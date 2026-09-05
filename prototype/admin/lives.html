@@ -1,0 +1,414 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>直播列表 · 艺博 To-B</title>
+<link rel="stylesheet" href="../assets/css/proto.css" />
+</head>
+<body class="admin-body" data-module="live" data-nav="lives" data-title="直播列表" data-crumb="直播 / 直播管理 / 直播列表">
+<div id="header-actions">
+  <button class="btn" id="btn-tutorial">使用教程</button>
+  <button class="btn" id="btn-batch">批量创建</button>
+  <a class="btn btn-primary" href="live-edit.html" id="btn-create">+ 新建直播</a>
+</div>
+<div id="page-content" style="display:none">
+
+  <!-- 3 个 Tab -->
+  <div class="tabs" id="live-tabs">
+    <a class="active" href="#video" data-tab="video">视频直播</a>
+    <a href="#audio" data-tab="audio">语音直播</a>
+    <a href="#record" data-tab="record">录播直播</a>
+  </div>
+
+  <!-- 顶部 4 个统计卡片 -->
+  <div class="stat-cards" style="margin:8px 0">
+    <div class="stat-card">
+      <div class="stat-label">今日待审核</div>
+      <div class="stat-value">12</div>
+      <div class="stat-hint"><span class="up">+3</span> 较昨日</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">今日通过</div>
+      <div class="stat-value" style="color:#00b42a">28</div>
+      <div class="stat-hint"><span class="up">+5</span> 较昨日</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">今日驳回</div>
+      <div class="stat-value" style="color:#f53f3f">4</div>
+      <div class="stat-hint"><span class="down">-1</span> 较昨日</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">累计上架中</div>
+      <div class="stat-value">136</div>
+      <div class="stat-hint">本周直播</div>
+    </div>
+  </div>
+
+  <!-- 筛选 -->
+  <div class="card" style="margin-bottom:8px"><div class="card-bd">
+    <div class="form-grid" style="grid-template-columns:repeat(6,minmax(0,1fr));gap:8px 12px">
+      <input id="f-name" placeholder="请输入直播名称" />
+      <select id="f-course">
+        <option value="">全部课程</option>
+        <option>店铺课程</option>
+        <option>转播课程</option>
+      </select>
+      <select id="f-mode">
+        <option value="">全部模式</option>
+        <option>视频直播</option>
+        <option>语音直播</option>
+        <option>录播直播</option>
+      </select>
+      <select id="f-style">
+        <option value="">全部模式</option>
+        <option>传统直播间</option>
+        <option>沉浸直播间</option>
+      </select>
+      <select id="f-audit">
+        <option value="">审核状态</option>
+        <option>草稿</option>
+        <option>待审核</option>
+        <option>已通过</option>
+        <option>已驳回</option>
+        <option>已取消</option>
+      </select>
+      <select id="f-status">
+        <option value="">直播状态</option>
+        <option>未开始</option>
+        <option>直播中</option>
+        <option>已结束</option>
+      </select>
+    </div>
+    <div class="toolbar" style="margin-top:8px">
+      <button class="btn btn-primary" id="btn-query">查询</button>
+      <button class="btn" id="btn-reset">重置</button>
+      <div class="spacer"></div>
+      <button class="btn" id="btn-export">导出</button>
+      <button class="btn" id="btn-shelf">上架</button>
+      <button class="btn" id="btn-unshelf">下架</button>
+      <button class="btn" id="btn-del">删除</button>
+    </div>
+  </div></div>
+
+  <!-- 表格 -->
+  <div class="card"><div class="card-bd" style="padding:0">
+    <table class="data">
+      <thead>
+        <tr>
+          <th style="width:36px"><input type="checkbox" id="check-all" /></th>
+          <th>课程</th><th>直播名称</th><th>模式</th><th>直播间</th>
+          <th>审核状态</th><th>直播状态</th><th>开始时间</th><th>创建人</th>
+          <th>审核人</th><th>提交时间</th>
+          <th style="width:220px">操作</th>
+        </tr>
+      </thead>
+      <tbody id="lv-tbody">
+        <!-- 待审核 -->
+        <tr data-audit="pending">
+          <td><input type="checkbox" class="row-check" /></td>
+          <td><div class="course-cell"><div class="thumb video"></div><div>春启 03 期家长必修课</div></div></td>
+          <td>春启 03 期家长公开课</td>
+          <td>视频直播</td>
+          <td>传统直播间</td>
+          <td><span class="audit-badge audit-pending">待审核</span></td>
+          <td><span class="status-dot status-pending"></span>未开始</td>
+          <td>2026-03-30 20:00</td>
+          <td>阮荣均</td>
+          <td>—</td><td>2026-09-04 14:30</td>
+          <td class="row-actions">
+            <a href="live-audit-detail.html" data-row-act="audit">审核</a>
+            <a href="#" data-row-act="withdraw">撤回</a>
+            <a href="#" data-row-act="detail">详情</a>
+          </td>
+        </tr>
+        <!-- 已驳回 -->
+        <tr data-audit="rejected">
+          <td><input type="checkbox" class="row-check" /></td>
+          <td><div class="course-cell"><div class="thumb video"></div><div>9.9 引流课 · 亲子沟通</div></div></td>
+          <td>9.9 引流试听课</td>
+          <td>视频直播</td>
+          <td>沉浸直播间</td>
+          <td><span class="audit-badge audit-rejected">已驳回</span></td>
+          <td><span class="status-dot status-pending"></span>未开始</td>
+          <td>2026-03-31 19:30</td>
+          <td>赵老师</td>
+          <td>刘管理</td><td>2026-09-03 16:00</td>
+          <td class="row-actions">
+            <a href="#" data-row-act="view-reject">查看原因</a>
+            <a href="live-edit.html" data-row-act="edit">编辑</a>
+            <a href="#" data-row-act="detail">详情</a>
+          </td>
+        </tr>
+        <!-- 草稿 -->
+        <tr data-audit="draft">
+          <td><input type="checkbox" class="row-check" /></td>
+          <td><div class="course-cell"><div class="thumb audio"></div><div>家长训练营</div></div></td>
+          <td>家长答疑会·音频直播</td>
+          <td>语音直播</td>
+          <td>传统直播间</td>
+          <td><span class="audit-badge audit-draft">草稿</span></td>
+          <td><span class="status-dot status-pending"></span>未开始</td>
+          <td>2026-04-01 20:00</td>
+          <td>王助教</td>
+          <td>—</td><td>—</td>
+          <td class="row-actions">
+            <a href="live-edit.html" data-row-act="edit">编辑</a>
+            <a href="#" data-row-act="submit">提交审核</a>
+            <a href="#" data-row-act="del" class="danger">删除</a>
+          </td>
+        </tr>
+        <!-- 已通过 + 直播中 -->
+        <tr data-audit="approved">
+          <td><input type="checkbox" class="row-check" /></td>
+          <td><div class="course-cell"><div class="thumb video"></div><div>今晚直播 · 复盘</div></div></td>
+          <td>今晚直播 · 公开课</td>
+          <td>视频直播</td>
+          <td>传统直播间</td>
+          <td><span class="audit-badge audit-approved">已通过</span></td>
+          <td><span class="status-dot status-livestreaming"></span>直播中</td>
+          <td>2026-09-04 20:00</td>
+          <td>阮荣均</td>
+          <td>李管理</td><td>2026-09-03 11:30</td>
+          <td class="row-actions">
+            <a href="live-screen.html?live_id=LV20260904001" data-row-act="screen" style="color:#165dff;font-weight:600">📺 大屏</a>
+            <a href="live-stats.html" data-row-act="data">数据</a>
+            <a href="live-control.html?live_id=LV20260904001" data-row-act="control">🎛 中控台</a>
+            <a href="#" data-row-act="takedown" class="danger">强制下架</a>
+          </td>
+        </tr>
+        <!-- 已通过 + 未开始 -->
+        <tr data-audit="approved">
+          <td><input type="checkbox" class="row-check" /></td>
+          <td><div class="course-cell"><div class="thumb video"></div><div>春启 04 期</div></div></td>
+          <td>明日直播·春启04 招生</td>
+          <td>视频直播</td>
+          <td>沉浸直播间</td>
+          <td><span class="audit-badge audit-approved">已通过</span></td>
+          <td><span class="status-dot status-pending"></span>未开始</td>
+          <td>2026-09-05 19:00</td>
+          <td>赵老师</td>
+          <td>李管理</td><td>2026-09-03 18:00</td>
+          <td class="row-actions">
+            <a href="live-control.html?live_id=LV20260905002" data-row-act="control" style="color:#165dff;font-weight:600">▶ 中控台</a>
+            <a href="live-edit.html" data-row-act="edit">编辑</a>
+            <a href="#" data-row-act="cancel" class="danger">取消上架</a>
+          </td>
+        </tr>
+        <!-- 已取消 -->
+        <tr data-audit="cancelled">
+          <td><input type="checkbox" class="row-check" /></td>
+          <td><div class="course-cell"><div class="thumb video"></div><div>试听公开课</div></div></td>
+          <td>试听公开课·已取消</td>
+          <td>视频直播</td>
+          <td>传统直播间</td>
+          <td><span class="audit-badge audit-cancelled">已取消</span></td>
+          <td><span class="status-dot status-finished"></span>已结束</td>
+          <td>2026-03-15 20:00</td>
+          <td>王助教</td>
+          <td>—</td><td>2026-03-14 09:30</td>
+          <td class="row-actions">
+            <a href="#" data-row-act="detail">详情</a>
+            <a href="#" data-row-act="copy">复制</a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div></div>
+
+  <!-- 分页 -->
+  <div class="toolbar" style="margin-top:8px">
+    <span class="muted">共 <b>6</b> 条</span>
+    <div class="spacer"></div>
+    <select><option>10条/页</option><option>20条/页</option><option>50条/页</option></select>
+    <button class="btn btn-sm" disabled>上一页</button>
+    <button class="btn btn-sm" disabled>1</button>
+    <button class="btn btn-sm" disabled>下一页</button>
+  </div>
+
+</div>
+
+<!-- ============ 弹窗 / 抽屉 ============ -->
+<div class="proto-mask" id="mask"></div>
+
+<!-- 驳回原因抽屉 -->
+<div class="proto-drawer" id="drawer-reject">
+  <div class="proto-drawer-hd">
+    <h3>驳回原因</h3>
+    <button class="btn btn-sm btn-ghost" data-close>×</button>
+  </div>
+  <div class="proto-drawer-bd">
+    <div class="field"><label>审核人</label><div>刘管理</div></div>
+    <div class="field"><label>驳回时间</label><div>2026-09-03 17:30</div></div>
+    <div class="field"><label>驳回理由</label>
+      <div style="background:#fff5f5;border:1px solid #ffccc7;border-radius:4px;padding:12px;color:#cf1322">
+        直播封面图包含第三方水印，请重新设计后再提交。建议尺寸 750*422px，去掉水印 logo。
+      </div>
+    </div>
+    <div class="field">
+      <label>审核维度</label>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <span class="audit-tag fail">内容合规 ✕</span>
+        <span class="audit-tag pass">主讲资质 ✓</span>
+        <span class="audit-tag pass">商品合规 ✓</span>
+        <span class="audit-tag pass">直播间设置 ✓</span>
+      </div>
+    </div>
+  </div>
+  <div class="proto-drawer-ft">
+    <button class="btn" data-close>关闭</button>
+    <a class="btn btn-primary" href="live-edit.html">去编辑</a>
+  </div>
+</div>
+
+<!-- 撤回确认弹窗 -->
+<div class="proto-modal" id="modal-withdraw">
+  <div class="proto-modal-hd">
+    <h3>确认撤回</h3>
+    <button class="btn btn-sm btn-ghost" data-close>×</button>
+  </div>
+  <div class="proto-modal-bd">
+    <p>撤回后该直播将回到"草稿"状态，可继续编辑后重新提交。</p>
+    <div class="field"><label>撤回原因（选填）</label>
+      <textarea rows="3" placeholder="请输入撤回原因"></textarea>
+    </div>
+  </div>
+  <div class="proto-modal-ft">
+    <button class="btn" data-close>取消</button>
+    <button class="btn btn-primary" id="btn-confirm-withdraw">确认撤回</button>
+  </div>
+</div>
+
+<style>
+.thumb {
+  width: 36px; height: 28px; border-radius: 4px;
+  background: linear-gradient(135deg,#722ed1,#a066f5);
+  flex-shrink: 0;
+}
+.thumb.video { background: linear-gradient(135deg,#165dff,#4080ff); }
+.thumb.audio { background: linear-gradient(135deg,#00b42a,#5fd068); }
+.course-cell { display: flex; align-items: center; gap: 8px; font-size: 12px; }
+.status-dot {
+  display: inline-block; width: 8px; height: 8px; border-radius: 50%;
+  margin-right: 4px; vertical-align: middle;
+}
+.status-livestreaming { background: var(--color-danger); animation: pulse 1.5s infinite; }
+.status-pending { background: var(--color-warning); }
+.status-finished { background: var(--color-text-muted); }
+@keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
+.row-actions a.danger { color: var(--color-danger); }
+
+/* 审核状态徽标 */
+.audit-badge {
+  display: inline-block; padding: 2px 10px; border-radius: 12px;
+  font-size: 12px; line-height: 18px; font-weight: 500;
+}
+.audit-draft    { background: #f0f1f3; color: #4e5969; }
+.audit-pending  { background: #fff7e6; color: #d48806; border: 1px solid #ffd591; }
+.audit-approved { background: #e8f5e9; color: #00b42a; }
+.audit-rejected { background: #fff1f0; color: #cf1322; border: 1px solid #ffa39e; }
+.audit-cancelled{ background: #f5f5f5; color: #86909c; }
+
+.audit-tag {
+  display: inline-block; padding: 2px 10px; border-radius: 4px;
+  font-size: 12px; line-height: 20px;
+}
+.audit-tag.pass { background: #e8f5e9; color: #00b42a; }
+.audit-tag.fail { background: #fff1f0; color: #cf1322; }
+
+/* 统计卡片 */
+.stat-cards {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px;
+}
+.stat-card {
+  background: #fff; border: 1px solid var(--color-border);
+  border-radius: 8px; padding: 14px 18px;
+}
+.stat-label { font-size: 13px; color: var(--color-text-muted); margin-bottom: 6px; }
+.stat-value { font-size: 24px; font-weight: 700; color: var(--color-text); line-height: 1.2; }
+.stat-hint  { font-size: 12px; color: var(--color-text-muted); margin-top: 4px; }
+.stat-hint .up   { color: #00b42a; margin-right: 4px; }
+.stat-hint .down { color: #f53f3f; margin-right: 4px; }
+</style>
+
+<script src="../assets/js/proto.js"></script>
+<script src="../assets/js/admin-shell.js"></script>
+<script>
+(function () {
+  // ===== Tabs =====
+  document.querySelectorAll("#live-tabs a[data-tab]").forEach(function (a) {
+    a.addEventListener("click", function (e) {
+      e.preventDefault();
+      document.querySelectorAll("#live-tabs a").forEach(function (x) { x.classList.remove("active"); });
+      a.classList.add("active");
+      Proto.toast("已切换：" + a.textContent);
+    });
+  });
+
+  // ===== Mask =====
+  var mask = document.getElementById("mask");
+  function closeAll() {
+    mask.classList.remove("open");
+    document.querySelectorAll(".proto-modal, .proto-drawer").forEach(function (n) { n.classList.remove("open"); });
+  }
+  function open(node) { mask.classList.add("open"); node.classList.add("open"); }
+  mask.addEventListener("click", closeAll);
+  document.querySelectorAll("[data-close]").forEach(function (n) { n.addEventListener("click", closeAll); });
+
+  // ===== Batch =====
+  document.getElementById("check-all").addEventListener("change", function () {
+    var c = this;
+    document.querySelectorAll(".row-check").forEach(function (x) { x.checked = c.checked; });
+  });
+
+  // ===== Row actions =====
+  document.querySelectorAll("#lv-tbody tr").forEach(function (tr) {
+    tr.querySelectorAll("[data-row-act]").forEach(function (a) {
+      a.addEventListener("click", function (e) {
+        e.preventDefault();
+        var act = a.getAttribute("data-row-act");
+        var name = tr.querySelectorAll("td")[2].textContent.trim();
+        if (act === "audit")         location.href = "live-audit-detail.html";
+        else if (act === "withdraw") open(document.getElementById("modal-withdraw"));
+        else if (act === "view-reject") open(document.getElementById("drawer-reject"));
+        else if (act === "submit")   Proto.toast("已提交审核：" + name);
+        else if (act === "takedown") { if (confirm("强制下架「" + name + "」？")) Proto.toast("已下架（原型）"); }
+        else if (act === "cancel")   { if (confirm("取消上架「" + name + "」？")) Proto.toast("已取消（原型）"); }
+        else if (act === "edit")     location.href = "live-edit.html";
+        else if (act === "data")     location.href = "live-stats.html";
+        else if (act === "control")  location.href = a.getAttribute("href");
+        else if (act === "screen")   location.href = a.getAttribute("href");
+        else if (act === "copy")     Proto.toast("已复制链接（原型）");
+        else if (act === "detail")   Proto.toast("打开详情（原型）");
+        else if (act === "del") {
+          if (confirm("确认删除「" + name + "」?")) { tr.remove(); Proto.toast("已删除（原型）"); }
+        }
+      });
+    });
+  });
+
+  // ===== Confirm withdraw =====
+  document.getElementById("btn-confirm-withdraw").addEventListener("click", function () {
+    Proto.toast("已撤回，回到草稿状态（原型）");
+    closeAll();
+  });
+
+  // ===== Header buttons =====
+  document.getElementById("btn-tutorial").addEventListener("click", function () { Proto.toast("打开使用教程（原型）"); });
+  document.getElementById("btn-batch").addEventListener("click", function () { Proto.toast("打开批量创建（原型）"); });
+  document.getElementById("btn-export").addEventListener("click", function () { Proto.toast("已导出（原型）"); });
+  document.getElementById("btn-shelf").addEventListener("click", function () { Proto.toast("已上架选中（原型）"); });
+  document.getElementById("btn-unshelf").addEventListener("click", function () { Proto.toast("已下架选中（原型）"); });
+  document.getElementById("btn-del").addEventListener("click", function () {
+    if (confirm("确认批量删除？")) Proto.toast("已批量删除（原型）");
+  });
+  document.getElementById("btn-query").addEventListener("click", function () { Proto.toast("已查询（原型）"); });
+  document.getElementById("btn-reset").addEventListener("click", function () {
+    document.getElementById("f-name").value = "";
+    ["f-course","f-mode","f-style","f-audit","f-status"].forEach(function (id) { document.getElementById(id).value = ""; });
+    Proto.toast("已重置");
+  });
+})();
+</script>
+</body>
+</html>

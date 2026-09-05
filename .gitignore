@@ -1,0 +1,21 @@
+# local dev
+*.log
+__pycache__/
+screenshots/
+.venv/
+node_modules/
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editor
+.vscode/
+.idea/
+*.swp
+
+# BOM scripts
+bom_*.py
+cp_screenshot.py
+bom_control.py

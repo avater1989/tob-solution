@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>直播间 · To-B 小程序</title>
+  <link rel="stylesheet" href="../assets/css/proto.css" />
+</head>
+<body class="mp-page" data-tabbar="0">
+  <div class="mp-frame">
+    <div class="mp-status" style="background:#0f172a;color:#fff"><span>9:41</span><span>直播中</span><span>100%</span></div>
+    <div class="live-player">
+      <span class="live-tag">LIVE 1,286</span>
+      <div style="font-size:14px;opacity:.9">亲子沟通 90 分钟</div>
+      <div style="font-size:12px;opacity:.55;margin-top:6px">主讲画面占位（小程序直播方案）</div>
+      <div style="position:absolute;top:10px;right:10px">
+        <a href="lives.html" style="color:#fff;font-size:12px;background:rgba(0,0,0,.4);padding:4px 8px;border-radius:4px">关闭</a>
+      </div>
+    </div>
+    <div class="live-chat">
+      <div class="msg"><b>系统</b> 欢迎进入直播间</div>
+      <div class="msg"><b>李女士</b> 老师讲得太实用了</div>
+      <div class="msg"><b>助教小王</b> 今晚下单课程有优惠哦</div>
+      <div class="msg"><b>张妈妈</b> 求挂课链接</div>
+    </div>
+    <div class="goods-sheet">
+      <div style="font-size:12px;color:#888;margin-bottom:6px">本场商品</div>
+      <div class="goods-row">
+        <div class="course-cover" style="width:56px;height:42px;font-size:10px">沟通课</div>
+        <div style="flex:1">
+          <div style="font-size:13px;font-weight:600">亲子沟通基础</div>
+          <div style="color:#dc2626;font-size:13px">¥199</div>
+        </div>
+        <a class="btn btn-primary btn-sm" href="pay-result.html?from=live">购买</a>
+      </div>
+      <div class="goods-row" style="border:0">
+        <div class="course-cover live" style="width:56px;height:42px;font-size:10px">本场</div>
+        <div style="flex:1">
+          <div style="font-size:13px;font-weight:600">本场直播门票</div>
+          <div style="color:#dc2626;font-size:13px">¥19.9 · 未购可买</div>
+        </div>
+        <a class="btn btn-sm" href="pay-result.html?from=ticket">购买入场</a>
+      </div>
+      <div style="display:flex;gap:8px;margin-top:8px">
+        <input placeholder="说点什么…" style="flex:1" />
+        <button class="btn btn-sm" data-toast="评论已发送（原型）">发送</button>
+      </div>
+    </div>
+  </div>
+  <p class="mp-hint">未购用户可买直播或挂载课 · <a href="../admin/live-edit.html">管理端配置</a></p>
+  <script src="../assets/js/proto.js"></script>
+  <script src="../assets/js/mp-shell.js"></script>
+</body>
+</html>

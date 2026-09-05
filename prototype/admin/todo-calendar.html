@@ -1,0 +1,311 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>待办日历 · 艺博 To-B</title>
+<link rel="stylesheet" href="../assets/css/proto.css" />
+</head>
+<body class="admin-body" data-module="scrm" data-nav="todo-cal" data-title="待办日历" data-crumb="SCRM / 营销管理 / 待办日历">
+<div id="header-actions">
+  <button class="btn" id="btn-prev">‹</button>
+  <button class="btn" id="btn-today">今天</button>
+  <button class="btn" id="btn-next">›</button>
+  <select id="f-month" style="margin-left:8px">
+    <option value="2026-09" selected>2026-09</option>
+    <option value="2026-10">2026-10</option>
+    <option value="2026-11">2026-11</option>
+  </select>
+  <button class="btn btn-primary" id="btn-create" style="margin-left:8px">+ 新增日程</button>
+</div>
+<div id="page-content" style="display:none">
+  <div class="cal-layout">
+    <!-- 左：日历 -->
+    <div class="card">
+      <div class="card-hd">
+        <h2>2026 年 9 月</h2>
+        <div class="muted">点击日期查看当日日程</div>
+      </div>
+      <div class="card-bd" style="padding:8px">
+        <div class="cal-weekdays">
+          <div>一</div><div>二</div><div>三</div><div>四</div>
+          <div>五</div><div class="cal-weekend">六</div><div class="cal-weekend">日</div>
+        </div>
+        <div class="cal-grid">
+          <!-- 上月末尾 -->
+          <div class="cal-day cal-out">31</div>
+          <div class="cal-day cal-out">1</div>
+          <div class="cal-day cal-out">2</div>
+          <div class="cal-day cal-has-event" data-day="3">
+            <div class="cal-day-no">3</div>
+            <div class="cal-event" data-act="event-detail">11:25 test--不指定客户--发素材-阶段111</div>
+            <div class="cal-event" data-act="event-detail">11:40 test--执行人自选--发素材-阶段aaa</div>
+          </div>
+          <div class="cal-day" data-day="4"><div class="cal-day-no">4</div></div>
+          <div class="cal-day cal-weekend" data-day="5"><div class="cal-day-no">5</div></div>
+          <div class="cal-day cal-weekend" data-day="6"><div class="cal-day-no">6</div></div>
+          <div class="cal-day" data-day="7"><div class="cal-day-no">7</div></div>
+          <div class="cal-day cal-has-event" data-day="8"><div class="cal-day-no">8</div></div>
+          <div class="cal-day" data-day="9"><div class="cal-day-no">9</div></div>
+          <div class="cal-day" data-day="10"><div class="cal-day-no">10</div></div>
+          <div class="cal-day" data-day="11"><div class="cal-day-no">11</div></div>
+          <div class="cal-day" data-day="12"><div class="cal-day-no">12</div></div>
+          <div class="cal-day cal-weekend" data-day="13"><div class="cal-day-no">13</div></div>
+          <div class="cal-day cal-weekend" data-day="14"><div class="cal-day-no">14</div></div>
+          <div class="cal-day" data-day="15"><div class="cal-day-no">15</div></div>
+          <div class="cal-day cal-has-event" data-day="16"><div class="cal-day-no">16</div></div>
+          <div class="cal-day" data-day="17"><div class="cal-day-no">17</div></div>
+          <div class="cal-day" data-day="18"><div class="cal-day-no">18</div></div>
+          <div class="cal-day cal-has-event" data-day="19"><div class="cal-day-no">19</div></div>
+          <div class="cal-day" data-day="20"><div class="cal-day-no">20</div></div>
+          <div class="cal-day cal-weekend" data-day="21"><div class="cal-day-no">21</div></div>
+          <div class="cal-day cal-weekend" data-day="22"><div class="cal-day-no">22</div></div>
+          <div class="cal-day" data-day="23"><div class="cal-day-no">23</div></div>
+          <div class="cal-day" data-day="24"><div class="cal-day-no">24</div></div>
+          <div class="cal-day" data-day="25"><div class="cal-day-no">25</div></div>
+          <div class="cal-day" data-day="26"><div class="cal-day-no">26</div></div>
+          <div class="cal-day" data-day="27"><div class="cal-day-no">27</div></div>
+          <div class="cal-day" data-day="28"><div class="cal-day-no">28</div></div>
+          <div class="cal-day" data-day="29"><div class="cal-day-no">29</div></div>
+          <div class="cal-day" data-day="30"><div class="cal-day-no">30</div></div>
+          <!-- 下月开头 -->
+          <div class="cal-day cal-out">1</div>
+          <div class="cal-day cal-out">2</div>
+          <div class="cal-day cal-out">3</div>
+          <div class="cal-day cal-out">4</div>
+          <div class="cal-day cal-out">5</div>
+          <div class="cal-day cal-out">6</div>
+          <div class="cal-day cal-out">7</div>
+          <div class="cal-day cal-out">8</div>
+          <div class="cal-day cal-out">9</div>
+          <div class="cal-day cal-out">10</div>
+          <div class="cal-day cal-out">11</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 右：当日日程 -->
+    <div class="card">
+      <div class="card-hd">
+        <h2 id="day-title">当日日程 (2026-09-03)</h2>
+        <div class="muted">显示选中日期的日程</div>
+      </div>
+      <div class="card-bd">
+        <div id="day-events">
+          <div class="event-card">
+            <div class="event-time">11:25</div>
+            <div class="event-body">
+              <div class="event-title">test--不指定客户--发素材-阶段111</div>
+              <div class="event-meta">客户：李女士 · 阶段 111 · 状态：待执行</div>
+            </div>
+          </div>
+          <div class="event-card">
+            <div class="event-time">11:40</div>
+            <div class="event-body">
+              <div class="event-title">test--执行人自选--发素材-阶段aaa</div>
+              <div class="event-meta">执行人：自选 · 阶段 aaa · 状态：待执行</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ 弹窗 ============ -->
+<div class="proto-mask" id="mask"></div>
+
+<!-- 新增日程弹窗 -->
+<div class="proto-modal" id="modal-create" style="width:600px">
+  <div class="proto-modal-hd">
+    <h3 style="font-size:16px;font-weight:600">新增日程</h3>
+    <button class="btn btn-sm btn-ghost" data-close>×</button>
+  </div>
+  <div class="proto-modal-bd">
+    <div class="form-grid">
+      <div class="field"><label>日程标题 *</label><input id="ce-title" placeholder="如：春启03 资料包推送" /></div>
+      <div class="field"><label>关联客户</label>
+        <select>
+          <option>不指定客户</option>
+          <option>李女士</option>
+          <option>张妈妈</option>
+        </select>
+      </div>
+      <div class="field"><label>所属阶段</label>
+        <select>
+          <option>新线索</option>
+          <option>跟进中</option>
+          <option>已转化</option>
+          <option>阶段 111</option>
+          <option>阶段 aaa</option>
+        </select>
+      </div>
+      <div class="field"><label>执行人</label>
+        <select>
+          <option>系统</option>
+          <option>指定员工</option>
+          <option>执行人自选</option>
+        </select>
+      </div>
+      <div class="field"><label>日期 *</label><input type="date" value="2026-09-03" /></div>
+      <div class="field"><label>时间 *</label><input type="time" value="11:25" /></div>
+      <div class="field"><label>执行动作</label>
+        <select>
+          <option>发素材</option>
+          <option>发欢迎语</option>
+          <option>发表单</option>
+          <option>群发消息</option>
+          <option>提醒</option>
+        </select>
+      </div>
+      <div class="field"><label>提醒方式</label>
+        <select><option>企微</option><option>站内信</option><option>不提醒</option></select>
+      </div>
+      <div class="field" style="grid-column:1/-1"><label>说明</label>
+        <textarea rows="2" style="width:100%;padding:8px;border:1px solid var(--color-border);border-radius:6px" placeholder="选填"></textarea>
+      </div>
+    </div>
+  </div>
+  <div class="proto-modal-ft">
+    <button class="btn" data-close>取消</button>
+    <button class="btn btn-primary" id="ce-submit">保存</button>
+  </div>
+</div>
+
+<!-- 日程详情抽屉 -->
+<div class="proto-drawer" id="drawer-event">
+  <div class="proto-drawer-hd">
+    <h3>日程详情</h3>
+    <button class="btn btn-sm btn-ghost" data-close>×</button>
+  </div>
+  <div class="proto-drawer-bd">
+    <h4 style="margin-bottom:8px">test--不指定客户--发素材-阶段111</h4>
+    <div class="form-grid" style="grid-template-columns:1fr 1fr">
+      <div class="field"><label>触发时间</label><div>2026-09-03 11:25</div></div>
+      <div class="field"><label>关联客户</label><div>不指定</div></div>
+      <div class="field"><label>所属阶段</label><div>阶段 111</div></div>
+      <div class="field"><label>执行动作</label><div>发素材</div></div>
+      <div class="field"><label>执行人</label><div>系统</div></div>
+      <div class="field"><label>状态</label><div>待执行</div></div>
+    </div>
+    <h4 style="margin:16px 0 8px">说明</h4>
+    <p class="muted">不指定客户的群发测试任务，命中即下发到所有相关客户。</p>
+  </div>
+  <div class="proto-drawer-ft">
+    <button class="btn" data-close>关闭</button>
+    <button class="btn btn-primary">立即执行</button>
+  </div>
+</div>
+
+<style>
+.cal-layout {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 12px;
+  align-items: start;
+}
+.cal-weekdays {
+  display: grid; grid-template-columns: repeat(7, 1fr);
+  margin-bottom: 4px;
+}
+.cal-weekdays div {
+  text-align: center; font-size: 12px; color: var(--color-text-muted);
+  padding: 6px 0;
+}
+.cal-weekend { color: var(--color-warning); }
+
+.cal-grid {
+  display: grid; grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+}
+.cal-day {
+  min-height: 72px;
+  border: 1px solid var(--color-border); border-radius: 4px;
+  padding: 4px 6px;
+  font-size: 12px;
+  background: #fff;
+  cursor: pointer;
+}
+.cal-day:hover { background: #f7f8fa; }
+.cal-out { background: #fafafa; color: var(--color-text-muted); }
+.cal-out:hover { background: #fafafa; }
+.cal-day-no { font-weight: 600; margin-bottom: 4px; }
+.cal-has-event { border-color: var(--color-primary); }
+.cal-event {
+  background: var(--color-primary-soft); color: var(--color-primary);
+  padding: 2px 6px; border-radius: 3px;
+  font-size: 11px; line-height: 1.4;
+  margin-bottom: 2px; overflow: hidden; text-overflow: ellipsis;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.cal-event:hover { background: var(--color-primary); color: #fff; }
+
+.event-card {
+  display: flex; gap: 12px; padding: 12px;
+  border: 1px solid var(--color-border); border-radius: 6px;
+  margin-bottom: 8px; background: #fff;
+}
+.event-time {
+  font-size: 14px; font-weight: 600; color: var(--color-primary);
+  flex-shrink: 0; min-width: 56px;
+}
+.event-body { flex: 1; }
+.event-title { font-size: 13px; font-weight: 500; margin-bottom: 4px; }
+.event-meta { font-size: 12px; color: var(--color-text-muted); }
+</style>
+
+<script src="../assets/js/proto.js"></script>
+<script src="../assets/js/admin-shell.js"></script>
+<script>
+(function () {
+  // ===== Mask / modal =====
+  var mask = document.getElementById("mask");
+  function closeAll() {
+    mask.classList.remove("open");
+    document.querySelectorAll(".proto-modal, .proto-drawer").forEach(function (n) { n.classList.remove("open"); });
+  }
+  function open(node) { mask.classList.add("open"); node.classList.add("open"); }
+  mask.addEventListener("click", closeAll);
+  document.querySelectorAll("[data-close]").forEach(function (n) { n.addEventListener("click", closeAll); });
+
+  // ===== Day click =====
+  document.querySelectorAll(".cal-day[data-day]").forEach(function (day) {
+    day.addEventListener("click", function (e) {
+      if (e.target.classList.contains("cal-event")) return;
+      var d = day.getAttribute("data-day");
+      document.getElementById("day-title").textContent = "当日日程 (2026-09-" + d + ")";
+      Proto.toast("已切换到 9 月 " + d + " 日");
+    });
+  });
+
+  // ===== Event click =====
+  document.querySelectorAll('[data-act="event-detail"]').forEach(function (ev) {
+    ev.addEventListener("click", function (e) {
+      e.stopPropagation();
+      open(document.getElementById("drawer-event"));
+    });
+  });
+
+  // ===== Create =====
+  document.getElementById("btn-create").addEventListener("click", function () { open(document.getElementById("modal-create")); });
+  document.getElementById("ce-submit").addEventListener("click", function () {
+    var t = document.getElementById("ce-title").value.trim();
+    if (!t) { Proto.toast("请输入日程标题"); return; }
+    closeAll(); Proto.toast("日程已新增（原型）");
+  });
+
+  // ===== Nav buttons =====
+  document.getElementById("btn-prev").addEventListener("click", function () { Proto.toast("上一月（原型）"); });
+  document.getElementById("btn-next").addEventListener("click", function () { Proto.toast("下一月（原型）"); });
+  document.getElementById("btn-today").addEventListener("click", function () {
+    document.getElementById("day-title").textContent = "当日日程 (今天)";
+    Proto.toast("已跳到今天");
+  });
+  document.getElementById("f-month").addEventListener("change", function (e) {
+    Proto.toast("已切换到 " + e.target.value);
+  });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,601 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>自定义表单 · 艺博 To-B</title>
+<link rel="stylesheet" href="../assets/css/proto.css" />
+</head>
+<body class="admin-body" data-module="scrm" data-nav="quick-form" data-title="自定义表单" data-crumb="SCRM / 内容中心 / 自定义表单">
+<div id="header-actions">
+  <button class="btn" id="btn-batch-del" disabled>批量删除</button>
+  <button class="btn btn-primary" id="btn-create">+ 新建表单</button>
+</div>
+<div id="page-content" style="display:none">
+  <div class="content-layout">
+    <!-- 左：分组树 -->
+    <div class="card tree-card">
+      <div class="card-hd">
+        <h2>表单分组</h2>
+        <button class="btn btn-sm" id="btn-add-group">+ 添加分组</button>
+      </div>
+      <div class="card-bd">
+        <input id="tree-search" placeholder="请输入分组名称" style="margin-bottom:8px" />
+        <ul class="tree" id="form-tree">
+          <li class="tree-node expanded" data-key="all">
+            <div class="tree-row tree-row--active">
+              <span class="tree-toggle">▾</span>
+              <span class="tree-icon">📁</span>
+              <span class="tree-label">全部分组</span>
+              <span class="tree-count">11</span>
+            </div>
+          </li>
+          <li class="tree-node expanded" data-key="survey">
+            <div class="tree-row">
+              <span class="tree-toggle">▾</span>
+              <span class="tree-icon">📁</span>
+              <span class="tree-label">调研宣传/介绍 (0)</span>
+              <span class="tree-count">0</span>
+              <button class="tree-more">⋯</button>
+            </div>
+            <ul class="tree-children">
+              <li class="tree-node"><div class="tree-row"><span class="tree-toggle">▸</span><span class="tree-icon">📁</span><span class="tree-label">介绍词 (1)</span><span class="tree-count">1</span><button class="tree-more">⋯</button></div></li>
+            </ul>
+          </li>
+          <li class="tree-node" data-key="pro-svc">
+            <div class="tree-row">
+              <span class="tree-toggle">▸</span>
+              <span class="tree-icon">📁</span>
+              <span class="tree-label">专业服务</span>
+              <span class="tree-count">—</span>
+              <button class="tree-more">⋯</button>
+            </div>
+          </li>
+          <li class="tree-node" data-key="self-intro">
+            <div class="tree-row">
+              <span class="tree-toggle">▸</span>
+              <span class="tree-icon">📁</span>
+              <span class="tree-label">自我介绍词</span>
+              <span class="tree-count">—</span>
+              <button class="tree-more">⋯</button>
+            </div>
+          </li>
+          <li class="tree-node expanded" data-key="K-form">
+            <div class="tree-row">
+              <span class="tree-toggle">▾</span>
+              <span class="tree-icon">📁</span>
+              <span class="tree-label">K话术</span>
+              <span class="tree-count">2</span>
+              <button class="tree-more">⋯</button>
+            </div>
+          </li>
+          <li class="tree-node" data-key="S-form">
+            <div class="tree-row">
+              <span class="tree-toggle">▸</span>
+              <span class="tree-icon">📁</span>
+              <span class="tree-label">S话术</span>
+              <span class="tree-count">2</span>
+              <button class="tree-more">⋯</button>
+            </div>
+          </li>
+          <li class="tree-node" data-key="K-form-intro">
+            <div class="tree-row">
+              <span class="tree-toggle">▸</span>
+              <span class="tree-icon">📁</span>
+              <span class="tree-label">K话术介绍</span>
+              <span class="tree-count">—</span>
+              <button class="tree-more">⋯</button>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- 右：表单列表 -->
+    <div class="card">
+      <div class="card-bd">
+        <div class="form-grid" style="grid-template-columns:repeat(5,minmax(0,1fr));gap:8px 12px">
+          <input id="f-title" placeholder="标题说明" />
+          <select id="f-type">
+            <option value="">模板类型</option>
+            <option>问卷调查</option>
+            <option>收集信息</option>
+            <option>登记表单</option>
+            <option>报名表</option>
+          </select>
+          <select id="f-status">
+            <option value="">状态</option>
+            <option>已发布</option>
+            <option>草稿</option>
+            <option>未发布</option>
+          </select>
+          <select id="f-updater">
+            <option value="">更新人</option>
+            <option>宋梨肉</option>
+            <option>木子</option>
+            <option>企业运营28</option>
+            <option>陈氏</option>
+          </select>
+          <div class="time-range" style="display:flex;gap:6px">
+            <input id="f-time1" type="datetime-local" />
+            <input id="f-time2" type="datetime-local" />
+          </div>
+        </div>
+        <div class="toolbar" style="margin-top:8px">
+          <button class="btn btn-primary" id="btn-query">查询</button>
+          <button class="btn" id="btn-reset">重置</button>
+          <div class="spacer"></div>
+          <button class="btn" id="btn-col">列展示</button>
+        </div>
+
+        <!-- 表格 -->
+        <div class="card" style="margin-top:8px"><div class="card-bd" style="padding:0">
+          <table class="data">
+            <thead>
+              <tr>
+                <th style="width:36px"><input type="checkbox" id="check-all" /></th>
+                <th>标题</th><th>说明</th><th>模板类型</th><th>转发数</th>
+                <th>提交数</th><th>版本号</th><th>状态</th>
+                <th>更新人</th><th>更新时间</th>
+                <th style="width:200px">操作</th>
+              </tr>
+            </thead>
+            <tbody id="fm-tbody">
+              <tr>
+                <td><input type="checkbox" class="row-check" /></td>
+                <td>问卷调查</td>
+                <td>感谢您参与本次问卷调查...</td>
+                <td>问卷调查</td>
+                <td>0</td><td>0</td><td>1</td>
+                <td><span class="status-dot status-on"></span> 已发布</td>
+                <td>宋梨肉</td><td>2026-08-13 11:38:48</td>
+                <td class="row-actions">
+                  <a href="#" data-row-act="data">数据</a>
+                  <a href="#" data-row-act="preview">预览</a>
+                  <a href="#" data-row-act="edit">编辑</a>
+                  <a href="#" data-row-act="del" class="danger">删除</a>
+                </td>
+              </tr>
+              <tr>
+                <td><input type="checkbox" class="row-check" /></td>
+                <td>收客信息</td>
+                <td>询客需求</td>
+                <td>收集信息</td>
+                <td>2</td><td>2</td><td>8</td>
+                <td><span class="status-dot status-on"></span> 已发布</td>
+                <td>木子</td><td>2026-08-11 15:59:35</td>
+                <td class="row-actions">
+                  <a href="#" data-row-act="data">数据</a>
+                  <a href="#" data-row-act="preview">预览</a>
+                  <a href="#" data-row-act="edit">编辑</a>
+                  <a href="#" data-row-act="del" class="danger">删除</a>
+                </td>
+              </tr>
+              <tr>
+                <td><input type="checkbox" class="row-check" /></td>
+                <td>专业服务</td>
+                <td>点击填写专属您已报名，游览...</td>
+                <td>登记表单</td>
+                <td>15</td><td>7</td><td>3</td>
+                <td><span class="status-dot status-on"></span> 已发布</td>
+                <td>木子</td><td>2026-07-29 18:55:27</td>
+                <td class="row-actions">
+                  <a href="#" data-row-act="data">数据</a>
+                  <a href="#" data-row-act="preview">预览</a>
+                  <a href="#" data-row-act="edit">编辑</a>
+                  <a href="#" data-row-act="del" class="danger">删除</a>
+                </td>
+              </tr>
+              <tr>
+                <td><input type="checkbox" class="row-check" /></td>
+                <td>调队高级版</td>
+                <td>农家调味</td>
+                <td>问卷调查</td>
+                <td>0</td><td>0</td><td>1</td>
+                <td><span class="status-dot status-on"></span> 已发布</td>
+                <td>木子</td><td>2026-07-24 15:04:23</td>
+                <td class="row-actions">
+                  <a href="#" data-row-act="data">数据</a>
+                  <a href="#" data-row-act="preview">预览</a>
+                  <a href="#" data-row-act="edit">编辑</a>
+                  <a href="#" data-row-act="del" class="danger">删除</a>
+                </td>
+              </tr>
+              <tr>
+                <td><input type="checkbox" class="row-check" /></td>
+                <td>课程预约</td>
+                <td>K应正课推限内水平</td>
+                <td>报名表</td>
+                <td>2</td><td>0</td><td>2</td>
+                <td><span class="status-dot status-on"></span> 已发布</td>
+                <td>企业运营28</td><td>2026-07-23 19:05:27</td>
+                <td class="row-actions">
+                  <a href="#" data-row-act="data">数据</a>
+                  <a href="#" data-row-act="preview">预览</a>
+                  <a href="#" data-row-act="edit">编辑</a>
+                  <a href="#" data-row-act="del" class="danger">删除</a>
+                </td>
+              </tr>
+              <tr>
+                <td><input type="checkbox" class="row-check" /></td>
+                <td>活体服务-包英之英</td>
+                <td>闭谢以上会员英和包线。</td>
+                <td>收集信息</td>
+                <td>4</td><td>0</td><td>1</td>
+                <td><span class="status-dot status-on"></span> 已发布</td>
+                <td>陈氏</td><td>2026-07-23 19:04:21</td>
+                <td class="row-actions">
+                  <a href="#" data-row-act="data">数据</a>
+                  <a href="#" data-row-act="preview">预览</a>
+                  <a href="#" data-row-act="edit">编辑</a>
+                  <a href="#" data-row-act="del" class="danger">删除</a>
+                </td>
+              </tr>
+              <tr>
+                <td><input type="checkbox" class="row-check" /></td>
+                <td>班仁名师课程介介介绍中介</td>
+                <td>全体有介们</td>
+                <td>课程介绍</td>
+                <td>0</td><td>0</td><td>2</td>
+                <td><span class="status-dot status-on"></span> 已发布</td>
+                <td>谭文等</td><td>2026-07-22 14:24:10</td>
+                <td class="row-actions">
+                  <a href="#" data-row-act="data">数据</a>
+                  <a href="#" data-row-act="preview">预览</a>
+                  <a href="#" data-row-act="edit">编辑</a>
+                  <a href="#" data-row-act="del" class="danger">删除</a>
+                </td>
+              </tr>
+              <tr>
+                <td><input type="checkbox" class="row-check" /></td>
+                <td>课程收费</td>
+                <td>收费制度说明</td>
+                <td>介绍表单</td>
+                <td>0</td><td>1</td><td>1</td>
+                <td><span class="status-dot status-draft"></span> 草稿</td>
+                <td>宁交源28</td><td>2026-07-22 14:24:10</td>
+                <td class="row-actions">
+                  <a href="#" data-row-act="data">数据</a>
+                  <a href="#" data-row-act="preview">预览</a>
+                  <a href="#" data-row-act="edit">编辑</a>
+                  <a href="#" data-row-act="del" class="danger">删除</a>
+                </td>
+              </tr>
+              <tr>
+                <td><input type="checkbox" class="row-check" /></td>
+                <td>高生服务</td>
+                <td>高宝璋服务专户已报名，游览...</td>
+                <td>登记表单</td>
+                <td>0</td><td>0</td><td>3</td>
+                <td><span class="status-dot status-warn"></span> 未发布</td>
+                <td>陈朗宝</td><td>2026-07-22 14:24:10</td>
+                <td class="row-actions">
+                  <a href="#" data-row-act="data">数据</a>
+                  <a href="#" data-row-act="preview">预览</a>
+                  <a href="#" data-row-act="edit">编辑</a>
+                  <a href="#" data-row-act="del" class="danger">删除</a>
+                </td>
+              </tr>
+              <tr>
+                <td><input type="checkbox" class="row-check" /></td>
+                <td>调客辅导</td>
+                <td>所调辅导参与到构中的客...</td>
+                <td>问卷调查</td>
+                <td>0</td><td>0</td><td>1</td>
+                <td><span class="status-dot status-off"></span> 未发布</td>
+                <td>木子</td><td>2026-07-22 14:24:10</td>
+                <td class="row-actions">
+                  <a href="#" data-row-act="data">数据</a>
+                  <a href="#" data-row-act="preview">预览</a>
+                  <a href="#" data-row-act="edit">编辑</a>
+                  <a href="#" data-row-act="del" class="danger">删除</a>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div></div>
+
+        <!-- 分页 -->
+        <div class="toolbar" style="margin-top:8px">
+          <span class="muted">已选 <b id="fm-count">0</b> 条</span>
+          <div class="spacer"></div>
+          <span class="muted">共 <b>11</b> 条</span>
+          <button class="btn btn-sm" disabled>上一页</button>
+          <button class="btn btn-sm" id="btn-next">下一页</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ 抽屉 / 弹窗 ============ -->
+<div class="proto-mask" id="mask"></div>
+
+<!-- 新建表单弹窗 -->
+<div class="proto-modal" id="modal-create" style="width:600px">
+  <div class="proto-modal-hd">
+    <h3 style="font-size:16px;font-weight:600">新建表单</h3>
+    <button class="btn btn-sm btn-ghost" data-close>×</button>
+  </div>
+  <div class="proto-modal-bd">
+    <div class="form-grid">
+      <div class="field"><label>标题 *</label><input id="cf-title" placeholder="如：收客信息" /></div>
+      <div class="field"><label>模板类型 *</label>
+        <select id="cf-type">
+          <option>问卷调查</option>
+          <option>收集信息</option>
+          <option>登记表单</option>
+          <option>报名表</option>
+          <option>介绍表单</option>
+          <option>课程介绍</option>
+        </select>
+      </div>
+      <div class="field"><label>所属分组</label>
+        <select>
+          <option>调研宣传/介绍</option>
+          <option>介绍词</option>
+          <option>专业服务</option>
+          <option>自我介绍词</option>
+          <option>K话术</option>
+          <option>S话术</option>
+        </select>
+      </div>
+      <div class="field"><label>状态</label>
+        <select><option>草稿</option><option>已发布</option><option>未发布</option></select>
+      </div>
+      <div class="field" style="grid-column:1/-1"><label>说明</label>
+        <textarea id="cf-desc" rows="3" style="width:100%;padding:8px;border:1px solid var(--color-border);border-radius:6px" placeholder="选填"></textarea>
+      </div>
+    </div>
+    <p class="muted" style="margin-top:12px">保存后将进入 <a href="form-edit.html">表单构建器</a> 添加字段。</p>
+  </div>
+  <div class="proto-modal-ft">
+    <button class="btn" data-close>取消</button>
+    <button class="btn btn-primary" id="cf-submit">下一步：构建表单</button>
+  </div>
+</div>
+
+<!-- 数据抽屉 -->
+<div class="proto-drawer" id="drawer-data">
+  <div class="proto-drawer-hd">
+    <h3 id="dd-title">表单数据</h3>
+    <button class="btn btn-sm btn-ghost" data-close>×</button>
+  </div>
+  <div class="proto-drawer-bd">
+    <div class="grid-4" style="margin-bottom:16px">
+      <div class="stat"><div class="label">转发数</div><div class="value" id="dd-share">—</div></div>
+      <div class="stat"><div class="label">提交数</div><div class="value" id="dd-submit">—</div></div>
+      <div class="stat"><div class="label">完成率</div><div class="value" id="dd-rate">—</div></div>
+      <div class="stat"><div class="label">版本</div><div class="value" id="dd-version">—</div></div>
+    </div>
+    <h4 style="margin-bottom:8px">最近提交</h4>
+    <table class="data">
+      <thead><tr><th>提交人</th><th>提交时间</th><th>状态</th><th>操作</th></tr></thead>
+      <tbody>
+        <tr><td>李女士</td><td>2026-03-29 09:12</td><td><span class="badge badge-success">已完成</span></td><td><a href="#" data-toast="查看提交详情">查看</a></td></tr>
+        <tr><td>张妈妈</td><td>2026-03-28 18:30</td><td><span class="badge badge-success">已完成</span></td><td><a href="#" data-toast="查看提交详情">查看</a></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="proto-drawer-ft">
+    <button class="btn" data-close>关闭</button>
+    <button class="btn btn-primary" id="dd-export">导出全部</button>
+  </div>
+</div>
+
+<!-- 新建分组 -->
+<div class="proto-modal" id="modal-group">
+  <div class="proto-modal-hd">
+    <h3 style="font-size:16px;font-weight:600">新建分组</h3>
+    <button class="btn btn-sm btn-ghost" data-close>×</button>
+  </div>
+  <div class="proto-modal-bd">
+    <div class="form-grid">
+      <div class="field"><label>分组名称</label><input id="gr-name" /></div>
+      <div class="field"><label>排序</label><input type="number" value="1" /></div>
+      <div class="field" style="grid-column:1/-1"><label>可见范围</label>
+        <select><option>全员</option><option>本部门</option><option>指定成员</option></select>
+      </div>
+    </div>
+  </div>
+  <div class="proto-modal-ft">
+    <button class="btn" data-close>取消</button>
+    <button class="btn btn-primary" id="gr-submit">保存</button>
+  </div>
+</div>
+
+<!-- 列展示 -->
+<div class="proto-drawer" id="drawer-col" style="width:340px">
+  <div class="proto-drawer-hd">
+    <h3>列展示</h3>
+    <button class="btn btn-sm btn-ghost" data-close>×</button>
+  </div>
+  <div class="proto-drawer-bd">
+    <div id="col-list">
+      <label><input type="checkbox" checked> 标题</label>
+      <label><input type="checkbox" checked> 说明</label>
+      <label><input type="checkbox" checked> 模板类型</label>
+      <label><input type="checkbox" checked> 转发数</label>
+      <label><input type="checkbox" checked> 提交数</label>
+      <label><input type="checkbox" checked> 版本号</label>
+      <label><input type="checkbox" checked> 状态</label>
+      <label><input type="checkbox" checked> 更新人</label>
+      <label><input type="checkbox" checked> 更新时间</label>
+    </div>
+  </div>
+  <div class="proto-drawer-ft">
+    <button class="btn" data-close>取消</button>
+    <button class="btn btn-primary" id="col-apply">应用</button>
+  </div>
+</div>
+
+<style>
+.content-layout {
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  gap: 12px;
+}
+.tree-card { height: fit-content; }
+.tree { list-style: none; padding: 0; margin: 0; }
+.tree-children { list-style: none; padding-left: 18px; margin: 0; }
+.tree-node { margin-bottom: 2px; }
+.tree-row {
+  display: flex; align-items: center; gap: 6px;
+  padding: 6px 8px; border-radius: 4px; cursor: pointer;
+  font-size: 13px;
+}
+.tree-row:hover { background: #f0f4fa; }
+.tree-row--active { background: var(--color-primary-soft); color: var(--color-primary); font-weight: 500; }
+.tree-toggle { color: var(--color-text-muted); font-size: 10px; width: 12px; }
+.tree-icon { font-size: 14px; }
+.tree-label { flex: 1; }
+.tree-count { color: var(--color-text-muted); font-size: 12px; }
+.tree-more {
+  background: none; border: none; color: var(--color-text-muted);
+  cursor: pointer; padding: 0 4px; font-size: 16px; line-height: 1;
+}
+.status-dot {
+  display: inline-block; width: 8px; height: 8px; border-radius: 50%;
+  margin-right: 4px; vertical-align: middle;
+}
+.status-on { background: var(--color-success); }
+.status-off { background: var(--color-text-muted); }
+.status-draft { background: var(--color-text-muted); }
+.status-warn { background: var(--color-warning); }
+.row-actions a.danger { color: var(--color-danger); }
+#col-list label {
+  display: flex; align-items: center; gap: 6px;
+  padding: 6px 0; font-size: 13px;
+}
+</style>
+
+<script src="../assets/js/proto.js"></script>
+<script src="../assets/js/admin-shell.js"></script>
+<script>
+(function () {
+  // ===== Tree =====
+  document.querySelectorAll(".tree-row").forEach(function (row) {
+    row.addEventListener("click", function (e) {
+      if (e.target.classList.contains("tree-more")) return;
+      document.querySelectorAll(".tree-row").forEach(function (x) { x.classList.remove("tree-row--active"); });
+      row.classList.add("tree-row--active");
+      Proto.toast("已切换到：" + row.querySelector(".tree-label").textContent);
+    });
+  });
+  document.querySelectorAll(".tree-toggle").forEach(function (t) {
+    t.addEventListener("click", function (e) {
+      e.stopPropagation();
+      var node = t.closest(".tree-node");
+      node.classList.toggle("expanded");
+      t.textContent = node.classList.contains("expanded") ? "▾" : "▸";
+    });
+  });
+  document.querySelectorAll(".tree-more").forEach(function (b) {
+    b.addEventListener("click", function (e) {
+      e.stopPropagation();
+      Proto.toast("更多操作（原型）");
+    });
+  });
+
+  // ===== Mask / drawer / modal =====
+  var mask = document.getElementById("mask");
+  function closeAll() {
+    mask.classList.remove("open");
+    document.querySelectorAll(".proto-modal, .proto-drawer").forEach(function (n) { n.classList.remove("open"); });
+  }
+  function open(node) { mask.classList.add("open"); node.classList.add("open"); }
+  mask.addEventListener("click", closeAll);
+  document.querySelectorAll("[data-close]").forEach(function (n) { n.addEventListener("click", closeAll); });
+
+  // ===== Batch =====
+  var btnBatchDel = document.getElementById("btn-batch-del");
+  var checkAll = document.getElementById("check-all");
+  function syncBatch() {
+    var n = document.querySelectorAll(".row-check:checked").length;
+    document.getElementById("fm-count").textContent = n;
+    btnBatchDel.disabled = n === 0;
+  }
+  checkAll.addEventListener("change", function () {
+    document.querySelectorAll(".row-check").forEach(function (c) { c.checked = checkAll.checked; });
+    syncBatch();
+  });
+  document.querySelectorAll(".row-check").forEach(function (c) { c.addEventListener("change", syncBatch); });
+  btnBatchDel.addEventListener("click", function () {
+    if (confirm("确认批量删除？")) Proto.toast("已批量删除（原型）");
+  });
+
+  // ===== Create =====
+  document.getElementById("btn-create").addEventListener("click", function () { open(document.getElementById("modal-create")); });
+  document.getElementById("cf-submit").addEventListener("click", function () {
+    var t = document.getElementById("cf-title").value.trim();
+    if (!t) { Proto.toast("请输入标题"); return; }
+    closeAll();
+    Proto.toast("表单已创建（原型）");
+    setTimeout(function () { location.href = "form-edit.html"; }, 300);
+  });
+
+  // ===== Row actions =====
+  function rowData(tr) {
+    var tds = tr.querySelectorAll("td");
+    return {
+      title: tds[1] ? tds[1].textContent.trim() : "",
+      desc: tds[2] ? tds[2].textContent.trim() : "",
+      type: tds[3] ? tds[3].textContent.trim() : "",
+      share: tds[4] ? tds[4].textContent.trim() : "0",
+      submit: tds[5] ? tds[5].textContent.trim() : "0",
+      version: tds[6] ? tds[6].textContent.trim() : "1",
+      status: tds[7] ? tds[7].textContent.trim() : "",
+      updater: tds[8] ? tds[8].textContent.trim() : "",
+      updated: tds[9] ? tds[9].textContent.trim() : "",
+    };
+  }
+  document.querySelectorAll("#fm-tbody tr").forEach(function (tr) {
+    tr.querySelectorAll("[data-row-act]").forEach(function (a) {
+      a.addEventListener("click", function (e) {
+        e.preventDefault();
+        var act = a.getAttribute("data-row-act");
+        var d = rowData(tr);
+        if (act === "data") {
+          document.getElementById("dd-title").textContent = "表单数据 · " + d.title;
+          document.getElementById("dd-share").textContent = d.share;
+          document.getElementById("dd-submit").textContent = d.submit;
+          var rate = (parseInt(d.share) > 0 ? Math.round(parseInt(d.submit) / parseInt(d.share) * 100) : 0);
+          document.getElementById("dd-rate").textContent = rate + "%";
+          document.getElementById("dd-version").textContent = "v" + d.version;
+          open(document.getElementById("drawer-data"));
+        }
+        else if (act === "preview") location.href = "form-preview.html";
+        else if (act === "edit") location.href = "form-edit.html";
+        else if (act === "del") {
+          if (confirm("确认删除「" + d.title + "」?")) {
+            tr.remove();
+            Proto.toast("已删除（原型）");
+          }
+        }
+      });
+    });
+  });
+  document.getElementById("dd-export").addEventListener("click", function () { Proto.toast("已导出全部提交（原型）"); });
+
+  // ===== Other buttons =====
+  document.getElementById("btn-query").addEventListener("click", function () { Proto.toast("已查询（原型）"); });
+  document.getElementById("btn-reset").addEventListener("click", function () {
+    document.getElementById("f-title").value = "";
+    ["f-type","f-status","f-updater"].forEach(function (id) { document.getElementById(id).value = ""; });
+    document.getElementById("f-time1").value = "";
+    document.getElementById("f-time2").value = "";
+    Proto.toast("已重置");
+  });
+  document.getElementById("btn-col").addEventListener("click", function () { open(document.getElementById("drawer-col")); });
+  document.getElementById("col-apply").addEventListener("click", function () { closeAll(); Proto.toast("列展示已应用（原型）"); });
+  document.getElementById("btn-add-group").addEventListener("click", function () { open(document.getElementById("modal-group")); });
+  document.getElementById("gr-submit").addEventListener("click", function () {
+    var n = document.getElementById("gr-name").value.trim();
+    if (!n) { Proto.toast("请输入分组名称"); return; }
+    closeAll(); Proto.toast("分组已创建（原型）");
+  });
+  document.getElementById("btn-next").addEventListener("click", function () { Proto.toast("下一页（原型）"); });
+})();
+</script>
+</body>
+</html>

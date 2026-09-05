@@ -1,0 +1,418 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>获客链接 · 艺博 To-B</title>
+<link rel="stylesheet" href="../assets/css/proto.css" />
+</head>
+<body class="admin-body" data-module="scrm" data-nav="acquire-link" data-title="获客链接" data-crumb="SCRM / 营销管理 / 获客链接">
+<div id="header-actions">
+  <button class="btn" id="btn-export">导出</button>
+  <button class="btn btn-primary" id="btn-create">+ 新建链接</button>
+</div>
+<div id="page-content" style="display:none">
+
+  <!-- 顶部统计卡片 -->
+  <div class="grid-4" style="margin-bottom:16px">
+    <div class="stat"><div class="label">剩余使用量</div><div class="value">34</div></div>
+    <div class="stat"><div class="label">历史累计使用量</div><div class="value">16</div></div>
+    <div class="stat"><div class="label">即时过期数量</div><div class="value">0</div></div>
+    <div class="stat"><div class="label">就近到期日</div><div class="value" style="font-size:18px;color:var(--color-text-muted)">—</div></div>
+  </div>
+
+  <!-- 筛选 -->
+  <div class="card" style="margin-bottom:8px"><div class="card-bd">
+    <div class="form-grid" style="grid-template-columns:repeat(5,minmax(0,1fr));gap:8px 12px">
+      <input id="f-name" placeholder="请输入" />
+      <select id="f-status">
+        <option value="">状态</option>
+        <option>启用</option>
+        <option>停用</option>
+      </select>
+      <select id="f-updater">
+        <option value="">更新人</option>
+        <option>陈奕均</option>
+        <option>阮荣均</option>
+        <option>李大</option>
+      </select>
+      <input id="f-time1" type="datetime-local" />
+      <input id="f-time2" type="datetime-local" />
+    </div>
+    <div class="toolbar" style="margin-top:8px">
+      <button class="btn btn-primary" id="btn-query">查询</button>
+      <button class="btn" id="btn-reset">重置</button>
+      <div class="spacer"></div>
+      <button class="btn" id="btn-col">列展示</button>
+    </div>
+  </div></div>
+
+  <!-- 表格 -->
+  <div class="card"><div class="card-bd" style="padding:0">
+    <table class="data">
+      <thead>
+        <tr>
+          <th>链接名称</th><th>创建类型</th>
+          <th>状态</th>
+          <th>累计链接添加客户数</th><th>今日链接添加客户数</th>
+          <th>累计开口客户数</th><th>今日开口客户数</th>
+          <th style="width:220px">操作</th>
+        </tr>
+      </thead>
+      <tbody id="al-tbody">
+        <tr>
+          <td>源家妈（个人专属）</td>
+          <td>系统创建</td>
+          <td><label class="switch on"><input type="checkbox" checked /><span></span></label></td>
+          <td>0</td><td>0</td><td>0</td><td>0</td>
+          <td class="row-actions">
+            <a href="#" data-row-act="detail">详情</a>
+            <a href="#" data-row-act="promote">推广使用</a>
+            <a href="#" data-row-act="stat">数据统计</a>
+            <a href="#" class="row-more" data-row-act="more">⋯</a>
+          </td>
+        </tr>
+        <tr>
+          <td>张嘉锐（个人专属）</td>
+          <td>系统创建</td>
+          <td><label class="switch on"><input type="checkbox" checked /><span></span></label></td>
+          <td>0</td><td>0</td><td>0</td><td>0</td>
+          <td class="row-actions">
+            <a href="#" data-row-act="detail">详情</a>
+            <a href="#" data-row-act="promote">推广使用</a>
+            <a href="#" data-row-act="stat">数据统计</a>
+            <a href="#" class="row-more" data-row-act="more">⋯</a>
+          </td>
+        </tr>
+        <tr>
+          <td>获客test1111</td>
+          <td>手动创建</td>
+          <td><label class="switch on"><input type="checkbox" checked /><span></span></label></td>
+          <td>1</td><td>0</td><td>0</td><td>0</td>
+          <td class="row-actions">
+            <a href="#" data-row-act="detail">详情</a>
+            <a href="#" data-row-act="promote">推广使用</a>
+            <a href="#" data-row-act="stat">数据统计</a>
+            <a href="#" class="row-more" data-row-act="more">⋯</a>
+          </td>
+        </tr>
+        <tr>
+          <td>张龙（个人专属）</td>
+          <td>手动创建</td>
+          <td><label class="switch on"><input type="checkbox" checked /><span></span></label></td>
+          <td>0</td><td>0</td><td>0</td><td>0</td>
+          <td class="row-actions">
+            <a href="#" data-row-act="detail">详情</a>
+            <a href="#" data-row-act="promote">推广使用</a>
+            <a href="#" data-row-act="stat">数据统计</a>
+            <a href="#" class="row-more" data-row-act="more">⋯</a>
+          </td>
+        </tr>
+        <tr>
+          <td>桂兰（个人专属）</td>
+          <td>系统创建</td>
+          <td><label class="switch off"><input type="checkbox" /><span></span></label></td>
+          <td>0</td><td>0</td><td>0</td><td>0</td>
+          <td class="row-actions">
+            <a href="#" data-row-act="detail">详情</a>
+            <a href="#" data-row-act="promote">推广使用</a>
+            <a href="#" data-row-act="stat">数据统计</a>
+            <a href="#" class="row-more" data-row-act="more">⋯</a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div></div>
+  <!-- 分页 -->
+  <div class="toolbar" style="margin-top:8px">
+    <span class="muted">共 <b>20</b> 条</span>
+    <div class="spacer"></div>
+    <select>
+      <option>10条/页</option><option selected>20条/页</option>
+    </select>
+    <button class="btn btn-sm" id="btn-prev">前往</button>
+    <button class="btn btn-sm" id="btn-next">1</button>
+    <button class="btn btn-sm" disabled>2</button>
+  </div>
+</div>
+
+<!-- ============ 抽屉 / 弹窗 ============ -->
+<div class="proto-mask" id="mask"></div>
+
+<!-- 新建链接弹窗 -->
+<div class="proto-modal" id="modal-create" style="width:600px">
+  <div class="proto-modal-hd">
+    <h3 style="font-size:16px;font-weight:600">新建获客链接</h3>
+    <button class="btn btn-sm btn-ghost" data-close>×</button>
+  </div>
+  <div class="proto-modal-bd">
+    <div class="form-grid">
+      <div class="field"><label>链接名称 *</label><input id="ca-name" placeholder="如：9.9 引流课" /></div>
+      <div class="field"><label>创建类型</label>
+        <select id="ca-type">
+          <option>手动创建</option>
+          <option>系统创建</option>
+          <option>个人专属</option>
+        </select>
+      </div>
+      <div class="field"><label>所属员工</label>
+        <select><option>阮荣均</option><option>赵老师</option><option>王助教</option></select>
+      </div>
+      <div class="field"><label>使用上限</label><input type="number" value="100" /></div>
+      <div class="field"><label>到期时间</label><input type="datetime-local" /></div>
+      <div class="field"><label>状态</label>
+        <select><option>启用</option><option>停用</option></select>
+      </div>
+      <div class="field" style="grid-column:1/-1"><label>链接说明</label>
+        <textarea rows="3" style="width:100%;padding:8px;border:1px solid var(--color-border);border-radius:6px" placeholder="选填，记录用途"></textarea>
+      </div>
+    </div>
+  </div>
+  <div class="proto-modal-ft">
+    <button class="btn" data-close>取消</button>
+    <button class="btn btn-primary" id="ca-submit">创建链接</button>
+  </div>
+</div>
+
+<!-- 详情抽屉 -->
+<div class="proto-drawer" id="drawer-detail">
+  <div class="proto-drawer-hd">
+    <h3 id="ad-title">链接详情</h3>
+    <button class="btn btn-sm btn-ghost" data-close>×</button>
+  </div>
+  <div class="proto-drawer-bd">
+    <h4 style="margin-bottom:8px">基础信息</h4>
+    <div class="form-grid" style="grid-template-columns:1fr 1fr">
+      <div class="field"><label>链接名称</label><div id="ad-name">—</div></div>
+      <div class="field"><label>创建类型</label><div id="ad-type">—</div></div>
+      <div class="field"><label>所属员工</label><div id="ad-owner">—</div></div>
+      <div class="field"><label>使用上限</label><div id="ad-limit">—</div></div>
+      <div class="field"><label>已使用</label><div id="ad-used">—</div></div>
+      <div class="field"><label>到期时间</label><div id="ad-expire">—</div></div>
+      <div class="field"><label>状态</label><div id="ad-status">—</div></div>
+      <div class="field"><label>创建时间</label><div id="ad-create-time">—</div></div>
+    </div>
+    <h4 style="margin:16px 0 8px">推广链接</h4>
+    <div class="link-box">
+      <input id="ad-url" readonly value="https://cockpit.dayuzhongxue.com/l/abc123def" />
+      <button class="btn" id="btn-copy-url">复制</button>
+    </div>
+    <h4 style="margin:16px 0 8px">推广二维码</h4>
+    <div class="qr-mock">
+      <div class="qr-block"></div>
+      <button class="btn">下载</button>
+    </div>
+  </div>
+  <div class="proto-drawer-ft">
+    <button class="btn" data-close>关闭</button>
+    <button class="btn btn-primary" id="ad-stat">数据统计</button>
+  </div>
+</div>
+
+<!-- 数据统计抽屉 -->
+<div class="proto-drawer" id="drawer-stat">
+  <div class="proto-drawer-hd">
+    <h3 id="st-title">数据统计</h3>
+    <button class="btn btn-sm btn-ghost" data-close>×</button>
+  </div>
+  <div class="proto-drawer-bd">
+    <div class="grid-4" style="margin-bottom:16px">
+      <div class="stat"><div class="label">累计链接添加客户</div><div class="value">0</div></div>
+      <div class="stat"><div class="label">今日链接添加客户</div><div class="value">0</div></div>
+      <div class="stat"><div class="label">累计开口客户</div><div class="value">0</div></div>
+      <div class="stat"><div class="label">今日开口客户</div><div class="value">0</div></div>
+    </div>
+    <h4 style="margin-bottom:8px">趋势（近 7 天）</h4>
+    <table class="data">
+      <thead><tr><th>日期</th><th>链接添加</th><th>开口</th><th>转化</th></tr></thead>
+      <tbody>
+        <tr><td>03-29</td><td>0</td><td>0</td><td>0</td></tr>
+        <tr><td>03-28</td><td>1</td><td>0</td><td>0</td></tr>
+        <tr><td>03-27</td><td>0</td><td>0</td><td>0</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="proto-drawer-ft">
+    <button class="btn" data-close>关闭</button>
+    <button class="btn btn-primary">导出明细</button>
+  </div>
+</div>
+
+<!-- 列展示抽屉 -->
+<div class="proto-drawer" id="drawer-col" style="width:340px">
+  <div class="proto-drawer-hd">
+    <h3>列展示</h3>
+    <button class="btn btn-sm btn-ghost" data-close>×</button>
+  </div>
+  <div class="proto-drawer-bd">
+    <div id="col-list">
+      <label><input type="checkbox" checked> 链接名称</label>
+      <label><input type="checkbox" checked> 创建类型</label>
+      <label><input type="checkbox" checked> 状态</label>
+      <label><input type="checkbox" checked> 累计链接添加客户数</label>
+      <label><input type="checkbox" checked> 今日链接添加客户数</label>
+      <label><input type="checkbox" checked> 累计开口客户数</label>
+      <label><input type="checkbox" checked> 今日开口客户数</label>
+    </div>
+  </div>
+  <div class="proto-drawer-ft">
+    <button class="btn" data-close>取消</button>
+    <button class="btn btn-primary" id="col-apply">应用</button>
+  </div>
+</div>
+
+<style>
+.switch {
+  position: relative; display: inline-block; width: 32px; height: 18px;
+  cursor: pointer;
+}
+.switch input { opacity: 0; width: 0; height: 0; }
+.switch span {
+  position: absolute; inset: 0; background: #dcdfe6; border-radius: 18px;
+  transition: 0.2s;
+}
+.switch span::before {
+  content: ''; position: absolute; left: 2px; top: 2px;
+  width: 14px; height: 14px; background: #fff; border-radius: 50%;
+  transition: 0.2s;
+}
+.switch.on span { background: var(--color-primary); }
+.switch.on span::before { transform: translateX(14px); }
+.row-actions a.danger { color: var(--color-danger); }
+.row-actions .row-more { color: var(--color-text-muted); font-weight: 600; }
+.link-box {
+  display: flex; gap: 8px;
+}
+.link-box input {
+  flex: 1; padding: 8px;
+  border: 1px solid var(--color-border); border-radius: 6px;
+  font-family: monospace; font-size: 12px; background: #f7f8fa;
+}
+.qr-mock {
+  padding: 20px; background: #f7f8fa; border-radius: 6px;
+  display: flex; flex-direction: column; align-items: center; gap: 12px;
+}
+.qr-block {
+  width: 120px; height: 120px;
+  background-image:
+    linear-gradient(45deg, #000 25%, transparent 25%),
+    linear-gradient(-45deg, #000 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, #000 75%),
+    linear-gradient(-45deg, transparent 75%, #000 75%);
+  background-size: 8px 8px;
+  background-position: 0 0, 0 4px, 4px -4px, -4px 0;
+  border: 1px solid var(--color-border);
+  background-color: #fff;
+}
+#col-list label {
+  display: flex; align-items: center; gap: 6px;
+  padding: 6px 0; font-size: 13px;
+}
+</style>
+
+<script src="../assets/js/proto.js"></script>
+<script src="../assets/js/admin-shell.js"></script>
+<script>
+(function () {
+  // ===== Mask / drawer / modal =====
+  var mask = document.getElementById("mask");
+  function closeAll() {
+    mask.classList.remove("open");
+    document.querySelectorAll(".proto-modal, .proto-drawer").forEach(function (n) { n.classList.remove("open"); });
+  }
+  function open(node) { mask.classList.add("open"); node.classList.add("open"); }
+  mask.addEventListener("click", closeAll);
+  document.querySelectorAll("[data-close]").forEach(function (n) { n.addEventListener("click", closeAll); });
+
+  // ===== Row data =====
+  function rowData(tr) {
+    var tds = tr.querySelectorAll("td");
+    return {
+      name: tds[0] ? tds[0].textContent.trim() : "",
+      type: tds[1] ? tds[1].textContent.trim() : "",
+      totalAdd: tds[3] ? tds[3].textContent.trim() : "0",
+      todayAdd: tds[4] ? tds[4].textContent.trim() : "0",
+      totalOpen: tds[5] ? tds[5].textContent.trim() : "0",
+      todayOpen: tds[6] ? tds[6].textContent.trim() : "0",
+    };
+  }
+
+  // ===== Detail drawer =====
+  function fillDetail(d) {
+    document.getElementById("ad-title").textContent = "链接详情 · " + d.name;
+    document.getElementById("ad-name").textContent = d.name;
+    document.getElementById("ad-type").textContent = d.type;
+    document.getElementById("ad-owner").textContent = "阮荣均";
+    document.getElementById("ad-limit").textContent = "100";
+    document.getElementById("ad-used").textContent = d.totalAdd;
+    document.getElementById("ad-expire").textContent = "2026-12-31";
+    document.getElementById("ad-status").textContent = "启用";
+    document.getElementById("ad-create-time").textContent = "2026-03-29";
+    document.getElementById("ad-url").value = "https://cockpit.dayuzhongxue.com/l/" + (d.name.length ? "abc123def" : "xyz789");
+    open(document.getElementById("drawer-detail"));
+  }
+
+  // ===== Row actions =====
+  document.querySelectorAll("#al-tbody tr").forEach(function (tr) {
+    tr.querySelectorAll("[data-row-act]").forEach(function (a) {
+      a.addEventListener("click", function (e) {
+        e.preventDefault();
+        var act = a.getAttribute("data-row-act");
+        var d = rowData(tr);
+        if (act === "detail") fillDetail(d);
+        else if (act === "promote") {
+          fillDetail(d);
+        }
+        else if (act === "stat") {
+          document.getElementById("st-title").textContent = "数据统计 · " + d.name;
+          open(document.getElementById("drawer-stat"));
+        }
+        else if (act === "more") {
+          Proto.toast("更多操作（原型）");
+        }
+      });
+    });
+    var sw = tr.querySelector(".switch");
+    if (sw) {
+      sw.addEventListener("click", function () {
+        var input = sw.querySelector("input");
+        input.checked = !input.checked;
+        sw.classList.toggle("on", input.checked);
+        Proto.toast(input.checked ? "已启用（原型）" : "已停用（原型）");
+      });
+    }
+  });
+
+  // ===== Buttons =====
+  document.getElementById("btn-export").addEventListener("click", function () { Proto.toast("已导出（原型）"); });
+  document.getElementById("btn-create").addEventListener("click", function () { open(document.getElementById("modal-create")); });
+  document.getElementById("ca-submit").addEventListener("click", function () {
+    var n = document.getElementById("ca-name").value.trim();
+    if (!n) { Proto.toast("请输入链接名称"); return; }
+    closeAll(); Proto.toast("链接已创建（原型）");
+  });
+  document.getElementById("btn-copy-url").addEventListener("click", function () {
+    var url = document.getElementById("ad-url").value;
+    Proto.toast("已复制链接：" + url.substring(0, 30) + "...");
+  });
+  document.getElementById("ad-stat").addEventListener("click", function () {
+    closeAll();
+    var d = rowData(document.querySelector("#al-tbody tr"));
+    document.getElementById("st-title").textContent = "数据统计 · " + d.name;
+    open(document.getElementById("drawer-stat"));
+  });
+  document.getElementById("btn-query").addEventListener("click", function () { Proto.toast("已查询（原型）"); });
+  document.getElementById("btn-reset").addEventListener("click", function () {
+    document.getElementById("f-name").value = "";
+    ["f-status","f-updater"].forEach(function (id) { document.getElementById(id).value = ""; });
+    document.getElementById("f-time1").value = "";
+    document.getElementById("f-time2").value = "";
+    Proto.toast("已重置");
+  });
+  document.getElementById("btn-col").addEventListener("click", function () { open(document.getElementById("drawer-col")); });
+  document.getElementById("col-apply").addEventListener("click", function () { closeAll(); Proto.toast("列展示已应用（原型）"); });
+  document.getElementById("btn-next").addEventListener("click", function () { Proto.toast("下一页（原型）"); });
+})();
+</script>
+</body>
+</html>

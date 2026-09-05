@@ -1,0 +1,385 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>视频号订单 · 艺博 To-B</title>
+<link rel="stylesheet" href="../assets/css/proto.css" />
+</head>
+<body class="admin-body" data-module="scrm" data-nav="channels-orders" data-title="视频号订单" data-crumb="SCRM / 公域获客 / 视频号订单">
+<div id="header-actions">
+  <button class="btn btn-primary" id="btn-import">导入手机号</button>
+  <button class="btn" id="btn-export">导出列表</button>
+  <button class="btn" id="btn-sms">发送领课短信</button>
+  <button class="btn" id="btn-touch">加微触达</button>
+  <button class="btn" id="btn-decrypt">批量解密</button>
+</div>
+<div id="page-content" style="display:none">
+
+  <!-- 顶部统计卡片 -->
+  <div class="grid-4" style="margin-bottom:16px">
+    <div class="stat"><div class="label">总订单</div><div class="value">43</div></div>
+    <div class="stat"><div class="label">待处理</div><div class="value">5</div></div>
+    <div class="stat"><div class="label">已支付</div><div class="value">32</div></div>
+    <div class="stat"><div class="label">已退款</div><div class="value">2</div></div>
+    <div class="stat"><div class="label">待发送短信</div><div class="value">8</div></div>
+  </div>
+
+  <!-- 筛选 -->
+  <div class="card" style="margin-bottom:8px"><div class="card-bd">
+    <div class="form-grid" style="grid-template-columns:repeat(5,minmax(0,1fr));gap:8px 12px">
+      <input id="f-order-public" placeholder="公域订单号" />
+      <input id="f-order-local" placeholder="小鹅通订单号" />
+      <select id="f-status">
+        <option value="">订单状态</option>
+        <option>全部</option><option>已支付</option><option>待付款</option>
+        <option>待发货</option><option>已发货</option>
+        <option>已完成</option><option>已取消</option>
+      </select>
+      <select id="f-refund">
+        <option value="">退款状态</option>
+        <option>全部</option><option>否</option><option>是</option>
+      </select>
+      <select id="f-deliver">
+        <option value="">发货状态</option>
+        <option>全部</option><option>已发货</option><option>待发货</option>
+      </select>
+      <select id="f-sms">
+        <option value="">短信发送</option>
+        <option>全部</option><option>待发送</option><option>发送中</option>
+        <option>发送成功</option><option>发送失败</option><option>不发送</option>
+      </select>
+      <select id="f-has-note">
+        <option value="">商家备注</option>
+        <option>全部</option><option>是</option><option>否</option>
+      </select>
+      <input id="f-product" placeholder="公域商品" />
+      <input id="f-time1" type="datetime-local" />
+      <input id="f-time2" type="datetime-local" />
+      <select id="f-decrypt">
+        <option value="">解密状态</option>
+        <option>全部</option><option>已解密</option><option>未解密</option>
+      </select>
+      <button class="btn btn-primary" id="btn-query">筛选</button>
+      <button class="btn" id="btn-reset">重置</button>
+    </div>
+  </div></div>
+
+  <!-- 表格 -->
+  <div class="card"><div class="card-bd" style="padding:0">
+    <table class="data">
+      <thead>
+        <tr>
+          <th style="width:48px">商品图</th>
+          <th>商品信息</th>
+          <th>客户信息</th>
+          <th>价格</th>
+          <th>实付金额</th>
+          <th>订单来源</th>
+          <th>订单状态</th>
+          <th>来源订单号</th>
+          <th>订单归属人</th>
+          <th>添加时间</th>
+          <th>商家备注</th>
+          <th style="width:200px">操作</th>
+        </tr>
+      </thead>
+      <tbody id="co-tbody">
+        <tr>
+          <td><div class="thumb thumb-course"></div></td>
+          <td>春启 03 期家长必修课<br><span class="muted">¥9.9 / ¥99</span></td>
+          <td>李***<br><span class="muted">138****2610</span></td>
+          <td>¥99.00</td>
+          <td><b>¥9.90</b></td>
+          <td><span class="tag tag-blue">视频号</span></td>
+          <td><span class="badge badge-info">已支付</span></td>
+          <td><a href="#" class="link-mono">wx202603291001</a></td>
+          <td>—</td>
+          <td>2026-03-29 09:12</td>
+          <td><a href="#" data-row-act="note">查看备注</a></td>
+          <td class="row-actions">
+            <a href="#" data-row-act="detail">详情</a>
+            <a href="#" data-row-act="refund">退款</a>
+            <a href="#" data-row-act="aftersale">售后</a>
+          </td>
+        </tr>
+        <tr>
+          <td><div class="thumb thumb-course"></div></td>
+          <td>春启 03 期家长必修课<br><span class="muted">¥9.9 / ¥99</span></td>
+          <td>张***<br><span class="muted">159****8832</span></td>
+          <td>¥99.00</td>
+          <td><b>¥9.90</b></td>
+          <td><span class="tag tag-blue">视频号</span></td>
+          <td><span class="badge badge-info">已支付</span></td>
+          <td><a href="#" class="link-mono">wx202603291088</a></td>
+          <td>赵老师</td>
+          <td>2026-03-29 09:40</td>
+          <td><a href="#" data-row-act="note">查看备注</a></td>
+          <td class="row-actions">
+            <a href="#" data-row-act="detail">详情</a>
+            <a href="#" data-row-act="refund">退款</a>
+            <a href="#" data-row-act="aftersale">售后</a>
+          </td>
+        </tr>
+        <tr>
+          <td><div class="thumb thumb-live"></div></td>
+          <td>今晚直播·家长公开课<br><span class="muted">¥0 / 免费</span></td>
+          <td>陈***<br><span class="muted">186****4411</span></td>
+          <td>¥0.00</td>
+          <td><b>¥0.00</b></td>
+          <td><span class="tag tag-blue">视频号</span></td>
+          <td><span class="badge badge-info">已支付</span></td>
+          <td><a href="#" class="link-mono">wx202603281055</a></td>
+          <td>阮荣均</td>
+          <td>2026-03-28 20:18</td>
+          <td>—</td>
+          <td class="row-actions">
+            <a href="#" data-row-act="detail">详情</a>
+            <a href="#" data-row-act="refund">退款</a>
+            <a href="#" data-row-act="aftersale">售后</a>
+          </td>
+        </tr>
+        <tr>
+          <td><div class="thumb thumb-course"></div></td>
+          <td>9.9 引流课·亲子沟通<br><span class="muted">¥9.9 / ¥199</span></td>
+          <td>刘***<br><span class="muted">137****0012</span></td>
+          <td>¥199.00</td>
+          <td><b>¥9.90</b></td>
+          <td><span class="tag tag-blue">视频号</span></td>
+          <td><span class="badge">待付款</span></td>
+          <td><a href="#" class="link-mono">wx202603271002</a></td>
+          <td>—</td>
+          <td>2026-03-27 15:30</td>
+          <td><a href="#" data-row-act="note">查看备注</a></td>
+          <td class="row-actions">
+            <a href="#" data-row-act="detail">详情</a>
+            <a href="#" data-row-act="decrypt">解密</a>
+          </td>
+        </tr>
+        <tr>
+          <td><div class="thumb thumb-course"></div></td>
+          <td>9.9 引流课·亲子沟通<br><span class="muted">¥9.9 / ¥199</span></td>
+          <td>赵***<br><span class="muted">186****2099</span></td>
+          <td>¥199.00</td>
+          <td><b>¥9.90</b></td>
+          <td><span class="tag tag-blue">视频号</span></td>
+          <td><span class="badge badge-danger">已退款</span></td>
+          <td><a href="#" class="link-mono">wx202603250066</a></td>
+          <td>赵老师</td>
+          <td>2026-03-25 14:22</td>
+          <td>—</td>
+          <td class="row-actions">
+            <a href="#" data-row-act="detail">详情</a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div></div>
+  <!-- 分页 -->
+  <div class="toolbar" style="margin-top:8px">
+    <span class="muted">共 <b>43</b> 条</span>
+    <div class="spacer"></div>
+    <select><option>10条/页</option><option>20条/页</option><option>50条/页</option></select>
+    <button class="btn btn-sm" disabled>上一页</button>
+    <button class="btn btn-sm">下一页</button>
+  </div>
+</div>
+
+<!-- ============ 弹窗 / 抽屉 ============ -->
+<div class="proto-mask" id="mask"></div>
+
+<!-- 详情抽屉 -->
+<div class="proto-drawer" id="drawer-detail">
+  <div class="proto-drawer-hd">
+    <h3 id="cod-title">订单详情</h3>
+    <button class="btn btn-sm btn-ghost" data-close>×</button>
+  </div>
+  <div class="proto-drawer-bd">
+    <h4 style="margin-bottom:8px">订单信息</h4>
+    <div class="form-grid" style="grid-template-columns:1fr 1fr">
+      <div class="field"><label>公域订单号</label><div id="cod-public">—</div></div>
+      <div class="field"><label>小鹅通订单号</label><div id="cod-local">—</div></div>
+      <div class="field"><label>订单来源</label><div id="cod-source">—</div></div>
+      <div class="field"><label>订单状态</label><div id="cod-status">—</div></div>
+      <div class="field"><label>下单时间</label><div id="cod-time">—</div></div>
+      <div class="field"><label>订单归属人</label><div id="cod-owner">—</div></div>
+      <div class="field"><label>价格</label><div id="cod-price">—</div></div>
+      <div class="field"><label>实付金额</label><div id="cod-paid">—</div></div>
+      <div class="field"><label>解密状态</label><div id="cod-decrypt">—</div></div>
+      <div class="field"><label>短信发送</label><div id="cod-sms">—</div></div>
+    </div>
+    <h4 style="margin:16px 0 8px">商品信息</h4>
+    <div class="form-grid" style="grid-template-columns:1fr 1fr">
+      <div class="field"><label>商品</label><div id="cod-product">—</div></div>
+      <div class="field"><label>规格</label><div id="cod-spec">—</div></div>
+    </div>
+    <h4 style="margin:16px 0 8px">客户信息</h4>
+    <div class="form-grid" style="grid-template-columns:1fr 1fr">
+      <div class="field"><label>客户</label><div id="cod-customer">—</div></div>
+      <div class="field"><label>手机号</label><div id="cod-phone">—</div></div>
+    </div>
+    <h4 style="margin:16px 0 8px">备注</h4>
+    <p class="muted" id="cod-note">—</p>
+  </div>
+  <div class="proto-drawer-ft">
+    <button class="btn" data-close>关闭</button>
+    <button class="btn">发起退款</button>
+    <button class="btn btn-primary">查看售后</button>
+  </div>
+</div>
+
+<!-- 退款弹窗 -->
+<div class="proto-modal" id="modal-refund" style="width:520px">
+  <div class="proto-modal-hd">
+    <h3 style="font-size:16px;font-weight:600">发起退款</h3>
+    <button class="btn btn-sm btn-ghost" data-close>×</button>
+  </div>
+  <div class="proto-modal-bd">
+    <div class="form-grid">
+      <div class="field"><label>订单号</label><div id="ref-ord">—</div></div>
+      <div class="field"><label>客户</label><div id="ref-cust">—</div></div>
+      <div class="field"><label>实付金额</label><div id="ref-paid">—</div></div>
+      <div class="field"><label>退款金额 *</label><input id="ref-amount" type="number" value="9.9" /></div>
+      <div class="field" style="grid-column:1/-1"><label>退款原因 *</label>
+        <textarea rows="3" style="width:100%;padding:8px;border:1px solid var(--color-border);border-radius:6px"></textarea>
+      </div>
+    </div>
+  </div>
+  <div class="proto-drawer-ft" style="border-top:1px solid var(--color-border);padding:12px 20px;display:flex;gap:8px;justify-content:flex-end">
+    <button class="btn" data-close>取消</button>
+    <button class="btn btn-primary" id="ref-submit">确认退款</button>
+  </div>
+</div>
+
+<!-- 备注弹窗 -->
+<div class="proto-modal" id="modal-note" style="width:520px">
+  <div class="proto-modal-hd">
+    <h3 style="font-size:16px;font-weight:600">商家备注</h3>
+    <button class="btn btn-sm btn-ghost" data-close>×</button>
+  </div>
+  <div class="proto-modal-bd">
+    <p class="muted" id="note-text">—</p>
+  </div>
+  <div class="proto-drawer-ft" style="border-top:1px solid var(--color-border);padding:12px 20px;display:flex;gap:8px;justify-content:flex-end">
+    <button class="btn" data-close>关闭</button>
+    <button class="btn btn-primary">编辑备注</button>
+  </div>
+</div>
+
+<style>
+.thumb {
+  width: 48px; height: 36px; border-radius: 4px;
+}
+.thumb-course { background: linear-gradient(135deg,#165dff,#4080ff); }
+.thumb-live { background: linear-gradient(135deg,#722ed1,#a066f5); }
+.link-mono {
+  font-family: ui-monospace, Consolas, monospace;
+  font-size: 12px;
+  color: var(--color-primary);
+  text-decoration: none;
+}
+.link-mono:hover { text-decoration: underline; }
+.tag { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 12px; }
+.tag-blue { background: #e8f3ff; color: #165dff; }
+.row-actions a.danger { color: var(--color-danger); }
+</style>
+
+<script src="../assets/js/proto.js"></script>
+<script src="../assets/js/admin-shell.js"></script>
+<script>
+(function () {
+  // ===== Mask =====
+  var mask = document.getElementById("mask");
+  function closeAll() {
+    mask.classList.remove("open");
+    document.querySelectorAll(".proto-modal, .proto-drawer").forEach(function (n) { n.classList.remove("open"); });
+  }
+  function open(node) { mask.classList.add("open"); node.classList.add("open"); }
+  mask.addEventListener("click", closeAll);
+  document.querySelectorAll("[data-close]").forEach(function (n) { n.addEventListener("click", closeAll); });
+
+  // ===== Row data =====
+  function rowData(tr) {
+    var tds = tr.querySelectorAll("td");
+    return {
+      product: tds[1] ? tds[1].textContent.trim() : "",
+      customer: tds[2] ? tds[2].childNodes[0].textContent.trim() : "",
+      phone: tds[2] && tds[2].querySelector(".muted") ? tds[2].querySelector(".muted").textContent.trim() : "",
+      price: tds[3] ? tds[3].textContent.trim() : "",
+      paid: tds[4] ? tds[4].textContent.trim() : "",
+      source: tds[5] ? tds[5].textContent.trim() : "",
+      status: tds[6] ? tds[6].textContent.trim() : "",
+      publicOrd: tds[7] ? tds[7].textContent.trim() : "",
+      owner: tds[8] ? tds[8].textContent.trim() : "",
+      time: tds[9] ? tds[9].textContent.trim() : "",
+      note: tds[10] ? tds[10].textContent.trim() : "",
+    };
+  }
+
+  // ===== Detail =====
+  function fillDetail(d) {
+    document.getElementById("cod-title").textContent = "订单详情 · " + d.product.split("\n")[0];
+    document.getElementById("cod-public").textContent = d.publicOrd;
+    document.getElementById("cod-local").textContent = "L" + d.publicOrd.replace(/^wx/, "XT");
+    document.getElementById("cod-source").textContent = d.source;
+    document.getElementById("cod-status").textContent = d.status;
+    document.getElementById("cod-time").textContent = d.time;
+    document.getElementById("cod-owner").textContent = d.owner;
+    document.getElementById("cod-price").textContent = d.price;
+    document.getElementById("cod-paid").textContent = d.paid;
+    document.getElementById("cod-decrypt").textContent = d.status === "已支付" ? "已解密" : "未解密";
+    document.getElementById("cod-sms").textContent = "发送成功";
+    document.getElementById("cod-product").textContent = d.product.split("\n")[0];
+    document.getElementById("cod-spec").textContent = "默认";
+    document.getElementById("cod-customer").textContent = d.customer + "*";
+    document.getElementById("cod-phone").textContent = d.phone;
+    document.getElementById("cod-note").textContent = d.note === "—" ? "无" : "客户通过视频号直播下单，留言：希望尽快开通课程。";
+    open(document.getElementById("drawer-detail"));
+  }
+
+  // ===== Row actions =====
+  document.querySelectorAll("#co-tbody tr").forEach(function (tr) {
+    tr.querySelectorAll("[data-row-act]").forEach(function (a) {
+      a.addEventListener("click", function (e) {
+        e.preventDefault();
+        var act = a.getAttribute("data-row-act");
+        var d = rowData(tr);
+        if (act === "detail") fillDetail(d);
+        else if (act === "refund") {
+          document.getElementById("ref-ord").textContent = d.publicOrd;
+          document.getElementById("ref-cust").textContent = d.customer + "*";
+          document.getElementById("ref-paid").textContent = d.paid;
+          open(document.getElementById("modal-refund"));
+        } else if (act === "aftersale") Proto.toast("打开售后（原型）");
+        else if (act === "note") {
+          document.getElementById("note-text").textContent = d.note === "—" ? "无备注" : "客户通过视频号直播下单，留言：希望尽快开通课程。";
+          open(document.getElementById("modal-note"));
+        } else if (act === "decrypt") Proto.toast("已解密手机号（原型）");
+      });
+    });
+  });
+
+  document.getElementById("ref-submit").addEventListener("click", function () {
+    var amt = document.getElementById("ref-amount").value.trim();
+    if (!amt) { Proto.toast("请输入退款金额"); return; }
+    closeAll(); Proto.toast("已发起退款（原型）");
+  });
+
+  // ===== Header buttons =====
+  document.getElementById("btn-import").addEventListener("click", function () { Proto.toast("打开导入手机号（原型）"); });
+  document.getElementById("btn-export").addEventListener("click", function () { Proto.toast("已导出（原型）"); });
+  document.getElementById("btn-sms").addEventListener("click", function () { Proto.toast("发送领课短信（原型）"); });
+  document.getElementById("btn-touch").addEventListener("click", function () { Proto.toast("加微触达（原型）"); });
+  document.getElementById("btn-decrypt").addEventListener("click", function () { Proto.toast("批量解密手机号（原型）"); });
+  document.getElementById("btn-query").addEventListener("click", function () { Proto.toast("已筛选（原型）"); });
+  document.getElementById("btn-reset").addEventListener("click", function () {
+    ["f-order-public","f-order-local","f-product"].forEach(function (id) { document.getElementById(id).value = ""; });
+    ["f-status","f-refund","f-deliver","f-sms","f-has-note","f-decrypt"].forEach(function (id) { document.getElementById(id).value = ""; });
+    document.getElementById("f-time1").value = "";
+    document.getElementById("f-time2").value = "";
+    Proto.toast("已重置");
+  });
+})();
+</script>
+</body>
+</html>

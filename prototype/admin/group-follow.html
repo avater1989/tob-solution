@@ -1,0 +1,345 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>企微群跟进 · 艺博 To-B</title>
+<link rel="stylesheet" href="../assets/css/proto.css" />
+</head>
+<body class="admin-body" data-module="scrm" data-nav="group-follow" data-title="企微群跟进" data-crumb="SCRM / 客户中心 / 企微群跟进">
+<div id="header-actions">
+  <button class="btn" id="btn-sync">同步企微客户群</button>
+  <button class="btn btn-primary" id="btn-tag">打标签</button>
+</div>
+<div id="page-content" style="display:none">
+
+  <!-- 筛选 -->
+  <div class="card" style="margin-bottom:8px"><div class="card-bd">
+    <div class="form-grid" style="grid-template-columns:repeat(6,minmax(0,1fr));gap:8px 12px">
+      <input id="f-name" placeholder="请输入群名称" />
+      <input id="f-tag" placeholder="请选择群标签" readonly />
+      <input id="f-owner" placeholder="请输入群主姓名" />
+      <input id="f-time1" type="datetime-local" />
+      <input id="f-time2" type="datetime-local" />
+      <button class="btn btn-primary" id="btn-query">查询</button>
+    </div>
+    <div class="toolbar" style="margin-top:8px">
+      <button class="btn" id="btn-reset">重置</button>
+      <div class="spacer"></div>
+      <button class="btn" id="btn-col">列展示</button>
+      <button class="btn" id="btn-export">导出</button>
+    </div>
+  </div></div>
+
+  <!-- 表格 -->
+  <div class="card"><div class="card-bd" style="padding:0">
+    <table class="data">
+      <thead>
+        <tr>
+          <th>群名称</th><th>群标签</th><th>群主</th><th>群人数</th>
+          <th>本地标签</th><th>最近跟进时间</th><th>最近跟进备注</th>
+          <th>状态</th><th>创建时间</th>
+          <th style="width:140px">操作</th>
+        </tr>
+      </thead>
+      <tbody id="gf-tbody">
+        <tr>
+          <td>春启03·家长交流群</td>
+          <td>核心群</td>
+          <td>阮荣均</td><td>186</td>
+          <td><span class="badge">高活跃</span></td>
+          <td>03-29 20:10</td>
+          <td>发送直播预告素材</td>
+          <td><span class="badge badge-info">活跃</span></td>
+          <td>2026-03-01 10:22</td>
+          <td class="row-actions">
+            <a href="#" data-row-act="detail">详情</a>
+            <a href="#" data-row-act="write">群跟进</a>
+          </td>
+        </tr>
+        <tr>
+          <td>视频号领课·转化群A</td>
+          <td>转化群</td>
+          <td>赵老师</td><td>92</td>
+          <td><span class="badge">新群</span></td>
+          <td>03-28 11:00</td>
+          <td>欢迎语 + 资料包</td>
+          <td><span class="badge badge-warn">冷启动</span></td>
+          <td>2026-03-25 14:30</td>
+          <td class="row-actions">
+            <a href="#" data-row-act="detail">详情</a>
+            <a href="#" data-row-act="write">群跟进</a>
+          </td>
+        </tr>
+        <tr>
+          <td>复购·高意向群</td>
+          <td>复购群</td>
+          <td>王助教</td><td>54</td>
+          <td><span class="badge badge-success">高意向</span></td>
+          <td>03-27 18:45</td>
+          <td>催到课提醒</td>
+          <td><span class="badge badge-success">活跃</span></td>
+          <td>2026-02-18 09:12</td>
+          <td class="row-actions">
+            <a href="#" data-row-act="detail">详情</a>
+            <a href="#" data-row-act="write">群跟进</a>
+          </td>
+        </tr>
+        <tr>
+          <td>卓培客户·服务群</td>
+          <td>服务群</td>
+          <td>刘助教</td><td>118</td>
+          <td><span class="badge badge-success">高净值</span></td>
+          <td>03-29 09:30</td>
+          <td>已发 24h 服务 SOP 第 1 步</td>
+          <td><span class="badge badge-info">活跃</span></td>
+          <td>2026-01-22 15:08</td>
+          <td class="row-actions">
+            <a href="#" data-row-act="detail">详情</a>
+            <a href="#" data-row-act="write">群跟进</a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div></div>
+  <!-- 分页 -->
+  <div class="toolbar" style="margin-top:8px">
+    <span class="muted">共 <b>0</b> 条</span>
+    <div class="spacer"></div>
+    <button class="btn btn-sm" disabled>上一页</button>
+    <button class="btn btn-sm" id="btn-next">下一页</button>
+    <span class="muted" style="margin-left:8px">第</span>
+    <input id="pg-input" type="number" min="1" value="1" style="width:60px" />
+    <span class="muted">页</span>
+    <select id="pg-size" style="margin-left:8px">
+      <option>10条/页</option><option selected>20条/页</option>
+      <option>30条/页</option><option>50条/页</option>
+    </select>
+  </div>
+</div>
+
+<!-- ============ 抽屉 / 弹窗 ============ -->
+<div class="proto-mask" id="mask"></div>
+
+<!-- 群详情抽屉 -->
+<div class="proto-drawer" id="drawer-detail">
+  <div class="proto-drawer-hd">
+    <h3 id="gd-title">群详情</h3>
+    <button class="btn btn-sm btn-ghost" data-close>×</button>
+  </div>
+  <div class="proto-drawer-bd">
+    <h4 style="margin-bottom:8px">基础信息</h4>
+    <div class="form-grid" style="grid-template-columns:1fr 1fr">
+      <div class="field"><label>群名称</label><div id="gd-name">—</div></div>
+      <div class="field"><label>群主</label><div id="gd-owner">—</div></div>
+      <div class="field"><label>群人数</label><div id="gd-count">—</div></div>
+      <div class="field"><label>状态</label><div id="gd-status">—</div></div>
+      <div class="field"><label>群标签</label><div id="gd-tag">—</div></div>
+      <div class="field"><label>本地标签</label><div id="gd-local-tag">—</div></div>
+      <div class="field"><label>创建时间</label><div id="gd-create-time">—</div></div>
+      <div class="field"><label>群公告</label><div id="gd-notice">—</div></div>
+    </div>
+    <h4 style="margin:16px 0 8px">跟进时间线</h4>
+    <ul class="muted" style="padding-left:18px;line-height:1.8" id="gd-timeline">
+      <li>暂无跟进</li>
+    </ul>
+  </div>
+  <div class="proto-drawer-ft">
+    <button class="btn" data-close>关闭</button>
+    <a class="btn btn-primary" href="sop-group.html">群 SOP</a>
+  </div>
+</div>
+
+<!-- 群跟进抽屉 -->
+<div class="proto-drawer" id="drawer-write">
+  <div class="proto-drawer-hd">
+    <h3 id="gw-title">群跟进</h3>
+    <button class="btn btn-sm btn-ghost" data-close>×</button>
+  </div>
+  <div class="proto-drawer-bd">
+    <div class="form-grid">
+      <div class="field"><label>群</label><div id="gw-group">—</div></div>
+      <div class="field"><label>跟进方式</label>
+        <select><option>群内消息</option><option>群公告</option><option>私聊群主</option><option>群 SOP</option></select>
+      </div>
+      <div class="field"><label>群阶段</label>
+        <select><option>冷启动</option><option>活跃转化</option><option>复购运营</option></select>
+      </div>
+      <div class="field" style="grid-column:1/-1"><label>跟进内容</label>
+        <textarea id="gw-content" rows="4" style="width:100%;padding:8px;border:1px solid var(--color-border);border-radius:6px" placeholder="记录群跟进要点"></textarea>
+      </div>
+      <div class="field"><label>下次跟进</label><input id="gw-next" type="datetime-local" /></div>
+      <div class="field"><label>关联素材</label>
+        <select><option>—</option><option>今晚直播预告</option><option>9.9 引流课</option></select>
+      </div>
+    </div>
+    <p style="margin:16px 0 6px"><b>历史跟进</b></p>
+    <ul class="muted" style="padding-left:18px;line-height:1.8" id="gw-history">
+      <li>—</li>
+    </ul>
+  </div>
+  <div class="proto-drawer-ft">
+    <button class="btn" data-close>取消</button>
+    <button class="btn btn-primary" id="gw-save">保存</button>
+  </div>
+</div>
+
+<!-- 打标签弹窗 -->
+<div class="proto-modal" id="modal-tag">
+  <div class="proto-modal-hd">
+    <h3 style="font-size:16px;font-weight:600">打标签</h3>
+    <button class="btn btn-sm btn-ghost" data-close>×</button>
+  </div>
+  <div class="proto-modal-bd">
+    <div class="form-grid">
+      <div class="field" style="grid-column:1/-1"><label>群标签</label>
+        <select multiple style="height:120px;padding:8px">
+          <option>核心群</option><option>转化群</option><option>复购群</option>
+          <option>服务群</option><option>沉睡群</option><option>高净值</option>
+        </select>
+        <span class="muted" style="font-size:12px">按住 Ctrl / Cmd 多选</span>
+      </div>
+      <div class="field" style="grid-column:1/-1"><label>本地标签</label>
+        <input placeholder="可输入新标签，逗号分隔" />
+      </div>
+    </div>
+  </div>
+  <div class="proto-modal-ft">
+    <button class="btn" data-close>取消</button>
+    <button class="btn btn-primary" id="tag-submit">保存标签</button>
+  </div>
+</div>
+
+<!-- 列展示抽屉 -->
+<div class="proto-drawer" id="drawer-col" style="width:340px">
+  <div class="proto-drawer-hd">
+    <h3>列展示</h3>
+    <button class="btn btn-sm btn-ghost" data-close>×</button>
+  </div>
+  <div class="proto-drawer-bd">
+    <p class="muted" style="margin-bottom:8px">勾选需要在表格中显示的列。</p>
+    <div id="col-list">
+      <label><input type="checkbox" checked> 群名称</label>
+      <label><input type="checkbox" checked> 群标签</label>
+      <label><input type="checkbox"> 群主</label>
+      <label><input type="checkbox" checked> 群人数</label>
+      <label><input type="checkbox" checked> 本地标签</label>
+      <label><input type="checkbox" checked> 最近跟进时间</label>
+      <label><input type="checkbox" checked> 最近跟进备注</label>
+      <label><input type="checkbox" checked> 状态</label>
+      <label><input type="checkbox"> 群公告</label>
+      <label><input type="checkbox" checked> 创建时间</label>
+    </div>
+  </div>
+  <div class="proto-drawer-ft">
+    <button class="btn" data-close>取消</button>
+    <button class="btn btn-primary" id="col-apply">应用</button>
+  </div>
+</div>
+
+<style>
+.row-actions a.danger { color: var(--color-danger); }
+#col-list label {
+  display: flex; align-items: center; gap: 6px;
+  padding: 6px 0; font-size: 13px; color: var(--color-text-secondary);
+}
+</style>
+
+<script src="../assets/js/proto.js"></script>
+<script src="../assets/js/admin-shell.js"></script>
+<script>
+(function () {
+  // ===== Mask / drawer / modal =====
+  var mask = document.getElementById("mask");
+  function closeAll() {
+    mask.classList.remove("open");
+    document.querySelectorAll(".proto-modal, .proto-drawer").forEach(function (n) { n.classList.remove("open"); });
+  }
+  function open(node) { mask.classList.add("open"); node.classList.add("open"); }
+  mask.addEventListener("click", closeAll);
+  document.querySelectorAll("[data-close]").forEach(function (n) { n.addEventListener("click", closeAll); });
+
+  // ===== Row data =====
+  function rowData(tr) {
+    var tds = tr.querySelectorAll("td");
+    return {
+      name: tds[0] ? tds[0].textContent.trim() : "",
+      tag: tds[1] ? tds[1].textContent.trim() : "",
+      owner: tds[2] ? tds[2].textContent.trim() : "",
+      count: tds[3] ? tds[3].textContent.trim() : "",
+      localTag: tds[4] ? tds[4].textContent.trim() : "",
+      lastFu: tds[5] ? tds[5].textContent.trim() : "",
+      lastNote: tds[6] ? tds[6].textContent.trim() : "",
+      status: tds[7] ? tds[7].textContent.trim() : "",
+      createTime: tds[8] ? tds[8].textContent.trim() : "",
+    };
+  }
+  function fillDetail(d) {
+    document.getElementById("gd-title").textContent = "群详情 · " + d.name;
+    document.getElementById("gd-name").textContent = d.name;
+    document.getElementById("gd-owner").textContent = d.owner;
+    document.getElementById("gd-count").textContent = d.count;
+    document.getElementById("gd-status").textContent = d.status;
+    document.getElementById("gd-tag").textContent = d.tag;
+    document.getElementById("gd-local-tag").textContent = d.localTag;
+    document.getElementById("gd-create-time").textContent = d.createTime;
+    document.getElementById("gd-notice").textContent = "—";
+    document.getElementById("gd-timeline").innerHTML =
+      d.lastFu !== "—"
+        ? "<li>" + d.lastFu + " · " + d.owner + " · " + d.lastNote + "</li><li>—</li>"
+        : "<li>暂无跟进</li>";
+  }
+  function openWrite(d) {
+    document.getElementById("gw-title").textContent = "群跟进 · " + d.name;
+    document.getElementById("gw-group").textContent = d.name + " · 群主 " + d.owner + " · " + d.count + " 人";
+    document.getElementById("gw-history").innerHTML =
+      d.lastFu !== "—"
+        ? "<li>" + d.lastFu + " · " + d.owner + " · " + d.lastNote + "</li><li>—</li>"
+        : "<li>暂无历史</li>";
+    document.getElementById("gw-content").value = "";
+    open(document.getElementById("drawer-write"));
+  }
+  document.querySelectorAll("#gf-tbody tr").forEach(function (tr) {
+    tr.querySelectorAll("[data-row-act]").forEach(function (a) {
+      a.addEventListener("click", function (e) {
+        e.preventDefault();
+        var act = a.getAttribute("data-row-act");
+        var d = rowData(tr);
+        if (act === "detail") { fillDetail(d); open(document.getElementById("drawer-detail")); }
+        else if (act === "write") { openWrite(d); }
+      });
+    });
+  });
+
+  // ===== Header buttons =====
+  document.getElementById("btn-sync").addEventListener("click", function () { Proto.toast("已同步企微客户群（原型）"); });
+  document.getElementById("btn-tag").addEventListener("click", function () { open(document.getElementById("modal-tag")); });
+  document.getElementById("btn-query").addEventListener("click", function () { Proto.toast("已查询（原型）"); });
+  document.getElementById("btn-reset").addEventListener("click", function () {
+    ["f-name","f-owner"].forEach(function (id) { document.getElementById(id).value = ""; });
+    ["f-tag"].forEach(function (id) { document.getElementById(id).value = ""; });
+    document.getElementById("f-time1").value = "";
+    document.getElementById("f-time2").value = "";
+    Proto.toast("已重置筛选");
+  });
+  document.getElementById("btn-export").addEventListener("click", function () { Proto.toast("已导出（原型）"); });
+  document.getElementById("btn-col").addEventListener("click", function () { open(document.getElementById("drawer-col")); });
+  document.getElementById("col-apply").addEventListener("click", function () { closeAll(); Proto.toast("列展示已应用（原型）"); });
+  document.getElementById("tag-submit").addEventListener("click", function () { closeAll(); Proto.toast("标签已保存（原型）"); });
+
+  // ===== Drawer submit =====
+  document.getElementById("gw-save").addEventListener("click", function () {
+    var c = document.getElementById("gw-content").value.trim();
+    if (!c) { Proto.toast("请填写跟进内容"); return; }
+    closeAll(); Proto.toast("群跟进已保存（原型）");
+    document.getElementById("gw-content").value = "";
+  });
+  document.getElementById("btn-next").addEventListener("click", function () {
+    var inp = document.getElementById("pg-input");
+    inp.value = parseInt(inp.value || 1) + 1;
+    Proto.toast("已跳转第 " + inp.value + " 页（原型）");
+  });
+})();
+</script>
+</body>
+</html>

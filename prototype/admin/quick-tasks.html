@@ -1,0 +1,328 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>快捷任务 · 艺博 To-B</title>
+<link rel="stylesheet" href="../assets/css/proto.css" />
+</head>
+<body class="admin-body" data-module="scrm" data-nav="quick-task" data-title="快捷任务" data-crumb="SCRM / 营销管理 / 快捷任务">
+<div id="header-actions">
+  <button class="btn btn-primary" id="btn-create">新建任务</button>
+</div>
+<div id="page-content" style="display:none">
+
+  <!-- 筛选 -->
+  <div class="card" style="margin-bottom:8px"><div class="card-bd">
+    <div class="form-grid" style="grid-template-columns:repeat(5,minmax(0,1fr));gap:8px 12px">
+      <input id="f-name" placeholder="请输入" />
+      <select id="f-status">
+        <option value="">状态</option>
+        <option>进行中</option>
+        <option>已完成</option>
+        <option>已取消</option>
+      </select>
+      <select id="f-updater">
+        <option value="">请选择</option>
+        <option>陈奕均</option>
+        <option>阮荣均</option>
+        <option>李大</option>
+      </select>
+      <input id="f-time1" type="datetime-local" />
+      <input id="f-time2" type="datetime-local" />
+    </div>
+    <div class="toolbar" style="margin-top:8px">
+      <button class="btn btn-primary" id="btn-query">查询</button>
+      <button class="btn" id="btn-reset">重置</button>
+      <div class="spacer"></div>
+      <button class="btn" id="btn-col">列展示</button>
+    </div>
+  </div></div>
+
+  <!-- 表格 -->
+  <div class="card"><div class="card-bd" style="padding:0">
+    <table class="data">
+      <thead>
+        <tr>
+          <th>任务名称</th><th>任务描述</th><th>执行成员数</th>
+          <th>有效时间</th><th>下发时间</th>
+          <th>状态</th><th>更新人</th><th>更新时间</th>
+          <th style="width:160px">操作</th>
+        </tr>
+      </thead>
+      <tbody id="qt-tbody">
+        <tr>
+          <td>提醒未到课客户</td>
+          <td>催到课提醒，确保今日到课率达 80%</td>
+          <td>3</td>
+          <td>今天 00:00 — 今天 23:59</td>
+          <td>2026-03-29 08:00</td>
+          <td><span class="badge badge-warn">进行中</span></td>
+          <td>阮荣均</td><td>2026-03-29 08:00</td>
+          <td class="row-actions">
+            <a href="#" data-row-act="detail">详情</a>
+            <a href="#" data-row-act="progress">进度</a>
+            <a href="#" data-row-act="stop">终止</a>
+          </td>
+        </tr>
+        <tr>
+          <td>回访短信失败客户</td>
+          <td>视频号订单短信发送失败客户电话回访</td>
+          <td>1</td>
+          <td>今天 00:00 — 今天 18:00</td>
+          <td>2026-03-29 08:00</td>
+          <td><span class="badge badge-warn">进行中</span></td>
+          <td>王助教</td><td>2026-03-29 08:00</td>
+          <td class="row-actions">
+            <a href="#" data-row-act="detail">详情</a>
+            <a href="#" data-row-act="progress">进度</a>
+            <a href="#" data-row-act="stop">终止</a>
+          </td>
+        </tr>
+        <tr>
+          <td>公客池领取跟进</td>
+          <td>昨日分配未跟进的线索统一跟进</td>
+          <td>1</td>
+          <td>2026-03-28 — 2026-03-29</td>
+          <td>2026-03-28 09:00</td>
+          <td><span class="badge badge-success">已完成</span></td>
+          <td>周销售</td><td>2026-03-29 18:00</td>
+          <td class="row-actions">
+            <a href="#" data-row-act="detail">详情</a>
+            <a href="#" data-row-act="progress">进度</a>
+          </td>
+        </tr>
+        <tr>
+          <td>今日直播催到</td>
+          <td>春启 03 今晚 20:00 直播，到课提醒</td>
+          <td>2</td>
+          <td>今天 19:00 — 今天 20:00</td>
+          <td>2026-03-29 19:00</td>
+          <td><span class="badge">已取消</span></td>
+          <td>刘助教</td><td>2026-03-29 19:00</td>
+          <td class="row-actions">
+            <a href="#" data-row-act="detail">详情</a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div></div>
+  <!-- 分页 -->
+  <div class="toolbar" style="margin-top:8px">
+    <span class="muted">共 <b>4</b> 条</span>
+    <div class="spacer"></div>
+    <button class="btn btn-sm" disabled>上一页</button>
+    <button class="btn btn-sm" disabled>下一页</button>
+    <span class="muted" style="margin-left:8px">第</span>
+    <input id="pg-input" type="number" min="1" value="1" style="width:60px" />
+    <span class="muted">页</span>
+    <select id="pg-size" style="margin-left:8px">
+      <option>10条/页</option><option selected>20条/页</option>
+      <option>30条/页</option><option>50条/页</option>
+    </select>
+  </div>
+</div>
+
+<!-- ============ 抽屉 / 弹窗 ============ -->
+<div class="proto-mask" id="mask"></div>
+
+<!-- 新建任务弹窗 -->
+<div class="proto-modal" id="modal-create" style="width:600px">
+  <div class="proto-modal-hd">
+    <h3 style="font-size:16px;font-weight:600">新建任务</h3>
+    <button class="btn btn-sm btn-ghost" data-close>×</button>
+  </div>
+  <div class="proto-modal-bd">
+    <div class="form-grid">
+      <div class="field"><label>任务名称 *</label><input id="ct-name" placeholder="如：提醒未到课客户" /></div>
+      <div class="field"><label>任务类型</label>
+        <select>
+          <option>到课提醒</option>
+          <option>短信回访</option>
+          <option>客户领取</option>
+          <option>直播促到</option>
+          <option>其他</option>
+        </select>
+      </div>
+      <div class="field" style="grid-column:1/-1"><label>任务描述</label>
+        <textarea rows="3" style="width:100%;padding:8px;border:1px solid var(--color-border);border-radius:6px" placeholder="说明任务目标 / 完成标准"></textarea>
+      </div>
+      <div class="field"><label>有效时间（起）</label><input type="datetime-local" /></div>
+      <div class="field"><label>有效时间（止）</label><input type="datetime-local" /></div>
+      <div class="field" style="grid-column:1/-1"><label>执行成员</label>
+        <select multiple style="height:90px;padding:8px">
+          <option>阮荣均</option><option>赵老师</option>
+          <option>王助教</option><option>刘助教</option>
+          <option>周销售</option>
+        </select>
+        <span class="muted" style="font-size:12px">按住 Ctrl/Cmd 多选</span>
+      </div>
+      <div class="field"><label>关联线索条件</label>
+        <select><option>全部</option><option>昨日分配未跟进</option><option>今日待跟进</option></select>
+      </div>
+      <div class="field"><label>提醒方式</label>
+        <select><option>企微</option><option>站内信</option><option>不提醒</option></select>
+      </div>
+    </div>
+  </div>
+  <div class="proto-modal-ft">
+    <button class="btn" data-close>取消</button>
+    <button class="btn btn-primary" id="ct-submit">下发任务</button>
+  </div>
+</div>
+
+<!-- 详情抽屉 -->
+<div class="proto-drawer" id="drawer-detail">
+  <div class="proto-drawer-hd">
+    <h3 id="td-title">任务详情</h3>
+    <button class="btn btn-sm btn-ghost" data-close>×</button>
+  </div>
+  <div class="proto-drawer-bd">
+    <h4 style="margin-bottom:8px">任务信息</h4>
+    <div class="form-grid" style="grid-template-columns:1fr 1fr">
+      <div class="field"><label>任务名称</label><div id="td-name">—</div></div>
+      <div class="field"><label>任务类型</label><div id="td-type">—</div></div>
+      <div class="field" style="grid-column:1/-1"><label>任务描述</label><div id="td-desc">—</div></div>
+      <div class="field"><label>执行成员数</label><div id="td-members">—</div></div>
+      <div class="field"><label>状态</label><div id="td-status">—</div></div>
+      <div class="field"><label>有效时间</label><div id="td-time">—</div></div>
+      <div class="field"><label>下发时间</label><div id="td-issue-time">—</div></div>
+      <div class="field"><label>更新人</label><div id="td-updater">—</div></div>
+      <div class="field"><label>更新时间</label><div id="td-updated">—</div></div>
+    </div>
+    <h4 style="margin:16px 0 8px">执行进度</h4>
+    <div class="grid-4" style="margin:0">
+      <div class="stat"><div class="label">应完成</div><div class="value" id="td-total">—</div></div>
+      <div class="stat"><div class="label">已完成</div><div class="value" id="td-done">—</div></div>
+      <div class="stat"><div class="label">完成率</div><div class="value" id="td-rate">—</div></div>
+      <div class="stat"><div class="label">剩余</div><div class="value" id="td-remain">—</div></div>
+    </div>
+  </div>
+  <div class="proto-drawer-ft">
+    <button class="btn" data-close">关闭</button>
+    <a class="btn btn-primary" href="dashboard.html">返回工作台</a>
+  </div>
+</div>
+
+<!-- 列展示 -->
+<div class="proto-drawer" id="drawer-col" style="width:340px">
+  <div class="proto-drawer-hd">
+    <h3>列展示</h3>
+    <button class="btn btn-sm btn-ghost" data-close>×</button>
+  </div>
+  <div class="proto-drawer-bd">
+    <div id="col-list">
+      <label><input type="checkbox" checked> 任务名称</label>
+      <label><input type="checkbox" checked> 任务描述</label>
+      <label><input type="checkbox" checked> 执行成员数</label>
+      <label><input type="checkbox" checked> 有效时间</label>
+      <label><input type="checkbox" checked> 下发时间</label>
+      <label><input type="checkbox" checked> 状态</label>
+      <label><input type="checkbox" checked> 更新人</label>
+      <label><input type="checkbox" checked> 更新时间</label>
+    </div>
+  </div>
+  <div class="proto-drawer-ft">
+    <button class="btn" data-close>取消</button>
+    <button class="btn btn-primary" id="col-apply">应用</button>
+  </div>
+</div>
+
+<style>
+.row-actions a.danger { color: var(--color-danger); }
+#col-list label {
+  display: flex; align-items: center; gap: 6px;
+  padding: 6px 0; font-size: 13px;
+}
+</style>
+
+<script src="../assets/js/proto.js"></script>
+<script src="../assets/js/admin-shell.js"></script>
+<script>
+(function () {
+  // ===== Mask / drawer / modal =====
+  var mask = document.getElementById("mask");
+  function closeAll() {
+    mask.classList.remove("open");
+    document.querySelectorAll(".proto-modal, .proto-drawer").forEach(function (n) { n.classList.remove("open"); });
+  }
+  function open(node) { mask.classList.add("open"); node.classList.add("open"); }
+  mask.addEventListener("click", closeAll);
+  document.querySelectorAll("[data-close]").forEach(function (n) { n.addEventListener("click", closeAll); });
+
+  // ===== Row data =====
+  function rowData(tr) {
+    var tds = tr.querySelectorAll("td");
+    return {
+      name: tds[0] ? tds[0].textContent.trim() : "",
+      desc: tds[1] ? tds[1].textContent.trim() : "",
+      members: tds[2] ? tds[2].textContent.trim() : "0",
+      validTime: tds[3] ? tds[3].textContent.trim() : "",
+      issueTime: tds[4] ? tds[4].textContent.trim() : "",
+      status: tds[5] ? tds[5].textContent.trim() : "",
+      updater: tds[6] ? tds[6].textContent.trim() : "",
+      updated: tds[7] ? tds[7].textContent.trim() : "",
+    };
+  }
+
+  // ===== Detail =====
+  function fillDetail(d) {
+    document.getElementById("td-title").textContent = "任务详情 · " + d.name;
+    document.getElementById("td-name").textContent = d.name;
+    document.getElementById("td-type").textContent = "到课提醒";
+    document.getElementById("td-desc").textContent = d.desc;
+    document.getElementById("td-members").textContent = d.members;
+    document.getElementById("td-status").textContent = d.status;
+    document.getElementById("td-time").textContent = d.validTime;
+    document.getElementById("td-issue-time").textContent = d.issueTime;
+    document.getElementById("td-updater").textContent = d.updater;
+    document.getElementById("td-updated").textContent = d.updated;
+    document.getElementById("td-total").textContent = "74";
+    document.getElementById("td-done").textContent = "62";
+    document.getElementById("td-rate").textContent = "84%";
+    document.getElementById("td-remain").textContent = "12";
+    open(document.getElementById("drawer-detail"));
+  }
+
+  // ===== Row actions =====
+  document.querySelectorAll("#qt-tbody tr").forEach(function (tr) {
+    tr.querySelectorAll("[data-row-act]").forEach(function (a) {
+      a.addEventListener("click", function (e) {
+        e.preventDefault();
+        var act = a.getAttribute("data-row-act");
+        var d = rowData(tr);
+        if (act === "detail") fillDetail(d);
+        else if (act === "progress") location.href = "dashboard.html";
+        else if (act === "stop") {
+          if (confirm("确认终止「" + d.name + "」?")) {
+            tr.querySelector(".badge").outerHTML = '<span class="badge">已取消</span>';
+            Proto.toast("已终止（原型）");
+          }
+        }
+      });
+    });
+  });
+
+  // ===== Create =====
+  document.getElementById("btn-create").addEventListener("click", function () { open(document.getElementById("modal-create")); });
+  document.getElementById("ct-submit").addEventListener("click", function () {
+    var n = document.getElementById("ct-name").value.trim();
+    if (!n) { Proto.toast("请输入任务名称"); return; }
+    closeAll(); Proto.toast("任务已下发（原型）");
+  });
+
+  // ===== Other buttons =====
+  document.getElementById("btn-query").addEventListener("click", function () { Proto.toast("已查询（原型）"); });
+  document.getElementById("btn-reset").addEventListener("click", function () {
+    document.getElementById("f-name").value = "";
+    ["f-status","f-updater"].forEach(function (id) { document.getElementById(id).value = ""; });
+    document.getElementById("f-time1").value = "";
+    document.getElementById("f-time2").value = "";
+    Proto.toast("已重置");
+  });
+  document.getElementById("btn-col").addEventListener("click", function () { open(document.getElementById("drawer-col")); });
+  document.getElementById("col-apply").addEventListener("click", function () { closeAll(); Proto.toast("列展示已应用（原型）"); });
+})();
+</script>
+</body>
+</html>

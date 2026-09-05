@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>领课 · To-B 小程序</title>
+  <link rel="stylesheet" href="../assets/css/proto.css" />
+</head>
+<body class="mp-page" data-tabbar="0">
+  <div class="mp-frame">
+    <div class="mp-status"><span>9:41</span><span>领课</span><span>100%</span></div>
+    <div class="mp-nav">领取课程</div>
+    <div class="mp-body">
+      <div style="padding:24px 16px">
+        <div style="background:#fff;border-radius:12px;padding:20px;text-align:center">
+          <div class="course-cover" style="width:100%;height:100px;margin:0 auto 14px;font-size:14px">视频号订单兑换</div>
+          <h3 style="font-size:17px">家庭教育入门 9.9</h3>
+          <p style="font-size:12px;color:#888;margin:8px 0 16px">订单 VX202603291088 · 点击短信进入本页</p>
+          <a class="mp-btn" href="#" id="btn-claim">立即领课</a>
+          <a class="mp-btn mp-btn-outline" href="#" id="btn-wecom" style="margin-top:10px">添加企微老师</a>
+          <p class="muted" style="margin-top:14px;text-align:left">领课后将开通对应线上课权益，并可引导添加企微完成私域承接。</p>
+        </div>
+        <div id="claim-ok" style="display:none;margin-top:16px;background:#ecfdf5;border-radius:10px;padding:14px;font-size:13px;color:#065f46">
+          ✅ 领课成功。可前往学习或进入直播。<br /><br />
+          <a href="learn.html">去学习</a> · <a href="lives.html">看直播</a> · <a href="mine.html">我的</a>
+        </div>
+      </div>
+    </div>
+  </div>
+  <p class="mp-hint">承接视频号短信链路 · <a href="../admin/channels-orders.html">管理端订单</a></p>
+  <script src="../assets/js/proto.js"></script>
+  <script src="../assets/js/mp-shell.js"></script>
+  <script>
+    document.getElementById("btn-claim").addEventListener("click", function (e) {
+      e.preventDefault();
+      document.getElementById("claim-ok").style.display = "block";
+      Proto.toast("权益已开通（原型）");
+    });
+    document.getElementById("btn-wecom").addEventListener("click", function (e) {
+      e.preventDefault();
+      Proto.toast("唤起企微获客助手（原型示意）");
+    });
+  </script>
+</body>
+</html>

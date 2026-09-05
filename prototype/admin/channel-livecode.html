@@ -1,0 +1,512 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>渠道活码 · 艺博 To-B</title>
+<link rel="stylesheet" href="../assets/css/proto.css" />
+</head>
+<body class="admin-body" data-module="scrm" data-nav="channel-code" data-title="渠道活码" data-crumb="SCRM / 营销管理 / 渠道活码">
+<div id="header-actions">
+  <button class="btn" id="btn-download">下载活码</button>
+  <button class="btn" id="btn-delete" disabled>删除</button>
+  <button class="btn" id="btn-export">导出</button>
+  <button class="btn" id="btn-batch-create">批量创建活码</button>
+  <button class="btn btn-primary" id="btn-create">+ 新建活码</button>
+</div>
+<div id="page-content" style="display:none">
+  <div class="content-layout">
+    <!-- 左：分组树 -->
+    <div class="card tree-card">
+      <div class="card-hd">
+        <h2>活码分组</h2>
+        <button class="btn btn-sm" id="btn-add-group">+ 添加分组</button>
+      </div>
+      <div class="card-bd">
+        <input id="tree-search" placeholder="请输入分组名称" style="margin-bottom:8px" />
+        <ul class="tree" id="code-tree">
+          <li class="tree-node expanded" data-key="all">
+            <div class="tree-row tree-row--active">
+              <span class="tree-icon">📁</span>
+              <span class="tree-label">全部分组</span>
+              <span class="tree-count">(19)</span>
+            </div>
+          </li>
+          <li class="tree-node" data-key="pl">
+            <div class="tree-row">
+              <span class="tree-icon">📁</span>
+              <span class="tree-label">派龙专用</span>
+              <span class="tree-count">(1)</span>
+              <button class="tree-more">⋯</button>
+            </div>
+          </li>
+          <li class="tree-node" data-key="jh">
+            <div class="tree-row">
+              <span class="tree-icon">📁</span>
+              <span class="tree-label">JH专用</span>
+              <span class="tree-count">(2)</span>
+              <button class="tree-more">⋯</button>
+            </div>
+          </li>
+          <li class="tree-node expanded" data-key="mz">
+            <div class="tree-row">
+              <span class="tree-icon">📁</span>
+              <span class="tree-label">木子的活码</span>
+              <span class="tree-count">(16)</span>
+              <button class="tree-more">⋯</button>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- 右：活码列表 -->
+    <div class="card">
+      <div class="card-bd">
+        <div class="form-grid" style="grid-template-columns:repeat(5,minmax(0,1fr));gap:8px 12px">
+          <select id="f-owner">
+            <option value="">使用成员</option>
+            <option>学员 2036</option>
+            <option>游客</option>
+          </select>
+          <input id="f-name" placeholder="活码名称" />
+          <select id="f-updater">
+            <option value="">更新人</option>
+            <option>阮荣均</option>
+            <option>赵老师</option>
+          </select>
+          <input id="f-time1" type="datetime-local" />
+          <input id="f-time2" type="datetime-local" />
+        </div>
+        <div class="toolbar" style="margin-top:8px">
+          <button class="btn btn-primary" id="btn-query">查询</button>
+          <button class="btn" id="btn-reset">重置</button>
+          <div class="spacer"></div>
+          <button class="btn" id="btn-refresh">↻</button>
+        </div>
+
+        <!-- 表格 -->
+        <div class="card" style="margin-top:8px"><div class="card-bd" style="padding:0">
+          <table class="data">
+            <thead>
+              <tr>
+                <th style="width:36px"><input type="checkbox" id="check-all" /></th>
+                <th>活码名称</th><th>欢迎语类型</th><th>留存客户数</th>
+                <th>使用成员</th><th>所属分组</th><th>更新人</th><th>更新时间</th>
+                <th style="width:220px">操作</th>
+              </tr>
+            </thead>
+            <tbody id="cq-tbody">
+              <tr>
+                <td><input type="checkbox" class="row-check" /></td>
+                <td>批量 1</td>
+                <td><span class="tag tag-blue">固定欢迎语</span></td>
+                <td>0</td>
+                <td>学员 2036</td>
+                <td>木子的活码</td>
+                <td>—</td>
+                <td>2026-09-04</td>
+                <td class="row-actions">
+                  <a href="#" data-row-act="detail">详情</a>
+                  <a href="#" data-row-act="stat">数据</a>
+                  <a href="#" data-row-act="download">下载</a>
+                  <a href="#" data-row-act="edit">编辑</a>
+                </td>
+              </tr>
+              <tr>
+                <td><input type="checkbox" class="row-check" /></td>
+                <td>批量 2</td>
+                <td><span class="tag tag-blue">固定欢迎语</span></td>
+                <td>0</td>
+                <td>学员 2036</td>
+                <td>木子的活码</td>
+                <td>—</td>
+                <td>2026-09-04</td>
+                <td class="row-actions">
+                  <a href="#" data-row-act="detail">详情</a>
+                  <a href="#" data-row-act="stat">数据</a>
+                  <a href="#" data-row-act="download">下载</a>
+                  <a href="#" data-row-act="edit">编辑</a>
+                </td>
+              </tr>
+              <tr>
+                <td><input type="checkbox" class="row-check" /></td>
+                <td>批量 1</td>
+                <td><span class="tag tag-blue">固定欢迎语</span></td>
+                <td>0</td>
+                <td>学员 2036</td>
+                <td>木子的活码</td>
+                <td>—</td>
+                <td>2026-09-04</td>
+                <td class="row-actions">
+                  <a href="#" data-row-act="detail">详情</a>
+                  <a href="#" data-row-act="stat">数据</a>
+                  <a href="#" data-row-act="download">下载</a>
+                  <a href="#" data-row-act="edit">编辑</a>
+                </td>
+              </tr>
+              <tr>
+                <td><input type="checkbox" class="row-check" /></td>
+                <td>test渠道活码回归验证</td>
+                <td><span class="tag tag-blue">固定欢迎语</span></td>
+                <td>1</td>
+                <td>游客</td>
+                <td>木子的活码</td>
+                <td>—</td>
+                <td>2026-08-31</td>
+                <td class="row-actions">
+                  <a href="#" data-row-act="detail">详情</a>
+                  <a href="#" data-row-act="stat">数据</a>
+                  <a href="#" data-row-act="download">下载</a>
+                  <a href="#" data-row-act="edit">编辑</a>
+                </td>
+              </tr>
+              <tr>
+                <td><input type="checkbox" class="row-check" /></td>
+                <td>test9999</td>
+                <td><span class="tag tag-blue">固定欢迎语</span></td>
+                <td>1</td>
+                <td>学员 2036</td>
+                <td>—</td>
+                <td>—</td>
+                <td>2026-08-28</td>
+                <td class="row-actions">
+                  <a href="#" data-row-act="detail">详情</a>
+                  <a href="#" data-row-act="stat">数据</a>
+                  <a href="#" data-row-act="download">下载</a>
+                  <a href="#" data-row-act="edit">编辑</a>
+                </td>
+              </tr>
+              <tr>
+                <td><input type="checkbox" class="row-check" /></td>
+                <td>胡班不说夏洛特头模 1</td>
+                <td><span class="tag tag-blue">固定欢迎语</span></td>
+                <td>0</td>
+                <td>游客</td>
+                <td>木子的活码</td>
+                <td>—</td>
+                <td>2026-08-22</td>
+                <td class="row-actions">
+                  <a href="#" data-row-act="detail">详情</a>
+                  <a href="#" data-row-act="stat">数据</a>
+                  <a href="#" data-row-act="download">下载</a>
+                  <a href="#" data-row-act="edit">编辑</a>
+                </td>
+              </tr>
+              <tr>
+                <td><input type="checkbox" class="row-check" /></td>
+                <td>测试字段取消 1</td>
+                <td><span class="tag tag-blue">固定欢迎语</span></td>
+                <td>0</td>
+                <td>木子的活码</td>
+                <td>—</td>
+                <td>—</td>
+                <td>2026-08-15</td>
+                <td class="row-actions">
+                  <a href="#" data-row-act="detail">详情</a>
+                  <a href="#" data-row-act="stat">数据</a>
+                  <a href="#" data-row-act="download">下载</a>
+                  <a href="#" data-row-act="edit">编辑</a>
+                </td>
+              </tr>
+              <tr>
+                <td><input type="checkbox" class="row-check" /></td>
+                <td>测试不说夏洛特头像 1</td>
+                <td><span class="tag tag-blue">固定欢迎语</span></td>
+                <td>0</td>
+                <td>游客</td>
+                <td>木子的活码</td>
+                <td>—</td>
+                <td>2026-08-15</td>
+                <td class="row-actions">
+                  <a href="#" data-row-act="detail">详情</a>
+                  <a href="#" data-row-act="stat">数据</a>
+                  <a href="#" data-row-act="download">下载</a>
+                  <a href="#" data-row-act="edit">编辑</a>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div></div>
+        <!-- 分页 -->
+        <div class="toolbar" style="margin-top:8px">
+          <span class="muted">共 <b>19</b> 条</span>
+          <div class="spacer"></div>
+          <select><option>10条/页</option><option selected>20条/页</option></select>
+          <button class="btn btn-sm" disabled>上一页</button>
+          <button class="btn btn-sm" id="btn-next">下一页</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ 抽屉 / 弹窗 ============ -->
+<div class="proto-mask" id="mask"></div>
+
+<!-- 新建 / 编辑 活码 弹窗 -->
+<div class="proto-modal" id="modal-create" style="width:680px">
+  <div class="proto-modal-hd">
+    <h3 id="cq-title" style="font-size:16px;font-weight:600">新建活码</h3>
+    <button class="btn btn-sm btn-ghost" data-close>×</button>
+  </div>
+  <div class="proto-modal-bd">
+    <div class="form-grid">
+      <div class="field"><label>活码名称 *</label><input id="cc-name" placeholder="如：视频号·春启03" /></div>
+      <div class="field"><label>所属分组 *</label>
+        <select>
+          <option>全部分组</option>
+          <option>派龙专用</option>
+          <option>JH专用</option>
+          <option>木子的活码</option>
+        </select>
+      </div>
+      <div class="field"><label>使用成员 *</label>
+        <select multiple style="height:90px;padding:8px">
+          <option>学员 2036</option><option>游客</option>
+          <option>阮荣均</option><option>赵老师</option><option>王助教</option>
+        </select>
+        <span class="muted" style="font-size:12px">按住 Ctrl/Cmd 多选；轮询分配</span>
+      </div>
+      <div class="field"><label>欢迎语类型</label>
+        <select><option>固定欢迎语</option><option>不关联</option><option>分时段欢迎语</option></select>
+      </div>
+      <div class="field"><label>使用上限</label><input type="number" value="1000" /></div>
+      <div class="field"><label>到期时间</label><input type="datetime-local" /></div>
+      <div class="field" style="grid-column:1/-1"><label>说明</label>
+        <textarea rows="2" style="width:100%;padding:8px;border:1px solid var(--color-border);border-radius:6px" placeholder="选填"></textarea>
+      </div>
+    </div>
+  </div>
+  <div class="proto-modal-ft">
+    <button class="btn" data-close>取消</button>
+    <button class="btn btn-primary" id="cc-submit">保存</button>
+  </div>
+</div>
+
+<!-- 详情抽屉 -->
+<div class="proto-drawer" id="drawer-detail">
+  <div class="proto-drawer-hd">
+    <h3 id="cqd-title">活码详情</h3>
+    <button class="btn btn-sm btn-ghost" data-close>×</button>
+  </div>
+  <div class="proto-drawer-bd">
+    <h4 style="margin-bottom:8px">基础信息</h4>
+    <div class="form-grid" style="grid-template-columns:1fr 1fr">
+      <div class="field"><label>活码名称</label><div id="cqd-name">—</div></div>
+      <div class="field"><label>所属分组</label><div id="cqd-group">—</div></div>
+      <div class="field"><label>使用成员</label><div id="cqd-owner">—</div></div>
+      <div class="field"><label>欢迎语类型</label><div id="cqd-welcome">—</div></div>
+      <div class="field"><label>使用上限</label><div id="cqd-limit">—</div></div>
+      <div class="field"><label>留存客户数</label><div id="cqd-retain">—</div></div>
+      <div class="field"><label>更新人</label><div id="cqd-updater">—</div></div>
+      <div class="field"><label>更新时间</label><div id="cqd-updated">—</div></div>
+    </div>
+    <h4 style="margin:16px 0 8px">数据</h4>
+    <div class="grid-4" style="margin:0">
+      <div class="stat"><div class="label">累计扫码</div><div class="value">—</div></div>
+      <div class="stat"><div class="label">累计加微</div><div class="value">—</div></div>
+      <div class="stat"><div class="label">今日扫码</div><div class="value">—</div></div>
+      <div class="stat"><div class="label">今日加微</div><div class="value">—</div></div>
+    </div>
+  </div>
+  <div class="proto-drawer-ft">
+    <button class="btn" data-close>关闭</button>
+    <a class="btn btn-primary" href="#" id="cqd-edit">编辑</a>
+  </div>
+</div>
+
+<!-- 列展示抽屉 -->
+<div class="proto-drawer" id="drawer-col" style="width:340px">
+  <div class="proto-drawer-hd">
+    <h3>列展示</h3>
+    <button class="btn btn-sm btn-ghost" data-close>×</button>
+  </div>
+  <div class="proto-drawer-bd">
+    <div id="col-list">
+      <label><input type="checkbox" checked> 活码名称</label>
+      <label><input type="checkbox" checked> 欢迎语类型</label>
+      <label><input type="checkbox" checked> 留存客户数</label>
+      <label><input type="checkbox" checked> 使用成员</label>
+      <label><input type="checkbox" checked> 所属分组</label>
+      <label><input type="checkbox" checked> 更新人</label>
+      <label><input type="checkbox" checked> 更新时间</label>
+    </div>
+  </div>
+  <div class="proto-drawer-ft">
+    <button class="btn" data-close>取消</button>
+    <button class="btn btn-primary" id="col-apply">应用</button>
+  </div>
+</div>
+
+<style>
+.content-layout {
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  gap: 12px;
+}
+.tree-card { height: fit-content; }
+.tree { list-style: none; padding: 0; margin: 0; }
+.tree-node { margin-bottom: 2px; }
+.tree-row {
+  display: flex; align-items: center; gap: 6px;
+  padding: 6px 8px; border-radius: 4px; cursor: pointer;
+  font-size: 13px;
+}
+.tree-row:hover { background: #f0f4fa; }
+.tree-row--active { background: var(--color-primary-soft); color: var(--color-primary); font-weight: 500; }
+.tree-icon { font-size: 14px; }
+.tree-label { flex: 1; }
+.tree-count { color: var(--color-text-muted); font-size: 12px; }
+.tree-more {
+  background: none; border: none; color: var(--color-text-muted);
+  cursor: pointer; padding: 0 4px; font-size: 16px; line-height: 1;
+}
+.tag { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 12px; }
+.tag-blue { background: #e8f3ff; color: #165dff; }
+.row-actions a.danger { color: var(--color-danger); }
+#col-list label {
+  display: flex; align-items: center; gap: 6px;
+  padding: 6px 0; font-size: 13px;
+}
+</style>
+
+<script src="../assets/js/proto.js"></script>
+<script src="../assets/js/admin-shell.js"></script>
+<script>
+(function () {
+  // ===== Tree =====
+  document.querySelectorAll(".tree-row").forEach(function (row) {
+    row.addEventListener("click", function (e) {
+      if (e.target.classList.contains("tree-more")) return;
+      document.querySelectorAll(".tree-row").forEach(function (x) { x.classList.remove("tree-row--active"); });
+      row.classList.add("tree-row--active");
+      Proto.toast("已切换到：" + row.querySelector(".tree-label").textContent);
+    });
+  });
+  document.querySelectorAll(".tree-more").forEach(function (b) {
+    b.addEventListener("click", function (e) {
+      e.stopPropagation();
+      Proto.toast("更多操作（原型）");
+    });
+  });
+  document.getElementById("btn-add-group").addEventListener("click", function () { Proto.toast("添加分组（原型）"); });
+
+  // ===== Mask / drawer / modal =====
+  var mask = document.getElementById("mask");
+  function closeAll() {
+    mask.classList.remove("open");
+    document.querySelectorAll(".proto-modal, .proto-drawer").forEach(function (n) { n.classList.remove("open"); });
+  }
+  function open(node) { mask.classList.add("open"); node.classList.add("open"); }
+  mask.addEventListener("click", closeAll);
+  document.querySelectorAll("[data-close]").forEach(function (n) { n.addEventListener("click", closeAll); });
+
+  // ===== Batch =====
+  var btnDelete = document.getElementById("btn-delete");
+  var checkAll = document.getElementById("check-all");
+  function syncBatch() {
+    var n = document.querySelectorAll(".row-check:checked").length;
+    btnDelete.disabled = n === 0;
+  }
+  checkAll.addEventListener("change", function () {
+    document.querySelectorAll(".row-check").forEach(function (c) { c.checked = checkAll.checked; });
+    syncBatch();
+  });
+  document.querySelectorAll(".row-check").forEach(function (c) { c.addEventListener("change", syncBatch); });
+
+  // ===== Row data =====
+  function rowData(tr) {
+    var tds = tr.querySelectorAll("td");
+    return {
+      name: tds[1] ? tds[1].textContent.trim() : "",
+      welcome: tds[2] ? tds[2].textContent.trim() : "",
+      retain: tds[3] ? tds[3].textContent.trim() : "0",
+      owner: tds[4] ? tds[4].textContent.trim() : "",
+      group: tds[5] ? tds[5].textContent.trim() : "",
+      updater: tds[6] ? tds[6].textContent.trim() : "",
+      updated: tds[7] ? tds[7].textContent.trim() : "",
+    };
+  }
+
+  // ===== Detail =====
+  function fillDetail(d) {
+    document.getElementById("cqd-title").textContent = "活码详情 · " + d.name;
+    document.getElementById("cqd-name").textContent = d.name;
+    document.getElementById("cqd-group").textContent = d.group;
+    document.getElementById("cqd-owner").textContent = d.owner;
+    document.getElementById("cqd-welcome").textContent = d.welcome;
+    document.getElementById("cqd-limit").textContent = "1000";
+    document.getElementById("cqd-retain").textContent = d.retain;
+    document.getElementById("cqd-updater").textContent = d.updater;
+    document.getElementById("cqd-updated").textContent = d.updated;
+    open(document.getElementById("drawer-detail"));
+  }
+
+  // ===== Row actions =====
+  document.querySelectorAll("#cq-tbody tr").forEach(function (tr) {
+    tr.querySelectorAll("[data-row-act]").forEach(function (a) {
+      a.addEventListener("click", function (e) {
+        e.preventDefault();
+        var act = a.getAttribute("data-row-act");
+        var d = rowData(tr);
+        if (act === "detail") fillDetail(d);
+        else if (act === "stat") Proto.toast("打开数据明细（原型）");
+        else if (act === "download") Proto.toast("已下载活码（原型）");
+        else if (act === "edit") {
+          document.getElementById("cq-title").textContent = "编辑活码 · " + d.name;
+          document.getElementById("cc-name").value = d.name;
+          open(document.getElementById("modal-create"));
+        }
+      });
+    });
+  });
+
+  // ===== Create =====
+  document.getElementById("btn-create").addEventListener("click", function () {
+    document.getElementById("cq-title").textContent = "新建活码";
+    document.getElementById("cc-name").value = "";
+    open(document.getElementById("modal-create"));
+  });
+  document.getElementById("btn-batch-create").addEventListener("click", function () {
+    Proto.toast("打开批量创建活码（原型）");
+  });
+  document.getElementById("cc-submit").addEventListener("click", function () {
+    var n = document.getElementById("cc-name").value.trim();
+    if (!n) { Proto.toast("请输入活码名称"); return; }
+    closeAll(); Proto.toast("活码已创建（原型）");
+  });
+
+  // ===== Detail edit =====
+  document.getElementById("cqd-edit").addEventListener("click", function (e) {
+    e.preventDefault();
+    closeAll();
+    document.getElementById("cq-title").textContent = "编辑活码";
+    open(document.getElementById("modal-create"));
+  });
+
+  // ===== Other buttons =====
+  document.getElementById("btn-download").addEventListener("click", function () { Proto.toast("已下载（原型）"); });
+  document.getElementById("btn-delete").addEventListener("click", function () {
+    if (confirm("确认批量删除？")) {
+      document.querySelectorAll(".row-check:checked").forEach(function (c) { c.closest("tr").remove(); });
+      Proto.toast("已批量删除（原型）");
+      syncBatch();
+    }
+  });
+  document.getElementById("btn-export").addEventListener("click", function () { Proto.toast("已导出（原型）"); });
+  document.getElementById("btn-query").addEventListener("click", function () { Proto.toast("已查询（原型）"); });
+  document.getElementById("btn-reset").addEventListener("click", function () {
+    document.getElementById("f-name").value = "";
+    document.getElementById("f-owner").value = "";
+    document.getElementById("f-updater").value = "";
+    document.getElementById("f-time1").value = "";
+    document.getElementById("f-time2").value = "";
+    Proto.toast("已重置");
+  });
+  document.getElementById("btn-refresh").addEventListener("click", function () { Proto.toast("已刷新（原型）"); });
+  document.getElementById("btn-next").addEventListener("click", function () { Proto.toast("下一页（原型）"); });
+})();
+</script>
+</body>
+</html>

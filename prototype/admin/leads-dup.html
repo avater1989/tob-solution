@@ -1,0 +1,336 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>重复线索 · 艺博 To-B</title>
+<link rel="stylesheet" href="../assets/css/proto.css" />
+</head>
+<body class="admin-body" data-module="scrm" data-nav="leads-dup" data-title="重复线索" data-crumb="SCRM / 客户中心 / 重复线索">
+<div id="header-actions">
+  <button class="btn" id="btn-export">导出</button>
+  <button class="btn" id="btn-merge">合并</button>
+  <button class="btn" id="btn-skip">忽略</button>
+  <button class="btn btn-primary" id="btn-rule">去重规则</button>
+</div>
+<div id="page-content" style="display:none">
+
+  <!-- 筛选条 -->
+  <div class="card" style="margin-bottom:8px"><div class="card-bd">
+    <div class="form-grid" style="grid-template-columns:repeat(7,minmax(0,1fr));gap:8px 12px">
+      <input id="f-name" placeholder="姓名" />
+      <input id="f-phone" placeholder="手机号" />
+      <input id="f-region" placeholder="号码归属" />
+      <select id="f-source">
+        <option value="">流入方式</option>
+        <option>渠道对接</option><option>手工新建</option>
+        <option>批量导入</option><option>OpenAPI</option>
+      </select>
+      <input id="f-daren" placeholder="达人" />
+      <input id="f-batch" placeholder="批次编码" />
+      <input id="f-rule" placeholder="命中规则" />
+    </div>
+    <div class="toolbar" style="margin-top:8px">
+      <button class="btn" id="btn-expand">展开</button>
+      <button class="btn btn-primary" id="btn-query">查询</button>
+      <button class="btn" id="btn-reset">重置</button>
+    </div>
+  </div></div>
+
+  <!-- 表格 -->
+  <div class="card"><div class="card-bd" style="padding:0">
+    <table class="data">
+      <thead>
+        <tr>
+          <th style="width:36px"><input type="checkbox" id="check-all" /></th>
+          <th>流入方式</th>
+          <th>姓名</th>
+          <th>手机号</th>
+          <th>号码归属</th>
+          <th>性别</th>
+          <th>达人</th>
+          <th>备注</th>
+          <th>创建时间</th>
+          <th>更新人</th>
+          <th>更新时间</th>
+          <th>导入时间</th>
+          <th>拆分</th>
+          <th style="width:200px">操作</th>
+        </tr>
+      </thead>
+      <tbody id="dup-tbody">
+        <tr>
+          <td><input type="checkbox" class="row-check" /></td>
+          <td>渠道对接</td>
+          <td><button type="button" class="link-btn" data-act="unmask-name">查看</button></td>
+          <td><button type="button" class="link-btn" data-act="unmask-phone">查看</button></td>
+          <td>北京市</td>
+          <td>女</td>
+          <td>—</td>
+          <td>渠道对接重复</td>
+          <td>2026-03-29 09:12</td>
+          <td>系统</td>
+          <td>2026-03-29 09:12</td>
+          <td>—</td>
+          <td>命中手机号匹配</td>
+          <td class="row-actions">
+            <a href="#" data-row-act="merge">合并</a>
+            <a href="#" data-row-act="skip">忽略</a>
+            <a href="#" data-row-act="split">拆分</a>
+            <a href="#" data-row-act="detail">详情</a>
+          </td>
+        </tr>
+        <tr>
+          <td><input type="checkbox" class="row-check" /></td>
+          <td>手工新建</td>
+          <td><button type="button" class="link-btn" data-act="unmask-name">查看</button></td>
+          <td><button type="button" class="link-btn" data-act="unmask-phone">查看</button></td>
+          <td>上海市</td>
+          <td>男</td>
+          <td>张三</td>
+          <td>—</td>
+          <td>2026-03-28 18:22</td>
+          <td>赵老师</td>
+          <td>2026-03-28 18:22</td>
+          <td>2026-03-28 18:22</td>
+          <td>命中订单号匹配</td>
+          <td class="row-actions">
+            <a href="#" data-row-act="merge">合并</a>
+            <a href="#" data-row-act="skip">忽略</a>
+            <a href="#" data-row-act="split">拆分</a>
+            <a href="#" data-row-act="detail">详情</a>
+          </td>
+        </tr>
+        <tr>
+          <td><input type="checkbox" class="row-check" /></td>
+          <td>批量导入</td>
+          <td><button type="button" class="link-btn" data-act="unmask-name">查看</button></td>
+          <td><button type="button" class="link-btn" data-act="unmask-phone">查看</button></td>
+          <td>广东省</td>
+          <td>未知</td>
+          <td>—</td>
+          <td>同姓名同渠道疑似重复</td>
+          <td>2026-03-27 11:30</td>
+          <td>系统</td>
+          <td>2026-03-27 11:30</td>
+          <td>2026-03-27 11:30</td>
+          <td>命中姓名+渠道</td>
+          <td class="row-actions">
+            <a href="#" data-row-act="merge">合并</a>
+            <a href="#" data-row-act="skip">忽略</a>
+            <a href="#" data-row-act="split">拆分</a>
+            <a href="#" data-row-act="detail">详情</a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div></div>
+
+  <!-- 批量操作条 -->
+  <div class="toolbar" style="margin-top:8px">
+    <span class="muted">已选 <b id="dup-count">0</b> 条</span>
+    <div class="spacer"></div>
+    <button class="btn" id="btn-batch-merge" disabled>批量合并</button>
+    <button class="btn" id="btn-batch-skip" disabled>批量忽略</button>
+    <div class="spacer"></div>
+    <span class="muted">共 <b>3</b> 条</span>
+    <button class="btn btn-sm" disabled>上一页</button>
+    <button class="btn btn-sm" disabled>下一页</button>
+  </div>
+</div>
+
+<!-- ============ 抽屉 / 弹窗 ============ -->
+<div class="proto-mask" id="mask"></div>
+
+<!-- 合并抽屉 -->
+<div class="proto-drawer" id="drawer-merge" style="width:560px">
+  <div class="proto-drawer-hd">
+    <h3>合并线索</h3>
+    <button class="btn btn-sm btn-ghost" data-close>×</button>
+  </div>
+  <div class="proto-drawer-bd">
+    <p class="muted" style="margin-bottom:12px">选择要保留的线索（主线索），其余线索字段将被合并到主线索后归档。</p>
+    <table class="data" id="merge-tbody">
+      <thead><tr><th>主</th><th>姓名</th><th>手机号</th><th>渠道</th><th>创建时间</th></tr></thead>
+      <tbody>
+        <tr><td><input type="radio" name="merge-main" checked /></td><td>李女士</td><td>138****2610</td><td>视频号</td><td>2026-03-29 09:12</td></tr>
+        <tr><td><input type="radio" name="merge-main" /></td><td>李女士</td><td>138****2610</td><td>OpenAPI</td><td>2026-03-28 18:22</td></tr>
+      </tbody>
+    </table>
+    <div class="field" style="margin-top:12px">
+      <label>合并策略</label>
+      <select><option>保留最早</option><option>保留最新</option><option>手动指定主线索</option></select>
+    </div>
+    <p class="muted" style="margin-top:12px">合并字段将以主线索优先；冲突字段可在合并后再次编辑。</p>
+  </div>
+  <div class="proto-drawer-ft">
+    <button class="btn" data-close>取消</button>
+    <button class="btn btn-primary" id="merge-submit">确认合并</button>
+  </div>
+</div>
+
+<!-- 拆分抽屉 -->
+<div class="proto-drawer" id="drawer-split">
+  <div class="proto-drawer-hd">
+    <h3>拆分线索</h3>
+    <button class="btn btn-sm btn-ghost" data-close>×</button>
+  </div>
+  <div class="proto-drawer-bd">
+    <p class="muted" style="margin-bottom:12px">将该线索从重复组中独立出来，作为新线索保留。</p>
+    <div class="form-grid">
+      <div class="field"><label>当前线索</label><div id="sp-name">—</div></div>
+      <div class="field" style="grid-column:1/-1"><label>拆分原因</label>
+        <textarea rows="3" style="width:100%;padding:8px;border:1px solid var(--color-border);border-radius:6px" placeholder="选填，记录到日志"></textarea>
+      </div>
+    </div>
+  </div>
+  <div class="proto-drawer-ft">
+    <button class="btn" data-close>取消</button>
+    <button class="btn btn-primary" id="sp-submit">确认拆分</button>
+  </div>
+</div>
+
+<!-- 详情抽屉 -->
+<div class="proto-drawer" id="drawer-detail">
+  <div class="proto-drawer-hd">
+    <h3 id="dd-title">重复线索详情</h3>
+    <button class="btn btn-sm btn-ghost" data-close>×</button>
+  </div>
+  <div class="proto-drawer-bd">
+    <h4 style="margin-bottom:8px">重复组</h4>
+    <p class="muted" style="margin-bottom:12px">命中规则：<b id="dd-rule">—</b></p>
+    <table class="data">
+      <thead><tr><th>姓名</th><th>手机号</th><th>渠道</th><th>商品</th><th>归属人</th><th>创建时间</th></tr></thead>
+      <tbody id="dd-group">
+        <tr><td>李女士</td><td>138****2610</td><td>视频号</td><td>9.9 引流课</td><td>阮荣均</td><td>2026-03-29 09:12</td></tr>
+        <tr><td>李女士</td><td>138****2610</td><td>OpenAPI</td><td>直播票</td><td>赵老师</td><td>2026-03-28 18:22</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="proto-drawer-ft">
+    <button class="btn" data-close>关闭</button>
+    <a class="btn btn-primary" href="rules-config.html">去重规则</a>
+  </div>
+</div>
+
+<style>
+.link-btn {
+  background: none; border: none; color: var(--color-primary);
+  cursor: pointer; padding: 0; font-size: 13px;
+}
+.link-btn:hover { color: var(--color-primary-hover); text-decoration: underline; }
+.row-actions a.danger { color: var(--color-danger); }
+</style>
+
+<script src="../assets/js/proto.js"></script>
+<script src="../assets/js/admin-shell.js"></script>
+<script>
+(function () {
+  // ===== Mask / drawer / modal =====
+  var mask = document.getElementById("mask");
+  function closeAll() {
+    mask.classList.remove("open");
+    document.querySelectorAll(".proto-modal, .proto-drawer").forEach(function (n) { n.classList.remove("open"); });
+  }
+  function open(node) { mask.classList.add("open"); node.classList.add("open"); }
+  mask.addEventListener("click", closeAll);
+  document.querySelectorAll("[data-close]").forEach(function (n) { n.addEventListener("click", closeAll); });
+
+  // ===== Unmask =====
+  document.querySelectorAll('[data-act="unmask-name"], [data-act="unmask-phone"]').forEach(function (b) {
+    b.addEventListener("click", function () {
+      var tr = b.closest("tr");
+      var nameIdx = Array.prototype.indexOf.call(tr.children, b.closest("td"));
+      var samples = [
+        { name: "李女士", phone: "13800002610" },
+        { name: "王先生", phone: "13900002211" },
+        { name: "张妈妈", phone: "15900008832" },
+      ];
+      var idx = Array.prototype.indexOf.call(tr.parentElement.children, tr);
+      var s = samples[idx % samples.length];
+      b.textContent = nameIdx === 2 ? s.name : s.phone;
+    });
+  });
+
+  // ===== Batch =====
+  var btnBatchMerge = document.getElementById("btn-batch-merge");
+  var btnBatchSkip = document.getElementById("btn-batch-skip");
+  var checkAll = document.getElementById("check-all");
+  function syncBatch() {
+    var n = document.querySelectorAll(".row-check:checked").length;
+    document.getElementById("dup-count").textContent = n;
+    btnBatchMerge.disabled = n === 0;
+    btnBatchSkip.disabled = n === 0;
+  }
+  checkAll.addEventListener("change", function () {
+    document.querySelectorAll(".row-check").forEach(function (c) { c.checked = checkAll.checked; });
+    syncBatch();
+  });
+  document.querySelectorAll(".row-check").forEach(function (c) { c.addEventListener("change", syncBatch); });
+  btnBatchMerge.addEventListener("click", function () { open(document.getElementById("drawer-merge")); });
+  btnBatchSkip.addEventListener("click", function () { Proto.toast("已忽略选中线索（原型）"); });
+
+  document.getElementById("merge-submit").addEventListener("click", function () {
+    closeAll(); Proto.toast("已合并（原型）");
+    document.querySelectorAll(".row-check:checked").forEach(function (c) { c.closest("tr").remove(); });
+    checkAll.checked = false; syncBatch();
+  });
+
+  // ===== Row actions =====
+  function rowRule(tr) {
+    var tds = tr.querySelectorAll("td");
+    return {
+      name: "李女士", // 占位
+      rule: tds[12] ? tds[12].textContent.trim() : "",
+    };
+  }
+  document.querySelectorAll("#dup-tbody tr").forEach(function (tr) {
+    tr.querySelectorAll("[data-row-act]").forEach(function (a) {
+      a.addEventListener("click", function (e) {
+        e.preventDefault();
+        var act = a.getAttribute("data-row-act");
+        if (act === "merge") {
+          open(document.getElementById("drawer-merge"));
+        } else if (act === "skip") {
+          if (confirm("确认忽略该重复线索？")) {
+            tr.remove();
+            Proto.toast("已忽略（原型）");
+          }
+        } else if (act === "split") {
+          document.getElementById("sp-name").textContent = rowRule(tr).name || "—";
+          open(document.getElementById("drawer-split"));
+        } else if (act === "detail") {
+          document.getElementById("dd-title").textContent = "重复线索详情";
+          document.getElementById("dd-rule").textContent = rowRule(tr).rule || "—";
+          open(document.getElementById("drawer-detail"));
+        }
+      });
+    });
+  });
+
+  document.getElementById("sp-submit").addEventListener("click", function () {
+    closeAll(); Proto.toast("已拆分（原型）");
+  });
+
+  // ===== Header buttons =====
+  document.getElementById("btn-export").addEventListener("click", function () { Proto.toast("已导出（原型）"); });
+  document.getElementById("btn-merge").addEventListener("click", function () { open(document.getElementById("drawer-merge")); });
+  document.getElementById("btn-skip").addEventListener("click", function () {
+    if (document.querySelectorAll(".row-check:checked").length === 0) {
+      Proto.toast("请先勾选线索");
+      return;
+    }
+    Proto.toast("已忽略选中（原型）");
+  });
+  document.getElementById("btn-rule").addEventListener("click", function () { location.href = "rules-config.html#dedup"; });
+  document.getElementById("btn-query").addEventListener("click", function () { Proto.toast("已查询（原型）"); });
+  document.getElementById("btn-reset").addEventListener("click", function () {
+    ["f-name","f-phone","f-region","f-daren","f-batch","f-rule"].forEach(function (id) { document.getElementById(id).value = ""; });
+    document.getElementById("f-source").value = "";
+    Proto.toast("已重置");
+  });
+  document.getElementById("btn-expand").addEventListener("click", function () { Proto.toast("展开更多筛选（原型）"); });
+})();
+</script>
+</body>
+</html>

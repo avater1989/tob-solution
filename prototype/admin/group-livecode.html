@@ -1,0 +1,352 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>群活码管理 · 艺博 To-B</title>
+<link rel="stylesheet" href="../assets/css/proto.css" />
+</head>
+<body class="admin-body" data-module="scrm" data-nav="group-code" data-title="群活码管理" data-crumb="SCRM / 营销管理 / 群活码管理">
+<div id="header-actions">
+  <button class="btn" id="btn-export">导出</button>
+  <button class="btn btn-primary" id="btn-create">新建群活码</button>
+</div>
+<div id="page-content" style="display:none">
+
+  <!-- 筛选 -->
+  <div class="card" style="margin-bottom:8px"><div class="card-bd">
+    <div class="form-grid" style="grid-template-columns:repeat(4,minmax(0,1fr));gap:8px 12px">
+      <input id="f-name" placeholder="请输入" />
+      <select id="f-updater">
+        <option value="">请选择</option>
+        <option>陈奕均</option>
+        <option>阮荣均</option>
+        <option>李大</option>
+      </select>
+      <input id="f-time1" type="datetime-local" />
+      <input id="f-time2" type="datetime-local" />
+    </div>
+    <div class="toolbar" style="margin-top:8px">
+      <button class="btn btn-primary" id="btn-query">查询</button>
+      <button class="btn" id="btn-reset">重置</button>
+      <div class="spacer"></div>
+      <button class="btn" id="btn-col">列展示</button>
+    </div>
+  </div></div>
+
+  <!-- 表格 -->
+  <div class="card"><div class="card-bd" style="padding:0">
+    <table class="data">
+      <thead>
+        <tr>
+          <th style="width:36px"><input type="checkbox" id="check-all" /></th>
+          <th>群活码名称</th>
+          <th>入群客户数</th><th>退群客户数</th><th>净增客户数</th>
+          <th>更新人</th><th>更新时间</th>
+          <th style="width:160px">操作</th>
+        </tr>
+      </thead>
+      <tbody id="gc-tbody">
+        <tr>
+          <td><input type="checkbox" class="row-check" /></td>
+          <td>春启03·家长交流群</td>
+          <td>186</td><td>12</td><td>174</td>
+          <td>阮荣均</td><td>2026-03-29 10:22</td>
+          <td class="row-actions">
+            <a href="#" data-row-act="detail">详情</a>
+            <a href="#" data-row-act="download">下载活码</a>
+            <a href="#" data-row-act="more">⋯</a>
+          </td>
+        </tr>
+        <tr>
+          <td><input type="checkbox" class="row-check" /></td>
+          <td>视频号·转化群A</td>
+          <td>92</td><td>4</td><td>88</td>
+          <td>赵老师</td><td>2026-03-28 18:30</td>
+          <td class="row-actions">
+            <a href="#" data-row-act="detail">详情</a>
+            <a href="#" data-row-act="download">下载活码</a>
+            <a href="#" data-row-act="more">⋯</a>
+          </td>
+        </tr>
+        <tr>
+          <td><input type="checkbox" class="row-check" /></td>
+          <td>复购·高意向群</td>
+          <td>54</td><td>2</td><td>52</td>
+          <td>王助教</td><td>2026-03-25 14:30</td>
+          <td class="row-actions">
+            <a href="#" data-row-act="detail">详情</a>
+            <a href="#" data-row-act="download">下载活码</a>
+            <a href="#" data-row-act="more">⋯</a>
+          </td>
+        </tr>
+        <tr>
+          <td><input type="checkbox" class="row-check" /></td>
+          <td>卓培·服务群</td>
+          <td>118</td><td>8</td><td>110</td>
+          <td>刘助教</td><td>2026-03-20 09:18</td>
+          <td class="row-actions">
+            <a href="#" data-row-act="detail">详情</a>
+            <a href="#" data-row-act="download">下载活码</a>
+            <a href="#" data-row-act="more">⋯</a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div></div>
+
+  <!-- 分页 -->
+  <div class="toolbar" style="margin-top:8px">
+    <span class="muted">已选 <b id="gc-count">0</b> 条</span>
+    <div class="spacer"></div>
+    <button class="btn" id="btn-batch-download" disabled>下载活码</button>
+    <span class="muted" style="margin-left:16px">共 <b>4</b> 条</span>
+    <button class="btn btn-sm" disabled>上一页</button>
+    <button class="btn btn-sm" disabled>下一页</button>
+    <span class="muted" style="margin-left:8px">第</span>
+    <input id="pg-input" type="number" min="1" value="1" style="width:60px" />
+    <span class="muted">页</span>
+    <select id="pg-size" style="margin-left:8px">
+      <option>10条/页</option><option selected>20条/页</option>
+      <option>30条/页</option><option>50条/页</option>
+    </select>
+  </div>
+</div>
+
+<!-- ============ 抽屉 / 弹窗 ============ -->
+<div class="proto-mask" id="mask"></div>
+
+<!-- 新建群活码弹窗 -->
+<div class="proto-modal" id="modal-create" style="width:600px">
+  <div class="proto-modal-hd">
+    <h3 style="font-size:16px;font-weight:600">新建群活码</h3>
+    <button class="btn btn-sm btn-ghost" data-close>×</button>
+  </div>
+  <div class="proto-modal-bd">
+    <div class="form-grid">
+      <div class="field"><label>群活码名称 *</label><input id="cg-name" placeholder="如：春启04·家长交流群" /></div>
+      <div class="field"><label>群分组</label>
+        <select>
+          <option>春启系列</option>
+          <option>视频号系列</option>
+          <option>复购系列</option>
+          <option>卓培系列</option>
+        </select>
+      </div>
+      <div class="field"><label>使用上限</label><input type="number" value="200" /></div>
+      <div class="field"><label>到期时间</label><input type="datetime-local" /></div>
+      <div class="field"><label>自动打标签</label>
+        <select><option>不打标</option><option>视频号</option><option>直播</option></select>
+      </div>
+      <div class="field"><label>关联拉群模板</label>
+        <select><option>默认模板</option><option>不关联</option></select>
+      </div>
+      <div class="field" style="grid-column:1/-1"><label>说明</label>
+        <textarea rows="2" style="width:100%;padding:8px;border:1px solid var(--color-border);border-radius:6px" placeholder="选填"></textarea>
+      </div>
+    </div>
+  </div>
+  <div class="proto-modal-ft">
+    <button class="btn" data-close>取消</button>
+    <button class="btn btn-primary" id="cg-submit">创建活码</button>
+  </div>
+</div>
+
+<!-- 详情抽屉 -->
+<div class="proto-drawer" id="drawer-detail">
+  <div class="proto-drawer-hd">
+    <h3 id="gd-title">群活码详情</h3>
+    <button class="btn btn-sm btn-ghost" data-close>×</button>
+  </div>
+  <div class="proto-drawer-bd">
+    <h4 style="margin-bottom:8px">基础信息</h4>
+    <div class="form-grid" style="grid-template-columns:1fr 1fr">
+      <div class="field"><label>群活码名称</label><div id="gd-name">—</div></div>
+      <div class="field"><label>群分组</label><div id="gd-group">—</div></div>
+      <div class="field"><label>使用上限</label><div id="gd-limit">—</div></div>
+      <div class="field"><label>到期时间</label><div id="gd-expire">—</div></div>
+      <div class="field"><label>更新人</label><div id="gd-updater">—</div></div>
+      <div class="field"><label>更新时间</label><div id="gd-updated">—</div></div>
+    </div>
+    <h4 style="margin:16px 0 8px">数据</h4>
+    <div class="grid-4" style="margin:0">
+      <div class="stat"><div class="label">入群客户</div><div class="value" id="gd-join">—</div></div>
+      <div class="stat"><div class="label">退群客户</div><div class="value" id="gd-leave">—</div></div>
+      <div class="stat"><div class="label">净增客户</div><div class="value" id="gd-net">—</div></div>
+      <div class="stat"><div class="label">使用率</div><div class="value" id="gd-rate">—</div></div>
+    </div>
+    <h4 style="margin:16px 0 8px">活码</h4>
+    <div class="link-box">
+      <input id="gd-url" readonly value="https://work.weixin.qq.com/g/abc123def" />
+      <button class="btn" id="gd-copy">复制</button>
+    </div>
+    <div class="qr-mock" style="margin-top:12px">
+      <div class="qr-block"></div>
+      <button class="btn">下载海报</button>
+    </div>
+  </div>
+  <div class="proto-drawer-ft">
+    <button class="btn" data-close>关闭</button>
+    <a class="btn btn-primary" href="#" id="gd-stats">数据明细</a>
+  </div>
+</div>
+
+<!-- 列展示抽屉 -->
+<div class="proto-drawer" id="drawer-col" style="width:340px">
+  <div class="proto-drawer-hd">
+    <h3>列展示</h3>
+    <button class="btn btn-sm btn-ghost" data-close>×</button>
+  </div>
+  <div class="proto-drawer-bd">
+    <div id="col-list">
+      <label><input type="checkbox" checked> 群活码名称</label>
+      <label><input type="checkbox" checked> 入群客户数</label>
+      <label><input type="checkbox" checked> 退群客户数</label>
+      <label><input type="checkbox" checked> 净增客户数</label>
+      <label><input type="checkbox" checked> 更新人</label>
+      <label><input type="checkbox" checked> 更新时间</label>
+    </div>
+  </div>
+  <div class="proto-drawer-ft">
+    <button class="btn" data-close>取消</button>
+    <button class="btn btn-primary" id="col-apply">应用</button>
+  </div>
+</div>
+
+<style>
+.link-box {
+  display: flex; gap: 8px;
+}
+.link-box input {
+  flex: 1; padding: 8px;
+  border: 1px solid var(--color-border); border-radius: 6px;
+  font-family: monospace; font-size: 12px; background: #f7f8fa;
+}
+.qr-mock {
+  padding: 20px; background: #f7f8fa; border-radius: 6px;
+  display: flex; flex-direction: column; align-items: center; gap: 12px;
+}
+.qr-block {
+  width: 120px; height: 120px;
+  background-image:
+    linear-gradient(45deg, #000 25%, transparent 25%),
+    linear-gradient(-45deg, #000 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, #000 75%),
+    linear-gradient(-45deg, transparent 75%, #000 75%);
+  background-size: 8px 8px;
+  background-position: 0 0, 0 4px, 4px -4px, -4px 0;
+  border: 1px solid var(--color-border);
+  background-color: #fff;
+}
+.row-actions a.danger { color: var(--color-danger); }
+.row-actions .row-more { color: var(--color-text-muted); font-weight: 600; }
+#col-list label {
+  display: flex; align-items: center; gap: 6px;
+  padding: 6px 0; font-size: 13px;
+}
+</style>
+
+<script src="../assets/js/proto.js"></script>
+<script src="../assets/js/admin-shell.js"></script>
+<script>
+(function () {
+  // ===== Mask / drawer / modal =====
+  var mask = document.getElementById("mask");
+  function closeAll() {
+    mask.classList.remove("open");
+    document.querySelectorAll(".proto-modal, .proto-drawer").forEach(function (n) { n.classList.remove("open"); });
+  }
+  function open(node) { mask.classList.add("open"); node.classList.add("open"); }
+  mask.addEventListener("click", closeAll);
+  document.querySelectorAll("[data-close]").forEach(function (n) { n.addEventListener("click", closeAll); });
+
+  // ===== Batch =====
+  var btnBatchDownload = document.getElementById("btn-batch-download");
+  var checkAll = document.getElementById("check-all");
+  function syncBatch() {
+    var n = document.querySelectorAll(".row-check:checked").length;
+    document.getElementById("gc-count").textContent = n;
+    btnBatchDownload.disabled = n === 0;
+  }
+  checkAll.addEventListener("change", function () {
+    document.querySelectorAll(".row-check").forEach(function (c) { c.checked = checkAll.checked; });
+    syncBatch();
+  });
+  document.querySelectorAll(".row-check").forEach(function (c) { c.addEventListener("change", syncBatch); });
+  btnBatchDownload.addEventListener("click", function () { Proto.toast("已批量下载活码（原型）"); });
+
+  // ===== Row data =====
+  function rowData(tr) {
+    var tds = tr.querySelectorAll("td");
+    return {
+      name: tds[1] ? tds[1].textContent.trim() : "",
+      join: tds[2] ? tds[2].textContent.trim() : "0",
+      leave: tds[3] ? tds[3].textContent.trim() : "0",
+      net: tds[4] ? tds[4].textContent.trim() : "0",
+      updater: tds[5] ? tds[5].textContent.trim() : "",
+      updated: tds[6] ? tds[6].textContent.trim() : "",
+    };
+  }
+
+  // ===== Detail =====
+  function fillDetail(d) {
+    document.getElementById("gd-title").textContent = "群活码详情 · " + d.name;
+    document.getElementById("gd-name").textContent = d.name;
+    document.getElementById("gd-group").textContent = "春启系列";
+    document.getElementById("gd-limit").textContent = "200";
+    document.getElementById("gd-expire").textContent = "2026-12-31";
+    document.getElementById("gd-updater").textContent = d.updater;
+    document.getElementById("gd-updated").textContent = d.updated;
+    document.getElementById("gd-join").textContent = d.join;
+    document.getElementById("gd-leave").textContent = d.leave;
+    document.getElementById("gd-net").textContent = d.net;
+    var rate = parseInt(d.join) > 0 ? Math.round(parseInt(d.net) / parseInt(d.join) * 100) : 0;
+    document.getElementById("gd-rate").textContent = rate + "%";
+    document.getElementById("gd-url").value = "https://work.weixin.qq.com/g/abc123def";
+    open(document.getElementById("drawer-detail"));
+  }
+
+  // ===== Row actions =====
+  document.querySelectorAll("#gc-tbody tr").forEach(function (tr) {
+    tr.querySelectorAll("[data-row-act]").forEach(function (a) {
+      a.addEventListener("click", function (e) {
+        e.preventDefault();
+        var act = a.getAttribute("data-row-act");
+        var d = rowData(tr);
+        if (act === "detail") fillDetail(d);
+        else if (act === "download") Proto.toast("已下载活码（原型）");
+        else if (act === "more") Proto.toast("更多操作（原型）");
+      });
+    });
+  });
+
+  // ===== Create =====
+  document.getElementById("btn-create").addEventListener("click", function () { open(document.getElementById("modal-create")); });
+  document.getElementById("cg-submit").addEventListener("click", function () {
+    var n = document.getElementById("cg-name").value.trim();
+    if (!n) { Proto.toast("请输入群活码名称"); return; }
+    closeAll(); Proto.toast("群活码已创建（原型）");
+  });
+
+  // ===== Detail buttons =====
+  document.getElementById("gd-copy").addEventListener("click", function () { Proto.toast("已复制活码链接（原型）"); });
+  document.getElementById("gd-stats").addEventListener("click", function () {
+    closeAll(); Proto.toast("打开数据明细（原型）");
+  });
+
+  // ===== Other buttons =====
+  document.getElementById("btn-export").addEventListener("click", function () { Proto.toast("已导出（原型）"); });
+  document.getElementById("btn-query").addEventListener("click", function () { Proto.toast("已查询（原型）"); });
+  document.getElementById("btn-reset").addEventListener("click", function () {
+    document.getElementById("f-name").value = "";
+    document.getElementById("f-updater").value = "";
+    document.getElementById("f-time1").value = "";
+    document.getElementById("f-time2").value = "";
+    Proto.toast("已重置");
+  });
+  document.getElementById("btn-col").addEventListener("click", function () { open(document.getElementById("drawer-col")); });
+  document.getElementById("col-apply").addEventListener("click", function () { closeAll(); Proto.toast("列展示已应用（原型）"); });
+})();
+</script>
+</body>
+</html>

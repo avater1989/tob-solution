@@ -1,0 +1,602 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>预约与推送 · 艺博 To-B</title>
+<link rel="stylesheet" href="../assets/css/proto.css" />
+</head>
+<body class="admin-body" data-module="live" data-nav="live-booking" data-title="预约与推送" data-crumb="直播 / 直播管理 / 预约与推送">
+<div id="header-actions">
+  <button class="btn" id="btn-export">导出</button>
+  <button class="btn btn-primary" id="btn-push">+ 新建推送</button>
+</div>
+<div id="page-content" style="display:none">
+
+  <!-- 4 个统计卡片 -->
+  <div class="stat-cards" style="margin-bottom:8px">
+    <div class="stat-card">
+      <div class="stat-label">累计预约</div>
+      <div class="stat-value">1,287</div>
+      <div class="stat-sub">较上月 <span class="up">+18%</span></div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">预约转化观看率</div>
+      <div class="stat-value" style="color:#00b42a">62.5%</div>
+      <div class="stat-sub">预约→实际观看</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">推送送达率</div>
+      <div class="stat-value">96.8%</div>
+      <div class="stat-sub">短信 + 站内信 + 企微</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">推送转化</div>
+      <div class="stat-value" style="color:#fa8c16">¥48,260</div>
+      <div class="stat-sub">推送带来的 GMV</div>
+    </div>
+  </div>
+
+  <!-- Tabs -->
+  <div class="tabs" id="bk-tabs">
+    <a class="active" href="#bookings" data-tab="bookings">预约名单</a>
+    <a href="#push-records" data-tab="push-records">推送记录</a>
+    <a href="#subscribers" data-tab="subscribers">开播提醒订阅</a>
+  </div>
+
+  <!-- 预约名单面板 -->
+  <div class="bk-pane active" id="pane-bookings">
+
+    <!-- 筛选 + 直播选择 -->
+    <div class="card" style="margin-bottom:8px"><div class="card-bd">
+      <div class="form-grid" style="grid-template-columns:repeat(5,minmax(0,1fr));gap:8px 12px">
+        <select id="f-live">
+          <option value="">全部直播</option>
+          <option>春启 03 期家长公开课</option>
+          <option>9.9 引流试听课</option>
+          <option>明日直播·春启04 招生</option>
+          <option>家长答疑会·音频直播</option>
+        </select>
+        <select id="f-status">
+          <option value="">全部状态</option>
+          <option>已预约</option>
+          <option>已观看</option>
+          <option>未观看</option>
+          <option>已取消</option>
+        </select>
+        <select id="f-channel">
+          <option value="">全部渠道</option>
+          <option>课程详情页</option>
+          <option>直播预告页</option>
+          <option>课程详情页弹窗</option>
+          <option>老师主页</option>
+        </select>
+        <input id="f-keyword" placeholder="姓名 / 手机号" />
+        <select id="f-time">
+          <option value="">全部时间</option>
+          <option>今日</option>
+          <option>近 7 天</option>
+          <option>近 30 天</option>
+        </select>
+      </div>
+      <div class="toolbar" style="margin-top:8px">
+        <button class="btn btn-primary" id="btn-bk-query">查询</button>
+        <button class="btn" id="btn-bk-reset">重置</button>
+        <div class="spacer"></div>
+        <span class="muted" style="font-size:12px">提示：预约用户将在开播前 1 小时收到短信 + 站内信提醒</span>
+      </div>
+    </div></div>
+
+    <!-- 预约名单表格 -->
+    <div class="card"><div class="card-bd" style="padding:0">
+      <table class="data">
+        <thead>
+          <tr>
+            <th style="width:36px"><input type="checkbox" id="bk-check-all" /></th>
+            <th>用户</th><th>手机号</th><th>预约直播</th>
+            <th>预约渠道</th><th>预约时间</th>
+            <th>状态</th><th>观看时长</th><th>是否下单</th>
+            <th style="width:160px">操作</th>
+          </tr>
+        </thead>
+        <tbody id="bk-tbody">
+          <tr data-status="watched">
+            <td><input type="checkbox" class="row-check" /></td>
+            <td><div class="user-cell"><div class="user-avatar" style="background:#165dff">张</div><b>张妈妈</b></div></td>
+            <td>138****1234</td>
+            <td><a href="live-edit.html" class="link-blue">春启 03 期家长公开课</a></td>
+            <td>课程详情页</td>
+            <td>2026-09-03 10:24</td>
+            <td><span class="audit-badge audit-approved">已观看 · 48 分钟</span></td>
+            <td>48 分钟</td>
+            <td><span class="audit-badge audit-approved">¥298 已下单</span></td>
+            <td class="row-actions">
+              <a href="#" data-bk-act="msg">私信</a>
+              <a href="#" data-bk-act="tag">打标签</a>
+              <a href="#" data-bk-act="detail">详情</a>
+            </td>
+          </tr>
+          <tr data-status="booked">
+            <td><input type="checkbox" class="row-check" /></td>
+            <td><div class="user-cell"><div class="user-avatar" style="background:#00b42a">李</div><b>李爸爸</b></div></td>
+            <td>139****5678</td>
+            <td><a href="live-edit.html" class="link-blue">春启 03 期家长公开课</a></td>
+            <td>直播预告页</td>
+            <td>2026-09-03 14:08</td>
+            <td><span class="audit-badge audit-pending">已预约</span></td>
+            <td>—</td>
+            <td>—</td>
+            <td class="row-actions">
+              <a href="#" data-bk-act="msg">私信</a>
+              <a href="#" data-bk-act="cancel">取消预约</a>
+            </td>
+          </tr>
+          <tr data-status="notwatched">
+            <td><input type="checkbox" class="row-check" /></td>
+            <td><div class="user-cell"><div class="user-avatar" style="background:#722ed1">王</div><b>王同学妈</b></div></td>
+            <td>136****9012</td>
+            <td><a href="live-edit.html" class="link-blue">9.9 引流试听课</a></td>
+            <td>课程详情页弹窗</td>
+            <td>2026-09-02 18:42</td>
+            <td><span class="audit-badge audit-rejected">未观看</span></td>
+            <td>0 分钟</td>
+            <td>—</td>
+            <td class="row-actions">
+              <a href="#" data-bk-act="msg">私信</a>
+              <a href="#" data-bk-act="repush">重新推送</a>
+            </td>
+          </tr>
+          <tr data-status="watched">
+            <td><input type="checkbox" class="row-check" /></td>
+            <td><div class="user-cell"><div class="user-avatar" style="background:#fa8c16">周</div><b>周妈妈</b></div></td>
+            <td>137****3456</td>
+            <td><a href="live-edit.html" class="link-blue">春启 03 期家长公开课</a></td>
+            <td>老师主页</td>
+            <td>2026-09-01 09:15</td>
+            <td><span class="audit-badge audit-approved">已观看 · 60 分钟</span></td>
+            <td>60 分钟</td>
+            <td><span class="audit-badge audit-approved">¥1,288 已下单</span></td>
+            <td class="row-actions">
+              <a href="#" data-bk-act="msg">私信</a>
+              <a href="#" data-bk-act="tag">打标签</a>
+              <a href="#" data-bk-act="detail">详情</a>
+            </td>
+          </tr>
+          <tr data-status="cancelled">
+            <td><input type="checkbox" class="row-check" /></td>
+            <td><div class="user-cell"><div class="user-avatar" style="background:#f53f3f">陈</div><b>陈妈妈</b></div></td>
+            <td>135****7890</td>
+            <td><a href="live-edit.html" class="link-blue">9.9 引流试听课</a></td>
+            <td>课程详情页</td>
+            <td>2026-08-30 16:33</td>
+            <td><span class="audit-badge audit-cancelled">已取消</span></td>
+            <td>—</td>
+            <td>—</td>
+            <td class="row-actions">
+              <a href="#" data-bk-act="msg">私信</a>
+              <a href="#" data-bk-act="rebook">重新预约</a>
+            </td>
+          </tr>
+          <tr data-status="booked">
+            <td><input type="checkbox" class="row-check" /></td>
+            <td><div class="user-cell"><div class="user-avatar" style="background:#13c2c2">刘</div><b>刘爸爸</b></div></td>
+            <td>188****4321</td>
+            <td><a href="live-edit.html" class="link-blue">明日直播·春启04 招生</a></td>
+            <td>直播预告页</td>
+            <td>2026-09-04 08:20</td>
+            <td><span class="audit-badge audit-pending">已预约</span></td>
+            <td>—</td>
+            <td>—</td>
+            <td class="row-actions">
+              <a href="#" data-bk-act="msg">私信</a>
+              <a href="#" data-bk-act="cancel">取消预约</a>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div></div>
+
+    <div class="toolbar" style="margin-top:8px">
+      <span class="muted">共 <b>1,287</b> 条预约 · 已观看 805 · 未观看 482</span>
+      <div class="spacer"></div>
+      <select><option>10条/页</option><option>20条/页</option></select>
+      <button class="btn btn-sm" disabled>‹</button>
+      <button class="btn btn-sm btn-primary">1</button>
+      <button class="btn btn-sm">2</button>
+      <button class="btn btn-sm">3</button>
+      <button class="btn btn-sm">›</button>
+    </div>
+  </div>
+
+  <!-- 推送记录面板 -->
+  <div class="bk-pane" id="pane-push-records">
+
+    <div class="card" style="margin-bottom:8px"><div class="card-bd">
+      <div class="form-grid" style="grid-template-columns:repeat(4,minmax(0,1fr));gap:8px 12px">
+        <select id="pr-live">
+          <option value="">全部直播</option>
+          <option>春启 03 期家长公开课</option>
+          <option>9.9 引流试听课</option>
+        </select>
+        <select id="pr-type">
+          <option value="">全部类型</option>
+          <option>开播前提醒</option>
+          <option>开播提醒</option>
+          <option>回放生成提醒</option>
+          <option>营销推送</option>
+        </select>
+        <select id="pr-channel">
+          <option value="">全部渠道</option>
+          <option>短信</option>
+          <option>站内信</option>
+          <option>企微</option>
+        </select>
+        <select id="pr-status">
+          <option value="">全部状态</option>
+          <option>已送达</option>
+          <option>已读</option>
+          <option>已点击</option>
+          <option>已转化</option>
+          <option>失败</option>
+        </select>
+      </div>
+      <div class="toolbar" style="margin-top:8px">
+        <button class="btn btn-primary">查询</button>
+        <button class="btn">重置</button>
+      </div>
+    </div></div>
+
+    <div class="card"><div class="card-bd" style="padding:0">
+      <table class="data">
+        <thead>
+          <tr>
+            <th>推送名称</th><th>类型</th><th>渠道</th>
+            <th>目标用户</th><th>推送时间</th>
+            <th>送达率</th><th>点击率</th>
+            <th>转化 GMV</th><th>状态</th>
+            <th style="width:140px">操作</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><b>春启 03 期·开播前 1 小时提醒</b></td>
+            <td><span class="pr-type pr-type-start">开播前提醒</span></td>
+            <td>短信 + 站内信</td>
+            <td>已预约 805 人</td>
+            <td>2026-03-29 19:00</td>
+            <td>96.8%</td>
+            <td>78.5%</td>
+            <td>¥32,180</td>
+            <td><span class="audit-badge audit-approved">已完成</span></td>
+            <td class="row-actions">
+              <a href="#">详情</a>
+              <a href="#">复制</a>
+            </td>
+          </tr>
+          <tr>
+            <td><b>9.9 引流试听课·开播提醒</b></td>
+            <td><span class="pr-type pr-type-onlive">开播提醒</span></td>
+            <td>企微 + 站内信</td>
+            <td>订阅用户 286 人</td>
+            <td>2026-03-30 19:30</td>
+            <td>98.2%</td>
+            <td>82.1%</td>
+            <td>¥14,080</td>
+            <td><span class="audit-badge audit-approved">已完成</span></td>
+            <td class="row-actions">
+              <a href="#">详情</a>
+              <a href="#">复制</a>
+            </td>
+          </tr>
+          <tr>
+            <td><b>春启 03 期·回放生成提醒</b></td>
+            <td><span class="pr-type pr-type-replay">回放提醒</span></td>
+            <td>站内信</td>
+            <td>未观看 482 人</td>
+            <td>2026-03-30 22:30</td>
+            <td>100%</td>
+            <td>62.3%</td>
+            <td>¥2,000</td>
+            <td><span class="audit-badge audit-approved">已完成</span></td>
+            <td class="row-actions">
+              <a href="#">详情</a>
+              <a href="#">复制</a>
+            </td>
+          </tr>
+          <tr>
+            <td><b>明日直播·开播前 1 小时提醒</b></td>
+            <td><span class="pr-type pr-type-start">开播前提醒</span></td>
+            <td>短信 + 站内信</td>
+            <td>已预约 200 人</td>
+            <td>—</td>
+            <td>—</td>
+            <td>—</td>
+            <td>—</td>
+            <td><span class="audit-badge audit-pending">待发送</span></td>
+            <td class="row-actions">
+              <a href="#">编辑</a>
+              <a href="#">取消</a>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div></div>
+  </div>
+
+  <!-- 订阅开播提醒 -->
+  <div class="bk-pane" id="pane-subscribers">
+    <div class="card" style="margin-bottom:8px"><div class="card-bd">
+      <p class="muted" style="margin:0 0 12px">
+        用户在 C 端点击「开播提醒我」后会自动加入此列表。当主播开启直播前 30 分钟会自动推送提醒通知。
+      </p>
+      <div class="form-grid" style="grid-template-columns:repeat(3,minmax(0,1fr));gap:8px 12px">
+        <input placeholder="搜索用户" />
+        <select><option>全部时间</option><option>近 7 天</option><option>近 30 天</option></select>
+        <div></div>
+      </div>
+    </div></div>
+
+    <div class="card"><div class="card-bd" style="padding:0">
+      <table class="data">
+        <thead>
+          <tr><th>用户</th><th>订阅时间</th><th>订阅方式</th><th>已推送次数</th><th>最近推送</th><th style="width:140px">操作</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><div class="user-cell"><div class="user-avatar" style="background:#165dff">张</div><b>张妈妈</b></div></td>
+            <td>2026-08-25 14:32</td>
+            <td>企微 + 站内信</td>
+            <td>3 次</td>
+            <td>2026-09-01 09:00</td>
+            <td class="row-actions"><a href="#">私信</a> <a href="#">取消订阅</a></td>
+          </tr>
+          <tr>
+            <td><div class="user-cell"><div class="user-avatar" style="background:#00b42a">李</div><b>李爸爸</b></div></td>
+            <td>2026-08-28 20:15</td>
+            <td>短信 + 站内信</td>
+            <td>1 次</td>
+            <td>2026-09-03 19:00</td>
+            <td class="row-actions"><a href="#">私信</a> <a href="#">取消订阅</a></td>
+          </tr>
+          <tr>
+            <td><div class="user-cell"><div class="user-avatar" style="background:#722ed1">王</div><b>王同学妈</b></div></td>
+            <td>2026-09-01 11:20</td>
+            <td>站内信</td>
+            <td>2 次</td>
+            <td>2026-09-02 18:30</td>
+            <td class="row-actions"><a href="#">私信</a> <a href="#">取消订阅</a></td>
+          </tr>
+        </tbody>
+      </table>
+    </div></div>
+  </div>
+
+</div>
+
+<!-- ============ 弹窗 ============ -->
+<div class="proto-mask" id="mask"></div>
+
+<!-- 新建推送弹窗 -->
+<div class="proto-modal" id="modal-push">
+  <div class="proto-modal-hd">
+    <h3>新建推送</h3>
+    <button class="btn btn-sm btn-ghost" data-close>×</button>
+  </div>
+  <div class="proto-modal-bd">
+    <div class="form-grid" style="grid-template-columns:1fr 1fr;gap:12px">
+      <div class="field" style="grid-column:1/-1"><label>推送名称</label><input placeholder="如：春启 03 期·开播前 1 小时提醒" /></div>
+      <div class="field"><label>推送类型</label>
+        <select><option>开播前提醒</option><option>开播提醒</option><option>回放生成提醒</option><option>营销推送</option></select>
+      </div>
+      <div class="field"><label>关联直播</label>
+        <select><option>春启 03 期家长公开课</option><option>明日直播·春启04 招生</option></select>
+      </div>
+      <div class="field"><label>推送时间</label><input type="datetime-local" /></div>
+      <div class="field"><label>目标用户</label>
+        <select><option>已预约用户</option><option>订阅开播提醒用户</option><option>全部关注用户</option><option>自定义标签</option></select>
+      </div>
+      <div class="field" style="grid-column:1/-1"><label>推送渠道</label>
+        <div style="display:flex;gap:16px;padding:6px 0">
+          <label><input type="checkbox" checked /> 站内信</label>
+          <label><input type="checkbox" checked /> 短信</label>
+          <label><input type="checkbox" /> 企微</label>
+          <label><input type="checkbox" /> 公众号模板消息</label>
+        </div>
+      </div>
+      <div class="field" style="grid-column:1/-1"><label>推送文案</label>
+        <textarea rows="4" placeholder="支持变量：{昵称} {直播名称} {开播时间}"></textarea>
+      </div>
+    </div>
+  </div>
+  <div class="proto-modal-ft">
+    <button class="btn" data-close>取消</button>
+    <button class="btn">保存为草稿</button>
+    <button class="btn btn-primary">✓ 立即推送</button>
+  </div>
+</div>
+
+<!-- 用户详情抽屉 -->
+<div class="proto-drawer" id="drawer-bk-detail">
+  <div class="proto-drawer-hd">
+    <h3 id="bk-detail-title">用户预约详情</h3>
+    <button class="btn btn-sm btn-ghost" data-close>×</button>
+  </div>
+  <div class="proto-drawer-bd">
+    <div class="form-grid readonly" style="grid-template-columns:1fr 1fr">
+      <div class="field"><label>用户</label><div id="bk-d-name">—</div></div>
+      <div class="field"><label>手机号</label><div id="bk-d-phone">—</div></div>
+      <div class="field" style="grid-column:1/-1"><label>预约直播</label><div id="bk-d-live">—</div></div>
+      <div class="field"><label>预约渠道</label><div id="bk-d-channel">—</div></div>
+      <div class="field"><label>预约时间</label><div id="bk-d-time">—</div></div>
+      <div class="field"><label>状态</label><div id="bk-d-status">—</div></div>
+      <div class="field"><label>观看时长</label><div id="bk-d-duration">—</div></div>
+      <div class="field"><label>下单金额</label><div id="bk-d-amount">—</div></div>
+      <div class="field" style="grid-column:1/-1"><label>推送触达记录</label>
+        <div id="bk-d-push" style="display:flex;flex-direction:column;gap:6px">
+          <div class="bk-push-item"><span>2026-09-04 19:00 · 开播前 1 小时提醒</span><span class="bk-push-ok">已送达</span></div>
+          <div class="bk-push-item"><span>2026-03-30 19:30 · 开播提醒</span><span class="bk-push-ok">已送达</span></div>
+          <div class="bk-push-item"><span>2026-03-30 22:30 · 回放生成</span><span class="bk-push-ok">已送达</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="proto-drawer-ft">
+    <button class="btn" data-close>关闭</button>
+    <button class="btn btn-primary">发私信</button>
+  </div>
+</div>
+
+<style>
+.user-cell { display: flex; align-items: center; gap: 8px; }
+.user-avatar {
+  width: 28px; height: 28px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  color: #fff; font-size: 12px; font-weight: 600;
+  flex-shrink: 0;
+}
+
+/* Tabs */
+.bk-pane { display: none; }
+.bk-pane.active { display: block; }
+
+/* 推送类型标签 */
+.pr-type {
+  display: inline-block; padding: 2px 8px; border-radius: 3px;
+  font-size: 12px; font-weight: 500;
+}
+.pr-type-start   { background: rgba(22,93,255,.15); color: #4d8aff; }
+.pr-type-onlive  { background: rgba(245,63,63,.15); color: #ff7875; }
+.pr-type-replay  { background: rgba(0,180,42,.15); color: #5fd068; }
+.pr-type-promo   { background: rgba(250,140,22,.15); color: #ffc857; }
+
+/* 详情抽屉内推送记录 */
+.bk-push-item {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 6px 10px; background: #f7f8fa; border-radius: 4px;
+  font-size: 12px;
+}
+.bk-push-ok {
+  color: #00b42a; font-size: 11px;
+  padding: 2px 6px; background: #e8f5e9; border-radius: 3px;
+}
+.bk-push-fail {
+  color: #f53f3f; font-size: 11px;
+  padding: 2px 6px; background: #fff1f0; border-radius: 3px;
+}
+</style>
+
+<script src="../assets/js/proto.js"></script>
+<script src="../assets/js/admin-shell.js"></script>
+<script>
+// 兜底：如果 1.5 秒后 admin-shell 未注入成功，给出明确提示
+setTimeout(function() {
+  if (document.documentElement.getAttribute('data-shell-ready') === '1') return;
+  if (document.querySelector('aside.sidebar')) return;
+  var err = document.createElement('div');
+  err.style.cssText = 'position:fixed;top:0;left:0;right:0;background:#fff1f0;color:#f53f3f;padding:14px 24px;border-bottom:2px solid #f53f3f;z-index:99999;font-size:14px;font-family:system-ui;line-height:1.6;';
+  err.innerHTML =
+    '<b style="font-size:15px;">⚠ admin-shell.js 未加载</b><br>' +
+    '<span style="color:#86909c;">页面是用 <code>file://</code> 协议打开的，Chrome/Edge 会因同源策略阻止加载 <code>../assets/js/admin-shell.js</code>。</span><br>' +
+    '<b>解决方法：</b>用本地服务打开 → 双击项目根目录的 <code>启动原型服务.bat</code>（一键启动 http://127.0.0.1:8765）<br>' +
+    '<button onclick="location.reload();" style="background:#165dff;color:#fff;border:none;padding:6px 16px;border-radius:4px;cursor:pointer;margin-top:6px;">如果已在 http:// 下访问，点击此处重试</button>';
+  document.body.appendChild(err);
+}, 1500);
+</script>
+<script>
+(function () {
+  // ===== Mask =====
+  var mask = document.getElementById("mask");
+  function closeAll() {
+    mask.classList.remove("open");
+    document.querySelectorAll(".proto-modal, .proto-drawer").forEach(function (n) { n.classList.remove("open"); });
+  }
+  function open(node) { mask.classList.add("open"); node.classList.add("open"); }
+  mask.addEventListener("click", closeAll);
+  document.querySelectorAll("[data-close]").forEach(function (n) { n.addEventListener("click", closeAll); });
+
+  // ===== Tabs =====
+  document.querySelectorAll("#bk-tabs a").forEach(function (a) {
+    a.addEventListener("click", function (e) {
+      e.preventDefault();
+      document.querySelectorAll("#bk-tabs a").forEach(function (x) { x.classList.remove("active"); });
+      a.classList.add("active");
+      var tab = a.getAttribute("data-tab");
+      document.querySelectorAll(".bk-pane").forEach(function (p) { p.classList.remove("active"); });
+      document.getElementById("pane-" + tab).classList.add("active");
+    });
+  });
+
+  // ===== Push modal =====
+  document.getElementById("btn-push").addEventListener("click", function () {
+    open(document.getElementById("modal-push"));
+  });
+
+  // ===== User detail drawer =====
+  var userDetails = {
+    "张妈妈":   { phone: "138****1234", live: "春启 03 期家长公开课", channel: "课程详情页",   time: "2026-09-03 10:24", status: "已观看 · 48 分钟", duration: "48 分钟", amount: "¥298" },
+    "李爸爸":   { phone: "139****5678", live: "春启 03 期家长公开课", channel: "直播预告页",   time: "2026-09-03 14:08", status: "已预约",           duration: "—",      amount: "—" },
+    "王同学妈": { phone: "136****9012", live: "9.9 引流试听课",       channel: "课程详情页弹窗", time: "2026-09-02 18:42", status: "未观看",           duration: "0 分钟",  amount: "—" },
+    "周妈妈":   { phone: "137****3456", live: "春启 03 期家长公开课", channel: "老师主页",       time: "2026-09-01 09:15", status: "已观看 · 60 分钟", duration: "60 分钟", amount: "¥1,288" },
+    "陈妈妈":   { phone: "135****7890", live: "9.9 引流试听课",       channel: "课程详情页",     time: "2026-08-30 16:33", status: "已取消",           duration: "—",      amount: "—" },
+    "刘爸爸":   { phone: "188****4321", live: "明日直播·春启04 招生", channel: "直播预告页",     time: "2026-09-04 08:20", status: "已预约",           duration: "—",      amount: "—" }
+  };
+
+  // ===== Row actions =====
+  document.querySelectorAll("#bk-tbody tr").forEach(function (tr) {
+    tr.querySelectorAll("[data-bk-act]").forEach(function (a) {
+      a.addEventListener("click", function (e) {
+        e.preventDefault();
+        var act = a.getAttribute("data-bk-act");
+        var name = tr.querySelectorAll("td")[1].querySelector("b").textContent.trim();
+        var d = userDetails[name];
+        if (!d) return;
+        if (act === "detail") {
+          document.getElementById("bk-detail-title").textContent = "预约详情 · " + name;
+          document.getElementById("bk-d-name").textContent    = name;
+          document.getElementById("bk-d-phone").textContent   = d.phone;
+          document.getElementById("bk-d-live").textContent    = d.live;
+          document.getElementById("bk-d-channel").textContent = d.channel;
+          document.getElementById("bk-d-time").textContent    = d.time;
+          document.getElementById("bk-d-status").textContent  = d.status;
+          document.getElementById("bk-d-duration").textContent = d.duration;
+          document.getElementById("bk-d-amount").textContent   = d.amount;
+          open(document.getElementById("drawer-bk-detail"));
+        } else if (act === "msg") {
+          Proto.toast("打开私信面板（原型）");
+        } else if (act === "cancel") {
+          if (confirm("确认取消「" + name + "」的预约？")) Proto.toast("已取消预约（原型）");
+        } else if (act === "rebook") {
+          Proto.toast("已重新发送预约链接（原型）");
+        } else if (act === "repush") {
+          Proto.toast("已重新推送提醒（原型）");
+        } else if (act === "tag") {
+          Proto.toast("打开打标签面板（原型）");
+        }
+      });
+    });
+  });
+
+  // ===== Header buttons =====
+  document.getElementById("btn-export").addEventListener("click", function () { Proto.toast("已导出预约名单（原型）"); });
+  document.getElementById("btn-bk-query").addEventListener("click", function () { Proto.toast("已查询（原型）"); });
+  document.getElementById("btn-bk-reset").addEventListener("click", function () {
+    ["f-live","f-status","f-channel","f-keyword","f-time"].forEach(function (id) {
+      var el = document.getElementById(id); if (el) el.value = "";
+    });
+    Proto.toast("已重置");
+  });
+})();
+</script>
+<script>
+// 兜底：如果 1 秒后 admin-shell 仍未注入成功，提示用户刷新
+setTimeout(function() {
+  if (document.documentElement.getAttribute('data-shell-ready') === '1') return;
+  if (document.querySelector('aside.sidebar')) return;
+  var err = document.createElement('div');
+  err.style.cssText = 'position:fixed;top:0;left:0;right:0;background:#fff1f0;color:#f53f3f;padding:12px 20px;border-bottom:1px solid #ffa39e;z-index:99999;font-size:13px;font-family:system-ui;';
+  err.innerHTML = '<b>⚠ 页面初始化失败</b>：可能是浏览器缓存了旧版本。请按 <kbd style="background:#fff;padding:2px 6px;border-radius:3px;border:1px solid #ffa39e;font-family:monospace;">Ctrl+Shift+R</kbd> 强制刷新，或 <button onclick="location.reload();" style="background:#165dff;color:#fff;border:none;padding:4px 12px;border-radius:4px;cursor:pointer;margin-left:8px;">点击重试</button>';
+  document.body.appendChild(err);
+}, 1500);
+</script>
+</body>
+</html>

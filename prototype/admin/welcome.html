@@ -1,0 +1,571 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>欢迎语管理 · 艺博 To-B</title>
+<link rel="stylesheet" href="../assets/css/proto.css" />
+</head>
+<body class="admin-body" data-module="scrm" data-nav="welcome" data-title="欢迎语管理" data-crumb="SCRM / 营销管理 / 欢迎语管理">
+<div id="header-actions">
+  <button class="btn btn-primary" id="btn-create">新建欢迎语</button>
+</div>
+<div id="page-content" style="display:none">
+
+  <div class="tabs" id="wm-tabs">
+    <a class="active" href="#friend" data-tab="friend">好友欢迎语</a>
+    <a href="#group" data-tab="group">入群欢迎语</a>
+  </div>
+
+  <div class="content-layout">
+    <!-- 左：分组树 -->
+    <div class="card tree-card">
+      <div class="card-hd">
+        <h2>欢迎语分组</h2>
+        <button class="btn btn-sm" id="btn-add-group">添加分组</button>
+      </div>
+      <div class="card-bd">
+        <input id="tree-search" placeholder="请输入分组名称" style="margin-bottom:8px" />
+        <ul class="tree" id="welcome-tree">
+          <li class="tree-node expanded" data-key="all">
+            <div class="tree-row tree-row--active">
+              <span class="tree-toggle">▾</span>
+              <span class="tree-icon">📁</span>
+              <span class="tree-label">全部分组</span>
+              <span class="tree-count">10</span>
+            </div>
+          </li>
+          <li class="tree-node" data-key="addwechat">
+            <div class="tree-row">
+              <span class="tree-toggle">▸</span>
+              <span class="tree-icon">📁</span>
+              <span class="tree-label">加微欢迎语</span>
+              <span class="tree-count">4</span>
+              <button class="tree-more">⋯</button>
+            </div>
+          </li>
+          <li class="tree-node" data-key="course">
+            <div class="tree-row">
+              <span class="tree-toggle">▸</span>
+              <span class="tree-icon">📁</span>
+              <span class="tree-label">课程欢迎语</span>
+              <span class="tree-count">3</span>
+              <button class="tree-more">⋯</button>
+            </div>
+          </li>
+          <li class="tree-node" data-key="activity">
+            <div class="tree-row">
+              <span class="tree-toggle">▸</span>
+              <span class="tree-icon">📁</span>
+              <span class="tree-label">活动欢迎语</span>
+              <span class="tree-count">2</span>
+              <button class="tree-more">⋯</button>
+            </div>
+          </li>
+          <li class="tree-node" data-key="general">
+            <div class="tree-row">
+              <span class="tree-toggle">▸</span>
+              <span class="tree-icon">📁</span>
+              <span class="tree-label">通用欢迎语</span>
+              <span class="tree-count">1</span>
+              <button class="tree-more">⋯</button>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- 右：欢迎语列表 -->
+    <div class="card">
+      <div class="card-bd">
+        <div class="form-grid" style="grid-template-columns:repeat(5,minmax(0,1fr));gap:8px 12px">
+          <input id="f-name" placeholder="请输入" />
+          <select id="f-member"><option value="">请选择</option><option>全员</option><option>指定成员</option></select>
+          <select id="f-status"><option value="">状态</option><option>启用</option><option>停用</option></select>
+          <select id="f-updater"><option value="">更新人</option><option>宋梨肉</option><option>木子</option><option>阮荣均</option></select>
+          <div class="time-range" style="display:flex;gap:6px">
+            <input id="f-time1" type="datetime-local" />
+            <input id="f-time2" type="datetime-local" />
+          </div>
+        </div>
+        <div class="toolbar" style="margin-top:8px">
+          <button class="btn btn-primary" id="btn-query">查询</button>
+          <button class="btn" id="btn-reset">重置</button>
+          <div class="spacer"></div>
+          <button class="btn" id="btn-col">列展示</button>
+        </div>
+
+        <!-- 表格 -->
+        <div class="card" style="margin-top:8px"><div class="card-bd" style="padding:0">
+          <table class="data">
+            <thead>
+              <tr>
+                <th style="width:36px"><input type="checkbox" id="check-all" /></th>
+                <th>欢迎语搜索</th>
+                <th>消息内容</th>
+                <th>使用成员</th>
+                <th>分组</th>
+                <th>开启状态</th>
+                <th>更新人</th>
+                <th>更新时间</th>
+                <th style="width:160px">操作</th>
+              </tr>
+            </thead>
+            <tbody id="wm-tbody">
+              <tr>
+                <td><input type="checkbox" class="row-check" /></td>
+                <td>激活2980服务老师</td>
+                <td><div class="msg-cell">【艺博教育科技集团有限公司】您已成功激活2980卓越家族-培养计划的权益，P3为您指定的服务老师为：{shortUrl}。 请立即添加您的服务老师，老师将为您提供定制化专属服务。拒收请回复R</div></td>
+                <td>全员</td>
+                <td>激活欢迎语</td>
+                <td><label class="switch on"><input type="checkbox" checked /><span></span></label></td>
+                <td>宋梨肉</td><td>2026-03-29 10:22</td>
+                <td class="row-actions">
+                  <a href="#" data-row-act="detail">详情</a>
+                  <a href="#" data-row-act="edit">编辑</a>
+                  <a href="#" data-row-act="copy">复制</a>
+                </td>
+              </tr>
+              <tr>
+                <td><input type="checkbox" class="row-check" /></td>
+                <td>青春期深度沟通</td>
+                <td><div class="msg-cell">【艺博教育科技集团有限公司】您已成功报名定制化品类-《青春期深度沟通实战营》，您的服务老师为{shortUrl}。 请确保您已经添加您的服务老师微信，老师将为您提供定制化专属服务。拒收请回复R</div></td>
+                <td>全员</td>
+                <td>课程欢迎语</td>
+                <td><label class="switch on"><input type="checkbox" checked /><span></span></label></td>
+                <td>木子</td><td>2026-03-28 18:30</td>
+                <td class="row-actions">
+                  <a href="#" data-row-act="detail">详情</a>
+                  <a href="#" data-row-act="edit">编辑</a>
+                  <a href="#" data-row-act="copy">复制</a>
+                </td>
+              </tr>
+              <tr>
+                <td><input type="checkbox" class="row-check" /></td>
+                <td>加微欢迎</td>
+                <td><div class="msg-cell">🎉hi{客户姓名}，我是{员工姓名}，我联系方式{员工手机号}，一起好好学习</div></td>
+                <td>指定成员</td>
+                <td>加微欢迎语</td>
+                <td><label class="switch on"><input type="checkbox" checked /><span></span></label></td>
+                <td>阮荣均</td><td>2026-03-25 14:30</td>
+                <td class="row-actions">
+                  <a href="#" data-row-act="detail">详情</a>
+                  <a href="#" data-row-act="edit">编辑</a>
+                  <a href="#" data-row-act="copy">复制</a>
+                </td>
+              </tr>
+              <tr>
+                <td><input type="checkbox" class="row-check" /></td>
+                <td>青春加微</td>
+                <td><div class="msg-cell">🎉hi{客户姓名}，我是{员工姓名}，我联系方式{员工手机号}，一起好好学习</div></td>
+                <td>指定成员</td>
+                <td>加微欢迎语</td>
+                <td><label class="switch off"><input type="checkbox" /><span></span></label></td>
+                <td>阮荣均</td><td>2026-03-22 09:18</td>
+                <td class="row-actions">
+                  <a href="#" data-row-act="detail">详情</a>
+                  <a href="#" data-row-act="edit">编辑</a>
+                  <a href="#" data-row-act="copy">复制</a>
+                </td>
+              </tr>
+              <tr>
+                <td><input type="checkbox" class="row-check" /></td>
+                <td>测试文本</td>
+                <td><div class="msg-cell">121212</div></td>
+                <td>全员</td>
+                <td>通用欢迎语</td>
+                <td><label class="switch off"><input type="checkbox" /><span></span></label></td>
+                <td>刘助教</td><td>2026-03-18 11:00</td>
+                <td class="row-actions">
+                  <a href="#" data-row-act="detail">详情</a>
+                  <a href="#" data-row-act="edit">编辑</a>
+                  <a href="#" data-row-act="copy">复制</a>
+                </td>
+              </tr>
+              <tr>
+                <td><input type="checkbox" class="row-check" /></td>
+                <td>课程开营</td>
+                <td><div class="msg-cell">😃{客户姓名}{员工姓名}{员工手机号}你好，欢迎迎！！！！！</div></td>
+                <td>全员</td>
+                <td>课程欢迎语</td>
+                <td><label class="switch on"><input type="checkbox" checked /><span></span></label></td>
+                <td>赵老师</td><td>2026-03-15 16:45</td>
+                <td class="row-actions">
+                  <a href="#" data-row-act="detail">详情</a>
+                  <a href="#" data-row-act="edit">编辑</a>
+                  <a href="#" data-row-act="copy">复制</a>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div></div>
+
+        <!-- 分页 -->
+        <div class="toolbar" style="margin-top:8px">
+          <span class="muted">已选 <b id="wm-count">0</b> 条</span>
+          <div class="spacer"></div>
+          <button class="btn" id="btn-batch-del" disabled>批量删除</button>
+          <span class="muted" style="margin-left:16px">共 <b>10</b> 条</span>
+          <button class="btn btn-sm" disabled>上一页</button>
+          <button class="btn btn-sm" id="btn-next">下一页</button>
+          <span class="muted" style="margin-left:8px">第</span>
+          <input id="pg-input" type="number" min="1" value="1" style="width:60px" />
+          <span class="muted">页</span>
+          <select id="pg-size" style="margin-left:8px">
+            <option>10条/页</option><option selected>20条/页</option>
+            <option>30条/页</option><option>50条/页</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ 抽屉 / 弹窗 ============ -->
+<div class="proto-mask" id="mask"></div>
+
+<!-- 新建欢迎语弹窗 -->
+<div class="proto-modal" id="modal-create" style="width:680px">
+  <div class="proto-modal-hd">
+    <h3 style="font-size:16px;font-weight:600">新建欢迎语</h3>
+    <button class="btn btn-sm btn-ghost" data-close>×</button>
+  </div>
+  <div class="proto-modal-bd">
+    <div class="form-grid">
+      <div class="field"><label>名称 *</label><input id="cw-name" placeholder="如：加微欢迎" /></div>
+      <div class="field"><label>所属分组 *</label>
+        <select id="cw-group">
+          <option>激活欢迎语</option>
+          <option>加微欢迎语</option>
+          <option>课程欢迎语</option>
+          <option>活动欢迎语</option>
+          <option>通用欢迎语</option>
+        </select>
+      </div>
+      <div class="field"><label>使用成员</label>
+        <select id="cw-member">
+          <option>全员</option>
+          <option>指定成员</option>
+        </select>
+      </div>
+      <div class="field"><label>开启状态</label>
+        <select><option>启用</option><option>停用</option></select>
+      </div>
+      <div class="field" style="grid-column:1/-1"><label>消息内容 *</label>
+        <textarea id="cw-msg" rows="6" style="width:100%;padding:8px;border:1px solid var(--color-border);border-radius:6px" placeholder="支持文字 + 图片 + 链接；可插入变量如 {客户姓名} {员工姓名} {shortUrl}"></textarea>
+      </div>
+      <div class="field" style="grid-column:1/-1">
+        <label>附件</label>
+        <div class="toolbar" style="margin:0">
+          <button class="btn btn-sm" data-toast="插入图片（原型）">图片</button>
+          <button class="btn btn-sm" data-toast="插入链接（原型）">链接</button>
+          <button class="btn btn-sm" data-toast="插入小程序（原型）">小程序</button>
+          <a class="btn btn-sm" href="material.html">从素材库</a>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="proto-modal-ft">
+    <button class="btn" data-close>取消</button>
+    <button class="btn btn-primary" id="cw-submit">保存</button>
+  </div>
+</div>
+
+<!-- 详情抽屉 -->
+<div class="proto-drawer" id="drawer-detail">
+  <div class="proto-drawer-hd">
+    <h3 id="wd-title">欢迎语详情</h3>
+    <button class="btn btn-sm btn-ghost" data-close>×</button>
+  </div>
+  <div class="proto-drawer-bd">
+    <h4 style="margin-bottom:8px">消息内容</h4>
+    <div class="msg-preview" id="wd-content">—</div>
+    <h4 style="margin:16px 0 8px">基础信息</h4>
+    <div class="form-grid" style="grid-template-columns:1fr 1fr">
+      <div class="field"><label>名称</label><div id="wd-name">—</div></div>
+      <div class="field"><label>使用成员</label><div id="wd-member">—</div></div>
+      <div class="field"><label>分组</label><div id="wd-group">—</div></div>
+      <div class="field"><label>开启状态</label><div id="wd-status">—</div></div>
+      <div class="field"><label>更新人</label><div id="wd-updater">—</div></div>
+      <div class="field"><label>更新时间</label><div id="wd-updated">—</div></div>
+    </div>
+    <h4 style="margin:16px 0 8px">支持变量</h4>
+    <p class="muted" style="line-height:1.8">{客户姓名} {客户手机} {员工姓名} {员工手机号} {shortUrl} {商品名称} {下单时间}</p>
+    <h4 style="margin:16px 0 8px">预览效果</h4>
+    <div class="msg-mock">
+      <div class="msg-bubble">
+        <div class="msg-text">Hi 李女士，我是王助教，我联系方式 138****2610，一起好好学习</div>
+        <div class="muted" style="font-size:12px;margin-top:6px">— 来自 艺博教育</div>
+      </div>
+    </div>
+  </div>
+  <div class="proto-drawer-ft">
+    <button class="btn" data-close>关闭</button>
+    <a class="btn btn-primary" href="#" id="wd-edit">编辑</a>
+  </div>
+</div>
+
+<!-- 新建分组 -->
+<div class="proto-modal" id="modal-group">
+  <div class="proto-modal-hd">
+    <h3 style="font-size:16px;font-weight:600">新建分组</h3>
+    <button class="btn btn-sm btn-ghost" data-close>×</button>
+  </div>
+  <div class="proto-modal-bd">
+    <div class="form-grid">
+      <div class="field"><label>分组名称</label><input id="gr-name" /></div>
+      <div class="field"><label>排序</label><input type="number" value="1" /></div>
+      <div class="field" style="grid-column:1/-1"><label>使用范围</label>
+        <select><option>全员</option><option>本部门</option><option>指定成员</option></select>
+      </div>
+    </div>
+  </div>
+  <div class="proto-modal-ft">
+    <button class="btn" data-close>取消</button>
+    <button class="btn btn-primary" id="gr-submit">保存</button>
+  </div>
+</div>
+
+<!-- 列展示 -->
+<div class="proto-drawer" id="drawer-col" style="width:340px">
+  <div class="proto-drawer-hd">
+    <h3>列展示</h3>
+    <button class="btn btn-sm btn-ghost" data-close>×</button>
+  </div>
+  <div class="proto-drawer-bd">
+    <div id="col-list">
+      <label><input type="checkbox" checked> 欢迎语搜索</label>
+      <label><input type="checkbox" checked> 消息内容</label>
+      <label><input type="checkbox" checked> 使用成员</label>
+      <label><input type="checkbox" checked> 分组</label>
+      <label><input type="checkbox" checked> 开启状态</label>
+      <label><input type="checkbox" checked> 更新人</label>
+      <label><input type="checkbox" checked> 更新时间</label>
+    </div>
+  </div>
+  <div class="proto-drawer-ft">
+    <button class="btn" data-close>取消</button>
+    <button class="btn btn-primary" id="col-apply">应用</button>
+  </div>
+</div>
+
+<style>
+.content-layout {
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  gap: 12px;
+}
+.tree-card { height: fit-content; }
+.tree { list-style: none; padding: 0; margin: 0; }
+.tree-children { list-style: none; padding-left: 18px; margin: 0; }
+.tree-node { margin-bottom: 2px; }
+.tree-row {
+  display: flex; align-items: center; gap: 6px;
+  padding: 6px 8px; border-radius: 4px; cursor: pointer;
+  font-size: 13px;
+}
+.tree-row:hover { background: #f0f4fa; }
+.tree-row--active { background: var(--color-primary-soft); color: var(--color-primary); font-weight: 500; }
+.tree-toggle { color: var(--color-text-muted); font-size: 10px; width: 12px; }
+.tree-icon { font-size: 14px; }
+.tree-label { flex: 1; }
+.tree-count { color: var(--color-text-muted); font-size: 12px; }
+.tree-more {
+  background: none; border: none; color: var(--color-text-muted);
+  cursor: pointer; padding: 0 4px; font-size: 16px; line-height: 1;
+}
+.msg-cell {
+  max-width: 420px;
+  font-size: 12px;
+  color: var(--color-text-secondary);
+  line-height: 1.6;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+}
+.msg-preview {
+  padding: 16px; background: #f7f8fa; border-radius: 6px;
+  line-height: 1.8; font-size: 14px; white-space: pre-wrap;
+}
+.msg-mock {
+  padding: 16px; background: #ededed; border-radius: 6px;
+  display: flex; flex-direction: column; align-items: flex-start;
+}
+.msg-bubble {
+  max-width: 80%;
+  padding: 10px 12px; background: #fff;
+  border-radius: 6px; box-shadow: 0 1px 2px rgba(0,0,0,.08);
+}
+.switch {
+  position: relative; display: inline-block; width: 32px; height: 18px;
+  cursor: pointer;
+}
+.switch input { opacity: 0; width: 0; height: 0; }
+.switch span {
+  position: absolute; inset: 0; background: #dcdfe6; border-radius: 18px;
+  transition: 0.2s;
+}
+.switch span::before {
+  content: ''; position: absolute; left: 2px; top: 2px;
+  width: 14px; height: 14px; background: #fff; border-radius: 50%;
+  transition: 0.2s;
+}
+.switch.on span { background: var(--color-primary); }
+.switch.on span::before { transform: translateX(14px); }
+.row-actions a.danger { color: var(--color-danger); }
+#col-list label {
+  display: flex; align-items: center; gap: 6px;
+  padding: 6px 0; font-size: 13px;
+}
+</style>
+
+<script src="../assets/js/proto.js"></script>
+<script src="../assets/js/admin-shell.js"></script>
+<script>
+(function () {
+  // ===== Tabs =====
+  document.querySelectorAll("#wm-tabs a[data-tab]").forEach(function (a) {
+    a.addEventListener("click", function (e) {
+      e.preventDefault();
+      document.querySelectorAll("#wm-tabs a").forEach(function (x) { x.classList.remove("active"); });
+      a.classList.add("active");
+      Proto.toast("已切换：" + a.textContent);
+    });
+  });
+
+  // ===== Tree =====
+  document.querySelectorAll(".tree-row").forEach(function (row) {
+    row.addEventListener("click", function (e) {
+      if (e.target.classList.contains("tree-more")) return;
+      document.querySelectorAll(".tree-row").forEach(function (x) { x.classList.remove("tree-row--active"); });
+      row.classList.add("tree-row--active");
+      Proto.toast("已切换到：" + row.querySelector(".tree-label").textContent);
+    });
+  });
+  document.querySelectorAll(".tree-toggle").forEach(function (t) {
+    t.addEventListener("click", function (e) {
+      e.stopPropagation();
+      var node = t.closest(".tree-node");
+      node.classList.toggle("expanded");
+      t.textContent = node.classList.contains("expanded") ? "▾" : "▸";
+    });
+  });
+  document.querySelectorAll(".tree-more").forEach(function (b) {
+    b.addEventListener("click", function (e) {
+      e.stopPropagation();
+      Proto.toast("更多操作（原型）");
+    });
+  });
+
+  // ===== Mask / drawer / modal =====
+  var mask = document.getElementById("mask");
+  function closeAll() {
+    mask.classList.remove("open");
+    document.querySelectorAll(".proto-modal, .proto-drawer").forEach(function (n) { n.classList.remove("open"); });
+  }
+  function open(node) { mask.classList.add("open"); node.classList.add("open"); }
+  mask.addEventListener("click", closeAll);
+  document.querySelectorAll("[data-close]").forEach(function (n) { n.addEventListener("click", closeAll); });
+
+  // ===== Batch =====
+  var btnBatchDel = document.getElementById("btn-batch-del");
+  var checkAll = document.getElementById("check-all");
+  function syncBatch() {
+    var n = document.querySelectorAll(".row-check:checked").length;
+    document.getElementById("wm-count").textContent = n;
+    btnBatchDel.disabled = n === 0;
+  }
+  checkAll.addEventListener("change", function () {
+    document.querySelectorAll(".row-check").forEach(function (c) { c.checked = checkAll.checked; });
+    syncBatch();
+  });
+  document.querySelectorAll(".row-check").forEach(function (c) { c.addEventListener("change", syncBatch); });
+  btnBatchDel.addEventListener("click", function () {
+    if (confirm("确认批量删除？")) Proto.toast("已批量删除（原型）");
+  });
+
+  // ===== Create =====
+  document.getElementById("btn-create").addEventListener("click", function () { open(document.getElementById("modal-create")); });
+  document.getElementById("cw-submit").addEventListener("click", function () {
+    var n = document.getElementById("cw-name").value.trim();
+    var m = document.getElementById("cw-msg").value.trim();
+    if (!n) { Proto.toast("请输入名称"); return; }
+    if (!m) { Proto.toast("请输入消息内容"); return; }
+    closeAll(); Proto.toast("欢迎语已保存（原型）");
+  });
+
+  // ===== Row actions =====
+  function rowData(tr) {
+    var tds = tr.querySelectorAll("td");
+    var content = tr.querySelector(".msg-cell") ? tr.querySelector(".msg-cell").textContent.trim() : "";
+    return {
+      name: tds[1] ? tds[1].textContent.trim() : "",
+      content: content,
+      member: tds[3] ? tds[3].textContent.trim() : "",
+      group: tds[4] ? tds[4].textContent.trim() : "",
+      status: tr.querySelector(".switch.on") ? "启用" : "停用",
+      updater: tds[6] ? tds[6].textContent.trim() : "",
+      updated: tds[7] ? tds[7].textContent.trim() : "",
+    };
+  }
+  function fillDetail(d) {
+    document.getElementById("wd-title").textContent = "欢迎语详情 · " + d.name;
+    document.getElementById("wd-content").textContent = d.content;
+    document.getElementById("wd-name").textContent = d.name;
+    document.getElementById("wd-member").textContent = d.member;
+    document.getElementById("wd-group").textContent = d.group;
+    document.getElementById("wd-status").textContent = d.status;
+    document.getElementById("wd-updater").textContent = d.updater;
+    document.getElementById("wd-updated").textContent = d.updated;
+    open(document.getElementById("drawer-detail"));
+  }
+  document.querySelectorAll("#wm-tbody tr").forEach(function (tr) {
+    tr.querySelectorAll("[data-row-act]").forEach(function (a) {
+      a.addEventListener("click", function (e) {
+        e.preventDefault();
+        var act = a.getAttribute("data-row-act");
+        var d = rowData(tr);
+        if (act === "detail") fillDetail(d);
+        else if (act === "edit") open(document.getElementById("modal-create"));
+        else if (act === "copy") Proto.toast("已复制欢迎语（原型）");
+      });
+    });
+    var sw = tr.querySelector(".switch");
+    if (sw) {
+      sw.addEventListener("click", function () {
+        var input = sw.querySelector("input");
+        input.checked = !input.checked;
+        sw.classList.toggle("on", input.checked);
+        Proto.toast(input.checked ? "已启用（原型）" : "已停用（原型）");
+      });
+    }
+  });
+
+  // ===== Other buttons =====
+  document.getElementById("btn-query").addEventListener("click", function () { Proto.toast("已查询（原型）"); });
+  document.getElementById("btn-reset").addEventListener("click", function () {
+    document.getElementById("f-name").value = "";
+    ["f-member","f-status","f-updater"].forEach(function (id) { document.getElementById(id).value = ""; });
+    document.getElementById("f-time1").value = "";
+    document.getElementById("f-time2").value = "";
+    Proto.toast("已重置");
+  });
+  document.getElementById("btn-col").addEventListener("click", function () { open(document.getElementById("drawer-col")); });
+  document.getElementById("col-apply").addEventListener("click", function () { closeAll(); Proto.toast("列展示已应用（原型）"); });
+  document.getElementById("btn-add-group").addEventListener("click", function () { open(document.getElementById("modal-group")); });
+  document.getElementById("gr-submit").addEventListener("click", function () {
+    var n = document.getElementById("gr-name").value.trim();
+    if (!n) { Proto.toast("请输入分组名称"); return; }
+    closeAll(); Proto.toast("分组已创建（原型）");
+  });
+  document.getElementById("btn-next").addEventListener("click", function () {
+    var inp = document.getElementById("pg-input");
+    inp.value = parseInt(inp.value || 1) + 1;
+    Proto.toast("已跳转第 " + inp.value + " 页（原型）");
+  });
+})();
+</script>
+</body>
+</html>

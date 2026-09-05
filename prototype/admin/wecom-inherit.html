@@ -1,0 +1,346 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>客户继承 · 艺博 To-B</title>
+<link rel="stylesheet" href="../assets/css/proto.css" />
+</head>
+<body class="admin-body" data-module="scrm" data-nav="wecom-inherit" data-title="客户继承" data-crumb="SCRM / 客户中心 / 客户继承">
+<div id="header-actions">
+  <button class="btn" id="btn-add">添加转出</button>
+  <button class="btn" id="btn-pick">选择成员</button>
+  <button class="btn btn-primary" id="btn-confirm" disabled>确认转移</button>
+</div>
+<div id="page-content" style="display:none">
+
+  <div class="tabs" id="ci-tabs">
+    <a class="active" href="#on-job" data-tab="on-job">在职继承</a>
+    <a href="#off-job" data-tab="off-job">离职继承</a>
+    <a href="#records" data-tab="records">分配记录</a>
+  </div>
+
+  <!-- ===== 在职继承 / 离职继承 ===== -->
+  <div id="panel-on-job" class="two-col-assist">
+    <div class="card">
+      <div class="card-hd"><h2>需转出的资源</h2></div>
+      <div class="card-bd">
+        <p class="muted" style="margin-bottom:12px">按员工、线索、微信客户或客户群添加转出项；同类资源自动合并，重复选择不会重复转出。</p>
+        <div id="resource-list">
+          <div class="empty-state" id="empty-resource">请点击「添加转出」选择需转移的资源</div>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-hd"><h2>接收服务老师</h2></div>
+      <div class="card-bd">
+        <p class="muted" style="margin-bottom:12px">转出资源将继承给该成员。</p>
+        <div id="receiver-list">
+          <div class="empty-state" id="empty-receiver">请选择接收服务老师</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== 离职继承 ===== -->
+  <div id="panel-off-job" style="display:none" class="two-col-assist">
+    <div class="card">
+      <div class="card-hd"><h2>离职员工资源</h2></div>
+      <div class="card-bd">
+        <p class="muted" style="margin-bottom:12px">离职员工的客户 / 群 / 线索将自动列出，请勾选需要继承的资源。</p>
+        <table class="data">
+          <thead><tr><th><input type="checkbox" id="off-all" /></th><th>原归属员工</th><th>资源类型</th><th>资源名称</th><th>数量</th><th>离职时间</th></tr></thead>
+          <tbody>
+            <tr><td><input type="checkbox" class="off-row" /></td><td>离职 A</td><td>线索</td><td>—</td><td>38</td><td>03-15</td></tr>
+            <tr><td><input type="checkbox" class="off-row" /></td><td>离职 A</td><td>微信客户</td><td>—</td><td>62</td><td>03-15</td></tr>
+            <tr><td><input type="checkbox" class="off-row" /></td><td>离职 A</td><td>客户群</td><td>—</td><td>4</td><td>03-15</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-hd"><h2>接收服务老师</h2></div>
+      <div class="card-bd">
+        <p class="muted" style="margin-bottom:12px">转出资源将继承给该成员。</p>
+        <div id="receiver-list-2">
+          <div class="empty-state">请选择接收服务老师</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== 分配记录 ===== -->
+  <div id="panel-records" style="display:none">
+    <div class="card"><div class="card-bd" style="padding:0">
+      <table class="data">
+        <thead><tr><th>时间</th><th>类型</th><th>转出方</th><th>接收方</th><th>资源数</th><th>操作人</th><th>状态</th></tr></thead>
+        <tbody>
+          <tr><td>03-28 15:30</td><td>在职继承</td><td>赵老师</td><td>阮荣均</td><td>12 线索 / 8 客户</td><td>赵老师</td><td><span class="badge badge-success">已完成</span></td></tr>
+          <tr><td>03-15 11:02</td><td>离职继承</td><td>离职 A</td><td>王助教</td><td>104 线索 / 62 客户 / 4 群</td><td>系统</td><td><span class="badge badge-success">已完成</span></td></tr>
+          <tr><td>03-12 09:48</td><td>在职继承</td><td>周销售</td><td>阮荣均</td><td>6 线索</td><td>周销售</td><td><span class="badge badge-warn">处理中</span></td></tr>
+        </tbody>
+      </table>
+    </div></div>
+  </div>
+</div>
+
+<!-- ============ 弹窗 ============ -->
+<div class="proto-mask" id="mask"></div>
+
+<!-- 添加转出弹窗 -->
+<div class="proto-modal" id="modal-add" style="width:680px">
+  <div class="proto-modal-hd">
+    <h3 style="font-size:16px;font-weight:600">添加转出资源</h3>
+    <button class="btn btn-sm btn-ghost" data-close>×</button>
+  </div>
+  <div class="proto-modal-bd">
+    <div class="tabs" id="add-tabs">
+      <a class="active" href="#emp" data-tab="emp">按员工</a>
+      <a href="#lead" data-tab="lead">按线索</a>
+      <a href="#cust" data-tab="cust">按微信客户</a>
+      <a href="#group" data-tab="group">按客户群</a>
+    </div>
+    <div class="toolbar" style="margin-top:12px">
+      <input id="add-kw" placeholder="搜索" style="width:200px" />
+      <button class="btn btn-primary" id="add-search">搜索</button>
+      <div class="spacer"></div>
+      <span class="muted" id="add-count">已选 0 项</span>
+    </div>
+    <div class="card" style="margin-top:8px"><div class="card-bd" style="padding:0;max-height:300px;overflow:auto">
+      <table class="data">
+        <thead><tr><th><input type="checkbox" id="add-all" /></th><th id="add-th">员工</th></tr></thead>
+        <tbody id="add-tbody">
+          <tr><td><input type="checkbox" class="add-check" /></td><td>王助教 · 销售一部</td></tr>
+          <tr><td><input type="checkbox" class="add-check" /></td><td>赵老师 · 销售一部</td></tr>
+          <tr><td><input type="checkbox" class="add-check" /></td><td>刘助教 · 销售二部</td></tr>
+        </tbody>
+      </table>
+    </div></div>
+  </div>
+  <div class="proto-modal-ft">
+    <button class="btn" data-close>取消</button>
+    <button class="btn btn-primary" id="add-submit">确认添加</button>
+  </div>
+</div>
+
+<!-- 选择接收成员弹窗 -->
+<div class="proto-modal" id="modal-pick">
+  <div class="proto-modal-hd">
+    <h3 style="font-size:16px;font-weight:600">选择接收服务老师</h3>
+    <button class="btn btn-sm btn-ghost" data-close>×</button>
+  </div>
+  <div class="proto-modal-bd">
+    <div class="toolbar">
+      <input id="pick-kw" placeholder="搜索成员" style="width:200px" />
+      <button class="btn btn-primary" id="pick-search">搜索</button>
+    </div>
+    <table class="data" style="margin-top:8px">
+      <thead><tr><th>姓名</th><th>部门</th><th>角色</th><th>操作</th></tr></thead>
+      <tbody>
+        <tr><td>阮荣均</td><td>运营中心</td><td>管理员</td><td><a href="#" class="pick-go">选择</a></td></tr>
+        <tr><td>赵老师</td><td>销售一部</td><td>销售</td><td><a href="#" class="pick-go">选择</a></td></tr>
+        <tr><td>王助教</td><td>销售一部</td><td>助教</td><td><a href="#" class="pick-go">选择</a></td></tr>
+        <tr><td>刘助教</td><td>销售二部</td><td>助教</td><td><a href="#" class="pick-go">选择</a></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="proto-modal-ft">
+    <button class="btn" data-close>取消</button>
+  </div>
+</div>
+
+<style>
+.two-col-assist {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr;
+  gap: 16px;
+}
+.empty-state {
+  color: var(--color-text-muted);
+  text-align: center;
+  padding: 60px 20px;
+  background: #f7f8fa;
+  border-radius: 8px;
+}
+.resource-item {
+  display: flex; align-items: center; gap: 12px;
+  padding: 10px 12px; border: 1px solid var(--color-border); border-radius: 6px;
+  margin-bottom: 8px; background: #fff;
+}
+.resource-item .type {
+  display: inline-block; padding: 2px 8px;
+  background: var(--color-primary-soft); color: var(--color-primary);
+  font-size: 12px; border-radius: 4px;
+}
+.resource-item .name { flex: 1; font-weight: 500; }
+.resource-item .meta { color: var(--color-text-muted); font-size: 12px; }
+.resource-item .del { color: var(--color-danger); cursor: pointer; }
+.receiver-card {
+  display: flex; align-items: center; gap: 12px;
+  padding: 12px; border: 1px solid var(--color-primary); border-radius: 6px;
+  background: var(--color-primary-soft);
+}
+.receiver-card .avatar {
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  background: var(--color-primary); color: #fff;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 600;
+}
+.receiver-card .info { flex: 1; }
+.receiver-card .info b { display: block; margin-bottom: 2px; }
+.receiver-card .info small { color: var(--color-text-muted); }
+.receiver-card .change { color: var(--color-primary); cursor: pointer; }
+</style>
+
+<script src="../assets/js/proto.js"></script>
+<script src="../assets/js/admin-shell.js"></script>
+<script>
+(function () {
+  // ===== Tabs =====
+  function show(tab) {
+    ["panel-on-job","panel-off-job","panel-records"].forEach(function (id) {
+      document.getElementById(id).style.display = "none";
+    });
+    var target = tab === "on-job" ? "panel-on-job" : tab === "off-job" ? "panel-off-job" : "panel-records";
+    document.getElementById(target).style.display = tab === "records" ? "block" : "grid";
+    document.querySelectorAll("#ci-tabs a[data-tab]").forEach(function (a) {
+      a.classList.toggle("active", a.getAttribute("data-tab") === tab);
+    });
+  }
+  document.querySelectorAll("#ci-tabs a[data-tab]").forEach(function (a) {
+    a.addEventListener("click", function (e) { e.preventDefault(); show(a.getAttribute("data-tab")); });
+  });
+
+  // ===== State =====
+  var resources = [];
+  var receiver = null;
+
+  function renderResources() {
+    var box = document.getElementById("resource-list");
+    var empty = document.getElementById("empty-resource");
+    if (resources.length === 0) {
+      box.innerHTML = "";
+      box.appendChild(empty);
+      empty.style.display = "block";
+    } else {
+      empty.style.display = "none";
+      var html = "";
+      resources.forEach(function (r, i) {
+        html += '<div class="resource-item" data-i="' + i + '">' +
+          '<span class="type">' + r.type + '</span>' +
+          '<span class="name">' + r.name + '</span>' +
+          '<span class="meta">' + r.meta + '</span>' +
+          '<a class="del">移除</a>' +
+          '</div>';
+      });
+      box.innerHTML = html;
+      box.querySelectorAll(".del").forEach(function (a) {
+        a.addEventListener("click", function () {
+          var i = parseInt(a.closest(".resource-item").getAttribute("data-i"));
+          resources.splice(i, 1); renderResources(); syncConfirm();
+        });
+      });
+    }
+  }
+  function renderReceiver() {
+    var box = document.getElementById("receiver-list");
+    if (!receiver) {
+      box.innerHTML = '<div class="empty-state" id="empty-receiver">请选择接收服务老师</div>';
+    } else {
+      var initial = receiver.name.substring(0, 1);
+      box.innerHTML = '<div class="receiver-card">' +
+        '<div class="avatar">' + initial + '</div>' +
+        '<div class="info"><b>' + receiver.name + '</b><small>' + receiver.dept + ' · ' + receiver.role + '</small></div>' +
+        '<a class="change" id="btn-change-receiver">更换</a>' +
+        '</div>';
+      document.getElementById("btn-change-receiver").addEventListener("click", function () {
+        open(document.getElementById("modal-pick"));
+      });
+    }
+  }
+  function syncConfirm() {
+    var btn = document.getElementById("btn-confirm");
+    btn.disabled = !(resources.length > 0 && receiver);
+  }
+  renderResources(); renderReceiver(); syncConfirm();
+
+  // ===== Mask / modal =====
+  var mask = document.getElementById("mask");
+  function closeAll() {
+    mask.classList.remove("open");
+    document.querySelectorAll(".proto-modal, .proto-drawer").forEach(function (n) { n.classList.remove("open"); });
+  }
+  function open(node) { mask.classList.add("open"); node.classList.add("open"); }
+  mask.addEventListener("click", closeAll);
+  document.querySelectorAll("[data-close]").forEach(function (n) { n.addEventListener("click", closeAll); });
+
+  // ===== Add resources =====
+  var addTabLabels = { emp: "员工", lead: "线索", cust: "微信客户", group: "客户群" };
+  var addSamples = {
+    emp: ["王助教 · 销售一部", "赵老师 · 销售一部", "刘助教 · 销售二部", "周销售 · 销售二部"],
+    lead: ["李女士 · 9.9 引流课", "张妈妈 · 9.9 引流课", "陈先生 · 直播票", "刘爸爸 · 直播票"],
+    cust: ["阮荣均客户 · 18 人", "赵老师客户 · 36 人", "王助教客户 · 22 人"],
+    group: ["春启03·家长交流群 · 186 人", "视频号领课·转化群A · 92 人", "复购·高意向群 · 54 人"],
+  };
+  function refreshAddTab(tab) {
+    document.getElementById("add-th").textContent = addTabLabels[tab];
+    var html = "";
+    addSamples[tab].forEach(function (s) {
+      html += '<tr><td><input type="checkbox" class="add-check" /></td><td>' + s + '</td></tr>';
+    });
+    document.getElementById("add-tbody").innerHTML = html;
+    syncAddCount();
+  }
+  function syncAddCount() {
+    document.getElementById("add-count").textContent = "已选 " + document.querySelectorAll(".add-check:checked").length + " 项";
+  }
+  document.querySelectorAll("#add-tabs a[data-tab]").forEach(function (a) {
+    a.addEventListener("click", function (e) {
+      e.preventDefault();
+      document.querySelectorAll("#add-tabs a").forEach(function (x) { x.classList.remove("active"); });
+      a.classList.add("active");
+      refreshAddTab(a.getAttribute("data-tab"));
+    });
+  });
+  document.getElementById("add-all").addEventListener("change", function () {
+    document.querySelectorAll(".add-check").forEach(function (c) { c.checked = addAll.checked; });
+    syncAddCount();
+  });
+  document.getElementById("add-tbody").addEventListener("change", syncAddCount);
+  document.getElementById("add-search").addEventListener("click", function () { Proto.toast("搜索（原型）"); });
+
+  document.getElementById("btn-add").addEventListener("click", function () { refreshAddTab("emp"); open(document.getElementById("modal-add")); });
+  document.getElementById("add-submit").addEventListener("click", function () {
+    var activeTab = document.querySelector("#add-tabs a.active").getAttribute("data-tab");
+    var rows = document.querySelectorAll(".add-check:checked");
+    rows.forEach(function (c) {
+      var name = c.closest("tr").children[1].textContent;
+      resources.push({ type: addTabLabels[activeTab], name: name, meta: "—" });
+    });
+    closeAll(); renderResources(); syncConfirm();
+    Proto.toast("已添加 " + rows.length + " 项资源");
+  });
+
+  // ===== Pick receiver =====
+  document.getElementById("btn-pick").addEventListener("click", function () { open(document.getElementById("modal-pick")); });
+  document.getElementById("pick-search").addEventListener("click", function () { Proto.toast("搜索（原型）"); });
+  document.querySelectorAll(".pick-go").forEach(function (a) {
+    a.addEventListener("click", function (e) {
+      e.preventDefault();
+      var tr = a.closest("tr");
+      receiver = { name: tr.children[0].textContent, dept: tr.children[1].textContent, role: tr.children[2].textContent };
+      closeAll(); renderReceiver(); syncConfirm();
+      Proto.toast("已选择：" + receiver.name);
+    });
+  });
+
+  // ===== Confirm =====
+  document.getElementById("btn-confirm").addEventListener("click", function () {
+    Proto.toast("已发起转移：" + resources.length + " 项 → " + (receiver ? receiver.name : "—"));
+    resources = []; receiver = null; renderResources(); renderReceiver(); syncConfirm();
+  });
+})();
+</script>
+</body>
+</html>

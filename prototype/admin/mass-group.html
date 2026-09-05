@@ -1,0 +1,397 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>客户群群发 · 艺博 To-B</title>
+<link rel="stylesheet" href="../assets/css/proto.css" />
+</head>
+<body class="admin-body" data-module="scrm" data-nav="mass-group" data-title="客户群群发" data-crumb="SCRM / 营销管理 / 客户群群发">
+<div id="header-actions">
+  <button class="btn" id="btn-export">导出</button>
+  <button class="btn btn-primary" id="btn-create">新建客户群群发</button>
+</div>
+<div id="page-content" style="display:none">
+
+  <!-- 筛选 -->
+  <div class="card" style="margin-bottom:8px"><div class="card-bd">
+    <div class="form-grid" style="grid-template-columns:repeat(5,minmax(0,1fr));gap:8px 12px">
+      <input id="f-name" placeholder="请输入" />
+      <select id="f-status">
+        <option value="">任务状态</option>
+        <option>草稿</option>
+        <option>待执行</option>
+        <option>执行中</option>
+        <option>已完成</option>
+        <option>已取消</option>
+        <option>已失败</option>
+      </select>
+      <select id="f-updater">
+        <option value="">请选择</option>
+        <option>陈奕均</option>
+        <option>阮荣均</option>
+        <option>李大</option>
+      </select>
+      <input id="f-time1" type="datetime-local" />
+      <input id="f-time2" type="datetime-local" />
+    </div>
+    <div class="toolbar" style="margin-top:8px">
+      <button class="btn btn-primary" id="btn-query">查询</button>
+      <button class="btn" id="btn-reset">重置</button>
+      <div class="spacer"></div>
+      <button class="btn" id="btn-col">列展示</button>
+    </div>
+  </div></div>
+
+  <!-- 表格 -->
+  <div class="card"><div class="card-bd" style="padding:0">
+    <table class="data">
+      <thead>
+        <tr>
+          <th>任务名称</th><th>发送类型</th><th>任务状态</th><th>完成率</th>
+          <th>完成时间</th><th>更新人</th><th>更新时间</th>
+          <th style="width:220px">操作</th>
+        </tr>
+      </thead>
+      <tbody id="mg-tbody">
+        <tr>
+          <td>春启03·家长群 资料包</td>
+          <td>文本+文件</td>
+          <td><span class="badge badge-success">已完成</span></td>
+          <td>4/4 (100%)</td>
+          <td>2026-03-29 10:22</td>
+          <td>阮荣均</td><td>2026-03-29 09:00</td>
+          <td class="row-actions">
+            <a href="#" data-row-act="detail">详情</a>
+            <a href="#" data-row-act="copy">复制</a>
+            <a href="#" data-row-act="del" class="danger">删除</a>
+          </td>
+        </tr>
+        <tr>
+          <td>视频号·转化群A 早报</td>
+          <td>文本+图片</td>
+          <td><span class="badge badge-warn">执行中</span></td>
+          <td>1/3 (33%)</td>
+          <td>—</td>
+          <td>赵老师</td><td>2026-03-29 08:30</td>
+          <td class="row-actions">
+            <a href="#" data-row-act="edit">编辑</a>
+            <a href="#" data-row-act="detail">详情</a>
+            <a href="#" data-row-act="copy">复制</a>
+          </td>
+        </tr>
+        <tr>
+          <td>复购·高意向群 优惠</td>
+          <td>文本+链接</td>
+          <td><span class="badge">草稿</span></td>
+          <td>—</td>
+          <td>—</td>
+          <td>王助教</td><td>2026-03-28 17:00</td>
+          <td class="row-actions">
+            <a href="#" data-row-act="publish">发布</a>
+            <a href="#" data-row-act="detail">详情</a>
+            <a href="#" data-row-act="copy">复制</a>
+            <a href="#" data-row-act="del" class="danger">删除</a>
+          </td>
+        </tr>
+        <tr>
+          <td>卓培·服务群 直播提醒</td>
+          <td>文本</td>
+          <td><span class="badge badge-success">已完成</span></td>
+          <td>6/6 (100%)</td>
+          <td>2026-03-27 20:00</td>
+          <td>刘助教</td><td>2026-03-27 18:00</td>
+          <td class="row-actions">
+            <a href="#" data-row-act="remind">提醒</a>
+            <a href="#" data-row-act="detail">详情</a>
+            <a href="#" data-row-act="copy">复制</a>
+          </td>
+        </tr>
+        <tr>
+          <td>春启02·家长群 毕业典礼</td>
+          <td>文本+图片</td>
+          <td><span class="badge badge-warn">执行中</span></td>
+          <td>2/5 (40%)</td>
+          <td>—</td>
+          <td>王助教</td><td>2026-03-26 14:30</td>
+          <td class="row-actions">
+            <a href="#" data-row-act="remind">提醒</a>
+            <a href="#" data-row-act="detail">详情</a>
+            <a href="#" data-row-act="copy">复制</a>
+          </td>
+        </tr>
+        <tr>
+          <td>复购·沉睡群 唤醒</td>
+          <td>文本</td>
+          <td><span class="badge badge-success">已完成</span></td>
+          <td>3/3 (100%)</td>
+          <td>2026-03-22 11:30</td>
+          <td>阮荣均</td><td>2026-03-22 10:00</td>
+          <td class="row-actions">
+            <a href="#" data-row-act="detail">详情</a>
+            <a href="#" data-row-act="copy">复制</a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div></div>
+
+  <!-- 分页 -->
+  <div class="toolbar" style="margin-top:8px">
+    <span class="muted">共 <b>6</b> 条</span>
+    <div class="spacer"></div>
+    <button class="btn btn-sm" disabled>上一页</button>
+    <button class="btn btn-sm" id="btn-next">下一页</button>
+    <span class="muted" style="margin-left:8px">第</span>
+    <input id="pg-input" type="number" min="1" value="1" style="width:60px" />
+    <span class="muted">页</span>
+    <select id="pg-size" style="margin-left:8px">
+      <option>10条/页</option><option selected>20条/页</option>
+      <option>30条/页</option><option>50条/页</option>
+    </select>
+  </div>
+</div>
+
+<!-- ============ 抽屉 / 弹窗 ============ -->
+<div class="proto-mask" id="mask"></div>
+
+<!-- 新建客户群群发弹窗 -->
+<div class="proto-modal" id="modal-create" style="width:680px">
+  <div class="proto-modal-hd">
+    <h3 style="font-size:16px;font-weight:600">新建客户群群发</h3>
+    <button class="btn btn-sm btn-ghost" data-close>×</button>
+  </div>
+  <div class="proto-modal-bd">
+    <div class="form-grid">
+      <div class="field"><label>任务名称 *</label><input id="cmg-name" placeholder="如：春启03·家长群 资料包" /></div>
+      <div class="field"><label>发送对象 *</label>
+        <select id="cmg-target">
+          <option>全部客户群</option>
+          <option>指定客户群</option>
+          <option>按群主</option>
+          <option>按标签</option>
+        </select>
+      </div>
+      <div class="field"><label>发送时间</label>
+        <select id="cmg-when">
+          <option>立即发送</option>
+          <option>定时发送</option>
+        </select>
+      </div>
+      <div class="field"><label>定时发送时间</label><input type="datetime-local" /></div>
+      <div class="field" style="grid-column:1/-1"><label>消息内容 *</label>
+        <textarea id="cmg-msg" rows="6" style="width:100%;padding:8px;border:1px solid var(--color-border);border-radius:6px" placeholder="支持文字 + 图片 + 文件 + 链接 + 小程序；可插入群变量如 {群名称}"></textarea>
+      </div>
+      <div class="field" style="grid-column:1/-1">
+        <label>附件</label>
+        <div class="toolbar" style="margin:0">
+          <button class="btn btn-sm" data-toast="插入图片（原型）">图片</button>
+          <button class="btn btn-sm" data-toast="插入链接（原型）">链接</button>
+          <button class="btn btn-sm" data-toast="插入小程序（原型）">小程序</button>
+          <button class="btn btn-sm" data-toast="上传文件（原型）">文件</button>
+          <a class="btn btn-sm" href="material.html">从素材库</a>
+        </div>
+      </div>
+      <div class="field"><label>客户去重</label>
+        <select><option>是</option><option>否</option></select>
+      </div>
+      <div class="field"><label>全员可见</label>
+        <select><option>是</option><option>否（仅指定员工）</option></select>
+      </div>
+    </div>
+  </div>
+  <div class="proto-modal-ft">
+    <button class="btn" data-close>取消</button>
+    <button class="btn" id="cmg-save-draft">存为草稿</button>
+    <button class="btn btn-primary" id="cmg-submit">开始发送</button>
+  </div>
+</div>
+
+<!-- 详情抽屉 -->
+<div class="proto-drawer" id="drawer-detail">
+  <div class="proto-drawer-hd">
+    <h3 id="mdg-title">群发任务详情</h3>
+    <button class="btn btn-sm btn-ghost" data-close>×</button>
+  </div>
+  <div class="proto-drawer-bd">
+    <h4 style="margin-bottom:8px">任务信息</h4>
+    <div class="form-grid" style="grid-template-columns:1fr 1fr">
+      <div class="field"><label>任务名称</label><div id="mdg-name">—</div></div>
+      <div class="field"><label>发送类型</label><div id="mdg-type">—</div></div>
+      <div class="field"><label>任务状态</label><div id="mdg-status">—</div></div>
+      <div class="field"><label>完成时间</label><div id="mdg-time">—</div></div>
+      <div class="field"><label>更新人</label><div id="mdg-updater">—</div></div>
+      <div class="field"><label>更新时间</label><div id="mdg-updated">—</div></div>
+    </div>
+    <h4 style="margin:16px 0 8px">消息内容</h4>
+    <div class="msg-preview" id="mdg-content">—</div>
+    <h4 style="margin:16px 0 8px">执行进度</h4>
+    <div class="grid-4" style="margin:0">
+      <div class="stat"><div class="label">目标群数</div><div class="value" id="mdg-total">—</div></div>
+      <div class="stat"><div class="label">已发送</div><div class="value" id="mdg-sent">—</div></div>
+      <div class="stat"><div class="label">已读</div><div class="value" id="mdg-read">—</div></div>
+      <div class="stat"><div class="label">完成率</div><div class="value" id="mdg-rate">—</div></div>
+    </div>
+    <h4 style="margin:16px 0 8px">目标客户群</h4>
+    <table class="data">
+      <thead><tr><th>群名称</th><th>群主</th><th>发送状态</th><th>发送时间</th></tr></thead>
+      <tbody>
+        <tr><td>春启03·家长交流群</td><td>阮荣均</td><td><span class="badge badge-success">已发送</span></td><td>03-29 09:00:12</td></tr>
+        <tr><td>视频号·转化群A</td><td>赵老师</td><td><span class="badge badge-success">已发送</span></td><td>03-29 09:00:08</td></tr>
+        <tr><td>卓培·服务群</td><td>刘助教</td><td><span class="badge">未发送</span></td><td>—</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="proto-drawer-ft">
+    <button class="btn" data-close>关闭</button>
+    <button class="btn btn-primary" id="mdg-export">导出明细</button>
+  </div>
+</div>
+
+<!-- 列展示抽屉 -->
+<div class="proto-drawer" id="drawer-col" style="width:340px">
+  <div class="proto-drawer-hd">
+    <h3>列展示</h3>
+    <button class="btn btn-sm btn-ghost" data-close>×</button>
+  </div>
+  <div class="proto-drawer-bd">
+    <div id="col-list">
+      <label><input type="checkbox" checked> 任务名称</label>
+      <label><input type="checkbox" checked> 发送类型</label>
+      <label><input type="checkbox" checked> 任务状态</label>
+      <label><input type="checkbox" checked> 完成率</label>
+      <label><input type="checkbox" checked> 完成时间</label>
+      <label><input type="checkbox" checked> 更新人</label>
+      <label><input type="checkbox" checked> 更新时间</label>
+    </div>
+  </div>
+  <div class="proto-drawer-ft">
+    <button class="btn" data-close>取消</button>
+    <button class="btn btn-primary" id="col-apply">应用</button>
+  </div>
+</div>
+
+<style>
+.msg-preview {
+  padding: 16px; background: #f7f8fa; border-radius: 6px;
+  line-height: 1.8; font-size: 14px; white-space: pre-wrap;
+}
+.row-actions a.danger { color: var(--color-danger); }
+#col-list label {
+  display: flex; align-items: center; gap: 6px;
+  padding: 6px 0; font-size: 13px;
+}
+</style>
+
+<script src="../assets/js/proto.js"></script>
+<script src="../assets/js/admin-shell.js"></script>
+<script>
+(function () {
+  // ===== Mask / drawer / modal =====
+  var mask = document.getElementById("mask");
+  function closeAll() {
+    mask.classList.remove("open");
+    document.querySelectorAll(".proto-modal, .proto-drawer").forEach(function (n) { n.classList.remove("open"); });
+  }
+  function open(node) { mask.classList.add("open"); node.classList.add("open"); }
+  mask.addEventListener("click", closeAll);
+  document.querySelectorAll("[data-close]").forEach(function (n) { n.addEventListener("click", closeAll); });
+
+  // ===== Row data =====
+  function rowData(tr) {
+    var tds = tr.querySelectorAll("td");
+    return {
+      name: tds[0] ? tds[0].textContent.trim() : "",
+      type: tds[1] ? tds[1].textContent.trim() : "",
+      status: tds[2] ? tds[2].textContent.trim() : "",
+      rate: tds[3] ? tds[3].textContent.trim() : "",
+      time: tds[4] ? tds[4].textContent.trim() : "—",
+      updater: tds[5] ? tds[5].textContent.trim() : "",
+      updated: tds[6] ? tds[6].textContent.trim() : "",
+    };
+  }
+
+  // ===== Detail =====
+  function fillDetail(d) {
+    document.getElementById("mdg-title").textContent = "群发任务详情 · " + d.name;
+    document.getElementById("mdg-name").textContent = d.name;
+    document.getElementById("mdg-type").textContent = d.type;
+    document.getElementById("mdg-status").textContent = d.status;
+    document.getElementById("mdg-time").textContent = d.time;
+    document.getElementById("mdg-updater").textContent = d.updater;
+    document.getElementById("mdg-updated").textContent = d.updated;
+    document.getElementById("mdg-content").textContent = "Hi 春启03群，资料包更新了，点击下载...";
+    var parts = d.rate.match(/(\d+)\/(\d+)\s*\((\d+)%\)/);
+    if (parts) {
+      document.getElementById("mdg-total").textContent = parts[2];
+      document.getElementById("mdg-sent").textContent = parts[1];
+      document.getElementById("mdg-read").textContent = parts[1];
+      document.getElementById("mdg-rate").textContent = parts[3] + "%";
+    } else {
+      document.getElementById("mdg-total").textContent = "—";
+      document.getElementById("mdg-sent").textContent = "—";
+      document.getElementById("mdg-read").textContent = "—";
+      document.getElementById("mdg-rate").textContent = "—";
+    }
+    open(document.getElementById("drawer-detail"));
+  }
+
+  // ===== Row actions =====
+  document.querySelectorAll("#mg-tbody tr").forEach(function (tr) {
+    tr.querySelectorAll("[data-row-act]").forEach(function (a) {
+      a.addEventListener("click", function (e) {
+        e.preventDefault();
+        var act = a.getAttribute("data-row-act");
+        var d = rowData(tr);
+        if (act === "detail") fillDetail(d);
+        else if (act === "remind") Proto.toast("已提醒群主（原型）");
+        else if (act === "copy") Proto.toast("已复制任务（原型）");
+        else if (act === "edit") open(document.getElementById("modal-create"));
+        else if (act === "publish") Proto.toast("任务已发布（原型）");
+        else if (act === "del") {
+          if (confirm("确认删除「" + d.name + "」?")) {
+            tr.remove();
+            Proto.toast("已删除（原型）");
+          }
+        }
+      });
+    });
+  });
+
+  // ===== Create =====
+  document.getElementById("btn-create").addEventListener("click", function () { open(document.getElementById("modal-create")); });
+  document.getElementById("cmg-submit").addEventListener("click", function () {
+    var n = document.getElementById("cmg-name").value.trim();
+    var m = document.getElementById("cmg-msg").value.trim();
+    if (!n) { Proto.toast("请输入任务名称"); return; }
+    if (!m) { Proto.toast("请输入消息内容"); return; }
+    closeAll(); Proto.toast("群发任务已创建（原型）");
+  });
+  document.getElementById("cmg-save-draft").addEventListener("click", function () {
+    var n = document.getElementById("cmg-name").value.trim();
+    if (!n) { Proto.toast("请输入任务名称"); return; }
+    closeAll(); Proto.toast("已存为草稿（原型）");
+  });
+
+  // ===== Other buttons =====
+  document.getElementById("mdg-export").addEventListener("click", function () { Proto.toast("已导出明细（原型）"); });
+  document.getElementById("btn-export").addEventListener("click", function () { Proto.toast("已导出（原型）"); });
+  document.getElementById("btn-query").addEventListener("click", function () { Proto.toast("已查询（原型）"); });
+  document.getElementById("btn-reset").addEventListener("click", function () {
+    document.getElementById("f-name").value = "";
+    ["f-status","f-updater"].forEach(function (id) { document.getElementById(id).value = ""; });
+    document.getElementById("f-time1").value = "";
+    document.getElementById("f-time2").value = "";
+    Proto.toast("已重置");
+  });
+  document.getElementById("btn-col").addEventListener("click", function () { open(document.getElementById("drawer-col")); });
+  document.getElementById("col-apply").addEventListener("click", function () { closeAll(); Proto.toast("列展示已应用（原型）"); });
+  document.getElementById("btn-next").addEventListener("click", function () {
+    var inp = document.getElementById("pg-input");
+    inp.value = parseInt(inp.value || 1) + 1;
+    Proto.toast("已跳转第 " + inp.value + " 页（原型）");
+  });
+})();
+</script>
+</body>
+</html>

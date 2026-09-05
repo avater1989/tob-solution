@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>支付结果 · To-B 小程序</title>
+  <link rel="stylesheet" href="../assets/css/proto.css" />
+</head>
+<body class="mp-page" data-tabbar="0">
+  <div class="mp-frame">
+    <div class="mp-status"><span>9:41</span><span>支付</span><span>100%</span></div>
+    <div class="mp-nav">支付结果</div>
+    <div class="mp-body">
+      <div style="padding:48px 24px;text-align:center">
+        <div style="width:64px;height:64px;border-radius:50%;background:#d1fae5;color:#059669;display:grid;place-items:center;margin:0 auto;font-size:28px">✓</div>
+        <h3 style="margin-top:16px;font-size:20px">支付成功</h3>
+        <p style="font-size:13px;color:#888;margin-top:8px" id="pay-desc">权益已开通 · 资金进入艺博备付金待分账（示意）</p>
+        <div style="margin-top:28px">
+          <a class="mp-btn" href="learn.html" id="go-learn">去学习</a>
+          <a class="mp-btn mp-btn-outline" href="mine.html" style="margin-top:10px">返回我的</a>
+          <a class="mp-btn mp-btn-outline" href="live-room.html" style="margin-top:10px" id="go-live">返回直播间</a>
+        </div>
+      </div>
+    </div>
+  </div>
+  <p class="mp-hint"><a href="../admin/orders.html">管理端订单</a></p>
+  <script src="../assets/js/proto.js"></script>
+  <script src="../assets/js/mp-shell.js"></script>
+  <script>
+    var params = new URLSearchParams(location.search);
+    var from = params.get("from") || "course";
+    var desc = document.getElementById("pay-desc");
+    var goLive = document.getElementById("go-live");
+    var goLearn = document.getElementById("go-learn");
+    if (from === "live" || from === "ticket") {
+      desc.textContent = "直播/课程权益已开通 · 可返回直播间继续观看";
+      goLearn.style.display = from === "live" ? "block" : "none";
+    } else {
+      goLive.style.display = "none";
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,353 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>渠道管理 · 艺博 To-B</title>
+<link rel="stylesheet" href="../assets/css/proto.css" />
+</head>
+<body class="admin-body" data-module="scrm" data-nav="channel-mgmt" data-title="渠道管理" data-crumb="SCRM / 业务设置 / 渠道管理">
+<div id="header-actions">
+  <button class="btn btn-primary" id="btn-create">新增渠道</button>
+</div>
+<div id="page-content" style="display:none">
+
+  <!-- 筛选 -->
+  <div class="card" style="margin-bottom:8px"><div class="card-bd">
+    <div class="form-grid" style="grid-template-columns:repeat(4,minmax(0,1fr));gap:8px 12px">
+      <input id="f-code" placeholder="请输入" />
+      <input id="f-name" placeholder="请输入" />
+      <select id="f-type">
+        <option value="">渠道类型</option>
+        <option>线上</option>
+        <option>线下</option>
+      </select>
+      <select id="f-status">
+        <option value="">状态</option>
+        <option>启用</option>
+        <option>停用</option>
+      </select>
+    </div>
+    <div class="toolbar" style="margin-top:8px">
+      <button class="btn btn-primary" id="btn-query">查询</button>
+      <button class="btn" id="btn-reset">重置</button>
+      <div class="spacer"></div>
+      <button class="btn" id="btn-col">列展示</button>
+    </div>
+  </div></div>
+
+  <!-- 表格 -->
+  <div class="card"><div class="card-bd" style="padding:0">
+    <table class="data">
+      <thead>
+        <tr>
+          <th>渠道编码</th>
+          <th>渠道名称</th>
+          <th>渠道类型</th>
+          <th>排序号</th>
+          <th>状态</th>
+          <th>更新人</th>
+          <th>更新时间</th>
+          <th style="width:160px">操作</th>
+        </tr>
+      </thead>
+      <tbody id="ch-tbody">
+        <tr>
+          <td>APP</td>
+          <td>艺博 APP</td>
+          <td><span class="tag tag-blue">线上</span></td>
+          <td>1</td>
+          <td><span class="badge badge-success">启用</span></td>
+          <td>阮荣均</td><td>2026-03-29 10:22</td>
+          <td class="row-actions">
+            <a href="#" data-row-act="edit">修改</a>
+            <a href="#" data-row-act="del" class="danger">删除</a>
+          </td>
+        </tr>
+        <tr>
+          <td>video</td>
+          <td>视频号</td>
+          <td><span class="tag tag-blue">线上</span></td>
+          <td>2</td>
+          <td><span class="badge badge-success">启用</span></td>
+          <td>阮荣均</td><td>2026-03-28 18:30</td>
+          <td class="row-actions">
+            <a href="#" data-row-act="edit">修改</a>
+            <a href="#" data-row-act="del" class="danger">删除</a>
+          </td>
+        </tr>
+        <tr>
+          <td>live</td>
+          <td>直播小程序</td>
+          <td><span class="tag tag-blue">线上</span></td>
+          <td>3</td>
+          <td><span class="badge badge-success">启用</span></td>
+          <td>赵老师</td><td>2026-03-25 14:30</td>
+          <td class="row-actions">
+            <a href="#" data-row-act="edit">修改</a>
+            <a href="#" data-row-act="del" class="danger">删除</a>
+          </td>
+        </tr>
+        <tr>
+          <td>xhs</td>
+          <td>小红书</td>
+          <td><span class="tag tag-blue">线上</span></td>
+          <td>4</td>
+          <td><span class="badge badge-success">启用</span></td>
+          <td>王助教</td><td>2026-03-25 14:30</td>
+          <td class="row-actions">
+            <a href="#" data-row-act="edit">修改</a>
+            <a href="#" data-row-act="del" class="danger">删除</a>
+          </td>
+        </tr>
+        <tr>
+          <td>douyin</td>
+          <td>抖音</td>
+          <td><span class="tag tag-blue">线上</span></td>
+          <td>5</td>
+          <td><span class="badge">停用</span></td>
+          <td>刘助教</td><td>2026-03-20 09:18</td>
+          <td class="row-actions">
+            <a href="#" data-row-act="edit">修改</a>
+            <a href="#" data-row-act="del" class="danger">删除</a>
+          </td>
+        </tr>
+        <tr>
+          <td>offline</td>
+          <td>线下推广</td>
+          <td><span class="tag tag-orange">线下</span></td>
+          <td>6</td>
+          <td><span class="badge badge-success">启用</span></td>
+          <td>王助教</td><td>2026-03-18 16:00</td>
+          <td class="row-actions">
+            <a href="#" data-row-act="edit">修改</a>
+            <a href="#" data-row-act="del" class="danger">删除</a>
+          </td>
+        </tr>
+        <tr>
+          <td>BD</td>
+          <td>业务系统</td>
+          <td><span class="tag tag-purple">线下</span></td>
+          <td>7</td>
+          <td><span class="badge badge-success">启用</span></td>
+          <td>陈奕均</td><td>2026-03-15 11:30</td>
+          <td class="row-actions">
+            <a href="#" data-row-act="edit">修改</a>
+            <a href="#" data-row-act="del" class="danger">删除</a>
+          </td>
+        </tr>
+        <tr>
+          <td>agent</td>
+          <td>代理商小程序</td>
+          <td><span class="tag tag-blue">线上</span></td>
+          <td>8</td>
+          <td><span class="badge">停用</span></td>
+          <td>陈奕均</td><td>2026-03-10 14:22</td>
+          <td class="row-actions">
+            <a href="#" data-row-act="edit">修改</a>
+            <a href="#" data-row-act="del" class="danger">删除</a>
+          </td>
+        </tr>
+        <tr>
+          <td>web</td>
+          <td>官网 App</td>
+          <td><span class="tag tag-blue">线上</span></td>
+          <td>9</td>
+          <td><span class="badge badge-success">启用</span></td>
+          <td>阮荣均</td><td>2026-03-08 10:00</td>
+          <td class="row-actions">
+            <a href="#" data-row-act="edit">修改</a>
+            <a href="#" data-row-act="del" class="danger">删除</a>
+          </td>
+        </tr>
+        <tr>
+          <td>ta</td>
+          <td>螳螂直播</td>
+          <td><span class="tag tag-blue">线上</span></td>
+          <td>10</td>
+          <td><span class="badge">停用</span></td>
+          <td>赵老师</td><td>2026-03-05 09:00</td>
+          <td class="row-actions">
+            <a href="#" data-row-act="edit">修改</a>
+            <a href="#" data-row-act="del" class="danger">删除</a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div></div>
+  <!-- 分页 -->
+  <div class="toolbar" style="margin-top:8px">
+    <span class="muted">共 <b>10</b> 条</span>
+    <div class="spacer"></div>
+    <button class="btn btn-sm" disabled>上一页</button>
+    <button class="btn btn-sm" id="btn-next">下一页</button>
+    <span class="muted" style="margin-left:8px">第</span>
+    <input id="pg-input" type="number" min="1" value="1" style="width:60px" />
+    <span class="muted">页</span>
+    <select id="pg-size" style="margin-left:8px">
+      <option>10条/页</option><option selected>20条/页</option>
+      <option>30条/页</option><option>50条/页</option>
+    </select>
+  </div>
+</div>
+
+<!-- ============ 弹窗 ============ -->
+<div class="proto-mask" id="mask"></div>
+
+<!-- 新增 / 修改 渠道弹窗 -->
+<div class="proto-modal" id="modal-create" style="width:520px">
+  <div class="proto-modal-hd">
+    <h3 id="cm-title" style="font-size:16px;font-weight:600">新增渠道</h3>
+    <button class="btn btn-sm btn-ghost" data-close>×</button>
+  </div>
+  <div class="proto-modal-bd">
+    <div class="form-grid">
+      <div class="field"><label>渠道编码 *</label><input id="cm-code" placeholder="如：APP / video / live" /></div>
+      <div class="field"><label>渠道名称 *</label><input id="cm-name" placeholder="如：艺博 APP" /></div>
+      <div class="field"><label>渠道类型 *</label>
+        <select id="cm-type">
+          <option>线上</option>
+          <option>线下</option>
+        </select>
+      </div>
+      <div class="field"><label>排序号</label><input id="cm-sort" type="number" value="1" /></div>
+      <div class="field"><label>状态</label>
+        <select id="cm-status">
+          <option>启用</option>
+          <option>停用</option>
+        </select>
+      </div>
+      <div class="field" style="grid-column:1/-1"><label>说明</label>
+        <textarea rows="2" style="width:100%;padding:8px;border:1px solid var(--color-border);border-radius:6px" placeholder="选填"></textarea>
+      </div>
+    </div>
+  </div>
+  <div class="proto-modal-ft">
+    <button class="btn" data-close>取消</button>
+    <button class="btn btn-primary" id="cm-submit">保存</button>
+  </div>
+</div>
+
+<!-- 列展示抽屉 -->
+<div class="proto-drawer" id="drawer-col" style="width:340px">
+  <div class="proto-drawer-hd">
+    <h3>列展示</h3>
+    <button class="btn btn-sm btn-ghost" data-close>×</button>
+  </div>
+  <div class="proto-drawer-bd">
+    <div id="col-list">
+      <label><input type="checkbox" checked> 渠道编码</label>
+      <label><input type="checkbox" checked> 渠道名称</label>
+      <label><input type="checkbox" checked> 渠道类型</label>
+      <label><input type="checkbox" checked> 排序号</label>
+      <label><input type="checkbox" checked> 更新人</label>
+      <label><input type="checkbox" checked> 更新时间</label>
+      <label><input type="checkbox" checked> 状态</label>
+    </div>
+  </div>
+  <div class="proto-drawer-ft">
+    <button class="btn" data-close>取消</button>
+    <button class="btn btn-primary" id="col-apply">应用</button>
+  </div>
+</div>
+
+<style>
+.tag { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 12px; }
+.tag-blue { background: #e8f3ff; color: #165dff; }
+.tag-orange { background: #fff7e8; color: #ff7d00; }
+.tag-purple { background: #f4eaff; color: #722ed1; }
+.row-actions a.danger { color: var(--color-danger); }
+#col-list label {
+  display: flex; align-items: center; gap: 6px;
+  padding: 6px 0; font-size: 13px;
+}
+</style>
+
+<script src="../assets/js/proto.js"></script>
+<script src="../assets/js/admin-shell.js"></script>
+<script>
+(function () {
+  // ===== Mask / modal =====
+  var mask = document.getElementById("mask");
+  function closeAll() {
+    mask.classList.remove("open");
+    document.querySelectorAll(".proto-modal, .proto-drawer").forEach(function (n) { n.classList.remove("open"); });
+  }
+  function open(node) { mask.classList.add("open"); node.classList.add("open"); }
+  mask.addEventListener("click", closeAll);
+  document.querySelectorAll("[data-close]").forEach(function (n) { n.addEventListener("click", closeAll); });
+
+  // ===== Row data =====
+  function rowData(tr) {
+    var tds = tr.querySelectorAll("td");
+    return {
+      code: tds[0] ? tds[0].textContent.trim() : "",
+      name: tds[1] ? tds[1].textContent.trim() : "",
+      type: tds[2] ? tds[2].textContent.trim() : "",
+      sort: tds[3] ? tds[3].textContent.trim() : "1",
+      status: tds[4] ? tds[4].textContent.trim() : "",
+      updater: tds[5] ? tds[5].textContent.trim() : "",
+      updated: tds[6] ? tds[6].textContent.trim() : "",
+    };
+  }
+
+  // ===== Row actions =====
+  document.querySelectorAll("#ch-tbody tr").forEach(function (tr) {
+    tr.querySelectorAll("[data-row-act]").forEach(function (a) {
+      a.addEventListener("click", function (e) {
+        e.preventDefault();
+        var act = a.getAttribute("data-row-act");
+        var d = rowData(tr);
+        if (act === "edit") {
+          document.getElementById("cm-title").textContent = "修改渠道 · " + d.name;
+          document.getElementById("cm-code").value = d.code;
+          document.getElementById("cm-name").value = d.name;
+          document.getElementById("cm-type").value = d.type;
+          document.getElementById("cm-sort").value = d.sort;
+          open(document.getElementById("modal-create"));
+        } else if (act === "del") {
+          if (confirm("确认删除渠道「" + d.name + "」?")) {
+            tr.remove();
+            Proto.toast("已删除（原型）");
+          }
+        }
+      });
+    });
+  });
+
+  // ===== Create =====
+  document.getElementById("btn-create").addEventListener("click", function () {
+    document.getElementById("cm-title").textContent = "新增渠道";
+    document.getElementById("cm-code").value = "";
+    document.getElementById("cm-name").value = "";
+    document.getElementById("cm-type").value = "线上";
+    document.getElementById("cm-sort").value = "1";
+    open(document.getElementById("modal-create"));
+  });
+  document.getElementById("cm-submit").addEventListener("click", function () {
+    var code = document.getElementById("cm-code").value.trim();
+    var name = document.getElementById("cm-name").value.trim();
+    if (!code) { Proto.toast("请输入渠道编码"); return; }
+    if (!name) { Proto.toast("请输入渠道名称"); return; }
+    closeAll(); Proto.toast("已保存（原型）");
+  });
+
+  // ===== Other buttons =====
+  document.getElementById("btn-query").addEventListener("click", function () { Proto.toast("已查询（原型）"); });
+  document.getElementById("btn-reset").addEventListener("click", function () {
+    document.getElementById("f-code").value = "";
+    document.getElementById("f-name").value = "";
+    ["f-type","f-status"].forEach(function (id) { document.getElementById(id).value = ""; });
+    Proto.toast("已重置");
+  });
+  document.getElementById("btn-col").addEventListener("click", function () { open(document.getElementById("drawer-col")); });
+  document.getElementById("col-apply").addEventListener("click", function () { closeAll(); Proto.toast("列展示已应用（原型）"); });
+  document.getElementById("btn-next").addEventListener("click", function () {
+    var inp = document.getElementById("pg-input");
+    inp.value = parseInt(inp.value || 1) + 1;
+    Proto.toast("已跳转第 " + inp.value + " 页（原型）");
+  });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,461 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>直播预告页 · 艺博 To-B</title>
+<link rel="stylesheet" href="../assets/css/proto.css" />
+</head>
+<body class="admin-body" data-module="live" data-nav="live-preview" data-title="直播预告页（C 端预览）" data-cbar="直播 / 直播管理 / 直播预告页">
+<div id="header-actions">
+  <button class="btn" id="btn-qr">扫码访问</button>
+  <button class="btn" id="btn-link">复制链接</button>
+</div>
+<div id="page-content" style="display:none">
+
+  <!-- 顶部说明 -->
+  <div class="alert alert-info" style="margin-bottom:16px">
+    <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+    <span>这是 <b>C 端用户</b> 在直播<b>开始前</b>看到的预告页（移动端样式），用户可在该页预约 / 订阅开播提醒 / 分享裂变。</span>
+  </div>
+
+  <div class="preview-layout">
+
+    <!-- 左侧：移动端预览 -->
+    <div class="preview-mobile-wrap">
+      <div class="preview-mobile">
+        <!-- 状态栏 -->
+        <div class="m-status">
+          <span>9:41</span>
+          <div class="m-status-icons">
+            <span>●●●</span>
+            <span>📶</span>
+            <span>🔋</span>
+          </div>
+        </div>
+        <!-- 顶部渐变 banner -->
+        <div class="m-hero">
+          <div class="m-hero-bg"></div>
+          <div class="m-live-tag">预告</div>
+          <div class="m-hero-title">春启 03 期家长公开课</div>
+          <div class="m-hero-sub">阮荣均老师 · 视频直播 · 传统直播间</div>
+        </div>
+
+        <!-- 倒计时 -->
+        <div class="m-countdown">
+          <div class="m-countdown-label">距离直播开始还有</div>
+          <div class="m-countdown-grid">
+            <div class="m-cd-cell"><div class="m-cd-num" id="m-cd-day">02</div><div class="m-cd-unit">天</div></div>
+            <div class="m-cd-cell"><div class="m-cd-num" id="m-cd-hr">14</div><div class="m-cd-unit">时</div></div>
+            <div class="m-cd-cell"><div class="m-cd-num" id="m-cd-min">28</div><div class="m-cd-unit">分</div></div>
+            <div class="m-cd-cell"><div class="m-cd-num" id="m-cd-sec">36</div><div class="m-cd-unit">秒</div></div>
+          </div>
+        </div>
+
+        <!-- 主讲信息 -->
+        <div class="m-teacher">
+          <div class="m-teacher-avatar">阮</div>
+          <div class="m-teacher-info">
+            <div class="m-teacher-name">阮荣均 <span class="m-teacher-tag">认证讲师</span></div>
+            <div class="m-teacher-meta">亲子沟通专家 · 已开设 28 场直播</div>
+          </div>
+          <button class="m-follow-btn">+ 关注</button>
+        </div>
+
+        <!-- 直播介绍 -->
+        <div class="m-section">
+          <div class="m-section-title">直播介绍</div>
+          <div class="m-section-text">本期家长公开课聚焦"亲子沟通 3 步法"，结合真实案例拆解如何与孩子建立有效对话。适合 6-12 岁孩子家长，主讲老师阮荣均将分享 10 年亲子咨询实战经验。</div>
+        </div>
+
+        <!-- 主讲课程 -->
+        <div class="m-section">
+          <div class="m-section-title">主讲课程</div>
+          <div class="m-course-card">
+            <div class="m-course-cover"></div>
+            <div class="m-course-info">
+              <div class="m-course-name">春启 03 期家长必修课</div>
+              <div class="m-course-meta">¥298 · 6 节 · 1.2 万人学过</div>
+            </div>
+            <button class="m-course-btn">查看</button>
+          </div>
+        </div>
+
+        <!-- 操作按钮 -->
+        <div class="m-actions">
+          <button class="m-action-btn m-action-primary" id="m-btn-book">预约直播</button>
+          <button class="m-action-btn" id="m-btn-sub">开播提醒我</button>
+        </div>
+        <div class="m-share-row">
+          <button class="m-share-btn" data-share="wechat"><span class="m-share-ico">💬</span>微信</button>
+          <button class="m-share-btn" data-share="moments"><span class="m-share-ico">⭕</span>朋友圈</button>
+          <button class="m-share-btn" data-share="copy"><span class="m-share-ico">🔗</span>复制链接</button>
+          <button class="m-share-btn" data-share="poster"><span class="m-share-ico">🖼️</span>生成海报</button>
+        </div>
+
+        <!-- 已预约列表预览 -->
+        <div class="m-section">
+          <div class="m-section-title">已预约 <b style="color:#ff7875">286</b> 人</div>
+          <div class="m-booker-avatars">
+            <div class="m-booker-avatar" style="background:#165dff">张</div>
+            <div class="m-booker-avatar" style="background:#00b42a">李</div>
+            <div class="m-booker-avatar" style="background:#722ed1">王</div>
+            <div class="m-booker-avatar" style="background:#fa8c16">周</div>
+            <div class="m-booker-avatar" style="background:#f53f3f">陈</div>
+            <div class="m-booker-more">+281</div>
+          </div>
+        </div>
+
+        <div class="m-bottom-pad"></div>
+        <!-- 底部 home indicator -->
+        <div class="m-home"></div>
+      </div>
+    </div>
+
+    <!-- 右侧：编辑面板 -->
+    <div class="preview-side">
+      <div class="card">
+        <div class="card-hd"><span class="card-title">📋 页面说明</span></div>
+        <div class="card-bd">
+          <p style="margin:0 0 8px">本页面是 C 端用户在直播<b>未开始</b>时看到的预告页。用户可在此：</p>
+          <ul class="preview-list">
+            <li>查看直播倒计时</li>
+            <li>了解主讲老师和课程内容</li>
+            <li>预约直播（开播前 1 小时提醒）</li>
+            <li>订阅开播提醒</li>
+            <li>分享给好友（携带邀请关系）</li>
+            <li>查看已预约用户</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-hd"><span class="card-title">📊 当前页面关键数据</span></div>
+        <div class="card-bd">
+          <div class="kpi-row">
+            <div class="kpi-card">
+              <div class="kpi-label">页面访问 PV</div>
+              <div class="kpi-value">2,486</div>
+              <div class="kpi-sub">较昨日 +12%</div>
+            </div>
+            <div class="kpi-card">
+              <div class="kpi-label">预约转化率</div>
+              <div class="kpi-value" style="color:#00b42a">11.5%</div>
+              <div class="kpi-sub">286 / 2,486</div>
+            </div>
+          </div>
+          <div class="kpi-row">
+            <div class="kpi-card">
+              <div class="kpi-label">分享次数</div>
+              <div class="kpi-value">428</div>
+              <div class="kpi-sub">人均分享 0.17 次</div>
+            </div>
+            <div class="kpi-card">
+              <div class="kpi-label">邀请带来新预约</div>
+              <div class="kpi-value" style="color:#fa8c16">68</div>
+              <div class="kpi-sub">占预约 23.8%</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-hd"><span class="card-title">⚙️ 页面配置</span></div>
+        <div class="card-bd">
+          <div class="form-grid" style="grid-template-columns:1fr 1fr">
+            <div class="field"><label>背景图</label><button class="btn btn-block" style="background:#165dff;color:#fff;border-color:#165dff">更换封面</button></div>
+            <div class="field"><label>直播介绍</label><button class="btn btn-block">编辑文案</button></div>
+            <div class="field" style="grid-column:1/-1"><label>关联课程</label>
+              <select><option>春启 03 期家长必修课</option><option>不关联</option></select>
+            </div>
+            <div class="field"><label>主推讲师</label>
+              <select><option>阮荣均</option><option>赵老师</option></select>
+            </div>
+            <div class="field"><label>分享海报模板</label>
+              <select><option>标准版</option><option>简约版</option><option>课程展示版</option></select>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<style>
+.alert { display: flex; align-items: center; gap: 8px; padding: 10px 14px; border-radius: 6px; font-size: 13px; }
+.alert-info { background: #e6f0ff; color: #165dff; border: 1px solid #adc8ff; }
+
+.preview-layout { display: grid; grid-template-columns: 380px 1fr; gap: 16px; }
+.preview-side { display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+.preview-list { padding-left: 18px; margin: 0; color: #4e5969; font-size: 13px; line-height: 24px; }
+
+/* KPI */
+.kpi-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px; }
+.kpi-row:last-child { margin-bottom: 0; }
+.kpi-card { background: #f7f8fa; padding: 10px 12px; border-radius: 6px; }
+.kpi-label { font-size: 12px; color: #86909c; }
+.kpi-value { font-size: 20px; font-weight: 700; color: #1d2129; margin: 4px 0 2px; line-height: 1; }
+.kpi-sub { font-size: 11px; color: #86909c; }
+
+.btn-block { width: 100%; }
+
+/* ====== 手机预览 ====== */
+.preview-mobile-wrap {
+  display: flex; justify-content: center;
+  background: #f0f2f5;
+  border-radius: 12px;
+  padding: 16px;
+  position: sticky; top: 16px; align-self: start;
+}
+.preview-mobile {
+  width: 320px; min-height: 640px;
+  background: #fff;
+  border-radius: 28px;
+  border: 8px solid #1d2129;
+  box-shadow: 0 20px 50px rgba(0,0,0,.18);
+  overflow: hidden;
+  display: flex; flex-direction: column;
+  position: relative;
+}
+.m-status {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 6px 18px; font-size: 13px; font-weight: 600;
+  background: #1d2129; color: #fff;
+}
+.m-status-icons { display: flex; gap: 4px; font-size: 11px; }
+.m-home {
+  position: absolute; bottom: 6px; left: 50%; transform: translateX(-50%);
+  width: 120px; height: 4px; border-radius: 2px;
+  background: rgba(0,0,0,.3);
+}
+.m-bottom-pad { height: 24px; }
+
+/* 顶部 banner */
+.m-hero {
+  position: relative; height: 200px;
+  background: linear-gradient(135deg,#165dff,#722ed1);
+  padding: 20px 18px; color: #fff;
+  overflow: hidden;
+}
+.m-hero-bg {
+  position: absolute; inset: 0;
+  background: radial-gradient(circle at 80% 20%, rgba(255,255,255,.2), transparent 60%);
+}
+.m-live-tag {
+  display: inline-block; padding: 3px 10px; border-radius: 4px;
+  background: rgba(255,255,255,.25);
+  font-size: 11px; font-weight: 500;
+  backdrop-filter: blur(8px);
+  position: relative;
+}
+.m-hero-title {
+  font-size: 18px; font-weight: 700; line-height: 1.4;
+  margin-top: 16px; position: relative;
+}
+.m-hero-sub {
+  font-size: 12px; opacity: .85;
+  margin-top: 8px; position: relative;
+}
+
+/* 倒计时 */
+.m-countdown {
+  padding: 14px 18px;
+  background: #fff7e6; text-align: center;
+  border-bottom: 1px solid #ffe7ba;
+}
+.m-countdown-label { font-size: 12px; color: #d48806; margin-bottom: 8px; }
+.m-countdown-grid { display: flex; gap: 8px; justify-content: center; }
+.m-cd-cell {
+  flex: 1;
+  background: #d48806; color: #fff;
+  padding: 8px 0; border-radius: 6px;
+}
+.m-cd-num { font-size: 22px; font-weight: 700; font-family: monospace; line-height: 1; }
+.m-cd-unit { font-size: 10px; opacity: .85; margin-top: 2px; }
+
+/* 主讲 */
+.m-teacher {
+  display: flex; align-items: center; gap: 10px;
+  padding: 12px 16px; border-bottom: 1px solid #f0f2f5;
+}
+.m-teacher-avatar {
+  width: 40px; height: 40px; border-radius: 50%;
+  background: linear-gradient(135deg,#165dff,#722ed1);
+  color: #fff; font-weight: 600; font-size: 16px;
+  display: flex; align-items: center; justify-content: center;
+}
+.m-teacher-info { flex: 1; }
+.m-teacher-name {
+  font-size: 14px; font-weight: 600; color: #1d2129;
+  display: flex; align-items: center; gap: 6px;
+}
+.m-teacher-tag {
+  font-size: 10px; padding: 1px 6px; border-radius: 3px;
+  background: #e6f0ff; color: #165dff; font-weight: 500;
+}
+.m-teacher-meta { font-size: 11px; color: #86909c; margin-top: 2px; }
+.m-follow-btn {
+  padding: 5px 14px; border-radius: 16px;
+  background: #165dff; color: #fff;
+  border: none; font-size: 12px; cursor: pointer;
+}
+
+/* 段落 */
+.m-section {
+  padding: 14px 16px;
+  border-bottom: 1px solid #f0f2f5;
+}
+.m-section-title {
+  font-size: 13px; font-weight: 600; color: #1d2129;
+  margin-bottom: 8px;
+}
+.m-section-text {
+  font-size: 12px; color: #4e5969; line-height: 1.7;
+}
+
+.m-course-card {
+  display: flex; align-items: center; gap: 10px;
+  padding: 8px; background: #f7f8fa; border-radius: 8px;
+}
+.m-course-cover {
+  width: 48px; height: 48px; border-radius: 6px;
+  background: linear-gradient(135deg,#165dff,#4080ff);
+  flex-shrink: 0;
+}
+.m-course-info { flex: 1; min-width: 0; }
+.m-course-name {
+  font-size: 12px; font-weight: 500; color: #1d2129;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.m-course-meta { font-size: 11px; color: #fa8c16; margin-top: 2px; }
+.m-course-btn {
+  padding: 4px 10px; border-radius: 4px;
+  background: #f0f2f5; color: #1d2129;
+  border: none; font-size: 11px; cursor: pointer;
+}
+
+/* 操作按钮 */
+.m-actions {
+  display: flex; gap: 8px;
+  padding: 14px 16px;
+}
+.m-action-btn {
+  flex: 1; padding: 10px;
+  border-radius: 22px;
+  border: none; font-size: 13px; font-weight: 500;
+  cursor: pointer;
+}
+.m-action-primary {
+  background: linear-gradient(135deg,#ff7a45,#ff4d4f);
+  color: #fff;
+}
+.m-action-primary:hover { box-shadow: 0 4px 12px rgba(255,77,79,.3); }
+.m-action-btn:not(.m-action-primary) {
+  background: #f7f8fa; color: #1d2129;
+}
+
+.m-share-row {
+  display: flex; gap: 8px;
+  padding: 0 16px 14px;
+  border-bottom: 1px solid #f0f2f5;
+}
+.m-share-btn {
+  flex: 1; display: flex; flex-direction: column;
+  align-items: center; gap: 4px;
+  padding: 8px 0;
+  background: transparent;
+  border: 1px solid #f0f2f5;
+  border-radius: 6px;
+  cursor: pointer;
+}
+.m-share-ico { font-size: 18px; }
+.m-share-btn span:last-child { font-size: 11px; color: #4e5969; }
+
+/* 已预约头像 */
+.m-booker-avatars {
+  display: flex; align-items: center;
+}
+.m-booker-avatar {
+  width: 28px; height: 28px; border-radius: 50%;
+  color: #fff; font-size: 11px; font-weight: 600;
+  display: flex; align-items: center; justify-content: center;
+  border: 2px solid #fff;
+  margin-left: -6px;
+}
+.m-booker-avatar:first-child { margin-left: 0; }
+.m-booker-more {
+  margin-left: 6px; padding: 2px 8px;
+  background: #f0f2f5; color: #4e5969;
+  font-size: 11px; border-radius: 14px;
+}
+</style>
+
+<script src="../assets/js/proto.js"></script>
+<script src="../assets/js/admin-shell.js"></script>
+<script>
+(function () {
+  // ===== Countdown =====
+  var target = new Date();
+  target.setDate(target.getDate() + 2);
+  target.setHours(target.getHours() + 14);
+  target.setMinutes(target.getMinutes() + 28);
+  target.setSeconds(target.getSeconds() + 36);
+
+  function tick() {
+    var now = new Date();
+    var diff = Math.max(0, Math.floor((target - now) / 1000));
+    var d = Math.floor(diff / 86400);
+    var h = Math.floor((diff % 86400) / 3600);
+    var m = Math.floor((diff % 3600) / 60);
+    var s = diff % 60;
+    var pad = function (n) { return n < 10 ? "0" + n : "" + n; };
+    document.getElementById("m-cd-day").textContent = pad(d);
+    document.getElementById("m-cd-hr").textContent  = pad(h);
+    document.getElementById("m-cd-min").textContent  = pad(m);
+    document.getElementById("m-cd-sec").textContent  = pad(s);
+  }
+  tick();
+  setInterval(tick, 1000);
+
+  // ===== Book =====
+  var booked = false;
+  document.getElementById("m-btn-book").addEventListener("click", function () {
+    booked = !booked;
+    this.textContent = booked ? "✓ 已预约" : "预约直播";
+    this.style.background = booked ? "#00b42a" : "";
+    Proto.toast(booked ? "已预约，开播前 1 小时会提醒您" : "已取消预约");
+  });
+
+  // ===== Subscribe =====
+  var subscribed = true;
+  document.getElementById("m-btn-sub").addEventListener("click", function () {
+    subscribed = !subscribed;
+    this.textContent = subscribed ? "🔔 已提醒" : "开播提醒我";
+    this.style.color = subscribed ? "#165dff" : "";
+  });
+
+  // ===== Follow =====
+  var followed = false;
+  document.querySelector(".m-follow-btn").addEventListener("click", function () {
+    followed = !followed;
+    this.textContent = followed ? "✓ 已关注" : "+ 关注";
+    this.style.background = followed ? "#86909c" : "";
+  });
+
+  // ===== Share =====
+  document.querySelectorAll(".m-share-btn").forEach(function (b) {
+    b.addEventListener("click", function () {
+      var c = b.getAttribute("data-share");
+      var labels = { wechat: "微信好友", moments: "朋友圈", copy: "复制链接", poster: "生成分享海报" };
+      Proto.toast("打开" + (labels[c] || c));
+    });
+  });
+
+  // ===== Header buttons =====
+  document.getElementById("btn-qr").addEventListener("click", function () { Proto.toast("显示二维码（原型）"); });
+  document.getElementById("btn-link").addEventListener("click", function () { Proto.toast("链接已复制（原型）"); });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,31 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Orders - MVP</title>
+<link rel="stylesheet" href="../assets/css/proto.css" />
+</head>
+<body class="admin-body" data-module="trade" data-nav="orders" data-title="Orders" data-crumb="Trade / Orders">
+<div id="header-actions">
+  <button class="btn" data-toast="Demo only">Refresh</button>
+  <button class="btn btn-primary" data-toast="Demo only">Create</button>
+</div>
+<div id="page-content" style="display:none">
+  <div class="card"><div class="card-hd"><h2>Orders</h2></div>
+  <div class="card-bd">
+    <p class="muted">Trade / Orders</p>
+    <table class="data">
+      <thead><tr><th>Item</th><th>Status</th><th>Updated</th><th>Actions</th></tr></thead>
+      <tbody>
+        <tr><td>Sample row 1</td><td><span class="badge badge-success">OK</span></td><td>2026-03-29</td><td><a href="#" data-toast="Demo">Edit</a></td></tr>
+        <tr><td>Sample row 2</td><td><span class="badge badge-warn">Pending</span></td><td>2026-03-29</td><td><a href="#" data-toast="Demo">Edit</a></td></tr>
+        <tr><td>Sample row 3</td><td><span class="badge">Draft</span></td><td>2026-03-28</td><td><a href="#" data-toast="Demo">Edit</a></td></tr>
+      </tbody>
+    </table>
+  </div></div>
+</div>
+<script src="../assets/js/proto.js"></script>
+<script src="../assets/js/admin-shell.js"></script>
+</body>
+</html>

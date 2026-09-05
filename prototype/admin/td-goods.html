@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>抖店商品管理 · 艺博 To-B</title>
+<link rel="stylesheet" href="../assets/css/proto.css" />
+</head>
+<body class="admin-body" data-module="scrm" data-nav="td-goods" data-title="抖店商品管理" data-crumb="SCRM / 公域获客 / 抖店商品管理">
+<div id="header-actions">
+  <button class="btn" id="btn-import">导入抖店商品</button>
+  <button class="btn" id="btn-export">导出</button>
+</div>
+<div id="page-content" style="display:none">
+
+  <!-- Tab -->
+  <div class="tabs" id="td-tabs">
+    <a class="active" href="#goods" data-tab="goods">商品管理</a>
+    <a href="#orders" data-tab="orders">订单管理</a>
+    <a href="#sms" data-tab="sms">短信&amp;语音配置</a>
+    <a href="#shop" data-tab="shop">小店设置</a>
+  </div>
+
+  <!-- 筛选 -->
+  <div class="card" style="margin-bottom:8px"><div class="card-bd">
+    <div class="form-grid" style="grid-template-columns:repeat(6,minmax(0,1fr));gap:8px 12px">
+      <input id="f-name" placeholder="商品名称" />
+      <select id="f-shop">
+        <option value="">所属抖店</option>
+        <option>全部</option><option>艺博抖店 1</option>
+      </select>
+      <select id="f-type">
+        <option value="">商品类型</option>
+        <option>全部</option><option>短视频服务</option><option>知识服务</option><option>实物</option>
+      </select>
+      <select id="f-audit">
+        <option value="">审核状态</option>
+        <option>全部</option><option>审核通过</option><option>未提交</option><option>审核中</option><option>已驳回</option>
+      </select>
+      <select id="f-shelf">
+        <option value="">上架状态</option>
+        <option>全部</option><option>上架</option><option>下架</option><option>删除</option>
+      </select>
+      <div class="course-id">
+        <span class="muted">课程 ID</span>
+        <input id="f-course" placeholder="全部" />
+      </div>
+    </div>
+    <div class="toolbar" style="margin-top:8px">
+      <button class="btn btn-primary" id="btn-query">查询</button>
+      <button class="btn" id="btn-reset">重置</button>
+    </div>
+  </div></div>
+
+  <!-- 表格 -->
+  <div class="card"><div class="card-bd" style="padding:0">
+    <table class="data">
+      <thead>
+        <tr>
+          <th style="width:36px"><input type="checkbox" id="check-all" /></th>
+          <th style="width:60px">商品图</th>
+          <th>商品名称</th>
+          <th>关联课程</th>
+          <th>商品类型</th>
+          <th>商品审核状态</th>
+          <th>上架状态</th>
+          <th>商品创建时间</th>
+          <th style="width:280px">操作</th>
+        </tr>
+      </thead>
+      <tbody id="td-tbody">
+        <tr>
+          <td><input type="checkbox" class="row-check" /></td>
+          <td><div class="thumb td-thumb"></div></td>
+          <td>创始人 IP 尼号 · ...<br><span class="muted">ID: 3824984459...</span><br><b>¥59.9</b></td>
+          <td>
+            <div class="link-course">
+              <div class="thumb mini"></div>
+              <div>创始人 IP 尼号 + 获...<br><span class="muted">编号: 44239</span></div>
+            </div>
+          </td>
+          <td>短视频服务 / 快卡 / 其他服务</td>
+          <td><span class="status-dot status-on"></span>审核通过</td>
+          <td><span class="status-dot status-on"></span>上架</td>
+          <td>2026-06-11 11:21:44</td>
+          <td class="row-actions">
+            <a href="#" data-row-act="decrypt">解密方式</a>
+            <a href="#" data-row-act="share">分享</a>
+            <a href="#" data-row-act="edit">编辑</a>
+          </td>
+        </tr>
+        <tr>
+          <td><input type="checkbox" class="row-check" /></td>
+          <td><div class="thumb td-thumb"></div></td>
+          <td>创始人 IP 打造 定位 ...<br><span class="muted">ID: 2818346063...</span><br><b>¥59.9</b></td>
+          <td>
+            <div class="link-course">
+              <div class="thumb mini"></div>
+              <div>创始人 IP 打造定位 ...<br><span class="muted">编号: 35297</span></div>
+            </div>
+          </td>
+          <td>技能培训 / 互联网产品运营 / 私域运营</td>
+          <td><span class="status-dot status-warn"></span>未提交</td>
+          <td><span class="status-dot status-off"></span>删除</td>
+          <td>2026-05-06 16:43:41</td>
+          <td class="row-actions">
+            <a href="#" data-row-act="decrypt">解密方式</a>
+            <a href="#" data-row-act="share">分享</a>
+            <a href="#" data-row-act="edit">编辑</a>
+          </td>
+        </tr>
+        <tr>
+          <td><input type="checkbox" class="row-check" /></td>
+          <td><div class="thumb td-thumb alt"></div></td>
+          <td>暴躁型家长 · 攀谈...<br><span class="muted">ID: 3750008302...</span><br><b>¥99</b></td>
+          <td>
+            <div class="link-course">
+              <div class="thumb mini alt"></div>
+              <div>暴躁型家长 · 攀谈...<br><span class="muted">编号: 18173</span></div>
+            </div>
+          </td>
+          <td>知识服务 / 快卡 / 其他服务</td>
+          <td><span class="status-dot status-on"></span>审核通过</td>
+          <td><span class="status-dot status-on"></span>上架</td>
+          <td>2025-06-04 17:11:27</td>
+          <td class="row-actions">
+            <a href="#" data-row-act="decrypt">解密方式</a>
+            <a href="#" data-row-act="share">分享</a>
+            <a href="#" data-row-act="edit">编辑</a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div></div>
+  <!-- 分页 -->
+  <div class="toolbar" style="margin-top:8px">
+    <span class="muted">共 <b>9</b> 条数据</span>
+    <div class="spacer"></div>
+    <select><option>10条/页</option><option>20条/页</option><option>50条/页</option></select>
+    <button class="btn btn-sm" disabled>上一页</button>
+    <button class="btn btn-sm" disabled>1</button>
+    <button class="btn btn-sm" disabled>下一页</button>
+  </div>
+</div>
+
+<!-- ============ 弹窗 / 抽屉 ============ -->
+<div class="proto-mask" id="mask"></div>
+
+<!-- 详情抽屉 -->
+<div class="proto-drawer" id="drawer-detail">
+  <div class="proto-drawer-hd">
+    <h3 id="tdd-title">抖店商品详情</h3>
+    <button class="btn btn-sm btn-ghost" data-close>×</button>
+  </div>
+  <div class="proto-drawer-bd">
+    <h4 style="margin-bottom:8px">基础信息</h4>
+    <div class="form-grid" style="grid-template-columns:1fr 1fr">
+      <div class="field"><label>商品 ID</label><div id="tdd-id">—</div></div>
+      <div class="field"><label>商品名称</label><div id="tdd-name">—</div></div>
+      <div class="field"><label>所属抖店</label><div id="tdd-shop">—</div></div>
+      <div class="field"><label>商品类型</label><div id="tdd-type">—</div></div>
+      <div class="field"><label>价格</label><div id="tdd-price">—</div></div>
+      <div class="field"><label>审核状态</label><div id="tdd-audit">—</div></div>
+      <div class="field"><label>上架状态</label><div id="tdd-shelf">—</div></div>
+      <div class="field"><label>创建时间</label><div id="tdd-time">—</div></div>
+    </div>
+    <h4 style="margin:16px 0 8px">关联 SCRM 课程</h4>
+    <div class="form-grid" style="grid-template-columns:1fr 1fr">
+      <div class="field"><label>课程编号</label><div id="tdd-course-no">—</div></div>
+      <div class="field"><label>课程名称</label><div id="tdd-course-name">—</div></div>
+    </div>
+    <h4 style="margin:16px 0 8px">解密方式</h4>
+    <p class="muted">本商品使用「手机号 + 验证码」方式发送领课链接，已开启自动发送。</p>
+  </div>
+  <div class="proto-drawer-ft">
+    <button class="btn" data-close>关闭</button>
+    <a class="btn btn-primary" href="#" id="tdd-edit">编辑</a>
+  </div>
+</div>
+
+<!-- 列展示抽屉 -->
+<div class="proto-drawer" id="drawer-col" style="width:340px">
+  <div class="proto-drawer-hd">
+    <h3>列展示</h3>
+    <button class="btn btn-sm btn-ghost" data-close>×</button>
+  </div>
+  <div class="proto-drawer-bd">
+    <div id="col-list">
+      <label><input type="checkbox" checked> 商品图</label>
+      <label><input type="checkbox" checked> 商品名称</label>
+      <label><input type="checkbox" checked> 关联课程</label>
+      <label><input type="checkbox" checked> 商品类型</label>
+      <label><input type="checkbox" checked> 商品审核状态</label>
+      <label><input type="checkbox" checked> 上架状态</label>
+      <label><input type="checkbox" checked> 商品创建时间</label>
+    </div>
+  </div>
+  <div class="proto-drawer-ft">
+    <button class="btn" data-close>取消</button>
+    <button class="btn btn-primary" id="col-apply">应用</button>
+  </div>
+</div>
+
+<style>
+.thumb {
+  width: 48px; height: 48px; border-radius: 4px;
+  background: linear-gradient(135deg,#ff6f00,#ffa726);
+}
+.thumb.alt { background: linear-gradient(135deg,#e0e0e0,#bdbdbd); }
+.td-thumb {
+  background: linear-gradient(135deg,#ff7043,#ff8a65);
+}
+.thumb.mini { width: 28px; height: 28px; border-radius: 3px; flex-shrink: 0; }
+.thumb.mini.alt { background: linear-gradient(135deg,#bdbdbd,#9e9e9e); }
+.link-course {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 12px;
+}
+.status-dot {
+  display: inline-block; width: 8px; height: 8px; border-radius: 50%;
+  margin-right: 4px; vertical-align: middle;
+}
+.status-on { background: var(--color-success); }
+.status-off { background: var(--color-text-muted); }
+.status-warn { background: var(--color-warning); }
+.course-id { display: flex; align-items: center; gap: 6px; font-size: 12px; }
+.course-id input { padding: 6px 8px; }
+.course-id .muted { color: var(--color-text-muted); }
+.row-actions a.danger { color: var(--color-danger); }
+#col-list label {
+  display: flex; align-items: center; gap: 6px;
+  padding: 6px 0; font-size: 13px;
+}
+</style>
+
+<script src="../assets/js/proto.js"></script>
+<script src="../assets/js/admin-shell.js"></script>
+<script>
+(function () {
+  // ===== Tabs =====
+  document.querySelectorAll("#td-tabs a[data-tab]").forEach(function (a) {
+    a.addEventListener("click", function (e) {
+      e.preventDefault();
+      document.querySelectorAll("#td-tabs a").forEach(function (x) { x.classList.remove("active"); });
+      a.classList.add("active");
+      Proto.toast("已切换：" + a.textContent.trim());
+    });
+  });
+
+  // ===== Mask =====
+  var mask = document.getElementById("mask");
+  function closeAll() {
+    mask.classList.remove("open");
+    document.querySelectorAll(".proto-modal, .proto-drawer").forEach(function (n) { n.classList.remove("open"); });
+  }
+  function open(node) { mask.classList.add("open"); node.classList.add("open"); }
+  mask.addEventListener("click", closeAll);
+  document.querySelectorAll("[data-close]").forEach(function (n) { n.addEventListener("click", closeAll); });
+
+  // ===== Batch =====
+  document.getElementById("check-all").addEventListener("change", function () {
+    document.querySelectorAll(".row-check").forEach(function (c) { c.checked = checkAll.checked; });
+  });
+
+  // ===== Row data =====
+  function rowData(tr) {
+    var tds = tr.querySelectorAll("td");
+    var nameBlock = tds[2] ? tds[2].innerHTML : "";
+    var nameMatch = nameBlock.match(/<b>(¥[^<]+)<\/b>/);
+    var price = nameMatch ? nameMatch[1] : "—";
+    var idMatch = nameBlock.match(/ID:\s*([\d\.\s]+)/);
+    var id = idMatch ? idMatch[1].trim() : "—";
+    var nameText = tds[2] ? tds[2].childNodes[0].textContent.trim() : "";
+    return {
+      id: id,
+      name: nameText,
+      type: tds[4] ? tds[4].textContent.trim() : "",
+      audit: tds[5] ? tds[5].textContent.trim() : "",
+      shelf: tds[6] ? tds[6].textContent.trim() : "",
+      time: tds[7] ? tds[7].textContent.trim() : "",
+      price: price,
+    };
+  }
+
+  // ===== Detail =====
+  function fillDetail(d) {
+    document.getElementById("tdd-title").textContent = "抖店商品详情 · " + d.name.split("·")[0].trim();
+    document.getElementById("tdd-id").textContent = d.id;
+    document.getElementById("tdd-name").textContent = d.name.split("\n")[0].trim();
+    document.getElementById("tdd-shop").textContent = "艺博抖店 1";
+    document.getElementById("tdd-type").textContent = d.type;
+    document.getElementById("tdd-price").textContent = d.price;
+    document.getElementById("tdd-audit").textContent = d.audit;
+    document.getElementById("tdd-shelf").textContent = d.shelf;
+    document.getElementById("tdd-time").textContent = d.time;
+    open(document.getElementById("drawer-detail"));
+  }
+
+  // ===== Row actions =====
+  document.querySelectorAll("#td-tbody tr").forEach(function (tr) {
+    tr.querySelectorAll("[data-row-act]").forEach(function (a) {
+      a.addEventListener("click", function (e) {
+        e.preventDefault();
+        var act = a.getAttribute("data-row-act");
+        var d = rowData(tr);
+        if (act === "edit") Proto.toast("打开编辑（原型）");
+        else if (act === "share") Proto.toast("生成分享链接（原型）");
+        else if (act === "decrypt") fillDetail(d);
+      });
+    });
+  });
+
+  // ===== Detail edit =====
+  document.getElementById("tdd-edit").addEventListener("click", function (e) {
+    e.preventDefault();
+    closeAll(); Proto.toast("打开编辑（原型）");
+  });
+
+  // ===== Other buttons =====
+  document.getElementById("btn-import").addEventListener("click", function () { Proto.toast("打开导入抖店商品（原型）"); });
+  document.getElementById("btn-export").addEventListener("click", function () { Proto.toast("已导出（原型）"); });
+  document.getElementById("btn-query").addEventListener("click", function () { Proto.toast("已查询（原型）"); });
+  document.getElementById("btn-reset").addEventListener("click", function () {
+    document.getElementById("f-name").value = "";
+    document.getElementById("f-course").value = "";
+    ["f-shop","f-type","f-audit","f-shelf"].forEach(function (id) { document.getElementById(id).value = ""; });
+    Proto.toast("已重置");
+  });
+  document.getElementById("btn-col").addEventListener("click", function () { open(document.getElementById("drawer-col")); });
+  document.getElementById("col-apply").addEventListener("click", function () { closeAll(); Proto.toast("列展示已应用（原型）"); });
+})();
+</script>
+</body>
+</html>

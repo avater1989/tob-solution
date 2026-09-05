@@ -1,0 +1,480 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>视频号商品 · 艺博 To-B</title>
+<link rel="stylesheet" href="../assets/css/proto.css" />
+</head>
+<body class="admin-body" data-module="scrm" data-nav="channels-products" data-title="视频号商品" data-crumb="SCRM / 公域获客 / 视频号商品">
+<div id="header-actions">
+  <button class="btn btn-primary" id="btn-create">+ 新建视频号商品</button>
+  <button class="btn" id="btn-upload">上传</button>
+  <button class="btn" id="btn-download">下载</button>
+  <button class="btn" id="btn-batch">批量</button>
+</div>
+<div id="page-content" style="display:none">
+
+  <!-- 筛选 -->
+  <div class="card" style="margin-bottom:8px"><div class="card-bd">
+    <div class="form-grid" style="grid-template-columns:repeat(6,minmax(0,1fr));gap:8px 12px">
+      <input id="f-name" placeholder="商品名称" />
+      <select id="f-merchant">
+        <option value="">视频号商家</option>
+        <option>艺博教育旗舰店</option>
+        <option>星启家庭教育</option>
+      </select>
+      <select id="f-cat1">
+        <option value="">一级分类</option>
+        <option>课程</option>
+        <option>训练营</option>
+      </select>
+      <select id="f-cat2">
+        <option value="">二级分类</option>
+        <option>亲子沟通</option>
+        <option>家长训练</option>
+      </select>
+      <select id="f-type">
+        <option value="">商品类型</option>
+        <option>课程</option>
+        <option>直播</option>
+        <option>实物</option>
+      </select>
+      <select id="f-shelf">
+        <option value="">上下架状态</option>
+        <option>已上架</option>
+        <option>已下架</option>
+      </select>
+      <select id="f-sale">
+        <option value="">售卖状态</option>
+        <option>售卖中</option>
+        <option>已停售</option>
+      </select>
+      <select id="f-refund">
+        <option value="">退款状态</option>
+        <option>已设置</option>
+        <option>未设置</option>
+      </select>
+      <select id="f-sku">
+        <option value="">是否绑定 SCRM 商品</option>
+        <option>已绑定</option>
+        <option>未绑定</option>
+      </select>
+      <input id="f-time1" type="datetime-local" />
+      <input id="f-time2" type="datetime-local" />
+      <select id="f-creator">
+        <option value="">创建人</option>
+        <option>陈奕均</option>
+        <option>阮荣均</option>
+      </select>
+    </div>
+    <div class="toolbar" style="margin-top:8px">
+      <button class="btn btn-primary" id="btn-query">查询</button>
+      <button class="btn" id="btn-reset">重置</button>
+      <div class="spacer"></div>
+      <button class="btn" id="btn-col">列展示</button>
+    </div>
+  </div></div>
+
+  <!-- 表格 -->
+  <div class="card"><div class="card-bd" style="padding:0">
+    <table class="data">
+      <thead>
+        <tr>
+          <th style="width:36px"><input type="checkbox" id="check-all" /></th>
+          <th style="width:60px">商品图</th>
+          <th>商品名称</th>
+          <th>售价</th>
+          <th>原价</th>
+          <th>视频号商家</th>
+          <th>商品分类</th>
+          <th>退款设置</th>
+          <th>关联 SCRM 商品</th>
+          <th>商品类型</th>
+          <th>上下架状态</th>
+          <th>售卖状态</th>
+          <th>更新时间</th>
+          <th>创建时间</th>
+          <th>创建人</th>
+          <th style="width:240px">操作</th>
+        </tr>
+      </thead>
+      <tbody id="cp-tbody">
+        <tr>
+          <td><input type="checkbox" class="row-check" /></td>
+          <td><div class="thumb thumb-img"></div></td>
+          <td>春启 03 期家长必修课</td>
+          <td><b>¥9.90</b></td>
+          <td><s>¥99.00</s></td>
+          <td>艺博教育旗舰店</td>
+          <td>课程 / 亲子沟通</td>
+          <td><span class="badge badge-success">已设置</span> <a href="#" data-row-act="refund">查看</a></td>
+          <td><a href="#" data-row-act="sku">9.9 引流课</a></td>
+          <td><span class="tag tag-blue">课程</span></td>
+          <td><span class="badge badge-success">已上架</span></td>
+          <td><span class="badge badge-success">售卖中</span></td>
+          <td>2026-03-29 10:22</td>
+          <td>2026-03-01 09:00</td>
+          <td>陈奕均</td>
+          <td class="row-actions">
+            <a href="#" data-row-act="edit">编辑</a>
+            <a href="#" data-row-act="unlink">取消关联</a>
+            <a href="#" data-row-act="del" class="danger">删除</a>
+          </td>
+        </tr>
+        <tr>
+          <td><input type="checkbox" class="row-check" /></td>
+          <td><div class="thumb thumb-img"></div></td>
+          <td>9.9 引流课·亲子沟通</td>
+          <td><b>¥9.90</b></td>
+          <td><s>¥199.00</s></td>
+          <td>艺博教育旗舰店</td>
+          <td>课程 / 亲子沟通</td>
+          <td><span class="badge badge-success">已设置</span> <a href="#" data-row-act="refund">查看</a></td>
+          <td><a href="#" data-row-act="sku">9.9 引流课</a></td>
+          <td><span class="tag tag-blue">课程</span></td>
+          <td><span class="badge badge-success">已上架</span></td>
+          <td><span class="badge badge-success">售卖中</span></td>
+          <td>2026-03-28 18:30</td>
+          <td>2026-02-25 14:30</td>
+          <td>陈奕均</td>
+          <td class="row-actions">
+            <a href="#" data-row-act="edit">编辑</a>
+            <a href="#" data-row-act="del" class="danger">删除</a>
+          </td>
+        </tr>
+        <tr>
+          <td><input type="checkbox" class="row-check" /></td>
+          <td><div class="thumb thumb-live"></div></td>
+          <td>今晚直播·家长公开课</td>
+          <td><b>¥0.00</b></td>
+          <td><s>¥99.00</s></td>
+          <td>星启家庭教育</td>
+          <td>训练营 / 家长训练</td>
+          <td><span class="badge">未设置</span> <a href="#" data-row-act="refund">设置</a></td>
+          <td><a href="#" data-row-act="sku" class="muted">未关联</a></td>
+          <td><span class="tag tag-purple">直播</span></td>
+          <td><span class="badge badge-success">已上架</span></td>
+          <td><span class="badge badge-success">售卖中</span></td>
+          <td>2026-03-28 11:00</td>
+          <td>2026-03-15 16:45</td>
+          <td>阮荣均</td>
+          <td class="row-actions">
+            <a href="#" data-row-act="edit">编辑</a>
+            <a href="#" data-row-act="link">关联 SCRM</a>
+            <a href="#" data-row-act="del" class="danger">删除</a>
+          </td>
+        </tr>
+        <tr>
+          <td><input type="checkbox" class="row-check" /></td>
+          <td><div class="thumb thumb-img"></div></td>
+          <td>卓培服务包</td>
+          <td><b>¥2980.00</b></td>
+          <td><s>¥3980.00</s></td>
+          <td>艺博教育旗舰店</td>
+          <td>训练营 / 家长训练</td>
+          <td><span class="badge badge-success">已设置</span> <a href="#" data-row-act="refund">查看</a></td>
+          <td><a href="#" data-row-act="sku">卓培服务</a></td>
+          <td><span class="tag tag-blue">课程</span></td>
+          <td><span class="badge">已下架</span></td>
+          <td><span class="badge">已停售</span></td>
+          <td>2026-03-25 14:30</td>
+          <td>2026-01-15 10:00</td>
+          <td>陈奕均</td>
+          <td class="row-actions">
+            <a href="#" data-row-act="edit">编辑</a>
+            <a href="#" data-row-act="unlink">取消关联</a>
+            <a href="#" data-row-act="del" class="danger">删除</a>
+          </td>
+        </tr>
+        <tr>
+          <td><input type="checkbox" class="row-check" /></td>
+          <td><div class="thumb thumb-img"></div></td>
+          <td>已测试请忽略</td>
+          <td><b>¥0.10</b></td>
+          <td>—</td>
+          <td>艺博教育旗舰店</td>
+          <td>课程 / 测试</td>
+          <td><span class="badge">未设置</span> <a href="#" data-row-act="refund">设置</a></td>
+          <td><a href="#" data-row-act="sku" class="muted">未关联</a></td>
+          <td><span class="tag tag-blue">课程</span></td>
+          <td><span class="badge">已下架</span></td>
+          <td><span class="badge">已停售</span></td>
+          <td>2026-03-20 09:18</td>
+          <td>2026-03-15 11:30</td>
+          <td>陈奕均</td>
+          <td class="row-actions">
+            <a href="#" data-row-act="edit">编辑</a>
+            <a href="#" data-row-act="del" class="danger">删除</a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div></div>
+  <!-- 分页 -->
+  <div class="toolbar" style="margin-top:8px">
+    <span class="muted">共 <b>19</b> 条</span>
+    <div class="spacer"></div>
+    <button class="btn" disabled>上一页</button>
+    <button class="btn">下一页</button>
+    <select style="margin-left:8px"><option>10条/页</option><option>20条/页</option></select>
+  </div>
+</div>
+
+<!-- ============ 弹窗 / 抽屉 ============ -->
+<div class="proto-mask" id="mask"></div>
+
+<!-- 新建 / 编辑 视频号商品 弹窗 -->
+<div class="proto-modal" id="modal-create" style="width:680px">
+  <div class="proto-modal-hd">
+    <h3 id="cp-title" style="font-size:16px;font-weight:600">新建视频号商品</h3>
+    <button class="btn btn-sm btn-ghost" data-close>×</button>
+  </div>
+  <div class="proto-modal-bd">
+    <div class="form-grid">
+      <div class="field"><label>商品名称 *</label><input id="ccp-name" placeholder="如：春启 03 期家长必修课" /></div>
+      <div class="field"><label>视频号商家 *</label>
+        <select>
+          <option>艺博教育旗舰店</option>
+          <option>星启家庭教育</option>
+        </select>
+      </div>
+      <div class="field"><label>一级分类 *</label>
+        <select><option>课程</option><option>训练营</option><option>实物</option></select>
+      </div>
+      <div class="field"><label>二级分类</label>
+        <select><option>亲子沟通</option><option>家长训练</option><option>其他</option></select>
+      </div>
+      <div class="field"><label>售价 *</label><input type="number" value="9.9" /></div>
+      <div class="field"><label>原价</label><input type="number" value="99" /></div>
+      <div class="field"><label>上下架状态</label>
+        <select><option>已上架</option><option>已下架</option></select>
+      </div>
+      <div class="field"><label>售卖状态</label>
+        <select><option>售卖中</option><option>已停售</option></select>
+      </div>
+      <div class="field"><label>商品类型</label>
+        <select><option>课程</option><option>直播</option><option>实物</option></select>
+      </div>
+      <div class="field" style="grid-column:1/-1"><label>关联 SCRM 商品</label>
+        <select><option>不关联</option><option>9.9 引流课</option><option>春启 03 期家长必修课</option></select>
+      </div>
+      <div class="field"><label>退款设置</label>
+        <select><option>默认（7 天无理由）</option><option>不支持退款</option><option>仅课程开始前</option></select>
+      </div>
+      <div class="field"><label>商品图片</label>
+        <input type="file" id="ccp-cover" />
+      </div>
+      <div class="field" style="grid-column:1/-1"><label>商品介绍</label>
+        <textarea rows="3" style="width:100%;padding:8px;border:1px solid var(--color-border);border-radius:6px" placeholder="选填"></textarea>
+      </div>
+    </div>
+  </div>
+  <div class="proto-modal-ft">
+    <button class="btn" data-close>取消</button>
+    <button class="btn btn-primary" id="ccp-submit">保存</button>
+  </div>
+</div>
+
+<!-- 详情抽屉 -->
+<div class="proto-drawer" id="drawer-detail">
+  <div class="proto-drawer-hd">
+    <h3 id="cpd-title">商品详情</h3>
+    <button class="btn btn-sm btn-ghost" data-close>×</button>
+  </div>
+  <div class="proto-drawer-bd">
+    <h4 style="margin-bottom:8px">基础信息</h4>
+    <div class="form-grid" style="grid-template-columns:1fr 1fr">
+      <div class="field"><label>商品名称</label><div id="cpd-name">—</div></div>
+      <div class="field"><label>视频号商家</label><div id="cpd-merchant">—</div></div>
+      <div class="field"><label>商品分类</label><div id="cpd-cat">—</div></div>
+      <div class="field"><label>商品类型</label><div id="cpd-type">—</div></div>
+      <div class="field"><label>售价</label><div id="cpd-price">—</div></div>
+      <div class="field"><label>原价</label><div id="cpd-original">—</div></div>
+      <div class="field"><label>上下架状态</label><div id="cpd-shelf">—</div></div>
+      <div class="field"><label>售卖状态</label><div id="cpd-sale">—</div></div>
+      <div class="field"><label>退款设置</label><div id="cpd-refund">—</div></div>
+      <div class="field"><label>关联 SCRM 商品</label><div id="cpd-sku">—</div></div>
+      <div class="field"><label>创建时间</label><div id="cpd-create">—</div></div>
+      <div class="field"><label>更新时间</label><div id="cpd-update">—</div></div>
+      <div class="field"><label>创建人</label><div id="cpd-creator">—</div></div>
+    </div>
+  </div>
+  <div class="proto-drawer-ft">
+    <button class="btn" data-close>关闭</button>
+    <a class="btn btn-primary" href="#" id="cpd-edit">编辑</a>
+  </div>
+</div>
+
+<!-- 列展示 -->
+<div class="proto-drawer" id="drawer-col" style="width:340px">
+  <div class="proto-drawer-hd">
+    <h3>列展示</h3>
+    <button class="btn btn-sm btn-ghost" data-close>×</button>
+  </div>
+  <div class="proto-drawer-bd">
+    <div id="col-list">
+      <label><input type="checkbox" checked> 商品图</label>
+      <label><input type="checkbox" checked> 商品名称</label>
+      <label><input type="checkbox" checked> 售价</label>
+      <label><input type="checkbox" checked> 原价</label>
+      <label><input type="checkbox" checked> 视频号商家</label>
+      <label><input type="checkbox" checked> 商品分类</label>
+      <label><input type="checkbox" checked> 退款设置</label>
+      <label><input type="checkbox" checked> 关联 SCRM 商品</label>
+      <label><input type="checkbox" checked> 商品类型</label>
+      <label><input type="checkbox" checked> 上下架状态</label>
+      <label><input type="checkbox" checked> 售卖状态</label>
+      <label><input type="checkbox" checked> 更新时间</label>
+      <label><input type="checkbox" checked> 创建时间</label>
+      <label><input type="checkbox" checked> 创建人</label>
+    </div>
+  </div>
+  <div class="proto-drawer-ft">
+    <button class="btn" data-close>取消</button>
+    <button class="btn btn-primary" id="col-apply">应用</button>
+  </div>
+</div>
+
+<style>
+.thumb {
+  width: 48px; height: 36px; border-radius: 4px;
+}
+.thumb-img { background: linear-gradient(135deg,#165dff,#4080ff); }
+.thumb-live { background: linear-gradient(135deg,#722ed1,#a066f5); }
+.tag { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 12px; }
+.tag-blue { background: #e8f3ff; color: #165dff; }
+.tag-purple { background: #f4eaff; color: #722ed1; }
+.row-actions a.danger { color: var(--color-danger); }
+#col-list label {
+  display: flex; align-items: center; gap: 6px;
+  padding: 6px 0; font-size: 13px;
+}
+</style>
+
+<script src="../assets/js/proto.js"></script>
+<script src="../assets/js/admin-shell.js"></script>
+<script>
+(function () {
+  // ===== Mask =====
+  var mask = document.getElementById("mask");
+  function closeAll() {
+    mask.classList.remove("open");
+    document.querySelectorAll(".proto-modal, .proto-drawer").forEach(function (n) { n.classList.remove("open"); });
+  }
+  function open(node) { mask.classList.add("open"); node.classList.add("open"); }
+  mask.addEventListener("click", closeAll);
+  document.querySelectorAll("[data-close]").forEach(function (n) { n.addEventListener("click", closeAll); });
+
+  // ===== Batch =====
+  var checkAll = document.getElementById("check-all");
+  checkAll.addEventListener("change", function () {
+    document.querySelectorAll(".row-check").forEach(function (c) { c.checked = checkAll.checked; });
+  });
+
+  // ===== Row data =====
+  function rowData(tr) {
+    var tds = tr.querySelectorAll("td");
+    return {
+      name: tds[2] ? tds[2].textContent.trim() : "",
+      price: tds[3] ? tds[3].textContent.trim() : "",
+      original: tds[4] ? tds[4].textContent.trim() : "",
+      merchant: tds[5] ? tds[5].textContent.trim() : "",
+      cat: tds[6] ? tds[6].textContent.trim() : "",
+      refund: tds[7] ? tds[7].textContent.trim() : "",
+      sku: tds[8] ? tds[8].textContent.trim() : "",
+      type: tds[9] ? tds[9].textContent.trim() : "",
+      shelf: tds[10] ? tds[10].textContent.trim() : "",
+      sale: tds[11] ? tds[11].textContent.trim() : "",
+      updated: tds[12] ? tds[12].textContent.trim() : "",
+      created: tds[13] ? tds[13].textContent.trim() : "",
+      creator: tds[14] ? tds[14].textContent.trim() : "",
+    };
+  }
+
+  // ===== Detail =====
+  function fillDetail(d) {
+    document.getElementById("cpd-title").textContent = "商品详情 · " + d.name;
+    document.getElementById("cpd-name").textContent = d.name;
+    document.getElementById("cpd-merchant").textContent = d.merchant;
+    document.getElementById("cpd-cat").textContent = d.cat;
+    document.getElementById("cpd-type").textContent = d.type;
+    document.getElementById("cpd-price").textContent = d.price;
+    document.getElementById("cpd-original").textContent = d.original;
+    document.getElementById("cpd-shelf").textContent = d.shelf;
+    document.getElementById("cpd-sale").textContent = d.sale;
+    document.getElementById("cpd-refund").textContent = d.refund.indexOf("已设置") >= 0 ? "默认（7 天无理由）" : "未设置";
+    document.getElementById("cpd-sku").textContent = d.sku;
+    document.getElementById("cpd-create").textContent = d.created;
+    document.getElementById("cpd-update").textContent = d.updated;
+    document.getElementById("cpd-creator").textContent = d.creator;
+    open(document.getElementById("drawer-detail"));
+  }
+
+  // ===== Row actions =====
+  document.querySelectorAll("#cp-tbody tr").forEach(function (tr) {
+    tr.querySelectorAll("[data-row-act]").forEach(function (a) {
+      a.addEventListener("click", function (e) {
+        e.preventDefault();
+        var act = a.getAttribute("data-row-act");
+        var d = rowData(tr);
+        if (act === "edit") {
+          document.getElementById("cp-title").textContent = "编辑视频号商品 · " + d.name;
+          document.getElementById("ccp-name").value = d.name;
+          open(document.getElementById("modal-create"));
+        } else if (act === "del") {
+          if (confirm("确认删除「" + d.name + "」?")) {
+            tr.remove();
+            Proto.toast("已删除（原型）");
+          }
+        } else if (act === "unlink") {
+          if (confirm("确认取消关联「" + d.sku + "」?")) Proto.toast("已取消关联（原型）");
+        } else if (act === "link") {
+          Proto.toast("打开关联 SCRM 商品（原型）");
+        } else if (act === "refund") {
+          Proto.toast(d.refund.indexOf("已设置") >= 0 ? "查看退款设置（原型）" : "打开退款设置（原型）");
+        } else if (act === "sku") {
+          Proto.toast("查看关联商品（原型）");
+        }
+      });
+    });
+  });
+
+  // ===== Create =====
+  document.getElementById("btn-create").addEventListener("click", function () {
+    document.getElementById("cp-title").textContent = "新建视频号商品";
+    document.getElementById("ccp-name").value = "";
+    open(document.getElementById("modal-create"));
+  });
+  document.getElementById("ccp-submit").addEventListener("click", function () {
+    var n = document.getElementById("ccp-name").value.trim();
+    if (!n) { Proto.toast("请输入商品名称"); return; }
+    closeAll(); Proto.toast("已保存（原型）");
+  });
+
+  // ===== Detail edit =====
+  document.getElementById("cpd-edit").addEventListener("click", function (e) {
+    e.preventDefault();
+    closeAll();
+    document.getElementById("cp-title").textContent = "编辑视频号商品";
+    open(document.getElementById("modal-create"));
+  });
+
+  // ===== Other buttons =====
+  document.getElementById("btn-upload").addEventListener("click", function () { Proto.toast("上传商品（原型）"); });
+  document.getElementById("btn-download").addEventListener("click", function () { Proto.toast("下载列表（原型）"); });
+  document.getElementById("btn-batch").addEventListener("click", function () { Proto.toast("批量操作（原型）"); });
+  document.getElementById("btn-query").addEventListener("click", function () { Proto.toast("已查询（原型）"); });
+  document.getElementById("btn-reset").addEventListener("click", function () {
+    document.getElementById("f-name").value = "";
+    ["f-merchant","f-cat1","f-cat2","f-type","f-shelf","f-sale","f-refund","f-sku","f-creator"].forEach(function (id) { document.getElementById(id).value = ""; });
+    document.getElementById("f-time1").value = "";
+    document.getElementById("f-time2").value = "";
+    Proto.toast("已重置");
+  });
+  document.getElementById("btn-col").addEventListener("click", function () { open(document.getElementById("drawer-col")); });
+  document.getElementById("col-apply").addEventListener("click", function () { closeAll(); Proto.toast("列展示已应用（原型）"); });
+})();
+</script>
+</body>
+</html>

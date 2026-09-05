@@ -1,0 +1,343 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>拉群模板 · 艺博 To-B</title>
+<link rel="stylesheet" href="../assets/css/proto.css" />
+</head>
+<body class="admin-body" data-module="scrm" data-nav="group-tpl" data-title="拉群模板" data-crumb="SCRM / 营销管理 / 拉群模板">
+<div id="header-actions">
+  <button class="btn btn-primary" id="btn-create">新建拉群模板</button>
+</div>
+<div id="page-content" style="display:none">
+
+  <!-- 筛选 -->
+  <div class="card" style="margin-bottom:8px"><div class="card-bd">
+    <div class="form-grid" style="grid-template-columns:repeat(5,minmax(0,1fr));gap:8px 12px">
+      <input id="f-name" placeholder="请输入" />
+      <select id="f-scope">
+        <option value="">使用范围</option>
+        <option>全员</option>
+        <option>指定成员</option>
+      </select>
+      <select id="f-updater">
+        <option value="">请选择</option>
+        <option>陈奕均</option>
+        <option>阮荣均</option>
+        <option>李大</option>
+      </select>
+      <input id="f-time1" type="datetime-local" />
+      <input id="f-time2" type="datetime-local" />
+    </div>
+    <div class="toolbar" style="margin-top:8px">
+      <button class="btn btn-primary" id="btn-query">查询</button>
+      <button class="btn" id="btn-reset">重置</button>
+      <div class="spacer"></div>
+      <button class="btn" id="btn-col">列展示</button>
+    </div>
+  </div></div>
+
+  <!-- 表格 -->
+  <div class="card"><div class="card-bd" style="padding:0">
+    <table class="data">
+      <thead>
+        <tr>
+          <th>模板名称</th><th>群聊名称</th><th>默认入群成员</th>
+          <th>使用范围</th><th>拉群总数</th><th>今日新增拉群</th>
+          <th>更新人</th><th>更新时间</th>
+          <th style="width:160px">操作</th>
+        </tr>
+      </thead>
+      <tbody id="gt-tbody">
+        <tr>
+          <td>春启 03 家长拉群</td>
+          <td>春启03·家长交流群</td>
+          <td>王助教 / 刘助教</td>
+          <td>全员</td>
+          <td>0</td><td>0</td>
+          <td>阮荣均</td><td>2026-03-29 10:22</td>
+          <td class="row-actions">
+            <a href="#" data-row-act="detail">详情</a>
+            <a href="#" data-row-act="edit">编辑</a>
+            <a href="#" data-row-act="copy">复制</a>
+          </td>
+        </tr>
+        <tr>
+          <td>视频号 转化拉群</td>
+          <td>视频号·转化群A</td>
+          <td>赵老师</td>
+          <td>指定成员</td>
+          <td>0</td><td>0</td>
+          <td>赵老师</td><td>2026-03-28 18:30</td>
+          <td class="row-actions">
+            <a href="#" data-row-act="detail">详情</a>
+            <a href="#" data-row-act="edit">编辑</a>
+            <a href="#" data-row-act="copy">复制</a>
+          </td>
+        </tr>
+        <tr>
+          <td>复购 高意向拉群</td>
+          <td>复购·高意向群</td>
+          <td>王助教</td>
+          <td>全员</td>
+          <td>0</td><td>0</td>
+          <td>王助教</td><td>2026-03-25 14:30</td>
+          <td class="row-actions">
+            <a href="#" data-row-act="detail">详情</a>
+            <a href="#" data-row-act="edit">编辑</a>
+            <a href="#" data-row-act="copy">复制</a>
+          </td>
+        </tr>
+        <tr>
+          <td>卓培 服务拉群</td>
+          <td>卓培·服务群</td>
+          <td>刘助教</td>
+          <td>全员</td>
+          <td>0</td><td>0</td>
+          <td>刘助教</td><td>2026-03-20 09:18</td>
+          <td class="row-actions">
+            <a href="#" data-row-act="detail">详情</a>
+            <a href="#" data-row-act="edit">编辑</a>
+            <a href="#" data-row-act="copy">复制</a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div></div>
+  <!-- 分页 -->
+  <div class="toolbar" style="margin-top:8px">
+    <span class="muted">共 <b>4</b> 条</span>
+    <div class="spacer"></div>
+    <button class="btn btn-sm" disabled>上一页</button>
+    <button class="btn btn-sm" id="btn-next">下一页</button>
+    <span class="muted" style="margin-left:8px">第</span>
+    <input id="pg-input" type="number" min="1" value="1" style="width:60px" />
+    <span class="muted">页</span>
+    <select id="pg-size" style="margin-left:8px">
+      <option>10条/页</option><option selected>20条/页</option>
+      <option>30条/页</option><option>50条/页</option>
+    </select>
+  </div>
+</div>
+
+<!-- ============ 抽屉 / 弹窗 ============ -->
+<div class="proto-mask" id="mask"></div>
+
+<!-- 新建模板弹窗 -->
+<div class="proto-modal" id="modal-create" style="width:680px">
+  <div class="proto-modal-hd">
+    <h3 style="font-size:16px;font-weight:600">新建拉群模板</h3>
+    <button class="btn btn-sm btn-ghost" data-close>×</button>
+  </div>
+  <div class="proto-modal-bd">
+    <div class="form-grid">
+      <div class="field"><label>模板名称 *</label><input id="ct-name" placeholder="如：春启 04 家长拉群" /></div>
+      <div class="field"><label>群聊名称 *</label><input id="ct-group" placeholder="如：春启04·家长交流群" /></div>
+      <div class="field"><label>使用范围</label>
+        <select id="ct-scope">
+          <option>全员</option>
+          <option>指定成员</option>
+        </select>
+      </div>
+      <div class="field"><label>默认入群成员</label>
+        <select id="ct-member" multiple style="height:90px;padding:8px">
+          <option>阮荣均</option><option>赵老师</option>
+          <option>王助教</option><option>刘助教</option>
+        </select>
+        <span class="muted" style="font-size:12px">按住 Ctrl/Cmd 多选</span>
+      </div>
+      <div class="field" style="grid-column:1/-1"><label>关联群活码</label>
+        <select>
+          <option>不关联</option>
+          <option>春启03·家长交流群</option>
+          <option>视频号·转化群A</option>
+          <option>复购·高意向群</option>
+        </select>
+      </div>
+      <div class="field" style="grid-column:1/-1"><label>拉群欢迎语</label>
+        <select>
+          <option>不关联</option>
+          <option>入群欢迎 - 默认</option>
+          <option>课程开营</option>
+        </select>
+      </div>
+      <div class="field" style="grid-column:1/-1"><label>说明</label>
+        <textarea rows="2" style="width:100%;padding:8px;border:1px solid var(--color-border);border-radius:6px" placeholder="选填"></textarea>
+      </div>
+    </div>
+  </div>
+  <div class="proto-modal-ft">
+    <button class="btn" data-close>取消</button>
+    <button class="btn btn-primary" id="ct-submit">保存</button>
+  </div>
+</div>
+
+<!-- 详情抽屉 -->
+<div class="proto-drawer" id="drawer-detail">
+  <div class="proto-drawer-hd">
+    <h3 id="td-title">拉群模板详情</h3>
+    <button class="btn btn-sm btn-ghost" data-close>×</button>
+  </div>
+  <div class="proto-drawer-bd">
+    <h4 style="margin-bottom:8px">基础信息</h4>
+    <div class="form-grid" style="grid-template-columns:1fr 1fr">
+      <div class="field"><label>模板名称</label><div id="td-name">—</div></div>
+      <div class="field"><label>群聊名称</label><div id="td-group">—</div></div>
+      <div class="field"><label>使用范围</label><div id="td-scope">—</div></div>
+      <div class="field"><label>关联群活码</label><div id="td-qr">—</div></div>
+      <div class="field" style="grid-column:1/-1"><label>默认入群成员</label><div id="td-member">—</div></div>
+      <div class="field"><label>更新人</label><div id="td-updater">—</div></div>
+      <div class="field"><label>更新时间</label><div id="td-updated">—</div></div>
+    </div>
+    <h4 style="margin:16px 0 8px">数据</h4>
+    <div class="grid-4" style="margin:0">
+      <div class="stat"><div class="label">拉群总数</div><div class="value" id="td-total">—</div></div>
+      <div class="stat"><div class="label">今日新增拉群</div><div class="value" id="td-today">—</div></div>
+      <div class="stat"><div class="label">入群客户</div><div class="value" id="td-join">—</div></div>
+      <div class="stat"><div class="label">成功率</div><div class="value" id="td-rate">—</div></div>
+    </div>
+    <h4 style="margin:16px 0 8px">拉群欢迎语预览</h4>
+    <div class="msg-mock">
+      <div class="msg-bubble">
+        <div class="msg-text">Hi 李女士，欢迎加入春启03·家长交流群...</div>
+      </div>
+    </div>
+  </div>
+  <div class="proto-drawer-ft">
+    <button class="btn" data-close>关闭</button>
+    <a class="btn btn-primary" href="group-livecode.html">关联群活码</a>
+  </div>
+</div>
+
+<!-- 列展示 -->
+<div class="proto-drawer" id="drawer-col" style="width:340px">
+  <div class="proto-drawer-hd">
+    <h3>列展示</h3>
+    <button class="btn btn-sm btn-ghost" data-close>×</button>
+  </div>
+  <div class="proto-drawer-bd">
+    <div id="col-list">
+      <label><input type="checkbox" checked> 模板名称</label>
+      <label><input type="checkbox" checked> 群聊名称</label>
+      <label><input type="checkbox" checked> 默认入群成员</label>
+      <label><input type="checkbox" checked> 使用范围</label>
+      <label><input type="checkbox" checked> 拉群总数</label>
+      <label><input type="checkbox" checked> 今日新增拉群</label>
+      <label><input type="checkbox" checked> 更新人</label>
+      <label><input type="checkbox" checked> 更新时间</label>
+    </div>
+  </div>
+  <div class="proto-drawer-ft">
+    <button class="btn" data-close>取消</button>
+    <button class="btn btn-primary" id="col-apply">应用</button>
+  </div>
+</div>
+
+<style>
+.msg-mock {
+  padding: 16px; background: #ededed; border-radius: 6px;
+  display: flex; flex-direction: column; align-items: flex-start;
+}
+.msg-bubble {
+  max-width: 80%;
+  padding: 10px 12px; background: #fff;
+  border-radius: 6px; box-shadow: 0 1px 2px rgba(0,0,0,.08);
+}
+.row-actions a.danger { color: var(--color-danger); }
+#col-list label {
+  display: flex; align-items: center; gap: 6px;
+  padding: 6px 0; font-size: 13px;
+}
+</style>
+
+<script src="../assets/js/proto.js"></script>
+<script src="../assets/js/admin-shell.js"></script>
+<script>
+(function () {
+  // ===== Mask / drawer / modal =====
+  var mask = document.getElementById("mask");
+  function closeAll() {
+    mask.classList.remove("open");
+    document.querySelectorAll(".proto-modal, .proto-drawer").forEach(function (n) { n.classList.remove("open"); });
+  }
+  function open(node) { mask.classList.add("open"); node.classList.add("open"); }
+  mask.addEventListener("click", closeAll);
+  document.querySelectorAll("[data-close]").forEach(function (n) { n.addEventListener("click", closeAll); });
+
+  // ===== Row data =====
+  function rowData(tr) {
+    var tds = tr.querySelectorAll("td");
+    return {
+      name: tds[0] ? tds[0].textContent.trim() : "",
+      group: tds[1] ? tds[1].textContent.trim() : "",
+      member: tds[2] ? tds[2].textContent.trim() : "",
+      scope: tds[3] ? tds[3].textContent.trim() : "",
+      total: tds[4] ? tds[4].textContent.trim() : "0",
+      today: tds[5] ? tds[5].textContent.trim() : "0",
+      updater: tds[6] ? tds[6].textContent.trim() : "",
+      updated: tds[7] ? tds[7].textContent.trim() : "",
+    };
+  }
+
+  // ===== Detail =====
+  function fillDetail(d) {
+    document.getElementById("td-title").textContent = "拉群模板详情 · " + d.name;
+    document.getElementById("td-name").textContent = d.name;
+    document.getElementById("td-group").textContent = d.group;
+    document.getElementById("td-scope").textContent = d.scope;
+    document.getElementById("td-qr").textContent = d.group;
+    document.getElementById("td-member").textContent = d.member;
+    document.getElementById("td-updater").textContent = d.updater;
+    document.getElementById("td-updated").textContent = d.updated;
+    document.getElementById("td-total").textContent = d.total;
+    document.getElementById("td-today").textContent = d.today;
+    document.getElementById("td-join").textContent = d.total;
+    document.getElementById("td-rate").textContent = "—";
+    open(document.getElementById("drawer-detail"));
+  }
+
+  // ===== Row actions =====
+  document.querySelectorAll("#gt-tbody tr").forEach(function (tr) {
+    tr.querySelectorAll("[data-row-act]").forEach(function (a) {
+      a.addEventListener("click", function (e) {
+        e.preventDefault();
+        var act = a.getAttribute("data-row-act");
+        var d = rowData(tr);
+        if (act === "detail") fillDetail(d);
+        else if (act === "edit") open(document.getElementById("modal-create"));
+        else if (act === "copy") Proto.toast("已复制模板（原型）");
+      });
+    });
+  });
+
+  // ===== Create =====
+  document.getElementById("btn-create").addEventListener("click", function () { open(document.getElementById("modal-create")); });
+  document.getElementById("ct-submit").addEventListener("click", function () {
+    var n = document.getElementById("ct-name").value.trim();
+    var g = document.getElementById("ct-group").value.trim();
+    if (!n) { Proto.toast("请输入模板名称"); return; }
+    if (!g) { Proto.toast("请输入群聊名称"); return; }
+    closeAll(); Proto.toast("模板已保存（原型）");
+  });
+
+  // ===== Other buttons =====
+  document.getElementById("btn-query").addEventListener("click", function () { Proto.toast("已查询（原型）"); });
+  document.getElementById("btn-reset").addEventListener("click", function () {
+    document.getElementById("f-name").value = "";
+    ["f-scope","f-updater"].forEach(function (id) { document.getElementById(id).value = ""; });
+    document.getElementById("f-time1").value = "";
+    document.getElementById("f-time2").value = "";
+    Proto.toast("已重置");
+  });
+  document.getElementById("btn-col").addEventListener("click", function () { open(document.getElementById("drawer-col")); });
+  document.getElementById("col-apply").addEventListener("click", function () { closeAll(); Proto.toast("列展示已应用（原型）"); });
+  document.getElementById("btn-next").addEventListener("click", function () {
+    var inp = document.getElementById("pg-input");
+    inp.value = parseInt(inp.value || 1) + 1;
+    Proto.toast("已跳转第 " + inp.value + " 页（原型）");
+  });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,440 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>群发朋友圈 · 艺博 To-B</title>
+<link rel="stylesheet" href="../assets/css/proto.css" />
+</head>
+<body class="admin-body" data-module="scrm" data-nav="mass-moment" data-title="群发朋友圈" data-crumb="SCRM / 营销管理 / 群发朋友圈">
+<div id="header-actions">
+  <button class="btn" id="btn-export">导出</button>
+  <button class="btn btn-primary" id="btn-create">新建群发朋友圈</button>
+</div>
+<div id="page-content" style="display:none">
+
+  <!-- 筛选 -->
+  <div class="card" style="margin-bottom:8px"><div class="card-bd">
+    <div class="form-grid" style="grid-template-columns:repeat(5,minmax(0,1fr));gap:8px 12px">
+      <input id="f-name" placeholder="请输入" />
+      <select id="f-status">
+        <option value="">任务状态</option>
+        <option>草稿</option>
+        <option>待执行</option>
+        <option>执行中</option>
+        <option>已完成</option>
+        <option>已取消</option>
+        <option>已失败</option>
+      </select>
+      <select id="f-updater">
+        <option value="">请选择</option>
+        <option>陈奕均</option>
+        <option>阮荣均</option>
+        <option>李大</option>
+      </select>
+      <input id="f-time1" type="datetime-local" />
+      <input id="f-time2" type="datetime-local" />
+    </div>
+    <div class="toolbar" style="margin-top:8px">
+      <button class="btn btn-primary" id="btn-query">查询</button>
+      <button class="btn" id="btn-reset">重置</button>
+      <div class="spacer"></div>
+      <button class="btn" id="btn-col">列展示</button>
+    </div>
+  </div></div>
+
+  <!-- 表格 -->
+  <div class="card"><div class="card-bd" style="padding:0">
+    <table class="data">
+      <thead>
+        <tr>
+          <th>任务名称</th><th>发送类型</th><th>任务状态</th><th>完成率</th>
+          <th>完成时间</th><th>更新人</th><th>更新时间</th>
+          <th style="width:220px">操作</th>
+        </tr>
+      </thead>
+      <tbody id="mm-tbody">
+        <tr>
+          <td>今晚直播 · 朋友圈预告</td>
+          <td>图文</td>
+          <td><span class="badge badge-success">已完成</span></td>
+          <td>12/12 (100%)</td>
+          <td>2026-03-29 19:00</td>
+          <td>阮荣均</td><td>2026-03-29 18:00</td>
+          <td class="row-actions">
+            <a href="#" data-row-act="remind">提醒</a>
+            <a href="#" data-row-act="detail">详情</a>
+            <a href="#" data-row-act="copy">复制</a>
+          </td>
+        </tr>
+        <tr>
+          <td>春启04 招生首发</td>
+          <td>图文+链接</td>
+          <td><span class="badge badge-success">已完成</span></td>
+          <td>8/8 (100%)</td>
+          <td>2026-03-28 12:00</td>
+          <td>赵老师</td><td>2026-03-28 10:00</td>
+          <td class="row-actions">
+            <a href="#" data-row-act="detail">详情</a>
+            <a href="#" data-row-act="copy">复制</a>
+          </td>
+        </tr>
+        <tr>
+          <td>暑期课表预告</td>
+          <td>视频</td>
+          <td><span class="badge">草稿</span></td>
+          <td>—</td>
+          <td>—</td>
+          <td>王助教</td><td>2026-03-28 09:30</td>
+          <td class="row-actions">
+            <a href="#" data-row-act="edit">编辑</a>
+            <a href="#" data-row-act="detail">详情</a>
+            <a href="#" data-row-act="copy">复制</a>
+          </td>
+        </tr>
+        <tr>
+          <td>复购福利</td>
+          <td>图文</td>
+          <td><span class="badge">草稿</span></td>
+          <td>—</td>
+          <td>—</td>
+          <td>阮荣均</td><td>2026-03-27 17:00</td>
+          <td class="row-actions">
+            <a href="#" data-row-act="edit">编辑</a>
+            <a href="#" data-row-act="detail">详情</a>
+            <a href="#" data-row-act="copy">复制</a>
+          </td>
+        </tr>
+        <tr>
+          <td>家长口碑秀</td>
+          <td>图文+小程序</td>
+          <td><span class="badge badge-warn">执行中</span></td>
+          <td>5/8 (62%)</td>
+          <td>—</td>
+          <td>王助教</td><td>2026-03-27 14:00</td>
+          <td class="row-actions">
+            <a href="#" data-row-act="remind">提醒</a>
+            <a href="#" data-row-act="detail">详情</a>
+            <a href="#" data-row-act="copy">复制</a>
+          </td>
+        </tr>
+        <tr>
+          <td>课程回顾月</td>
+          <td>图文</td>
+          <td><span class="badge badge-success">已完成</span></td>
+          <td>14/14 (100%)</td>
+          <td>2026-03-25 20:00</td>
+          <td>刘助教</td><td>2026-03-25 18:00</td>
+          <td class="row-actions">
+            <a href="#" data-row-act="detail">详情</a>
+            <a href="#" data-row-act="copy">复制</a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div></div>
+
+  <!-- 分页 -->
+  <div class="toolbar" style="margin-top:8px">
+    <span class="muted">共 <b>6</b> 条</span>
+    <div class="spacer"></div>
+    <button class="btn btn-sm" disabled>上一页</button>
+    <button class="btn btn-sm" id="btn-next">下一页</button>
+    <span class="muted" style="margin-left:8px">第</span>
+    <input id="pg-input" type="number" min="1" value="1" style="width:60px" />
+    <span class="muted">页</span>
+    <select id="pg-size" style="margin-left:8px">
+      <option>10条/页</option><option selected>20条/页</option>
+      <option>30条/页</option><option>50条/页</option>
+    </select>
+  </div>
+</div>
+
+<!-- ============ 抽屉 / 弹窗 ============ -->
+<div class="proto-mask" id="mask"></div>
+
+<!-- 新建群发朋友圈弹窗 -->
+<div class="proto-modal" id="modal-create" style="width:720px">
+  <div class="proto-modal-hd">
+    <h3 style="font-size:16px;font-weight:600">新建群发朋友圈</h3>
+    <button class="btn btn-sm btn-ghost" data-close>×</button>
+  </div>
+  <div class="proto-modal-bd">
+    <div class="form-grid">
+      <div class="field"><label>任务名称 *</label><input id="cmm-name" placeholder="如：今晚直播 · 朋友圈预告" /></div>
+      <div class="field"><label>发送对象 *</label>
+        <select id="cmm-target">
+          <option>全部员工</option>
+          <option>指定员工</option>
+          <option>指定部门</option>
+        </select>
+      </div>
+      <div class="field"><label>发送时间</label>
+        <select id="cmm-when">
+          <option>立即发送</option>
+          <option>定时发送</option>
+        </select>
+      </div>
+      <div class="field"><label>定时发送时间</label><input type="datetime-local" /></div>
+    </div>
+    <div class="field" style="margin-top:12px">
+      <label>朋友圈文案 *</label>
+      <textarea id="cmm-content" rows="4" style="width:100%;padding:8px;border:1px solid var(--color-border);border-radius:6px" placeholder="朋友圈文字，最多 1500 字；支持 {客户姓名} {服务老师} 等变量"></textarea>
+    </div>
+    <div class="field" style="margin-top:12px">
+      <label>朋友圈附件</label>
+      <div class="moments-editor">
+        <div class="moments-thumb-list" id="moments-thumbs">
+          <div class="moments-thumb-add" id="thumb-add">
+            <span>+</span>
+            <small>图片 / 视频 / 链接</small>
+          </div>
+        </div>
+        <p class="muted" style="font-size:12px;margin-top:8px">最多 9 张图或 1 个视频</p>
+      </div>
+    </div>
+    <div class="form-grid" style="margin-top:12px">
+      <div class="field"><label>客户可见</label>
+        <select><option>全部好友</option><option>部分好友可见</option><option>仅企微好友</option></select>
+      </div>
+      <div class="field"><label>评论互动</label>
+        <select><option>允许</option><option>关闭</option></select>
+      </div>
+    </div>
+  </div>
+  <div class="proto-modal-ft">
+    <button class="btn" data-close>取消</button>
+    <button class="btn" id="cmm-save-draft">存为草稿</button>
+    <button class="btn btn-primary" id="cmm-submit">立即发布</button>
+  </div>
+</div>
+
+<!-- 详情抽屉 -->
+<div class="proto-drawer" id="drawer-detail">
+  <div class="proto-drawer-hd">
+    <h3 id="mdr-title">朋友圈任务详情</h3>
+    <button class="btn btn-sm btn-ghost" data-close>×</button>
+  </div>
+  <div class="proto-drawer-bd">
+    <h4 style="margin-bottom:8px">任务信息</h4>
+    <div class="form-grid" style="grid-template-columns:1fr 1fr">
+      <div class="field"><label>任务名称</label><div id="mdr-name">—</div></div>
+      <div class="field"><label>发送类型</label><div id="mdr-type">—</div></div>
+      <div class="field"><label>任务状态</label><div id="mdr-status">—</div></div>
+      <div class="field"><label>完成时间</label><div id="mdr-time">—</div></div>
+      <div class="field"><label>更新人</label><div id="mdr-updater">—</div></div>
+      <div class="field"><label>更新时间</label><div id="mdr-updated">—</div></div>
+    </div>
+    <h4 style="margin:16px 0 8px">朋友圈预览</h4>
+    <div class="moment-preview">
+      <div class="mp-header">
+        <div class="mp-avatar">艺</div>
+        <div class="mp-name">艺博教育</div>
+      </div>
+      <div class="mp-text" id="mdr-content">今晚直播 8 点准时开始，点击链接进入直播间...</div>
+      <div class="mp-images">
+        <div class="mp-img"></div>
+        <div class="mp-img"></div>
+        <div class="mp-img"></div>
+      </div>
+      <div class="mp-meta">刚刚 · 来自 iPhone</div>
+    </div>
+    <h4 style="margin:16px 0 8px">执行进度</h4>
+    <div class="grid-4" style="margin:0">
+      <div class="stat"><div class="label">目标员工</div><div class="value" id="mdr-total">—</div></div>
+      <div class="stat"><div class="label">已发布</div><div class="value" id="mdr-sent">—</div></div>
+      <div class="stat"><div class="label">已点赞</div><div class="value" id="mdr-like">—</div></div>
+      <div class="stat"><div class="label">完成率</div><div class="value" id="mdr-rate">—</div></div>
+    </div>
+    <h4 style="margin:16px 0 8px">员工执行明细</h4>
+    <table class="data">
+      <thead><tr><th>员工</th><th>所属部门</th><th>发布状态</th><th>发布时间</th><th>点赞数</th></tr></thead>
+      <tbody>
+        <tr><td>阮荣均</td><td>运营中心</td><td><span class="badge badge-success">已发布</span></td><td>03-29 19:00:12</td><td>28</td></tr>
+        <tr><td>赵老师</td><td>销售一部</td><td><span class="badge badge-success">已发布</span></td><td>03-29 19:00:08</td><td>14</td></tr>
+        <tr><td>王助教</td><td>销售一部</td><td><span class="badge">未发布</span></td><td>—</td><td>—</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="proto-drawer-ft">
+    <button class="btn" data-close>关闭</button>
+    <button class="btn btn-primary" id="mdr-export">导出明细</button>
+  </div>
+</div>
+
+<!-- 列展示抽屉 -->
+<div class="proto-drawer" id="drawer-col" style="width:340px">
+  <div class="proto-drawer-hd">
+    <h3>列展示</h3>
+    <button class="btn btn-sm btn-ghost" data-close>×</button>
+  </div>
+  <div class="proto-drawer-bd">
+    <div id="col-list">
+      <label><input type="checkbox" checked> 任务名称</label>
+      <label><input type="checkbox" checked> 发送类型</label>
+      <label><input type="checkbox" checked> 任务状态</label>
+      <label><input type="checkbox" checked> 完成率</label>
+      <label><input type="checkbox" checked> 完成时间</label>
+      <label><input type="checkbox" checked> 更新人</label>
+      <label><input type="checkbox" checked> 更新时间</label>
+    </div>
+  </div>
+  <div class="proto-drawer-ft">
+    <button class="btn" data-close>取消</button>
+    <button class="btn btn-primary" id="col-apply">应用</button>
+  </div>
+</div>
+
+<style>
+.moments-editor {
+  border: 1px solid var(--color-border); border-radius: 6px;
+  padding: 12px; background: #f7f8fa;
+}
+.moments-thumb-list {
+  display: grid; grid-template-columns: repeat(4, 80px); gap: 8px;
+}
+.moments-thumb-add {
+  width: 80px; height: 80px;
+  background: #fff; border: 1px dashed var(--color-border); border-radius: 6px;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  cursor: pointer; color: var(--color-text-muted);
+}
+.moments-thumb-add span { font-size: 24px; line-height: 1; }
+.moments-thumb-add small { font-size: 10px; margin-top: 4px; }
+
+.moment-preview {
+  border: 1px solid var(--color-border); border-radius: 8px;
+  padding: 12px; background: #fff;
+  max-width: 360px;
+}
+.mp-header { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+.mp-avatar {
+  width: 36px; height: 36px; border-radius: 4px;
+  background: var(--color-primary); color: #fff;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 600;
+}
+.mp-name { font-weight: 600; }
+.mp-text { font-size: 14px; line-height: 1.6; margin-bottom: 8px; white-space: pre-wrap; }
+.mp-images { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; margin-bottom: 8px; }
+.mp-img {
+  aspect-ratio: 1; background: linear-gradient(135deg,#f0f4fa,#e5e6eb);
+  border-radius: 4px;
+}
+.mp-meta { color: var(--color-text-muted); font-size: 12px; }
+
+.row-actions a.danger { color: var(--color-danger); }
+#col-list label {
+  display: flex; align-items: center; gap: 6px;
+  padding: 6px 0; font-size: 13px;
+}
+</style>
+
+<script src="../assets/js/proto.js"></script>
+<script src="../assets/js/admin-shell.js"></script>
+<script>
+(function () {
+  // ===== Mask / drawer / modal =====
+  var mask = document.getElementById("mask");
+  function closeAll() {
+    mask.classList.remove("open");
+    document.querySelectorAll(".proto-modal, .proto-drawer").forEach(function (n) { n.classList.remove("open"); });
+  }
+  function open(node) { mask.classList.add("open"); node.classList.add("open"); }
+  mask.addEventListener("click", closeAll);
+  document.querySelectorAll("[data-close]").forEach(function (n) { n.addEventListener("click", closeAll); });
+
+  // ===== Row data =====
+  function rowData(tr) {
+    var tds = tr.querySelectorAll("td");
+    return {
+      name: tds[0] ? tds[0].textContent.trim() : "",
+      type: tds[1] ? tds[1].textContent.trim() : "",
+      status: tds[2] ? tds[2].textContent.trim() : "",
+      rate: tds[3] ? tds[3].textContent.trim() : "",
+      time: tds[4] ? tds[4].textContent.trim() : "—",
+      updater: tds[5] ? tds[5].textContent.trim() : "",
+      updated: tds[6] ? tds[6].textContent.trim() : "",
+    };
+  }
+
+  // ===== Detail =====
+  function fillDetail(d) {
+    document.getElementById("mdr-title").textContent = "朋友圈任务详情 · " + d.name;
+    document.getElementById("mdr-name").textContent = d.name;
+    document.getElementById("mdr-type").textContent = d.type;
+    document.getElementById("mdr-status").textContent = d.status;
+    document.getElementById("mdr-time").textContent = d.time;
+    document.getElementById("mdr-updater").textContent = d.updater;
+    document.getElementById("mdr-updated").textContent = d.updated;
+    document.getElementById("mdr-content").textContent = "今晚直播 8 点准时开始，点击链接进入直播间...";
+    var parts = d.rate.match(/(\d+)\/(\d+)\s*\((\d+)%\)/);
+    if (parts) {
+      document.getElementById("mdr-total").textContent = parts[2];
+      document.getElementById("mdr-sent").textContent = parts[1];
+      document.getElementById("mdr-like").textContent = Math.round(parseInt(parts[1]) * 12.5);
+      document.getElementById("mdr-rate").textContent = parts[3] + "%";
+    } else {
+      document.getElementById("mdr-total").textContent = "—";
+      document.getElementById("mdr-sent").textContent = "—";
+      document.getElementById("mdr-like").textContent = "—";
+      document.getElementById("mdr-rate").textContent = "—";
+    }
+    open(document.getElementById("drawer-detail"));
+  }
+
+  // ===== Row actions =====
+  document.querySelectorAll("#mm-tbody tr").forEach(function (tr) {
+    tr.querySelectorAll("[data-row-act]").forEach(function (a) {
+      a.addEventListener("click", function (e) {
+        e.preventDefault();
+        var act = a.getAttribute("data-row-act");
+        var d = rowData(tr);
+        if (act === "detail") fillDetail(d);
+        else if (act === "remind") Proto.toast("已提醒未发布员工（原型）");
+        else if (act === "copy") Proto.toast("已复制任务（原型）");
+        else if (act === "edit") open(document.getElementById("modal-create"));
+      });
+    });
+  });
+
+  // ===== Create =====
+  document.getElementById("btn-create").addEventListener("click", function () { open(document.getElementById("modal-create")); });
+  document.getElementById("cmm-submit").addEventListener("click", function () {
+    var n = document.getElementById("cmm-name").value.trim();
+    var c = document.getElementById("cmm-content").value.trim();
+    if (!n) { Proto.toast("请输入任务名称"); return; }
+    if (!c) { Proto.toast("请输入朋友圈文案"); return; }
+    closeAll(); Proto.toast("已发布（原型）");
+  });
+  document.getElementById("cmm-save-draft").addEventListener("click", function () {
+    var n = document.getElementById("cmm-name").value.trim();
+    if (!n) { Proto.toast("请输入任务名称"); return; }
+    closeAll(); Proto.toast("已存为草稿（原型）");
+  });
+
+  // ===== Thumb add =====
+  document.getElementById("thumb-add").addEventListener("click", function () { Proto.toast("选择图片 / 视频（原型）"); });
+
+  // ===== Other buttons =====
+  document.getElementById("mdr-export").addEventListener("click", function () { Proto.toast("已导出明细（原型）"); });
+  document.getElementById("btn-export").addEventListener("click", function () { Proto.toast("已导出（原型）"); });
+  document.getElementById("btn-query").addEventListener("click", function () { Proto.toast("已查询（原型）"); });
+  document.getElementById("btn-reset").addEventListener("click", function () {
+    document.getElementById("f-name").value = "";
+    ["f-status","f-updater"].forEach(function (id) { document.getElementById(id).value = ""; });
+    document.getElementById("f-time1").value = "";
+    document.getElementById("f-time2").value = "";
+    Proto.toast("已重置");
+  });
+  document.getElementById("btn-col").addEventListener("click", function () { open(document.getElementById("drawer-col")); });
+  document.getElementById("col-apply").addEventListener("click", function () { closeAll(); Proto.toast("列展示已应用（原型）"); });
+  document.getElementById("btn-next").addEventListener("click", function () {
+    var inp = document.getElementById("pg-input");
+    inp.value = parseInt(inp.value || 1) + 1;
+    Proto.toast("已跳转第 " + inp.value + " 页（原型）");
+  });
+})();
+</script>
+</body>
+</html>

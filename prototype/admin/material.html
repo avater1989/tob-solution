@@ -1,0 +1,524 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>助销素材库 · 艺博 To-B</title>
+<link rel="stylesheet" href="../assets/css/proto.css" />
+</head>
+<body class="admin-body" data-module="scrm" data-nav="material" data-title="助销素材库" data-crumb="SCRM / 内容中心 / 助销素材库">
+<div id="header-actions">
+  <button class="btn" id="btn-export">导出</button>
+  <button class="btn" id="btn-batch-copy" disabled>批量复制</button>
+  <button class="btn" id="btn-batch-del" disabled>批量删除</button>
+  <button class="btn btn-primary" id="btn-create">新建 ▾</button>
+</div>
+<div id="page-content" style="display:none">
+  <div class="content-layout">
+    <!-- 左：分组树 -->
+    <div class="card tree-card">
+      <div class="card-hd">
+        <h2>素材分组</h2>
+        <button class="btn btn-sm" id="btn-add-group">添加分组</button>
+      </div>
+      <div class="card-bd">
+        <input id="tree-search" placeholder="请输入分组名称" style="margin-bottom:8px" />
+        <ul class="tree" id="material-tree">
+          <li class="tree-node expanded" data-key="all">
+            <div class="tree-row tree-row--active">
+              <span class="tree-toggle">▾</span>
+              <span class="tree-icon">📁</span>
+              <span class="tree-label">全部素材</span>
+              <span class="tree-count">128</span>
+            </div>
+          </li>
+          <li class="tree-node expanded" data-key="poster">
+            <div class="tree-row">
+              <span class="tree-toggle">▾</span>
+              <span class="tree-icon">📁</span>
+              <span class="tree-label">海报</span>
+              <span class="tree-count">42</span>
+              <button class="tree-more" data-act="more">⋯</button>
+            </div>
+          </li>
+          <li class="tree-node" data-key="video">
+            <div class="tree-row">
+              <span class="tree-toggle">▸</span>
+              <span class="tree-icon">📁</span>
+              <span class="tree-label">视频</span>
+              <span class="tree-count">28</span>
+              <button class="tree-more" data-act="more">⋯</button>
+            </div>
+          </li>
+          <li class="tree-node" data-key="article">
+            <div class="tree-row">
+              <span class="tree-toggle">▸</span>
+              <span class="tree-icon">📁</span>
+              <span class="tree-label">文章</span>
+              <span class="tree-count">36</span>
+              <button class="tree-more" data-act="more">⋯</button>
+            </div>
+          </li>
+          <li class="tree-node" data-key="link">
+            <div class="tree-row">
+              <span class="tree-toggle">▸</span>
+              <span class="tree-icon">📁</span>
+              <span class="tree-label">链接</span>
+              <span class="tree-count">22</span>
+              <button class="tree-more" data-act="more">⋯</button>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- 右：素材列表 -->
+    <div class="card">
+      <div class="card-bd">
+        <!-- 筛选 -->
+        <div class="form-grid" style="grid-template-columns:repeat(4,minmax(0,1fr));gap:8px 12px">
+          <input id="f-name" placeholder="请输入素材名称" />
+          <select id="f-type">
+            <option value="">全部类型</option>
+            <option>图片</option><option>视频</option>
+            <option>文件</option><option>链接</option><option>文章</option>
+          </select>
+          <select id="f-status">
+            <option value="">全部状态</option>
+            <option>草稿</option><option>已发布</option><option>已下架</option>
+          </select>
+          <div class="time-range" style="display:flex;gap:6px">
+            <input id="f-time1" type="datetime-local" />
+            <input id="f-time2" type="datetime-local" />
+          </div>
+        </div>
+        <div class="toolbar" style="margin-top:8px">
+          <button class="btn btn-primary" id="btn-query">查询</button>
+          <button class="btn" id="btn-reset">重置</button>
+          <div class="spacer"></div>
+          <button class="btn" id="btn-col">列展示</button>
+        </div>
+
+        <!-- 表格 -->
+        <div class="card" style="margin-top:8px"><div class="card-bd" style="padding:0">
+          <table class="data">
+            <thead>
+              <tr>
+                <th style="width:36px"><input type="checkbox" id="check-all" /></th>
+                <th>素材</th><th>标题</th><th>素材类型</th><th>场景说明</th>
+                <th>所属分组</th><th>发送次数</th><th>查看次数</th>
+                <th>状态</th><th>更新人</th><th>更新时间</th>
+                <th style="width:180px">操作</th>
+              </tr>
+            </thead>
+            <tbody id="mat-tbody">
+              <tr>
+                <td><input type="checkbox" class="row-check" /></td>
+                <td><div class="material-thumb thumb-img">图片</div></td>
+                <td>9.9 引流课报名海报</td>
+                <td><span class="tag tag-blue">图片</span></td>
+                <td>朋友圈首图 / 群发图</td>
+                <td>海报</td>
+                <td>186</td><td>2,341</td>
+                <td><span class="badge badge-success">已发布</span></td>
+                <td>王助教</td><td>03-29 10:22</td>
+                <td class="row-actions">
+                  <a href="#" data-row-act="detail">详情</a>
+                  <a href="#" data-row-act="stat">数据</a>
+                  <a href="#" data-row-act="edit">编辑</a>
+                  <a href="#" data-row-act="copy">复制</a>
+                </td>
+              </tr>
+              <tr>
+                <td><input type="checkbox" class="row-check" /></td>
+                <td><div class="material-thumb thumb-video">视频</div></td>
+                <td>今晚直播预告片段</td>
+                <td><span class="tag tag-purple">视频</span></td>
+                <td>开课前 30 分钟群发</td>
+                <td>视频</td>
+                <td>92</td><td>1,580</td>
+                <td><span class="badge badge-success">已发布</span></td>
+                <td>赵老师</td><td>03-28 18:10</td>
+                <td class="row-actions">
+                  <a href="#" data-row-act="detail">详情</a>
+                  <a href="#" data-row-act="stat">数据</a>
+                  <a href="#" data-row-act="edit">编辑</a>
+                  <a href="#" data-row-act="copy">复制</a>
+                </td>
+              </tr>
+              <tr>
+                <td><input type="checkbox" class="row-check" /></td>
+                <td><div class="material-thumb thumb-link">链接</div></td>
+                <td>星启家庭教育介绍链接</td>
+                <td><span class="tag tag-orange">链接</span></td>
+                <td>新好友首次欢迎</td>
+                <td>链接</td>
+                <td>—</td><td>468</td>
+                <td><span class="badge badge-success">已发布</span></td>
+                <td>阮荣均</td><td>03-25 14:30</td>
+                <td class="row-actions">
+                  <a href="#" data-row-act="detail">详情</a>
+                  <a href="#" data-row-act="stat">数据</a>
+                  <a href="#" data-row-act="edit">编辑</a>
+                  <a href="#" data-row-act="copy">复制</a>
+                </td>
+              </tr>
+              <tr>
+                <td><input type="checkbox" class="row-check" /></td>
+                <td><div class="material-thumb thumb-article">文章</div></td>
+                <td>春启 03 家长问答</td>
+                <td><span class="tag tag-green">文章</span></td>
+                <td>—</td>
+                <td>文章</td>
+                <td>—</td><td>—</td>
+                <td><span class="badge">草稿</span></td>
+                <td>刘助教</td><td>03-29 09:05</td>
+                <td class="row-actions">
+                  <a href="#" data-row-act="detail">详情</a>
+                  <a href="#" data-row-act="stat">数据</a>
+                  <a href="#" data-row-act="edit">编辑</a>
+                  <a href="#" data-row-act="publish">发布</a>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div></div>
+
+        <!-- 分页 -->
+        <div class="toolbar" style="margin-top:8px">
+          <span class="muted">已选 <b id="mat-count">0</b> 条</span>
+          <div class="spacer"></div>
+          <span class="muted">共 <b>0</b> 条</span>
+          <button class="btn btn-sm" disabled>上一页</button>
+          <button class="btn btn-sm" id="btn-next">下一页</button>
+          <span class="muted" style="margin-left:8px">第</span>
+          <input id="pg-input" type="number" min="1" value="1" style="width:60px" />
+          <span class="muted">页</span>
+          <select id="pg-size" style="margin-left:8px">
+            <option>10条/页</option><option selected>20条/页</option>
+            <option>50条/页</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ 抽屉 / 弹窗 ============ -->
+<div class="proto-mask" id="mask"></div>
+
+<!-- 新建素材弹窗 -->
+<div class="proto-modal" id="modal-create">
+  <div class="proto-modal-hd">
+    <h3 style="font-size:16px;font-weight:600">新建素材</h3>
+    <button class="btn btn-sm btn-ghost" data-close>×</button>
+  </div>
+  <div class="proto-modal-bd">
+    <div class="form-grid">
+      <div class="field"><label>素材类型 *</label>
+        <select id="cm-type">
+          <option>图片</option><option>视频</option>
+          <option>文件</option><option>链接</option><option>文章</option>
+        </select>
+      </div>
+      <div class="field"><label>所属分组 *</label>
+        <select id="cm-group">
+          <option>海报</option><option>视频</option>
+          <option>文章</option><option>链接</option>
+        </select>
+      </div>
+      <div class="field" style="grid-column:1/-1"><label>标题 *</label><input id="cm-title" /></div>
+      <div class="field" style="grid-column:1/-1"><label>场景说明</label><input id="cm-scene" placeholder="如：朋友圈首图 / 开课前群发" /></div>
+      <div class="field" style="grid-column:1/-1"><label>排序号</label><input id="cm-sort" type="number" value="1" /></div>
+      <div class="field" style="grid-column:1/-1"><label>上传文件</label>
+        <input type="file" id="cm-file" />
+      </div>
+      <div class="field" style="grid-column:1/-1"><label>状态</label>
+        <select><option>草稿</option><option>已发布</option></select>
+      </div>
+    </div>
+  </div>
+  <div class="proto-modal-ft">
+    <button class="btn" data-close>取消</button>
+    <button class="btn" id="cm-save-draft">存为草稿</button>
+    <button class="btn btn-primary" id="cm-submit">保存并发布</button>
+  </div>
+</div>
+
+<!-- 新建分组弹窗 -->
+<div class="proto-modal" id="modal-group">
+  <div class="proto-modal-hd">
+    <h3 style="font-size:16px;font-weight:600">新建分组</h3>
+    <button class="btn btn-sm btn-ghost" data-close>×</button>
+  </div>
+  <div class="proto-modal-bd">
+    <div class="form-grid">
+      <div class="field"><label>分组名称</label><input id="gr-name" /></div>
+      <div class="field"><label>排序</label><input type="number" value="1" /></div>
+      <div class="field" style="grid-column:1/-1"><label>可见范围</label>
+        <select><option>全员</option><option>本部门</option><option>指定成员</option></select>
+      </div>
+    </div>
+  </div>
+  <div class="proto-modal-ft">
+    <button class="btn" data-close>取消</button>
+    <button class="btn btn-primary" id="gr-submit">保存</button>
+  </div>
+</div>
+
+<!-- 详情抽屉 -->
+<div class="proto-drawer" id="drawer-detail">
+  <div class="proto-drawer-hd">
+    <h3 id="md-title">素材详情</h3>
+    <button class="btn btn-sm btn-ghost" data-close>×</button>
+  </div>
+  <div class="proto-drawer-bd">
+    <div class="material-preview" id="md-preview">图片预览</div>
+    <h4 style="margin:16px 0 8px">基础信息</h4>
+    <div class="form-grid" style="grid-template-columns:1fr 1fr">
+      <div class="field"><label>标题</label><div id="md-title-text">—</div></div>
+      <div class="field"><label>类型</label><div id="md-type">—</div></div>
+      <div class="field"><label>分组</label><div id="md-group">—</div></div>
+      <div class="field"><label>状态</label><div id="md-status">—</div></div>
+      <div class="field" style="grid-column:1/-1"><label>场景说明</label><div id="md-scene">—</div></div>
+      <div class="field"><label>更新人</label><div id="md-updater">—</div></div>
+      <div class="field"><label>更新时间</label><div id="md-updated">—</div></div>
+    </div>
+    <h4 style="margin:16px 0 8px">数据</h4>
+    <div class="form-grid" style="grid-template-columns:1fr 1fr 1fr">
+      <div class="stat"><div class="label">发送次数</div><div class="value" id="md-send">—</div></div>
+      <div class="stat"><div class="label">查看次数</div><div class="value" id="md-view">—</div></div>
+      <div class="stat"><div class="label">点击次数</div><div class="value" id="md-click">—</div></div>
+    </div>
+  </div>
+  <div class="proto-drawer-ft">
+    <button class="btn" data-close>关闭</button>
+    <a class="btn btn-primary" href="#" id="md-edit">编辑</a>
+  </div>
+</div>
+
+<!-- 列展示抽屉 -->
+<div class="proto-drawer" id="drawer-col" style="width:340px">
+  <div class="proto-drawer-hd">
+    <h3>列展示</h3>
+    <button class="btn btn-sm btn-ghost" data-close>×</button>
+  </div>
+  <div class="proto-drawer-bd">
+    <div id="col-list">
+      <label><input type="checkbox" checked> 素材</label>
+      <label><input type="checkbox" checked> 标题</label>
+      <label><input type="checkbox" checked> 素材类型</label>
+      <label><input type="checkbox" checked> 场景说明</label>
+      <label><input type="checkbox"> 排序号</label>
+      <label><input type="checkbox" checked> 所属分组</label>
+      <label><input type="checkbox"> 发送次数</label>
+      <label><input type="checkbox"> 查看次数</label>
+      <label><input type="checkbox" checked> 状态</label>
+      <label><input type="checkbox"> 更新人</label>
+      <label><input type="checkbox" checked> 更新时间</label>
+    </div>
+  </div>
+  <div class="proto-drawer-ft">
+    <button class="btn" data-close>取消</button>
+    <button class="btn btn-primary" id="col-apply">应用</button>
+  </div>
+</div>
+
+<style>
+.content-layout {
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  gap: 12px;
+}
+.tree-card { height: fit-content; }
+.tree { list-style: none; padding: 0; margin: 0; }
+.tree-node { margin-bottom: 2px; }
+.tree-row {
+  display: flex; align-items: center; gap: 6px;
+  padding: 6px 8px; border-radius: 4px; cursor: pointer;
+  font-size: 13px;
+}
+.tree-row:hover { background: #f0f4fa; }
+.tree-row--active { background: var(--color-primary-soft); color: var(--color-primary); font-weight: 500; }
+.tree-toggle { color: var(--color-text-muted); font-size: 10px; width: 12px; }
+.tree-icon { font-size: 14px; }
+.tree-label { flex: 1; }
+.tree-count { color: var(--color-text-muted); font-size: 12px; }
+.tree-more {
+  background: none; border: none; color: var(--color-text-muted);
+  cursor: pointer; padding: 0 4px; font-size: 16px; line-height: 1;
+}
+.material-thumb {
+  width: 56px; height: 40px; border-radius: 4px;
+  display: flex; align-items: center; justify-content: center;
+  color: #fff; font-size: 11px; font-weight: 500;
+}
+.thumb-img { background: linear-gradient(135deg,#165dff,#4080ff); }
+.thumb-video { background: linear-gradient(135deg,#722ed1,#a066f5); }
+.thumb-link { background: linear-gradient(135deg,#ff7d00,#ffb84d); }
+.thumb-article { background: linear-gradient(135deg,#00b42a,#5fd068); }
+.thumb-file { background: linear-gradient(135deg,#86909c,#a9b1bb); }
+.tag { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 12px; }
+.tag-blue { background: #e8f3ff; color: #165dff; }
+.tag-purple { background: #f4eaff; color: #722ed1; }
+.tag-orange { background: #fff7e8; color: #ff7d00; }
+.tag-green { background: #e8f7eb; color: #00b42a; }
+.row-actions a.danger { color: var(--color-danger); }
+.material-preview {
+  width: 100%; aspect-ratio: 16/9;
+  background: linear-gradient(135deg,#f0f4fa,#e5e6eb);
+  border-radius: 6px; display: flex; align-items: center; justify-content: center;
+  color: var(--color-text-muted); font-size: 14px;
+}
+#col-list label {
+  display: flex; align-items: center; gap: 6px;
+  padding: 6px 0; font-size: 13px;
+}
+</style>
+
+<script src="../assets/js/proto.js"></script>
+<script src="../assets/js/admin-shell.js"></script>
+<script>
+(function () {
+  // ===== Tree interactions =====
+  document.querySelectorAll(".tree-row").forEach(function (row) {
+    row.addEventListener("click", function (e) {
+      if (e.target.classList.contains("tree-more")) return;
+      document.querySelectorAll(".tree-row").forEach(function (x) { x.classList.remove("tree-row--active"); });
+      row.classList.add("tree-row--active");
+      var label = row.querySelector(".tree-label").textContent;
+      Proto.toast("已切换到：" + label);
+    });
+  });
+  document.querySelectorAll(".tree-toggle").forEach(function (t) {
+    t.addEventListener("click", function (e) {
+      e.stopPropagation();
+      var node = t.closest(".tree-node");
+      node.classList.toggle("expanded");
+      t.textContent = node.classList.contains("expanded") ? "▾" : "▸";
+    });
+  });
+  document.querySelectorAll(".tree-more").forEach(function (b) {
+    b.addEventListener("click", function (e) {
+      e.stopPropagation();
+      Proto.toast("更多操作（原型）");
+    });
+  });
+  document.getElementById("btn-add-group").addEventListener("click", function () {
+    open(document.getElementById("modal-group"));
+  });
+  document.getElementById("gr-submit").addEventListener("click", function () {
+    var n = document.getElementById("gr-name").value.trim();
+    if (!n) { Proto.toast("请输入分组名称"); return; }
+    closeAll(); Proto.toast("分组已创建（原型）");
+  });
+
+  // ===== Mask / drawer / modal =====
+  var mask = document.getElementById("mask");
+  function closeAll() {
+    mask.classList.remove("open");
+    document.querySelectorAll(".proto-modal, .proto-drawer").forEach(function (n) { n.classList.remove("open"); });
+  }
+  function open(node) { mask.classList.add("open"); node.classList.add("open"); }
+  mask.addEventListener("click", closeAll);
+  document.querySelectorAll("[data-close]").forEach(function (n) { n.addEventListener("click", closeAll); });
+
+  // ===== Batch =====
+  var btnBatchCopy = document.getElementById("btn-batch-copy");
+  var btnBatchDel = document.getElementById("btn-batch-del");
+  var checkAll = document.getElementById("check-all");
+  function syncBatch() {
+    var n = document.querySelectorAll(".row-check:checked").length;
+    document.getElementById("mat-count").textContent = n;
+    btnBatchCopy.disabled = n === 0;
+    btnBatchDel.disabled = n === 0;
+  }
+  checkAll.addEventListener("change", function () {
+    document.querySelectorAll(".row-check").forEach(function (c) { c.checked = checkAll.checked; });
+    syncBatch();
+  });
+  document.querySelectorAll(".row-check").forEach(function (c) { c.addEventListener("change", syncBatch); });
+  btnBatchCopy.addEventListener("click", function () { Proto.toast("已批量复制（原型）"); });
+  btnBatchDel.addEventListener("click", function () {
+    if (confirm("确认批量删除？")) Proto.toast("已批量删除（原型）");
+  });
+
+  // ===== Create =====
+  document.getElementById("btn-create").addEventListener("click", function () { open(document.getElementById("modal-create")); });
+  document.getElementById("cm-submit").addEventListener("click", function () {
+    var t = document.getElementById("cm-title").value.trim();
+    if (!t) { Proto.toast("请输入标题"); return; }
+    closeAll(); Proto.toast("素材已保存并发布（原型）");
+  });
+  document.getElementById("cm-save-draft").addEventListener("click", function () {
+    var t = document.getElementById("cm-title").value.trim();
+    if (!t) { Proto.toast("请输入标题"); return; }
+    closeAll(); Proto.toast("已存为草稿（原型）");
+  });
+
+  // ===== Row actions =====
+  function rowData(tr) {
+    var tds = tr.querySelectorAll("td");
+    return {
+      title: tds[2] ? tds[2].textContent.trim() : "",
+      type: tds[3] ? tds[3].textContent.trim() : "",
+      group: tds[5] ? tds[5].textContent.trim() : "",
+      send: tds[6] ? tds[6].textContent.trim() : "—",
+      view: tds[7] ? tds[7].textContent.trim() : "—",
+      status: tds[8] ? tds[8].textContent.trim() : "",
+      updater: tds[9] ? tds[9].textContent.trim() : "",
+      updated: tds[10] ? tds[10].textContent.trim() : "",
+    };
+  }
+  function fillDetail(d) {
+    document.getElementById("md-title").textContent = "素材详情 · " + d.title;
+    document.getElementById("md-title-text").textContent = d.title;
+    document.getElementById("md-type").textContent = d.type;
+    document.getElementById("md-group").textContent = d.group;
+    document.getElementById("md-status").textContent = d.status;
+    document.getElementById("md-scene").textContent = "—";
+    document.getElementById("md-updater").textContent = d.updater;
+    document.getElementById("md-updated").textContent = d.updated;
+    document.getElementById("md-send").textContent = d.send;
+    document.getElementById("md-view").textContent = d.view;
+    document.getElementById("md-click").textContent = "—";
+    open(document.getElementById("drawer-detail"));
+  }
+  document.querySelectorAll("#mat-tbody tr").forEach(function (tr) {
+    tr.querySelectorAll("[data-row-act]").forEach(function (a) {
+      a.addEventListener("click", function (e) {
+        e.preventDefault();
+        var act = a.getAttribute("data-row-act");
+        var d = rowData(tr);
+        if (act === "detail" || act === "stat") fillDetail(d);
+        else if (act === "edit") Proto.toast("打开编辑（原型）");
+        else if (act === "copy") Proto.toast("已复制素材（原型）");
+        else if (act === "publish") {
+          tr.querySelector(".badge").outerHTML = '<span class="badge badge-success">已发布</span>';
+          Proto.toast("已发布（原型）");
+        }
+      });
+    });
+  });
+
+  // ===== Other buttons =====
+  document.getElementById("btn-export").addEventListener("click", function () { Proto.toast("已导出（原型）"); });
+  document.getElementById("btn-query").addEventListener("click", function () { Proto.toast("已查询（原型）"); });
+  document.getElementById("btn-reset").addEventListener("click", function () {
+    document.getElementById("f-name").value = "";
+    ["f-type","f-status"].forEach(function (id) { document.getElementById(id).value = ""; });
+    document.getElementById("f-time1").value = "";
+    document.getElementById("f-time2").value = "";
+    Proto.toast("已重置");
+  });
+  document.getElementById("btn-col").addEventListener("click", function () { open(document.getElementById("drawer-col")); });
+  document.getElementById("col-apply").addEventListener("click", function () { closeAll(); Proto.toast("列展示已应用（原型）"); });
+  document.getElementById("btn-next").addEventListener("click", function () {
+    var inp = document.getElementById("pg-input");
+    inp.value = parseInt(inp.value || 1) + 1;
+    Proto.toast("已跳转第 " + inp.value + " 页（原型）");
+  });
+})();
+</script>
+</body>
+</html>

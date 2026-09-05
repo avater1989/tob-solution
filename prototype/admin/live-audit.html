@@ -1,0 +1,336 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>直播审核工作台 · 艺博 To-B</title>
+<link rel="stylesheet" href="../assets/css/proto.css" />
+</head>
+<body class="admin-body" data-module="live" data-nav="live-audit" data-title="直播审核工作台" data-crumb="直播 / 直播审核 / 审核工作台">
+<div id="header-actions">
+  <button class="btn" id="btn-refresh">刷新</button>
+  <button class="btn" id="btn-export">导出</button>
+  <button class="btn btn-primary" id="btn-batch-approve">批量通过</button>
+</div>
+<div id="page-content" style="display:none">
+
+  <!-- 顶部 4 个统计卡片 -->
+  <div class="stat-cards" style="margin-bottom:8px">
+    <div class="stat-card">
+      <div class="stat-label">待我审核</div>
+      <div class="stat-value" style="color:#d48806">12</div>
+      <div class="stat-hint"><span class="up">+3</span> 较昨日</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">今日已审核</div>
+      <div class="stat-value">28</div>
+      <div class="stat-hint">通过 24 · 驳回 4</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">平均审核时长</div>
+      <div class="stat-value">14<span style="font-size:14px;color:#86909c;font-weight:400;margin-left:2px">分钟</span></div>
+      <div class="stat-hint"><span class="down">-3 分钟</span> 较上周</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">驳回率</div>
+      <div class="stat-value">14.3<span style="font-size:14px;color:#86909c;font-weight:400;margin-left:2px">%</span></div>
+      <div class="stat-hint">本周数据</div>
+    </div>
+  </div>
+
+  <!-- Tabs -->
+  <div class="tabs" id="audit-tabs">
+    <a class="active" href="#pending" data-tab="pending">待我审核 <span class="tab-badge">12</span></a>
+    <a href="#audited" data-tab="audited">我已审核</a>
+    <a href="#all" data-tab="all">全部</a>
+  </div>
+
+  <!-- 筛选 -->
+  <div class="card" style="margin-bottom:8px"><div class="card-bd">
+    <div class="form-grid" style="grid-template-columns:repeat(6,minmax(0,1fr));gap:8px 12px">
+      <input id="f-name" placeholder="请输入直播名称" />
+      <select id="f-course">
+        <option value="">全部课程</option>
+        <option>店铺课程</option>
+        <option>转播课程</option>
+      </select>
+      <select id="f-mode">
+        <option value="">全部模式</option>
+        <option>视频直播</option>
+        <option>语音直播</option>
+        <option>录播直播</option>
+      </select>
+      <select id="f-creator">
+        <option value="">全部创建人</option>
+        <option>阮荣均</option>
+        <option>赵老师</option>
+        <option>王助教</option>
+      </select>
+      <select id="f-date">
+        <option value="">全部时间</option>
+        <option>今日</option>
+        <option>近 7 天</option>
+        <option>近 30 天</option>
+      </select>
+      <input id="f-range" type="datetime-local" placeholder="提交时间" />
+    </div>
+    <div class="toolbar" style="margin-top:8px">
+      <button class="btn btn-primary" id="btn-query">查询</button>
+      <button class="btn" id="btn-reset">重置</button>
+      <div class="spacer"></div>
+      <span class="muted" style="font-size:12px">提示：批量操作仅支持「通过」，驳回需进入详情填写理由</span>
+    </div>
+  </div></div>
+
+  <!-- 表格 -->
+  <div class="card"><div class="card-bd" style="padding:0">
+    <table class="data">
+      <thead>
+        <tr>
+          <th style="width:36px"><input type="checkbox" id="check-all" /></th>
+          <th>直播名称</th><th>关联课程</th><th>模式</th><th>主讲老师</th>
+          <th>开始时间</th><th>创建人</th><th>提交时间</th>
+          <th>等待时长</th>
+          <th style="width:160px">操作</th>
+        </tr>
+      </thead>
+      <tbody id="audit-tbody">
+        <tr data-tab="pending">
+          <td><input type="checkbox" class="row-check" /></td>
+          <td><a href="live-audit-detail.html" class="link-blue">春启 03 期家长公开课</a></td>
+          <td>春启 03 期家长必修课</td>
+          <td>视频直播</td>
+          <td>阮荣均</td>
+          <td>2026-03-30 20:00</td>
+          <td>阮荣均</td><td>2026-09-04 14:30</td>
+          <td><span class="wait-badge wait-warn">2 小时</span></td>
+          <td class="row-actions">
+            <a href="live-audit-detail.html" data-row-act="audit">审核</a>
+            <a href="#" data-row-act="preview">预览</a>
+          </td>
+        </tr>
+        <tr data-tab="pending">
+          <td><input type="checkbox" class="row-check" /></td>
+          <td><a href="live-audit-detail.html" class="link-blue">明日直播·春启04 招生</a></td>
+          <td>春启 04 期</td>
+          <td>视频直播</td>
+          <td>赵老师</td>
+          <td>2026-09-05 19:00</td>
+          <td>赵老师</td><td>2026-09-04 10:00</td>
+          <td><span class="wait-badge wait-warn">6 小时</span></td>
+          <td class="row-actions">
+            <a href="live-audit-detail.html" data-row-act="audit">审核</a>
+            <a href="#" data-row-act="preview">预览</a>
+          </td>
+        </tr>
+        <tr data-tab="pending">
+          <td><input type="checkbox" class="row-check" /></td>
+          <td><a href="live-audit-detail.html" class="link-blue">家长答疑会·音频直播</a></td>
+          <td>家长训练营</td>
+          <td>语音直播</td>
+          <td>王助教</td>
+          <td>2026-04-01 20:00</td>
+          <td>王助教</td><td>2026-09-03 18:20</td>
+          <td><span class="wait-badge wait-overdue">22 小时</span></td>
+          <td class="row-actions">
+            <a href="live-audit-detail.html" data-row-act="audit">审核</a>
+            <a href="#" data-row-act="preview">预览</a>
+          </td>
+        </tr>
+        <tr data-tab="pending">
+          <td><input type="checkbox" class="row-check" /></td>
+          <td><a href="live-audit-detail.html" class="link-blue">9.9 引流试听课·改版</a></td>
+          <td>9.9 引流课 · 亲子沟通</td>
+          <td>视频直播</td>
+          <td>赵老师</td>
+          <td>2026-09-06 19:30</td>
+          <td>赵老师</td><td>2026-09-04 16:45</td>
+          <td><span class="wait-badge wait-fresh">30 分钟</span></td>
+          <td class="row-actions">
+            <a href="live-audit-detail.html" data-row-act="audit">审核</a>
+            <a href="#" data-row-act="preview">预览</a>
+          </td>
+        </tr>
+        <tr data-tab="audited">
+          <td><input type="checkbox" class="row-check" disabled /></td>
+          <td>今晚直播 · 公开课</td>
+          <td>今晚直播 · 复盘</td>
+          <td>视频直播</td>
+          <td>阮荣均</td>
+          <td>2026-09-04 20:00</td>
+          <td>阮荣均</td><td>2026-09-03 11:30</td>
+          <td><span class="audit-badge audit-approved">已通过</span></td>
+          <td class="row-actions">
+            <a href="live-audit-detail.html">查看</a>
+          </td>
+        </tr>
+        <tr data-tab="audited">
+          <td><input type="checkbox" class="row-check" disabled /></td>
+          <td>9.9 引流试听课</td>
+          <td>9.9 引流课 · 亲子沟通</td>
+          <td>视频直播</td>
+          <td>赵老师</td>
+          <td>2026-03-31 19:30</td>
+          <td>赵老师</td><td>2026-09-03 16:00</td>
+          <td><span class="audit-badge audit-rejected">已驳回</span></td>
+          <td class="row-actions">
+            <a href="live-audit-detail.html">查看</a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div></div>
+
+  <!-- 分页 -->
+  <div class="toolbar" style="margin-top:8px">
+    <span class="muted">共 <b>4</b> 条待审核 · 共 <b>2</b> 条已审核</span>
+    <div class="spacer"></div>
+    <select><option>10条/页</option><option>20条/页</option><option>50条/页</option></select>
+    <button class="btn btn-sm" disabled>上一页</button>
+    <button class="btn btn-sm" disabled>1</button>
+    <button class="btn btn-sm" disabled>下一页</button>
+  </div>
+
+</div>
+
+<!-- ============ 弹窗 ============ -->
+<div class="proto-mask" id="mask"></div>
+
+<!-- 批量通过确认 -->
+<div class="proto-modal" id="modal-batch-approve">
+  <div class="proto-modal-hd">
+    <h3>批量通过</h3>
+    <button class="btn btn-sm btn-ghost" data-close>×</button>
+  </div>
+  <div class="proto-modal-bd">
+    <p>即将通过 <b id="batch-count">0</b> 个直播的审核，提交后将自动上架：</p>
+    <ul id="batch-list" style="background:#f7f8fa;border-radius:4px;padding:12px 24px;margin:8px 0;color:#4e5969"></ul>
+    <div class="field"><label>备注（选填）</label>
+      <textarea rows="2" placeholder="如有补充说明请填写"></textarea>
+    </div>
+  </div>
+  <div class="proto-modal-ft">
+    <button class="btn" data-close>取消</button>
+    <button class="btn btn-primary" id="btn-confirm-batch">确认通过</button>
+  </div>
+</div>
+
+<style>
+.stat-cards {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px;
+}
+.stat-card {
+  background: #fff; border: 1px solid var(--color-border);
+  border-radius: 8px; padding: 14px 18px;
+}
+.stat-label { font-size: 13px; color: var(--color-text-muted); margin-bottom: 6px; }
+.stat-value { font-size: 24px; font-weight: 700; color: var(--color-text); line-height: 1.2; }
+.stat-hint  { font-size: 12px; color: var(--color-text-muted); margin-top: 4px; }
+.stat-hint .up   { color: #00b42a; margin-right: 4px; }
+.stat-hint .down { color: #f53f3f; margin-right: 4px; }
+
+.tab-badge {
+  display: inline-block; margin-left: 4px;
+  min-width: 18px; height: 16px; line-height: 16px;
+  padding: 0 6px; border-radius: 8px;
+  background: #f53f3f; color: #fff; font-size: 11px;
+  font-weight: 600; vertical-align: middle;
+}
+.tabs a.active .tab-badge { background: #fff; color: #f53f3f; }
+
+.wait-badge {
+  display: inline-block; padding: 2px 8px; border-radius: 4px;
+  font-size: 12px; line-height: 18px; font-weight: 500;
+}
+.wait-fresh   { background: #f0f9ff; color: #165dff; }
+.wait-warn    { background: #fffbe6; color: #d48806; }
+.wait-overdue { background: #fff1f0; color: #cf1322; }
+
+.audit-badge {
+  display: inline-block; padding: 2px 10px; border-radius: 12px;
+  font-size: 12px; line-height: 18px; font-weight: 500;
+}
+.audit-approved { background: #e8f5e9; color: #00b42a; }
+.audit-rejected { background: #fff1f0; color: #cf1322; }
+.audit-pending  { background: #fff7e6; color: #d48806; }
+.audit-draft    { background: #f0f1f3; color: #4e5969; }
+.audit-cancelled{ background: #f5f5f5; color: #86909c; }
+
+.row-actions a { margin-right: 8px; }
+</style>
+
+<script src="../assets/js/proto.js"></script>
+<script src="../assets/js/admin-shell.js"></script>
+<script>
+(function () {
+  // ===== Tabs =====
+  document.querySelectorAll("#audit-tabs a[data-tab]").forEach(function (a) {
+    a.addEventListener("click", function (e) {
+      e.preventDefault();
+      document.querySelectorAll("#audit-tabs a").forEach(function (x) { x.classList.remove("active"); });
+      a.classList.add("active");
+      var tab = a.getAttribute("data-tab");
+      document.querySelectorAll("#audit-tbody tr").forEach(function (tr) {
+        tr.style.display = (tab === "all" || tr.dataset.tab === tab) ? "" : "none";
+      });
+    });
+  });
+
+  // ===== Mask =====
+  var mask = document.getElementById("mask");
+  function closeAll() {
+    mask.classList.remove("open");
+    document.querySelectorAll(".proto-modal").forEach(function (n) { n.classList.remove("open"); });
+  }
+  function open(node) { mask.classList.add("open"); node.classList.add("open"); }
+  mask.addEventListener("click", closeAll);
+  document.querySelectorAll("[data-close]").forEach(function (n) { n.addEventListener("click", closeAll); });
+
+  // ===== Batch =====
+  document.getElementById("check-all").addEventListener("change", function () {
+    var c = this;
+    document.querySelectorAll(".row-check").forEach(function (x) {
+      if (!x.disabled) x.checked = c.checked;
+    });
+  });
+
+  // ===== Row preview =====
+  document.querySelectorAll("[data-row-act=preview]").forEach(function (a) {
+    a.addEventListener("click", function (e) {
+      e.preventDefault();
+      Proto.toast("打开预览（原型）");
+    });
+  });
+
+  // ===== Batch approve =====
+  document.getElementById("btn-batch-approve").addEventListener("click", function () {
+    var rows = Array.from(document.querySelectorAll(".row-check:checked")).map(function (c) { return c.closest("tr"); });
+    if (!rows.length) { Proto.toast("请先选择要通过的直播"); return; }
+    document.getElementById("batch-count").textContent = rows.length;
+    var list = document.getElementById("batch-list");
+    list.innerHTML = rows.map(function (r) {
+      var name = r.querySelectorAll("td")[1].textContent.trim();
+      return "<li>" + name + "</li>";
+    }).join("");
+    open(document.getElementById("modal-batch-approve"));
+  });
+  document.getElementById("btn-confirm-batch").addEventListener("click", function () {
+    closeAll();
+    Proto.toast("已批量通过（原型）");
+    setTimeout(function () { location.reload(); }, 600);
+  });
+
+  // ===== Header buttons =====
+  document.getElementById("btn-refresh").addEventListener("click", function () { location.reload(); });
+  document.getElementById("btn-export").addEventListener("click", function () { Proto.toast("已导出（原型）"); });
+  document.getElementById("btn-query").addEventListener("click", function () { Proto.toast("已查询（原型）"); });
+  document.getElementById("btn-reset").addEventListener("click", function () {
+    document.getElementById("f-name").value = "";
+    ["f-course","f-mode","f-creator","f-date"].forEach(function (id) { document.getElementById(id).value = ""; });
+    document.getElementById("f-range").value = "";
+    Proto.toast("已重置");
+  });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,204 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>直播数据 · 艺博 To-B</title>
+<link rel="stylesheet" href="../assets/css/proto.css" />
+</head>
+<body class="admin-body" data-module="live" data-nav="live-stats" data-title="直播数据" data-crumb="直播 / 直播管理 / 直播数据">
+<div id="header-actions">
+  <button class="btn" id="btn-export">导出</button>
+  <button class="btn" id="btn-refresh">↻</button>
+</div>
+<div id="page-content" style="display:none">
+
+  <!-- 顶部 5 大核心数据 -->
+  <div class="grid-4" style="margin-bottom:16px">
+    <div class="stat"><div class="label">累计观看人次</div><div class="value">8,642</div></div>
+    <div class="stat"><div class="label">累计观看人数</div><div class="value">4,128</div></div>
+    <div class="stat"><div class="label">最高在线</div><div class="value">386</div></div>
+    <div class="stat"><div class="label">平均观看时长</div><div class="value">14:32</div></div>
+    <div class="stat"><div class="label">新增客户数</div><div class="value">186</div></div>
+  </div>
+
+  <!-- 筛选 -->
+  <div class="card" style="margin-bottom:8px"><div class="card-bd">
+    <div class="form-grid" style="grid-template-columns:repeat(5,minmax(0,1fr));gap:8px 12px">
+      <select id="f-live">
+        <option value="">选择直播</option>
+        <option>春启 03 期家长公开课</option>
+        <option>9.9 引流课·试听课</option>
+        <option>家长答疑会·音频直播</option>
+      </select>
+      <select id="f-time">
+        <option value="">时间维度</option>
+        <option>今日</option>
+        <option>近 7 天</option>
+        <option>近 30 天</option>
+        <option>自定义</option>
+      </select>
+      <input id="f-time1" type="datetime-local" />
+      <input id="f-time2" type="datetime-local" />
+      <button class="btn btn-primary" id="btn-query">查询</button>
+    </div>
+  </div></div>
+
+  <!-- 4 个数据卡片：核心指标 -->
+  <div class="grid-4" style="margin-bottom:16px">
+    <div class="card"><div class="card-hd"><h2>实时数据</h2></div><div class="card-bd">
+      <div class="data-row"><span class="muted">实时在线</span><b>68</b></div>
+      <div class="data-row"><span class="muted">累计观看</span><b>1,248</b></div>
+      <div class="data-row"><span class="muted">评论数</span><b>86</b></div>
+      <div class="data-row"><span class="muted">分享次数</span><b>34</b></div>
+    </div></div>
+    <div class="card"><div class="card-hd"><h2>转化数据</h2></div><div class="card-bd">
+      <div class="data-row"><span class="muted">商品点击</span><b>326</b></div>
+      <div class="data-row"><span class="muted">下单数</span><b>62</b></div>
+      <div class="data-row"><span class="muted">GMV</span><b>¥3,180</b></div>
+      <div class="data-row"><span class="muted">转化率</span><b>19.0%</b></div>
+    </div></div>
+    <div class="card"><div class="card-hd"><h2>用户行为</h2></div><div class="card-bd">
+      <div class="data-row"><span class="muted">新增加微</span><b>92</b></div>
+      <div class="data-row"><span class="muted">关注主播</span><b>48</b></div>
+      <div class="data-row"><span class="muted">礼物收入</span><b>¥0</b></div>
+      <div class="data-row"><span class="muted">回看次数</span><b>248</b></div>
+    </div></div>
+    <div class="card"><div class="card-hd"><h2>直播表现</h2></div><div class="card-bd">
+      <div class="data-row"><span class="muted">平均在线</span><b>186</b></div>
+      <div class="data-row"><span class="muted">峰值在线</span><b>386</b></div>
+      <div class="data-row"><span class="muted">完播率</span><b>68%</b></div>
+      <div class="data-row"><span class="muted">互动率</span><b>42%</b></div>
+    </div></div>
+  </div>
+
+  <!-- 趋势图（占位） -->
+  <div class="card" style="margin-bottom:16px">
+    <div class="card-hd"><h2>在线人数趋势</h2><select style="margin-left:auto"><option>实时</option><option>分时</option><option>日</option></select></div>
+    <div class="card-bd">
+      <div class="trend-chart">
+        <div class="trend-bar" style="height:30%"></div>
+        <div class="trend-bar" style="height:45%"></div>
+        <div class="trend-bar" style="height:60%"></div>
+        <div class="trend-bar" style="height:75%"></div>
+        <div class="trend-bar" style="height:90%"></div>
+        <div class="trend-bar" style="height:100%"></div>
+        <div class="trend-bar" style="height:85%"></div>
+        <div class="trend-bar" style="height:70%"></div>
+        <div class="trend-bar" style="height:60%"></div>
+        <div class="trend-bar" style="height:50%"></div>
+        <div class="trend-bar" style="height:40%"></div>
+        <div class="trend-bar" style="height:30%"></div>
+      </div>
+      <div class="trend-labels">
+        <span>20:00</span><span>20:30</span><span>21:00</span><span>21:30</span>
+        <span>22:00</span><span>22:30</span><span>23:00</span><span>23:30</span>
+        <span>00:00</span><span>00:30</span><span>01:00</span><span>01:30</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 直播列表 + 数据 -->
+  <div class="card">
+    <div class="card-hd"><h2>直播数据明细</h2></div>
+    <div class="card-bd" style="padding:0">
+      <table class="data">
+        <thead>
+          <tr>
+            <th>直播名称</th>
+            <th>开始时间</th>
+            <th>时长</th>
+            <th>观看人数</th>
+            <th>最高在线</th>
+            <th>新增加微</th>
+            <th>订单数</th>
+            <th>GMV</th>
+            <th>完播率</th>
+            <th>操作</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>春启 03 期家长公开课</td>
+            <td>2026-03-29 20:00</td>
+            <td>2 小时</td>
+            <td>386</td>
+            <td>386</td>
+            <td>186</td>
+            <td>62</td>
+            <td>¥3,180</td>
+            <td>68%</td>
+            <td><a href="#" data-row-act="detail">详情</a></td>
+          </tr>
+          <tr>
+            <td>9.9 引流课·试听课</td>
+            <td>2026-03-22 19:30</td>
+            <td>1.5 小时</td>
+            <td>248</td>
+            <td>186</td>
+            <td>96</td>
+            <td>38</td>
+            <td>¥1,140</td>
+            <td>72%</td>
+            <td><a href="#" data-row-act="detail">详情</a></td>
+          </tr>
+          <tr>
+            <td>家长答疑会·音频直播</td>
+            <td>2026-03-20 20:00</td>
+            <td>1.5 小时</td>
+            <td>186</td>
+            <td>120</td>
+            <td>62</td>
+            <td>18</td>
+            <td>¥540</td>
+            <td>85%</td>
+            <td><a href="#" data-row-act="detail">详情</a></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<style>
+.data-row {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 8px 0; border-bottom: 1px dashed #f0f0f0; font-size: 13px;
+}
+.data-row:last-child { border-bottom: none; }
+.data-row b { color: var(--color-primary); font-size: 16px; font-weight: 600; }
+.trend-chart {
+  display: flex; align-items: flex-end; gap: 12px;
+  height: 200px; padding: 12px 0;
+}
+.trend-bar {
+  flex: 1; background: linear-gradient(180deg, #4080ff, #165dff);
+  border-radius: 4px 4px 0 0; min-height: 8px;
+  position: relative;
+  transition: all .2s;
+}
+.trend-bar:hover { opacity: 0.8; transform: translateY(-2px); }
+.trend-labels {
+  display: flex; justify-content: space-between;
+  font-size: 11px; color: var(--color-text-muted);
+  margin-top: 4px;
+}
+</style>
+
+<script src="../assets/js/proto.js"></script>
+<script src="../assets/js/admin-shell.js"></script>
+<script>
+(function () {
+  document.getElementById("btn-export").addEventListener("click", function () { Proto.toast("已导出（原型）"); });
+  document.getElementById("btn-refresh").addEventListener("click", function () { Proto.toast("已刷新（原型）"); });
+  document.getElementById("btn-query").addEventListener("click", function () { Proto.toast("已查询（原型）"); });
+  document.querySelectorAll('[data-row-act="detail"]').forEach(function (a) {
+    a.addEventListener("click", function (e) {
+      e.preventDefault();
+      Proto.toast("打开直播详细数据（原型）");
+    });
+  });
+})();
+</script>
+</body>
+</html>

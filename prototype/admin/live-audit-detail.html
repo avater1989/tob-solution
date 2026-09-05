@@ -1,0 +1,332 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>审核详情 · 艺博 To-B</title>
+<link rel="stylesheet" href="../assets/css/proto.css" />
+</head>
+<body class="admin-body" data-module="live" data-nav="live-audit-detail" data-title="审核详情" data-crumb="直播 / 直播审核 / 审核详情">
+<div id="header-actions">
+  <a class="btn" href="live-audit.html">返回工作台</a>
+  <button class="btn" id="btn-preview">预览直播</button>
+</div>
+<div id="page-content" style="display:none">
+
+  <!-- 顶部状态信息条 -->
+  <div class="audit-status-bar">
+    <div class="audit-status-info">
+      <span class="audit-badge audit-pending">待审核</span>
+      <span class="audit-status-title">春启 03 期家长公开课</span>
+      <span class="audit-status-sub">提交人：阮荣均　·　提交时间：2026-09-04 14:30　·　等待 2 小时</span>
+    </div>
+  </div>
+
+  <div class="audit-layout">
+    <!-- 左侧：直播内容预览 -->
+    <div class="audit-main">
+
+      <h2 class="page-section-title">基本信息</h2>
+      <div class="card"><div class="card-bd">
+        <div class="form-grid readonly" style="grid-template-columns:1fr 1fr">
+          <div class="field"><label>直播名称</label><div>春启 03 期家长公开课</div></div>
+          <div class="field"><label>直播模式</label><div>视频直播</div></div>
+          <div class="field"><label>关联课程</label><div>春启 03 期家长必修课</div></div>
+          <div class="field"><label>直播间类型</label><div>传统直播间</div></div>
+          <div class="field"><label>开始时间</label><div>2026-03-30 20:00</div></div>
+          <div class="field"><label>结束时间</label><div>2026-03-30 22:00</div></div>
+          <div class="field"><label>主讲老师</label><div>阮荣均</div></div>
+          <div class="field"><label>助教</label><div>王助教、刘助教</div></div>
+          <div class="field" style="grid-column:1/-1"><label>直播介绍</label>
+            <div>本期家长公开课聚焦"亲子沟通 3 步法"，结合真实案例拆解如何与孩子建立有效对话。适合 6-12 岁孩子家长，主讲老师阮荣均。</div>
+          </div>
+        </div>
+      </div></div>
+
+      <h2 class="page-section-title">详情封面</h2>
+      <div class="card"><div class="card-bd">
+        <div class="cover-row">
+          <div class="cover-preview"><div class="cover-placeholder">封面图</div></div>
+          <div class="cover-side">
+            <a href="#" class="link-blue">查看原图 ⓘ</a>
+            <p class="muted cover-tip">建议尺寸 750*422px 或 16:9，小于 5M 的 JPG、PNG 格式图片</p>
+          </div>
+        </div>
+      </div></div>
+
+      <h2 class="page-section-title">直播设置</h2>
+      <div class="card"><div class="card-bd">
+        <div class="form-grid readonly" style="grid-template-columns:1fr 1fr">
+          <div class="field"><label>开播密码</label><div>不设置</div></div>
+          <div class="field"><label>回放设置</label><div>永久有效</div></div>
+          <div class="field"><label>倍速播放</label><div>允许</div></div>
+          <div class="field"><label>快进</label><div>允许</div></div>
+          <div class="field"><label>直播清晰度</label><div>超清</div></div>
+          <div class="field"><label>麦克风降噪</label><div>开启</div></div>
+          <div class="field"><label>允许观众连麦</label><div>不允许</div></div>
+          <div class="field"><label>允许观众留言</label><div>开启</div></div>
+        </div>
+      </div></div>
+
+      <h2 class="page-section-title">挂载商品</h2>
+      <div class="card"><div class="card-bd" style="padding:0">
+        <table class="data">
+          <thead><tr><th>商品图</th><th>商品名称</th><th>价格</th><th>讲解话术</th></tr></thead>
+          <tbody>
+            <tr><td><div class="thumb"></div></td><td>春启 03 期家长必修课</td><td>¥9.9</td><td>限时优惠，名额有限</td></tr>
+            <tr><td><div class="thumb"></div></td><td>今晚直播·家长公开课</td><td>¥0</td><td>公开课免费预约</td></tr>
+          </tbody>
+        </table>
+      </div></div>
+
+      <h2 class="page-section-title">售卖方式</h2>
+      <div class="card"><div class="card-bd">
+        <div class="form-grid readonly" style="grid-template-columns:1fr 1fr">
+          <div class="field"><label>单独售卖</label><div>开启</div></div>
+          <div class="field"><label>售卖方式</label><div>免费</div></div>
+          <div class="field"><label>有效期</label><div>长期有效</div></div>
+          <div class="field"><label>上架设置</label><div>立即上架</div></div>
+        </div>
+      </div></div>
+
+    </div>
+
+    <!-- 右侧：审核侧栏 -->
+    <aside class="audit-side">
+      <!-- 当前状态 -->
+      <div class="audit-side-card">
+        <h3>审核状态</h3>
+        <div class="audit-current">
+          <span class="audit-badge audit-pending">待审核</span>
+          <span class="muted">等待 <b>刘管理</b> 处理</span>
+        </div>
+        <div class="audit-current-meta">提交时间：2026-09-04 14:30</div>
+      </div>
+
+      <!-- 审核维度 -->
+      <div class="audit-side-card">
+        <h3>审核维度 <span class="muted" style="font-size:12px;font-weight:400">至少勾选 4 项</span></h3>
+        <div class="audit-checks" id="audit-checks">
+          <label><input type="checkbox" checked /> <span>内容合规</span><i class="muted">封面、详情、暖场无违规</i></label>
+          <label><input type="checkbox" checked /> <span>主讲资质</span><i class="muted">老师身份已认证</i></label>
+          <label><input type="checkbox" checked /> <span>商品合规</span><i class="muted">挂载商品已审核</i></label>
+          <label><input type="checkbox" checked /> <span>直播间设置</span><i class="muted">密码、回放、连麦设置合理</i></label>
+        </div>
+      </div>
+
+      <!-- 审核意见 -->
+      <div class="audit-side-card">
+        <h3>审核意见</h3>
+        <textarea id="audit-comment" rows="4" placeholder="驳回时必填，请写明具体原因"></textarea>
+      </div>
+
+      <!-- 操作按钮 -->
+      <div class="audit-side-card audit-side-actions">
+        <button class="btn btn-primary" id="btn-approve" style="width:100%;margin-bottom:8px">✓ 通过</button>
+        <button class="btn btn-danger" id="btn-reject" style="width:100%">✕ 驳回</button>
+        <button class="btn" id="btn-cancel-link" style="width:100%;margin-top:8px">取消</button>
+      </div>
+
+      <!-- 审核历史 -->
+      <div class="audit-side-card">
+        <h3>审核历史</h3>
+        <div class="audit-history">
+          <div class="audit-history-item">
+            <div class="audit-history-dot dot-submit"></div>
+            <div class="audit-history-bd">
+              <div class="audit-history-title">提交审核</div>
+              <div class="audit-history-meta">阮荣均 · 2026-09-04 14:30</div>
+            </div>
+          </div>
+          <div class="audit-history-item">
+            <div class="audit-history-dot dot-rejected"></div>
+            <div class="audit-history-bd">
+              <div class="audit-history-title">驳回（首轮）</div>
+              <div class="audit-history-meta">刘管理 · 2026-09-03 17:30</div>
+              <div class="audit-history-reason">直播封面图包含第三方水印，请重新设计后再提交。</div>
+            </div>
+          </div>
+          <div class="audit-history-item">
+            <div class="audit-history-dot dot-edit"></div>
+            <div class="audit-history-bd">
+              <div class="audit-history-title">修改并重新提交</div>
+              <div class="audit-history-meta">阮荣均 · 2026-09-04 14:30</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </aside>
+  </div>
+
+</div>
+
+<!-- ============ 弹窗 ============ -->
+<div class="proto-mask" id="mask"></div>
+
+<!-- 通过确认 -->
+<div class="proto-modal" id="modal-approve">
+  <div class="proto-modal-hd">
+    <h3>确认通过审核</h3>
+    <button class="btn btn-sm btn-ghost" data-close>×</button>
+  </div>
+  <div class="proto-modal-bd">
+    <p>通过后该直播将自动上架，业务人员将收到审核通过通知。</p>
+    <ul style="background:#f7f8fa;border-radius:4px;padding:12px 24px;margin:8px 0;color:#4e5969">
+      <li>直播名称：春启 03 期家长公开课</li>
+      <li>创建人：阮荣均</li>
+      <li>开始时间：2026-03-30 20:00</li>
+    </ul>
+    <div class="field"><label>审核备注（选填）</label>
+      <textarea rows="2" placeholder="如有补充说明请填写"></textarea>
+    </div>
+  </div>
+  <div class="proto-modal-ft">
+    <button class="btn" data-close>取消</button>
+    <button class="btn btn-primary" id="btn-confirm-approve">确认通过</button>
+  </div>
+</div>
+
+<style>
+.audit-status-bar {
+  background: #fff; border: 1px solid var(--color-border);
+  border-radius: 6px; padding: 14px 18px; margin-bottom: 16px;
+}
+.audit-status-info { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.audit-status-title { font-size: 16px; font-weight: 600; }
+.audit-status-sub   { color: var(--color-text-muted); font-size: 12px; }
+
+.audit-layout { display: grid; grid-template-columns: 1fr 360px; gap: 16px; }
+.audit-main   { min-width: 0; }
+.audit-side   { display: flex; flex-direction: column; gap: 12px; }
+
+.audit-side-card {
+  background: #fff; border: 1px solid var(--color-border);
+  border-radius: 6px; padding: 14px 16px;
+}
+.audit-side-card h3 {
+  margin: 0 0 10px; font-size: 14px; font-weight: 600;
+  color: var(--color-text);
+}
+
+.audit-current { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+.audit-current-meta { font-size: 12px; color: var(--color-text-muted); }
+
+.audit-checks { display: flex; flex-direction: column; gap: 8px; }
+.audit-checks label {
+  display: flex; flex-direction: column; gap: 2px;
+  font-size: 13px; line-height: 20px; cursor: pointer;
+}
+.audit-checks label input[type=checkbox] { width: 14px; height: 14px; }
+.audit-checks label i { font-size: 12px; color: var(--color-text-muted); font-style: normal; }
+
+.audit-side-card textarea { width: 100%; resize: vertical; }
+
+.audit-history { display: flex; flex-direction: column; gap: 12px; }
+.audit-history-item {
+  display: flex; gap: 10px; position: relative;
+}
+.audit-history-item:not(:last-child)::before {
+  content: ""; position: absolute; left: 5px; top: 18px; bottom: -12px;
+  width: 1px; background: var(--color-border);
+}
+.audit-history-dot {
+  width: 12px; height: 12px; border-radius: 50%;
+  flex-shrink: 0; margin-top: 4px; border: 2px solid #fff;
+  box-shadow: 0 0 0 1px var(--color-border);
+}
+.dot-submit   { background: #165dff; }
+.dot-rejected { background: #f53f3f; }
+.dot-edit     { background: #faad14; }
+.dot-approved { background: #00b42a; }
+.audit-history-bd { flex: 1; min-width: 0; }
+.audit-history-title { font-size: 13px; font-weight: 500; }
+.audit-history-meta  { font-size: 12px; color: var(--color-text-muted); }
+.audit-history-reason {
+  margin-top: 4px; font-size: 12px; padding: 6px 8px;
+  background: #fff5f5; border-radius: 3px; color: #4e5969;
+}
+
+.btn-danger {
+  background: #fff; color: #f53f3f; border: 1px solid #ffa39e;
+}
+.btn-danger:hover { background: #fff1f0; }
+
+.form-grid.readonly .field > div {
+  padding: 6px 0; color: var(--color-text); font-size: 13px;
+}
+.cover-row { display: flex; gap: 16px; align-items: flex-start; }
+.cover-preview {
+  width: 200px; height: 113px; border-radius: 4px;
+  background: linear-gradient(135deg,#165dff,#4080ff);
+  flex-shrink: 0;
+}
+.cover-placeholder {
+  height: 100%; display: flex; align-items: center; justify-content: center;
+  color: #fff; font-size: 14px; opacity: 0.6;
+}
+.cover-side a { display: block; margin-bottom: 6px; }
+.cover-tip { font-size: 12px; }
+
+.thumb {
+  width: 36px; height: 28px; border-radius: 4px;
+  background: linear-gradient(135deg,#722ed1,#a066f5);
+}
+.audit-badge {
+  display: inline-block; padding: 2px 10px; border-radius: 12px;
+  font-size: 12px; line-height: 18px; font-weight: 500;
+}
+.audit-approved { background: #e8f5e9; color: #00b42a; }
+.audit-rejected { background: #fff1f0; color: #cf1322; }
+.audit-pending  { background: #fff7e6; color: #d48806; border: 1px solid #ffd591; }
+.audit-draft    { background: #f0f1f3; color: #4e5969; }
+
+@media (max-width: 1200px) {
+  .audit-layout { grid-template-columns: 1fr; }
+}
+</style>
+
+<script src="../assets/js/proto.js"></script>
+<script src="../assets/js/admin-shell.js"></script>
+<script>
+(function () {
+  // ===== Mask =====
+  var mask = document.getElementById("mask");
+  function closeAll() {
+    mask.classList.remove("open");
+    document.querySelectorAll(".proto-modal").forEach(function (n) { n.classList.remove("open"); });
+  }
+  function open(node) { mask.classList.add("open"); node.classList.add("open"); }
+  mask.addEventListener("click", closeAll);
+  document.querySelectorAll("[data-close]").forEach(function (n) { n.addEventListener("click", closeAll); });
+
+  // ===== Approve =====
+  document.getElementById("btn-approve").addEventListener("click", function () {
+    open(document.getElementById("modal-approve"));
+  });
+  document.getElementById("btn-confirm-approve").addEventListener("click", function () {
+    closeAll();
+    Proto.toast("已通过审核（原型）");
+    setTimeout(function () { location.href = "live-audit.html"; }, 600);
+  });
+
+  // ===== Reject =====
+  document.getElementById("btn-reject").addEventListener("click", function () {
+    var comment = document.getElementById("audit-comment").value.trim();
+    if (!comment) { Proto.toast("请填写驳回理由"); return; }
+    if (confirm("确认驳回该直播？")) {
+      Proto.toast("已驳回（原型）");
+      setTimeout(function () { location.href = "live-audit.html"; }, 600);
+    }
+  });
+
+  // ===== Other =====
+  document.getElementById("btn-preview").addEventListener("click", function () {
+    Proto.toast("打开预览（原型）");
+  });
+  document.getElementById("btn-cancel-link").addEventListener("click", function () {
+    if (confirm("放弃本次审核？已填写的内容将丢失")) location.href = "live-audit.html";
+  });
+})();
+</script>
+</body>
+</html>

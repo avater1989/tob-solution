@@ -1,0 +1,716 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>线索池 · 艺博 To-B</title>
+<link rel="stylesheet" href="../assets/css/proto.css" />
+</head>
+<body class="admin-body" data-module="scrm" data-nav="leads" data-title="线索池" data-crumb="SCRM / 客户中心 / 线索池">
+<div id="header-actions">
+  <button class="btn" id="btn-export">导出线索</button>
+  <button class="btn" id="btn-import">导入线索</button>
+  <button class="btn btn-primary" id="btn-create">新建线索</button>
+</div>
+<div id="page-content" style="display:none">
+
+  <div class="tabs" id="lead-tabs">
+    <a class="active" href="#pool" data-tab="pool">待分配线索</a>
+    <a href="#rule" data-tab="rule">分配规则</a>
+    <a href="#import" data-tab="import">导入历史</a>
+    <a href="#channel" data-tab="channel">渠道对接</a>
+    <a href="#migrate" data-tab="migrate">数据迁移</a>
+    <a href="#debug" data-tab="debug">三方调试</a>
+  </div>
+
+  <!-- ===== 待分配线索 ===== -->
+  <div id="panel-pool">
+    <!-- 筛选条 -->
+    <div class="card" style="margin-bottom:8px"><div class="card-bd">
+      <div class="form-grid" style="grid-template-columns:repeat(6,minmax(0,1fr));gap:8px 12px">
+        <input id="f-keyword" placeholder="姓名 / 手机号" />
+        <input id="f-keyword2" placeholder="订单号 / 关键词" />
+        <input id="f-keyword3" placeholder="达人 / 推荐人" />
+        <select id="f-level">
+          <option value="">线索等级</option>
+          <option>A</option><option>B</option><option>D</option><option>H</option>
+        </select>
+        <select id="f-stage">
+          <option value="">线索阶段</option>
+          <option>新线索</option><option>跟进中</option><option>已转化</option><option>无效</option>
+        </select>
+        <select id="f-intent">
+          <option value="">意向等级</option>
+          <option>高意向</option><option>观望</option>
+        </select>
+      </div>
+      <div class="toolbar" style="margin-top:8px">
+        <button class="btn" id="btn-expand">展开</button>
+        <button class="btn btn-primary" id="btn-query">查询</button>
+        <button class="btn" id="btn-reset">重置</button>
+        <div class="spacer"></div>
+        <button class="btn" id="btn-sync-order">同步指定订单号</button>
+        <button class="btn" id="btn-batch" disabled>批量分配</button>
+        <div class="dropdown" style="position:relative">
+          <button class="btn" id="btn-more">更多 ▾</button>
+          <div class="dropdown-menu" id="menu-more" style="display:none;position:absolute;right:0;top:32px;background:#fff;border:1px solid var(--color-border);border-radius:6px;box-shadow:0 4px 12px rgba(0,0,0,.08);min-width:140px;z-index:10">
+            <a href="#" data-act="col" style="display:block;padding:8px 12px">列展示</a>
+            <a href="#" data-act="stat" style="display:block;padding:8px 12px">分配统计</a>
+            <a href="#" data-act="runlog" style="display:block;padding:8px 12px">运行记录</a>
+            <a href="#" data-act="run" style="display:block;padding:8px 12px">手工运行分配</a>
+          </div>
+        </div>
+      </div>
+    </div></div>
+
+    <!-- 表格 -->
+    <div class="card"><div class="card-bd" style="padding:0">
+      <table class="data">
+        <thead>
+          <tr>
+            <th style="width:36px"><input type="checkbox" id="check-all" /></th>
+            <th>姓名</th><th>手机号</th><th>订单号</th>
+            <th>线索等级</th><th>线索阶段</th><th>意向等级</th>
+            <th>标签</th><th>归属人</th><th>归属部门</th>
+            <th>跟进时间</th><th>跟进记录数</th><th>分配时间</th>
+            <th style="width:160px">操作</th>
+          </tr>
+        </thead>
+        <tbody id="lead-tbody">
+          <tr>
+            <td><input type="checkbox" class="row-check" /></td>
+            <td><button type="button" class="link-btn" data-act="unmask">点击查看完整姓名</button></td>
+            <td><button type="button" class="link-btn" data-act="unmask">点击查看完整手机号</button></td>
+            <td>VX202603291001</td>
+            <td>A</td>
+            <td><span class="badge badge-info">跟进中</span></td>
+            <td><span class="badge badge-success">高意向</span></td>
+            <td>—</td>
+            <td>阮荣均</td><td>—</td>
+            <td>2026-03-29 11:45</td><td>3</td>
+            <td>2026-03-29 11:45</td>
+            <td class="row-actions">
+              <a href="#" data-row-act="detail">详情</a>
+              <a href="#" data-row-act="edit">编辑</a>
+              <a href="#" data-row-act="del" class="danger">删除</a>
+            </td>
+          </tr>
+          <tr>
+            <td><input type="checkbox" class="row-check" /></td>
+            <td><button type="button" class="link-btn" data-act="unmask">点击查看完整姓名</button></td>
+            <td><button type="button" class="link-btn" data-act="unmask">点击查看完整手机号</button></td>
+            <td>VX202603291002</td>
+            <td>B</td>
+            <td><span class="badge badge-warn">新线索</span></td>
+            <td>观望</td>
+            <td>视频号</td>
+            <td>—</td><td>—</td>
+            <td>—</td><td>0</td>
+            <td>—</td>
+            <td class="row-actions">
+              <a href="#" data-row-act="detail">详情</a>
+              <a href="#" data-row-act="edit">编辑</a>
+              <a href="#" data-row-act="del" class="danger">删除</a>
+            </td>
+          </tr>
+          <tr>
+            <td><input type="checkbox" class="row-check" /></td>
+            <td><button type="button" class="link-btn" data-act="unmask">点击查看完整姓名</button></td>
+            <td><button type="button" class="link-btn" data-act="unmask">点击查看完整手机号</button></td>
+            <td>VX202603291003</td>
+            <td>H</td>
+            <td><span class="badge badge-success">已转化</span></td>
+            <td><span class="badge badge-success">高意向</span></td>
+            <td>高净值</td>
+            <td>阮荣均</td><td>运营中心</td>
+            <td>2026-03-28 18:22</td><td>5</td>
+            <td>2026-03-28 09:10</td>
+            <td class="row-actions">
+              <a href="#" data-row-act="detail">详情</a>
+              <a href="#" data-row-act="edit">编辑</a>
+              <a href="#" data-row-act="del" class="danger">删除</a>
+            </td>
+          </tr>
+          <tr>
+            <td><input type="checkbox" class="row-check" /></td>
+            <td><button type="button" class="link-btn" data-act="unmask">点击查看完整姓名</button></td>
+            <td><button type="button" class="link-btn" data-act="unmask">点击查看完整手机号</button></td>
+            <td>VX202603291004</td>
+            <td>D</td>
+            <td><span class="badge badge-info">跟进中</span></td>
+            <td>观望</td>
+            <td>—</td>
+            <td>赵老师</td><td>销售一部</td>
+            <td>2026-03-29 09:40</td><td>1</td>
+            <td>2026-03-29 09:40</td>
+            <td class="row-actions">
+              <a href="#" data-row-act="detail">详情</a>
+              <a href="#" data-row-act="edit">编辑</a>
+              <a href="#" data-row-act="del" class="danger">删除</a>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div></div>
+    <!-- 分页 -->
+    <div class="toolbar" style="margin-top:8px">
+      <span class="muted">共 <b id="lead-total">184</b> 条</span>
+      <div class="spacer"></div>
+      <button class="btn btn-sm" disabled>上一页</button>
+      <button class="btn btn-sm" id="btn-next">下一页</button>
+      <span class="muted" style="margin-left:8px">第</span>
+      <input id="pg-input" type="number" min="1" value="1" style="width:60px" />
+      <span class="muted">页</span>
+      <select id="pg-size" style="margin-left:8px">
+        <option>10条/页</option><option selected>20条/页</option>
+        <option>30条/页</option><option>50条/页</option><option>100条/页</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- ===== 分配规则 ===== -->
+  <div id="panel-rule" style="display:none">
+    <p class="muted" style="margin-bottom:12px">视频号订单优先按商品对应分配规则；无规则时由分配规则进行自动分配。</p>
+    <div class="card"><div class="card-bd" style="padding:0">
+      <table class="data">
+        <thead><tr><th>规则名称</th><th>状态</th><th>更新人</th><th>更新时间</th><th>操作</th></tr></thead>
+        <tbody>
+          <tr><td>暂无分配规则，点击右下角按钮创建</td><td colspan="4" class="muted" style="text-align:center;padding:24px">—</td></tr>
+        </tbody>
+      </table>
+    </div></div>
+    <div class="toolbar" style="margin-top:8px;justify-content:flex-end">
+      <button class="btn btn-primary" id="btn-rule-create">新建分配规则</button>
+    </div>
+  </div>
+
+  <!-- ===== 导入历史 ===== -->
+  <div id="panel-import" style="display:none">
+    <p class="muted" style="margin-bottom:12px">线索批量导入 · 来自手工导入的线索导入记录，通过明细查看导入结果。</p>
+    <div class="card"><div class="card-bd" style="padding:0">
+      <table class="data">
+        <thead>
+          <tr><th>批次编码</th><th>原文件名</th><th>文件类型</th><th>导入目标</th>
+          <th>总行 / 成功 / 失败 / 跳过</th><th>批次状态</th><th>操作人</th><th>时间</th><th>操作</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>IMP20260329001</td><td>春启03线索.xlsx</td><td>xlsx</td><td>学员订单</td>
+          <td>200/186/10/4</td><td><span class="badge badge-success">已完成</span></td>
+          <td>赵老师</td><td>2026-03-29 08:00</td>
+          <td><a href="#" data-act="import-detail">明细</a></td></tr>
+        </tbody>
+      </table>
+    </div></div>
+  </div>
+
+  <!-- ===== 渠道对接 ===== -->
+  <div id="panel-channel" style="display:none">
+    <p class="muted" style="margin-bottom:12px">学员 / 三方订单同步写入渠道订单表并流入线索池。点击「对接配置」可新增 / 编辑 / 启停 / 删除 / 手工运行；需先完成「权益阶段映射」。工具栏可查看「流入统计」与「对接运行记录」。</p>
+    <div class="toolbar">
+      <button class="btn btn-primary" id="btn-ch-cfg">对接配置</button>
+      <button class="btn" data-ch-act="stat">流入统计</button>
+      <button class="btn" data-ch-act="runlog">运行记录</button>
+    </div>
+    <div class="card"><div class="card-bd" style="padding:0">
+      <table class="data">
+        <thead><tr><th>订单号</th><th>姓名</th><th>手机号</th><th>号码归属</th><th>同步渠道</th><th>渠道</th>
+          <th>金额</th><th>购买内容</th><th>商品类型</th><th>权益类型</th><th>服务老师</th>
+          <th>达人</th><th>处理状态</th><th>是否退单</th><th>留资时间</th><th>操作</th></tr></thead>
+        <tbody>
+          <tr><td>VX202603291001</td><td>李女士</td><td>138****2610</td><td>北京市</td><td>视频号</td><td>视频号</td>
+            <td>9.9</td><td>9.9 引流课</td><td>课程</td><td>视频</td><td>王助教</td>
+            <td>—</td><td><span class="badge badge-success">成功</span></td>
+            <td>否</td><td>2026-03-29 09:12</td><td><a href="channels-orders.html">详情</a></td></tr>
+          <tr><td>VX202603291088</td><td>张妈妈</td><td>159****8832</td><td>上海市</td><td>视频号</td><td>视频号</td>
+            <td>9.9</td><td>9.9 引流课</td><td>课程</td><td>视频</td><td>—</td>
+            <td>—</td><td><span class="badge badge-warn">待处理</span></td>
+            <td>否</td><td>2026-03-29 09:40</td><td><a href="channels-orders.html">详情</a></td></tr>
+        </tbody>
+      </table>
+    </div></div>
+  </div>
+
+  <!-- ===== 数据迁移 ===== -->
+  <div id="panel-migrate" style="display:none">
+    <p class="muted" style="margin-bottom:12px">学员订单对接 selectStudentOrderBy18or2980，三方订单对接 selectThirdAssetBy18or2980；可配置多条规则（同来源游标独立）。启用后由 XXL-JOB 每 5 分钟拉取已启用规则（默认每次 1000 条），直写入正式线索，不进渠道订单表。点击「迁移配置」可新增 / 编辑 / 启停 / 删除 / 手工运行。</p>
+    <div class="toolbar">
+      <button class="btn btn-primary" id="btn-mig-cfg">迁移配置</button>
+      <select><option>来源</option><option>学员订单</option><option>第三方订单</option></select>
+      <select><option>状态</option><option>运行中</option><option>成功</option><option>失败</option></select>
+      <select><option>方式</option><option>定时</option><option>手工</option></select>
+    </div>
+    <div class="card"><div class="card-bd" style="padding:0">
+      <table class="data">
+        <thead><tr><th>运行时间</th><th>来源</th><th>方式</th><th>状态</th><th>拉取/成功/失败/跳过</th><th>失败原因</th><th>运行前游标</th><th>运行后游标</th><th>整次错误</th><th>操作</th></tr></thead>
+        <tbody>
+          <tr><td>03-29 08:05</td><td>学员订单</td><td>定时</td><td><span class="badge badge-success">成功</span></td>
+            <td>1000/980/5/15</td><td>—</td><td>2026-03-28 23:59</td><td>2026-03-29 08:05</td><td>—</td>
+            <td><a href="#" data-act="mig-detail">查看</a></td></tr>
+        </tbody>
+      </table>
+    </div></div>
+  </div>
+
+  <!-- ===== 三方调试 ===== -->
+  <div id="panel-debug" style="display:none">
+    <p class="muted" style="margin-bottom:12px">GET /scrm/msk/pksg/my/userNodes；填写 userId 查指定用户，留空则查当前登录用户。</p>
+    <div class="card"><div class="card-bd">
+      <div class="form-grid" style="grid-template-columns:1fr auto">
+        <div class="field"><label>userId</label><input id="debug-uid" placeholder="留空 = 当前登录用户" /></div>
+        <div class="field" style="display:flex;align-items:flex-end"><button class="btn btn-primary" id="btn-debug-go">查询</button></div>
+      </div>
+      <pre class="muted" id="debug-out" style="margin-top:16px;background:#f7f8fa;padding:12px;border-radius:8px;font-size:12px">{ "code": 0, "data": { "nodes": [] } }</pre>
+    </div></div>
+  </div>
+</div>
+
+<!-- ============ 抽屉 / 弹窗 ============ -->
+<div class="proto-mask" id="mask"></div>
+
+<!-- 列展示抽屉 -->
+<div class="proto-drawer" id="drawer-col" style="width:480px">
+  <div class="proto-drawer-hd">
+    <h3>列展示</h3>
+    <button class="btn btn-sm btn-ghost" data-close>×</button>
+  </div>
+  <div class="proto-drawer-bd">
+    <p class="muted" style="margin-bottom:8px">勾选需要在表格中显示的列。基础信息始终展示。</p>
+    <div class="form-grid" id="col-groups">
+      <div><b>基础</b>
+        <label><input type="checkbox" checked disabled> 姓名</label>
+        <label><input type="checkbox" checked disabled> 手机号</label>
+        <label><input type="checkbox" checked> 订单号</label>
+        <label><input type="checkbox"> 编码/ID</label>
+      </div>
+      <div><b>渠道 / 来源</b>
+        <label><input type="checkbox"> 流入方式</label>
+        <label><input type="checkbox"> 渠道来源</label>
+      </div>
+      <div><b>注册信息</b>
+        <label><input type="checkbox"> 注册信息</label>
+        <label><input type="checkbox" checked> 号码归属</label>
+        <label><input type="checkbox" checked> 性别</label>
+        <label><input type="checkbox"> 省市区</label>
+      </div>
+      <div><b>达人 / 加微</b>
+        <label><input type="checkbox"> 达人信息</label>
+        <label><input type="checkbox"> 加微信息</label>
+      </div>
+      <div><b>线索属性</b>
+        <label><input type="checkbox" checked> 线索等级</label>
+        <label><input type="checkbox" checked> 意向等级</label>
+        <label><input type="checkbox" checked> 线索阶段</label>
+        <label><input type="checkbox" checked> 标签</label>
+      </div>
+      <div><b>归属信息</b>
+        <label><input type="checkbox" checked> 归属人</label>
+        <label><input type="checkbox" checked> 归属部门</label>
+      </div>
+      <div><b>商品信息</b>
+        <label><input type="checkbox"> 商品信息</label>
+        <label><input type="checkbox"> SKU 名称</label>
+        <label><input type="checkbox"> 是否退款</label>
+      </div>
+      <div><b>时间</b>
+        <label><input type="checkbox" checked> 跟进时间</label>
+        <label><input type="checkbox" checked> 跟进记录数</label>
+        <label><input type="checkbox" checked> 分配时间</label>
+        <label><input type="checkbox"> 留资时间</label>
+        <label><input type="checkbox"> 更新时间</label>
+        <label><input type="checkbox"> 导入时间</label>
+      </div>
+      <div><b>推荐 / 备注</b>
+        <label><input type="checkbox"> 推荐人信息</label>
+        <label><input type="checkbox"> 导入批次</label>
+        <label><input type="checkbox"> 备注</label>
+        <label><input type="checkbox"> 更新人</label>
+      </div>
+    </div>
+  </div>
+  <div class="proto-drawer-ft">
+    <button class="btn" data-close>取消</button>
+    <button class="btn btn-primary" id="col-apply">应用</button>
+  </div>
+</div>
+
+<!-- 新建线索 -->
+<div class="proto-modal" id="modal-create">
+  <div class="proto-modal-hd">
+    <h3 style="font-size:16px;font-weight:600">新建线索</h3>
+    <button class="btn btn-sm btn-ghost" data-close>×</button>
+  </div>
+  <div class="proto-modal-bd">
+    <div class="form-grid">
+      <div class="field"><label>姓名 *</label><input id="cr-name" /></div>
+      <div class="field"><label>手机号 *</label><input id="cr-phone" placeholder="11 位手机号" /></div>
+      <div class="field"><label>线索等级</label>
+        <select><option>A</option><option>B</option><option>D</option><option>H</option></select>
+      </div>
+      <div class="field"><label>线索阶段</label>
+        <select><option>新线索</option><option>跟进中</option><option>已转化</option><option>无效</option></select>
+      </div>
+      <div class="field"><label>意向等级</label>
+        <select><option>高意向</option><option>观望</option></select>
+      </div>
+      <div class="field"><label>渠道来源</label>
+        <select><option>手工新建</option><option>视频号</option><option>直播小程序</option><option>OpenAPI</option></select>
+      </div>
+      <div class="field"><label>归属人</label>
+        <select><option value="">—</option><option>阮荣均</option><option>赵老师</option></select>
+      </div>
+      <div class="field"><label>归属部门</label>
+        <select><option value="">—</option><option>运营中心</option><option>销售一部</option></select>
+      </div>
+      <div class="field"><label>号码归属</label>
+        <select><option value="">—</option><option>北京市</option><option>上海市</option><option>广东省</option></select>
+      </div>
+      <div class="field"><label>性别</label>
+        <select><option value="">未知</option><option>男</option><option>女</option></select>
+      </div>
+      <div class="field" style="grid-column:1/-1"><label>备注</label>
+        <textarea rows="2" style="width:100%;padding:8px;border:1px solid var(--color-border);border-radius:6px"></textarea>
+      </div>
+    </div>
+  </div>
+  <div class="proto-modal-ft">
+    <button class="btn" data-close>取消</button>
+    <button class="btn btn-primary" id="cr-submit">保存</button>
+  </div>
+</div>
+
+<!-- 导入线索 -->
+<div class="proto-modal" id="modal-import">
+  <div class="proto-modal-hd">
+    <h3 style="font-size:16px;font-weight:600">线索批量导入</h3>
+    <button class="btn btn-sm btn-ghost" data-close>×</button>
+  </div>
+  <div class="proto-modal-bd">
+    <p class="muted" style="margin-bottom:12px">支持 .xlsx / .csv，列必须包含「姓名、手机号」；按手机号去重。</p>
+    <div class="toolbar" style="margin:0">
+      <button class="btn" id="imp-tpl">下载模板</button>
+      <input type="file" id="imp-file" />
+    </div>
+    <p class="muted" style="margin-top:12px" id="imp-hint">未选择文件</p>
+  </div>
+  <div class="proto-modal-ft">
+    <button class="btn" data-close>取消</button>
+    <button class="btn btn-primary" id="imp-go">开始导入</button>
+  </div>
+</div>
+
+<!-- 分配线索 -->
+<div class="proto-modal" id="modal-assign">
+  <div class="proto-modal-hd">
+    <h3 style="font-size:16px;font-weight:600">分配线索</h3>
+    <button class="btn btn-sm btn-ghost" data-close>×</button>
+  </div>
+  <div class="proto-modal-bd">
+    <p class="muted" style="margin-bottom:12px">将 <b id="asg-count">0</b> 条线索分配给：</p>
+    <div class="form-grid">
+      <div class="field"><label>归属人</label>
+        <select><option>阮荣均</option><option>赵老师</option><option>王助教</option></select>
+      </div>
+      <div class="field"><label>归属部门</label>
+        <select><option>运营中心</option><option>销售一部</option></select>
+      </div>
+    </div>
+  </div>
+  <div class="proto-modal-ft">
+    <button class="btn" data-close>取消</button>
+    <button class="btn btn-primary" id="asg-submit">确认分配</button>
+  </div>
+</div>
+
+<!-- 详情抽屉 -->
+<div class="proto-drawer" id="drawer-detail">
+  <div class="proto-drawer-hd">
+    <h3 id="dd-title">线索详情</h3>
+    <button class="btn btn-sm btn-ghost" data-close>×</button>
+  </div>
+  <div class="proto-drawer-bd">
+    <h4 style="margin-bottom:8px">基础信息</h4>
+    <div class="form-grid" style="grid-template-columns:1fr 1fr">
+      <div class="field"><label>姓名</label><div id="dd-name">—</div></div>
+      <div class="field"><label>手机号</label><div id="dd-phone">—</div></div>
+      <div class="field"><label>订单号</label><div id="dd-order">—</div></div>
+      <div class="field"><label>线索等级</label><div id="dd-level">—</div></div>
+      <div class="field"><label>线索阶段</label><div id="dd-stage">—</div></div>
+      <div class="field"><label>意向等级</label><div id="dd-intent">—</div></div>
+      <div class="field"><label>标签</label><div id="dd-tag">—</div></div>
+      <div class="field"><label>号码归属</label><div id="dd-region">—</div></div>
+    </div>
+    <h4 style="margin:16px 0 8px">归属信息</h4>
+    <div class="form-grid" style="grid-template-columns:1fr 1fr">
+      <div class="field"><label>归属人</label><div id="dd-owner">—</div></div>
+      <div class="field"><label>归属部门</label><div id="dd-dept">—</div></div>
+      <div class="field"><label>分配时间</label><div id="dd-asg-time">—</div></div>
+      <div class="field"><label>跟进记录数</label><div id="dd-fu-count">—</div></div>
+    </div>
+    <h4 style="margin:16px 0 8px">跟进时间线</h4>
+    <ul class="muted" style="padding-left:18px;line-height:1.8" id="dd-timeline">
+      <li>暂无跟进</li>
+    </ul>
+  </div>
+  <div class="proto-drawer-ft">
+    <button class="btn" data-close>关闭</button>
+    <a class="btn btn-primary" href="follow-ups.html">写跟进</a>
+  </div>
+</div>
+
+<!-- 编辑线索 -->
+<div class="proto-modal" id="modal-edit">
+  <div class="proto-modal-hd">
+    <h3 style="font-size:16px;font-weight:600">编辑线索</h3>
+    <button class="btn btn-sm btn-ghost" data-close>×</button>
+  </div>
+  <div class="proto-modal-bd">
+    <div class="form-grid">
+      <div class="field"><label>姓名</label><input id="ed-name" /></div>
+      <div class="field"><label>手机号</label><input id="ed-phone" /></div>
+      <div class="field"><label>线索等级</label><select><option>A</option><option>B</option><option>D</option><option>H</option></select></div>
+      <div class="field"><label>线索阶段</label><select><option>新线索</option><option>跟进中</option><option>已转化</option><option>无效</option></select></div>
+      <div class="field"><label>意向等级</label><select><option>高意向</option><option>观望</option></select></div>
+      <div class="field"><label>归属人</label><select><option>阮荣均</option><option>赵老师</option></select></div>
+      <div class="field"><label>归属部门</label><select><option>运营中心</option><option>销售一部</option></select></div>
+      <div class="field"><label>号码归属</label><select><option>北京市</option><option>上海市</option></select></div>
+    </div>
+  </div>
+  <div class="proto-modal-ft">
+    <button class="btn" data-close>取消</button>
+    <button class="btn btn-primary" id="ed-submit">保存</button>
+  </div>
+</div>
+
+<style>
+.link-btn {
+  background: none; border: none; color: var(--color-primary);
+  cursor: pointer; padding: 0; font-size: 13px;
+}
+.link-btn:hover { color: var(--color-primary-hover); text-decoration: underline; }
+.row-actions a.danger { color: var(--color-danger); }
+#col-groups b { display:block; margin: 8px 0 4px; font-size: 13px; }
+#col-groups label {
+  display: flex; align-items: center; gap: 6px;
+  padding: 4px 0; font-size: 13px; color: var(--color-text-secondary);
+}
+#col-groups label input { margin: 0; }
+</style>
+
+<script src="../assets/js/proto.js"></script>
+<script src="../assets/js/admin-shell.js"></script>
+<script>
+(function () {
+  // ===== Tabs =====
+  var panels = { pool: "panel-pool", rule: "panel-rule", import: "panel-import", channel: "panel-channel", migrate: "panel-migrate", debug: "panel-debug" };
+  function show(tab) {
+    Object.keys(panels).forEach(function (k) {
+      document.getElementById(panels[k]).style.display = k === tab ? "block" : "none";
+    });
+    document.querySelectorAll("#lead-tabs a[data-tab]").forEach(function (a) {
+      a.classList.toggle("active", a.getAttribute("data-tab") === tab);
+    });
+  }
+  document.querySelectorAll("#lead-tabs a[data-tab]").forEach(function (a) {
+    a.addEventListener("click", function (e) { e.preventDefault(); show(a.getAttribute("data-tab")); });
+  });
+
+  // ===== Mask / drawer / modal =====
+  var mask = document.getElementById("mask");
+  function closeAll() {
+    mask.classList.remove("open");
+    document.querySelectorAll(".proto-modal, .proto-drawer").forEach(function (n) { n.classList.remove("open"); });
+  }
+  function open(node) { mask.classList.add("open"); node.classList.add("open"); }
+  mask.addEventListener("click", closeAll);
+  document.querySelectorAll("[data-close]").forEach(function (n) { n.addEventListener("click", closeAll); });
+
+  // ===== Dropdown "更多" =====
+  var menuMore = document.getElementById("menu-more");
+  document.getElementById("btn-more").addEventListener("click", function (e) {
+    e.stopPropagation();
+    menuMore.style.display = menuMore.style.display === "block" ? "none" : "block";
+  });
+  document.addEventListener("click", function () { menuMore.style.display = "none"; });
+  menuMore.addEventListener("click", function (e) {
+    var act = e.target.getAttribute && e.target.getAttribute("data-act");
+    if (!act) return;
+    e.preventDefault();
+    menuMore.style.display = "none";
+    if (act === "col") open(document.getElementById("drawer-col"));
+    else Proto.toast({ col: "列展示", stat: "分配统计", runlog: "运行记录", run: "手工运行分配" }[act] + "（原型）");
+  });
+
+  // ===== Unmask full name/phone =====
+  document.querySelectorAll('[data-act="unmask"]').forEach(function (b) {
+    b.addEventListener("click", function () {
+      var cell = b.closest("td");
+      var tr = cell.parentElement;
+      var idx = Array.prototype.indexOf.call(tr.children, cell);
+      // Pick a deterministic sample based on the row order
+      var samples = [
+        { name: "李女士", phone: "13800002610" },
+        { name: "张妈妈", phone: "15900008832" },
+        { name: "陈先生", phone: "18600004411" },
+        { name: "刘爸爸", phone: "13700000012" },
+      ];
+      var rowIndex = Array.prototype.indexOf.call(tr.parentElement.children, tr);
+      var sample = samples[rowIndex % samples.length];
+      cell.textContent = idx === 0 ? sample.name : sample.phone;
+    });
+  });
+
+  // ===== Batch select =====
+  var btnBatch = document.getElementById("btn-batch");
+  var checkAll = document.getElementById("check-all");
+  function syncBatch() {
+    var n = document.querySelectorAll(".row-check:checked").length;
+    btnBatch.disabled = n === 0;
+    btnBatch.textContent = n ? "批量分配(" + n + ")" : "批量分配";
+  }
+  checkAll.addEventListener("change", function () {
+    document.querySelectorAll(".row-check").forEach(function (c) { c.checked = checkAll.checked; });
+    syncBatch();
+  });
+  document.querySelectorAll(".row-check").forEach(function (c) { c.addEventListener("change", syncBatch); });
+
+  // ===== Row actions =====
+  function rowData(tr) {
+    var tds = tr.querySelectorAll("td");
+    return {
+      name: tds[1] ? tds[1].textContent.trim() : "",
+      phone: tds[2] ? tds[2].textContent.trim() : "",
+      order: tds[3] ? tds[3].textContent.trim() : "",
+      level: tds[4] ? tds[4].textContent.trim() : "",
+      stage: tds[5] ? tds[5].textContent.trim() : "",
+      intent: tds[6] ? tds[6].textContent.trim() : "",
+      tag: tds[7] ? tds[7].textContent.trim() : "",
+      owner: tds[8] ? tds[8].textContent.trim() : "",
+      dept: tds[9] ? tds[9].textContent.trim() : "",
+      fuTime: tds[10] ? tds[10].textContent.trim() : "",
+      fuCount: tds[11] ? tds[11].textContent.trim() : "",
+      asgTime: tds[12] ? tds[12].textContent.trim() : "",
+    };
+  }
+  function fillDrawer(d) {
+    document.getElementById("dd-title").textContent = "线索详情 · " + d.name;
+    document.getElementById("dd-name").textContent = d.name;
+    document.getElementById("dd-phone").textContent = d.phone;
+    document.getElementById("dd-order").textContent = d.order;
+    document.getElementById("dd-level").textContent = d.level;
+    document.getElementById("dd-stage").textContent = d.stage;
+    document.getElementById("dd-intent").textContent = d.intent;
+    document.getElementById("dd-tag").textContent = d.tag;
+    document.getElementById("dd-region").textContent = "—";
+    document.getElementById("dd-owner").textContent = d.owner;
+    document.getElementById("dd-dept").textContent = d.dept;
+    document.getElementById("dd-asg-time").textContent = d.asgTime;
+    document.getElementById("dd-fu-count").textContent = d.fuCount;
+    document.getElementById("dd-timeline").innerHTML =
+      d.fuCount !== "0"
+        ? "<li>" + d.fuTime + " · " + d.owner + " · 写跟进（原型）</li><li>—</li>"
+        : "<li>暂无跟进</li>";
+  }
+  function fillEdit(d) {
+    document.getElementById("ed-name").value = d.name;
+    document.getElementById("ed-phone").value = d.phone;
+  }
+  document.querySelectorAll("#lead-tbody tr").forEach(function (tr) {
+    tr.querySelectorAll("[data-row-act]").forEach(function (a) {
+      a.addEventListener("click", function (e) {
+        e.preventDefault();
+        var act = a.getAttribute("data-row-act");
+        var d = rowData(tr);
+        if (act === "detail") { fillDrawer(d); open(document.getElementById("drawer-detail")); }
+        else if (act === "edit") { fillEdit(d); open(document.getElementById("modal-edit")); }
+        else if (act === "del") {
+          if (confirm("确认删除线索 " + d.name + " ?")) {
+            tr.remove(); Proto.toast("已删除（原型）");
+          }
+        }
+      });
+    });
+  });
+
+  // ===== Header / toolbar buttons =====
+  document.getElementById("btn-create").addEventListener("click", function () { open(document.getElementById("modal-create")); });
+  document.getElementById("btn-export").addEventListener("click", function () { Proto.toast("已导出线索（原型）"); });
+  document.getElementById("btn-import").addEventListener("click", function () { open(document.getElementById("modal-import")); });
+  document.getElementById("btn-sync-order").addEventListener("click", function () { Proto.toast("请输入订单号（原型）"); });
+
+  document.getElementById("btn-query").addEventListener("click", function () {
+    var kw = document.getElementById("f-keyword").value.trim();
+    Proto.toast("已查询：" + (kw || "全部") + " · 共 184 条");
+  });
+  document.getElementById("btn-reset").addEventListener("click", function () {
+    ["f-keyword","f-keyword2","f-keyword3"].forEach(function (id) { document.getElementById(id).value = ""; });
+    ["f-level","f-stage","f-intent"].forEach(function (id) { document.getElementById(id).value = ""; });
+    Proto.toast("已重置筛选");
+  });
+  document.getElementById("btn-expand").addEventListener("click", function () { Proto.toast("展开更多筛选条件（原型）"); });
+
+  // Batch assign
+  btnBatch.addEventListener("click", function () {
+    if (btnBatch.disabled) return;
+    document.getElementById("asg-count").textContent = document.querySelectorAll(".row-check:checked").length;
+    open(document.getElementById("modal-assign"));
+  });
+  document.getElementById("asg-submit").addEventListener("click", function () {
+    closeAll();
+    Proto.toast("已批量分配（原型）");
+    document.querySelectorAll(".row-check:checked").forEach(function (c) { c.checked = false; });
+    checkAll.checked = false; syncBatch();
+  });
+
+  // New / edit submit
+  document.getElementById("cr-submit").addEventListener("click", function () {
+    var name = document.getElementById("cr-name").value.trim();
+    var phone = document.getElementById("cr-phone").value.trim();
+    if (!name) { Proto.toast("请输入姓名"); return; }
+    if (!/^\d{11}$/.test(phone)) { Proto.toast("请输入 11 位手机号"); return; }
+    closeAll();
+    Proto.toast("已创建线索：" + name);
+    document.getElementById("cr-name").value = "";
+    document.getElementById("cr-phone").value = "";
+  });
+  document.getElementById("ed-submit").addEventListener("click", function () {
+    closeAll();
+    Proto.toast("已保存修改（原型）");
+  });
+
+  // Import
+  document.getElementById("imp-file").addEventListener("change", function (e) {
+    var f = e.target.files && e.target.files[0];
+    document.getElementById("imp-hint").textContent = f ? "已选择：" + f.name : "未选择文件";
+  });
+  document.getElementById("imp-tpl").addEventListener("click", function () { Proto.toast("已下载导入模板（原型）"); });
+  document.getElementById("imp-go").addEventListener("click", function () { closeAll(); Proto.toast("已开始导入（原型）"); });
+
+  // Column display
+  document.getElementById("col-apply").addEventListener("click", function () {
+    closeAll();
+    Proto.toast("列展示已应用（原型）");
+  });
+
+  // Channel / migrate / debug tab actions
+  ["btn-ch-cfg", "btn-mig-cfg", "btn-rule-create", "btn-debug-go"].forEach(function (id) {
+    var n = document.getElementById(id);
+    if (!n) return;
+    n.addEventListener("click", function () { Proto.toast(id + "（原型）"); });
+  });
+  document.querySelectorAll('[data-ch-act]').forEach(function (n) {
+    n.addEventListener("click", function () { Proto.toast(n.getAttribute("data-ch-act") + "（原型）"); });
+  });
+  document.querySelectorAll('[data-act="import-detail"], [data-act="mig-detail"]').forEach(function (a) {
+    a.addEventListener("click", function (e) { e.preventDefault(); Proto.toast("查看明细（原型）"); });
+  });
+
+  // Pagination
+  document.getElementById("btn-next").addEventListener("click", function () {
+    var inp = document.getElementById("pg-input");
+    inp.value = parseInt(inp.value || 1) + 1;
+    Proto.toast("已跳转第 " + inp.value + " 页（原型）");
+  });
+})();
+</script>
+</body>
+</html>

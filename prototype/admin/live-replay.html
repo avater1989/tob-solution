@@ -1,0 +1,558 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>直播回放 · 艺博 To-B</title>
+<link rel="stylesheet" href="../assets/css/proto.css" />
+</head>
+<body class="admin-body" data-module="live" data-nav="live-replay" data-title="直播回放" data-crumb="直播 / 直播管理 / 直播回放">
+<div id="header-actions">
+  <button class="btn" id="btn-tutorial">使用教程</button>
+  <button class="btn" id="btn-import">导入外部回放</button>
+</div>
+<div id="page-content" style="display:none">
+
+  <!-- 顶部 3 个统计卡片（与 lives.html 风格一致） -->
+  <div class="stat-cards" style="margin-bottom:8px;grid-template-columns:repeat(3,1fr)">
+    <div class="stat-card">
+      <div class="stat-label">累计回放数</div>
+      <div class="stat-value">344</div>
+      <div class="stat-sub">覆盖 86% 历史直播</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">已上架</div>
+      <div class="stat-value" style="color:#00b42a">22</div>
+      <div class="stat-sub"><span class="up">+3</span> 较昨日</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">未上架</div>
+      <div class="stat-value" style="color:#86909c">322</div>
+      <div class="stat-sub">待运营处理</div>
+    </div>
+  </div>
+
+  <!-- 筛选 -->
+  <div class="card" style="margin-bottom:8px"><div class="card-bd">
+    <div class="form-grid" style="grid-template-columns:repeat(4,minmax(0,1fr));gap:12px">
+      <div class="field" style="margin:0">
+        <label>回放标题</label>
+        <input id="f-title" placeholder="请输入回放标题" />
+      </div>
+      <div class="field" style="margin:0">
+        <label>主播名称</label>
+        <input id="f-anchor" placeholder="请输入主播名称" />
+      </div>
+      <div class="field" style="margin:0">
+        <label>上架状态</label>
+        <select id="f-shelf">
+          <option value="">全部</option>
+          <option>已上架</option>
+          <option>未上架</option>
+        </select>
+      </div>
+      <div class="field" style="margin:0">
+        <label>关联直播</label>
+        <select>
+          <option value="">全部</option>
+          <option>春启 03 期家长公开课</option>
+          <option>9.9 引流试听课</option>
+          <option>明日直播·春启04</option>
+        </select>
+      </div>
+    </div>
+    <div class="toolbar" style="margin-top:12px">
+      <button class="btn btn-primary" id="btn-query">查询</button>
+      <button class="btn" id="btn-reset">重置</button>
+      <div class="spacer"></div>
+      <span class="muted" style="font-size:12px">提示：已选中的回放可批量上架/下架</span>
+      <button class="btn" id="btn-batch-on">批量上架</button>
+      <button class="btn" id="btn-batch-off">批量下架</button>
+      <button class="btn" id="btn-export-excel">导出 Excel</button>
+    </div>
+  </div></div>
+
+  <!-- 表格 -->
+  <div class="card"><div class="card-bd" style="padding:0">
+    <table class="data">
+      <thead>
+        <tr>
+          <th style="width:36px"><input type="checkbox" id="check-all" /></th>
+          <th style="width:80px">直播宣传图</th>
+          <th>回放标题</th>
+          <th>关联直播ID</th>
+          <th>主播</th>
+          <th>直播时间</th>
+          <th>回放时长</th>
+          <th>文件大小</th>
+          <th>上架状态</th>
+          <th>权重</th>
+          <th>播放量</th>
+          <th>完播率</th>
+          <th style="width:200px">操作</th>
+        </tr>
+      </thead>
+      <tbody id="rp-tbody">
+        <!-- 已上架 -->
+        <tr data-shelf="on">
+          <td><input type="checkbox" class="row-check" /></td>
+          <td><div class="rp-thumb" style="background:linear-gradient(135deg,#ff7a45,#ffbb96)"></div></td>
+          <td><a href="#" class="link-blue" data-row-act="detail">测试2</a></td>
+          <td><span class="rp-room">ROOM_178716<br/>4516664</span></td>
+          <td>闵诗兰</td>
+          <td><span class="rp-time">2026-07-16 13:48:06<br/>至 13:53:28</span></td>
+          <td>6分钟</td>
+          <td>19.97MB</td>
+          <td><span class="rp-badge rp-on">已上架</span></td>
+          <td><span class="rp-price">¥0</span></td>
+          <td>4</td>
+          <td>0%</td>
+          <td class="row-actions">
+            <a href="#" data-row-act="play">预览</a>
+            <a href="#" data-row-act="weight">权重</a>
+            <a href="#" data-row-act="off">下架</a>
+          </td>
+        </tr>
+        <tr data-shelf="off">
+          <td><input type="checkbox" class="row-check" /></td>
+          <td><div class="rp-thumb" style="background:linear-gradient(135deg,#165dff,#4080ff)"></div></td>
+          <td><a href="#" class="link-blue" data-row-act="detail">测试0820001</a></td>
+          <td><span class="rp-room">ROOM_178719<br/>6392970</span></td>
+          <td>褚悠悠</td>
+          <td><span class="rp-time">2026-08-20 11:52:48<br/>至 12:08:41</span></td>
+          <td>16分钟</td>
+          <td>154.78MB</td>
+          <td><span class="rp-badge rp-off">未上架</span></td>
+          <td><span class="rp-price">¥0</span></td>
+          <td>0</td>
+          <td>0%</td>
+          <td class="row-actions">
+            <a href="#" data-row-act="play">预览</a>
+            <a href="#" data-row-act="weight">权重</a>
+            <a href="#" data-row-act="on">上架</a>
+          </td>
+        </tr>
+        <tr data-shelf="off">
+          <td><input type="checkbox" class="row-check" /></td>
+          <td><div class="rp-thumb" style="background:linear-gradient(135deg,#165dff,#4080ff)"></div></td>
+          <td><a href="#" class="link-blue" data-row-act="detail">测试0820002</a></td>
+          <td><span class="rp-room">ROOM_178720<br/>8100936</span></td>
+          <td>褚悠悠</td>
+          <td><span class="rp-time">2026-08-20 14:51:34<br/>至 14:58:58</span></td>
+          <td>3分钟</td>
+          <td>16.28MB</td>
+          <td><span class="rp-badge rp-off">未上架</span></td>
+          <td><span class="rp-price">¥0</span></td>
+          <td>0</td>
+          <td>0%</td>
+          <td class="row-actions">
+            <a href="#" data-row-act="play">预览</a>
+            <a href="#" data-row-act="weight">权重</a>
+            <a href="#" data-row-act="on">上架</a>
+          </td>
+        </tr>
+        <tr data-shelf="off">
+          <td><input type="checkbox" class="row-check" /></td>
+          <td><div class="rp-thumb" style="background:linear-gradient(135deg,#165dff,#4080ff)"></div></td>
+          <td><a href="#" class="link-blue" data-row-act="detail">测试0820001-副本</a></td>
+          <td><span class="rp-room">ROOM_178720<br/>4800036</span></td>
+          <td>褚悠悠</td>
+          <td><span class="rp-time">2026-08-20 13:46:17<br/>至 13:49:13</span></td>
+          <td>3分钟</td>
+          <td>34.17MB</td>
+          <td><span class="rp-badge rp-off">未上架</span></td>
+          <td><span class="rp-price">¥0</span></td>
+          <td>0</td>
+          <td>0%</td>
+          <td class="row-actions">
+            <a href="#" data-row-act="play">预览</a>
+            <a href="#" data-row-act="weight">权重</a>
+            <a href="#" data-row-act="on">上架</a>
+          </td>
+        </tr>
+        <tr data-shelf="off">
+          <td><input type="checkbox" class="row-check" /></td>
+          <td><div class="rp-thumb" style="background:linear-gradient(135deg,#722ed1,#a066f5)"></div></td>
+          <td><a href="#" class="link-blue" data-row-act="detail">测试数据大屏01</a></td>
+          <td><span class="rp-room">ROOM_178778<br/>9981770</span></td>
+          <td>王翠花</td>
+          <td><span class="rp-time">2026-08-26 10:07:03<br/>至 10:39:34</span></td>
+          <td>148分钟</td>
+          <td>1505.13MB</td>
+          <td><span class="rp-badge rp-off">未上架</span></td>
+          <td><span class="rp-price">¥0</span></td>
+          <td>0</td>
+          <td>0%</td>
+          <td class="row-actions">
+            <a href="#" data-row-act="play">预览</a>
+            <a href="#" data-row-act="weight">权重</a>
+            <a href="#" data-row-act="on">上架</a>
+          </td>
+        </tr>
+        <tr data-shelf="off">
+          <td><input type="checkbox" class="row-check" /></td>
+          <td><div class="rp-thumb" style="background:linear-gradient(135deg,#00b42a,#5fd068)"></div></td>
+          <td><a href="#" class="link-blue" data-row-act="detail">硬信息看喻康师傅</a></td>
+          <td><span class="rp-room">ROOM_178425<br/>3648289</span></td>
+          <td>王翠花</td>
+          <td><span class="rp-time">2026-07-17 10:00:49<br/>至 10:37:35</span></td>
+          <td>3分钟</td>
+          <td>16.28MB</td>
+          <td><span class="rp-badge rp-off">未上架</span></td>
+          <td><span class="rp-price">¥0</span></td>
+          <td>0</td>
+          <td>0%</td>
+          <td class="row-actions">
+            <a href="#" data-row-act="play">预览</a>
+            <a href="#" data-row-act="weight">权重</a>
+            <a href="#" data-row-act="on">上架</a>
+          </td>
+        </tr>
+        <tr data-shelf="off">
+          <td><input type="checkbox" class="row-check" /></td>
+          <td><div class="rp-thumb" style="background:linear-gradient(135deg,#faad14,#ffd666)"></div></td>
+          <td><a href="#" class="link-blue" data-row-act="detail">惊屏直播04</a></td>
+          <td><span class="rp-room">ROOM_178728<br/>5534366</span></td>
+          <td>LsanKin·</td>
+          <td><span class="rp-time">2026-08-20 15:18:38<br/>至 15:23:49</span></td>
+          <td>1分钟</td>
+          <td>1.1MB</td>
+          <td><span class="rp-badge rp-off">未上架</span></td>
+          <td><span class="rp-price">¥0</span></td>
+          <td>0</td>
+          <td>0%</td>
+          <td class="row-actions">
+            <a href="#" data-row-act="play">预览</a>
+            <a href="#" data-row-act="weight">权重</a>
+            <a href="#" data-row-act="on">上架</a>
+          </td>
+        </tr>
+        <tr data-shelf="off">
+          <td><input type="checkbox" class="row-check" /></td>
+          <td><div class="rp-thumb" style="background:linear-gradient(135deg,#faad14,#ffd666)"></div></td>
+          <td><a href="#" class="link-blue" data-row-act="detail">惊屏直播04-副本</a></td>
+          <td><span class="rp-room">ROOM_178729<br/>2396886</span></td>
+          <td>LsanKin·</td>
+          <td><span class="rp-time">2026-08-21 15:48:32<br/>至 15:05:34</span></td>
+          <td>2分钟</td>
+          <td>3.97MB</td>
+          <td><span class="rp-badge rp-off">未上架</span></td>
+          <td><span class="rp-price">¥0</span></td>
+          <td>0</td>
+          <td>0%</td>
+          <td class="row-actions">
+            <a href="#" data-row-act="play">预览</a>
+            <a href="#" data-row-act="weight">权重</a>
+            <a href="#" data-row-act="on">上架</a>
+          </td>
+        </tr>
+        <tr data-shelf="off">
+          <td><input type="checkbox" class="row-check" /></td>
+          <td><div class="rp-thumb" style="background:linear-gradient(135deg,#faad14,#ffd666)"></div></td>
+          <td><a href="#" class="link-blue" data-row-act="detail">惊屏直播05</a></td>
+          <td><span class="rp-room">ROOM_178736<br/>7037786</span></td>
+          <td>LsanKin·</td>
+          <td><span class="rp-time">2026-08-24 18:25:01<br/>至 18:25:31</span></td>
+          <td>1分钟</td>
+          <td>2.32MB</td>
+          <td><span class="rp-badge rp-off">未上架</span></td>
+          <td><span class="rp-price">¥0</span></td>
+          <td>0</td>
+          <td>0%</td>
+          <td class="row-actions">
+            <a href="#" data-row-act="play">预览</a>
+            <a href="#" data-row-act="weight">权重</a>
+            <a href="#" data-row-act="on">上架</a>
+          </td>
+        </tr>
+        <tr data-shelf="off">
+          <td><input type="checkbox" class="row-check" /></td>
+          <td><div class="rp-thumb" style="background:linear-gradient(135deg,#faad14,#ffd666)"></div></td>
+          <td><a href="#" class="link-blue" data-row-act="detail">逆屏直播02</a></td>
+          <td><span class="rp-room">ROOM_178738<br/>4997299</span></td>
+          <td>LsanKin·</td>
+          <td><span class="rp-time">2026-08-20 13:39:50<br/>至 13:43:47</span></td>
+          <td>4分钟</td>
+          <td>26.65MB</td>
+          <td><span class="rp-badge rp-off">未上架</span></td>
+          <td><span class="rp-price">¥0</span></td>
+          <td>0</td>
+          <td>0%</td>
+          <td class="row-actions">
+            <a href="#" data-row-act="play">预览</a>
+            <a href="#" data-row-act="weight">权重</a>
+            <a href="#" data-row-act="on">上架</a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div></div>
+
+  <!-- 分页 -->
+  <div class="toolbar" style="margin-top:8px">
+    <span class="muted">共 <b>344</b> 条</span>
+    <div class="spacer"></div>
+    <select><option>10条/页</option><option>20条/页</option><option>50条/页</option></select>
+    <button class="btn btn-sm" disabled>‹</button>
+    <button class="btn btn-sm btn-primary">1</button>
+    <button class="btn btn-sm">2</button>
+    <button class="btn btn-sm">3</button>
+    <button class="btn btn-sm">4</button>
+    <button class="btn btn-sm">5</button>
+    <span class="muted">···</span>
+    <button class="btn btn-sm">35</button>
+    <button class="btn btn-sm">›</button>
+    <span class="muted" style="margin-left:8px">前往</span>
+    <input type="text" value="1" style="width:48px;height:28px;padding:0 8px;border:1px solid var(--color-border);border-radius:4px" />
+    <span class="muted">页</span>
+  </div>
+
+</div>
+
+<!-- ============ 弹窗 / 抽屉 ============ -->
+<div class="proto-mask" id="mask"></div>
+
+<!-- 权重设置弹窗 -->
+<div class="proto-modal" id="modal-weight">
+  <div class="proto-modal-hd">
+    <h3>权重设置</h3>
+    <button class="btn btn-sm btn-ghost" data-close>×</button>
+  </div>
+  <div class="proto-modal-bd">
+    <p class="muted">权重越高，回放列表中的排序越靠前。范围 0-100。</p>
+    <div class="field"><label>回放标题</label><div id="wt-title">—</div></div>
+    <div class="field"><label>权重值</label>
+      <input type="number" id="wt-value" min="0" max="100" value="50" style="width:120px" />
+    </div>
+  </div>
+  <div class="proto-modal-ft">
+    <button class="btn" data-close>取消</button>
+    <button class="btn btn-primary" id="btn-save-weight">保存</button>
+  </div>
+</div>
+
+<!-- 回放详情抽屉 -->
+<div class="proto-drawer" id="drawer-detail">
+  <div class="proto-drawer-hd">
+    <h3 id="dd-title">回放详情</h3>
+    <button class="btn btn-sm btn-ghost" data-close>×</button>
+  </div>
+  <div class="proto-drawer-bd">
+    <h4 style="margin-bottom:8px">回放信息</h4>
+    <div class="form-grid readonly" style="grid-template-columns:1fr 1fr">
+      <div class="field"><label>回放标题</label><div id="dd-name">—</div></div>
+      <div class="field"><label>关联直播ID</label><div id="dd-room">—</div></div>
+      <div class="field"><label>主播</label><div id="dd-anchor">—</div></div>
+      <div class="field"><label>直播时间</label><div id="dd-time">—</div></div>
+      <div class="field"><label>回放时长</label><div id="dd-duration">—</div></div>
+      <div class="field"><label>文件大小</label><div id="dd-size">—</div></div>
+      <div class="field"><label>上架状态</label><div id="dd-shelf">—</div></div>
+      <div class="field"><label>权重</label><div id="dd-weight">—</div></div>
+      <div class="field"><label>播放量</label><div id="dd-plays">—</div></div>
+      <div class="field"><label>完播率</label><div id="dd-finish">—</div></div>
+    </div>
+    <h4 style="margin:16px 0 8px">回放预览</h4>
+    <div class="rp-player">
+      <div class="rp-player-cover" id="dd-cover"></div>
+      <div class="rp-player-controls">
+        <button class="rp-play-btn" id="dd-play">▶</button>
+        <div class="rp-progress"><div class="rp-progress-bar"></div></div>
+        <span class="rp-time">00:00 / <span id="dd-total">06:00</span></span>
+      </div>
+    </div>
+  </div>
+  <div class="proto-drawer-ft">
+    <button class="btn" data-close>关闭</button>
+    <button class="btn" id="btn-dd-download">↧ 下载源文件</button>
+  </div>
+</div>
+
+<style>
+/* 表格内缩略图 - 样式见下方的「表格中的字段样式」块 */
+
+/* 表格中的字段样式 */
+.rp-thumb {
+  width: 64px; height: 40px; border-radius: 4px;
+}
+.rp-room { font-size: 12px; color: var(--color-text-muted); font-family: monospace; }
+.rp-time { font-size: 12px; color: var(--color-text-muted); }
+
+.rp-badge {
+  display: inline-block; padding: 2px 10px; border-radius: 4px;
+  font-size: 12px; line-height: 18px; font-weight: 500;
+}
+.rp-on  { background: #e8f5e9; color: #389e0d; }
+.rp-off { background: #f5f5f5; color: #86909c; }
+
+.rp-price {
+  display: inline-block; padding: 2px 8px; border-radius: 12px;
+  background: #fff7e6; color: #d48806;
+  font-size: 12px; font-weight: 500;
+}
+
+.row-actions a { margin-right: 8px; }
+
+/* 播放器 */
+.rp-player {
+  background: #1a1a1a; border-radius: 6px; overflow: hidden;
+}
+.rp-player-cover {
+  height: 220px; background: linear-gradient(135deg,#165dff,#722ed1);
+  display: flex; align-items: center; justify-content: center;
+  color: #fff; font-size: 14px;
+}
+.rp-player-controls {
+  display: flex; align-items: center; gap: 12px;
+  padding: 10px 14px;
+  color: #fff; font-size: 12px;
+}
+.rp-play-btn {
+  width: 28px; height: 28px; border-radius: 50%;
+  background: #fff; color: #1a1a1a; border: none;
+  cursor: pointer; font-size: 12px;
+  display: flex; align-items: center; justify-content: center;
+}
+.rp-progress {
+  flex: 1; height: 4px; background: rgba(255,255,255,.3);
+  border-radius: 2px; position: relative;
+}
+.rp-progress-bar {
+  width: 35%; height: 100%; background: #165dff; border-radius: 2px;
+}
+.rp-time { font-family: monospace; min-width: 90px; }
+
+/* 表单只读 */
+.form-grid.readonly .field > div {
+  padding: 6px 0; color: var(--color-text); font-size: 13px;
+}
+</style>
+
+<script src="../assets/js/proto.js"></script>
+<script src="../assets/js/admin-shell.js"></script>
+<script>
+(function () {
+  // ===== Mask =====
+  var mask = document.getElementById("mask");
+  function closeAll() {
+    mask.classList.remove("open");
+    document.querySelectorAll(".proto-modal, .proto-drawer").forEach(function (n) { n.classList.remove("open"); });
+  }
+  function open(node) { mask.classList.add("open"); node.classList.add("open"); }
+  mask.addEventListener("click", closeAll);
+  document.querySelectorAll("[data-close]").forEach(function (n) { n.addEventListener("click", closeAll); });
+
+  // ===== Batch =====
+  document.getElementById("check-all").addEventListener("change", function () {
+    var c = this;
+    document.querySelectorAll(".row-check").forEach(function (x) { x.checked = c.checked; });
+  });
+
+  // ===== Row data =====
+  function rowData(tr) {
+    var tds = tr.querySelectorAll("td");
+    return {
+      name: tds[2] ? tds[2].textContent.trim() : "",
+      room: tds[3] ? tds[3].textContent.trim() : "",
+      anchor: tds[4] ? tds[4].textContent.trim() : "",
+      time: tds[5] ? tds[5].textContent.trim() : "",
+      duration: tds[6] ? tds[6].textContent.trim() : "",
+      size: tds[7] ? tds[7].textContent.trim() : "",
+      shelf: tr.dataset.shelf,
+      weight: tds[9] ? tds[9].textContent.trim() : "¥0",
+      plays: tds[10] ? tds[10].textContent.trim() : "0",
+      finish: tds[11] ? tds[11].textContent.trim() : "0%"
+    };
+  }
+
+  function rowShelf(tr, newState) {
+    var badge = tr.querySelectorAll("td")[8].querySelector(".rp-badge");
+    var actCell = tr.querySelectorAll("td")[12];
+    if (newState === "on") {
+      tr.dataset.shelf = "on";
+      badge.className = "rp-badge rp-on";
+      badge.textContent = "已上架";
+      actCell.innerHTML = '<a href="#" data-row-act="play">预览</a>' +
+                           '<a href="#" data-row-act="weight">权重</a>' +
+                           '<a href="#" data-row-act="off">下架</a>';
+    } else {
+      tr.dataset.shelf = "off";
+      badge.className = "rp-badge rp-off";
+      badge.textContent = "未上架";
+      actCell.innerHTML = '<a href="#" data-row-act="play">预览</a>' +
+                           '<a href="#" data-row-act="weight">权重</a>' +
+                           '<a href="#" data-row-act="on">上架</a>';
+    }
+    bindRow(tr);
+  }
+
+  function fillDetail(d) {
+    document.getElementById("dd-title").textContent = "回放详情 · " + d.name;
+    document.getElementById("dd-name").textContent     = d.name;
+    document.getElementById("dd-room").textContent     = d.room;
+    document.getElementById("dd-anchor").textContent   = d.anchor;
+    document.getElementById("dd-time").textContent     = d.time;
+    document.getElementById("dd-duration").textContent = d.duration;
+    document.getElementById("dd-size").textContent     = d.size;
+    document.getElementById("dd-shelf").textContent    = d.shelf === "on" ? "已上架" : "未上架";
+    document.getElementById("dd-weight").textContent   = d.weight;
+    document.getElementById("dd-plays").textContent    = d.plays;
+    document.getElementById("dd-finish").textContent   = d.finish;
+    open(document.getElementById("drawer-detail"));
+  }
+
+  function bindRow(tr) {
+    tr.querySelectorAll("[data-row-act]").forEach(function (a) {
+      a.onclick = function (e) {
+        e.preventDefault();
+        var act = a.getAttribute("data-row-act");
+        var d = rowData(tr);
+        if (act === "detail") fillDetail(d);
+        else if (act === "play")  Proto.toast("打开预览（原型）");
+        else if (act === "weight") {
+          document.getElementById("wt-title").textContent = d.name;
+          open(document.getElementById("modal-weight"));
+        }
+        else if (act === "on")  rowShelf(tr, "on");
+        else if (act === "off") rowShelf(tr, "off");
+      };
+    });
+  }
+
+  document.querySelectorAll("#rp-tbody tr").forEach(bindRow);
+
+  // ===== Save weight =====
+  document.getElementById("btn-save-weight").addEventListener("click", function () {
+    Proto.toast("权重已保存（原型）");
+    closeAll();
+  });
+
+  // ===== Download =====
+  document.getElementById("btn-dd-download").addEventListener("click", function () {
+    Proto.toast("下载源文件（原型）");
+  });
+
+  // ===== Bulk actions =====
+  function batchUpdate(target) {
+    var rows = Array.from(document.querySelectorAll(".row-check:checked")).map(function (c) { return c.closest("tr"); });
+    if (!rows.length) { Proto.toast("请先选择回放"); return; }
+    rows.forEach(function (r) { rowShelf(r, target); });
+    Proto.toast(rows.length + " 个回放已" + (target === "on" ? "上架" : "下架") + "（原型）");
+  }
+  document.getElementById("btn-batch-on").addEventListener("click", function () { batchUpdate("on"); });
+  document.getElementById("btn-batch-off").addEventListener("click", function () { batchUpdate("off"); });
+
+  // ===== Header buttons =====
+  document.getElementById("btn-tutorial").addEventListener("click", function () { Proto.toast("打开使用教程（原型）"); });
+  document.getElementById("btn-import").addEventListener("click", function () { Proto.toast("导入外部回放（原型）"); });
+  document.getElementById("btn-export-excel").addEventListener("click", function () { Proto.toast("已导出 Excel（原型）"); });
+  document.getElementById("btn-query").addEventListener("click", function () { Proto.toast("已查询（原型）"); });
+  document.getElementById("btn-reset").addEventListener("click", function () {
+    document.getElementById("f-title").value = "";
+    document.getElementById("f-anchor").value = "";
+    document.getElementById("f-shelf").value = "";
+    Proto.toast("已重置");
+  });
+})();
+</script>
+</body>
+</html>

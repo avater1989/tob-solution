@@ -1,0 +1,736 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>直播大屏 · 艺博 To-B</title>
+<link rel="stylesheet" href="../assets/css/proto.css" />
+</head>
+<body class="admin-body ctrl-mode" data-module="live" data-nav="live-screen" data-title="直播大屏" data-crumb="直播 / 直播管理 / 直播大屏" data-assist="0">
+<div id="header-actions" style="display:none"></div>
+<div id="page-content" style="display:none">
+
+  <!-- 顶部 bar -->
+  <!-- 顶部 bar -->
+  <div class="screen-top">
+    <div class="screen-top-left">
+      <span class="screen-room-time" id="screen-time">直播间 54:22:56</span>
+      <button class="screen-back-btn" id="btn-back-control">
+        <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
+        返回中控台
+      </button>
+    </div>
+    <div class="screen-top-center">
+      <h1 class="screen-live-name">测试直播123</h1>
+      <span class="screen-live-id" id="screen-live-id">LV20260905001</span>
+    </div>
+    <div class="screen-top-right">
+      <span class="ctrl-pill ctrl-pill-ok">
+        <span class="net-dot"></span>
+        <span class="net-label">网络良好</span>
+      </span>
+      <span class="ctrl-pill ctrl-pill-live">
+        <span class="live-dot"></span>
+        <span class="net-label">直播中</span>
+      </span>
+    </div>
+  </div>
+
+  <!-- 当前直播列表条 -->
+  <div class="screen-live-bar">
+    <div class="screen-live-bar-label">
+      <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+      当前直播
+    </div>
+    <div class="screen-live-bar-list" id="live-bar-list">
+      <!-- 由 JS 渲染 -->
+    </div>
+  </div>
+
+  <!-- 主体 3 栏布局 -->
+  <div class="screen-main">
+
+    <!-- 左侧：实时消息 -->
+    <div class="screen-left">
+      <div class="screen-card">
+        <div class="screen-card-hd">
+          <span class="screen-card-title">实时消息</span>
+          <span class="screen-card-meta" id="msg-count">0 条</span>
+        </div>
+        <div class="screen-card-bd screen-msg-list" id="msg-list">
+          <!-- 模拟消息动态注入 -->
+        </div>
+      </div>
+    </div>
+
+    <!-- 中央：直播画面 + 倒计时 -->
+    <div class="screen-center">
+      <div class="screen-preview-wrap">
+        <div class="screen-preview">
+          <div class="screen-preview-frame">
+            <div class="screen-preview-empty">
+              <svg viewBox="0 0 64 64" fill="none" width="56" height="56">
+                <circle cx="32" cy="24" r="10" stroke="currentColor" stroke-width="2" opacity=".5"/>
+                <path d="M14 52c0-10 8-18 18-18s18 8 18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" opacity=".5"/>
+              </svg>
+              <div class="screen-preview-text">未控制开播，马上回来</div>
+              <div class="screen-preview-sub">主播距离还有 4 分钟</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 右侧：数据 + 商品 -->
+    <div class="screen-right">
+
+      <!-- 累计成交蓝卡 -->
+      <div class="screen-card screen-card-blue">
+        <div class="screen-revenue-hd">直播间累计成交</div>
+        <div class="screen-revenue-bd">
+          <span class="screen-revenue-yen">¥</span>
+          <span class="screen-revenue-value">0</span>
+        </div>
+        <div class="screen-revenue-grid">
+          <div class="screen-rev-item">
+            <div class="screen-rev-num">0</div>
+            <div class="screen-rev-label">成交人数</div>
+          </div>
+          <div class="screen-rev-item">
+            <div class="screen-rev-num">0</div>
+            <div class="screen-rev-label">成交订单</div>
+          </div>
+          <div class="screen-rev-item">
+            <div class="screen-rev-num">0%</div>
+            <div class="screen-rev-label">转化率</div>
+          </div>
+          <div class="screen-rev-item">
+            <div class="screen-rev-num">3</div>
+            <div class="screen-rev-label">当前在线</div>
+          </div>
+          <div class="screen-rev-item">
+            <div class="screen-rev-num">0</div>
+            <div class="screen-rev-label">累计消息</div>
+          </div>
+          <div class="screen-rev-item">
+            <div class="screen-rev-num">33</div>
+            <div class="screen-rev-label">累计商品数</div>
+          </div>
+        </div>
+        <div class="screen-revenue-avg">
+          <span class="screen-avg-label">人均观看</span>
+          <span class="screen-avg-value">00:10:59</span>
+        </div>
+      </div>
+
+      <!-- 近 5 分钟数据 + 带货商品 -->
+      <div class="screen-card-row">
+        <div class="screen-card screen-card-flex">
+          <div class="screen-card-hd">
+            <span class="screen-card-title">近 5 分钟数据</span>
+          </div>
+          <div class="screen-card-bd">
+            <div class="screen-mini-stat">
+              <div class="screen-mini-stat-label">进入人数</div>
+              <div class="screen-mini-stat-value">0</div>
+            </div>
+            <div class="screen-mini-stat">
+              <div class="screen-mini-stat-label">成交金额</div>
+              <div class="screen-mini-stat-value">¥0</div>
+            </div>
+            <div class="screen-mini-stat">
+              <div class="screen-mini-stat-label">退出人数</div>
+              <div class="screen-mini-stat-value">0</div>
+            </div>
+            <div class="screen-mini-stat">
+              <div class="screen-mini-stat-label">近 5 分钟在线峰值</div>
+              <div class="screen-mini-stat-value">—</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="screen-card screen-card-flex">
+          <div class="screen-card-hd">
+            <span class="screen-card-title">带货商品</span>
+            <span class="screen-card-meta">暂无带货商品</span>
+          </div>
+          <div class="screen-card-bd">
+            <table class="screen-product-table">
+              <thead><tr><th width="40">序号</th><th>商品名（共计）</th><th width="60">销量</th><th width="60">单价</th><th width="60">转化率</th></tr></thead>
+              <tbody>
+                <tr><td colspan="5" class="screen-empty-cell">暂无带货商品</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 底部实时趋势 -->
+  <div class="screen-bottom">
+    <div class="screen-trend">
+      <div class="screen-trend-hd">
+        <span class="screen-trend-title">直播趋势</span>
+        <div class="screen-trend-tabs">
+          <button class="screen-trend-tab active" data-range="all">全维数据</button>
+          <button class="screen-trend-tab" data-range="30m">近 30 分钟</button>
+          <button class="screen-trend-tab" data-range="1h">近 1 小时</button>
+        </div>
+      </div>
+      <div class="screen-trend-legend">
+        <span class="legend-item"><span class="legend-dot dot-blue"></span>在线人数</span>
+        <span class="legend-item"><span class="legend-dot dot-green"></span>进入人数</span>
+        <span class="legend-item"><span class="legend-dot dot-red"></span>退场人数</span>
+        <span class="legend-item"><span class="legend-dot dot-orange"></span>发言点击</span>
+        <span class="legend-item"><span class="legend-dot dot-purple"></span>聊天数</span>
+        <span class="legend-item"><span class="legend-dot dot-yellow"></span>跟单数</span>
+      </div>
+      <div class="screen-trend-chart">
+        <svg id="trend-svg" viewBox="0 0 1200 240" preserveAspectRatio="none">
+          <defs>
+            <linearGradient id="trendFill" x1="0" x2="0" y1="0" y2="1">
+              <stop offset="0%" stop-color="#165dff" stop-opacity=".3"/>
+              <stop offset="100%" stop-color="#165dff" stop-opacity="0"/>
+            </linearGradient>
+          </defs>
+          <!-- 网格 -->
+          <g stroke="#1f2940" stroke-width="1" opacity=".4">
+            <line x1="0" y1="60"  x2="1200" y2="60"/>
+            <line x1="0" y1="120" x2="1200" y2="120"/>
+            <line x1="0" y1="180" x2="1200" y2="180"/>
+          </g>
+          <!-- Y 轴标签 -->
+          <g fill="#6b758c" font-size="11" font-family="monospace">
+            <text x="4" y="56">12</text>
+            <text x="4" y="116">8</text>
+            <text x="4" y="176">4</text>
+            <text x="4" y="236">0</text>
+          </g>
+          <!-- 在线人数（蓝面积） -->
+          <path d="M40 220 L80 60 L120 100 L160 80 L200 110 L240 90 L280 100 L320 80 L360 90 L400 80 L440 90 L480 110 L520 100 L560 90 L600 80 L640 100 L680 90 L720 80 L760 100 L800 110 L840 90 L880 100 L920 110 L960 100 L1000 90 L1040 100 L1080 110 L1120 100 L1160 90 L1200 100 L1200 240 L40 240 Z" fill="url(#trendFill)"/>
+          <path d="M40 220 L80 60 L120 100 L160 80 L200 110 L240 90 L280 100 L320 80 L360 90 L400 80 L440 90 L480 110 L520 100 L560 90 L600 80 L640 100 L680 90 L720 80 L760 100 L800 110 L840 90 L880 100 L920 110 L960 100 L1000 90 L1040 100 L1080 110 L1120 100 L1160 90 L1200 100" stroke="#165dff" stroke-width="2" fill="none"/>
+          <!-- 进入人数（绿） -->
+          <path d="M40 230 L80 180 L120 200 L160 190 L200 210 L240 180 L280 200 L320 190 L360 210 L400 200 L440 180 L480 200 L520 190 L560 210 L600 200 L640 180 L680 200 L720 190 L760 210 L800 200 L840 180 L880 200 L920 210 L960 200 L1000 180 L1040 200 L1080 210 L1120 200 L1160 180 L1200 200" stroke="#00b42a" stroke-width="1.5" fill="none"/>
+          <!-- 退场人数（红） -->
+          <path d="M40 235 L80 225 L120 230 L160 220 L200 225 L240 215 L280 220 L320 210 L360 215 L400 205 L440 215 L480 220 L520 210 L560 215 L600 205 L640 215 L680 210 L720 215 L760 220 L800 215 L840 205 L880 210 L920 215 L960 210 L1000 205 L1040 210 L1080 215 L1120 210 L1160 205 L1200 210" stroke="#f53f3f" stroke-width="1.5" fill="none"/>
+          <!-- 发言点击（橙） -->
+          <path d="M40 230 L80 200 L120 210 L160 195 L200 205 L240 185 L280 195 L320 200 L360 210 L400 195 L440 200 L480 210 L520 195 L560 200 L600 210 L640 195 L680 200 L720 210 L760 195 L800 200 L840 210 L880 195 L920 200 L960 210 L1000 195 L1040 200 L1080 210 L1120 195 L1160 200 L1200 210" stroke="#fa8c16" stroke-width="1.5" fill="none"/>
+          <!-- 聊天数（紫） -->
+          <path d="M40 235 L80 220 L120 215 L160 220 L200 210 L240 215 L280 205 L320 210 L360 215 L400 205 L440 210 L480 215 L520 205 L560 210 L600 215 L640 205 L680 210 L720 215 L760 205 L800 210 L840 215 L880 205 L920 210 L960 215 L1000 205 L1040 210 L1080 215 L1120 205 L1160 210 L1200 215" stroke="#722ed1" stroke-width="1.5" fill="none"/>
+          <!-- 跟单数（黄） -->
+          <path d="M40 238 L80 232 L120 235 L160 228 L200 232 L240 230 L280 234 L320 228 L360 232 L400 230 L440 234 L480 232 L520 230 L560 234 L600 232 L640 230 L680 234 L720 232 L760 230 L800 234 L840 232 L880 230 L920 234 L960 232 L1000 230 L1040 234 L1080 232 L1120 230 L1160 234 L1200 232" stroke="#fadb14" stroke-width="1.5" fill="none"/>
+          <!-- 峰值标注 -->
+          <g>
+            <circle cx="80" cy="60" r="4" fill="#165dff" stroke="#fff" stroke-width="1.5"/>
+            <text x="80" y="48" fill="#165dff" font-size="11" font-weight="600" text-anchor="middle">12</text>
+          </g>
+          <!-- X 轴时间 -->
+          <g fill="#6b758c" font-size="10" font-family="monospace">
+            <text x="40"   y="258">10:50</text>
+            <text x="200"  y="258">12:40</text>
+            <text x="360"  y="258">14:30</text>
+            <text x="520"  y="258">16:20</text>
+            <text x="680"  y="258">18:10</text>
+            <text x="840"  y="258">20:00</text>
+            <text x="1000" y="258">21:50</text>
+            <text x="1160" y="258">23:40</text>
+          </g>
+        </svg>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<style>
+/* ====== 主题覆盖 ====== */
+body.ctrl-mode { background: #0a0f1c; color: #e8eaed; }
+.ctrl-mode .sidebar,
+.ctrl-mode .admin-topbar,
+.ctrl-mode .review-bar,
+.ctrl-mode .notice-bar,
+.ctrl-mode .assist,
+.ctrl-mode .page-header,
+.ctrl-mode .breadcrumb { display: none !important; }
+.ctrl-mode .admin-app { display: block; }
+.ctrl-mode .admin-body-row { display: block; }
+.ctrl-mode .main { background: #0a0f1c; }
+.ctrl-mode .content { padding: 0; }
+#page-content { padding: 0; }
+
+/* ====== 顶部 bar ====== */
+.screen-top {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 12px 24px;
+  background: #000;
+  height: 56px;
+  border-bottom: 1px solid #1f2940;
+}
+.screen-top-left { flex: 1; display: flex; align-items: center; gap: 16px; }
+.screen-top-center { flex: 1; text-align: center; }
+.screen-top-right { flex: 1; display: flex; justify-content: flex-end; gap: 8px; }
+.screen-back-btn {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 5px 12px; border-radius: 4px;
+  background: #1f2940; color: #b8c2dd;
+  border: 1px solid #2d3a55;
+  font-size: 12px; cursor: pointer;
+  transition: all .15s;
+}
+.screen-back-btn:hover { background: #2d3a55; color: #fff; border-color: #3a4866; }
+.screen-live-id {
+  display: inline-block; margin-left: 12px;
+  padding: 2px 8px; border-radius: 3px;
+  background: #1f2940; color: #6b758c;
+  font-family: monospace; font-size: 11px;
+  vertical-align: middle;
+}
+
+/* ====== 当前直播列表条 ====== */
+.screen-live-bar {
+  display: flex; align-items: center; gap: 12px;
+  padding: 8px 24px;
+  background: #0f172a;
+  border-bottom: 1px solid #1f2940;
+  height: 48px;
+}
+.screen-live-bar-label {
+  display: inline-flex; align-items: center; gap: 5px;
+  font-size: 12px; color: #8b95ad;
+  flex-shrink: 0;
+}
+.screen-live-bar-list {
+  display: flex; gap: 8px;
+  flex: 1; min-width: 0; overflow-x: auto;
+  scrollbar-width: thin;
+}
+.screen-live-bar-list::-webkit-scrollbar { height: 4px; }
+.screen-live-bar-list::-webkit-scrollbar-thumb { background: #2d3a55; border-radius: 2px; }
+.screen-live-pill {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 6px 14px; border-radius: 16px;
+  background: #1f2940; color: #b8c2dd;
+  border: 1px solid transparent;
+  font-size: 12px; cursor: pointer;
+  white-space: nowrap;
+  transition: all .15s;
+}
+.screen-live-pill:hover { background: #2d3a55; color: #fff; }
+.screen-live-pill.active {
+  background: rgba(22,93,255,.15);
+  border-color: rgba(22,93,255,.4);
+  color: #fff;
+}
+.screen-live-pill .pill-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: #f53f3f;
+  animation: pulse-net 1.5s infinite;
+}
+.screen-live-pill .pill-id {
+  font-family: monospace; font-size: 11px;
+  color: #6b758c;
+}
+.screen-live-pill.active .pill-id { color: #b8c2dd; }
+.screen-live-pill .pill-arrow {
+  font-size: 10px; color: #6b758c;
+}
+.screen-room-time {
+  font-family: monospace;
+  font-size: 14px;
+  color: #b8c2dd;
+  display: inline-flex; align-items: center; gap: 6px;
+}
+.screen-room-time::before {
+  content: ""; display: inline-block;
+  width: 8px; height: 8px; border-radius: 50%;
+  background: #f53f3f;
+  animation: pulse-live 1.5s infinite;
+}
+@keyframes pulse-live {
+  0%,100% { opacity: 1; box-shadow: 0 0 0 0 rgba(245,63,63,.5); }
+  50%      { opacity: .6; box-shadow: 0 0 0 4px rgba(245,63,63,0); }
+}
+.screen-live-name {
+  font-size: 18px; font-weight: 600; color: #fff;
+  margin: 0;
+}
+
+.ctrl-pill {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 6px 12px; border-radius: 16px;
+  font-size: 12px; line-height: 1;
+  border: 1px solid #1f2940;
+}
+.ctrl-pill-ok {
+  background: rgba(0,180,42,.15); color: #5fd068;
+  border-color: rgba(0,180,42,.3);
+}
+.ctrl-pill-live {
+  background: rgba(245,63,63,.15); color: #ff7875;
+  border-color: rgba(245,63,63,.3);
+}
+.net-dot {
+  display: inline-block; width: 6px; height: 6px; border-radius: 50%;
+  background: #00b42a;
+  animation: pulse-net 2s infinite;
+}
+.live-dot {
+  display: inline-block; width: 6px; height: 6px; border-radius: 50%;
+  background: #f53f3f;
+  animation: pulse-net 1s infinite;
+}
+@keyframes pulse-net {
+  0%,100% { opacity: 1; }
+  50% { opacity: .5; }
+}
+
+/* ====== 主体 ====== */
+.screen-main {
+  display: grid;
+  grid-template-columns: 280px 1fr 480px;
+  gap: 12px;
+  padding: 12px;
+  height: calc(100vh - 56px - 280px);
+  min-height: 360px;
+}
+.screen-left { display: flex; flex-direction: column; }
+.screen-center { display: flex; align-items: stretch; }
+.screen-right { display: flex; flex-direction: column; gap: 12px; }
+
+/* ====== 卡片 ====== */
+.screen-card {
+  background: #131b30;
+  border: 1px solid #1f2940;
+  border-radius: 8px;
+  display: flex; flex-direction: column;
+  overflow: hidden;
+  flex: 1;
+}
+.screen-card-hd {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 10px 14px;
+  border-bottom: 1px solid #1f2940;
+}
+.screen-card-title { font-size: 13px; font-weight: 600; color: #fff; }
+.screen-card-meta  { font-size: 11px; color: #6b758c; }
+.screen-card-bd { flex: 1; padding: 12px 14px; overflow-y: auto; }
+.screen-card-row {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+  flex: 1;
+}
+.screen-card-flex { flex: 1; }
+
+/* ====== 左侧消息 ====== */
+.screen-msg-list {
+  display: flex; flex-direction: column; gap: 12px;
+  padding: 14px;
+}
+.screen-msg {
+  display: flex; gap: 10px;
+  animation: msg-in .3s ease-out;
+}
+@keyframes msg-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.screen-msg-avatar {
+  width: 32px; height: 32px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  color: #fff; font-size: 12px; font-weight: 600;
+  flex-shrink: 0;
+}
+.screen-msg-body { flex: 1; min-width: 0; }
+.screen-msg-name {
+  font-size: 12px; color: #8b95ad;
+  margin-bottom: 4px;
+}
+.screen-msg-text {
+  font-size: 13px; color: #fff;
+  background: #1d2742;
+  padding: 6px 10px; border-radius: 6px;
+  word-break: break-word;
+}
+
+/* ====== 中央预览 ====== */
+.screen-preview-wrap {
+  flex: 1;
+  display: flex; align-items: center; justify-content: center;
+  background: #131b30;
+  border: 1px solid #1f2940;
+  border-radius: 8px;
+  padding: 16px;
+}
+.screen-preview {
+  width: 100%;
+  height: 100%;
+  display: flex; align-items: center; justify-content: center;
+}
+.screen-preview-frame {
+  width: 220px; height: 100%;
+  max-height: 420px;
+  background: #0a0f1c;
+  border: 1px solid #1f2940;
+  border-radius: 24px;
+  padding: 12px;
+  display: flex; align-items: center; justify-content: center;
+  position: relative;
+  box-shadow: 0 0 0 4px #1f2940, inset 0 0 0 1px #1f2940;
+}
+.screen-preview-empty {
+  display: flex; flex-direction: column;
+  align-items: center; gap: 8px;
+  color: #4a5677;
+  text-align: center;
+}
+.screen-preview-text {
+  font-size: 14px; color: #b8c2dd;
+}
+.screen-preview-sub {
+  font-size: 12px; color: #6b758c;
+}
+
+/* ====== 右侧蓝卡（累计成交） ====== */
+.screen-card-blue {
+  background: linear-gradient(135deg,#165dff,#4080ff);
+  border: none;
+}
+.screen-revenue-hd {
+  font-size: 12px; color: rgba(255,255,255,.85);
+  padding: 12px 16px 0;
+}
+.screen-revenue-bd {
+  display: flex; align-items: baseline; justify-content: center;
+  padding: 4px 16px 8px;
+}
+.screen-revenue-yen {
+  font-size: 22px; font-weight: 500;
+  color: rgba(255,255,255,.9);
+  margin-right: 4px;
+}
+.screen-revenue-value {
+  font-size: 48px; font-weight: 700;
+  color: #fff;
+  line-height: 1;
+}
+.screen-revenue-grid {
+  display: grid; grid-template-columns: repeat(6, 1fr);
+  gap: 1px;
+  background: rgba(255,255,255,.18);
+  margin: 0 12px;
+  border-radius: 4px;
+  overflow: hidden;
+}
+.screen-rev-item {
+  background: rgba(255,255,255,.08);
+  padding: 8px 4px; text-align: center;
+}
+.screen-rev-num {
+  font-size: 16px; font-weight: 600;
+  color: #fff;
+  line-height: 1.2;
+}
+.screen-rev-label {
+  font-size: 10px;
+  color: rgba(255,255,255,.8);
+  margin-top: 2px;
+}
+.screen-revenue-avg {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 12px 16px;
+}
+.screen-avg-label { font-size: 12px; color: rgba(255,255,255,.8); }
+.screen-avg-value {
+  font-family: monospace;
+  font-size: 16px; font-weight: 600; color: #fff;
+}
+
+/* ====== 近 5 分钟数据 ====== */
+.screen-mini-stat {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 0;
+  border-bottom: 1px dashed #1f2940;
+  font-size: 12px;
+}
+.screen-mini-stat:last-child { border-bottom: none; }
+.screen-mini-stat-label { color: #8b95ad; }
+.screen-mini-stat-value { font-size: 14px; font-weight: 600; color: #fff; }
+
+/* ====== 带货商品表 ====== */
+.screen-product-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+.screen-product-table thead th {
+  background: #1d2742; color: #8b95ad;
+  padding: 6px 8px; text-align: left;
+  font-weight: 500;
+}
+.screen-product-table tbody td {
+  padding: 8px;
+  border-top: 1px solid #1f2940;
+  color: #b8c2dd;
+}
+.screen-empty-cell {
+  text-align: center !important;
+  color: #6b758c !important;
+  padding: 32px 8px !important;
+}
+
+/* ====== 底部实时趋势 ====== */
+.screen-bottom {
+  padding: 12px;
+  height: 280px;
+}
+.screen-trend {
+  background: #131b30;
+  border: 1px solid #1f2940;
+  border-radius: 8px;
+  padding: 16px 20px;
+  height: 100%;
+  display: flex; flex-direction: column;
+}
+.screen-trend-hd {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 8px;
+}
+.screen-trend-title { font-size: 14px; font-weight: 600; color: #fff; }
+.screen-trend-tabs { display: flex; gap: 4px; }
+.screen-trend-tab {
+  padding: 5px 14px; border-radius: 4px;
+  background: transparent; color: #8b95ad;
+  border: 1px solid transparent; cursor: pointer;
+  font-size: 12px;
+}
+.screen-trend-tab:hover { background: rgba(255,255,255,.04); color: #fff; }
+.screen-trend-tab.active {
+  background: rgba(22,93,255,.15); color: #4d8aff;
+  border-color: rgba(22,93,255,.3);
+}
+
+.screen-trend-legend {
+  display: flex; gap: 18px;
+  font-size: 12px; color: #b8c2dd;
+  margin-bottom: 8px;
+}
+.legend-item { display: inline-flex; align-items: center; gap: 5px; }
+.legend-dot { width: 8px; height: 8px; border-radius: 2px; }
+.dot-blue   { background: #165dff; }
+.dot-gray   { background: #8b95ad; }
+.dot-green  { background: #00b42a; }
+.dot-purple { background: #722ed1; }
+.dot-red    { background: #f53f3f; }
+.dot-orange { background: #fa8c16; }
+.dot-yellow { background: #fadb14; }
+
+.screen-trend-chart {
+  flex: 1;
+  background: #0f172a;
+  border-radius: 6px;
+  padding: 12px 16px;
+  min-height: 200px;
+}
+.screen-trend-chart svg {
+  width: 100%; height: 100%;
+  display: block;
+}
+
+/* ====== 滚动条 ====== */
+.screen-card-bd::-webkit-scrollbar,
+.screen-msg-list::-webkit-scrollbar { width: 4px; }
+.screen-card-bd::-webkit-scrollbar-thumb,
+.screen-msg-list::-webkit-scrollbar-thumb { background: #2d3a55; border-radius: 2px; }
+</style>
+
+<script src="../assets/js/proto.js"></script>
+<script src="../assets/js/admin-shell.js"></script>
+<script>
+(function () {
+  // ===== Trend tabs =====
+  document.querySelectorAll(".screen-trend-tab").forEach(function (t) {
+    t.addEventListener("click", function () {
+      document.querySelectorAll(".screen-trend-tab").forEach(function (x) { x.classList.remove("active"); });
+      t.classList.add("active");
+    });
+  });
+
+  // ===== Static messages =====
+  var staticMessages = [
+    { name: "张妈妈",   color: "#165dff", text: "老师今天讲什么？" },
+    { name: "李爸爸",   color: "#00b42a", text: "终于开播了！" },
+    { name: "王同学妈", color: "#722ed1", text: "课程怎么报名？" },
+    { name: "陈妈妈",   color: "#fa8c16", text: "孩子 8 岁，能听懂吗？" },
+    { name: "刘爸爸",   color: "#f53f3f", text: "支持回放吗？" },
+    { name: "周妈妈",   color: "#165dff", text: "已下单！期待开课" },
+    { name: "吴爸爸",   color: "#00b42a", text: "价格很实惠" },
+    { name: "郑妈妈",   color: "#722ed1", text: "有没有试听课？" }
+  ];
+  var list = document.getElementById("msg-list");
+  var count = document.getElementById("msg-count");
+  list.innerHTML = staticMessages.map(function (m) {
+    return '<div class="screen-msg">' +
+           '<div class="screen-msg-avatar" style="background:' + m.color + '">' + m.name.charAt(0) + '</div>' +
+           '<div class="screen-msg-body">' +
+             '<div class="screen-msg-name">' + m.name + '</div>' +
+             '<div class="screen-msg-text">' + m.text + '</div>' +
+           '</div>' +
+           '</div>';
+  }).join("");
+  count.textContent = staticMessages.length + " 条";
+
+  // ===== Update top time =====
+  var elapsed = 54 * 3600 + 22 * 60 + 56;
+  setInterval(function () {
+    elapsed++;
+    var h = Math.floor(elapsed / 3600);
+    var m = Math.floor((elapsed % 3600) / 60);
+    var s = elapsed % 60;
+    var pad = function (n) { return n < 10 ? "0" + n : "" + n; };
+    document.getElementById("screen-time").textContent =
+      "直播间 " + pad(h) + ":" + pad(m) + ":" + pad(s);
+  }, 1000);
+
+  // ===== 当前直播列表（多场直播切换） =====
+  var streamingLives = [
+    { id: "LV20260905001", name: "测试直播123",   teacher: "阮荣均", duration: "54:22", viewers: 3 },
+    { id: "LV20260905002", name: "明日直播·春启04 招生", teacher: "赵老师", duration: "23:08", viewers: 8 },
+    { id: "LV20260905003", name: "家长答疑会·音频直播", teacher: "王助教", duration: "12:45", viewers: 5 }
+  ];
+  var currentLiveId = (new URLSearchParams(location.search)).get("live_id") || streamingLives[0].id;
+
+  // 同步显示
+  var current = streamingLives.filter(function (l) { return l.id === currentLiveId; })[0] || streamingLives[0];
+  document.getElementById("screen-live-id").textContent = current.id;
+  document.querySelector(".screen-live-name").textContent = current.name;
+  document.getElementById("screen-time").textContent = "直播间 " + current.duration + ":" + String(Math.floor(Math.random() * 59)).padStart(2, "0");
+
+  // 渲染直播列表
+  var liveBarList = document.getElementById("live-bar-list");
+  liveBarList.innerHTML = streamingLives.map(function (l) {
+    var active = l.id === currentLiveId ? " active" : "";
+    return '<button class="screen-live-pill' + active + '" data-live-id="' + l.id + '">' +
+           '<span class="pill-dot"></span>' +
+           '<span>' + l.name + '</span>' +
+           '<span class="pill-id">' + l.id + '</span>' +
+           '<span class="pill-arrow">▾</span>' +
+           '</button>';
+  }).join("");
+
+  // 点击切换直播
+  liveBarList.querySelectorAll(".screen-live-pill").forEach(function (p) {
+    p.addEventListener("click", function () {
+      var id = p.getAttribute("data-live-id");
+      // 切换到对应直播
+      location.search = "?live_id=" + id;
+    });
+  });
+
+  // ===== 返回中控台 =====
+  document.getElementById("btn-back-control").addEventListener("click", function () {
+    location.href = "live-control.html?live_id=" + currentLiveId;
+  });
+})();
+</script>
+</body>
+</html>

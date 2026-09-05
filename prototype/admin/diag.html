@@ -1,0 +1,74 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>诊断报告</title>
+<style>
+body {
+  margin: 0; padding: 20px;
+  font-family: -apple-system, "PingFang SC", sans-serif;
+  background: #1d2129; color: #e8eaed;
+  font-size: 13px;
+}
+.ok { color: #5fd068; }
+.bad { color: #ff7875; }
+.warn { color: #ffc857; }
+.box {
+  background: #2d3a55; padding: 14px; border-radius: 8px;
+  margin-bottom: 12px; font-family: monospace;
+}
+h2 { color: #fff; margin: 16px 0 8px; }
+</style>
+</head>
+<body>
+<h2>🔍 浏览器诊断报告</h2>
+<p>复制下面所有信息发给我（截图也行）</p>
+
+<div class="box" id="info"></div>
+
+<script>
+var info = [];
+function add(k, v, cls) {
+  info.push('<span class="' + (cls || '') + '">' + k + ': ' + v + '</span>');
+}
+
+add('Viewport', window.innerWidth + ' × ' + window.innerHeight);
+add('DevicePixelRatio', window.devicePixelRatio);
+add('UserAgent', navigator.userAgent);
+add('浏览器语言', navigator.language);
+add('协议', location.protocol);
+add('当前URL', location.href);
+
+// CSS 检查
+var s = document.createElement('style');
+s.textContent = '.test-class-not-exist { color: red; }';
+document.head.appendChild(s);
+try {
+  var matched = !!document.styleSheets[0];
+  add('CSS 可加载', matched ? '是' : '否', matched ? 'ok' : 'bad');
+} catch(e) {
+  add('CSS 加载异常', e.message, 'bad');
+}
+
+// 检查 link 资源
+document.querySelectorAll('link[rel=stylesheet]').forEach(function(l, i){
+  add('link[' + i + ']', l.href, l.href.indexOf('?v=') > -1 ? 'ok' : 'warn');
+});
+
+// 检查当前页 admin-shell.js 是否可访问
+fetch('../assets/js/admin-shell.js', { method: 'HEAD' })
+  .then(function(r){ add('admin-shell.js', r.status + ' ' + r.statusText, r.ok?'ok':'bad'); render(); })
+  .catch(function(e){ add('admin-shell.js', 'ERROR: ' + e.message, 'bad'); render(); });
+
+fetch('../assets/css/proto.css', { method: 'HEAD' })
+  .then(function(r){ add('proto.css', r.status + ' ' + r.statusText, r.ok?'ok':'bad'); render(); })
+  .catch(function(e){ add('proto.css', 'ERROR: ' + e.message, 'bad'); render(); });
+
+function render() {
+  document.getElementById('info').innerHTML = info.join('<br>');
+}
+render();
+</script>
+</body>
+</html>

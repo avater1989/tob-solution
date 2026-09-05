@@ -1,0 +1,335 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>直播促到SOP · 艺博 To-B</title>
+<link rel="stylesheet" href="../assets/css/proto.css" />
+</head>
+<body class="admin-body" data-module="scrm" data-nav="invite" data-title="直播促到SOP" data-crumb="SCRM / 直播促到 / 直播促到SOP">
+<div id="header-actions">
+  <button class="btn btn-primary" id="btn-create">+ 新建促到计划</button>
+</div>
+<div id="page-content" style="display:none">
+
+  <!-- 筛选 -->
+  <div class="card" style="margin-bottom:8px"><div class="card-bd">
+    <div class="form-grid" style="grid-template-columns:repeat(5,minmax(0,1fr));gap:8px 12px">
+      <input id="f-name" placeholder="计划名称" />
+      <select id="f-live">
+        <option value="">直播</option>
+        <option>春启03·家长公开课</option>
+        <option>春启04·家长公开课</option>
+      </select>
+      <select id="f-stage">
+        <option value="">客户阶段</option>
+        <option>全部</option>
+        <option>新线索</option>
+        <option>跟进中</option>
+        <option>已转化</option>
+      </select>
+      <select id="f-channel">
+        <option value="">触达方式</option>
+        <option>短信</option>
+        <option>企微</option>
+        <option>站内信</option>
+      </select>
+      <select id="f-status">
+        <option value="">状态</option>
+        <option>待执行</option>
+        <option>执行中</option>
+        <option>已完成</option>
+        <option>已取消</option>
+      </select>
+    </div>
+    <div class="toolbar" style="margin-top:8px">
+      <button class="btn btn-primary" id="btn-query">查询</button>
+      <button class="btn" id="btn-reset">重置</button>
+    </div>
+  </div></div>
+
+  <!-- 表格 -->
+  <div class="card"><div class="card-bd" style="padding:0">
+    <table class="data">
+      <thead>
+        <tr>
+          <th>计划名称</th><th>关联直播</th><th>触达方式</th>
+          <th>目标客户</th><th>发送成功</th><th>打开数</th>
+          <th>状态</th><th>执行时间</th>
+          <th style="width:160px">操作</th>
+        </tr>
+      </thead>
+      <tbody id="li-tbody">
+        <tr>
+          <td>今晚 8 点直播催到</td>
+          <td>春启03·家长公开课</td>
+          <td>短信</td>
+          <td>186</td>
+          <td>176</td>
+          <td>94</td>
+          <td><span class="badge badge-success">已完成</span></td>
+          <td>2026-03-29 19:00</td>
+          <td class="row-actions">
+            <a href="#" data-row-act="detail">详情</a>
+            <a href="#" data-row-act="stat">数据</a>
+            <a href="#" data-row-act="edit">编辑</a>
+          </td>
+        </tr>
+        <tr>
+          <td>开课前 30 分钟提醒</td>
+          <td>春启03·家长公开课</td>
+          <td>企微</td>
+          <td>186</td>
+          <td>182</td>
+          <td>108</td>
+          <td><span class="badge badge-success">已完成</span></td>
+          <td>2026-03-29 19:30</td>
+          <td class="row-actions">
+            <a href="#" data-row-act="detail">详情</a>
+            <a href="#" data-row-act="stat">数据</a>
+            <a href="#" data-row-act="edit">编辑</a>
+          </td>
+        </tr>
+        <tr>
+          <td>明日直播预告</td>
+          <td>春启04·家长公开课</td>
+          <td>短信</td>
+          <td>92</td>
+          <td>—</td>
+          <td>—</td>
+          <td><span class="badge">待执行</span></td>
+          <td>2026-03-30 19:00</td>
+          <td class="row-actions">
+            <a href="#" data-row-act="edit">编辑</a>
+            <a href="#" data-row-act="cancel">取消</a>
+          </td>
+        </tr>
+        <tr>
+          <td>回放提醒</td>
+          <td>春启03·家长公开课</td>
+          <td>站内信</td>
+          <td>186</td>
+          <td>180</td>
+          <td>76</td>
+          <td><span class="badge badge-success">已完成</span></td>
+          <td>2026-03-29 22:00</td>
+          <td class="row-actions">
+            <a href="#" data-row-act="detail">详情</a>
+            <a href="#" data-row-act="stat">数据</a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div></div>
+  <!-- 分页 -->
+  <div class="toolbar" style="margin-top:8px">
+    <span class="muted">共 <b>4</b> 条</span>
+    <div class="spacer"></div>
+    <button class="btn btn-sm" disabled>上一页</button>
+    <button class="btn btn-sm" disabled>下一页</button>
+  </div>
+</div>
+
+<!-- ============ 弹窗 / 抽屉 ============ -->
+<div class="proto-mask" id="mask"></div>
+
+<!-- 新建 / 编辑 促到计划 弹窗 -->
+<div class="proto-modal" id="modal-create" style="width:680px">
+  <div class="proto-modal-hd">
+    <h3 id="li-title" style="font-size:16px;font-weight:600">新建促到计划</h3>
+    <button class="btn btn-sm btn-ghost" data-close>×</button>
+  </div>
+  <div class="proto-modal-bd">
+    <div class="form-grid">
+      <div class="field"><label>计划名称 *</label><input id="cli-name" placeholder="如：今晚 8 点直播催到" /></div>
+      <div class="field"><label>关联直播 *</label>
+        <select>
+          <option>春启03·家长公开课</option>
+          <option>春启04·家长公开课</option>
+        </select>
+      </div>
+      <div class="field"><label>触达方式 *</label>
+        <select>
+          <option>短信</option>
+          <option>企微</option>
+          <option>站内信</option>
+        </select>
+      </div>
+      <div class="field"><label>发送时机</label>
+        <select>
+          <option>直播前 1 小时</option>
+          <option>直播前 30 分钟</option>
+          <option>直播开始时</option>
+          <option>直播结束后 2 小时</option>
+          <option>自定义时间</option>
+        </select>
+      </div>
+      <div class="field"><label>执行时间 *</label><input type="datetime-local" /></div>
+      <div class="field" style="grid-column:1/-1"><label>目标客户条件</label>
+        <textarea rows="2" style="width:100%;padding:8px;border:1px solid var(--color-border);border-radius:6px" placeholder="如：未到课 / 已加微 / 直播期间未到访"></textarea>
+      </div>
+      <div class="field"><label>短信模板</label>
+        <select><option>默认直播催到</option><option>开播提醒</option><option>回放提醒</option></select>
+      </div>
+      <div class="field"><label>客户去重</label>
+        <select><option>是</option><option>否</option></select>
+      </div>
+    </div>
+  </div>
+  <div class="proto-modal-ft">
+    <button class="btn" data-close>取消</button>
+    <button class="btn btn-primary" id="cli-submit">保存</button>
+  </div>
+</div>
+
+<!-- 详情抽屉 -->
+<div class="proto-drawer" id="drawer-detail">
+  <div class="proto-drawer-hd">
+    <h3 id="ld-title">促到计划详情</h3>
+    <button class="btn btn-sm btn-ghost" data-close>×</button>
+  </div>
+  <div class="proto-drawer-bd">
+    <h4 style="margin-bottom:8px">基础信息</h4>
+    <div class="form-grid" style="grid-template-columns:1fr 1fr">
+      <div class="field"><label>计划名称</label><div id="ld-name">—</div></div>
+      <div class="field"><label>关联直播</label><div id="ld-live">—</div></div>
+      <div class="field"><label>触达方式</label><div id="ld-channel">—</div></div>
+      <div class="field"><label>执行时间</label><div id="ld-time">—</div></div>
+      <div class="field"><label>状态</label><div id="ld-status">—</div></div>
+      <div class="field"><label>客户去重</label><div id="ld-dedup">—</div></div>
+    </div>
+    <h4 style="margin:16px 0 8px">执行数据</h4>
+    <div class="grid-4" style="margin:0">
+      <div class="stat"><div class="label">目标客户</div><div class="value" id="ld-target">—</div></div>
+      <div class="stat"><div class="label">发送成功</div><div class="value" id="ld-success">—</div></div>
+      <div class="stat"><div class="label">打开数</div><div class="value" id="ld-open">—</div></div>
+      <div class="stat"><div class="label">打开率</div><div class="value" id="ld-rate">—</div></div>
+    </div>
+    <h4 style="margin:16px 0 8px">短信预览</h4>
+    <div class="msg-mock">
+      <div class="msg-bubble">
+        <div class="msg-text">【艺博教育】春启03·家长公开课今晚 20:00 开播，点击链接进入直播间 [链接]</div>
+        <div class="muted" style="font-size:12px;margin-top:6px">— 来自 艺博教育</div>
+      </div>
+    </div>
+  </div>
+  <div class="proto-drawer-bd"></div>
+  <div class="proto-drawer-ft">
+    <button class="btn" data-close>关闭</button>
+    <a class="btn btn-primary" href="#" id="ld-edit">编辑</a>
+  </div>
+</div>
+
+<style>
+.msg-mock {
+  padding: 16px; background: #ededed; border-radius: 6px;
+  display: flex; flex-direction: column; align-items: flex-start;
+}
+.msg-bubble {
+  max-width: 80%;
+  padding: 10px 12px; background: #fff;
+  border-radius: 6px; box-shadow: 0 1px 2px rgba(0,0,0,.08);
+}
+.row-actions a.danger { color: var(--color-danger); }
+</style>
+
+<script src="../assets/js/proto.js"></script>
+<script src="../assets/js/admin-shell.js"></script>
+<script>
+(function () {
+  // ===== Mask / drawer / modal =====
+  var mask = document.getElementById("mask");
+  function closeAll() {
+    mask.classList.remove("open");
+    document.querySelectorAll(".proto-modal, .proto-drawer").forEach(function (n) { n.classList.remove("open"); });
+  }
+  function open(node) { mask.classList.add("open"); node.classList.add("open"); }
+  mask.addEventListener("click", closeAll);
+  document.querySelectorAll("[data-close]").forEach(function (n) { n.addEventListener("click", closeAll); });
+
+  // ===== Row data =====
+  function rowData(tr) {
+    var tds = tr.querySelectorAll("td");
+    return {
+      name: tds[0] ? tds[0].textContent.trim() : "",
+      live: tds[1] ? tds[1].textContent.trim() : "",
+      channel: tds[2] ? tds[2].textContent.trim() : "",
+      target: tds[3] ? tds[3].textContent.trim() : "0",
+      success: tds[4] ? tds[4].textContent.trim() : "0",
+      open: tds[5] ? tds[5].textContent.trim() : "0",
+      status: tds[6] ? tds[6].textContent.trim() : "",
+      time: tds[7] ? tds[7].textContent.trim() : "",
+    };
+  }
+
+  // ===== Detail =====
+  function fillDetail(d) {
+    document.getElementById("ld-title").textContent = "促到计划详情 · " + d.name;
+    document.getElementById("ld-name").textContent = d.name;
+    document.getElementById("ld-live").textContent = d.live;
+    document.getElementById("ld-channel").textContent = d.channel;
+    document.getElementById("ld-time").textContent = d.time;
+    document.getElementById("ld-status").textContent = d.status;
+    document.getElementById("ld-dedup").textContent = "是";
+    document.getElementById("ld-target").textContent = d.target;
+    document.getElementById("ld-success").textContent = d.success;
+    document.getElementById("ld-open").textContent = d.open;
+    var rate = (parseInt(d.success) > 0 ? Math.round(parseInt(d.open) / parseInt(d.success) * 100) : 0);
+    document.getElementById("ld-rate").textContent = rate + "%";
+    open(document.getElementById("drawer-detail"));
+  }
+
+  // ===== Row actions =====
+  document.querySelectorAll("#li-tbody tr").forEach(function (tr) {
+    tr.querySelectorAll("[data-row-act]").forEach(function (a) {
+      a.addEventListener("click", function (e) {
+        e.preventDefault();
+        var act = a.getAttribute("data-row-act");
+        var d = rowData(tr);
+        if (act === "detail") fillDetail(d);
+        else if (act === "stat") Proto.toast("打开数据明细（原型）");
+        else if (act === "edit") {
+          document.getElementById("li-title").textContent = "编辑促到计划 · " + d.name;
+          document.getElementById("cli-name").value = d.name;
+          open(document.getElementById("modal-create"));
+        } else if (act === "cancel") {
+          if (confirm("确认取消「" + d.name + "」?")) {
+            tr.querySelector(".badge").outerHTML = '<span class="badge">已取消</span>';
+            Proto.toast("已取消（原型）");
+          }
+        }
+      });
+    });
+  });
+
+  // ===== Create =====
+  document.getElementById("btn-create").addEventListener("click", function () {
+    document.getElementById("li-title").textContent = "新建促到计划";
+    document.getElementById("cli-name").value = "";
+    open(document.getElementById("modal-create"));
+  });
+  document.getElementById("cli-submit").addEventListener("click", function () {
+    var n = document.getElementById("cli-name").value.trim();
+    if (!n) { Proto.toast("请输入计划名称"); return; }
+    closeAll(); Proto.toast("促到计划已保存（原型）");
+  });
+
+  // ===== Detail edit =====
+  document.getElementById("ld-edit").addEventListener("click", function (e) {
+    e.preventDefault();
+    closeAll();
+    document.getElementById("li-title").textContent = "编辑促到计划";
+    open(document.getElementById("modal-create"));
+  });
+
+  // ===== Other buttons =====
+  document.getElementById("btn-query").addEventListener("click", function () { Proto.toast("已查询（原型）"); });
+  document.getElementById("btn-reset").addEventListener("click", function () {
+    document.getElementById("f-name").value = "";
+    ["f-live","f-stage","f-channel","f-status"].forEach(function (id) { document.getElementById(id).value = ""; });
+    Proto.toast("已重置");
+  });
+})();
+</script>
+</body>
+</html>

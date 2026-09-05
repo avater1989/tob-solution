@@ -1,0 +1,662 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>创建直播 · 艺博 To-B</title>
+<link rel="stylesheet" href="../assets/css/proto.css" />
+</head>
+<body class="admin-body" data-module="live" data-nav="live-edit" data-title="创建直播" data-crumb="直播 / 直播管理 / 新建直播">
+<div id="header-actions">
+  <button class="btn" id="btn-cancel">取消</button>
+  <button class="btn" id="btn-save-draft">存草稿</button>
+  <button class="btn btn-primary" id="btn-save">保存并提交审核</button>
+</div>
+<div id="page-content" style="display:none">
+
+  <!-- 审核状态横幅（驳回时展示） -->
+  <div class="audit-banner audit-banner-rejected" id="audit-banner" style="display:none">
+    <div class="audit-banner-icon">✕</div>
+    <div class="audit-banner-bd">
+      <div class="audit-banner-title">审核未通过 · 已驳回</div>
+      <div class="audit-banner-meta">
+        审核人：<b id="ab-auditor">刘管理</b>　·　驳回时间：<b id="ab-time">2026-09-03 17:30</b>　·　驳回维度：<span class="audit-tag fail">内容合规 ✕</span>
+      </div>
+      <div class="audit-banner-reason" id="ab-reason">
+        直播封面图包含第三方水印，请重新设计后再提交。建议尺寸 750*422px，去掉水印 logo。
+      </div>
+    </div>
+    <div class="audit-banner-act">
+      <a href="live-audit-detail.html" class="link-blue">查看审核详情</a>
+    </div>
+  </div>
+
+  <!-- 审核状态横幅（待审核/只读） -->
+  <div class="audit-banner audit-banner-pending" id="audit-banner-pending" style="display:none">
+    <div class="audit-banner-icon">⏱</div>
+    <div class="audit-banner-bd">
+      <div class="audit-banner-title">该直播已进入审核流程</div>
+      <div class="audit-banner-meta">
+        提交时间：<b id="ab-submit-time">2026-09-04 14:30</b>　·　当前不可编辑，需先撤回
+      </div>
+    </div>
+  </div>
+
+  <h2 class="page-section-title">基本信息</h2>
+  <div class="card"><div class="card-bd">
+    <div class="form-grid" style="grid-template-columns:1fr 1fr">
+      <div class="field"><label>直播名称 *</label><input id="le-name" placeholder="如：春启 03 期家长公开课" /></div>
+      <div class="field"><label>直播模式 *</label>
+        <select id="le-mode">
+          <option>视频直播</option>
+          <option>语音直播</option>
+          <option>录播直播</option>
+        </select>
+      </div>
+      <div class="field"><label>关联课程 *</label>
+        <select id="le-course">
+          <option>请选择</option>
+          <option>春启 03 期家长必修课</option>
+          <option>9.9 引流课 · 亲子沟通</option>
+          <option>家长训练营</option>
+        </select>
+      </div>
+      <div class="field"><label>直播间类型 *</label>
+        <select id="le-style">
+          <option>传统直播间</option>
+          <option>沉浸直播间</option>
+        </select>
+      </div>
+      <div class="field"><label>开始时间 *</label><input type="datetime-local" value="2026-03-30 20:00" /></div>
+      <div class="field"><label>结束时间 *</label><input type="datetime-local" value="2026-03-30 22:00" /></div>
+      <div class="field"><label>主讲老师 *</label>
+        <select><option>阮荣均</option><option>赵老师</option><option>王助教</option></select>
+      </div>
+      <div class="field"><label>助教</label>
+        <select multiple style="height:60px;padding:8px">
+          <option>王助教</option><option>刘助教</option>
+        </select>
+      </div>
+      <div class="field" style="grid-column:1/-1"><label>直播介绍</label>
+        <textarea rows="3" style="width:100%;padding:8px;border:1px solid var(--color-border);border-radius:6px" placeholder="介绍本次直播内容、主讲老师、适合人群等"></textarea>
+      </div>
+    </div>
+  </div></div>
+
+  <h2 class="page-section-title">详情封面</h2>
+  <div class="card"><div class="card-bd">
+    <div class="cover-row">
+      <div class="cover-preview">
+        <div class="cover-placeholder">详情封面</div>
+      </div>
+      <div class="cover-side">
+        <a href="#" data-act="design" class="link-blue">在线设计 ⓘ</a>
+        <p class="muted cover-tip">建议尺寸 750*422px 或 16:9，小于 5M 的 JPG、PNG 格式图片 <a href="#" class="link-blue">尺寸变更说明</a></p>
+      </div>
+    </div>
+  </div></div>
+
+  <h2 class="page-section-title">直播详情</h2>
+  <div class="card"><div class="card-bd" style="padding:0">
+    <div class="rich-editor">
+      <div class="rich-toolbar">
+        <button class="rt-btn" data-act="insert" title="插入">⊕</button>
+        <span class="rt-sep">|</span>
+        <button class="rt-btn" data-act="undo" title="撤销">↶</button>
+        <button class="rt-btn" data-act="redo" title="重做">↷</button>
+        <button class="rt-btn" data-act="format" title="格式刷">▢</button>
+        <button class="rt-btn" data-act="clear" title="清除格式">⌫</button>
+        <span class="rt-sep">|</span>
+        <select class="rt-select"><option>正文</option><option>标题</option></select>
+        <select class="rt-select"><option>16px</option><option>14px</option><option>18px</option></select>
+        <span class="rt-sep">|</span>
+        <button class="rt-btn" data-act="bold"><b>B</b></button>
+        <button class="rt-btn" data-act="italic"><i>I</i></button>
+        <button class="rt-btn" data-act="underline"><u>U</u></button>
+        <button class="rt-btn" data-act="strike"><s>S</s></button>
+        <button class="rt-btn" data-act="color">A</button>
+        <button class="rt-btn" data-act="bg">▢</button>
+        <span class="rt-sep">|</span>
+        <button class="rt-btn" data-act="ul">≡</button>
+        <button class="rt-btn" data-act="ol">1.</button>
+        <button class="rt-btn" data-act="align">⇔</button>
+        <span class="rt-sep">|</span>
+        <button class="rt-btn" data-act="fullscreen">⛶</button>
+        <a href="#" class="link-blue" style="margin-left:auto">查看示例</a>
+      </div>
+      <div class="rich-body">
+        <textarea id="le-content" rows="6" placeholder="请输入内容"></textarea>
+      </div>
+      <div class="rich-foot">
+        <span class="muted">友情提示：粘贴第三方内容，若排版不符合预期，需调整样式</span>
+        <span class="muted">字数统计</span>
+      </div>
+    </div>
+    <p class="muted" style="margin:8px 12px 12px">我已阅读并同意遵守 <a href="#" class="link-blue">《小鹅通直播运营规范》</a></p>
+  </div></div>
+
+  <h2 class="page-section-title">直播暖场</h2>
+  <div class="card"><div class="card-bd">
+    <div class="warmup-row">
+      <label class="warmup-radio"><input type="radio" name="warmup" value="image" checked /> 暖场图</label>
+      <label class="warmup-radio"><input type="radio" name="warmup" value="video" /> 暖场视频</label>
+    </div>
+    <div class="cover-row" style="margin-top:12px">
+      <div class="cover-preview warmup-img">
+        <div class="cover-placeholder">暖场</div>
+      </div>
+      <div class="cover-side">
+        <a href="#" data-act="design" class="link-blue">在线设计 ⓘ</a>
+        <p class="muted cover-tip">建议尺寸 750*1334px 或 9:16，小于 5M 的 JPG、PNG 格式图片 <a href="#" class="link-blue">查看示例</a></p>
+      </div>
+    </div>
+  </div></div>
+
+  <h2 class="page-section-title">直播设置</h2>
+  <div class="card"><div class="card-bd">
+    <div class="form-grid" style="grid-template-columns:1fr 1fr">
+      <div class="field"><label>开播密码</label>
+        <select><option>不设置</option><option>设置密码</option></select>
+      </div>
+      <div class="field"><label>密码</label><input type="text" placeholder="如：123456" /></div>
+      <div class="field" style="grid-column:1/-1">
+        <label style="display:inline-block;vertical-align:middle">回放设置：</label>
+        <label class="switch on" style="margin-left:8px"><input type="checkbox" checked /><span></span></label>
+        <span class="hint">开启回放后，直播结束后直播间将播放回放视频</span>
+      </div>
+      <div class="field" style="grid-column:1/-1">
+        <div class="replay-box">
+          <!-- Row 1: 回放有效期 -->
+          <div class="replay-row">
+            <span class="replay-label">回放有效期：</span>
+            <label class="replay-cell">
+              <input type="radio" name="replay" value="forever" checked /><span>永久有效</span>
+            </label>
+            <label class="replay-cell">
+              <input type="radio" name="replay" value="days" />
+              <span>直播结束后有效天数：<input type="number" value="7" class="num-input" /> ⓘ</span>
+            </label>
+            <label class="replay-cell">
+              <input type="radio" name="replay" value="period" /><span>指定时段有效</span>
+            </label>
+          </div>
+          <p class="muted replay-hint">到期后，学员无法观看回放内容，但仍可进入直播间查看聊天内容及共享文件</p>
+
+          <!-- Row 2: 倍速 + 快进 -->
+          <div class="replay-row">
+            <div class="speed-cell">
+              <span class="replay-label">倍速播放：</span>
+              <label class="opt">
+                <input type="radio" name="speed" checked />
+                <span class="opt-text">允许</span>
+              </label>
+              <label class="opt">
+                <input type="radio" name="speed" />
+                <span class="opt-text">禁止</span>
+              </label>
+              <p class="muted opt-hint">禁止时，课程未学完学员不可倍速播放</p>
+            </div>
+            <div class="speed-cell">
+              <span class="replay-label">快进：</span>
+              <label class="opt">
+                <input type="radio" name="fast" checked />
+                <span class="opt-text">允许</span>
+              </label>
+              <label class="opt">
+                <input type="radio" name="fast" />
+                <span class="opt-text">禁止</span>
+              </label>
+              <p class="muted opt-hint">禁止时，课程未学完学员不可快进</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="field"><label>直播清晰度</label>
+        <select><option>超清</option><option>高清</option><option>标清</option></select>
+      </div>
+      <div class="field"><label>麦克风降噪</label>
+        <select><option>开启</option><option>关闭</option></select>
+      </div>
+      <div class="field"><label>允许观众连麦</label>
+        <select><option>不允许</option><option>允许</option></select>
+      </div>
+      <div class="field"><label>允许观众留言</label>
+        <select><option>开启</option><option>关闭</option></select>
+      </div>
+      <div class="field" style="grid-column:1/-1"><label>主播端设备</label>
+        <div class="muted">小鹅通直播伴侣 / 视频号直播伴侣 / OBS / 手机端</div>
+      </div>
+    </div>
+  </div></div>
+
+  <h2 class="page-section-title">角色设置</h2>
+  <div class="card"><div class="card-bd">
+    <button class="btn btn-sm" id="btn-add-role">+ 添加角色</button>
+    <span class="muted" style="margin-left:12px;font-size:12px">添加用户成为主播、助理或嘉宾</span>
+  </div></div>
+
+  <h2 class="page-section-title">归属人 ⓘ</h2>
+  <div class="card"><div class="card-bd">
+    <button class="btn btn-sm" id="btn-pick-owner">+ 选择员工</button>
+  </div></div>
+
+  <h2 class="page-section-title">所属课程</h2>
+  <div class="card"><div class="card-bd">
+    <div class="form-grid">
+      <div class="field" style="grid-column:1/-1">
+        <label>作为目录内容：</label>
+        <button class="btn" id="btn-pick-course">+ 选择课程/专栏/训练营/会员</button>
+      </div>
+    </div>
+  </div></div>
+
+  <h2 class="page-section-title">挂载商品</h2>
+  <div class="card"><div class="card-bd">
+    <p class="muted" style="margin-bottom:12px">挂载商品将在直播间以「购物车」形式展示，观众可边看边买。</p>
+    <div class="toolbar" style="margin-bottom:12px">
+      <button class="btn btn-primary" id="btn-add-goods">+ 添加商品</button>
+      <button class="btn" id="btn-import-crm">从 SCRM 商品导入</button>
+    </div>
+    <table class="data">
+      <thead><tr><th>商品图</th><th>商品名称</th><th>价格</th><th>讲解话术</th><th>操作</th></tr></thead>
+      <tbody id="goods-tbody">
+        <tr><td><div class="thumb"></div></td><td>春启 03 期家长必修课</td><td>¥9.9</td><td><input placeholder="选填" style="width:240px" /></td><td><a href="#" data-act="del">移除</a></td></tr>
+        <tr><td><div class="thumb"></div></td><td>今晚直播·家长公开课</td><td>¥0</td><td><input placeholder="选填" style="width:240px" /></td><td><a href="#" data-act="del">移除</a></td></tr>
+      </tbody>
+    </table>
+  </div></div>
+
+  <h2 class="page-section-title">售卖方式</h2>
+  <div class="card"><div class="card-bd">
+    <div class="goods-section">
+      <div class="goods-line">
+        <label class="goods-checkbox">
+          <input type="checkbox" checked />
+          <b>单独售卖</b>
+          <span class="muted">用户可以通过店铺或链接的方式单独购买该商品</span>
+          <a href="#" class="link-blue">在线设计</a>
+        </label>
+      </div>
+
+      <div class="goods-line goods-sale">
+        <label><input type="radio" name="sale" checked /><span>免费</span></label>
+        <label><input type="radio" name="sale" /><span>付费</span></label>
+        <label><input type="radio" name="sale" /><span>加密</span></label>
+        <label><input type="radio" name="sale" /><span>指定用户</span></label>
+      </div>
+
+      <div class="goods-line goods-validity">
+        <span class="pro-badge">专业版</span>
+        <span class="validity-label">有效期：</span>
+        <label class="opt"><input type="radio" name="valid" checked /><span class="opt-text">长期有效，暂不支持修改</span></label>
+      </div>
+
+      <div class="goods-line goods-links">
+        <a href="#" class="link-blue">刷新</a>
+        <a href="#" class="link-blue">前往商品分组</a>
+        <a href="#" class="link-blue">查看教程</a>
+      </div>
+
+      <div class="goods-line goods-shelf-row">
+        <label class="shelf-label">上架设置：</label>
+        <label><input type="radio" name="shelf" checked /><span>立即上架</span></label>
+        <label class="shelf-time-label">
+          <input type="radio" name="shelf" /><span>定时上架</span>
+          <input type="datetime-local" placeholder="请设置时间" class="shelf-time-input" />
+        </label>
+        <label><input type="radio" name="shelf" /><span>暂不上架</span></label>
+      </div>
+    </div>
+  </div></div>
+
+  <h2 class="page-section-title">推送设置</h2>
+  <div class="card"><div class="card-bd">
+    <div class="form-grid" style="grid-template-columns:1fr 1fr">
+      <div class="field"><label>开播前提醒</label>
+        <select><option>发送</option><option>不发送</option></select>
+      </div>
+      <div class="field"><label>提醒时间</label>
+        <select><option>开播前 1 小时</option><option>开播前 30 分钟</option><option>开播前 10 分钟</option></select>
+      </div>
+      <div class="field"><label>提醒对象</label>
+        <select><option>所有订阅用户</option><option>已购课用户</option><option>近 7 天访问用户</option></select>
+      </div>
+      <div class="field"><label>提醒方式</label>
+        <select><option>站内信</option><option>企微</option><option>短信</option></select>
+      </div>
+      <div class="field" style="grid-column:1/-1"><label>提醒文案模板</label>
+        <textarea rows="3" style="width:100%;padding:8px;border:1px solid var(--color-border);border-radius:6px">【艺博教育】您预约的《{直播名称}》将在 {开播时间} 开始，点击进入直播间</textarea>
+      </div>
+      <div class="field"><label>回放推送</label>
+        <select><option>开启</option><option>关闭</option></select>
+      </div>
+      <div class="field"><label>回放推送时间</label>
+        <select><option>直播结束立即</option><option>直播结束 1 小时后</option></select>
+      </div>
+    </div>
+  </div></div>
+
+</div>
+
+<style>
+.page-section-title {
+  font-size: 15px; font-weight: 600;
+  color: var(--color-text);
+  margin: 24px 0 8px;
+  padding-left: 8px;
+  border-left: 3px solid var(--color-primary);
+}
+.page-section-title:first-child { margin-top: 0; }
+.cover-row { display: flex; gap: 16px; align-items: flex-start; }
+.cover-preview {
+  width: 200px; height: 112px;
+  background: linear-gradient(135deg,#4080ff,#165dff);
+  border-radius: 6px; overflow: hidden;
+  display: flex; align-items: center; justify-content: center;
+  position: relative; flex-shrink: 0;
+}
+.cover-placeholder {
+  color: rgba(255,255,255,0.85);
+  font-size: 13px; font-weight: 500;
+  letter-spacing: 1px;
+}
+.warmup-img { background: linear-gradient(135deg,#7c3aed,#a855f7); height: 200px; width: 112px; }
+.cover-side { display: flex; flex-direction: column; gap: 6px; padding-top: 6px; }
+.cover-tip { font-size: 12px; line-height: 1.6; }
+.link-blue { color: var(--color-primary); text-decoration: none; }
+.link-blue:hover { text-decoration: underline; }
+
+.rich-editor { border: 1px solid var(--color-border); border-radius: 6px; overflow: hidden; }
+.rich-toolbar {
+  display: flex; align-items: center; gap: 4px;
+  padding: 8px 12px; background: #fafbfc; border-bottom: 1px solid var(--color-border);
+  flex-wrap: wrap;
+}
+.rt-btn {
+  background: none; border: none; cursor: pointer;
+  width: 26px; height: 26px; border-radius: 3px;
+  color: var(--color-text-secondary); font-size: 13px;
+  display: inline-flex; align-items: center; justify-content: center;
+}
+.rt-btn:hover { background: #e8f3ff; color: var(--color-primary); }
+.rt-sep { color: #dcdfe6; margin: 0 2px; }
+.rt-select {
+  height: 26px; border: 1px solid var(--color-border); border-radius: 3px;
+  padding: 0 4px; font-size: 12px; background: #fff;
+}
+.rich-body { padding: 12px; }
+.rich-body textarea {
+  width: 100%; border: none; outline: none; resize: vertical;
+  font-size: 14px; line-height: 1.6; min-height: 100px;
+}
+.rich-foot {
+  display: flex; justify-content: space-between;
+  padding: 8px 12px; background: #fafbfc; border-top: 1px solid var(--color-border);
+  font-size: 12px;
+}
+.hint { font-size: 12px; color: var(--color-text-muted); margin-left: 12px; }
+.switch {
+  position: relative; display: inline-block; width: 32px; height: 18px; vertical-align: middle;
+}
+.switch input { opacity: 0; width: 0; height: 0; }
+.switch span {
+  position: absolute; inset: 0; background: #dcdfe6; border-radius: 18px; transition: 0.2s;
+}
+.switch span::before {
+  content: ''; position: absolute; left: 2px; top: 2px;
+  width: 14px; height: 14px; background: #fff; border-radius: 50%; transition: 0.2s;
+}
+.switch.on span { background: var(--color-primary); }
+.switch.on span::before { transform: translateX(14px); }
+
+/* 回放设置 box */
+.replay-box {
+  background: #eef4ff;
+  border: 1px solid #b6d4ff;
+  border-radius: 6px;
+  padding: 16px 20px;
+  width: 100%;
+}
+.replay-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 24px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+  font-size: 13px;
+}
+.replay-row:last-child { margin-bottom: 0; }
+.replay-label {
+  font-weight: 600;
+  font-size: 13px;
+  flex-shrink: 0;
+  min-width: 80px;
+  line-height: 22px;
+}
+.replay-cell {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 13px;
+  white-space: nowrap;
+  cursor: pointer;
+  line-height: 22px;
+}
+.replay-cell input[type=radio] {
+  width: 14px; height: 14px;
+  margin: 0 4px 0 0;
+  vertical-align: middle;
+}
+.replay-cell input[type=number] {
+  width: 44px;
+  padding: 2px 4px; font-size: 12px;
+  border: 1px solid #dcdfe6; border-radius: 3px;
+  vertical-align: middle;
+  margin: 0 2px;
+}
+.validity-label {
+  font-size: 13px;
+  line-height: 22px;
+  margin-right: 4px;
+}
+.more-config {
+  background: #fafbfc;
+  border: 1px solid #e5e6eb;
+  border-radius: 4px;
+  padding: 12px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  max-width: 360px;
+}
+
+/* 商品信息：所有行左缩进对齐 + radio 小 + 文字 baseline 对齐 */
+.goods-section { padding: 4px 0; }
+.goods-line {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+  font-size: 13px;
+  line-height: 24px;
+  padding-left: 4px;
+}
+.goods-line:last-child { margin-bottom: 0; }
+.goods-checkbox {
+  display: flex; align-items: center; gap: 6px;
+  cursor: pointer; flex-wrap: wrap; line-height: 22px;
+}
+.goods-checkbox input[type=checkbox] { width: 14px; height: 14px; margin: 0; vertical-align: middle; }
+.goods-sale label, .goods-shelf-row label, .more-config label {
+  display: inline-flex; align-items: center; gap: 6px;
+  cursor: pointer; line-height: 22px;
+}
+.goods-sale input[type=radio], .goods-shelf-row input[type=radio] {
+  width: 14px; height: 14px; margin: 0; vertical-align: middle;
+}
+.goods-validity .opt input[type=radio] { width: 14px; height: 14px; margin: 0; vertical-align: middle; }
+.goods-validity .pro-badge { align-self: center; }
+.goods-links { gap: 12px; }
+.shelf-label { line-height: 22px; }
+.shelf-time-input {
+  padding: 2px 6px; font-size: 12px; height: 24px;
+  border: 1px solid #dcdfe6; border-radius: 3px; margin-left: 6px;
+  min-width: 160px;
+}
+.goods-shelf-row { align-items: flex-start; gap: 32px; }
+.goods-shelf-left { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; flex: 1; }
+.more-label {
+  font-size: 13px;
+  color: var(--color-text-secondary);
+  margin-bottom: 4px;
+}
+.shelf-label {
+  font-size: 13px;
+  line-height: 22px;
+  margin-right: 8px;
+}
+.replay-hint {
+  font-size: 12px;
+  color: var(--color-text-muted);
+  margin: 0 0 12px 100px;
+}
+.speed-cell {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.opt {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1px;
+  font-size: 12px;
+  cursor: pointer;
+  line-height: 1.2;
+  padding: 0 2px;
+}
+.opt input[type=radio] {
+  width: 14px; height: 14px;
+  margin: 0;
+  vertical-align: middle;
+}
+.opt-text {
+  line-height: 1.2;
+  font-size: 12px;
+}
+.opt-hint {
+  font-size: 12px;
+  color: var(--color-text-muted);
+  flex-basis: 100%;
+  margin: 6px 0 0 0;
+}
+.warmup-row { display: flex; gap: 24px; }
+.warmup-radio { display: inline-flex; align-items: center; gap: 4px; font-size: 13px; cursor: pointer; }
+.thumb {
+  width: 36px; height: 28px; border-radius: 4px;
+  background: linear-gradient(135deg,#165dff,#4080ff);
+}
+
+/* 审核状态横幅 */
+.audit-banner {
+  display: flex; align-items: flex-start; gap: 12px;
+  padding: 14px 18px; border-radius: 6px;
+  margin-bottom: 16px;
+  border: 1px solid;
+}
+.audit-banner-icon {
+  width: 28px; height: 28px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 700; font-size: 14px; color: #fff; flex-shrink: 0;
+}
+.audit-banner-bd { flex: 1; min-width: 0; }
+.audit-banner-title { font-size: 14px; font-weight: 600; margin-bottom: 6px; }
+.audit-banner-meta  { font-size: 12px; line-height: 20px; color: var(--color-text-muted); }
+.audit-banner-reason {
+  margin-top: 8px; padding: 8px 12px; border-radius: 4px;
+  font-size: 13px; line-height: 20px;
+}
+.audit-banner-act { flex-shrink: 0; }
+
+.audit-banner-rejected {
+  background: #fff5f5; border-color: #ffccc7; color: #cf1322;
+}
+.audit-banner-rejected .audit-banner-icon { background: #f53f3f; }
+.audit-banner-rejected .audit-banner-title { color: #cf1322; }
+.audit-banner-rejected .audit-banner-reason { background: #fff; color: #4e5969; }
+
+.audit-banner-pending {
+  background: #fffbe6; border-color: #ffe58f; color: #d48806;
+}
+.audit-banner-pending .audit-banner-icon { background: #faad14; }
+.audit-banner-pending .audit-banner-title { color: #d48806; }
+
+/* 待审核只读样式 */
+.is-readonly .form-grid input,
+.is-readonly .form-grid select,
+.is-readonly .form-grid textarea {
+  pointer-events: none; background: #f7f8fa; color: var(--color-text-muted);
+}
+.is-readonly .form-grid button,
+.is-readonly .toolbar button { display: none !important; }
+.is-readonly .cover-upload { pointer-events: none; opacity: 0.6; }
+.is-readonly .proto-mask { display: none !important; }
+</style>
+
+<script src="../assets/js/proto.js"></script>
+<script src="../assets/js/admin-shell.js"></script>
+<script>
+(function () {
+  // ===== Audit state detection =====
+  var params = new URLSearchParams(location.search);
+  var audit = params.get("status") || "new"; // new | pending | rejected
+  if (audit === "rejected") {
+    document.getElementById("audit-banner").style.display = "flex";
+    document.getElementById("btn-save").textContent = "重新提交审核";
+    document.title = "编辑直播（已驳回） · 艺博 To-B";
+  } else if (audit === "pending") {
+    document.getElementById("audit-banner-pending").style.display = "flex";
+    document.body.classList.add("is-readonly");
+    document.getElementById("btn-save-draft").style.display = "none";
+    document.getElementById("btn-save").textContent = "撤回审核";
+    document.getElementById("btn-save").classList.remove("btn-primary");
+    document.title = "查看直播（审核中） · 艺博 To-B";
+  }
+
+  // ===== Header buttons =====
+  document.getElementById("btn-cancel").addEventListener("click", function () { location.href = "lives.html"; });
+  document.getElementById("btn-save-draft").addEventListener("click", function () {
+    var n = document.getElementById("le-name").value.trim();
+    if (!n) { Proto.toast("请输入直播名称"); return; }
+    Proto.toast("已存草稿（原型）");
+  });
+  document.getElementById("btn-save").addEventListener("click", function () {
+    var n = document.getElementById("le-name").value.trim();
+    if (!n) { Proto.toast("请输入直播名称"); return; }
+    Proto.toast("已保存并提交审核（原型）");
+    setTimeout(function () { location.href = "lives.html"; }, 600);
+  });
+
+  // ===== Section buttons =====
+  document.getElementById("btn-add-role").addEventListener("click", function () { Proto.toast("打开添加角色（原型）"); });
+  document.getElementById("btn-pick-owner").addEventListener("click", function () { Proto.toast("选择员工（原型）"); });
+  document.getElementById("btn-pick-course").addEventListener("click", function () { Proto.toast("选择课程/专栏/训练营/会员（原型）"); });
+  document.getElementById("btn-add-goods").addEventListener("click", function () { Proto.toast("打开商品选择（原型）"); });
+  document.getElementById("btn-import-crm").addEventListener("click", function () { Proto.toast("打开 SCRM 商品（原型）"); });
+  document.getElementById("btn-more-config").addEventListener("click", function () { Proto.toast("更多设置（原型）"); });
+  document.querySelectorAll('[data-act="del"]').forEach(function (a) {
+    a.addEventListener("click", function (e) {
+      e.preventDefault();
+      a.closest("tr").remove();
+      Proto.toast("已移除（原型）");
+    });
+  });
+  document.querySelectorAll('[data-act="design"]').forEach(function (a) {
+    a.addEventListener("click", function (e) { e.preventDefault(); Proto.toast("打开在线设计（原型）"); });
+  });
+})();
+</script>
+</body>
+</html>

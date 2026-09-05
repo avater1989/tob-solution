@@ -1,0 +1,127 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Tab 测试</title>
+<style>
+* { box-sizing: border-box; }
+body {
+  margin: 0; padding: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", sans-serif;
+  background: #0f172a; color: #fff;
+  min-height: 100vh;
+}
+.wrap {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+.tabs {
+  display: flex; gap: 8px;
+  margin-bottom: 16px;
+  padding: 8px;
+  background: #131b30;
+  border-radius: 8px;
+}
+.tab {
+  padding: 10px 24px;
+  background: #1d2742; color: #8b95ad;
+  border: 1px solid #1f2940;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+}
+.tab:hover { background: #2d3a55; color: #fff; }
+.tab.active { background: #165dff; color: #fff; border-color: #165dff; }
+
+.pane {
+  display: none;
+  padding: 24px;
+  background: #131b30;
+  border: 1px solid #1f2940;
+  border-radius: 8px;
+  min-height: 200px;
+}
+.pane.active { display: block; }
+
+.pane h3 { margin: 0 0 12px; color: #fff; }
+.pane p { color: #8b95ad; line-height: 1.6; }
+.pane ul { color: #b8c2dd; padding-left: 20px; }
+.pane li { margin-bottom: 8px; }
+.bar { background: #165dff; color: #fff; padding: 4px 8px; border-radius: 4px; font-size: 12px; }
+
+.status {
+  position: fixed; top: 10px; right: 10px;
+  background: #00b42a; color: #fff;
+  padding: 8px 16px; border-radius: 6px;
+  font-size: 12px; font-weight: 600;
+}
+</style>
+</head>
+<body>
+<div class="status">JS 已加载 ✓</div>
+<div class="wrap">
+  <h2>Tab 切换测试</h2>
+  <p style="color:#8b95ad">点击下面 4 个 tab，应该能看到对应面板切换显示。如果看不到，请截图发我。</p>
+
+  <div class="tabs" id="tabs">
+    <button class="tab active" data-tab="interact">互动 <span class="bar">0</span></button>
+    <button class="tab" data-tab="fans">风学院 <span class="bar">0</span></button>
+    <button class="tab" data-tab="mic">连麦 <span class="bar">0</span></button>
+    <button class="tab" data-tab="data">数据</button>
+  </div>
+
+  <div class="pane active" id="pane-interact">
+    <h3>💬 互动面板</h3>
+    <p>这里是互动评论区域。</p>
+    <ul>
+      <li>用户 A：老师讲得好</li>
+      <li>用户 B：怎么报名？</li>
+      <li>用户 C：已下单，期待开课</li>
+    </ul>
+  </div>
+
+  <div class="pane" id="pane-fans">
+    <h3>👥 风学院面板</h3>
+    <p>这里是风学院成员列表。</p>
+    <ul>
+      <li>会员 1 - 张三</li>
+      <li>会员 2 - 李四</li>
+    </ul>
+  </div>
+
+  <div class="pane" id="pane-mic">
+    <h3>🎤 连麦面板</h3>
+    <p>这里是连麦申请列表。</p>
+    <button class="tab" style="background:#165dff;color:#fff;border-color:#165dff">+ 邀请连麦</button>
+  </div>
+
+  <div class="pane" id="pane-data">
+    <h3>📊 数据面板</h3>
+    <p>这里是实时数据。</p>
+    <ul>
+      <li>在线：0 人</li>
+      <li>累计：30 人</li>
+      <li>点赞：30 次</li>
+    </ul>
+  </div>
+</div>
+
+<script>
+console.log("[test-tabs] JS started");
+document.querySelectorAll("#tabs .tab").forEach(function(t){
+  t.addEventListener("click", function(){
+    console.log("[test-tabs] clicked:", t.getAttribute("data-tab"));
+    document.querySelectorAll("#tabs .tab").forEach(function(x){x.classList.remove("active")});
+    document.querySelectorAll(".pane").forEach(function(p){p.classList.remove("active")});
+    t.classList.add("active");
+    var tab = t.getAttribute("data-tab");
+    var pane = document.getElementById("pane-" + tab);
+    if (pane) pane.classList.add("active");
+  });
+});
+</script>
+</body>
+</html>

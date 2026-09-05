@@ -1,0 +1,236 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>侧边栏管理 · 艺博 To-B</title>
+<link rel="stylesheet" href="../assets/css/proto.css" />
+</head>
+<body class="admin-body" data-module="scrm" data-nav="sidebar-mgmt" data-title="侧边栏管理" data-crumb="SCRM / 业务设置 / 侧边栏管理">
+<div id="header-actions">
+  <button class="btn btn-primary" id="btn-create">+ 新增页面</button>
+</div>
+<div id="page-content" style="display:none">
+
+  <!-- 搜索 -->
+  <div class="card" style="margin-bottom:8px"><div class="card-bd">
+    <div class="toolbar" style="margin:0">
+      <input id="f-search" placeholder="搜索页面名称、地址或备注" style="flex:1;max-width:480px" />
+      <button class="btn btn-primary" id="btn-search">搜索</button>
+      <button class="btn" id="btn-refresh" title="刷新">↻</button>
+    </div>
+  </div></div>
+
+  <!-- 表格 -->
+  <div class="card"><div class="card-bd" style="padding:0">
+    <table class="data">
+      <thead>
+        <tr>
+          <th>页面名称</th>
+          <th>页面地址</th>
+          <th>备注</th>
+          <th style="width:240px">操作</th>
+        </tr>
+      </thead>
+      <tbody id="sb-tbody">
+        <tr>
+          <td>表单素材</td>
+          <td><a href="#" class="link-mono">https://scrm-h5-test.dayuzhongxue.com/...</a></td>
+          <td>—</td>
+          <td class="row-actions">
+            <a href="#" data-row-act="copy">复制链接</a>
+            <a href="#" data-row-act="edit">修改</a>
+            <a href="#" data-row-act="del" class="danger">删除</a>
+          </td>
+        </tr>
+        <tr>
+          <td>新建客户</td>
+          <td><a href="#" class="link-mono">https://scrm-h5-test.dayuzhongxue.com/...</a></td>
+          <td>—</td>
+          <td class="row-actions">
+            <a href="#" data-row-act="copy">复制链接</a>
+            <a href="#" data-row-act="edit">修改</a>
+            <a href="#" data-row-act="del" class="danger">删除</a>
+          </td>
+        </tr>
+        <tr>
+          <td>客户详情</td>
+          <td><a href="#" class="link-mono">https://scrm-h5-test.dayuzhongxue.com/...</a></td>
+          <td>非固定地址，需要用入参，...</td>
+          <td class="row-actions">
+            <a href="#" data-row-act="copy">复制链接</a>
+            <a href="#" data-row-act="edit">修改</a>
+            <a href="#" data-row-act="del" class="danger">删除</a>
+          </td>
+        </tr>
+        <tr>
+          <td>客户退出</td>
+          <td><a href="#" class="link-mono">https://scrm-h5-test.dayuzhongxue.com/...</a></td>
+          <td>最好打开当前客户的跟进...</td>
+          <td class="row-actions">
+            <a href="#" data-row-act="copy">复制链接</a>
+            <a href="#" data-row-act="edit">修改</a>
+            <a href="#" data-row-act="del" class="danger">删除</a>
+          </td>
+        </tr>
+        <tr>
+          <td>个人 SOP</td>
+          <td><a href="#" class="link-mono">https://scrm-h5-test.dayuzhongxue.com/...</a></td>
+          <td>—</td>
+          <td class="row-actions">
+            <a href="#" data-row-act="copy">复制链接</a>
+            <a href="#" data-row-act="edit">修改</a>
+            <a href="#" data-row-act="del" class="danger">删除</a>
+          </td>
+        </tr>
+        <tr>
+          <td>群 SOP</td>
+          <td><a href="#" class="link-mono">https://scrm-h5-test.dayuzhongxue.com/...</a></td>
+          <td>—</td>
+          <td class="row-actions">
+            <a href="#" data-row-act="copy">复制链接</a>
+            <a href="#" data-row-act="edit">修改</a>
+            <a href="#" data-row-act="del" class="danger">删除</a>
+          </td>
+        </tr>
+        <tr>
+          <td>助销素材</td>
+          <td><a href="#" class="link-mono">https://scrm-h5-test.dayuzhongxue.com/...</a></td>
+          <td>—</td>
+          <td class="row-actions">
+            <a href="#" data-row-act="copy">复制链接</a>
+            <a href="#" data-row-act="edit">修改</a>
+            <a href="#" data-row-act="del" class="danger">删除</a>
+          </td>
+        </tr>
+        <tr>
+          <td>快捷话术</td>
+          <td><a href="#" class="link-mono">https://scrm-h5-test.dayuzhongxue.com/...</a></td>
+          <td>—</td>
+          <td class="row-actions">
+            <a href="#" data-row-act="copy">复制链接</a>
+            <a href="#" data-row-act="edit">修改</a>
+            <a href="#" data-row-act="del" class="danger">删除</a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div></div>
+</div>
+
+<!-- ============ 弹窗 ============ -->
+<div class="proto-mask" id="mask"></div>
+
+<!-- 新增 / 修改 页面弹窗 -->
+<div class="proto-modal" id="modal-page" style="width:520px">
+  <div class="proto-modal-hd">
+    <h3 id="mp-title" style="font-size:16px;font-weight:600">新增页面</h3>
+    <button class="btn btn-sm btn-ghost" data-close>×</button>
+  </div>
+  <div class="proto-modal-bd">
+    <div class="form-grid">
+      <div class="field"><label>页面名称 *</label><input id="mp-name" placeholder="如：表单素材" /></div>
+      <div class="field" style="grid-column:1/-1"><label>页面地址 *</label><input id="mp-url" placeholder="https://scrm-h5-test.dayuzhongxue.com/..." /></div>
+      <div class="field" style="grid-column:1/-1"><label>备注</label>
+        <textarea rows="3" id="mp-note" style="width:100%;padding:8px;border:1px solid var(--color-border);border-radius:6px" placeholder="选填"></textarea>
+      </div>
+    </div>
+  </div>
+  <div class="proto-modal-ft">
+    <button class="btn" data-close>取消</button>
+    <button class="btn btn-primary" id="mp-submit">保存</button>
+  </div>
+</div>
+
+<style>
+.link-mono {
+  font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
+  font-size: 12px;
+  color: var(--color-primary);
+  text-decoration: none;
+}
+.link-mono:hover { text-decoration: underline; }
+.row-actions a.danger { color: var(--color-danger); }
+</style>
+
+<script src="../assets/js/proto.js"></script>
+<script src="../assets/js/admin-shell.js"></script>
+<script>
+(function () {
+  // ===== Mask / modal =====
+  var mask = document.getElementById("mask");
+  function closeAll() {
+    mask.classList.remove("open");
+    document.querySelectorAll(".proto-modal, .proto-drawer").forEach(function (n) { n.classList.remove("open"); });
+  }
+  function open(node) { mask.classList.add("open"); node.classList.add("open"); }
+  mask.addEventListener("click", closeAll);
+  document.querySelectorAll("[data-close]").forEach(function (n) { n.addEventListener("click", closeAll); });
+
+  // ===== Row data =====
+  function rowData(tr) {
+    var tds = tr.querySelectorAll("td");
+    return {
+      name: tds[0] ? tds[0].textContent.trim() : "",
+      url: tds[1] ? tds[1].textContent.trim() : "",
+      note: tds[2] ? tds[2].textContent.trim() : "",
+    };
+  }
+
+  // ===== Row actions =====
+  document.querySelectorAll("#sb-tbody tr").forEach(function (tr) {
+    tr.querySelectorAll("[data-row-act]").forEach(function (a) {
+      a.addEventListener("click", function (e) {
+        e.preventDefault();
+        var act = a.getAttribute("data-row-act");
+        var d = rowData(tr);
+        if (act === "copy") {
+          Proto.toast("已复制链接（原型）");
+        } else if (act === "edit") {
+          document.getElementById("mp-title").textContent = "修改页面 · " + d.name;
+          document.getElementById("mp-name").value = d.name;
+          document.getElementById("mp-url").value = d.url === "—" ? "" : d.url;
+          document.getElementById("mp-note").value = d.note === "—" ? "" : d.note;
+          open(document.getElementById("modal-page"));
+        } else if (act === "del") {
+          if (confirm("确认删除页面「" + d.name + "」?")) {
+            tr.remove();
+            Proto.toast("已删除（原型）");
+          }
+        }
+      });
+    });
+  });
+
+  // ===== Create =====
+  document.getElementById("btn-create").addEventListener("click", function () {
+    document.getElementById("mp-title").textContent = "新增页面";
+    document.getElementById("mp-name").value = "";
+    document.getElementById("mp-url").value = "";
+    document.getElementById("mp-note").value = "";
+    open(document.getElementById("modal-page"));
+  });
+  document.getElementById("mp-submit").addEventListener("click", function () {
+    var n = document.getElementById("mp-name").value.trim();
+    var u = document.getElementById("mp-url").value.trim();
+    if (!n) { Proto.toast("请输入页面名称"); return; }
+    if (!u) { Proto.toast("请输入页面地址"); return; }
+    closeAll(); Proto.toast("已保存（原型）");
+  });
+
+  // ===== Search =====
+  document.getElementById("btn-search").addEventListener("click", function () {
+    var q = document.getElementById("f-search").value.trim();
+    Proto.toast("已搜索：" + (q || "全部"));
+  });
+  document.getElementById("f-search").addEventListener("keydown", function (e) {
+    if (e.key === "Enter") document.getElementById("btn-search").click();
+  });
+  document.getElementById("btn-refresh").addEventListener("click", function () {
+    document.getElementById("f-search").value = "";
+    Proto.toast("已刷新（原型）");
+  });
+})();
+</script>
+</body>
+</html>
