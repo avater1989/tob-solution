@@ -17,10 +17,29 @@
   <div id="view-list" style="display:none">
     <div class="bk-list-tip">
       <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
-      选择一个直播进入，配置其预约用户管理和推送计划。当前展示全部 <b id="bk-list-count" style="margin:0 4px">3</b> 场有推送计划的直播
+      点击直播名称进入，配置其预约用户管理和推送计划。当前共 <b id="bk-list-count" style="margin:0 4px">3</b> 场有推送计划的直播
     </div>
 
-    <div class="bk-lives-grid" id="bk-lives-grid">
+    <!-- 筛选条 -->
+    <div class="card" style="margin-bottom:12px"><div class="card-bd" style="padding:12px 16px">
+      <div class="toolbar" style="border:none;padding:0;background:transparent">
+        <select class="input" style="width:140px">
+          <option>全部状态</option><option>已上架</option><option>审核中</option><option>已结束</option>
+        </select>
+        <select class="input" style="width:140px">
+          <option>全部模式</option><option>视频直播</option><option>语音直播</option>
+        </select>
+        <input class="input" type="text" placeholder="直播名称 / ID" style="width:220px" />
+        <button class="btn btn-primary">查询</button>
+        <button class="btn">重置</button>
+        <div style="margin-left:auto;display:flex;gap:6px">
+          <button class="btn">批量推送</button>
+          <button class="btn btn-primary">+ 新建推送</button>
+        </div>
+      </div>
+    </div></div>
+
+    <div id="bk-lives-grid">
       <!-- JS 动态渲染 -->
     </div>
   </div>
@@ -543,68 +562,29 @@
 }
 .bk-selector-back:hover { background: #f0f5ff; }
 
-/* ===== 直播列表视图 ===== */
-.bk-lives-grid {
-  display: grid; grid-template-columns: repeat(2, 1fr);
-  gap: 14px;
+/* ===== 直播列表视图（表格） ===== */
+.bk-live-thumb-mini {
+  width: 36px; height: 24px; border-radius: 4px;
+  display: inline-flex; align-items: center; justify-content: center;
+  color: #fff; font-size: 14px; flex-shrink: 0;
+  vertical-align: middle;
 }
-.bk-live-card {
-  background: #fff; border: 1px solid #e8e8e8; border-radius: 8px;
-  overflow: hidden; transition: all .15s;
+.bk-live-thumb-mini.blue   { background: linear-gradient(135deg, #165dff, #4080ff); }
+.bk-live-thumb-mini.orange { background: linear-gradient(135deg, #fa8c16, #ffc53d); }
+.bk-live-thumb-mini.green  { background: linear-gradient(135deg, #00b42a, #4ed679); }
+.bk-live-thumb-mini.purple { background: linear-gradient(135deg, #722ed1, #b577ff); }
+
+.bk-live-name-cell {
+  display: inline-flex; align-items: center; gap: 8px;
 }
-.bk-live-card:hover {
-  border-color: #165dff;
-  box-shadow: 0 6px 20px rgba(22,93,255,.1);
-  transform: translateY(-2px);
+.bk-live-name-cell b {
+  color: #1d2129; font-weight: 600;
 }
-.bk-live-card-head {
-  display: flex; gap: 14px; padding: 16px;
-  border-bottom: 1px solid #f0f0f0;
-}
-.bk-live-thumb {
-  width: 96px; height: 64px; border-radius: 6px;
-  background: linear-gradient(135deg, #165dff, #4080ff);
-  display: flex; align-items: center; justify-content: center;
-  color: #fff; font-size: 24px; flex-shrink: 0;
-}
-.bk-live-thumb.green { background: linear-gradient(135deg, #00b42a, #4ed679); }
-.bk-live-thumb.orange { background: linear-gradient(135deg, #fa8c16, #ffc53d); }
-.bk-live-thumb.purple { background: linear-gradient(135deg, #722ed1, #b577ff); }
-.bk-live-info { flex: 1; min-width: 0; }
-.bk-live-name {
-  font-size: 14px; font-weight: 600; color: #1d2129;
-  margin-bottom: 4px;
-  display: flex; align-items: center; gap: 8px;
-}
-.bk-live-meta {
-  font-size: 12px; color: #8c8c8c; line-height: 1.6;
-}
-.bk-live-stats {
-  display: grid; grid-template-columns: repeat(4, 1fr);
-  padding: 12px 16px; gap: 0;
-  background: #fafafa;
-  border-bottom: 1px solid #f0f0f0;
-}
-.bk-live-stat {
-  text-align: center; border-right: 1px solid #f0f0f0;
-}
-.bk-live-stat:last-child { border-right: 0; }
-.bk-live-stat-val {
-  font-size: 16px; font-weight: 600; color: #1d2129;
-  font-family: monospace;
-}
-.bk-live-stat-val.blue { color: #165dff; }
-.bk-live-stat-val.green { color: #00b42a; }
-.bk-live-stat-val.orange { color: #fa8c16; }
-.bk-live-stat-label {
-  font-size: 11px; color: #8c8c8c; margin-top: 2px;
-}
-.bk-live-actions {
-  display: flex; gap: 8px; padding: 12px 16px;
-  background: #fff;
-}
-.bk-live-actions .btn { flex: 1; }
-.bk-live-actions .btn-primary { flex: 1.4; }
+.bk-live-name-cell a { color: inherit; text-decoration: none; }
+.bk-live-name-cell a:hover b { color: #165dff; }
+
+.bk-mono { font-family: ui-monospace, Consolas, monospace; }
+.bk-num  { color: #165dff; font-weight: 600; }
 
 .bk-list-tip {
   display: flex; align-items: center; gap: 8px;
@@ -784,28 +764,58 @@ setTimeout(function() {
   function renderList() {
     var grid = document.getElementById("bk-lives-grid");
     document.getElementById("bk-list-count").textContent = lives.length;
-    grid.innerHTML = lives.map(function (lv) {
+    var rows = lives.map(function (lv) {
       return '' +
-        '<div class="bk-live-card">' +
-          '<div class="bk-live-card-head">' +
-            '<div class="bk-live-thumb ' + lv.thumb + '">' + lv.emoji + '</div>' +
-            '<div class="bk-live-info">' +
-              '<div class="bk-live-name">' + escapeHtml(lv.name) + statusBadge(lv.statusType, lv.status) + '</div>' +
-              '<div class="bk-live-meta">📅 ' + escapeHtml(lv.time) + ' · ' + escapeHtml(lv.mode) + '</div>' +
+        '<tr>' +
+          '<td><input type="checkbox" /></td>' +
+          '<td>' +
+            '<div class="bk-live-name-cell">' +
+              '<span class="bk-live-thumb-mini ' + lv.thumb + '">' + lv.emoji + '</span>' +
+              '<a href="live-booking.html?live_id=' + lv.id + '"><b>' + escapeHtml(lv.name) + '</b></a>' +
+              statusBadge(lv.statusType, lv.status) +
             '</div>' +
-          '</div>' +
-          '<div class="bk-live-stats">' +
-            '<div class="bk-live-stat"><div class="bk-live-stat-val blue">' + lv.reserve + '</div><div class="bk-live-stat-label">预约人数</div></div>' +
-            '<div class="bk-live-stat"><div class="bk-live-stat-val orange">' + lv.plans + '</div><div class="bk-live-stat-label">推送计划</div></div>' +
-            '<div class="bk-live-stat"><div class="bk-live-stat-val">' + lv.sent.toLocaleString() + '</div><div class="bk-live-stat-label">已推送</div></div>' +
-            '<div class="bk-live-stat"><div class="bk-live-stat-val green">' + lv.converted + '</div><div class="bk-live-stat-label">转化下单</div></div>' +
-          '</div>' +
-          '<div class="bk-live-actions">' +
-            '<a class="btn" href="live-booking.html?live_id=' + lv.id + '">查看预约用户</a>' +
-            '<a class="btn btn-primary" href="live-booking.html?live_id=' + lv.id + '#plans">管理推送计划</a>' +
-          '</div>' +
-        '</div>';
+          '</td>' +
+          '<td class="bk-mono">' + escapeHtml(lv.id) + '</td>' +
+          '<td>' + escapeHtml(lv.time) + '</td>' +
+          '<td>' + escapeHtml(lv.mode) + '</td>' +
+          '<td class="bk-num">' + lv.reserve + '</td>' +
+          '<td class="bk-num">' + lv.plans + '</td>' +
+          '<td class="bk-mono">' + lv.sent.toLocaleString() + '</td>' +
+          '<td class="bk-num">' + lv.converted + '</td>' +
+          '<td style="width:160px">' +
+            '<a class="link-blue" href="live-booking.html?live_id=' + lv.id + '">查看预约</a>' +
+            '<span style="color:#e8e8e8;margin:0 6px">|</span>' +
+            '<a class="link-blue" href="live-booking.html?live_id=' + lv.id + '">推送计划</a>' +
+          '</td>' +
+        '</tr>';
     }).join("");
+
+    grid.innerHTML = '' +
+      '<div class="card"><div class="card-bd" style="padding:0">' +
+        '<table class="data">' +
+          '<thead><tr>' +
+            '<th style="width:36px"><input type="checkbox" /></th>' +
+            '<th>直播</th>' +
+            '<th style="width:80px">ID</th>' +
+            '<th style="width:160px">开播时间</th>' +
+            '<th style="width:90px">模式</th>' +
+            '<th style="width:90px">预约</th>' +
+            '<th style="width:80px">推送计划</th>' +
+            '<th style="width:90px">已推送</th>' +
+            '<th style="width:80px">转化</th>' +
+            '<th style="width:160px">操作</th>' +
+          '</tr></thead>' +
+          '<tbody>' + rows + '</tbody>' +
+        '</table>' +
+      '</div></div>' +
+      '<div style="margin-top:14px;display:flex;align-items:center;gap:12px">' +
+        '<span style="color:#8c8c8c;font-size:12px">共 ' + lives.length +  ' 条</span>' +
+        '<div style="margin-left:auto;display:flex;gap:6px">' +
+          '<button class="btn" disabled>上一页</button>' +
+          '<button class="btn btn-primary">1</button>' +
+          '<button class="btn" disabled>下一页</button>' +
+        '</div>' +
+      '</div>';
   }
 
   function showView() {
