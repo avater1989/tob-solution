@@ -90,7 +90,7 @@
   <!-- Tabs -->
   <div class="tabs" id="bk-tabs">
     <a class="active" href="#bookings" data-tab="bookings">预约名单</a>
-    <a href="#push-records" data-tab="push-records">推送记录</a>
+    <a href="#push-records" data-tab="push-records">推送计划</a>
     <a href="#subscribers" data-tab="subscribers">开播提醒订阅</a>
   </div>
 
@@ -258,7 +258,7 @@
     </div>
   </div>
 
-  <!-- 推送记录面板 -->
+  <!-- 推送计划面板 -->
   <div class="bk-pane" id="pane-push-records">
 
     <div class="card" style="margin-bottom:8px"><div class="card-bd">
@@ -785,7 +785,7 @@ setTimeout(function() {
           '<td style="width:160px">' +
             '<a class="link-blue" href="live-booking.html?live_id=' + lv.id + '">查看预约</a>' +
             '<span style="color:#e8e8e8;margin:0 6px">|</span>' +
-            '<a class="link-blue" href="live-booking.html?live_id=' + lv.id + '">推送计划</a>' +
+            '<a class="link-blue" href="live-booking.html?live_id=' + lv.id + '#push-records">推送计划</a>' +
           '</td>' +
         '</tr>';
     }).join("");
