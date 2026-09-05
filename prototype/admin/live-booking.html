@@ -13,6 +13,37 @@
 </div>
 <div id="page-content" style="display:none">
 
+  <!-- ========== 直播列表视图（无 live_id 时显示） ========== -->
+  <div id="view-list" style="display:none">
+    <div class="bk-list-tip">
+      <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+      选择一个直播进入，配置其预约用户管理和推送计划。当前展示全部 <b id="bk-list-count" style="margin:0 4px">3</b> 场有推送计划的直播
+    </div>
+
+    <div class="bk-lives-grid" id="bk-lives-grid">
+      <!-- JS 动态渲染 -->
+    </div>
+  </div>
+
+  <!-- ========== 单一直播视图（有 live_id 时显示） ========== -->
+  <div id="view-single" style="display:none">
+
+  <!-- 顶部直播选择器 -->
+  <div class="bk-selector">
+    <span class="bk-selector-label">
+      <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z"/></svg>
+      当前直播
+    </span>
+    <span class="bk-selector-current" id="bk-current-live-name">
+      <svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></svg>
+      <span id="bk-current-live-text">—</span>
+    </span>
+    <a class="bk-selector-back" href="live-booking.html">
+      <svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
+      切换其他直播
+    </a>
+  </div>
+
   <!-- 4 个统计卡片 -->
   <div class="stat-cards" style="margin-bottom:8px">
     <div class="stat-card">
@@ -446,6 +477,8 @@
   </div>
 </div>
 
+  </div><!-- /#view-single -->
+
 <style>
 .user-cell { display: flex; align-items: center; gap: 8px; }
 .user-avatar {
@@ -482,6 +515,106 @@
 .bk-push-fail {
   color: #f53f3f; font-size: 11px;
   padding: 2px 6px; background: #fff1f0; border-radius: 3px;
+}
+
+/* ===== 直播选择器（顶部） ===== */
+.bk-selector {
+  display: flex; align-items: center; gap: 12px;
+  padding: 14px 18px;
+  background: #fff; border: 1px solid #e8e8e8; border-radius: 8px;
+  margin-bottom: 12px;
+}
+.bk-selector-label {
+  font-size: 13px; color: #8c8c8c;
+  display: flex; align-items: center; gap: 6px;
+}
+.bk-selector-current {
+  font-size: 14px; font-weight: 600; color: #1d2129;
+  padding: 6px 12px; background: #f0f5ff; border-radius: 4px;
+  border: 1px solid #d6e4ff; color: #165dff;
+  display: inline-flex; align-items: center; gap: 8px;
+}
+.bk-selector-current svg { color: #165dff; }
+.bk-selector-back {
+  margin-left: auto;
+  font-size: 12px; color: #165dff; cursor: pointer;
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 4px 10px; border-radius: 4px;
+}
+.bk-selector-back:hover { background: #f0f5ff; }
+
+/* ===== 直播列表视图 ===== */
+.bk-lives-grid {
+  display: grid; grid-template-columns: repeat(2, 1fr);
+  gap: 14px;
+}
+.bk-live-card {
+  background: #fff; border: 1px solid #e8e8e8; border-radius: 8px;
+  overflow: hidden; transition: all .15s;
+}
+.bk-live-card:hover {
+  border-color: #165dff;
+  box-shadow: 0 6px 20px rgba(22,93,255,.1);
+  transform: translateY(-2px);
+}
+.bk-live-card-head {
+  display: flex; gap: 14px; padding: 16px;
+  border-bottom: 1px solid #f0f0f0;
+}
+.bk-live-thumb {
+  width: 96px; height: 64px; border-radius: 6px;
+  background: linear-gradient(135deg, #165dff, #4080ff);
+  display: flex; align-items: center; justify-content: center;
+  color: #fff; font-size: 24px; flex-shrink: 0;
+}
+.bk-live-thumb.green { background: linear-gradient(135deg, #00b42a, #4ed679); }
+.bk-live-thumb.orange { background: linear-gradient(135deg, #fa8c16, #ffc53d); }
+.bk-live-thumb.purple { background: linear-gradient(135deg, #722ed1, #b577ff); }
+.bk-live-info { flex: 1; min-width: 0; }
+.bk-live-name {
+  font-size: 14px; font-weight: 600; color: #1d2129;
+  margin-bottom: 4px;
+  display: flex; align-items: center; gap: 8px;
+}
+.bk-live-meta {
+  font-size: 12px; color: #8c8c8c; line-height: 1.6;
+}
+.bk-live-stats {
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  padding: 12px 16px; gap: 0;
+  background: #fafafa;
+  border-bottom: 1px solid #f0f0f0;
+}
+.bk-live-stat {
+  text-align: center; border-right: 1px solid #f0f0f0;
+}
+.bk-live-stat:last-child { border-right: 0; }
+.bk-live-stat-val {
+  font-size: 16px; font-weight: 600; color: #1d2129;
+  font-family: monospace;
+}
+.bk-live-stat-val.blue { color: #165dff; }
+.bk-live-stat-val.green { color: #00b42a; }
+.bk-live-stat-val.orange { color: #fa8c16; }
+.bk-live-stat-label {
+  font-size: 11px; color: #8c8c8c; margin-top: 2px;
+}
+.bk-live-actions {
+  display: flex; gap: 8px; padding: 12px 16px;
+  background: #fff;
+}
+.bk-live-actions .btn { flex: 1; }
+.bk-live-actions .btn-primary { flex: 1.4; }
+
+.bk-list-tip {
+  display: flex; align-items: center; gap: 8px;
+  padding: 10px 14px; background: #f0f5ff; border-radius: 6px;
+  color: #165dff; font-size: 12px; margin-bottom: 14px;
+  border-left: 3px solid #165dff;
+}
+.bk-empty {
+  text-align: center; padding: 60px 20px; color: #8c8c8c;
+  background: #fff; border-radius: 8px; border: 1px dashed #e8e8e8;
 }
 </style>
 
@@ -597,6 +730,120 @@ setTimeout(function() {
   err.innerHTML = '<b>⚠ 页面初始化失败</b>：可能是浏览器缓存了旧版本。请按 <kbd style="background:#fff;padding:2px 6px;border-radius:3px;border:1px solid #ffa39e;font-family:monospace;">Ctrl+Shift+R</kbd> 强制刷新，或 <button onclick="location.reload();" style="background:#165dff;color:#fff;border:none;padding:4px 12px;border-radius:4px;cursor:pointer;margin-left:8px;">点击重试</button>';
   document.body.appendChild(err);
 }, 1500);
+</script>
+<script>
+// ========== 视图切换：直播列表 vs 单一直播 ==========
+(function () {
+  // 演示数据：全部有推送计划的直播
+  var lives = [
+    {
+      id: "L001",
+      name: "9.9 引流试听课 · 开学季专场",
+      time: "2026-09-08 20:00",
+      mode: "视频直播",
+      status: "已上架",
+      statusType: "live",
+      thumb: "blue", emoji: "🎓",
+      reserve: 234, plans: 3, sent: 1280, converted: 68
+    },
+    {
+      id: "L002",
+      name: "家长答疑·音频年卡限时特惠",
+      time: "2026-09-10 19:30",
+      mode: "语音直播",
+      status: "审核中",
+      statusType: "audit",
+      thumb: "orange", emoji: "🎙",
+      reserve: 89, plans: 1, sent: 0, converted: 0
+    },
+    {
+      id: "L003",
+      name: "明日直播·春启04 招生启动会",
+      time: "2026-09-04 20:00",
+      mode: "视频直播",
+      status: "已结束",
+      statusType: "end",
+      thumb: "green", emoji: "📚",
+      reserve: 512, plans: 4, sent: 3450, converted: 142
+    }
+  ];
+
+  function escapeHtml(s) {
+    return String(s).replace(/[&<>"']/g, function (c) {
+      return ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c];
+    });
+  }
+
+  function statusBadge(type, text) {
+    if (type === "live")  return '<span class="audit-badge pass">已上架</span>';
+    if (type === "audit") return '<span class="audit-badge review">审核中</span>';
+    if (type === "end")   return '<span class="audit-badge reject">已结束</span>';
+    return '<span class="audit-badge">' + escapeHtml(text) + '</span>';
+  }
+
+  function renderList() {
+    var grid = document.getElementById("bk-lives-grid");
+    document.getElementById("bk-list-count").textContent = lives.length;
+    grid.innerHTML = lives.map(function (lv) {
+      return '' +
+        '<div class="bk-live-card">' +
+          '<div class="bk-live-card-head">' +
+            '<div class="bk-live-thumb ' + lv.thumb + '">' + lv.emoji + '</div>' +
+            '<div class="bk-live-info">' +
+              '<div class="bk-live-name">' + escapeHtml(lv.name) + statusBadge(lv.statusType, lv.status) + '</div>' +
+              '<div class="bk-live-meta">📅 ' + escapeHtml(lv.time) + ' · ' + escapeHtml(lv.mode) + '</div>' +
+            '</div>' +
+          '</div>' +
+          '<div class="bk-live-stats">' +
+            '<div class="bk-live-stat"><div class="bk-live-stat-val blue">' + lv.reserve + '</div><div class="bk-live-stat-label">预约人数</div></div>' +
+            '<div class="bk-live-stat"><div class="bk-live-stat-val orange">' + lv.plans + '</div><div class="bk-live-stat-label">推送计划</div></div>' +
+            '<div class="bk-live-stat"><div class="bk-live-stat-val">' + lv.sent.toLocaleString() + '</div><div class="bk-live-stat-label">已推送</div></div>' +
+            '<div class="bk-live-stat"><div class="bk-live-stat-val green">' + lv.converted + '</div><div class="bk-live-stat-label">转化下单</div></div>' +
+          '</div>' +
+          '<div class="bk-live-actions">' +
+            '<a class="btn" href="live-booking.html?live_id=' + lv.id + '">查看预约用户</a>' +
+            '<a class="btn btn-primary" href="live-booking.html?live_id=' + lv.id + '#plans">管理推送计划</a>' +
+          '</div>' +
+        '</div>';
+    }).join("");
+  }
+
+  function showView() {
+    var sp = new URLSearchParams(window.location.search);
+    var liveId = sp.get("live_id");
+    var viewList = document.getElementById("view-list");
+    var viewSingle = document.getElementById("view-single");
+    if (liveId) {
+      var lv = lives.find(function (x) { return x.id === liveId; }) || lives[0];
+      viewList.style.display = "none";
+      viewSingle.style.display = "";
+      document.getElementById("bk-current-live-text").textContent = lv.name;
+      // 同步顶部标题（admin-shell 渲染时用 data-title）
+      document.title = "预约与推送 · " + lv.name + " · 艺博 To-B";
+      var crumbEl = document.body.getAttribute("data-crumb");
+      document.body.setAttribute("data-crumb", "直播 / 直播管理 / 预约与推送 / " + lv.name);
+    } else {
+      viewList.style.display = "";
+      viewSingle.style.display = "none";
+      renderList();
+    }
+  }
+
+  // 等 admin-shell 注入完成后再切视图
+  function tryShow() {
+    if (document.documentElement.getAttribute("data-shell-ready") === "1" || document.getElementById("page-content").style.display !== "none") {
+      showView();
+    } else {
+      setTimeout(tryShow, 80);
+    }
+  }
+  // DOM ready
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", tryShow);
+  } else {
+    tryShow();
+  }
+})();
 </script>
 </body>
 </html>
