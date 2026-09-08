@@ -461,7 +461,9 @@ body { overflow: hidden; }
   margin-bottom: 12px;
 }
 .toolbar .spacer { flex: 1; }
-input, select, textarea {
+input:not([type="checkbox"]):not([type="radio"]),
+select,
+textarea {
   border: 1px solid var(--color-border);
   border-radius: var(--radius-sm);
   padding: 7px 10px;
@@ -472,9 +474,32 @@ input, select, textarea {
   height: 32px;
 }
 textarea { height: auto; }
-input:focus, select:focus, textarea:focus {
+input:not([type="checkbox"]):not([type="radio"]):focus,
+select:focus,
+textarea:focus {
   outline: 2px solid var(--color-primary-soft);
   border-color: var(--color-primary);
+}
+input[type="checkbox"],
+input[type="radio"] {
+  width: 14px;
+  height: 14px;
+  margin: 0 6px 0 0;
+  padding: 0;
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  flex-shrink: 0;
+  vertical-align: -2px;
+  accent-color: var(--color-primary, #165dff);
+  cursor: pointer;
+}
+input[type="checkbox"]:focus,
+input[type="radio"]:focus {
+  outline: 2px solid rgba(22, 93, 255, 0.25);
+  outline-offset: 2px;
+  border-color: transparent;
 }
 .btn {
   display: inline-flex;
@@ -551,7 +576,44 @@ table.data tr:hover td { background: #fafbfc; }
   color: var(--color-text-secondary);
   margin-bottom: 4px;
 }
-.field input, .field select, .field textarea { width: 100%; }
+.field input:not([type="checkbox"]):not([type="radio"]),
+.field select,
+.field textarea { width: 100%; }
+.field input[type="checkbox"],
+.field input[type="radio"] {
+  width: 14px;
+  height: 14px;
+  margin: 0 6px 0 0;
+  padding: 0;
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  flex-shrink: 0;
+  vertical-align: -2px;
+  accent-color: var(--color-primary, #165dff);
+  cursor: pointer;
+}
+.field > label:has(> input[type="checkbox"]),
+.field > label:has(> input[type="radio"]),
+.field > div > label:has(> input[type="checkbox"]),
+.field > div > label:has(> input[type="radio"]) {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0 16px 6px 0;
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--color-text, #1d2129);
+  cursor: pointer;
+  line-height: 1.4;
+}
+.field > div:has(> label > input[type="radio"]),
+.field > div:has(> label > input[type="checkbox"]) {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 2px 4px;
+}
 .muted { color: var(--color-text-secondary); font-size: 12px; }
 .row-actions { display: flex; gap: 8px; flex-wrap: wrap; }
 .tabs {
@@ -1026,13 +1088,59 @@ table.data tr:hover td { background: #fafbfc; }
   display: block; font-size: 12px; color: var(--color-text-muted);
   margin-bottom: 6px;
 }
-.field input, .field select, .field textarea {
+.field input:not([type="checkbox"]):not([type="radio"]),
+.field select,
+.field textarea {
   width: 100%; padding: 7px 10px; border: 1px solid var(--color-border);
   border-radius: 4px; background: #fff; font-size: 13px; color: var(--color-text);
   font-family: inherit;
 }
-.field input:focus, .field select:focus, .field textarea:focus {
+.field input:not([type="checkbox"]):not([type="radio"]):focus,
+.field select:focus,
+.field textarea:focus {
   outline: none; border-color: var(--color-primary);
+}
+.field input[type="checkbox"],
+.field input[type="radio"] {
+  width: 14px;
+  height: 14px;
+  margin: 0 6px 0 0;
+  padding: 0;
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  flex-shrink: 0;
+  vertical-align: -2px;
+  accent-color: var(--color-primary, #165dff);
+  cursor: pointer;
+}
+.field input[type="checkbox"]:focus,
+.field input[type="radio"]:focus {
+  outline: 2px solid rgba(22, 93, 255, 0.25);
+  outline-offset: 2px;
+  border-color: transparent;
+}
+.field > label:has(> input[type="checkbox"]),
+.field > label:has(> input[type="radio"]),
+.field > div > label:has(> input[type="checkbox"]),
+.field > div > label:has(> input[type="radio"]) {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0 16px 6px 0;
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--color-text);
+  cursor: pointer;
+  line-height: 1.4;
+}
+.field > div:has(> label > input[type="radio"]),
+.field > div:has(> label > input[type="checkbox"]) {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 2px 4px;
 }
 
 /* Form readonly */
@@ -1189,12 +1297,31 @@ table.data tr:hover td { background: #fafbfc; }
 .btn-sm { padding: 3px 10px; font-size: 12px; }
 
 /* ===== 输入控件 ===== */
-input, select, textarea {
+input:not([type="checkbox"]):not([type="radio"]),
+select,
+textarea {
   padding: 6px 10px; border: 1px solid var(--color-border); border-radius: 4px;
   background: #fff; color: var(--color-text); font-size: 13px; font-family: inherit;
 }
-input:focus, select:focus, textarea:focus {
+input:not([type="checkbox"]):not([type="radio"]):focus,
+select:focus,
+textarea:focus {
   outline: none; border-color: var(--color-primary);
+}
+input[type="checkbox"],
+input[type="radio"] {
+  width: 14px;
+  height: 14px;
+  margin: 0 6px 0 0;
+  padding: 0;
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  flex-shrink: 0;
+  vertical-align: -2px;
+  accent-color: var(--color-primary, #165dff);
+  cursor: pointer;
 }
 
 /* ===== 顶栏用户下拉 ===== */
@@ -1226,3 +1353,5 @@ input:focus, select:focus, textarea:focus {
 .user-dropdown .udd-item:hover { background: #f2f3f5; }
 .user-dropdown .udd-logout { color: var(--color-danger); }
 .user-dropdown .udd-sep { height: 1px; background: var(--color-border); margin: 4px 6px; }
+
+/* cache-bust-radio-fix-20260908 */

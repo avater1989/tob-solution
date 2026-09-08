@@ -1,0 +1,113 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>图文详情 · 艺博 To-B</title>
+<link rel="stylesheet" href="../assets/css/proto.css?v=3" />
+<link rel="stylesheet" href="../assets/css/content-mgmt.css?v=3" />
+</head>
+<body class="admin-body" data-module="content" data-nav="content-article" data-title="图文详情" data-crumb="内容 / 内容管理 / 图文 / 详情">
+
+<div id="header-actions">
+  <button class="btn" id="btn-share">分享</button>
+  <a class="btn btn-primary" id="btn-edit" href="content-article-edit.html?id=A001">编辑</a>
+</div>
+
+<div id="page-content" style="display:none">
+  <a class="cm-back" href="content-article.html">← 返回图文列表</a>
+  <div class="cm-page-hd">
+    <div>
+      <h1 id="d-name">9 月新学期家长指南</h1>
+      <p class="sub">图文商品详情</p>
+    </div>
+  </div>
+
+  <div class="cm-hero">
+    <div class="cm-avatar purple" id="d-avatar">9</div>
+    <div class="cm-hero-bd">
+      <div class="cm-hero-title">
+        <span id="d-name2">9 月新学期家长指南</span>
+        <span class="cm-pill" id="d-pub">已发布</span>
+        <span class="cm-pill" id="d-shelf">已上架</span>
+      </div>
+      <div class="cm-hero-desc" id="d-desc">用一篇图文快速了解新学期家长准备事项。</div>
+    </div>
+  </div>
+
+  <div class="cm-section">
+    <div class="cm-section-hd"><h2>内容信息</h2></div>
+    <div class="cm-dl">
+      <div class="item"><span class="k">内容类型</span><span class="v">图文</span></div>
+      <div class="item"><span class="k">分类</span><span class="v" id="d-cat">K12 教育</span></div>
+      <div class="item"><span class="k">内容摘要</span><span class="v" id="d-summary">9 月新学期家长指南 · 5分钟</span></div>
+      <div class="item"><span class="k">更新时间</span><span class="v" id="d-updated">2026-08-25</span></div>
+      <div class="item"><span class="k">作者</span><span class="v" id="d-author">编辑部</span></div>
+      <div class="item"><span class="k">字数</span><span class="v" id="d-words">1280</span></div>
+    </div>
+  </div>
+
+  <div class="cm-section">
+    <div class="cm-section-hd"><h2>商品信息</h2></div>
+    <div class="cm-dl">
+      <div class="item"><span class="k">获取方式</span><span class="v" id="d-access">免费</span></div>
+      <div class="item"><span class="k">商品分组</span><span class="v" id="d-group">K12 教育</span></div>
+      <div class="item"><span class="k">有效期</span><span class="v">长期有效</span></div>
+      <div class="item"><span class="k">店铺显示</span><span class="v">显示</span></div>
+    </div>
+  </div>
+
+  <div class="cm-section">
+    <div class="cm-section-hd"><h2>正文预览</h2></div>
+    <div style="font-size:13px;line-height:1.8;color:#595959" id="d-body">
+      <p>新学期开始，家长可以从作息、书包整理、情绪陪伴三个维度做准备……</p>
+      <p>（原型演示正文，实际项目展示富文本内容）</p>
+    </div>
+  </div>
+</div>
+
+<div class="proto-modal" id="modal-share">
+  <div style="background:#fff;border-radius:10px;width:440px;max-width:92vw;overflow:hidden">
+    <div class="proto-modal-hd"><h3 style="margin:0;font-size:16px">分享图文</h3><button class="ctrl-icon-btn" data-close>×</button></div>
+    <div class="proto-modal-bd">
+      <div class="cm-share-link" id="share-url">https://yibo.app/a/A001</div>
+      <div style="margin-top:12px"><button class="btn btn-primary" id="btn-copy-link">复制链接</button></div>
+    </div>
+  </div>
+</div>
+
+<script src="../assets/js/proto.js"></script>
+<script src="../assets/js/admin-shell.js?v=3"></script>
+<script>
+var DATA = {
+  A001: { name:"9 月新学期家长指南", cat:"K12 教育", author:"编辑部", desc:"用一篇图文快速了解新学期家长准备事项。", summary:"9 月新学期家长指南 · 5分钟", words:"1,280", access:"免费", group:"K12 教育", shelf:"已上架", updated:"2026-08-25", color:"purple" },
+  A002: { name:"孩子注意力训练方法论", cat:"学习能力", author:"张老师", desc:"可操作的注意力训练方法合集。", summary:"孩子注意力训练方法论 · 8分钟", words:"980", access:"免费", group:"学习能力", shelf:"已上架", updated:"2026-08-30", color:"" },
+  A003: { name:"家庭情绪急救指南", cat:"家庭教育", author:"李老师", desc:"冲突场景下的情绪急救步骤。", summary:"家庭情绪急救指南 · 3分钟", words:"320", access:"免费", group:"家庭教育", shelf:"草稿", updated:"—", color:"green", pub:"草稿" }
+};
+var id = new URLSearchParams(location.search).get("id") || "A001";
+var d = DATA[id] || DATA.A001;
+["d-name","d-name2"].forEach(function(k){ document.getElementById(k).textContent = d.name; });
+document.getElementById("d-avatar").textContent = d.name.charAt(0);
+document.getElementById("d-avatar").className = "cm-avatar " + (d.color||"");
+document.getElementById("d-desc").textContent = d.desc;
+document.getElementById("d-cat").textContent = d.cat;
+document.getElementById("d-summary").textContent = d.summary;
+document.getElementById("d-updated").textContent = d.updated;
+document.getElementById("d-author").textContent = d.author;
+document.getElementById("d-words").textContent = d.words;
+document.getElementById("d-access").textContent = d.access;
+document.getElementById("d-group").textContent = d.group;
+document.getElementById("d-shelf").textContent = d.shelf;
+document.getElementById("d-shelf").className = "cm-pill" + (d.shelf === "已上架" ? "" : " off");
+document.getElementById("d-pub").textContent = d.pub || "已发布";
+document.getElementById("btn-edit").href = "content-article-edit.html?id=" + id;
+document.getElementById("share-url").textContent = "https://yibo.app/a/" + id;
+var mask = document.getElementById("mask");
+function closeAll(){ mask.classList.remove("open"); document.getElementById("modal-share").classList.remove("open"); }
+document.getElementById("btn-share").onclick = function(){ mask.classList.add("open"); document.getElementById("modal-share").classList.add("open"); };
+document.getElementById("btn-copy-link").onclick = function(){ Proto.toast("链接已复制"); };
+mask && mask.addEventListener("click", closeAll);
+document.querySelectorAll("[data-close]").forEach(function(b){ b.addEventListener("click", closeAll); });
+</script>
+</body>
+</html>

@@ -1,0 +1,242 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>系列测评管理 · 运营后台</title>
+<link rel="stylesheet" href="../assets/css/proto.css?v=3" />
+<link rel="stylesheet" href="../assets/css/assess.css?v=3" />
+</head>
+<body class="admin-body" data-module="content" data-nav="assess-series" data-title="系列测评管理" data-crumb="运营后台 / 内容 / 测评管理 / 系列测评">
+
+<div id="header-actions">
+  <button class="btn btn-primary" id="btn-new">+ 新建系列</button>
+</div>
+
+<div id="page-content" style="display:none">
+  <div class="as-banner">组合多个测评项目为系列，统一管理答题顺序、报告与关联规则。</div>
+  <div class="card" style="margin-bottom:14px"><div class="card-bd" style="padding:12px 16px">
+    <div class="toolbar" style="border:none;padding:0;background:transparent">
+      <input class="input" id="f-q" placeholder="搜索系列名称或描述..." style="width:240px" />
+      <select class="input" id="f-shelf" style="width:140px">
+        <option value="">全部上下架</option><option>已上架</option><option>已下架</option>
+      </select>
+      <button class="btn btn-primary" id="btn-query">查询</button>
+    </div>
+  </div></div>
+
+  <table class="as-table">
+    <thead>
+      <tr>
+        <th style="width:56px">排序</th>
+        <th>系列名称</th>
+        <th style="width:90px">项目数</th>
+        <th style="width:90px">状态</th>
+        <th style="width:90px">上下架</th>
+        <th style="width:320px">操作</th>
+      </tr>
+    </thead>
+    <tbody id="tbody"></tbody>
+  </table>
+  <div style="margin-top:12px;font-size:12px;color:#8c8c8c">共 <b id="cnt">0</b> 条</div>
+</div>
+
+<div class="proto-modal" id="modal-edit">
+  <div style="background:#fff;border-radius:10px;width:560px;max-width:94vw;max-height:88vh;overflow:auto">
+    <div class="proto-modal-hd"><h3 style="margin:0;font-size:16px" id="m-title">新建系列测评</h3><button class="ctrl-icon-btn" data-close>×</button></div>
+    <div class="proto-modal-bd">
+      <div class="field"><label>系列名称 *</label><input class="input" id="m-name" placeholder="如：新生入学心理系列" /></div>
+      <div class="field"><label>描述</label><textarea class="input" id="m-desc" rows="2"></textarea></div>
+      <div class="field"><label>包含项目（勾选并排序）</label>
+        <div id="m-projects" style="border:1px solid #e8e8e8;border-radius:6px;padding:10px;max-height:200px;overflow:auto"></div>
+      </div>
+      <div class="field"><label style="display:flex;align-items:center;gap:8px;font-weight:400"><input type="checkbox" id="m-enabled" checked> 启用该系列</label></div>
+    </div>
+    <div class="proto-modal-ft" style="justify-content:flex-end;gap:8px">
+      <button class="btn" data-close>取消</button>
+      <button class="btn btn-primary" id="btn-save">保存系列</button>
+    </div>
+  </div>
+</div>
+
+<div class="proto-modal" id="modal-view">
+  <div style="background:#fff;border-radius:10px;width:520px;max-width:94vw;overflow:hidden">
+    <div class="proto-modal-hd"><h3 style="margin:0;font-size:16px">查看系列</h3><button class="ctrl-icon-btn" data-close>×</button></div>
+    <div class="proto-modal-bd" id="view-bd"></div>
+    <div class="proto-modal-ft" style="justify-content:flex-end;gap:8px">
+      <a class="btn" id="view-rules" href="#">关联规则</a>
+      <button class="btn" data-close>关闭</button>
+    </div>
+  </div>
+</div>
+
+<div class="proto-modal as-wide-modal" id="modal-report">
+  <div style="background:#fff;border-radius:10px;width:min(860px,94vw);max-height:90vh;overflow:hidden;display:flex;flex-direction:column">
+    <div class="proto-modal-hd"><h3 style="margin:0;font-size:16px">系列报告配置</h3><button class="ctrl-icon-btn" data-close>×</button></div>
+    <div class="proto-modal-bd" style="overflow:auto">
+      <div class="muted" style="margin:0 0 12px;font-size:13px" id="sr-sub">—</div>
+      <div class="as-report-layout">
+        <div>
+          <div class="field"><label>前端报告组件 *</label>
+            <select class="input" id="sr-tpl">
+              <option value="mental-health-v2">心理健康报告 · v2 · 心理健康</option>
+              <option value="generic-v1">通用测评报告 · v1 · 通用</option>
+              <option value="ability-radar-v1">能力雷达报告 · v1 · 能力测评</option>
+            </select>
+          </div>
+          <label style="display:flex;align-items:center;gap:8px;font-size:13px">
+            <input type="checkbox" id="sr-on" checked> 启用该系列的专属综合报告
+          </label>
+          <p class="muted" style="font-size:12px;margin-top:10px">系列报告将汇总各子测评得分，生成统一结论。</p>
+        </div>
+        <div class="as-report-preview">
+          <div class="muted" style="font-size:11px;margin-bottom:4px">实时预览 · 系列综合报告</div>
+          <div class="as-report-level">中等风险</div>
+          <div class="muted" style="font-size:12px;margin-bottom:14px">综合 · 新生入学心理系列</div>
+          <h4 style="margin:0 0 8px;font-size:14px">子测评摘要</h4>
+          <div class="as-preview-item">心理健康测评 · 中等风险</div>
+          <div class="as-preview-item">情绪调节问卷 · 低风险</div>
+        </div>
+      </div>
+    </div>
+    <div class="proto-modal-ft" style="justify-content:flex-end;gap:8px">
+      <button class="btn" data-close>取消</button>
+      <button class="btn btn-primary" data-close data-toast="系列报告已保存">保存系列报告</button>
+    </div>
+  </div>
+</div>
+
+<div class="proto-mask" id="mask"></div>
+
+<script src="../assets/js/proto.js"></script>
+<script src="../assets/js/ops-shell.js?v=2"></script>
+<script>
+var POOL = ["心理健康测评","学习能力诊断","情绪调节问卷","职业兴趣初探"];
+var SERIES = [
+  { id:"S1", name:"新生入学心理系列", desc:"入学适应 + 心理健康双测", items:["心理健康测评","情绪调节问卷"], enabled:true, shelf:"已下架", rules:1 },
+  { id:"S2", name:"学习力提升测评包", desc:"学习能力诊断为主，情绪调节为辅", items:["学习能力诊断","情绪调节问卷"], enabled:true, shelf:"已上架", rules:0 }
+];
+var editing = null;
+
+function esc(s){ return String(s).replace(/[&<>"']/g,function(c){return({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"})[c];}); }
+
+function render(){
+  var q = (document.getElementById("f-q").value||"").trim();
+  var shelf = document.getElementById("f-shelf").value;
+  var list = SERIES.filter(function(s){
+    if (shelf && s.shelf !== shelf) return false;
+    if (q && (s.name+s.desc).indexOf(q)<0) return false;
+    return true;
+  });
+  document.getElementById("cnt").textContent = list.length;
+  document.getElementById("tbody").innerHTML = list.map(function(s,i){
+    return '<tr>' +
+      '<td><button class="btn" data-move="'+s.id+'" data-dir="-1">↑</button> '+(i+1)+' <button class="btn" data-move="'+s.id+'" data-dir="1">↓</button></td>' +
+      '<td><div class="as-name">'+esc(s.name)+'</div><div class="as-desc">'+esc(s.desc)+'</div></td>' +
+      '<td>'+s.items.length+'</td>' +
+      '<td><button class="btn" data-enable="'+s.id+'"><span class="as-tag '+(s.enabled?'green':'gray')+'">'+(s.enabled?'已启用':'已停用')+'</span></button></td>' +
+      '<td><span class="as-tag '+(s.shelf==='已上架'?'green':'orange')+'">'+esc(s.shelf)+'</span></td>' +
+      '<td><div class="as-acts">' +
+        '<button class="btn" data-view="'+s.id+'">查看系列</button>' +
+        '<button class="btn" data-edit="'+s.id+'">编辑系列</button>' +
+        '<button class="btn" data-report="'+s.id+'">报告配置</button>' +
+        '<a class="btn" href="assess-relations.html?from=series&id='+s.id+'">关联规则'+(s.rules?' ('+s.rules+')':'')+'</a>' +
+        (s.shelf==='已上架'
+          ? '<button class="btn" data-shelf="'+s.id+'">下架</button>'
+          : '<button class="btn btn-primary" data-shelf="'+s.id+'">上架</button>') +
+        '<button class="btn" style="color:#f53f3f;border-color:#ffa39e" data-del="'+s.id+'">删除</button>' +
+      '</div></td></tr>';
+  }).join("");
+}
+
+var mask = document.getElementById("mask");
+function closeAll(){ mask.classList.remove("open"); document.querySelectorAll(".proto-modal").forEach(function(n){n.classList.remove("open");}); }
+function openM(mid){ mask.classList.add("open"); document.getElementById(mid).classList.add("open"); }
+
+function fillProjects(selected){
+  selected = selected || [];
+  document.getElementById("m-projects").innerHTML = POOL.map(function(n,i){
+    var ck = selected.indexOf(n)>=0 ? " checked" : "";
+    return '<label style="display:flex;align-items:center;gap:8px;padding:6px 0;font-size:13px"><input type="checkbox" value="'+esc(n)+'"'+ck+'> <span class="muted">'+(i+1)+'.</span> '+esc(n)+'</label>';
+  }).join("");
+}
+
+function openEdit(sid){
+  editing = sid;
+  var s = sid ? SERIES.find(function(x){return x.id===sid;}) : null;
+  document.getElementById("m-title").textContent = s ? "编辑系列测评" : "新建系列测评";
+  document.getElementById("m-name").value = s ? s.name : "";
+  document.getElementById("m-desc").value = s ? s.desc : "";
+  document.getElementById("m-enabled").checked = s ? s.enabled : true;
+  fillProjects(s ? s.items : []);
+  openM("modal-edit");
+}
+
+document.getElementById("btn-new").onclick = function(){ openEdit(null); };
+document.getElementById("btn-query").onclick = render;
+document.getElementById("btn-save").onclick = function(){
+  var name = document.getElementById("m-name").value.trim();
+  if (!name) { Proto.toast("请填写系列名称"); return; }
+  var items = Array.from(document.querySelectorAll("#m-projects input:checked")).map(function(c){return c.value;});
+  if (!items.length) { Proto.toast("请至少选择一个项目"); return; }
+  var payload = {
+    name:name, desc:document.getElementById("m-desc").value.trim(),
+    items:items, enabled:document.getElementById("m-enabled").checked, shelf:"已下架", rules:0
+  };
+  if (editing) {
+    var s = SERIES.find(function(x){return x.id===editing;});
+    Object.assign(s, payload, { shelf:s.shelf, rules:s.rules||0 });
+  } else {
+    payload.id = "S"+Date.now().toString().slice(-4);
+    SERIES.unshift(payload);
+  }
+  closeAll(); render(); Proto.toast("系列已保存");
+};
+
+document.addEventListener("click", function(e){
+  var view = e.target.closest("[data-view]");
+  if (view) {
+    var s = SERIES.find(function(x){return x.id===view.getAttribute("data-view");});
+    document.getElementById("view-bd").innerHTML =
+      '<div class="as-name" style="font-size:16px;margin-bottom:6px">'+esc(s.name)+'</div>' +
+      '<div class="as-desc" style="margin-bottom:12px">'+esc(s.desc)+'</div>' +
+      '<div style="font-size:13px;margin-bottom:4px">状态：'+(s.enabled?"已启用":"已停用")+' · '+esc(s.shelf)+'</div>' +
+      '<div style="font-size:13px;margin:12px 0 8px">答题顺序：</div>' +
+      s.items.map(function(n,i){ return '<div class="as-preview-item">'+(i+1)+'. '+esc(n)+'</div>'; }).join("");
+    document.getElementById("view-rules").href = "assess-relations.html?from=series&id="+s.id;
+    openM("modal-view"); return;
+  }
+  var ed = e.target.closest("[data-edit]"); if (ed) { openEdit(ed.getAttribute("data-edit")); return; }
+  var report = e.target.closest("[data-report]");
+  if (report) {
+    var s3 = SERIES.find(function(x){return x.id===report.getAttribute("data-report");});
+    document.getElementById("sr-sub").textContent = s3.name;
+    openM("modal-report"); return;
+  }
+  var en = e.target.closest("[data-enable]");
+  if (en) {
+    var s4 = SERIES.find(function(x){return x.id===en.getAttribute("data-enable");});
+    s4.enabled = !s4.enabled; render(); Proto.toast(s4.enabled?"已启用":"已停用"); return;
+  }
+  var shelf = e.target.closest("[data-shelf]");
+  if (shelf) {
+    var s2 = SERIES.find(function(x){return x.id===shelf.getAttribute("data-shelf");});
+    s2.shelf = s2.shelf==="已上架"?"已下架":"已上架";
+    Proto.toast(s2.shelf); render(); return;
+  }
+  var del = e.target.closest("[data-del]");
+  if (del) { SERIES = SERIES.filter(function(x){return x.id!==del.getAttribute("data-del");}); render(); Proto.toast("已删除"); return; }
+  var mv = e.target.closest("[data-move]");
+  if (mv) {
+    var mid=mv.getAttribute("data-move"), dir=+mv.getAttribute("data-dir");
+    var i=SERIES.findIndex(function(x){return x.id===mid;}), j=i+dir;
+    if (j<0||j>=SERIES.length) return;
+    var t=SERIES[i]; SERIES[i]=SERIES[j]; SERIES[j]=t; render();
+  }
+});
+mask.addEventListener("click", closeAll);
+document.querySelectorAll("[data-close]").forEach(function(b){ b.addEventListener("click", closeAll); });
+render();
+</script>
+</body>
+</html>

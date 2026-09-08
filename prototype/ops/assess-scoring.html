@@ -1,0 +1,146 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>评分规则配置 · 运营后台</title>
+<link rel="stylesheet" href="../assets/css/proto.css?v=3" />
+<link rel="stylesheet" href="../assets/css/assess.css?v=3" />
+</head>
+<body class="admin-body" data-module="content" data-nav="assess-projects" data-title="评分规则配置" data-crumb="运营后台 / 内容 / 测评管理 / 评分规则">
+
+<div id="header-actions">
+  <a class="btn" href="assess-projects.html">返回项目列表</a>
+  <button class="btn btn-primary" id="btn-save">保存配置</button>
+</div>
+
+<div id="page-content" style="display:none">
+  <a href="assess-projects.html" style="display:inline-flex;color:#165dff;font-size:13px;margin-bottom:12px;text-decoration:none">← 返回项目列表</a>
+
+  <div class="cm-page-hd" style="margin-bottom:14px">
+    <h1 style="margin:0 0 4px;font-size:22px">评分规则配置</h1>
+    <p class="muted" style="margin:0;font-size:13px">为 <b id="p-name">心理健康测评</b> 配置评分规则和结果判定</p>
+  </div>
+
+  <div style="display:flex;gap:16px;align-items:center;background:#fff;border:1px solid #e8e8e8;border-radius:10px;padding:14px 16px;margin-bottom:14px">
+    <div>
+      <div style="font-weight:600" id="p-name2">心理健康测评</div>
+      <div class="muted" style="font-size:12px;margin-top:2px"><span id="p-desc">综合心理健康评估</span> · <span id="p-q">1</span> 道题目</div>
+    </div>
+    <div style="margin-left:auto;text-align:right">
+      <div class="muted" style="font-size:11px">理论最高分</div>
+      <div style="font-size:22px;font-weight:700;color:#165dff" id="p-max">3.0</div>
+    </div>
+  </div>
+
+  <div class="as-tabs" id="mode-tabs">
+    <a href="#" class="active" data-mode="seg">整体分值分段</a>
+    <a href="#" data-mode="combo">题目组合评分</a>
+    <a href="#" data-mode="script">自定义脚本</a>
+  </div>
+
+  <div id="panel-seg">
+    <div class="card" style="margin-bottom:12px"><div class="card-bd">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+        <div>
+          <div style="font-weight:600">整体测评累计分值分段结果</div>
+          <div class="muted" style="font-size:12px">根据测评总分设置不同分数段的评估结果</div>
+        </div>
+        <button class="btn" id="btn-add-seg">+ 添加分段</button>
+      </div>
+      <div id="seg-list"></div>
+      <div class="as-banner" style="margin-top:12px;margin-bottom:0">
+        配置提示：分段范围应覆盖所有可能分数且互不重叠；理论最高分为 <b id="tip-max">3.0</b> 分。
+      </div>
+    </div></div>
+  </div>
+
+  <div id="panel-combo" style="display:none">
+    <div class="card"><div class="card-bd">
+      <p class="muted">按题目组合加权计分（原型演示）。例如：情绪维度题目权重 ×2，注意力维度 ×1。</p>
+      <div class="as-seg">情绪状态维度 · 权重 2.0 · 含 1 题</div>
+      <div class="as-seg">学习风格维度 · 权重 1.0 · 含 0 题</div>
+    </div></div>
+  </div>
+
+  <div id="panel-script" style="display:none">
+    <div class="card"><div class="card-bd">
+      <label style="font-size:13px;font-weight:500">自定义脚本（只读演示）</label>
+      <textarea class="input" rows="8" style="font-family:ui-monospace,monospace;font-size:12px;margin-top:8px" readonly>function score(answers) {
+  var total = answers.reduce((s,a) => s + a.value, 0);
+  if (total <= 30) return { level: "低风险", tip: "继续保持" };
+  if (total <= 60) return { level: "中等风险", tip: "建议调节" };
+  return { level: "高风险", tip: "寻求专业支持" };
+}</textarea>
+    </div></div>
+  </div>
+</div>
+
+<script src="../assets/js/proto.js"></script>
+<script src="../assets/js/ops-shell.js?v=2"></script>
+<script>
+var META = {
+  P001:{ name:"心理健康测评", desc:"综合心理健康评估", q:1, max:"3.0" },
+  P002:{ name:"学习能力诊断", desc:"评估学习风格与能力结构", q:12, max:"36.0" },
+  P003:{ name:"情绪调节问卷", desc:"评估情绪调节能力与压力应对", q:5, max:"15.0" }
+};
+var id = new URLSearchParams(location.search).get("id") || "P001";
+var meta = META[id] || META.P001;
+["p-name","p-name2"].forEach(function(k){ document.getElementById(k).textContent = meta.name; });
+document.getElementById("p-desc").textContent = meta.desc;
+document.getElementById("p-q").textContent = meta.q;
+document.getElementById("p-max").textContent = meta.max;
+document.getElementById("tip-max").textContent = meta.max;
+
+var SEGS = [
+  { min:0, max:30, title:"低风险", desc:"心理健康状况良好，继续保持" },
+  { min:31, max:60, title:"中等风险", desc:"存在一定心理压力，建议适当调节" },
+  { min:61, max:100, title:"高风险", desc:"建议及时寻求专业心理支持" }
+];
+
+function renderSegs(){
+  document.getElementById("seg-list").innerHTML = SEGS.map(function(s,i){
+    return '<div class="as-seg" data-i="'+i+'">' +
+      '<div class="as-seg-hd"><div><span class="as-seg-num">'+(i+1)+'</span><span style="font-size:12px;color:#8c8c8c">分数范围: '+s.min+' - '+s.max+'</span></div>' +
+      '<button class="btn" data-del-seg="'+i+'" style="color:#f53f3f;border-color:#ffa39e">删除分段</button></div>' +
+      '<div class="form-grid" style="grid-template-columns:1fr 1fr 1fr 1.4fr">' +
+        '<div class="field"><label>最小分值</label><input class="input" type="number" data-f="min" data-i="'+i+'" value="'+s.min+'" /></div>' +
+        '<div class="field"><label>最大分值</label><input class="input" type="number" data-f="max" data-i="'+i+'" value="'+s.max+'" /></div>' +
+        '<div class="field"><label>结果标题</label><input class="input" data-f="title" data-i="'+i+'" value="'+s.title+'" /></div>' +
+        '<div class="field"><label>结果描述</label><input class="input" data-f="desc" data-i="'+i+'" value="'+s.desc+'" /></div>' +
+      '</div></div>';
+  }).join("");
+}
+
+document.getElementById("mode-tabs").addEventListener("click", function(e){
+  var a = e.target.closest("[data-mode]"); if (!a) return; e.preventDefault();
+  document.querySelectorAll("#mode-tabs a").forEach(function(x){x.classList.remove("active");});
+  a.classList.add("active");
+  var m = a.getAttribute("data-mode");
+  document.getElementById("panel-seg").style.display = m==="seg"?"":"none";
+  document.getElementById("panel-combo").style.display = m==="combo"?"":"none";
+  document.getElementById("panel-script").style.display = m==="script"?"":"none";
+});
+
+document.getElementById("btn-add-seg").onclick = function(){
+  var last = SEGS[SEGS.length-1];
+  SEGS.push({ min:(last?last.max+1:0), max:(last?last.max+20:20), title:"新分段", desc:"" });
+  renderSegs();
+};
+
+document.addEventListener("click", function(e){
+  var d = e.target.closest("[data-del-seg]");
+  if (d) { SEGS.splice(+d.getAttribute("data-del-seg"),1); renderSegs(); }
+});
+document.addEventListener("change", function(e){
+  var inp = e.target.closest("[data-f]");
+  if (!inp) return;
+  var i = +inp.getAttribute("data-i"), f = inp.getAttribute("data-f");
+  SEGS[i][f] = f==="min"||f==="max" ? +inp.value : inp.value;
+});
+
+document.getElementById("btn-save").onclick = function(){ Proto.toast("评分规则已保存"); };
+renderSegs();
+</script>
+</body>
+</html>

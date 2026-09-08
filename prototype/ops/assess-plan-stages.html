@@ -1,0 +1,254 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>配置关卡 · 运营后台</title>
+<link rel="stylesheet" href="../assets/css/proto.css?v=3" />
+<link rel="stylesheet" href="../assets/css/assess.css?v=3" />
+</head>
+<body class="admin-body" data-module="content" data-nav="assess-plans" data-title="配置关卡" data-crumb="运营后台 / 内容 / 计划管理 / 配置关卡">
+
+<div id="header-actions">
+  <a class="btn" href="assess-plans.html">返回计划列表</a>
+  <button class="btn btn-primary" id="btn-save">保存配置</button>
+</div>
+
+<div id="page-content" style="display:none">
+  <a href="assess-plans.html" style="display:inline-flex;color:#165dff;font-size:13px;margin-bottom:12px;text-decoration:none">← 返回计划列表</a>
+
+  <div style="margin-bottom:14px">
+    <h1 style="margin:0 0 4px;font-size:22px">配置关卡</h1>
+    <p class="muted" style="margin:0;font-size:13px"><b id="plan-name">一年级AI助手培训计划</b> · <span id="plan-mode">直接选择任务</span></p>
+  </div>
+
+  <div class="card" style="margin-bottom:14px"><div class="card-bd">
+    <h3 style="margin:0 0 8px;font-size:14px">1. 划分方式</h3>
+    <p class="muted" style="font-size:12px;margin:0 0 10px">根据计划创建方式配置关卡内容</p>
+    <label style="display:flex;gap:10px;align-items:flex-start;font-size:13px;margin-bottom:8px" id="divide-task">
+      <input type="radio" name="divide" value="task" checked style="margin-top:3px" />
+      <span><b>手动分配任务到关卡</b><br><span class="muted">将计划已选择的任务分配到不同关卡；任务数据来自外部任务模块</span></span>
+    </label>
+    <label style="display:flex;gap:10px;align-items:flex-start;font-size:13px" id="divide-assess">
+      <input type="radio" name="divide" value="assess" style="margin-top:3px" />
+      <span><b>按关联测评划分关卡</b><br><span class="muted">每个测评可独立成关，或合并到同一关卡；适合「关联测评」创建方式</span></span>
+    </label>
+  </div></div>
+
+  <div class="as-stage-col">
+    <!-- 任务池 -->
+    <div class="as-panel">
+      <h3>可选任务</h3>
+      <input class="input" id="task-q" placeholder="搜索任务名称..." style="margin-bottom:8px;width:100%" />
+      <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px" id="task-filters">
+        <button class="btn active-filter" data-filter="全部">全部</button>
+        <button class="btn" data-filter="智能体">智能体</button>
+        <button class="btn" data-filter="线上课">线上课</button>
+        <button class="btn" data-filter="测评">测评</button>
+        <button class="btn" data-filter="其他">其他</button>
+      </div>
+      <div id="task-pool"></div>
+    </div>
+
+    <!-- 关卡编辑 -->
+    <div class="as-panel">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+        <h3 style="margin:0">关卡列表</h3>
+        <div style="display:flex;gap:6px">
+          <button class="btn" id="btn-add-stage">+ 添加关卡</button>
+          <button class="btn" id="btn-del-stage" style="color:#f53f3f;border-color:#ffa39e">− 删除关卡</button>
+        </div>
+      </div>
+      <div id="stage-tabs" style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px"></div>
+      <div class="field"><label>关卡名称</label><input class="input" id="stage-name" /></div>
+      <div style="font-size:12px;color:#8c8c8c;margin-bottom:6px">已分配任务</div>
+      <div id="stage-tasks"></div>
+      <div style="margin-top:8px;font-size:12px" class="muted">在左侧选择任务后点「分配」加入当前关卡</div>
+    </div>
+
+    <!-- 解锁规则 + 预览 -->
+    <div>
+      <div class="as-panel" style="margin-bottom:14px">
+        <h3>2. 解锁规则</h3>
+        <p class="muted" style="font-size:12px;margin:0 0 10px">任务完成数据由外部执行模块提供，这里只定义下一关的判断条件</p>
+        <label class="as-seg" style="display:block;cursor:pointer">
+          <input type="radio" name="unlock" value="task-count" checked /> 完成任务数量
+          <div class="muted" style="font-size:11px;margin:4px 0 6px 20px">完成指定数量的任务后解锁下一关</div>
+          <div style="margin-left:20px"><input class="input" type="number" id="unlock-n" value="2" style="width:80px;display:inline-block" /> 个</div>
+        </label>
+        <label class="as-seg" style="display:block;cursor:pointer"><input type="radio" name="unlock" value="point-value" /> 完成积分值
+          <div class="muted" style="font-size:11px;margin:4px 0 0 20px">累计达到指定积分后解锁下一关</div>
+        </label>
+        <label class="as-seg" style="display:block;cursor:pointer"><input type="radio" name="unlock" value="task-ratio" /> 完成任务占比
+          <div class="muted" style="font-size:11px;margin:4px 0 0 20px">完成指定比例的任务后解锁下一关</div>
+        </label>
+        <label class="as-seg" style="display:block;cursor:pointer"><input type="radio" name="unlock" value="point-ratio" /> 完成积分占比
+          <div class="muted" style="font-size:11px;margin:4px 0 0 20px">获得指定比例的积分后解锁下一关</div>
+        </label>
+      </div>
+      <div class="as-panel">
+        <h3>配置预览</h3>
+        <div id="preview"></div>
+        <div class="muted" style="font-size:11px;line-height:1.7;margin-top:8px">
+          · 第一关默认解锁，其他关卡依次判断<br>
+          · 关卡按顺序解锁，不允许跳关<br>
+          · 保存后仍可在计划发布前继续调整
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+.active-filter { background:#165dff !important; color:#fff !important; border-color:#165dff !important; }
+.stage-tab { padding:6px 12px; border:1px solid #e8e8e8; border-radius:6px; background:#fff; cursor:pointer; font-size:12px; }
+.stage-tab.on { border-color:#165dff; color:#165dff; background:#f0f5ff; font-weight:600; }
+</style>
+
+<script src="../assets/js/proto.js"></script>
+<script src="../assets/js/ops-shell.js?v=2"></script>
+<script>
+var META = {
+  PL1:{ name:"2025春季心理健康测评计划", mode:"关联测评" },
+  PL2:{ name:"六年级毕业生职业规划测评", mode:"关联测评" },
+  PL3:{ name:"一年级AI助手培训计划", mode:"直接选择任务" },
+  PL4:{ name:"春季学习能力测评（草稿）", mode:"关联测评" },
+  PL5:{ name:"情商培养训练计划（草稿）", mode:"直接选择任务" }
+};
+var id = new URLSearchParams(location.search).get("id") || "PL3";
+var meta = META[id] || { name:"未命名计划", mode:"直接选择任务" };
+document.getElementById("plan-name").textContent = meta.name;
+document.getElementById("plan-mode").textContent = meta.mode;
+
+var isAssessMode = meta.mode === "关联测评";
+if (isAssessMode) {
+  document.querySelector('input[name="divide"][value="assess"]').checked = true;
+} else {
+  document.getElementById("divide-assess").style.opacity = "0.45";
+  document.querySelector('input[name="divide"][value="assess"]').disabled = true;
+}
+
+var TASKS = isAssessMode ? [
+  { id:"T1", name:"心理健康测评", type:"测评", pts:15 },
+  { id:"T2", name:"学习能力诊断", type:"测评", pts:15 },
+  { id:"T3", name:"情绪调节问卷", type:"测评", pts:10 },
+  { id:"T4", name:"新生入学心理系列", type:"测评", pts:20 }
+] : [
+  { id:"T1", name:"AI 助手自我介绍", type:"智能体", pts:10 },
+  { id:"T2", name:"情绪管理基础课 · 第1章", type:"线上课", pts:20 },
+  { id:"T3", name:"心理健康测评", type:"测评", pts:15 },
+  { id:"T4", name:"三分钟呼吸放松", type:"线上课", pts:10 },
+  { id:"T5", name:"班级破冰对话", type:"智能体", pts:10 },
+  { id:"T6", name:"学习习惯打卡", type:"其他", pts:5 }
+];
+var filter = "全部";
+var stages = [
+  { name:"关卡 1", tasks:["T1","T5"] },
+  { name:"关卡 2", tasks:["T2","T4"] }
+];
+var cur = 0;
+
+function esc(s){ return String(s).replace(/[&<>"']/g,function(c){return({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"})[c];}); }
+function taskById(tid){ return TASKS.find(function(t){return t.id===tid;}); }
+function assignedIds(){
+  var set={}; stages.forEach(function(s){ s.tasks.forEach(function(t){ set[t]=1; }); }); return set;
+}
+
+function renderPool(){
+  var q=(document.getElementById("task-q").value||"").trim();
+  var used=assignedIds();
+  var html=TASKS.filter(function(t){
+    if (filter!=="全部" && t.type!==filter) return false;
+    if (q && t.name.indexOf(q)<0) return false;
+    return true;
+  }).map(function(t){
+    var disabled = used[t.id] ? " opacity:.45" : "";
+    return '<div class="as-task" style="'+disabled+'">' +
+      '<span class="as-tag blue">'+esc(t.type)+'</span>' +
+      '<span style="flex:1">'+esc(t.name)+'</span>' +
+      '<span class="muted">'+t.pts+'分</span>' +
+      (used[t.id] ? '<span class="muted">已分配</span>' :
+        '<select class="input" style="width:90px;padding:2px 6px;font-size:12px" data-assign="'+t.id+'">' +
+          '<option value="">分配</option>' +
+          stages.map(function(s,i){ return '<option value="'+i+'">'+esc(s.name)+'</option>'; }).join("") +
+        '</select>') +
+    '</div>';
+  }).join("") || '<div class="muted" style="padding:12px;text-align:center">无匹配任务</div>';
+  document.getElementById("task-pool").innerHTML = html;
+}
+
+function renderStages(){
+  document.getElementById("stage-tabs").innerHTML = stages.map(function(s,i){
+    return '<button type="button" class="stage-tab'+(i===cur?' on':'')+'" data-stage="'+i+'">'+esc(s.name)+'</button>';
+  }).join("");
+  var s = stages[cur];
+  if (!s) return;
+  document.getElementById("stage-name").value = s.name;
+  document.getElementById("btn-del-stage").disabled = stages.length<=1;
+  document.getElementById("stage-tasks").innerHTML = s.tasks.map(function(tid){
+    var t=taskById(tid); if (!t) return "";
+    return '<div class="as-task"><span class="as-tag blue">'+esc(t.type)+'</span><span style="flex:1">'+esc(t.name)+'</span>' +
+      '<button class="btn" data-unassign="'+tid+'" style="padding:0 6px;color:#f53f3f">移除</button></div>';
+  }).join("") || '<div class="muted" style="padding:10px;border:1px dashed #e8e8e8;border-radius:6px;text-align:center">暂无任务</div>';
+  renderPreview();
+}
+
+function renderPreview(){
+  var n = +document.getElementById("unlock-n").value || 2;
+  var mode = (document.querySelector('input[name="unlock"]:checked')||{}).value || "task-count";
+  var ruleText = mode==="task-count" ? ("完成 "+n+" 个任务后解锁下一关") : "按所选规则解锁下一关";
+  document.getElementById("preview").innerHTML = stages.map(function(s,i){
+    return '<div class="as-preview-item"><b>'+esc(s.name)+'</b> · '+s.tasks.length+' 个任务' +
+      (i===0?' · 默认解锁':' · '+ruleText)+'</div>';
+  }).join("");
+}
+
+document.getElementById("task-filters").addEventListener("click", function(e){
+  var b=e.target.closest("[data-filter]"); if (!b) return;
+  document.querySelectorAll("#task-filters .btn").forEach(function(x){x.classList.remove("active-filter");});
+  b.classList.add("active-filter"); filter=b.getAttribute("data-filter"); renderPool();
+});
+document.getElementById("task-q").addEventListener("input", renderPool);
+
+document.getElementById("btn-add-stage").onclick = function(){
+  stages.push({ name:"关卡 "+(stages.length+1), tasks:[] });
+  cur = stages.length-1; renderStages(); renderPool();
+};
+document.getElementById("btn-del-stage").onclick = function(){
+  if (stages.length<=1) return;
+  stages.splice(cur,1); cur=Math.max(0,cur-1); renderStages(); renderPool();
+};
+document.getElementById("stage-name").addEventListener("input", function(){
+  if (stages[cur]) { stages[cur].name=this.value; renderStages(); renderPool(); }
+});
+document.getElementById("stage-tabs").addEventListener("click", function(e){
+  var b=e.target.closest("[data-stage]"); if (!b) return;
+  cur=+b.getAttribute("data-stage"); renderStages();
+});
+
+document.addEventListener("change", function(e){
+  var sel=e.target.closest("[data-assign]");
+  if (sel && sel.value!=="") {
+    var tid=sel.getAttribute("data-assign"), si=+sel.value;
+    stages[si].tasks.push(tid); renderStages(); renderPool(); Proto.toast("已分配到 "+stages[si].name);
+  }
+  if (e.target.name==="unlock" || e.target.id==="unlock-n") renderPreview();
+});
+document.addEventListener("click", function(e){
+  var u=e.target.closest("[data-unassign]");
+  if (u) {
+    var tid=u.getAttribute("data-unassign");
+    stages[cur].tasks = stages[cur].tasks.filter(function(x){return x!==tid;});
+    renderStages(); renderPool();
+  }
+});
+
+document.getElementById("btn-save").onclick = function(){
+  Proto.toast("关卡配置已保存");
+  setTimeout(function(){ location.href="assess-plans.html"; }, 500);
+};
+
+renderPool(); renderStages();
+</script>
+</body>
+</html>

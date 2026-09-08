@@ -1,10 +1,10 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>视频 · 艺博 To-B</title>
-<link rel="stylesheet" href="../assets/css/proto.css" />
+<link rel="stylesheet" href="../assets/css/proto.css?v=3" />
 <style>
 .cv-list { background: #fff; border: 1px solid #e8e8e8; border-radius: 8px; overflow: hidden; }
 .cv-row {
@@ -75,7 +75,7 @@
 
 <div id="header-actions">
   <button class="btn">批量删除</button>
-  <button class="btn btn-primary" id="btn-upload">+ 上传视频</button>
+  <a class="btn btn-primary" href="content-video-edit.html">+ 新增视频</a>
 </div>
 
 <div id="page-content" style="display:none">
@@ -110,80 +110,18 @@
 
 </div><!-- /#page-content -->
 
-<!-- 上传视频 抽屉 -->
-<div class="proto-drawer" id="drawer-video">
-  <div class="proto-drawer-bd">
-    <div class="proto-drawer-hd">
-      <h3>上传视频</h3>
-      <button class="ctrl-icon-btn" data-close>×</button>
-    </div>
-    <div class="proto-drawer-bd" style="padding:20px">
-
-      <div class="field">
-        <label>视频文件 *</label>
-        <div class="cv-upload">
-          <div class="cv-upload-icon">⬆️</div>
-          <div>拖拽视频到此处或<b style="color:#165dff">点击上传</b></div>
-          <div class="cv-upload-hint">支持 mp4 / mov / avi，最大 2GB</div>
-        </div>
-      </div>
-
-      <div class="form-grid" style="grid-template-columns:1fr">
-        <div class="field">
-          <label>标题 *</label>
-          <input class="input" placeholder="请输入视频标题" />
-        </div>
-      </div>
-
-      <div class="form-grid" style="grid-template-columns:1fr 1fr">
-        <div class="field">
-          <label>讲师</label>
-          <select class="input"><option>张老师</option><option>李老师</option><option>王博士</option></select>
-        </div>
-        <div class="field">
-          <label>分类</label>
-          <select class="input"><option>K12 教育 / 小学</option><option>家庭教育</option></select>
-        </div>
-      </div>
-
-      <div class="form-grid" style="grid-template-columns:1fr 1fr">
-        <div class="field">
-          <label>时长（自动识别）</label>
-          <input class="input" value="--" disabled />
-        </div>
-        <div class="field">
-          <label>状态</label>
-          <div>
-            <label style="margin-right:14px"><input type="radio" name="cv-st" checked> 转码中</label>
-            <label><input type="radio" name="cv-st"> 已上架</label>
-          </div>
-        </div>
-      </div>
-
-      <div class="form-grid" style="grid-template-columns:1fr">
-        <div class="field">
-          <label>视频描述</label>
-          <textarea class="input" rows="3" placeholder="请输入视频描述"></textarea>
-        </div>
-      </div>
-
-      <div class="form-grid" style="grid-template-columns:1fr">
-        <div class="field">
-          <label>封面缩略图</label>
-          <div style="width:160px;height:90px;border:1px dashed #d9d9d9;border-radius:6px;display:flex;align-items:center;justify-content:center;color:#bfbfbf;font-size:12px;cursor:pointer">点击上传封面</div>
-        </div>
-      </div>
-
-    </div>
-    <div class="proto-drawer-ft">
-      <button class="btn" data-close>取消</button>
-      <button class="btn btn-primary">开始上传</button>
+<div class="proto-modal" id="modal-share">
+  <div style="background:#fff;border-radius:10px;width:420px;max-width:92vw;overflow:hidden">
+    <div class="proto-modal-hd"><h3 style="margin:0;font-size:16px">分享视频</h3><button class="ctrl-icon-btn" data-close>×</button></div>
+    <div class="proto-modal-bd">
+      <div id="share-url" style="font-family:monospace;font-size:12px;background:#f7f8fa;border:1px solid #e8e8e8;border-radius:6px;padding:8px 10px;word-break:break-all"></div>
+      <div style="margin-top:12px"><button class="btn btn-primary" id="btn-copy-link">复制链接</button></div>
     </div>
   </div>
 </div>
 
 <script src="../assets/js/proto.js"></script>
-<script src="../assets/js/admin-shell.js?v=2"></script>
+<script src="../assets/js/admin-shell.js?v=3"></script>
 <script>
 setTimeout(function() {
   if (document.documentElement.getAttribute('data-shell-ready') === '1') return;
@@ -197,13 +135,13 @@ setTimeout(function() {
 var VIDEOS = [
   { id: "V001", title: "如何让孩子爱上阅读", emoji: "📖", thumb: "blue",
     teacher: "张老师", duration: "8:24", size: "156 MB", date: "2026-09-01",
-    status: "已上架", statusType: "pass", encoding: null },
+    status: "已上架", statusType: "pass", encoding: null, onShelf: true },
   { id: "V002", title: "亲子沟通的5 个关键", emoji: "💬", thumb: "green",
     teacher: "李老师", duration: "12:35", size: "245 MB", date: "2026-08-28",
-    status: "已上架", statusType: "pass", encoding: null },
+    status: "已上架", statusType: "pass", encoding: null, onShelf: true },
   { id: "V003", title: "AI 助力学习规划", emoji: "🤖", thumb: "orange",
     teacher: "王博士", duration: "15:20", size: "312 MB", date: "2026-09-04",
-    status: "转码中", statusType: "review", encoding: 68 }
+    status: "转码中", statusType: "review", encoding: 68, onShelf: false }
 ];
 
 function esc(s) {
@@ -236,9 +174,12 @@ function renderList() {
           enc +
         '</div>' +
         '<div class="cv-actions">' +
-          '<button class="btn">预览</button>' +
-          '<button class="btn">编辑</button>' +
-          '<button class="btn" style="color:#f53f3f;border-color:#ffa39e">删除</button>' +
+          '<button class="btn" data-share="' + v.id + '"' + (v.onShelf ? '' : ' disabled') + '>分享</button>' +
+          '<a class="btn" href="content-video-detail.html?id=' + v.id + '">查看视频</a>' +
+          (v.onShelf
+            ? '<button class="btn" data-shelf-off="' + v.id + '">下架</button>'
+            : '<a class="btn btn-primary" href="content-video-edit.html?id=' + v.id + '">编辑</a>') +
+          '<button class="btn" data-copy="' + v.id + '">复制</button>' +
         '</div>' +
       '</div>';
   }).join("");
@@ -246,20 +187,30 @@ function renderList() {
   document.getElementById("cv-count").textContent = VIDEOS.length;
 }
 
-// 抽屉控制
 var mask = document.getElementById("mask");
 function closeAll() {
   mask.classList.remove("open");
   document.querySelectorAll(".proto-modal, .proto-drawer").forEach(function(n) { n.classList.remove("open"); });
 }
-document.getElementById("btn-upload").addEventListener("click", function() {
-  document.getElementById("drawer-video").classList.add("open");
-  mask.classList.add("open");
+document.addEventListener("click", function(e) {
+  var share = e.target.closest("[data-share]");
+  if (share && !share.disabled) {
+    document.getElementById("share-url").textContent = "https://yibo.app/v/" + share.getAttribute("data-share");
+    mask.classList.add("open");
+    document.getElementById("modal-share").classList.add("open");
+    return;
+  }
+  var off = e.target.closest("[data-shelf-off]");
+  if (off) {
+    var v = VIDEOS.find(function(x){ return x.id === off.getAttribute("data-shelf-off"); });
+    if (v) { v.onShelf = false; v.status = "已下架"; v.statusType = "review"; renderList(); Proto.toast("已下架"); }
+    return;
+  }
+  if (e.target.closest("[data-copy]")) Proto.toast("已复制视频（演示）");
 });
+document.getElementById("btn-copy-link").addEventListener("click", function(){ Proto.toast("链接已复制"); });
 mask && mask.addEventListener("click", closeAll);
-document.querySelectorAll("[data-close]").forEach(function(b) {
-  b.addEventListener("click", closeAll);
-});
+document.querySelectorAll("[data-close]").forEach(function(b) { b.addEventListener("click", closeAll); });
 
 function tryRender() {
   if (document.getElementById("page-content").style.display !== "none") renderList();

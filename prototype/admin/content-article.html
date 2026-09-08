@@ -1,10 +1,10 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>图文 · 艺博 To-B</title>
-<link rel="stylesheet" href="../assets/css/proto.css" />
+<link rel="stylesheet" href="../assets/css/proto.css?v=3" />
 <style>
 .ca-list { background: #fff; border: 1px solid #e8e8e8; border-radius: 8px; overflow: hidden; }
 .ca-row {
@@ -34,67 +34,33 @@
   display: flex; gap: 14px; flex-wrap: wrap;
 }
 .ca-meta b { color: #595959; font-weight: 500; }
-.ca-actions { display: flex; gap: 6px; }
-
-/* 富文本编辑器占位 */
-.rt-editor {
-  border: 1px solid #e8e8e8; border-radius: 6px;
-  background: #fff;
-}
-.rt-toolbar {
-  display: flex; gap: 4px; padding: 8px 10px;
-  border-bottom: 1px solid #e8e8e8;
-  background: #fafafa; border-radius: 6px 6px 0 0;
-  flex-wrap: wrap;
-}
-.rt-btn {
-  padding: 4px 8px; border-radius: 3px;
-  font-size: 12px; color: #595959;
-  background: transparent; border: 1px solid transparent;
-  cursor: pointer; min-width: 26px; text-align: center;
-}
-.rt-btn:hover { background: #fff; border-color: #d9d9d9; }
-.rt-divider {
-  width: 1px; background: #e8e8e8; margin: 4px 4px;
-}
-.rt-body {
-  min-height: 200px; padding: 16px;
-  font-size: 13px; color: #595959; line-height: 1.7;
-  background: #fff; border-radius: 0 0 6px 6px;
-}
-.rt-placeholder {
-  color: #bfbfbf; font-size: 13px; font-style: italic;
-}
+.ca-actions { display: flex; gap: 6px; flex-wrap: wrap; }
 </style>
 </head>
 <body class="admin-body" data-module="content" data-nav="content-article" data-title="图文" data-crumb="内容 / 内容管理 / 图文">
 
 <div id="header-actions">
   <button class="btn">批量删除</button>
-  <button class="btn btn-primary" id="btn-write">+ 写新图文</button>
+  <a class="btn btn-primary" href="content-article-edit.html">+ 新增图文</a>
 </div>
 
 <div id="page-content" style="display:none">
-
-  <!-- 筛选 -->
   <div class="card" style="margin-bottom:14px"><div class="card-bd" style="padding:12px 16px">
     <div class="toolbar" style="border:none;padding:0;background:transparent">
-      <input class="input" type="text" placeholder="搜索图文标题 / 作者" style="width:240px" />
-      <select class="input" style="width:140px">
-        <option>全部状态</option><option>已发布</option><option>草稿</option>
-      </select>
+      <input class="input" type="text" placeholder="搜索图文名称或简介..." style="width:240px" />
       <select class="input" style="width:140px">
         <option>全部分类</option><option>K12 教育</option><option>家庭教育</option>
+      </select>
+      <select class="input" style="width:140px">
+        <option>全部上下架</option><option>已上架</option><option>已下架</option>
       </select>
       <button class="btn btn-primary">查询</button>
       <button class="btn">重置</button>
     </div>
   </div></div>
 
-  <!-- 图文列表 -->
   <div class="ca-list" id="ca-list"></div>
 
-  <!-- 分页 -->
   <div style="display:flex;align-items:center;gap:8px;margin-top:16px">
     <span style="color:#8c8c8c;font-size:12px">共 <b id="ca-count">3</b> 条</span>
     <div style="margin-left:auto;display:flex;gap:6px">
@@ -103,120 +69,40 @@
       <button class="btn" disabled>下一页</button>
     </div>
   </div>
+</div>
 
-</div><!-- /#page-content -->
-
-<!-- 写图文 抽屉 -->
-<div class="proto-drawer" id="drawer-article">
-  <div class="proto-drawer-bd">
-    <div class="proto-drawer-hd">
-      <h3 id="article-drawer-title">写新图文</h3>
-      <button class="ctrl-icon-btn" data-close>×</button>
-    </div>
-    <div class="proto-drawer-bd" style="padding:20px">
-
-      <div class="form-grid" style="grid-template-columns:1fr">
-        <div class="field">
-          <label>标题 *</label>
-          <input class="input" placeholder="请输入图文标题" />
-        </div>
-      </div>
-
-      <div class="form-grid" style="grid-template-columns:1fr 1fr 1fr">
-        <div class="field">
-          <label>作者</label>
-          <select class="input"><option>张老师</option><option>李老师</option><option>编辑部</option></select>
-        </div>
-        <div class="field">
-          <label>分类</label>
-          <select class="input"><option>K12 教育 / 小学</option><option>家庭教育</option></select>
-        </div>
-        <div class="field">
-          <label>状态</label>
-          <div>
-            <label style="margin-right:14px"><input type="radio" name="ca-st" checked> 草稿</label>
-            <label><input type="radio" name="ca-st"> 已发布</label>
-          </div>
-        </div>
-      </div>
-
-      <div class="form-grid" style="grid-template-columns:1fr">
-        <div class="field">
-          <label>封面图</label>
-          <div style="width:140px;height:84px;border:1px dashed #d9d9d9;border-radius:6px;display:flex;align-items:center;justify-content:center;color:#bfbfbf;font-size:12px;cursor:pointer">点击上传封面</div>
-        </div>
-      </div>
-
-      <div class="form-grid" style="grid-template-columns:1fr">
-        <div class="field">
-          <label>正文</label>
-          <div class="rt-editor">
-            <div class="rt-toolbar">
-              <button class="rt-btn"><b>B</b></button>
-              <button class="rt-btn"><i>I</i></button>
-              <button class="rt-btn"><u>U</u></button>
-              <button class="rt-btn"><s>S</s></button>
-              <div class="rt-divider"></div>
-              <button class="rt-btn">H1</button>
-              <button class="rt-btn">H2</button>
-              <button class="rt-btn">H3</button>
-              <div class="rt-divider"></div>
-              <button class="rt-btn">❝</button>
-              <button class="rt-btn">≡</button>
-              <button class="rt-btn">⊞</button>
-              <div class="rt-divider"></div>
-              <button class="rt-btn">🔗</button>
-              <button class="rt-btn">📷</button>
-              <button class="rt-btn">📹</button>
-              <div class="rt-divider"></div>
-              <button class="rt-btn">↶</button>
-              <button class="rt-btn">↷</button>
-            </div>
-            <div class="rt-body">
-              <span class="rt-placeholder">在这里开始书写正文…（富文本编辑器占位，实际项目接入 wangEditor / TinyMCE / Quill 等）</span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="form-grid" style="grid-template-columns:1fr">
-        <div class="field">
-          <label>摘要（用于列表展示）</label>
-          <textarea class="input" rows="2" placeholder="选填，120 字以内"></textarea>
-        </div>
-      </div>
-
-    </div>
-    <div class="proto-drawer-ft">
-      <button class="btn" data-close>取消</button>
-      <button class="btn">保存草稿</button>
-      <button class="btn btn-primary">保存并发布</button>
+<div class="proto-modal" id="modal-share">
+  <div style="background:#fff;border-radius:10px;width:420px;max-width:92vw;overflow:hidden">
+    <div class="proto-modal-hd"><h3 style="margin:0;font-size:16px">分享图文</h3><button class="ctrl-icon-btn" data-close>×</button></div>
+    <div class="proto-modal-bd">
+      <div id="share-url" style="font-family:monospace;font-size:12px;background:#f7f8fa;border:1px solid #e8e8e8;border-radius:6px;padding:8px 10px;word-break:break-all"></div>
+      <div style="margin-top:12px"><button class="btn btn-primary" id="btn-copy-link">复制链接</button></div>
     </div>
   </div>
 </div>
 
 <script src="../assets/js/proto.js"></script>
-<script src="../assets/js/admin-shell.js?v=2"></script>
+<script src="../assets/js/admin-shell.js?v=3"></script>
 <script>
 setTimeout(function() {
   if (document.documentElement.getAttribute('data-shell-ready') === '1') return;
   if (document.querySelector('aside.sidebar')) return;
   var err = document.createElement('div');
   err.style.cssText = 'position:fixed;top:0;left:0;right:0;background:#fff1f0;color:#f53f3f;padding:12px 20px;border-bottom:1px solid #ffa39e;z-index:99999;font-size:13px;font-family:system-ui;';
-  err.innerHTML = '<b>⚠ 页面初始化失败</b>：请按 <kbd style="background:#fff;padding:2px 6px;border-radius:3px;border:1px solid #ffa39e;font-family:monospace;">Ctrl+Shift+R</kbd> 强制刷新，或 <button onclick="location.reload();" style="background:#165dff;color:#fff;border:none;padding:4px 12px;border-radius:4px;cursor:pointer;margin-left:8px;">点击重试</button>';
+  err.innerHTML = '<b>⚠ 页面初始化失败</b>：请按 <kbd style="background:#fff;padding:2px 6px;border-radius:3px;border:1px solid #ffa39e;font-family:monospace;">Ctrl+Shift+R</kbd> 强制刷新';
   document.body.appendChild(err);
 }, 1500);
 
 var ARTICLES = [
   { id: "A001", title: "9 月新学期家长指南", emoji: "📚", thumb: "purple",
     author: "编辑部", date: "2026-08-25", reads: 2340, words: 1280,
-    status: "已发布", statusType: "pass" },
+    status: "已上架", statusType: "pass", onShelf: true },
   { id: "A002", title: "孩子注意力训练方法论", emoji: "🎯", thumb: "blue",
     author: "张老师", date: "2026-08-30", reads: 1560, words: 980,
-    status: "已发布", statusType: "pass" },
+    status: "已上架", statusType: "pass", onShelf: true },
   { id: "A003", title: "家庭情绪急救指南", emoji: "💝", thumb: "green",
     author: "李老师", date: "—", reads: 0, words: 320,
-    status: "草稿", statusType: "review" }
+    status: "已下架", statusType: "review", onShelf: false }
 ];
 
 function esc(s) {
@@ -243,9 +129,13 @@ function renderList() {
           '</div>' +
         '</div>' +
         '<div class="ca-actions">' +
-          '<button class="btn">查看</button>' +
-          '<button class="btn btn-primary">编辑</button>' +
-          '<button class="btn" style="color:#f53f3f;border-color:#ffa39e">删除</button>' +
+          '<button class="btn" data-share="' + a.id + '"' + (a.onShelf ? '' : ' disabled') + '>分享</button>' +
+          '<a class="btn" href="content-article-detail.html?id=' + a.id + '">查看图文</a>' +
+          (a.onShelf
+            ? '<button class="btn" data-shelf-off="' + a.id + '">下架</button>'
+            : '<a class="btn btn-primary" href="content-article-edit.html?id=' + a.id + '">编辑</a>' +
+              '<button class="btn" data-shelf-on="' + a.id + '">上架</button>') +
+          '<button class="btn" data-copy="' + a.id + '">复制</button>' +
         '</div>' +
       '</div>';
   }).join("");
@@ -256,17 +146,33 @@ function renderList() {
 var mask = document.getElementById("mask");
 function closeAll() {
   mask.classList.remove("open");
-  document.querySelectorAll(".proto-modal, .proto-drawer").forEach(function(n) { n.classList.remove("open"); });
+  document.querySelectorAll(".proto-modal").forEach(function(n) { n.classList.remove("open"); });
 }
-document.getElementById("btn-write").addEventListener("click", function() {
-  document.getElementById("article-drawer-title").textContent = "写新图文";
-  document.getElementById("drawer-article").classList.add("open");
-  mask.classList.add("open");
+document.addEventListener("click", function(e) {
+  var share = e.target.closest("[data-share]");
+  if (share && !share.disabled) {
+    document.getElementById("share-url").textContent = "https://yibo.app/a/" + share.getAttribute("data-share");
+    mask.classList.add("open");
+    document.getElementById("modal-share").classList.add("open");
+    return;
+  }
+  var off = e.target.closest("[data-shelf-off]");
+  if (off) {
+    var a = ARTICLES.find(function(x){ return x.id === off.getAttribute("data-shelf-off"); });
+    if (a) { a.onShelf = false; a.status = "已下架"; a.statusType = "review"; renderList(); Proto.toast("已下架"); }
+    return;
+  }
+  var on = e.target.closest("[data-shelf-on]");
+  if (on) {
+    var a2 = ARTICLES.find(function(x){ return x.id === on.getAttribute("data-shelf-on"); });
+    if (a2) { a2.onShelf = true; a2.status = "已上架"; a2.statusType = "pass"; renderList(); Proto.toast("已上架"); }
+    return;
+  }
+  if (e.target.closest("[data-copy]")) Proto.toast("已复制图文（演示）");
 });
+document.getElementById("btn-copy-link").addEventListener("click", function(){ Proto.toast("链接已复制"); });
 mask && mask.addEventListener("click", closeAll);
-document.querySelectorAll("[data-close]").forEach(function(b) {
-  b.addEventListener("click", closeAll);
-});
+document.querySelectorAll("[data-close]").forEach(function(b) { b.addEventListener("click", closeAll); });
 
 function tryRender() {
   if (document.getElementById("page-content").style.display !== "none") renderList();

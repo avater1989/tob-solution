@@ -1,0 +1,249 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>目录管理 · 运营后台</title>
+<link rel="stylesheet" href="../assets/css/proto.css?v=3" />
+<link rel="stylesheet" href="../assets/css/content-mgmt.css?v=3" />
+</head>
+<body class="admin-body" data-module="content" data-nav="content-series" data-title="目录管理" data-crumb="运营后台 / 内容 / 系列课 / 目录管理">
+
+<div id="header-actions">
+  <button class="btn" id="btn-new-ch" style="display:none">+ 新建章节</button>
+  <button class="btn btn-primary" id="btn-publish" style="display:none">完成并上架</button>
+  <a class="btn" href="content-series.html">返回列表</a>
+</div>
+
+<div id="page-content" style="display:none">
+  <a class="cm-back" href="content-series.html">← 返回系列课列表</a>
+
+  <div class="cm-page-hd">
+    <div>
+      <h1 id="o-name">小学语文阅读启蒙系列</h1>
+      <p class="sub" id="o-sub">K12 教育 · 系列视频课程</p>
+    </div>
+  </div>
+
+  <div class="cm-hero">
+    <div class="cm-avatar" id="o-avatar">小</div>
+    <div class="cm-hero-bd">
+      <div class="cm-hero-title">
+        <span id="o-name2">小学语文阅读启蒙系列</span>
+        <span class="cm-pill" id="o-shelf">已上架</span>
+      </div>
+      <div class="cm-hero-desc" id="o-desc">针对 6-12 岁儿童阅读兴趣培养，从绘本到章节书的进阶路径。</div>
+      <div class="cm-hero-meta">
+        <span><b id="o-ch-count">3</b> 章节</span>
+        <span><b id="o-v-count">6</b> 视频</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="cm-alert" id="o-readonly" style="display:none">
+    课程已上架，目录处于只读状态。如需调整内容，请先返回课程列表下架课程。
+  </div>
+
+  <div id="o-chapters"></div>
+</div>
+
+<!-- 编辑章节弹窗 -->
+<div class="proto-modal" id="modal-chapter">
+  <div style="background:#fff;border-radius:10px;width:520px;max-width:94vw;max-height:86vh;overflow:auto;display:flex;flex-direction:column">
+    <div class="proto-modal-hd">
+      <h3 style="margin:0;font-size:16px" id="ch-modal-title">编辑章节和视频</h3>
+      <button class="ctrl-icon-btn" data-close>×</button>
+    </div>
+    <div class="proto-modal-bd">
+      <p style="margin:0 0 12px;font-size:12px;color:#8c8c8c" id="ch-modal-course">—</p>
+      <div class="field"><label>章节名称 *</label><input class="input" id="ch-name" placeholder="如：第一章 认识情绪" /></div>
+      <div class="field"><label>视频名称 *</label><input class="input" id="ch-video" placeholder="请输入视频名称" /></div>
+      <div class="field"><label>预计学习时长</label><input class="input" id="ch-dur" placeholder="如：15分钟" /></div>
+      <div class="field">
+        <label>视频来源 *</label>
+        <input class="input" id="ch-src" placeholder="填写视频素材名称或播放地址" />
+        <div style="font-size:11px;color:#8c8c8c;margin-top:4px">当前版本记录视频引用，不上传或复制实际文件</div>
+      </div>
+      <div class="field">
+        <label style="display:flex;align-items:center;gap:8px;font-weight:400"><input type="checkbox" id="ch-req" checked> 设为必修视频</label>
+        <label style="display:flex;align-items:center;gap:8px;font-weight:400;margin-top:8px"><input type="checkbox" id="ch-trial"> 设为免费试看章节</label>
+      </div>
+    </div>
+    <div class="proto-modal-ft" style="justify-content:flex-end;gap:8px">
+      <button class="btn" data-close>取消</button>
+      <button class="btn btn-primary" id="btn-save-ch">保存章节和视频</button>
+    </div>
+  </div>
+</div>
+
+<script src="../assets/js/proto.js"></script>
+<script src="../assets/js/ops-shell.js?v=2"></script>
+<script>
+var COURSES = {
+  S001: {
+    name:"小学语文阅读启蒙系列", cat:"K12 教育", desc:"针对 6-12 岁儿童阅读兴趣培养，从绘本到章节书的进阶路径。",
+    shelf:"已上架", color:"", editable:false,
+    chapters:[
+      { title:"第一章 认识绘本", status:"已配置视频", lessons:[
+        { title:"如何让孩子爱上阅读", req:true, meta:"如何让孩子爱上阅读.mp4 · 观看完成 · 8分钟", type:"视频" },
+        { title:"亲子共读示范", req:false, meta:"亲子共读.mp4 · 观看完成 · 12分钟", type:"视频" }
+      ]},
+      { title:"第二章 章节书进阶", status:"已配置视频", lessons:[
+        { title:"从绘本到章节书", req:true, meta:"章节书入门.mp4 · 观看完成 · 15分钟", type:"视频" }
+      ]},
+      { title:"第三章 阅读习惯养成", status:"已配置视频", lessons:[
+        { title:"每日阅读打卡法", req:true, meta:"阅读打卡.mp4 · 观看完成 · 10分钟", type:"视频" }
+      ]}
+    ]
+  },
+  S002: {
+    name:"家长情绪管理训练营", cat:"家庭教育", desc:"8 周系统训练，帮助家长识别情绪、管理情绪、与孩子正向沟通。",
+    shelf:"已下架", color:"green", editable:true,
+    chapters:[
+      { title:"第一章 制定学习目标", status:"已配置视频", lessons:[
+        { title:"目标拆解方法", req:true, meta:"课程图文内容 · 观看完成 · 8分钟", type:"视频" }
+      ]}
+    ]
+  },
+  S003: {
+    name:"AI 学习规划入门", cat:"学习能力", desc:"AI 助力学习规划，10 节实操课让孩子学会用 AI 工具提升学习效率。",
+    shelf:"已上架", color:"orange", editable:false,
+    chapters:[
+      { title:"第一章 AI 工具入门", status:"已配置视频", lessons:[
+        { title:"认识常用 AI 工具", req:true, meta:"AI入门.mp4 · 观看完成 · 18分钟", type:"视频" }
+      ]}
+    ]
+  }
+};
+
+var id = new URLSearchParams(location.search).get("id") || "S001";
+var course = COURSES[id] || COURSES.S001;
+var editingIdx = -1;
+
+function esc(s){ return String(s).replace(/[&<>"']/g,function(c){return({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"})[c];}); }
+
+function render() {
+  document.getElementById("o-name").textContent = course.name;
+  document.getElementById("o-name2").textContent = course.name;
+  document.getElementById("o-sub").textContent = course.cat + " · 系列视频课程";
+  document.getElementById("o-desc").textContent = course.desc;
+  document.getElementById("o-avatar").textContent = course.name.charAt(0);
+  document.getElementById("o-avatar").className = "cm-avatar " + (course.color||"");
+  document.getElementById("o-shelf").textContent = course.shelf;
+  document.getElementById("o-shelf").className = "cm-pill" + (course.shelf === "已上架" ? "" : " off");
+  document.getElementById("o-readonly").style.display = course.editable ? "none" : "block";
+  document.getElementById("btn-new-ch").style.display = course.editable ? "" : "none";
+  document.getElementById("btn-publish").style.display = course.editable ? "" : "none";
+
+  var vCount = 0;
+  course.chapters.forEach(function(c){ vCount += c.lessons.length; });
+  document.getElementById("o-ch-count").textContent = course.chapters.length;
+  document.getElementById("o-v-count").textContent = vCount;
+
+  var html = course.chapters.map(function(ch, i){
+    var acts = course.editable
+      ? '<div class="cm-chapter-acts">' +
+          '<button class="btn" data-move="' + i + '" data-dir="-1">↑</button>' +
+          '<button class="btn" data-move="' + i + '" data-dir="1">↓</button>' +
+          '<button class="btn" data-edit-ch="' + i + '">编辑</button>' +
+          '<button class="btn" style="color:#f53f3f;border-color:#ffa39e" data-del-ch="' + i + '">删除</button>' +
+        '</div>'
+      : '';
+    var lessons = ch.lessons.map(function(l, j){
+      return '<div class="cm-lesson">' +
+        '<span class="cm-lesson-idx">' + (j+1) + '</span>' +
+        '<div class="cm-lesson-bd">' +
+          '<div class="cm-lesson-title">' + esc(l.title) + (l.req ? '<span class="req">必修</span>' : '') + '</div>' +
+          '<div class="cm-lesson-meta">' + esc(l.meta) + '</div>' +
+        '</div>' +
+        '<span class="cm-type-tag">' + esc(l.type) + '</span>' +
+      '</div>';
+    }).join("");
+    return '<div class="cm-chapter">' +
+      '<div class="cm-chapter-hd">' +
+        '<div class="cm-chapter-num">' + (i+1) + '</div>' +
+        '<div class="cm-chapter-title">' + esc(ch.title) + '</div>' +
+        '<span class="cm-chapter-status">' + esc(ch.status) + '</span>' + acts +
+      '</div>' + lessons +
+    '</div>';
+  }).join("");
+  document.getElementById("o-chapters").innerHTML = html || '<div class="cm-section" style="text-align:center;color:#bfbfbf">暂无章节，点击「新建章节」开始编排</div>';
+}
+render();
+
+var mask = document.getElementById("mask");
+function closeAll(){
+  mask && mask.classList.remove("open");
+  document.querySelectorAll(".proto-modal").forEach(function(n){ n.classList.remove("open"); });
+}
+function openChapterModal(idx){
+  editingIdx = idx;
+  var isNew = idx < 0;
+  document.getElementById("ch-modal-title").textContent = isNew ? "新建章节和视频" : "编辑章节和视频";
+  document.getElementById("ch-modal-course").textContent = course.name;
+  if (isNew) {
+    document.getElementById("ch-name").value = "";
+    document.getElementById("ch-video").value = "";
+    document.getElementById("ch-dur").value = "";
+    document.getElementById("ch-src").value = "";
+    document.getElementById("ch-req").checked = true;
+    document.getElementById("ch-trial").checked = false;
+  } else {
+    var ch = course.chapters[idx];
+    var les = ch.lessons[0] || { title:"", meta:"", req:true };
+    document.getElementById("ch-name").value = ch.title;
+    document.getElementById("ch-video").value = les.title;
+    document.getElementById("ch-dur").value = (les.meta.match(/·\s*([^·]+)$/) || [])[1] || "";
+    document.getElementById("ch-src").value = (les.meta.split(" · ")[0] || "");
+    document.getElementById("ch-req").checked = !!les.req;
+  }
+  mask.classList.add("open");
+  document.getElementById("modal-chapter").classList.add("open");
+}
+
+document.getElementById("btn-new-ch").addEventListener("click", function(){ openChapterModal(-1); });
+document.getElementById("btn-publish").addEventListener("click", function(){
+  course.shelf = "已上架"; course.editable = false;
+  Proto.toast("已上架");
+  render();
+});
+document.getElementById("btn-save-ch").addEventListener("click", function(){
+  var title = document.getElementById("ch-name").value.trim() || "未命名章节";
+  var video = document.getElementById("ch-video").value.trim() || "未命名视频";
+  var dur = document.getElementById("ch-dur").value.trim() || "10分钟";
+  var src = document.getElementById("ch-src").value.trim() || "未指定素材";
+  var req = document.getElementById("ch-req").checked;
+  var lesson = { title: video, req: req, meta: src + " · 观看完成 · " + dur, type: "视频" };
+  if (editingIdx < 0) {
+    course.chapters.push({ title: title, status: "已配置视频", lessons: [lesson] });
+  } else {
+    course.chapters[editingIdx].title = title;
+    course.chapters[editingIdx].lessons = [lesson];
+  }
+  closeAll();
+  render();
+  Proto.toast("已保存");
+});
+
+document.addEventListener("click", function(e){
+  var edit = e.target.closest("[data-edit-ch]");
+  if (edit) { openChapterModal(+edit.getAttribute("data-edit-ch")); return; }
+  var del = e.target.closest("[data-del-ch]");
+  if (del) {
+    course.chapters.splice(+del.getAttribute("data-del-ch"), 1);
+    render(); Proto.toast("章节已删除"); return;
+  }
+  var mv = e.target.closest("[data-move]");
+  if (mv) {
+    var i = +mv.getAttribute("data-move"), dir = +mv.getAttribute("data-dir"), j = i + dir;
+    if (j < 0 || j >= course.chapters.length) return;
+    var tmp = course.chapters[i]; course.chapters[i] = course.chapters[j]; course.chapters[j] = tmp;
+    render();
+  }
+});
+
+mask && mask.addEventListener("click", closeAll);
+document.querySelectorAll("[data-close]").forEach(function(b){ b.addEventListener("click", closeAll); });
+</script>
+</body>
+</html>

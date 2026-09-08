@@ -1,0 +1,254 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>系列课管理 · 运营后台</title>
+<link rel="stylesheet" href="../assets/css/proto.css?v=3" />
+<style>
+.cs-card {
+  background: #fff; border: 1px solid #e8e8e8; border-radius: 8px;
+  margin-bottom: 14px; padding: 16px; display: flex; gap: 16px;
+  transition: all .15s;
+}
+.cs-card:hover { border-color: #165dff; box-shadow: 0 4px 14px rgba(22,93,255,.1); }
+.cs-cover {
+  width: 160px; height: 100px; border-radius: 6px;
+  background: linear-gradient(135deg, #165dff, #4080ff);
+  display: flex; align-items: center; justify-content: center;
+  color: #fff; font-size: 36px; flex-shrink: 0;
+}
+.cs-cover.green  { background: linear-gradient(135deg, #00b42a, #4ed679); }
+.cs-cover.orange { background: linear-gradient(135deg, #fa8c16, #ffc53d); }
+.cs-cover.purple { background: linear-gradient(135deg, #722ed1, #b577ff); }
+.cs-info { flex: 1; min-width: 0; }
+.cs-title {
+  font-size: 15px; font-weight: 600; color: #1d2129;
+  display: flex; align-items: center; gap: 10px; margin-bottom: 6px;
+}
+.cs-desc { font-size: 12px; color: #8c8c8c; line-height: 1.6; margin-bottom: 8px; }
+.cs-stats {
+  display: flex; gap: 16px; font-size: 12px; color: #595959;
+  margin-bottom: 10px;
+}
+.cs-stats b { color: #165dff; font-weight: 600; font-family: monospace; }
+.cs-actions { display: flex; gap: 8px; }
+
+/* ===== 抽屉：子内容编排 ===== */
+.cs-subitems {
+  border: 1px solid #e8e8e8; border-radius: 6px;
+  padding: 10px; max-height: 280px; overflow-y: auto;
+  background: #fafafa;
+}
+.cs-sub-block { margin-bottom: 12px; }
+.cs-sub-block:last-child { margin-bottom: 0; }
+.cs-sub-title {
+  font-size: 12px; font-weight: 500; color: #595959;
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 6px;
+}
+.cs-sub-title .cs-add { color: #165dff; cursor: pointer; font-size: 12px; }
+.cs-sub-pill {
+  display: flex; align-items: center; gap: 6px;
+  background: #fff; border: 1px solid #e8e8e8;
+  padding: 6px 10px; border-radius: 4px; margin-bottom: 4px;
+  font-size: 12px; color: #1d2129;
+}
+.cs-sub-pill .cs-pill-x {
+  margin-left: auto; color: #8c8c8c; cursor: pointer; font-size: 14px;
+}
+.cs-sub-pill .cs-pill-x:hover { color: #f53f3f; }
+.cs-pill-type {
+  font-size: 11px; padding: 1px 6px; border-radius: 3px;
+  font-weight: 500;
+}
+.cs-pill-type.video   { background: #e6f4ff; color: #165dff; }
+.cs-pill-type.article { background: #f9f0ff; color: #722ed1; }
+.cs-pill-type.goods   { background: #fff7e6; color: #fa8c16; }
+.cs-empty-sub {
+  font-size: 12px; color: #bfbfbf; text-align: center;
+  padding: 16px; border: 1px dashed #e8e8e8; border-radius: 4px;
+}
+</style>
+</head>
+<body class="admin-body" data-module="content" data-nav="content-series" data-title="系列课管理" data-crumb="运营后台 / 内容 / 内容管理 / 系列课">
+
+<div id="header-actions">
+  <button class="btn">导出</button>
+  <a class="btn btn-primary" href="content-series-edit.html">+ 新建系列课</a>
+</div>
+
+<div id="page-content" style="display:none">
+
+  <div class="card" style="margin-bottom:14px;border-color:#d3adf7;background:#f9f0ff"><div class="card-bd" style="padding:10px 16px;font-size:13px;color:#531dab">
+    平台内容中台 · 此处维护<strong>标准内容库</strong>，可下发或授权给租户使用；租户自建售卖内容仍在商家后台「内容」模块，上架前经本模块「内容审核」。
+  </div></div>
+
+  <!-- 筛选条 -->
+  <div class="card" style="margin-bottom:14px"><div class="card-bd" style="padding:12px 16px">
+    <div class="toolbar" style="border:none;padding:0;background:transparent">
+      <input class="input" type="text" placeholder="搜索系列课名称 / 讲师" style="width:240px" />
+      <select class="input" style="width:140px">
+        <option>全部状态</option><option>已上架</option><option>草稿</option><option>已下架</option>
+      </select>
+      <select class="input" style="width:160px">
+        <option>全部分组</option><option>K12 教育</option><option>家庭教育</option>
+      </select>
+      <button class="btn btn-primary">查询</button>
+      <button class="btn">重置</button>
+    </div>
+  </div></div>
+
+  <!-- 系列课卡片列表 -->
+  <div id="cs-list"></div>
+
+  <!-- 分页 -->
+  <div style="display:flex;align-items:center;gap:8px;margin-top:16px">
+    <span style="color:#8c8c8c;font-size:12px">共 <b id="cs-count">3</b> 条</span>
+    <div style="margin-left:auto;display:flex;gap:6px">
+      <button class="btn" disabled>上一页</button>
+      <button class="btn btn-primary">1</button>
+      <button class="btn" disabled>下一页</button>
+    </div>
+  </div>
+
+</div><!-- /#page-content -->
+
+<!-- 分享弹窗 -->
+<div class="proto-modal" id="modal-share">
+  <div style="background:#fff;border-radius:10px;width:440px;max-width:92vw;overflow:hidden">
+    <div class="proto-modal-hd">
+      <h3 style="margin:0;font-size:16px">分享系列课</h3>
+      <button class="ctrl-icon-btn" data-close>×</button>
+    </div>
+    <div class="proto-modal-bd">
+      <div style="font-size:12px;color:#8c8c8c;margin-bottom:6px">短链</div>
+      <div id="share-url" style="font-family:monospace;font-size:12px;background:#f7f8fa;border:1px solid #e8e8e8;border-radius:6px;padding:8px 10px;word-break:break-all">https://yibo.app/s/S001</div>
+      <div style="margin-top:12px;display:flex;gap:8px">
+        <button class="btn btn-primary" id="btn-copy-link">复制链接</button>
+        <button class="btn" data-toast="海报已生成（演示）">预览海报</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="../assets/js/proto.js"></script>
+<script src="../assets/js/ops-shell.js?v=2"></script>
+<script>
+// ===== 兜底 =====
+setTimeout(function() {
+  if (document.documentElement.getAttribute('data-shell-ready') === '1') return;
+  if (document.querySelector('aside.sidebar')) return;
+  var err = document.createElement('div');
+  err.style.cssText = 'position:fixed;top:0;left:0;right:0;background:#fff1f0;color:#f53f3f;padding:12px 20px;border-bottom:1px solid #ffa39e;z-index:99999;font-size:13px;font-family:system-ui;';
+  err.innerHTML = '<b>⚠ 页面初始化失败</b>：浏览器可能缓存了旧版本。请按 <kbd style="background:#fff;padding:2px 6px;border-radius:3px;border:1px solid #ffa39e;font-family:monospace;">Ctrl+Shift+R</kbd> 强制刷新，或 <button onclick="location.reload();" style="background:#165dff;color:#fff;border:none;padding:4px 12px;border-radius:4px;cursor:pointer;margin-left:8px;">点击重试</button>';
+  document.body.appendChild(err);
+}, 1500);
+
+// ===== 数据 =====
+var SERIES = [
+  { id: "S001", name: "小学语文阅读启蒙系列", emoji: "📚", thumb: "blue",
+    teacher: "张老师", desc: "针对 6-12 岁儿童阅读兴趣培养，从绘本到章节书的进阶路径。",
+    videos: 6, articles: 3, goods: 1, students: 1287, duration: "2.5h",
+    status: "已上架", statusType: "pass", onShelf: true, scope: "全平台标准库" },
+  { id: "S002", name: "家长情绪管理训练营", emoji: "💝", thumb: "green",
+    teacher: "李老师", desc: "8 周系统训练，帮助家长识别情绪、管理情绪、与孩子正向沟通。",
+    videos: 4, articles: 2, goods: 2, students: 0, duration: "1.8h",
+    status: "已下架", statusType: "review", onShelf: false, scope: "试点租户 · 星启家庭教育" },
+  { id: "S003", name: "AI 学习规划入门", emoji: "🤖", thumb: "orange",
+    teacher: "王博士", desc: "AI 助力学习规划，10 节实操课让孩子学会用 AI 工具提升学习效率。",
+    videos: 5, articles: 1, goods: 1, students: 856, duration: "3.2h",
+    status: "已上架", statusType: "pass", onShelf: true, scope: "全平台标准库" }
+];
+
+function esc(s) {
+  return String(s).replace(/[&<>"']/g, function(c) {
+    return ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c];
+  });
+}
+
+function renderList() {
+  var html = SERIES.map(function(s) {
+    return '' +
+      '<div class="cs-card">' +
+        '<div class="cs-cover ' + s.thumb + '">' + s.emoji + '</div>' +
+        '<div class="cs-info">' +
+          '<div class="cs-title">' + esc(s.name) +
+            '<span class="audit-badge ' + s.statusType + '">' + esc(s.status) + '</span>' +
+            '<span style="color:#8c8c8c;font-size:11px;font-weight:400">ID: ' + esc(s.id) + '</span>' +
+          '</div>' +
+          '<div class="cs-desc">' + esc(s.desc) + '</div>' +
+          '<div class="cs-stats">' +
+            '<span>适用范围：<b style="color:#722ed1">' + esc(s.scope) + '</b></span>' +
+            '<span>讲师：' + esc(s.teacher) + '</span>' +
+            '<span>总时长：<b>' + esc(s.duration) + '</b></span>' +
+            '<span>📹 <b>' + s.videos + '</b> 视频</span>' +
+            '<span>📝 <b>' + s.articles + '</b> 图文</span>' +
+            '<span>🛒 <b>' + s.goods + '</b> 商品</span>' +
+            '<span>学员：<b>' + s.students.toLocaleString() + '</b></span>' +
+          '</div>' +
+          '<div class="cs-actions">' +
+            '<button class="btn" data-share="' + s.id + '"' + (s.onShelf ? '' : ' disabled') + '>分享</button>' +
+            '<a class="btn" href="content-series-detail.html?id=' + s.id + '">查看系列课</a>' +
+            '<a class="btn" href="content-series-outline.html?id=' + s.id + '">目录管理</a>' +
+            (s.onShelf
+              ? '<button class="btn" data-shelf-off="' + s.id + '">下架</button>'
+              : '<a class="btn btn-primary" href="content-series-edit.html?id=' + s.id + '">编辑系列课</a>' +
+                '<button class="btn" data-shelf-on="' + s.id + '">上架</button>' +
+                '<button class="btn" style="color:#f53f3f;border-color:#ffa39e" data-del="' + s.id + '">删除</button>') +
+            '<button class="btn" data-copy="' + s.id + '">复制</button>' +
+          '</div>' +
+        '</div>' +
+      '</div>';
+  }).join("");
+  document.getElementById("cs-list").innerHTML = html;
+  document.getElementById("cs-count").textContent = SERIES.length;
+}
+
+// ===== Mask & 弹窗 =====
+var mask = document.getElementById("mask");
+function closeAll() {
+  mask.classList.remove("open");
+  document.querySelectorAll(".proto-modal, .proto-drawer").forEach(function(n) { n.classList.remove("open"); });
+}
+
+document.addEventListener("click", function(e) {
+  var share = e.target.closest("[data-share]");
+  if (share && !share.disabled) {
+    document.getElementById("share-url").textContent = "https://yibo.app/s/" + share.getAttribute("data-share");
+    mask.classList.add("open");
+    document.getElementById("modal-share").classList.add("open");
+    return;
+  }
+  var off = e.target.closest("[data-shelf-off]");
+  if (off) {
+    var s = SERIES.find(function(x){ return x.id === off.getAttribute("data-shelf-off"); });
+    if (s) { s.onShelf = false; s.status = "已下架"; s.statusType = "review"; renderList(); Proto.toast("已下架"); }
+    return;
+  }
+  var on = e.target.closest("[data-shelf-on]");
+  if (on) {
+    var s2 = SERIES.find(function(x){ return x.id === on.getAttribute("data-shelf-on"); });
+    if (s2) { s2.onShelf = true; s2.status = "已上架"; s2.statusType = "pass"; renderList(); Proto.toast("已上架"); }
+    return;
+  }
+  if (e.target.closest("[data-copy]")) { Proto.toast("已复制系列课（演示）"); return; }
+  if (e.target.closest("[data-del]")) { Proto.toast("已删除（演示）"); return; }
+});
+
+document.getElementById("btn-copy-link").addEventListener("click", function(){ Proto.toast("链接已复制"); });
+mask && mask.addEventListener("click", closeAll);
+document.querySelectorAll("[data-close]").forEach(function(b) {
+  b.addEventListener("click", closeAll);
+});
+
+// 渲染
+function tryRender() {
+  if (document.getElementById("page-content").style.display !== "none") renderList();
+  else setTimeout(tryRender, 80);
+}
+if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", tryRender);
+else tryRender();
+</script>
+</body>
+</html>

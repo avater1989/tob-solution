@@ -1,0 +1,112 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>视频详情 · 艺博 To-B</title>
+<link rel="stylesheet" href="../assets/css/proto.css?v=3" />
+<link rel="stylesheet" href="../assets/css/content-mgmt.css?v=3" />
+</head>
+<body class="admin-body" data-module="content" data-nav="content-video" data-title="视频详情" data-crumb="内容 / 内容管理 / 视频 / 详情">
+
+<div id="header-actions">
+  <button class="btn" id="btn-share">分享</button>
+  <a class="btn btn-primary" id="btn-edit" href="content-video-edit.html?id=V001">编辑</a>
+</div>
+
+<div id="page-content" style="display:none">
+  <a class="cm-back" href="content-video.html">← 返回视频列表</a>
+  <div class="cm-page-hd">
+    <div>
+      <h1 id="d-name">如何让孩子爱上阅读</h1>
+      <p class="sub">视频商品详情</p>
+    </div>
+  </div>
+
+  <div class="cm-hero">
+    <div class="cm-avatar" id="d-avatar">如</div>
+    <div class="cm-hero-bd">
+      <div class="cm-hero-title">
+        <span id="d-name2">如何让孩子爱上阅读</span>
+        <span class="cm-pill" id="d-pub">已发布</span>
+        <span class="cm-pill" id="d-shelf">已上架</span>
+      </div>
+      <div class="cm-hero-desc" id="d-desc">通过一个短视频掌握亲子阅读引导方法。</div>
+    </div>
+  </div>
+
+  <div class="cm-section">
+    <div class="cm-section-hd"><h2>内容信息</h2></div>
+    <div class="cm-dl">
+      <div class="item"><span class="k">内容类型</span><span class="v">视频</span></div>
+      <div class="item"><span class="k">分类</span><span class="v" id="d-cat">K12 教育</span></div>
+      <div class="item"><span class="k">内容摘要</span><span class="v" id="d-summary">如何让孩子爱上阅读 · reading.mp4 · 8分钟</span></div>
+      <div class="item"><span class="k">更新时间</span><span class="v" id="d-updated">2026-09-01</span></div>
+      <div class="item"><span class="k">讲师</span><span class="v" id="d-teacher">张老师</span></div>
+      <div class="item"><span class="k">文件大小</span><span class="v" id="d-size">156 MB</span></div>
+    </div>
+  </div>
+
+  <div class="cm-section">
+    <div class="cm-section-hd"><h2>商品信息</h2></div>
+    <div class="cm-dl">
+      <div class="item"><span class="k">获取方式</span><span class="v" id="d-access">免费</span></div>
+      <div class="item"><span class="k">商品分组</span><span class="v" id="d-group">K12 教育</span></div>
+      <div class="item"><span class="k">有效期</span><span class="v">长期有效</span></div>
+      <div class="item"><span class="k">店铺显示</span><span class="v">显示</span></div>
+    </div>
+  </div>
+</div>
+
+<div class="proto-modal" id="modal-share">
+  <div style="background:#fff;border-radius:10px;width:440px;max-width:92vw;overflow:hidden">
+    <div class="proto-modal-hd"><h3 style="margin:0;font-size:16px">分享视频</h3><button class="ctrl-icon-btn" data-close>×</button></div>
+    <div class="proto-modal-bd">
+      <div class="cm-share-grid">
+        <div><div class="cm-qr"></div><div style="text-align:center;font-size:11px;color:#8c8c8c;margin-top:6px">扫码预览</div></div>
+        <div>
+          <div style="font-size:12px;color:#8c8c8c;margin-bottom:6px">短链</div>
+          <div class="cm-share-link" id="share-url">https://yibo.app/v/V001</div>
+          <div style="margin-top:12px"><button class="btn btn-primary" id="btn-copy-link">复制链接</button></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="../assets/js/proto.js"></script>
+<script src="../assets/js/admin-shell.js?v=3"></script>
+<script>
+var DATA = {
+  V001: { name:"如何让孩子爱上阅读", cat:"K12 教育", teacher:"张老师", desc:"通过一个短视频掌握亲子阅读引导方法。", summary:"如何让孩子爱上阅读 · reading.mp4 · 8分钟", size:"156 MB", access:"免费", group:"K12 教育", shelf:"已上架", updated:"2026-09-01" },
+  V002: { name:"亲子沟通的5 个关键", cat:"家庭教育", teacher:"李老师", desc:"五个可落地的亲子沟通关键，帮助家长建立安全对话。", summary:"亲子沟通的5个关键 · talk.mp4 · 12分钟", size:"245 MB", access:"免费", group:"家庭教育", shelf:"已上架", updated:"2026-08-28", color:"green" },
+  V003: { name:"AI 助力学习规划", cat:"学习能力", teacher:"王博士", desc:"用 AI 工具帮孩子做一周学习计划。", summary:"AI 助力学习规划 · ai-plan.mp4 · 15分钟", size:"312 MB", access:"付费 · ¥9.9", group:"学习能力", shelf:"转码中", updated:"2026-09-04", color:"orange", pub:"处理中" }
+};
+var id = new URLSearchParams(location.search).get("id") || "V001";
+var d = DATA[id] || DATA.V001;
+["d-name","d-name2"].forEach(function(k){ document.getElementById(k).textContent = d.name; });
+document.getElementById("d-avatar").textContent = d.name.charAt(0);
+document.getElementById("d-avatar").className = "cm-avatar " + (d.color||"");
+document.getElementById("d-desc").textContent = d.desc;
+document.getElementById("d-cat").textContent = d.cat;
+document.getElementById("d-summary").textContent = d.summary;
+document.getElementById("d-updated").textContent = d.updated;
+document.getElementById("d-teacher").textContent = d.teacher;
+document.getElementById("d-size").textContent = d.size;
+document.getElementById("d-access").textContent = d.access;
+document.getElementById("d-group").textContent = d.group;
+document.getElementById("d-shelf").textContent = d.shelf;
+document.getElementById("d-shelf").className = "cm-pill" + (d.shelf === "已上架" ? "" : " off");
+document.getElementById("d-pub").textContent = d.pub || "已发布";
+document.getElementById("btn-edit").href = "content-video-edit.html?id=" + id;
+document.getElementById("share-url").textContent = "https://yibo.app/v/" + id;
+
+var mask = document.getElementById("mask");
+function closeAll(){ mask.classList.remove("open"); document.getElementById("modal-share").classList.remove("open"); }
+document.getElementById("btn-share").onclick = function(){ mask.classList.add("open"); document.getElementById("modal-share").classList.add("open"); };
+document.getElementById("btn-copy-link").onclick = function(){ Proto.toast("链接已复制"); };
+mask && mask.addEventListener("click", closeAll);
+document.querySelectorAll("[data-close]").forEach(function(b){ b.addEventListener("click", closeAll); });
+</script>
+</body>
+</html>

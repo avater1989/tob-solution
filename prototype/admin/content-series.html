@@ -1,10 +1,10 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>系列课 · 艺博 To-B</title>
-<link rel="stylesheet" href="../assets/css/proto.css" />
+<link rel="stylesheet" href="../assets/css/proto.css?v=3" />
 <style>
 .cs-card {
   background: #fff; border: 1px solid #e8e8e8; border-radius: 8px;
@@ -75,7 +75,7 @@
 
 <div id="header-actions">
   <button class="btn">导出</button>
-  <button class="btn btn-primary" id="btn-new-series">+ 新建系列课</button>
+  <a class="btn btn-primary" href="content-series-edit.html">+ 新建系列课</a>
 </div>
 
 <div id="page-content" style="display:none">
@@ -110,135 +110,26 @@
 
 </div><!-- /#page-content -->
 
-<!-- 新建/编辑系列课 抽屉 -->
-<div class="proto-drawer" id="drawer-series">
-  <div class="proto-drawer-bd">
-    <div class="proto-drawer-hd">
-      <h3 id="series-drawer-title">新建系列课</h3>
+<!-- 分享弹窗 -->
+<div class="proto-modal" id="modal-share">
+  <div style="background:#fff;border-radius:10px;width:440px;max-width:92vw;overflow:hidden">
+    <div class="proto-modal-hd">
+      <h3 style="margin:0;font-size:16px">分享系列课</h3>
       <button class="ctrl-icon-btn" data-close>×</button>
     </div>
-    <div class="proto-drawer-bd" style="padding:20px">
-
-      <div class="form-grid" style="grid-template-columns:1fr 1fr">
-        <div class="field">
-          <label>封面</label>
-          <div style="width:120px;height:80px;border:1px dashed #d9d9d9;border-radius:6px;display:flex;align-items:center;justify-content:center;color:#bfbfbf;font-size:12px;cursor:pointer">点击上传</div>
-        </div>
-        <div class="field">
-          <label>状态</label>
-          <div>
-            <label style="margin-right:14px"><input type="radio" name="series-st" checked> 草稿</label>
-            <label><input type="radio" name="series-st"> 已上架</label>
-          </div>
-        </div>
+    <div class="proto-modal-bd">
+      <div style="font-size:12px;color:#8c8c8c;margin-bottom:6px">短链</div>
+      <div id="share-url" style="font-family:monospace;font-size:12px;background:#f7f8fa;border:1px solid #e8e8e8;border-radius:6px;padding:8px 10px;word-break:break-all">https://yibo.app/s/S001</div>
+      <div style="margin-top:12px;display:flex;gap:8px">
+        <button class="btn btn-primary" id="btn-copy-link">复制链接</button>
+        <button class="btn" data-toast="海报已生成（演示）">预览海报</button>
       </div>
-
-      <div class="form-grid" style="grid-template-columns:1fr">
-        <div class="field">
-          <label>系列课名称 *</label>
-          <input class="input" placeholder="请输入系列课名称" />
-        </div>
-      </div>
-
-      <div class="form-grid" style="grid-template-columns:1fr 1fr">
-        <div class="field">
-          <label>讲师</label>
-          <input class="input" placeholder="请选择讲师" />
-        </div>
-        <div class="field">
-          <label>所属分组</label>
-          <select class="input"><option>K12 教育 / 小学</option><option>家庭教育</option></select>
-        </div>
-      </div>
-
-      <div class="form-grid" style="grid-template-columns:1fr">
-        <div class="field">
-          <label>系列课描述</label>
-          <textarea class="input" rows="3" placeholder="请输入系列课描述"></textarea>
-        </div>
-      </div>
-
-      <div class="form-grid" style="grid-template-columns:1fr 1fr">
-        <div class="field">
-          <label>价格（元）</label>
-          <input class="input" type="number" placeholder="0.00" />
-        </div>
-        <div class="field">
-          <label>标签</label>
-          <input class="input" placeholder="多个用逗号分隔" />
-        </div>
-      </div>
-
-      <!-- 子内容编排 -->
-      <div class="field">
-        <label>子内容编排</label>
-        <div class="cs-subitems">
-
-          <div class="cs-sub-block">
-            <div class="cs-sub-title">
-              <span>📹 视频（<b id="cnt-video">2</b>）</span>
-              <span class="cs-add" id="add-video">+ 添加视频</span>
-            </div>
-            <div id="list-video">
-              <div class="cs-sub-pill">
-                <span class="cs-pill-type video">视频</span>
-                如何让孩子爱上阅读<span style="color:#8c8c8c;font-size:11px">（8:24）</span>
-                <span class="cs-pill-x">×</span>
-              </div>
-              <div class="cs-sub-pill">
-                <span class="cs-pill-type video">视频</span>
-                亲子沟通的5 个关键<span style="color:#8c8c8c;font-size:11px">（12:35）</span>
-                <span class="cs-pill-x">×</span>
-              </div>
-            </div>
-          </div>
-
-          <div class="cs-sub-block">
-            <div class="cs-sub-title">
-              <span>📝 图文（<b id="cnt-article">1</b>）</span>
-              <span class="cs-add" id="add-article">+ 添加图文</span>
-            </div>
-            <div id="list-article">
-              <div class="cs-sub-pill">
-                <span class="cs-pill-type article">图文</span>
-                9 月新学期家长指南
-                <span class="cs-pill-x">×</span>
-              </div>
-            </div>
-          </div>
-
-          <div class="cs-sub-block">
-            <div class="cs-sub-title">
-              <span>🛒 关联商品（<b id="cnt-goods">2</b>）</span>
-              <span class="cs-add" id="add-goods">+ 添加商品</span>
-            </div>
-            <div id="list-goods">
-              <div class="cs-sub-pill">
-                <span class="cs-pill-type goods">商品</span>
-                9.9 试听课<span style="color:#fa8c16">¥9.9</span>
-                <span class="cs-pill-x">×</span>
-              </div>
-              <div class="cs-sub-pill">
-                <span class="cs-pill-type goods">商品</span>
-                家长情绪年卡<span style="color:#fa8c16">¥199</span>
-                <span class="cs-pill-x">×</span>
-              </div>
-            </div>
-          </div>
-
-        </div>
-      </div>
-
-    </div>
-    <div class="proto-drawer-ft">
-      <button class="btn" data-close>取消</button>
-      <button class="btn btn-primary">保存系列课</button>
     </div>
   </div>
 </div>
 
 <script src="../assets/js/proto.js"></script>
-<script src="../assets/js/admin-shell.js?v=2"></script>
+<script src="../assets/js/admin-shell.js?v=3"></script>
 <script>
 // ===== 兜底 =====
 setTimeout(function() {
@@ -255,15 +146,15 @@ var SERIES = [
   { id: "S001", name: "小学语文阅读启蒙系列", emoji: "📚", thumb: "blue",
     teacher: "张老师", desc: "针对 6-12 岁儿童阅读兴趣培养，从绘本到章节书的进阶路径。",
     videos: 6, articles: 3, goods: 1, students: 1287, duration: "2.5h",
-    status: "已上架", statusType: "pass" },
+    status: "已上架", statusType: "pass", onShelf: true },
   { id: "S002", name: "家长情绪管理训练营", emoji: "💝", thumb: "green",
     teacher: "李老师", desc: "8 周系统训练，帮助家长识别情绪、管理情绪、与孩子正向沟通。",
     videos: 4, articles: 2, goods: 2, students: 0, duration: "1.8h",
-    status: "草稿", statusType: "review" },
+    status: "已下架", statusType: "review", onShelf: false },
   { id: "S003", name: "AI 学习规划入门", emoji: "🤖", thumb: "orange",
     teacher: "王博士", desc: "AI 助力学习规划，10 节实操课让孩子学会用 AI 工具提升学习效率。",
     videos: 5, articles: 1, goods: 1, students: 856, duration: "3.2h",
-    status: "已上架", statusType: "pass" }
+    status: "已上架", statusType: "pass", onShelf: true }
 ];
 
 function esc(s) {
@@ -292,10 +183,15 @@ function renderList() {
             '<span>学员：<b>' + s.students.toLocaleString() + '</b></span>' +
           '</div>' +
           '<div class="cs-actions">' +
-            '<button class="btn">查看</button>' +
-            '<button class="btn btn-primary" data-edit-series="' + s.id + '">编辑</button>' +
-            '<button class="btn">配置子内容</button>' +
-            '<button class="btn" style="color:#f53f3f;border-color:#ffa39e">删除</button>' +
+            '<button class="btn" data-share="' + s.id + '"' + (s.onShelf ? '' : ' disabled') + '>分享</button>' +
+            '<a class="btn" href="content-series-detail.html?id=' + s.id + '">查看系列课</a>' +
+            '<a class="btn" href="content-series-outline.html?id=' + s.id + '">目录管理</a>' +
+            (s.onShelf
+              ? '<button class="btn" data-shelf-off="' + s.id + '">下架</button>'
+              : '<a class="btn btn-primary" href="content-series-edit.html?id=' + s.id + '">编辑系列课</a>' +
+                '<button class="btn" data-shelf-on="' + s.id + '">上架</button>' +
+                '<button class="btn" style="color:#f53f3f;border-color:#ffa39e" data-del="' + s.id + '">删除</button>') +
+            '<button class="btn" data-copy="' + s.id + '">复制</button>' +
           '</div>' +
         '</div>' +
       '</div>';
@@ -304,74 +200,41 @@ function renderList() {
   document.getElementById("cs-count").textContent = SERIES.length;
 }
 
-// ===== Mask & 抽屉 =====
+// ===== Mask & 弹窗 =====
 var mask = document.getElementById("mask");
 function closeAll() {
   mask.classList.remove("open");
   document.querySelectorAll(".proto-modal, .proto-drawer").forEach(function(n) { n.classList.remove("open"); });
 }
-function openDrawer(el) {
-  mask.classList.add("open");
-  el.classList.add("open");
-}
-
-// ===== 事件 =====
-document.getElementById("btn-new-series").addEventListener("click", function() {
-  document.getElementById("series-drawer-title").textContent = "新建系列课";
-  openDrawer(document.getElementById("drawer-series"));
-});
 
 document.addEventListener("click", function(e) {
-  var t = e.target.closest("[data-edit-series]");
-  if (t) {
-    document.getElementById("series-drawer-title").textContent = "编辑系列课";
-    openDrawer(document.getElementById("drawer-series"));
+  var share = e.target.closest("[data-share]");
+  if (share && !share.disabled) {
+    document.getElementById("share-url").textContent = "https://yibo.app/s/" + share.getAttribute("data-share");
+    mask.classList.add("open");
+    document.getElementById("modal-share").classList.add("open");
+    return;
   }
+  var off = e.target.closest("[data-shelf-off]");
+  if (off) {
+    var s = SERIES.find(function(x){ return x.id === off.getAttribute("data-shelf-off"); });
+    if (s) { s.onShelf = false; s.status = "已下架"; s.statusType = "review"; renderList(); Proto.toast("已下架"); }
+    return;
+  }
+  var on = e.target.closest("[data-shelf-on]");
+  if (on) {
+    var s2 = SERIES.find(function(x){ return x.id === on.getAttribute("data-shelf-on"); });
+    if (s2) { s2.onShelf = true; s2.status = "已上架"; s2.statusType = "pass"; renderList(); Proto.toast("已上架"); }
+    return;
+  }
+  if (e.target.closest("[data-copy]")) { Proto.toast("已复制系列课（演示）"); return; }
+  if (e.target.closest("[data-del]")) { Proto.toast("已删除（演示）"); return; }
 });
 
-// 关闭
+document.getElementById("btn-copy-link").addEventListener("click", function(){ Proto.toast("链接已复制"); });
 mask && mask.addEventListener("click", closeAll);
 document.querySelectorAll("[data-close]").forEach(function(b) {
   b.addEventListener("click", closeAll);
-});
-
-// 子内容删除
-document.addEventListener("click", function(e) {
-  var x = e.target.closest(".cs-pill-x");
-  if (!x) return;
-  var pill = x.closest(".cs-sub-pill");
-  var block = x.closest(".cs-sub-block");
-  pill.remove();
-  // 更新计数
-  var cnt = block.querySelectorAll(".cs-sub-pill").length;
-  var label = block.querySelector(".cs-sub-title b");
-  if (label) label.textContent = cnt;
-});
-
-// 添加子项（仅演示）
-function addPill(block, type, label, meta) {
-  var list = block.querySelector(".cs-sub-pill").parentNode;
-  if (block.querySelector(".cs-empty-sub")) block.querySelector(".cs-empty-sub").remove();
-  var pill = document.createElement("div");
-  pill.className = "cs-sub-pill";
-  pill.innerHTML = '<span class="cs-pill-type ' + type + '">' +
-    (type === "video" ? "视频" : type === "article" ? "图文" : "商品") +
-    '</span>' + label + (meta ? '<span style="color:#8c8c8c;font-size:11px">' + meta + '</span>' : '') +
-    '<span class="cs-pill-x">×</span>';
-  list.appendChild(pill);
-  var cnt = block.querySelectorAll(".cs-sub-pill").length;
-  var lbl = block.querySelector(".cs-sub-title b");
-  if (lbl) lbl.textContent = cnt;
-  Proto.toast("已添加（原型演示）");
-}
-document.getElementById("add-video").addEventListener("click", function() {
-  addPill(document.getElementById("list-video").parentNode, "video", "新课程导论", "（5:00）");
-});
-document.getElementById("add-article").addEventListener("click", function() {
-  addPill(document.getElementById("list-article").parentNode, "article", "学习要点速览");
-});
-document.getElementById("add-goods").addEventListener("click", function() {
-  addPill(document.getElementById("list-goods").parentNode, "goods", "新课程包 ¥99");
 });
 
 // 渲染

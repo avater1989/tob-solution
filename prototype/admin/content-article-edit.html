@@ -1,0 +1,166 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>编辑图文 · 艺博 To-B</title>
+<link rel="stylesheet" href="../assets/css/proto.css?v=3" />
+<link rel="stylesheet" href="../assets/css/content-mgmt.css?v=3" />
+</head>
+<body class="admin-body" data-module="content" data-nav="content-article" data-title="编辑图文" data-crumb="内容 / 内容管理 / 图文 / 编辑">
+
+<div id="header-actions">
+  <a class="btn" href="content-article.html">返回列表</a>
+  <button class="btn" id="btn-draft">保存草稿</button>
+  <button class="btn" id="btn-preview">用户端预览</button>
+  <button class="btn btn-primary" id="btn-publish">保存并上架</button>
+</div>
+
+<div id="page-content" style="display:none">
+  <a class="cm-back" href="content-article.html">← 返回图文列表</a>
+  <div class="cm-page-hd">
+    <div>
+      <h1 id="e-title">新建图文</h1>
+      <p class="sub">在同一页面完成图文内容、展示和商品规则配置</p>
+    </div>
+  </div>
+
+  <div class="cm-anchor" id="anchors">
+    <button class="btn active" data-goto="sec-content">内容信息</button>
+    <button class="btn" data-goto="sec-body">图文正文</button>
+    <button class="btn" data-goto="sec-product">商品信息</button>
+    <button class="btn" data-goto="sec-share">分享设置</button>
+  </div>
+
+  <div class="cm-section" id="sec-content">
+    <div class="cm-section-hd"><h2>内容信息</h2></div>
+    <div class="form-grid" style="grid-template-columns:1fr 1fr">
+      <div class="field" style="grid-column:1/-1">
+        <label>图文名称 * <span style="float:right;color:#8c8c8c;font-weight:400" id="name-cnt">0/45</span></label>
+        <input class="input" id="f-name" maxlength="45" placeholder="建议14字内" />
+      </div>
+      <div class="field">
+        <label>分类</label>
+        <select class="input" id="f-cat"><option>未分类</option><option>K12 教育</option><option>家庭教育</option><option>学习能力</option></select>
+      </div>
+      <div class="field">
+        <label>作者</label>
+        <select class="input" id="f-author"><option>编辑部</option><option>张老师</option><option>李老师</option></select>
+      </div>
+      <div class="field"><label>封面</label><div class="cm-cover-up">点击选择图片</div></div>
+      <div class="field" style="grid-column:1/-1">
+        <label>图文简介</label>
+        <textarea class="input" id="f-intro" rows="2" maxlength="256" placeholder="建议256字内"></textarea>
+      </div>
+    </div>
+  </div>
+
+  <div class="cm-section" id="sec-body">
+    <div class="cm-section-hd"><h2>图文正文 <span class="hint">支持粘贴富文本内容</span></h2></div>
+    <div class="rt-editor">
+      <div class="rt-toolbar">
+        <button type="button" class="rt-btn"><b>B</b></button>
+        <button type="button" class="rt-btn"><i>I</i></button>
+        <button type="button" class="rt-btn"><u>U</u></button>
+        <button type="button" class="rt-btn"><s>S</s></button>
+        <div class="rt-divider"></div>
+        <button type="button" class="rt-btn">H1</button>
+        <button type="button" class="rt-btn">H2</button>
+        <button type="button" class="rt-btn">H3</button>
+        <div class="rt-divider"></div>
+        <button type="button" class="rt-btn">❝</button>
+        <button type="button" class="rt-btn">≡</button>
+        <button type="button" class="rt-btn">🔗</button>
+        <button type="button" class="rt-btn">📷</button>
+        <div class="rt-divider"></div>
+        <button type="button" class="rt-btn">↶</button>
+        <button type="button" class="rt-btn">↷</button>
+        <button type="button" class="rt-btn">预览</button>
+      </div>
+      <div class="rt-body" id="f-body" contenteditable="true" style="min-height:240px">
+        <span class="rt-placeholder">在这里开始书写正文…</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="cm-section" id="sec-product">
+    <div class="cm-section-hd"><h2>商品信息</h2></div>
+    <div class="field"><label class="cm-check"><input type="checkbox" checked> 允许在店铺或链接中独立获取</label></div>
+    <div class="field">
+      <label>获取方式</label>
+      <div class="cm-choice">
+        <label><input type="radio" name="access" checked> 免费获取</label>
+        <label><input type="radio" name="access"> 付费购买</label>
+        <label><input type="radio" name="access"> 仅限指定用户</label>
+      </div>
+    </div>
+    <div class="form-grid" style="grid-template-columns:1fr 1fr">
+      <div class="field"><label>商品分组</label>
+        <select class="input"><option>默认分组</option><option selected>K12 教育</option><option>家庭教育</option></select>
+      </div>
+      <div class="field">
+        <label>上架策略</label>
+        <div class="cm-choice">
+          <label><input type="radio" name="shelf"> 立即上架</label>
+          <label><input type="radio" name="shelf" checked> 暂不上架</label>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="cm-section" id="sec-share">
+    <div class="cm-section-hd"><h2>分享设置</h2></div>
+    <div class="field"><label class="cm-check"><input type="checkbox" checked> 允许用户在小程序内分享</label></div>
+    <div class="field"><label class="cm-check"><input type="checkbox"> 自定义分享标题</label></div>
+  </div>
+
+  <div class="cm-sticky-ft">
+    <a class="btn" href="content-article.html">取消</a>
+    <button class="btn" id="btn-draft2">保存草稿</button>
+    <button class="btn" id="btn-preview2">用户端预览</button>
+    <button class="btn btn-primary" id="btn-publish2">保存并上架</button>
+  </div>
+</div>
+
+<script src="../assets/js/proto.js"></script>
+<script src="../assets/js/admin-shell.js?v=3"></script>
+<script>
+var PRESET = {
+  A001: { name:"9 月新学期家长指南", cat:"K12 教育", author:"编辑部", intro:"用一篇图文快速了解新学期家长准备事项。", body:"新学期开始，家长可以从作息、书包整理、情绪陪伴三个维度做准备。" },
+  A002: { name:"孩子注意力训练方法论", cat:"学习能力", author:"张老师", intro:"可操作的注意力训练方法合集。", body:"注意力训练建议每天固定 10 分钟，从视觉追踪开始……" },
+  A003: { name:"家庭情绪急救指南", cat:"家庭教育", author:"李老师", intro:"冲突场景下的情绪急救步骤。", body:"先暂停、再命名情绪、最后再谈规则。" }
+};
+var id = new URLSearchParams(location.search).get("id") || "";
+var isNew = !id || !PRESET[id];
+document.getElementById("e-title").textContent = isNew ? "新建图文" : "编辑图文";
+if (!isNew) {
+  var p = PRESET[id];
+  document.getElementById("f-name").value = p.name;
+  document.getElementById("f-intro").value = p.intro;
+  document.getElementById("f-body").innerHTML = "<p>" + p.body + "</p>";
+  var cat = document.getElementById("f-cat");
+  for (var i=0;i<cat.options.length;i++) if (cat.options[i].text === p.cat) cat.selectedIndex = i;
+  var au = document.getElementById("f-author");
+  for (var j=0;j<au.options.length;j++) if (au.options[j].text === p.author) au.selectedIndex = j;
+}
+document.getElementById("f-name").addEventListener("input", function(){
+  document.getElementById("name-cnt").textContent = this.value.length + "/45";
+});
+document.getElementById("name-cnt").textContent = (document.getElementById("f-name").value||"").length + "/45";
+document.getElementById("anchors").addEventListener("click", function(e){
+  var b = e.target.closest("[data-goto]"); if (!b) return;
+  document.querySelectorAll("#anchors .btn").forEach(function(x){ x.classList.remove("active"); });
+  b.classList.add("active");
+  var el = document.getElementById(b.getAttribute("data-goto"));
+  if (el) el.scrollIntoView({ behavior:"smooth", block:"start" });
+});
+function draft(){ Proto.toast("草稿已保存"); }
+function preview(){ Proto.toast("已打开用户端预览（演示）"); }
+function publish(){ Proto.toast("已保存并上架"); setTimeout(function(){ location.href="content-article.html"; }, 500); }
+["btn-draft","btn-draft2"].forEach(function(id){ document.getElementById(id).onclick = draft; });
+["btn-preview","btn-preview2"].forEach(function(id){ document.getElementById(id).onclick = preview; });
+["btn-publish","btn-publish2"].forEach(function(id){ document.getElementById(id).onclick = publish; });
+document.getElementById("f-body").addEventListener("focus", function(){ var ph=this.querySelector(".rt-placeholder"); if(ph) ph.remove(); });
+</script>
+</body>
+</html>

@@ -18,10 +18,13 @@
   var showAssist = false; // 操作助手已隐藏（原 data-assist="1" 开关）
   var showNotice = document.body.getAttribute("data-notice") !== "0";
 
+  // 兼容旧页 data-module="audit" → 归入「内容」
+  if (moduleId === "audit") moduleId = "content";
+
   var modules = [
     { id: "workbench", label: "工作台", href: "dashboard.html" },
     { id: "tenant", label: "租户管理", href: "tenants.html" },
-    { id: "audit", label: "内容审核", href: "audit.html" },
+    { id: "content", label: "内容", href: "content-series.html" },
     { id: "data", label: "全局数据", href: "data.html" },
     { id: "sys", label: "系统管理", href: "sys-users.html" },
   ];
@@ -60,7 +63,30 @@
         ],
       },
     ],
-    audit: [
+    content: [
+      {
+        group: "内容管理",
+        links: [
+          { id: "content-series", href: "content-series.html", label: "系列课管理" },
+          { id: "content-video", href: "content-video.html", label: "视频管理" },
+          { id: "content-article", href: "content-article.html", label: "图文管理" },
+          { id: "content-category", href: "content-category.html", label: "商品分组" },
+        ],
+      },
+      {
+        group: "测评管理",
+        links: [
+          { id: "assess-projects", href: "assess-projects.html", label: "测试项目管理" },
+          { id: "assess-series", href: "assess-series.html", label: "系列测评管理" },
+          { id: "assess-results", href: "assess-results.html", label: "测评结果" },
+        ],
+      },
+      {
+        group: "计划管理",
+        links: [
+          { id: "assess-plans", href: "assess-plans.html", label: "测评计划" },
+        ],
+      },
       {
         group: "内容审核",
         links: [
@@ -105,7 +131,7 @@
       "<li>全局查看各租户经营数据</li><li>处理结算与风控异常</li></ol></div>" +
       "<div class='assist-block'><h3>评审路径</h3><ul>" +
       "<li><a href='tenants.html'>① 租户开通</a></li>" +
-      "<li><a href='audit.html'>② 内容审核</a></li>" +
+      "<li><a href='content-series.html'>② 内容中台</a></li>" +
       "<li><a href='data.html'>③ 全局数据</a></li>" +
       "<li><a href='orders.html'>④ 全局订单</a></li></ul></div>",
     tenant:
@@ -120,9 +146,13 @@
       "<li>商家也可在后台自建角色（此处可见）</li>" +
       "<li>功能资源配置维护权限勾选的资源树</li>" +
       "<li>应用按套餐授权，可对租户单独覆盖</li></ul></div>",
-    audit:
+    content:
+      "<div class='assist-block'><h3>内容中台</h3><ul>" +
+      "<li>内容管理：平台标准系列课 / 视频 / 图文 / 商品分组</li>" +
+      "<li>测评与计划：测试项目、系列测评、结果与测评计划（后续迭代）</li>" +
+      "<li>内容审核：商家提交上架的内容进入审核队列</li>" +
+      "<li>与商家后台「内容」双轨：此处为平台侧，商家侧为租户售卖</li></ul></div>" +
       "<div class='assist-block'><h3>审核规则</h3><ul>" +
-      "<li>商家后台「提交上架」的内容进入本队列</li>" +
       "<li>审核通过后内容才会发布到 C 端小程序</li>" +
       "<li>驳回需填写原因，商家可在后台查看并修改重提</li></ul></div>",
     data:
@@ -166,7 +196,7 @@
     '<div class="review-bar">' +
     "<strong>评审路径</strong>" +
     '<a href="tenants.html">①租户开通</a><span class="sep">·</span>' +
-    '<a href="audit.html">②内容审核</a><span class="sep">·</span>' +
+    '<a href="content-series.html">②内容</a><span class="sep">·</span>' +
     '<a href="data.html">③全局数据</a><span class="sep">·</span>' +
     '<a href="orders.html">④全局订单</a><span class="sep">|</span>' +
     '<a href="../admin/dashboard.html">切商家后台</a><span class="sep">·</span>' +
@@ -176,7 +206,7 @@
 
   var notice = showNotice
     ? '<div class="notice-bar" id="notice-bar">' +
-      "<span>运营后台 · 平台侧演示原型（v1 2026-09-06）· 管理租户开通、内容审核与全局数据</span>" +
+      "<span>运营后台 · 平台侧演示原型（v1.1）· 租户开通、内容中台（管理+审核）与全局数据</span>" +
       '<button type="button" class="close-notice" id="close-notice" aria-label="关闭">×</button>' +
       "</div>"
     : "";

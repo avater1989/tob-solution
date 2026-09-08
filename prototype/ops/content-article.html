@@ -1,0 +1,188 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>图文管理 · 运营后台</title>
+<link rel="stylesheet" href="../assets/css/proto.css?v=3" />
+<style>
+.ca-list { background: #fff; border: 1px solid #e8e8e8; border-radius: 8px; overflow: hidden; }
+.ca-row {
+  display: flex; align-items: center; gap: 14px;
+  padding: 14px 16px; border-bottom: 1px solid #f0f0f0;
+  transition: background .12s;
+}
+.ca-row:last-child { border-bottom: 0; }
+.ca-row:hover { background: #fafbff; }
+.ca-cover {
+  width: 96px; height: 64px; border-radius: 6px; flex-shrink: 0;
+  background: linear-gradient(135deg, #722ed1, #b577ff);
+  display: flex; align-items: center; justify-content: center;
+  color: #fff; font-size: 24px;
+}
+.ca-cover.blue  { background: linear-gradient(135deg, #165dff, #4080ff); }
+.ca-cover.green { background: linear-gradient(135deg, #00b42a, #4ed679); }
+.ca-cover.orange{ background: linear-gradient(135deg, #fa8c16, #ffc53d); }
+.ca-info { flex: 1; min-width: 0; }
+.ca-title {
+  font-size: 14px; font-weight: 500; color: #1d2129;
+  margin-bottom: 4px;
+  display: flex; align-items: center; gap: 10px;
+}
+.ca-meta {
+  font-size: 12px; color: #8c8c8c;
+  display: flex; gap: 14px; flex-wrap: wrap;
+}
+.ca-meta b { color: #595959; font-weight: 500; }
+.ca-actions { display: flex; gap: 6px; flex-wrap: wrap; }
+</style>
+</head>
+<body class="admin-body" data-module="content" data-nav="content-article" data-title="图文管理" data-crumb="运营后台 / 内容 / 内容管理 / 图文">
+
+<div id="header-actions">
+  <button class="btn">批量删除</button>
+  <a class="btn btn-primary" href="content-article-edit.html">+ 新增图文</a>
+</div>
+
+<div id="page-content" style="display:none">
+  <div class="card" style="margin-bottom:14px;border-color:#d3adf7;background:#f9f0ff"><div class="card-bd" style="padding:10px 16px;font-size:13px;color:#531dab">
+    平台内容中台 · 图文标准库；与商家后台「图文」双轨，审核入口见侧栏「内容审核」。
+  </div></div>
+  <div class="card" style="margin-bottom:14px"><div class="card-bd" style="padding:12px 16px">
+    <div class="toolbar" style="border:none;padding:0;background:transparent">
+      <input class="input" type="text" placeholder="搜索图文名称或简介..." style="width:240px" />
+      <select class="input" style="width:140px">
+        <option>全部分类</option><option>K12 教育</option><option>家庭教育</option>
+      </select>
+      <select class="input" style="width:140px">
+        <option>全部上下架</option><option>已上架</option><option>已下架</option>
+      </select>
+      <button class="btn btn-primary">查询</button>
+      <button class="btn">重置</button>
+    </div>
+  </div></div>
+
+  <div class="ca-list" id="ca-list"></div>
+
+  <div style="display:flex;align-items:center;gap:8px;margin-top:16px">
+    <span style="color:#8c8c8c;font-size:12px">共 <b id="ca-count">3</b> 条</span>
+    <div style="margin-left:auto;display:flex;gap:6px">
+      <button class="btn" disabled>上一页</button>
+      <button class="btn btn-primary">1</button>
+      <button class="btn" disabled>下一页</button>
+    </div>
+  </div>
+</div>
+
+<div class="proto-modal" id="modal-share">
+  <div style="background:#fff;border-radius:10px;width:420px;max-width:92vw;overflow:hidden">
+    <div class="proto-modal-hd"><h3 style="margin:0;font-size:16px">分享图文</h3><button class="ctrl-icon-btn" data-close>×</button></div>
+    <div class="proto-modal-bd">
+      <div id="share-url" style="font-family:monospace;font-size:12px;background:#f7f8fa;border:1px solid #e8e8e8;border-radius:6px;padding:8px 10px;word-break:break-all"></div>
+      <div style="margin-top:12px"><button class="btn btn-primary" id="btn-copy-link">复制链接</button></div>
+    </div>
+  </div>
+</div>
+
+<script src="../assets/js/proto.js"></script>
+<script src="../assets/js/ops-shell.js?v=2"></script>
+<script>
+setTimeout(function() {
+  if (document.documentElement.getAttribute('data-shell-ready') === '1') return;
+  if (document.querySelector('aside.sidebar')) return;
+  var err = document.createElement('div');
+  err.style.cssText = 'position:fixed;top:0;left:0;right:0;background:#fff1f0;color:#f53f3f;padding:12px 20px;border-bottom:1px solid #ffa39e;z-index:99999;font-size:13px;font-family:system-ui;';
+  err.innerHTML = '<b>⚠ 页面初始化失败</b>：请按 <kbd style="background:#fff;padding:2px 6px;border-radius:3px;border:1px solid #ffa39e;font-family:monospace;">Ctrl+Shift+R</kbd> 强制刷新';
+  document.body.appendChild(err);
+}, 1500);
+
+var ARTICLES = [
+  { id: "A001", title: "9 月新学期家长指南", emoji: "📚", thumb: "purple",
+    author: "编辑部", date: "2026-08-25", reads: 2340, words: 1280,
+    status: "已上架", statusType: "pass", onShelf: true },
+  { id: "A002", title: "孩子注意力训练方法论", emoji: "🎯", thumb: "blue",
+    author: "张老师", date: "2026-08-30", reads: 1560, words: 980,
+    status: "已上架", statusType: "pass", onShelf: true },
+  { id: "A003", title: "家庭情绪急救指南", emoji: "💝", thumb: "green",
+    author: "李老师", date: "—", reads: 0, words: 320,
+    status: "已下架", statusType: "review", onShelf: false }
+];
+
+function esc(s) {
+  return String(s).replace(/[&<>"']/g, function(c) {
+    return ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c];
+  });
+}
+
+function renderList() {
+  var html = ARTICLES.map(function(a) {
+    return '' +
+      '<div class="ca-row">' +
+        '<div class="ca-cover ' + a.thumb + '">' + a.emoji + '</div>' +
+        '<div class="ca-info">' +
+          '<div class="ca-title">' + esc(a.title) +
+            '<span class="audit-badge ' + a.statusType + '">' + esc(a.status) + '</span>' +
+          '</div>' +
+          '<div class="ca-meta">' +
+            '<span><b>ID:</b> ' + esc(a.id) + '</span>' +
+            '<span><b>作者:</b> ' + esc(a.author) + '</span>' +
+            '<span><b>发布:</b> ' + esc(a.date) + '</span>' +
+            '<span><b>阅读:</b> ' + a.reads.toLocaleString() + '</span>' +
+            '<span><b>字数:</b> ' + a.words.toLocaleString() + '</span>' +
+          '</div>' +
+        '</div>' +
+        '<div class="ca-actions">' +
+          '<button class="btn" data-share="' + a.id + '"' + (a.onShelf ? '' : ' disabled') + '>分享</button>' +
+          '<a class="btn" href="content-article-detail.html?id=' + a.id + '">查看图文</a>' +
+          (a.onShelf
+            ? '<button class="btn" data-shelf-off="' + a.id + '">下架</button>'
+            : '<a class="btn btn-primary" href="content-article-edit.html?id=' + a.id + '">编辑</a>' +
+              '<button class="btn" data-shelf-on="' + a.id + '">上架</button>') +
+          '<button class="btn" data-copy="' + a.id + '">复制</button>' +
+        '</div>' +
+      '</div>';
+  }).join("");
+  document.getElementById("ca-list").innerHTML = html;
+  document.getElementById("ca-count").textContent = ARTICLES.length;
+}
+
+var mask = document.getElementById("mask");
+function closeAll() {
+  mask.classList.remove("open");
+  document.querySelectorAll(".proto-modal").forEach(function(n) { n.classList.remove("open"); });
+}
+document.addEventListener("click", function(e) {
+  var share = e.target.closest("[data-share]");
+  if (share && !share.disabled) {
+    document.getElementById("share-url").textContent = "https://yibo.app/a/" + share.getAttribute("data-share");
+    mask.classList.add("open");
+    document.getElementById("modal-share").classList.add("open");
+    return;
+  }
+  var off = e.target.closest("[data-shelf-off]");
+  if (off) {
+    var a = ARTICLES.find(function(x){ return x.id === off.getAttribute("data-shelf-off"); });
+    if (a) { a.onShelf = false; a.status = "已下架"; a.statusType = "review"; renderList(); Proto.toast("已下架"); }
+    return;
+  }
+  var on = e.target.closest("[data-shelf-on]");
+  if (on) {
+    var a2 = ARTICLES.find(function(x){ return x.id === on.getAttribute("data-shelf-on"); });
+    if (a2) { a2.onShelf = true; a2.status = "已上架"; a2.statusType = "pass"; renderList(); Proto.toast("已上架"); }
+    return;
+  }
+  if (e.target.closest("[data-copy]")) Proto.toast("已复制图文（演示）");
+});
+document.getElementById("btn-copy-link").addEventListener("click", function(){ Proto.toast("链接已复制"); });
+mask && mask.addEventListener("click", closeAll);
+document.querySelectorAll("[data-close]").forEach(function(b) { b.addEventListener("click", closeAll); });
+
+function tryRender() {
+  if (document.getElementById("page-content").style.display !== "none") renderList();
+  else setTimeout(tryRender, 80);
+}
+if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", tryRender);
+else tryRender();
+</script>
+</body>
+</html>

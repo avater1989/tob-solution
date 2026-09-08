@@ -1,0 +1,189 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>商品分组 · 运营后台</title>
+<link rel="stylesheet" href="../assets/css/proto.css?v=3" />
+<style>
+.cc-table { width:100%; border-collapse:collapse; background:#fff; border:1px solid #e8e8e8; border-radius:8px; overflow:hidden; }
+.cc-table th, .cc-table td { padding:12px 14px; text-align:left; font-size:13px; border-bottom:1px solid #f0f0f0; }
+.cc-table th { background:#fafafa; color:#8c8c8c; font-weight:500; }
+.cc-table tr:last-child td { border-bottom:0; }
+.cc-table tr:hover td { background:#fafbff; }
+.cc-name { font-weight:500; color:#1d2129; }
+.cc-acts { display:flex; gap:6px; align-items:center; }
+.cc-acts .btn { padding:2px 8px; font-size:12px; }
+.cc-status { display:inline-flex; padding:1px 8px; border-radius:999px; font-size:11px; border:1px solid #b7eb8f; color:#389e0d; background:#f6ffed; }
+.cc-status.off { border-color:#d9d9d9; color:#8c8c8c; background:#fafafa; }
+</style>
+</head>
+<body class="admin-body" data-module="content" data-nav="content-category" data-title="商品分组" data-crumb="运营后台 / 内容 / 内容管理 / 商品分组">
+
+<div id="header-actions">
+  <button class="btn btn-primary" id="btn-new-cat">+ 新建分组</button>
+</div>
+
+<div id="page-content" style="display:none">
+  <div class="card" style="margin-bottom:14px;border-color:#d3adf7;background:#f9f0ff"><div class="card-bd" style="padding:10px 16px;font-size:13px;color:#531dab">
+    平台内容中台 · 维护店铺商品的运营分组与展示顺序（平台标准分组）。
+  </div></div>
+  <div style="margin-bottom:12px">
+    <div style="font-size:13px;color:#8c8c8c">维护店铺商品的运营分组与展示顺序</div>
+  </div>
+
+  <table class="cc-table">
+    <thead>
+      <tr>
+        <th style="width:72px">排序</th>
+        <th>分组名称</th>
+        <th style="width:120px">使用商品</th>
+        <th style="width:100px">状态</th>
+        <th style="width:260px">操作</th>
+      </tr>
+    </thead>
+    <tbody id="cc-body"></tbody>
+  </table>
+
+  <div style="display:flex;align-items:center;gap:8px;margin-top:16px">
+    <span style="color:#8c8c8c;font-size:12px">共 <b id="cc-count">4</b> 条</span>
+    <div style="margin-left:auto;display:flex;gap:6px">
+      <button class="btn" disabled>上一页</button>
+      <button class="btn btn-primary">1</button>
+      <button class="btn" disabled>下一页</button>
+    </div>
+  </div>
+</div>
+
+<div class="proto-modal" id="modal-cat">
+  <div style="background:#fff;border-radius:10px;width:440px;max-width:92vw;overflow:hidden">
+    <div class="proto-modal-hd">
+      <h3 style="margin:0;font-size:16px" id="cat-modal-title">新建商品分组</h3>
+      <button class="ctrl-icon-btn" data-close>×</button>
+    </div>
+    <div class="proto-modal-bd">
+      <p style="margin:0 0 12px;font-size:12px;color:#8c8c8c">用于店铺内组织商品</p>
+      <div class="field">
+        <label>分组名称 *</label>
+        <input class="input" id="cat-name" placeholder="请输入分组名称" />
+      </div>
+      <div class="field">
+        <label class="cm-check"><input type="checkbox" id="cat-enabled" checked> 启用该分组</label>
+      </div>
+    </div>
+    <div class="proto-modal-ft" style="justify-content:flex-end;gap:8px">
+      <button class="btn" data-close>取消</button>
+      <button class="btn btn-primary" id="btn-save-cat">保存分组</button>
+    </div>
+  </div>
+</div>
+
+<script src="../assets/js/proto.js"></script>
+<script src="../assets/js/ops-shell.js?v=2"></script>
+<script>
+setTimeout(function() {
+  if (document.documentElement.getAttribute('data-shell-ready') === '1') return;
+  if (document.querySelector('aside.sidebar')) return;
+  var err = document.createElement('div');
+  err.style.cssText = 'position:fixed;top:0;left:0;right:0;background:#fff1f0;color:#f53f3f;padding:12px 20px;border-bottom:1px solid #ffa39e;z-index:99999;font-size:13px;font-family:system-ui;';
+  err.innerHTML = '<b>⚠ 页面初始化失败</b>：请按 Ctrl+Shift+R 强制刷新';
+  document.body.appendChild(err);
+}, 1500);
+
+var GROUPS = [
+  { id: "G1", name: "默认分组", count: 2, enabled: true },
+  { id: "G2", name: "K12 教育", count: 2, enabled: true },
+  { id: "G3", name: "家庭教育", count: 0, enabled: true },
+  { id: "G4", name: "学习能力", count: 0, enabled: true }
+];
+var editingId = null;
+
+function esc(s) {
+  return String(s).replace(/[&<>"']/g, function(c) {
+    return ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c];
+  });
+}
+
+function render() {
+  var html = GROUPS.map(function(g, i) {
+    return '<tr data-id="' + esc(g.id) + '">' +
+      '<td>' + (i + 1) + '</td>' +
+      '<td class="cc-name">' + esc(g.name) + '</td>' +
+      '<td>' + g.count + ' 个</td>' +
+      '<td><span class="cc-status' + (g.enabled ? '' : ' off') + '">' + (g.enabled ? '启用' : '停用') + '</span></td>' +
+      '<td><div class="cc-acts">' +
+        '<button class="btn" data-move="' + i + '" data-dir="-1">↑</button>' +
+        '<button class="btn" data-move="' + i + '" data-dir="1">↓</button>' +
+        '<button class="btn" data-edit="' + g.id + '">编辑</button>' +
+        '<button class="btn" data-toggle="' + g.id + '">' + (g.enabled ? '停用' : '启用') + '</button>' +
+        '<button class="btn" style="color:#f53f3f;border-color:#ffa39e" data-del="' + g.id + '">删除</button>' +
+      '</div></td></tr>';
+  }).join("");
+  document.getElementById("cc-body").innerHTML = html;
+  document.getElementById("cc-count").textContent = GROUPS.length;
+}
+
+var mask = document.getElementById("mask");
+function closeAll() {
+  mask.classList.remove("open");
+  document.getElementById("modal-cat").classList.remove("open");
+}
+function openModal(id) {
+  editingId = id;
+  var g = id ? GROUPS.find(function(x){ return x.id === id; }) : null;
+  document.getElementById("cat-modal-title").textContent = g ? "编辑商品分组" : "新建商品分组";
+  document.getElementById("cat-name").value = g ? g.name : "";
+  document.getElementById("cat-enabled").checked = g ? g.enabled : true;
+  mask.classList.add("open");
+  document.getElementById("modal-cat").classList.add("open");
+}
+
+document.getElementById("btn-new-cat").addEventListener("click", function(){ openModal(null); });
+document.getElementById("btn-save-cat").addEventListener("click", function(){
+  var name = document.getElementById("cat-name").value.trim();
+  if (!name) { Proto.toast("请填写分组名称"); return; }
+  var enabled = document.getElementById("cat-enabled").checked;
+  if (editingId) {
+    var g = GROUPS.find(function(x){ return x.id === editingId; });
+    if (g) { g.name = name; g.enabled = enabled; }
+  } else {
+    GROUPS.push({ id: "G" + Date.now(), name: name, count: 0, enabled: enabled });
+  }
+  closeAll(); render(); Proto.toast("已保存");
+});
+
+document.addEventListener("click", function(e) {
+  var edit = e.target.closest("[data-edit]");
+  if (edit) { openModal(edit.getAttribute("data-edit")); return; }
+  var tog = e.target.closest("[data-toggle]");
+  if (tog) {
+    var g = GROUPS.find(function(x){ return x.id === tog.getAttribute("data-toggle"); });
+    if (g) { g.enabled = !g.enabled; render(); Proto.toast(g.enabled ? "已启用" : "已停用"); }
+    return;
+  }
+  var del = e.target.closest("[data-del]");
+  if (del) {
+    GROUPS = GROUPS.filter(function(x){ return x.id !== del.getAttribute("data-del"); });
+    render(); Proto.toast("已删除"); return;
+  }
+  var mv = e.target.closest("[data-move]");
+  if (mv) {
+    var i = +mv.getAttribute("data-move"), dir = +mv.getAttribute("data-dir"), j = i + dir;
+    if (j < 0 || j >= GROUPS.length) return;
+    var tmp = GROUPS[i]; GROUPS[i] = GROUPS[j]; GROUPS[j] = tmp;
+    render();
+  }
+});
+
+mask && mask.addEventListener("click", closeAll);
+document.querySelectorAll("[data-close]").forEach(function(b){ b.addEventListener("click", closeAll); });
+
+function tryRender() {
+  if (document.getElementById("page-content").style.display !== "none") render();
+  else setTimeout(tryRender, 80);
+}
+if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", tryRender);
+else tryRender();
+</script>
+</body>
+</html>

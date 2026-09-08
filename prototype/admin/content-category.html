@@ -1,202 +1,99 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>商品分组 · 艺博 To-B</title>
-<link rel="stylesheet" href="../assets/css/proto.css" />
+<link rel="stylesheet" href="../assets/css/proto.css?v=3" />
 <style>
-.cc-tree {
-  background: #fff; border: 1px solid #e8e8e8; border-radius: 8px;
-  padding: 16px; min-height: 400px;
-}
-.cc-row {
-  display: flex; align-items: center; gap: 10px;
-  padding: 8px 12px; border-radius: 6px;
-  font-size: 13px;
-  transition: background .12s;
-}
-.cc-row:hover { background: #fafbff; }
-.cc-row.cc-row-child { padding-left: 36px; font-size: 12px; }
-.cc-row.cc-row-grand { padding-left: 60px; font-size: 12px; color: #8c8c8c; }
-.cc-toggle {
-  width: 18px; height: 18px; cursor: pointer;
-  display: inline-flex; align-items: center; justify-content: center;
-  color: #8c8c8c; font-size: 10px;
-}
-.cc-toggle::before { content: "▾"; transition: transform .15s; }
-.cc-toggle.collapsed::before { transform: rotate(-90deg); }
-.cc-icon { font-size: 16px; width: 22px; text-align: center; }
-.cc-name { color: #1d2129; font-weight: 500; }
-.cc-row-child .cc-name { font-weight: 400; }
-.cc-row-grand .cc-name { color: #595959; }
-.cc-count { color: #165dff; font-family: monospace; font-size: 12px; }
-.cc-sort { color: #8c8c8c; font-size: 11px; }
-.cc-actions { margin-left: auto; display: flex; gap: 4px; opacity: 0; transition: opacity .15s; }
-.cc-row:hover .cc-actions { opacity: 1; }
-.cc-actions a { color: #165dff; font-size: 12px; cursor: pointer; }
-.cc-actions a.del { color: #f53f3f; }
-
-/* 图标选择器 */
-.icon-picker {
-  display: flex; gap: 8px; flex-wrap: wrap;
-}
-.icon-pick {
-  width: 36px; height: 36px; border-radius: 6px;
-  border: 1px solid #e8e8e8; background: #fff;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 18px; cursor: pointer;
-  transition: all .12s;
-}
-.icon-pick:hover { border-color: #165dff; }
-.icon-pick.active { border-color: #165dff; background: #f0f5ff; }
+.cc-table { width:100%; border-collapse:collapse; background:#fff; border:1px solid #e8e8e8; border-radius:8px; overflow:hidden; }
+.cc-table th, .cc-table td { padding:12px 14px; text-align:left; font-size:13px; border-bottom:1px solid #f0f0f0; }
+.cc-table th { background:#fafafa; color:#8c8c8c; font-weight:500; }
+.cc-table tr:last-child td { border-bottom:0; }
+.cc-table tr:hover td { background:#fafbff; }
+.cc-name { font-weight:500; color:#1d2129; }
+.cc-acts { display:flex; gap:6px; align-items:center; }
+.cc-acts .btn { padding:2px 8px; font-size:12px; }
+.cc-status { display:inline-flex; padding:1px 8px; border-radius:999px; font-size:11px; border:1px solid #b7eb8f; color:#389e0d; background:#f6ffed; }
+.cc-status.off { border-color:#d9d9d9; color:#8c8c8c; background:#fafafa; }
 </style>
 </head>
 <body class="admin-body" data-module="content" data-nav="content-category" data-title="商品分组" data-crumb="内容 / 内容管理 / 商品分组">
 
 <div id="header-actions">
-  <button class="btn">批量删除</button>
   <button class="btn btn-primary" id="btn-new-cat">+ 新建分组</button>
 </div>
 
 <div id="page-content" style="display:none">
-
-  <!-- 筛选条 -->
-  <div class="card" style="margin-bottom:14px"><div class="card-bd" style="padding:12px 16px">
-    <div class="toolbar" style="border:none;padding:0;background:transparent">
-      <input class="input" type="text" placeholder="搜索分组名称" style="width:220px" />
-      <span style="color:#8c8c8c;font-size:12px;margin-left:auto">视图：树状 / 列表</span>
-    </div>
-  </div></div>
-
-  <!-- 树状视图 -->
-  <div class="cc-tree" id="cc-tree">
-    <!-- 渲染 -->
+  <div style="margin-bottom:12px">
+    <div style="font-size:13px;color:#8c8c8c">维护店铺商品的运营分组与展示顺序</div>
   </div>
 
-  <!-- 分页 -->
+  <table class="cc-table">
+    <thead>
+      <tr>
+        <th style="width:72px">排序</th>
+        <th>分组名称</th>
+        <th style="width:120px">使用商品</th>
+        <th style="width:100px">状态</th>
+        <th style="width:260px">操作</th>
+      </tr>
+    </thead>
+    <tbody id="cc-body"></tbody>
+  </table>
+
   <div style="display:flex;align-items:center;gap:8px;margin-top:16px">
-    <span style="color:#8c8c8c;font-size:12px">共 <b id="cc-count">7</b> 个分组</span>
+    <span style="color:#8c8c8c;font-size:12px">共 <b id="cc-count">4</b> 条</span>
     <div style="margin-left:auto;display:flex;gap:6px">
       <button class="btn" disabled>上一页</button>
       <button class="btn btn-primary">1</button>
       <button class="btn" disabled>下一页</button>
     </div>
   </div>
+</div>
 
-</div><!-- /#page-content -->
-
-<!-- 新建分组 抽屉 -->
-<div class="proto-drawer" id="drawer-cat">
-  <div class="proto-drawer-bd">
-    <div class="proto-drawer-hd">
-      <h3 id="cat-drawer-title">新建分组</h3>
+<div class="proto-modal" id="modal-cat">
+  <div style="background:#fff;border-radius:10px;width:440px;max-width:92vw;overflow:hidden">
+    <div class="proto-modal-hd">
+      <h3 style="margin:0;font-size:16px" id="cat-modal-title">新建商品分组</h3>
       <button class="ctrl-icon-btn" data-close>×</button>
     </div>
-    <div class="proto-drawer-bd" style="padding:20px">
-
+    <div class="proto-modal-bd">
+      <p style="margin:0 0 12px;font-size:12px;color:#8c8c8c">用于店铺内组织商品</p>
       <div class="field">
-        <label>分组名 *</label>
-        <input class="input" placeholder="请输入分组名称" />
+        <label>分组名称 *</label>
+        <input class="input" id="cat-name" placeholder="请输入分组名称" />
       </div>
-
       <div class="field">
-        <label>父分组</label>
-        <select class="input">
-          <option>— 顶级分组 —</option>
-          <option>K12 教育</option>
-          <option>K12 教育 / 小学</option>
-          <option>家庭教育</option>
-        </select>
+        <label class="cm-check"><input type="checkbox" id="cat-enabled" checked> 启用该分组</label>
       </div>
-
-      <div class="form-grid" style="grid-template-columns:1fr 1fr">
-        <div class="field">
-          <label>排序（数字越小越靠前）</label>
-          <input class="input" type="number" value="0" />
-        </div>
-        <div class="field">
-          <label>关联课程类型</label>
-          <div>
-            <label style="margin-right:12px"><input type="checkbox" checked> 系列课</label>
-            <label style="margin-right:12px"><input type="checkbox" checked> 视频</label>
-            <label><input type="checkbox" checked> 图文</label>
-          </div>
-        </div>
-      </div>
-
-      <div class="field">
-        <label>分组图标</label>
-        <div class="icon-picker">
-          <span class="icon-pick active">📁</span>
-          <span class="icon-pick">🏷</span>
-          <span class="icon-pick">🎯</span>
-          <span class="icon-pick">📚</span>
-          <span class="icon-pick">🎓</span>
-          <span class="icon-pick">🧠</span>
-          <span class="icon-pick">❤️</span>
-          <span class="icon-pick">👨‍👩‍👧</span>
-          <span class="icon-pick">🌱</span>
-          <span class="icon-pick">⭐</span>
-        </div>
-      </div>
-
-      <div class="field">
-        <label>分组描述</label>
-        <textarea class="input" rows="3" placeholder="选填，描述此分组的用途"></textarea>
-      </div>
-
     </div>
-    <div class="proto-drawer-ft">
+    <div class="proto-modal-ft" style="justify-content:flex-end;gap:8px">
       <button class="btn" data-close>取消</button>
-      <button class="btn btn-primary">保存</button>
+      <button class="btn btn-primary" id="btn-save-cat">保存分组</button>
     </div>
   </div>
 </div>
 
 <script src="../assets/js/proto.js"></script>
-<script src="../assets/js/admin-shell.js?v=2"></script>
+<script src="../assets/js/admin-shell.js?v=3"></script>
 <script>
 setTimeout(function() {
   if (document.documentElement.getAttribute('data-shell-ready') === '1') return;
   if (document.querySelector('aside.sidebar')) return;
   var err = document.createElement('div');
   err.style.cssText = 'position:fixed;top:0;left:0;right:0;background:#fff1f0;color:#f53f3f;padding:12px 20px;border-bottom:1px solid #ffa39e;z-index:99999;font-size:13px;font-family:system-ui;';
-  err.innerHTML = '<b>⚠ 页面初始化失败</b>：请按 <kbd style="background:#fff;padding:2px 6px;border-radius:3px;border:1px solid #ffa39e;font-family:monospace;">Ctrl+Shift+R</kbd> 强制刷新，或 <button onclick="location.reload();" style="background:#165dff;color:#fff;border:none;padding:4px 12px;border-radius:4px;cursor:pointer;margin-left:8px;">点击重试</button>';
+  err.innerHTML = '<b>⚠ 页面初始化失败</b>：请按 Ctrl+Shift+R 强制刷新';
   document.body.appendChild(err);
 }, 1500);
 
-// 数据：树状结构
-var TREE = [
-  {
-    id: "C1", name: "K12 教育", icon: "📁", sort: 1, count: 20,
-    children: [
-      {
-        id: "C1-1", name: "小学", icon: "📁", sort: 1, count: 12,
-        children: [
-          { id: "C1-1-1", name: "一年级", icon: "🏷", sort: 1, count: 5 },
-          { id: "C1-1-2", name: "二年级", icon: "🏷", sort: 2, count: 3 },
-          { id: "C1-1-3", name: "三年级", icon: "🏷", sort: 3, count: 4 }
-        ]
-      },
-      {
-        id: "C1-2", name: "初中", icon: "📁", sort: 2, count: 8,
-        children: [
-          { id: "C1-2-1", name: "初一", icon: "🏷", sort: 1, count: 5 },
-          { id: "C1-2-2", name: "初二", icon: "🏷", sort: 2, count: 3 }
-        ]
-      }
-    ]
-  },
-  {
-    id: "C2", name: "家庭教育", icon: "📁", sort: 2, count: 25,
-    children: [
-      { id: "C2-1", name: "家长情绪", icon: "🏷", sort: 1, count: 8 },
-      { id: "C2-2", name: "亲子沟通", icon: "🏷", sort: 2, count: 10 },
-      { id: "C2-3", name: "学习规划", icon: "🏷", sort: 3, count: 7 }
-    ]
-  }
+var GROUPS = [
+  { id: "G1", name: "默认分组", count: 2, enabled: true },
+  { id: "G2", name: "K12 教育", count: 2, enabled: true },
+  { id: "G3", name: "家庭教育", count: 0, enabled: true },
+  { id: "G4", name: "学习能力", count: 0, enabled: true }
 ];
+var editingId = null;
 
 function esc(s) {
   return String(s).replace(/[&<>"']/g, function(c) {
@@ -204,83 +101,82 @@ function esc(s) {
   });
 }
 
-function totalCount(nodes) {
-  var n = 0;
-  nodes.forEach(function(x) {
-    n++;
-    if (x.children) n += totalCount(x.children);
-  });
-  return n;
+function render() {
+  var html = GROUPS.map(function(g, i) {
+    return '<tr data-id="' + esc(g.id) + '">' +
+      '<td>' + (i + 1) + '</td>' +
+      '<td class="cc-name">' + esc(g.name) + '</td>' +
+      '<td>' + g.count + ' 个</td>' +
+      '<td><span class="cc-status' + (g.enabled ? '' : ' off') + '">' + (g.enabled ? '启用' : '停用') + '</span></td>' +
+      '<td><div class="cc-acts">' +
+        '<button class="btn" data-move="' + i + '" data-dir="-1">↑</button>' +
+        '<button class="btn" data-move="' + i + '" data-dir="1">↓</button>' +
+        '<button class="btn" data-edit="' + g.id + '">编辑</button>' +
+        '<button class="btn" data-toggle="' + g.id + '">' + (g.enabled ? '停用' : '启用') + '</button>' +
+        '<button class="btn" style="color:#f53f3f;border-color:#ffa39e" data-del="' + g.id + '">删除</button>' +
+      '</div></td></tr>';
+  }).join("");
+  document.getElementById("cc-body").innerHTML = html;
+  document.getElementById("cc-count").textContent = GROUPS.length;
 }
 
-function renderTree() {
-  function build(nodes, level) {
-    return nodes.map(function(n) {
-      var cls = level === 0 ? "cc-row" : (level === 1 ? "cc-row cc-row-child" : "cc-row cc-row-grand");
-      var hasChild = n.children && n.children.length > 0;
-      var toggle = hasChild ? '<span class="cc-toggle"></span>' : '<span style="display:inline-block;width:18px"></span>';
-      var row = '' +
-        '<div class="' + cls + '" data-id="' + esc(n.id) + '">' +
-          toggle +
-          '<span class="cc-icon">' + n.icon + '</span>' +
-          '<span class="cc-name">' + esc(n.name) + '</span>' +
-          '<span class="cc-count">' + n.count + ' 课程</span>' +
-          '<span class="cc-sort">排序 ' + n.sort + '</span>' +
-          '<div class="cc-actions">' +
-            '<a>+ 子项</a><a>编辑</a><a class="del">删除</a>' +
-          '</div>' +
-        '</div>';
-      var children = hasChild ? build(n.children, level + 1) : "";
-      return row + children;
-    }).join("");
-  }
-  document.getElementById("cc-tree").innerHTML = build(TREE, 0);
-  document.getElementById("cc-count").textContent = totalCount(TREE);
-}
-
-// 折叠展开
-document.addEventListener("click", function(e) {
-  var tg = e.target.closest(".cc-toggle");
-  if (!tg) return;
-  tg.classList.toggle("collapsed");
-  var row = tg.closest(".cc-row");
-  // 找到所有下一层级
-  var next = row.nextElementSibling;
-  var level = row.classList.contains("cc-row-grand") ? 3 : row.classList.contains("cc-row-child") ? 2 : 1;
-  while (next) {
-    var l = next.classList.contains("cc-row-grand") ? 3 : next.classList.contains("cc-row-child") ? 2 : 1;
-    if (l <= level) break;
-    next.style.display = tg.classList.contains("collapsed") ? "none" : "";
-    next = next.nextElementSibling;
-  }
-});
-
-// 抽屉
 var mask = document.getElementById("mask");
 function closeAll() {
   mask.classList.remove("open");
-  document.querySelectorAll(".proto-modal, .proto-drawer").forEach(function(n) { n.classList.remove("open"); });
+  document.getElementById("modal-cat").classList.remove("open");
 }
-document.getElementById("btn-new-cat").addEventListener("click", function() {
-  document.getElementById("cat-drawer-title").textContent = "新建分组";
-  document.getElementById("drawer-cat").classList.add("open");
+function openModal(id) {
+  editingId = id;
+  var g = id ? GROUPS.find(function(x){ return x.id === id; }) : null;
+  document.getElementById("cat-modal-title").textContent = g ? "编辑商品分组" : "新建商品分组";
+  document.getElementById("cat-name").value = g ? g.name : "";
+  document.getElementById("cat-enabled").checked = g ? g.enabled : true;
   mask.classList.add("open");
-});
-mask && mask.addEventListener("click", closeAll);
-document.querySelectorAll("[data-close]").forEach(function(b) {
-  b.addEventListener("click", closeAll);
+  document.getElementById("modal-cat").classList.add("open");
+}
+
+document.getElementById("btn-new-cat").addEventListener("click", function(){ openModal(null); });
+document.getElementById("btn-save-cat").addEventListener("click", function(){
+  var name = document.getElementById("cat-name").value.trim();
+  if (!name) { Proto.toast("请填写分组名称"); return; }
+  var enabled = document.getElementById("cat-enabled").checked;
+  if (editingId) {
+    var g = GROUPS.find(function(x){ return x.id === editingId; });
+    if (g) { g.name = name; g.enabled = enabled; }
+  } else {
+    GROUPS.push({ id: "G" + Date.now(), name: name, count: 0, enabled: enabled });
+  }
+  closeAll(); render(); Proto.toast("已保存");
 });
 
-// 图标选择
 document.addEventListener("click", function(e) {
-  var ip = e.target.closest(".icon-pick");
-  if (!ip) return;
-  document.querySelectorAll(".icon-pick").forEach(function(p) { p.classList.remove("active"); });
-  ip.classList.add("active");
+  var edit = e.target.closest("[data-edit]");
+  if (edit) { openModal(edit.getAttribute("data-edit")); return; }
+  var tog = e.target.closest("[data-toggle]");
+  if (tog) {
+    var g = GROUPS.find(function(x){ return x.id === tog.getAttribute("data-toggle"); });
+    if (g) { g.enabled = !g.enabled; render(); Proto.toast(g.enabled ? "已启用" : "已停用"); }
+    return;
+  }
+  var del = e.target.closest("[data-del]");
+  if (del) {
+    GROUPS = GROUPS.filter(function(x){ return x.id !== del.getAttribute("data-del"); });
+    render(); Proto.toast("已删除"); return;
+  }
+  var mv = e.target.closest("[data-move]");
+  if (mv) {
+    var i = +mv.getAttribute("data-move"), dir = +mv.getAttribute("data-dir"), j = i + dir;
+    if (j < 0 || j >= GROUPS.length) return;
+    var tmp = GROUPS[i]; GROUPS[i] = GROUPS[j]; GROUPS[j] = tmp;
+    render();
+  }
 });
+
+mask && mask.addEventListener("click", closeAll);
+document.querySelectorAll("[data-close]").forEach(function(b){ b.addEventListener("click", closeAll); });
 
 function tryRender() {
-  if (document.getElementById("page-content").style.display !== "none") renderTree();
+  if (document.getElementById("page-content").style.display !== "none") render();
   else setTimeout(tryRender, 80);
 }
 if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", tryRender);

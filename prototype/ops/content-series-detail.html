@@ -1,0 +1,145 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>系列课详情 · 运营后台</title>
+<link rel="stylesheet" href="../assets/css/proto.css?v=3" />
+<link rel="stylesheet" href="../assets/css/content-mgmt.css?v=3" />
+</head>
+<body class="admin-body" data-module="content" data-nav="content-series" data-title="系列课详情" data-crumb="运营后台 / 内容 / 系列课 / 详情">
+
+<div id="header-actions">
+  <button class="btn" id="btn-share">分享</button>
+  <a class="btn" href="content-series-outline.html?id=S001">查看目录</a>
+  <a class="btn btn-primary" href="content-series-edit.html?id=S001">编辑</a>
+</div>
+
+<div id="page-content" style="display:none">
+  <a class="cm-back" href="content-series.html">← 返回系列课列表</a>
+
+  <div class="cm-page-hd">
+    <div>
+      <h1 id="d-name">小学语文阅读启蒙系列</h1>
+      <p class="sub">系列课商品详情</p>
+    </div>
+  </div>
+
+  <div class="cm-hero">
+    <div class="cm-avatar" id="d-avatar">小</div>
+    <div class="cm-hero-bd">
+      <div class="cm-hero-title">
+        <span id="d-name2">小学语文阅读启蒙系列</span>
+        <span class="cm-pill" id="d-pub">已发布</span>
+        <span class="cm-pill" id="d-shelf">已上架</span>
+      </div>
+      <div class="cm-hero-desc" id="d-desc">针对 6-12 岁儿童阅读兴趣培养，从绘本到章节书的进阶路径。</div>
+    </div>
+  </div>
+
+  <div class="cm-section">
+    <div class="cm-section-hd"><h2>内容信息</h2></div>
+    <div class="cm-dl">
+      <div class="item"><span class="k">内容类型</span><span class="v">系列课</span></div>
+      <div class="item"><span class="k">分类</span><span class="v" id="d-cat">K12 教育</span></div>
+      <div class="item"><span class="k">内容摘要</span><span class="v" id="d-summary">3 章 · 6 视频</span></div>
+      <div class="item"><span class="k">更新时间</span><span class="v" id="d-updated">2026-09-01</span></div>
+      <div class="item"><span class="k">讲师</span><span class="v" id="d-teacher">张老师</span></div>
+      <div class="item"><span class="k">总时长</span><span class="v" id="d-duration">2.5h</span></div>
+    </div>
+  </div>
+
+  <div class="cm-section">
+    <div class="cm-section-hd"><h2>商品信息</h2></div>
+    <div class="cm-dl">
+      <div class="item"><span class="k">获取方式</span><span class="v" id="d-access">付费 · ¥99</span></div>
+      <div class="item"><span class="k">商品分组</span><span class="v" id="d-group">K12 教育</span></div>
+      <div class="item"><span class="k">有效期</span><span class="v">长期有效</span></div>
+      <div class="item"><span class="k">店铺显示</span><span class="v">显示</span></div>
+    </div>
+  </div>
+
+  <div class="cm-section">
+    <div class="cm-section-hd">
+      <h2>系列课目录</h2>
+      <a class="btn btn-primary" id="d-outline-link" href="content-series-outline.html?id=S001">查看目录</a>
+    </div>
+    <p style="margin:0;font-size:13px;color:#8c8c8c">目录包含章节与视频编排，可在「目录管理」中调整顺序、必修与试看。</p>
+  </div>
+</div>
+
+<!-- 分享弹窗 -->
+<div class="proto-modal" id="modal-share">
+  <div style="background:#fff;border-radius:10px;width:440px;max-width:92vw;overflow:hidden">
+    <div class="proto-modal-hd">
+      <h3 style="margin:0;font-size:16px">分享系列课</h3>
+      <button class="ctrl-icon-btn" data-close>×</button>
+    </div>
+    <div class="proto-modal-bd">
+      <div class="cm-share-grid">
+        <div>
+          <div class="cm-qr"></div>
+          <div style="text-align:center;font-size:11px;color:#8c8c8c;margin-top:6px">扫码预览</div>
+        </div>
+        <div>
+          <div style="font-size:12px;color:#8c8c8c;margin-bottom:6px">短链</div>
+          <div class="cm-share-link" id="share-url">https://yibo.app/s/S001</div>
+          <div style="margin-top:12px;display:flex;gap:8px">
+            <button class="btn btn-primary" id="btn-copy-link">复制链接</button>
+            <button class="btn" data-toast="海报已生成（演示）">预览海报</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="../assets/js/proto.js"></script>
+<script src="../assets/js/ops-shell.js?v=2"></script>
+<script>
+var DATA = {
+  S001: { name:"小学语文阅读启蒙系列", cat:"K12 教育", teacher:"张老师", desc:"针对 6-12 岁儿童阅读兴趣培养，从绘本到章节书的进阶路径。", summary:"3 章 · 6 视频", duration:"2.5h", access:"付费 · ¥99", group:"K12 教育", shelf:"已上架", updated:"2026-09-01", color:"" },
+  S002: { name:"家长情绪管理训练营", cat:"家庭教育", teacher:"李老师", desc:"8 周系统训练，帮助家长识别情绪、管理情绪、与孩子正向沟通。", summary:"2 章 · 4 视频", duration:"1.8h", access:"付费 · ¥199", group:"家庭教育", shelf:"草稿", pub:"草稿", updated:"2026-08-20", color:"green" },
+  S003: { name:"AI 学习规划入门", cat:"学习能力", teacher:"王博士", desc:"AI 助力学习规划，10 节实操课让孩子学会用 AI 工具提升学习效率。", summary:"4 章 · 5 视频", duration:"3.2h", access:"免费", group:"学习能力", shelf:"已上架", updated:"2026-09-04", color:"orange" }
+};
+var id = new URLSearchParams(location.search).get("id") || "S001";
+var d = DATA[id] || DATA.S001;
+function apply() {
+  ["d-name","d-name2"].forEach(function(k){ document.getElementById(k).textContent = d.name; });
+  document.getElementById("d-avatar").textContent = d.name.charAt(0);
+  document.getElementById("d-avatar").className = "cm-avatar " + (d.color||"");
+  document.getElementById("d-desc").textContent = d.desc;
+  document.getElementById("d-cat").textContent = d.cat;
+  document.getElementById("d-summary").textContent = d.summary;
+  document.getElementById("d-updated").textContent = d.updated;
+  document.getElementById("d-teacher").textContent = d.teacher;
+  document.getElementById("d-duration").textContent = d.duration;
+  document.getElementById("d-access").textContent = d.access;
+  document.getElementById("d-group").textContent = d.group;
+  document.getElementById("d-shelf").textContent = d.shelf;
+  document.getElementById("d-shelf").className = "cm-pill" + (d.shelf === "已上架" ? "" : " off");
+  document.getElementById("d-pub").textContent = d.pub || "已发布";
+  document.getElementById("d-outline-link").href = "content-series-outline.html?id=" + id;
+  document.querySelector('#header-actions a[href*="outline"]').href = "content-series-outline.html?id=" + id;
+  document.querySelector('#header-actions a[href*="edit"]').href = "content-series-edit.html?id=" + id;
+  document.getElementById("share-url").textContent = "https://yibo.app/s/" + id;
+}
+apply();
+
+var mask = document.getElementById("mask");
+function closeAll() {
+  mask && mask.classList.remove("open");
+  document.querySelectorAll(".proto-modal,.proto-drawer").forEach(function(n){ n.classList.remove("open"); });
+}
+document.getElementById("btn-share").addEventListener("click", function(){
+  mask.classList.add("open");
+  document.getElementById("modal-share").classList.add("open");
+});
+document.getElementById("btn-copy-link").addEventListener("click", function(){
+  Proto.toast("链接已复制");
+});
+mask && mask.addEventListener("click", closeAll);
+document.querySelectorAll("[data-close]").forEach(function(b){ b.addEventListener("click", closeAll); });
+</script>
+</body>
+</html>

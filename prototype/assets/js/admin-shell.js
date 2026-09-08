@@ -1,5 +1,6 @@
-﻿/* Mix shell per docs/DESIGN.md: Top modules + Side + Main + Assist */
+/* Mix shell per docs/DESIGN.md: Top modules + Side + Main + Assist */
 /* v4 (2026-09-04): 精简侧栏，移除公客池/工单中心/系统管理/加群/组织角色权限；提升"主播促到"为顶级模块 */
+/* v6 (2026-09-08): 内容模块入口改为 content-series；兼容旧缓存 */
 /* v5 (2026-09-05): 增强容错 - 缺失 page-content 时显示重试提示而非静默失败 */
 (function () {
   // 全局错误捕获 - 避免脚本异常导致页面全裸
