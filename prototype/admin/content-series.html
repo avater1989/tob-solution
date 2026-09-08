@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>系列课 · 艺博 To-B</title>
+<link rel="stylesheet" href="../assets/css/proto.css" />
+<style>
+.cs-card {
+  background: #fff; border: 1px solid #e8e8e8; border-radius: 8px;
+  margin-bottom: 14px; padding: 16px; display: flex; gap: 16px;
+  transition: all .15s;
+}
+.cs-card:hover { border-color: #165dff; box-shadow: 0 4px 14px rgba(22,93,255,.1); }
+.cs-cover {
+  width: 160px; height: 100px; border-radius: 6px;
+  background: linear-gradient(135deg, #165dff, #4080ff);
+  display: flex; align-items: center; justify-content: center;
+  color: #fff; font-size: 36px; flex-shrink: 0;
+}
+.cs-cover.green  { background: linear-gradient(135deg, #00b42a, #4ed679); }
+.cs-cover.orange { background: linear-gradient(135deg, #fa8c16, #ffc53d); }
+.cs-cover.purple { background: linear-gradient(135deg, #722ed1, #b577ff); }
+.cs-info { flex: 1; min-width: 0; }
+.cs-title {
+  font-size: 15px; font-weight: 600; color: #1d2129;
+  display: flex; align-items: center; gap: 10px; margin-bottom: 6px;
+}
+.cs-desc { font-size: 12px; color: #8c8c8c; line-height: 1.6; margin-bottom: 8px; }
+.cs-stats {
+  display: flex; gap: 16px; font-size: 12px; color: #595959;
+  margin-bottom: 10px;
+}
+.cs-stats b { color: #165dff; font-weight: 600; font-family: monospace; }
+.cs-actions { display: flex; gap: 8px; }
+
+/* ===== 抽屉：子内容编排 ===== */
+.cs-subitems {
+  border: 1px solid #e8e8e8; border-radius: 6px;
+  padding: 10px; max-height: 280px; overflow-y: auto;
+  background: #fafafa;
+}
+.cs-sub-block { margin-bottom: 12px; }
+.cs-sub-block:last-child { margin-bottom: 0; }
+.cs-sub-title {
+  font-size: 12px; font-weight: 500; color: #595959;
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 6px;
+}
+.cs-sub-title .cs-add { color: #165dff; cursor: pointer; font-size: 12px; }
+.cs-sub-pill {
+  display: flex; align-items: center; gap: 6px;
+  background: #fff; border: 1px solid #e8e8e8;
+  padding: 6px 10px; border-radius: 4px; margin-bottom: 4px;
+  font-size: 12px; color: #1d2129;
+}
+.cs-sub-pill .cs-pill-x {
+  margin-left: auto; color: #8c8c8c; cursor: pointer; font-size: 14px;
+}
+.cs-sub-pill .cs-pill-x:hover { color: #f53f3f; }
+.cs-pill-type {
+  font-size: 11px; padding: 1px 6px; border-radius: 3px;
+  font-weight: 500;
+}
+.cs-pill-type.video   { background: #e6f4ff; color: #165dff; }
+.cs-pill-type.article { background: #f9f0ff; color: #722ed1; }
+.cs-pill-type.goods   { background: #fff7e6; color: #fa8c16; }
+.cs-empty-sub {
+  font-size: 12px; color: #bfbfbf; text-align: center;
+  padding: 16px; border: 1px dashed #e8e8e8; border-radius: 4px;
+}
+</style>
+</head>
+<body class="admin-body" data-module="content" data-nav="content-series" data-title="系列课" data-crumb="内容 / 内容管理 / 系列课">
+
+<div id="header-actions">
+  <button class="btn">导出</button>
+  <button class="btn btn-primary" id="btn-new-series">+ 新建系列课</button>
+</div>
+
+<div id="page-content" style="display:none">
+
+  <!-- 筛选条 -->
+  <div class="card" style="margin-bottom:14px"><div class="card-bd" style="padding:12px 16px">
+    <div class="toolbar" style="border:none;padding:0;background:transparent">
+      <input class="input" type="text" placeholder="搜索系列课名称 / 讲师" style="width:240px" />
+      <select class="input" style="width:140px">
+        <option>全部状态</option><option>已上架</option><option>草稿</option><option>已下架</option>
+      </select>
+      <select class="input" style="width:160px">
+        <option>全部分组</option><option>K12 教育</option><option>家庭教育</option>
+      </select>
+      <button class="btn btn-primary">查询</button>
+      <button class="btn">重置</button>
+    </div>
+  </div></div>
+
+  <!-- 系列课卡片列表 -->
+  <div id="cs-list"></div>
+
+  <!-- 分页 -->
+  <div style="display:flex;align-items:center;gap:8px;margin-top:16px">
+    <span style="color:#8c8c8c;font-size:12px">共 <b id="cs-count">3</b> 条</span>
+    <div style="margin-left:auto;display:flex;gap:6px">
+      <button class="btn" disabled>上一页</button>
+      <button class="btn btn-primary">1</button>
+      <button class="btn" disabled>下一页</button>
+    </div>
+  </div>
+
+</div><!-- /#page-content -->
+
+<!-- 新建/编辑系列课 抽屉 -->
+<div class="proto-drawer" id="drawer-series">
+  <div class="proto-drawer-bd">
+    <div class="proto-drawer-hd">
+      <h3 id="series-drawer-title">新建系列课</h3>
+      <button class="ctrl-icon-btn" data-close>×</button>
+    </div>
+    <div class="proto-drawer-bd" style="padding:20px">
+
+      <div class="form-grid" style="grid-template-columns:1fr 1fr">
+        <div class="field">
+          <label>封面</label>
+          <div style="width:120px;height:80px;border:1px dashed #d9d9d9;border-radius:6px;display:flex;align-items:center;justify-content:center;color:#bfbfbf;font-size:12px;cursor:pointer">点击上传</div>
+        </div>
+        <div class="field">
+          <label>状态</label>
+          <div>
+            <label style="margin-right:14px"><input type="radio" name="series-st" checked> 草稿</label>
+            <label><input type="radio" name="series-st"> 已上架</label>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-grid" style="grid-template-columns:1fr">
+        <div class="field">
+          <label>系列课名称 *</label>
+          <input class="input" placeholder="请输入系列课名称" />
+        </div>
+      </div>
+
+      <div class="form-grid" style="grid-template-columns:1fr 1fr">
+        <div class="field">
+          <label>讲师</label>
+          <input class="input" placeholder="请选择讲师" />
+        </div>
+        <div class="field">
+          <label>所属分组</label>
+          <select class="input"><option>K12 教育 / 小学</option><option>家庭教育</option></select>
+        </div>
+      </div>
+
+      <div class="form-grid" style="grid-template-columns:1fr">
+        <div class="field">
+          <label>系列课描述</label>
+          <textarea class="input" rows="3" placeholder="请输入系列课描述"></textarea>
+        </div>
+      </div>
+
+      <div class="form-grid" style="grid-template-columns:1fr 1fr">
+        <div class="field">
+          <label>价格（元）</label>
+          <input class="input" type="number" placeholder="0.00" />
+        </div>
+        <div class="field">
+          <label>标签</label>
+          <input class="input" placeholder="多个用逗号分隔" />
+        </div>
+      </div>
+
+      <!-- 子内容编排 -->
+      <div class="field">
+        <label>子内容编排</label>
+        <div class="cs-subitems">
+
+          <div class="cs-sub-block">
+            <div class="cs-sub-title">
+              <span>📹 视频（<b id="cnt-video">2</b>）</span>
+              <span class="cs-add" id="add-video">+ 添加视频</span>
+            </div>
+            <div id="list-video">
+              <div class="cs-sub-pill">
+                <span class="cs-pill-type video">视频</span>
+                如何让孩子爱上阅读<span style="color:#8c8c8c;font-size:11px">（8:24）</span>
+                <span class="cs-pill-x">×</span>
+              </div>
+              <div class="cs-sub-pill">
+                <span class="cs-pill-type video">视频</span>
+                亲子沟通的5 个关键<span style="color:#8c8c8c;font-size:11px">（12:35）</span>
+                <span class="cs-pill-x">×</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="cs-sub-block">
+            <div class="cs-sub-title">
+              <span>📝 图文（<b id="cnt-article">1</b>）</span>
+              <span class="cs-add" id="add-article">+ 添加图文</span>
+            </div>
+            <div id="list-article">
+              <div class="cs-sub-pill">
+                <span class="cs-pill-type article">图文</span>
+                9 月新学期家长指南
+                <span class="cs-pill-x">×</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="cs-sub-block">
+            <div class="cs-sub-title">
+              <span>🛒 关联商品（<b id="cnt-goods">2</b>）</span>
+              <span class="cs-add" id="add-goods">+ 添加商品</span>
+            </div>
+            <div id="list-goods">
+              <div class="cs-sub-pill">
+                <span class="cs-pill-type goods">商品</span>
+                9.9 试听课<span style="color:#fa8c16">¥9.9</span>
+                <span class="cs-pill-x">×</span>
+              </div>
+              <div class="cs-sub-pill">
+                <span class="cs-pill-type goods">商品</span>
+                家长情绪年卡<span style="color:#fa8c16">¥199</span>
+                <span class="cs-pill-x">×</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+    <div class="proto-drawer-ft">
+      <button class="btn" data-close>取消</button>
+      <button class="btn btn-primary">保存系列课</button>
+    </div>
+  </div>
+</div>
+
+<script src="../assets/js/proto.js"></script>
+<script src="../assets/js/admin-shell.js?v=2"></script>
+<script>
+// ===== 兜底 =====
+setTimeout(function() {
+  if (document.documentElement.getAttribute('data-shell-ready') === '1') return;
+  if (document.querySelector('aside.sidebar')) return;
+  var err = document.createElement('div');
+  err.style.cssText = 'position:fixed;top:0;left:0;right:0;background:#fff1f0;color:#f53f3f;padding:12px 20px;border-bottom:1px solid #ffa39e;z-index:99999;font-size:13px;font-family:system-ui;';
+  err.innerHTML = '<b>⚠ 页面初始化失败</b>：浏览器可能缓存了旧版本。请按 <kbd style="background:#fff;padding:2px 6px;border-radius:3px;border:1px solid #ffa39e;font-family:monospace;">Ctrl+Shift+R</kbd> 强制刷新，或 <button onclick="location.reload();" style="background:#165dff;color:#fff;border:none;padding:4px 12px;border-radius:4px;cursor:pointer;margin-left:8px;">点击重试</button>';
+  document.body.appendChild(err);
+}, 1500);
+
+// ===== 数据 =====
+var SERIES = [
+  { id: "S001", name: "小学语文阅读启蒙系列", emoji: "📚", thumb: "blue",
+    teacher: "张老师", desc: "针对 6-12 岁儿童阅读兴趣培养，从绘本到章节书的进阶路径。",
+    videos: 6, articles: 3, goods: 1, students: 1287, duration: "2.5h",
+    status: "已上架", statusType: "pass" },
+  { id: "S002", name: "家长情绪管理训练营", emoji: "💝", thumb: "green",
+    teacher: "李老师", desc: "8 周系统训练，帮助家长识别情绪、管理情绪、与孩子正向沟通。",
+    videos: 4, articles: 2, goods: 2, students: 0, duration: "1.8h",
+    status: "草稿", statusType: "review" },
+  { id: "S003", name: "AI 学习规划入门", emoji: "🤖", thumb: "orange",
+    teacher: "王博士", desc: "AI 助力学习规划，10 节实操课让孩子学会用 AI 工具提升学习效率。",
+    videos: 5, articles: 1, goods: 1, students: 856, duration: "3.2h",
+    status: "已上架", statusType: "pass" }
+];
+
+function esc(s) {
+  return String(s).replace(/[&<>"']/g, function(c) {
+    return ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c];
+  });
+}
+
+function renderList() {
+  var html = SERIES.map(function(s) {
+    return '' +
+      '<div class="cs-card">' +
+        '<div class="cs-cover ' + s.thumb + '">' + s.emoji + '</div>' +
+        '<div class="cs-info">' +
+          '<div class="cs-title">' + esc(s.name) +
+            '<span class="audit-badge ' + s.statusType + '">' + esc(s.status) + '</span>' +
+            '<span style="color:#8c8c8c;font-size:11px;font-weight:400">ID: ' + esc(s.id) + '</span>' +
+          '</div>' +
+          '<div class="cs-desc">' + esc(s.desc) + '</div>' +
+          '<div class="cs-stats">' +
+            '<span>讲师：' + esc(s.teacher) + '</span>' +
+            '<span>总时长：<b>' + esc(s.duration) + '</b></span>' +
+            '<span>📹 <b>' + s.videos + '</b> 视频</span>' +
+            '<span>📝 <b>' + s.articles + '</b> 图文</span>' +
+            '<span>🛒 <b>' + s.goods + '</b> 商品</span>' +
+            '<span>学员：<b>' + s.students.toLocaleString() + '</b></span>' +
+          '</div>' +
+          '<div class="cs-actions">' +
+            '<button class="btn">查看</button>' +
+            '<button class="btn btn-primary" data-edit-series="' + s.id + '">编辑</button>' +
+            '<button class="btn">配置子内容</button>' +
+            '<button class="btn" style="color:#f53f3f;border-color:#ffa39e">删除</button>' +
+          '</div>' +
+        '</div>' +
+      '</div>';
+  }).join("");
+  document.getElementById("cs-list").innerHTML = html;
+  document.getElementById("cs-count").textContent = SERIES.length;
+}
+
+// ===== Mask & 抽屉 =====
+var mask = document.getElementById("mask");
+function closeAll() {
+  mask.classList.remove("open");
+  document.querySelectorAll(".proto-modal, .proto-drawer").forEach(function(n) { n.classList.remove("open"); });
+}
+function openDrawer(el) {
+  mask.classList.add("open");
+  el.classList.add("open");
+}
+
+// ===== 事件 =====
+document.getElementById("btn-new-series").addEventListener("click", function() {
+  document.getElementById("series-drawer-title").textContent = "新建系列课";
+  openDrawer(document.getElementById("drawer-series"));
+});
+
+document.addEventListener("click", function(e) {
+  var t = e.target.closest("[data-edit-series]");
+  if (t) {
+    document.getElementById("series-drawer-title").textContent = "编辑系列课";
+    openDrawer(document.getElementById("drawer-series"));
+  }
+});
+
+// 关闭
+mask && mask.addEventListener("click", closeAll);
+document.querySelectorAll("[data-close]").forEach(function(b) {
+  b.addEventListener("click", closeAll);
+});
+
+// 子内容删除
+document.addEventListener("click", function(e) {
+  var x = e.target.closest(".cs-pill-x");
+  if (!x) return;
+  var pill = x.closest(".cs-sub-pill");
+  var block = x.closest(".cs-sub-block");
+  pill.remove();
+  // 更新计数
+  var cnt = block.querySelectorAll(".cs-sub-pill").length;
+  var label = block.querySelector(".cs-sub-title b");
+  if (label) label.textContent = cnt;
+});
+
+// 添加子项（仅演示）
+function addPill(block, type, label, meta) {
+  var list = block.querySelector(".cs-sub-pill").parentNode;
+  if (block.querySelector(".cs-empty-sub")) block.querySelector(".cs-empty-sub").remove();
+  var pill = document.createElement("div");
+  pill.className = "cs-sub-pill";
+  pill.innerHTML = '<span class="cs-pill-type ' + type + '">' +
+    (type === "video" ? "视频" : type === "article" ? "图文" : "商品") +
+    '</span>' + label + (meta ? '<span style="color:#8c8c8c;font-size:11px">' + meta + '</span>' : '') +
+    '<span class="cs-pill-x">×</span>';
+  list.appendChild(pill);
+  var cnt = block.querySelectorAll(".cs-sub-pill").length;
+  var lbl = block.querySelector(".cs-sub-title b");
+  if (lbl) lbl.textContent = cnt;
+  Proto.toast("已添加（原型演示）");
+}
+document.getElementById("add-video").addEventListener("click", function() {
+  addPill(document.getElementById("list-video").parentNode, "video", "新课程导论", "（5:00）");
+});
+document.getElementById("add-article").addEventListener("click", function() {
+  addPill(document.getElementById("list-article").parentNode, "article", "学习要点速览");
+});
+document.getElementById("add-goods").addEventListener("click", function() {
+  addPill(document.getElementById("list-goods").parentNode, "goods", "新课程包 ¥99");
+});
+
+// 渲染
+function tryRender() {
+  if (document.getElementById("page-content").style.display !== "none") renderList();
+  else setTimeout(tryRender, 80);
+}
+if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", tryRender);
+else tryRender();
+</script>
+</body>
+</html>

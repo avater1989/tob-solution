@@ -22,7 +22,7 @@
     { id: "workbench", label: "工作台", href: "dashboard.html" },
     { id: "scrm", label: "SCRM", href: "scrm-overview.html" },
     { id: "live", label: "直播", href: "lives.html" },
-    { id: "content", label: "内容", href: "courses.html" },
+    { id: "content", label: "内容", href: "content-series.html" },
     { id: "trade", label: "交易", href: "orders.html" },
     { id: "user", label: "用户", href: "users.html" },
     { id: "sys", label: "系统管理", href: "sys-users.html" },
@@ -120,10 +120,12 @@
     ],
     content: [
       {
-        group: "课程",
+        group: "内容管理",
         links: [
-          { id: "courses", href: "courses.html", label: "课程列表" },
-          { id: "course-edit", href: "course-edit.html", label: "创建课程" },
+          { id: "content-series",   href: "content-series.html",   label: "系列课" },
+          { id: "content-video",    href: "content-video.html",    label: "视频" },
+          { id: "content-article",  href: "content-article.html",  label: "图文" },
+          { id: "content-category", href: "content-category.html", label: "商品分组" },
         ],
       },
     ],
@@ -186,7 +188,7 @@
       "<li>创建并上架线上课</li><li>创建直播并提交审核</li>" +
       "<li>关联视频号商品</li><li>配置期次与促到</li></ol></div>" +
       "<div class='assist-block'><h3>评审路径</h3><ul>" +
-      "<li><a href='courses.html'>① 内容售卖</a></li>" +
+      "<li><a href='content-series.html'>① 内容售卖</a></li>" +
       "<li><a href='lives.html'>② 直播转化</a></li>" +
       "<li><a href='channels-orders.html'>③ 视频号承接</a></li>" +
       "<li><a href='leads.html'>④ 私域运营</a></li></ul></div>",
@@ -265,7 +267,7 @@
   var review =
     '<div class="review-bar">' +
     "<strong>评审路径</strong>" +
-    '<a href="courses.html">①内容售卖</a><span class="sep">·</span>' +
+    '<a href="content-series.html">①内容售卖</a><span class="sep">·</span>' +
     '<a href="lives.html">②直播转化</a><span class="sep">·</span>' +
     '<a href="channels-orders.html">③视频号承接</a><span class="sep">·</span>' +
     '<a href="leads.html">④私域运营</a><span class="sep">|</span>' +
