@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>对账 · 商家管理后台</title>
+<link rel="stylesheet" href="../assets/css/proto.css" />
+</head>
+<body class="admin-body" data-module="trade" data-nav="recon" data-title="对账" data-crumb="交易 / 对账 / 对账单">
+<div id="header-actions">
+  <button class="btn" id="btn-export">导出对账单</button>
+  <button class="btn btn-primary" id="btn-run">发起对账</button>
+</div>
+<div id="page-content" style="display:none">
+
+  <!-- 顶部统计 -->
+  <div class="grid-4" style="margin-bottom:16px">
+    <div class="stat"><div class="label">本期账期</div><div class="value">2026-04-01 ~ 04-07</div><div class="hint">T+1 自动对账</div></div>
+    <div class="stat"><div class="label">本期交易额</div><div class="value">¥8,432.20</div><div class="hint">86 笔</div></div>
+    <div class="stat"><div class="label">本期退款额</div><div class="value">¥308.80</div><div class="hint">4 笔</div></div>
+    <div class="stat"><div class="label">未平差异</div><div class="value">2</div><div class="hint">金额差 1 / 单边账 1</div></div>
+  </div>
+
+  <!-- Tab -->
+  <div class="tabs" id="rc-tabs">
+    <a class="active" href="#" data-tab="bills">对账单</a>
+    <a href="#" data-tab="diffs">差异处理</a>
+  </div>
+
+  <!-- 对账单列表 -->
+  <div class="card" style="margin-bottom:8px"><div class="card-bd">
+    <div class="form-grid" style="grid-template-columns:repeat(5,minmax(0,1fr));gap:8px 12px">
+      <input id="f-bill-no" placeholder="对账单号" />
+      <select id="f-channel">
+        <option value="">账单渠道</option>
+        <option>微信支付</option><option>视频号小店</option>
+      </select>
+      <select id="f-status">
+        <option value="">对账状态</option>
+        <option>已对平</option><option>有差异</option><option>待对账</option>
+      </select>
+      <input id="f-period1" type="date" />
+      <button class="btn btn-primary" id="btn-query">筛选</button>
+    </div>
+  </div></div>
+
+  <div class="card"><div class="card-bd" style="padding:0">
+    <table class="data">
+      <thead>
+        <tr>
+          <th>对账单号</th>
+          <th>账期</th>
+          <th>账单渠道</th>
+          <th>平台订单数</th>
+          <th>渠道账单笔数</th>
+          <th>交易额</th>
+          <th>退款额</th>
+          <th>差异笔数</th>
+          <th>状态</th>
+          <th>生成时间</th>
+          <th style="width:130px">操作</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><a href="#" class="link-mono" data-toast="查看对账单明细（原型）">RC20260407001</a></td>
+          <td>04-01 ~ 04-07</td>
+          <td>微信支付</td>
+          <td>86</td>
+          <td>86</td>
+          <td><b>¥8,432.20</b></td>
+          <td>¥308.80</td>
+          <td><span class="badge badge-warn">2</span></td>
+          <td><span class="badge badge-warn">有差异</span></td>
+          <td>2026-04-08 02:00</td>
+          <td class="row-actions">
+            <a href="#" data-tab-jump="diffs">差异处理</a>
+            <a href="#" data-toast="下载渠道账单（原型）">下载账单</a>
+          </td>
+        </tr>
+        <tr>
+          <td><a href="#" class="link-mono" data-toast="查看对账单明细（原型）">RC20260407002</a></td>
+          <td>04-01 ~ 04-07</td>
+          <td>视频号小店</td>
+          <td>31</td>
+          <td>31</td>
+          <td><b>¥3,069.00</b></td>
+          <td>¥0.00</td>
+          <td><span class="badge badge-success">0</span></td>
+          <td><span class="badge badge-success">已对平</span></td>
+          <td>2026-04-08 02:05</td>
+          <td class="row-actions">
+            <a href="#" data-toast="下载渠道账单（原型）">下载账单</a>
+          </td>
+        </tr>
+        <tr>
+          <td><a href="#" class="link-mono" data-toast="查看对账单明细（原型）">RC20260331001</a></td>
+          <td>03-25 ~ 03-31</td>
+          <td>微信支付</td>
+          <td>42</td>
+          <td>42</td>
+          <td><b>¥4,135.30</b></td>
+          <td>¥9.90</td>
+          <td><span class="badge badge-success">0</span></td>
+          <td><span class="badge badge-success">已对平</span></td>
+          <td>2026-04-01 02:00</td>
+          <td class="row-actions">
+            <a href="#" data-toast="下载渠道账单（原型）">下载账单</a>
+          </td>
+        </tr>
+        <tr>
+          <td><a href="#" class="link-mono" data-toast="查看对账单明细（原型）">RC20260331002</a></td>
+          <td>03-25 ~ 03-31</td>
+          <td>视频号小店</td>
+          <td>18</td>
+          <td>18</td>
+          <td><b>¥1,782.00</b></td>
+          <td>¥0.00</td>
+          <td><span class="badge badge-success">0</span></td>
+          <td><span class="badge badge-success">已对平</span></td>
+          <td>2026-04-01 02:03</td>
+          <td class="row-actions">
+            <a href="#" data-toast="下载渠道账单（原型）">下载账单</a>
+          </td>
+        </tr>
+        <tr>
+          <td><span class="link-mono muted">RC20260408001</span></td>
+          <td>04-08</td>
+          <td>微信支付</td>
+          <td>—</td>
+          <td>—</td>
+          <td>—</td>
+          <td>—</td>
+          <td>—</td>
+          <td><span class="badge">待对账</span></td>
+          <td>次日 02:00 生成</td>
+          <td class="row-actions">
+            <a href="#" data-toast="等待 T+1 自动对账（原型）">—</a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div></div>
+
+  <!-- 差异处理面板 -->
+  <div class="card" id="panel-diffs" style="display:none">
+    <div class="card-hd">
+      <h2>对账差异 · RC20260407001（04-01 ~ 04-07 · 微信支付）</h2>
+      <span class="muted" style="font-size:12px">差异 2 笔，处理后将重新汇总至结算单</span>
+    </div>
+    <div class="card-bd" style="padding:0">
+      <table class="data">
+        <thead>
+          <tr>
+            <th>差异类型</th>
+            <th>平台记录</th>
+            <th>渠道记录</th>
+            <th>差值</th>
+            <th>发现时间</th>
+            <th>处理状态</th>
+            <th style="width:170px">操作</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="badge badge-warn">金额不一致</span></td>
+            <td>YB20260403100112 · ¥299.00<br><span class="muted">已支付 04-03 20:15</span></td>
+            <td>交易单 4200002388202604031…<br><b>¥269.10</b>（券后）</td>
+            <td class="danger">-¥29.90</td>
+            <td>2026-04-08 02:00</td>
+            <td><span class="badge badge-warn">待处理</span></td>
+            <td class="row-actions">
+              <a href="#" data-diff-act="recheck">重取渠道账单</a>
+              <a href="#" data-diff-act="confirm">人工确认</a>
+            </td>
+          </tr>
+          <tr>
+            <td><span class="badge badge-danger">渠道单边账</span></td>
+            <td>未找到对应订单<br><span class="muted">疑似掉单</span></td>
+            <td>交易单 4200002388202604029…<br><b>¥9.90</b>（04-02 23:59）</td>
+            <td class="danger">+¥9.90</td>
+            <td>2026-04-08 02:00</td>
+            <td><span class="badge badge-warn">待处理</span></td>
+            <td class="row-actions">
+              <a href="#" data-diff-act="repair">补单修复</a>
+              <a href="#" data-diff-act="suspend">挂起</a>
+            </td>
+          </tr>
+          <tr>
+            <td><span class="badge badge-info">退款状态不一致</span></td>
+            <td>RF202604010008 · 退款中</td>
+            <td>退款成功 04-02</td>
+            <td>¥0.00</td>
+            <td>2026-04-03 02:00</td>
+            <td><span class="badge badge-success">已自动平账</span></td>
+            <td class="row-actions">
+              <a href="refunds.html">查看退款单</a>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- 对账规则说明 -->
+  <div class="card" style="margin-top:8px"><div class="card-hd"><h2>对账规则说明</h2></div>
+    <div class="card-bd">
+      <ul class="muted" style="font-size:13px;line-height:1.9;padding-left:16px">
+        <li>每日 T+1 自动拉取微信支付 / 视频号小店账单，与平台订单按交易单号逐笔核对；</li>
+        <li>差异类型：金额不一致、平台/渠道单边账、退款状态不一致；</li>
+        <li>金额与笔数全部一致 → 对账单状态「已对平」，可参与结算；存在差异 → 需处理完差异后重算；</li>
+        <li>MVP 为商户侧对账视图；平台侧对账异常工单流转为后续能力。</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<style>
+.link-mono { font-family:ui-monospace,Consolas,monospace; font-size:12px; color:var(--color-primary); text-decoration:none; }
+.link-mono:hover { text-decoration:underline; }
+.muted.link-mono { color:var(--color-text-muted); pointer-events:none; }
+.danger { color:#cb2634; font-weight:600; }
+</style>
+
+<script src="../assets/js/proto.js"></script>
+<script src="../assets/js/admin-shell.js"></script>
+<script>
+(function () {
+  // Tabs（含差异面板切换）
+  var tabs = document.querySelectorAll("#rc-tabs a");
+  function switchTab(key) {
+    tabs.forEach(function (n) { n.classList.remove("active"); });
+    var target = document.querySelector('#rc-tabs a[data-tab="' + key + '"]');
+    if (target) target.classList.add("active");
+    document.getElementById("panel-diffs").style.display = key === "diffs" ? "block" : "none";
+  }
+  tabs.forEach(function (a) {
+    a.addEventListener("click", function (e) {
+      e.preventDefault();
+      switchTab(a.getAttribute("data-tab"));
+    });
+  });
+  document.querySelectorAll("[data-tab-jump]").forEach(function (a) {
+    a.addEventListener("click", function (e) {
+      e.preventDefault();
+      switchTab(a.getAttribute("data-tab-jump"));
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    });
+  });
+
+  // 差异操作
+  document.querySelectorAll("[data-diff-act]").forEach(function (a) {
+    a.addEventListener("click", function (e) {
+      e.preventDefault();
+      var act = a.getAttribute("data-diff-act");
+      var msg = {
+        recheck: "已重新拉取渠道账单，稍后自动重试对账（原型）",
+        confirm: "已人工确认差异，按渠道 ¥269.10 重算（原型）",
+        repair: "已发起补单修复，订单稍后生成（原型）",
+        suspend: "差异已挂起，下期账单继续跟踪（原型）",
+      }[act];
+      Proto.toast(msg);
+    });
+  });
+
+  document.getElementById("btn-run").addEventListener("click", function () { Proto.toast("已发起本期对账（原型）"); });
+  document.getElementById("btn-export").addEventListener("click", function () { Proto.toast("已导出对账单（原型）"); });
+  document.getElementById("btn-query").addEventListener("click", function () { Proto.toast("已筛选（原型）"); });
+})();
+</script>
+</body>
+</html>

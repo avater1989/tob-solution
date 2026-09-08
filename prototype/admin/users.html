@@ -3,29 +3,517 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Users - MVP</title>
+<title>用户列表 · 商家管理后台</title>
 <link rel="stylesheet" href="../assets/css/proto.css" />
 </head>
-<body class="admin-body" data-module="user" data-nav="users" data-title="Users" data-crumb="User / Users">
+<body class="admin-body" data-module="user" data-nav="users" data-title="用户列表" data-crumb="用户 / 用户管理 / 用户列表">
 <div id="header-actions">
-  <button class="btn" data-toast="Demo only">Refresh</button>
-  <button class="btn btn-primary" data-toast="Demo only">Create</button>
+  <button class="btn" id="btn-export">选择导出</button>
+  <button class="btn btn-primary" id="btn-batch-tag">批量打标</button>
 </div>
 <div id="page-content" style="display:none">
-  <div class="card"><div class="card-hd"><h2>Users</h2></div>
-  <div class="card-bd">
-    <p class="muted">User / Users</p>
+
+  <!-- 搜索区 -->
+  <div class="card" style="margin-bottom:12px"><div class="card-bd">
+    <div class="ua-search">
+      <div class="ua-search-row">
+        <div class="ua-field"><label>姓名：</label><input id="f-name" placeholder="请输入姓名" /></div>
+        <div class="ua-field"><label>手机号码：</label><input id="f-phone" placeholder="请输入学员手机号" /></div>
+        <div class="ua-field"><label>身份证号：</label><input id="f-idno" placeholder="请输入身份证号" /></div>
+        <div class="ua-field"><label>性别：</label>
+          <select id="f-gender">
+            <option value="">请选择性别</option>
+            <option>男</option>
+            <option>女</option>
+          </select>
+        </div>
+      </div>
+      <div class="ua-search-row ua-more" id="search-more" style="display:none">
+        <div class="ua-field"><label>所属S：</label><input id="f-s" placeholder="所属 S" /></div>
+        <div class="ua-field"><label>所属K：</label><input id="f-k" placeholder="所属 K" /></div>
+        <div class="ua-field"><label>所属G：</label><input id="f-g" placeholder="所属 G" /></div>
+        <div class="ua-field"><label>家庭身份：</label>
+          <select id="f-family">
+            <option value="">请选择</option>
+            <option>主理人</option>
+            <option>成员</option>
+            <option>临时家庭</option>
+            <option>—</option>
+          </select>
+        </div>
+      </div>
+      <div class="ua-search-btns">
+        <button class="btn btn-primary" id="btn-query">搜索</button>
+        <button class="btn" id="btn-reset">重置</button>
+        <button class="btn btn-ghost" id="btn-toggle">展开</button>
+      </div>
+    </div>
+  </div></div>
+
+  <!-- 操作条 -->
+  <div class="toolbar" style="margin-bottom:12px">
+    <button class="btn btn-primary" id="btn-add">+ 新增</button>
+    <button class="btn" id="btn-import">手动导入</button>
+    <div class="spacer"></div>
+    <span class="muted" style="font-size:12px">全量用户管理（与营销驾驶舱-线索池区分）；支持手动/自动打标、批量打标、批量导出；自动标签规则 MVP 暂不实现</span>
+  </div>
+
+  <!-- 表格 -->
+  <div class="card"><div class="card-bd" style="padding:0">
     <table class="data">
-      <thead><tr><th>Item</th><th>Status</th><th>Updated</th><th>Actions</th></tr></thead>
+      <thead>
+        <tr>
+          <th style="width:32px"><input type="checkbox" id="ck-all" /></th>
+          <th>姓名</th>
+          <th>手机号码</th>
+          <th>昵称</th>
+          <th>推荐人</th>
+          <th>推荐人手机号码</th>
+          <th>所属S</th>
+          <th>所属K</th>
+          <th>所属G</th>
+          <th>家庭身份</th>
+          <th>性别</th>
+          <th style="width:230px">操作</th>
+        </tr>
+      </thead>
       <tbody>
-        <tr><td>Sample row 1</td><td><span class="badge badge-success">OK</span></td><td>2026-03-29</td><td><a href="#" data-toast="Demo">Edit</a></td></tr>
-        <tr><td>Sample row 2</td><td><span class="badge badge-warn">Pending</span></td><td>2026-03-29</td><td><a href="#" data-toast="Demo">Edit</a></td></tr>
-        <tr><td>Sample row 3</td><td><span class="badge">Draft</span></td><td>2026-03-28</td><td><a href="#" data-toast="Demo">Edit</a></td></tr>
+        <tr>
+          <td><input type="checkbox" class="ck-row" /></td>
+          <td><a href="user-detail.html"><b>学员7576</b></a></td>
+          <td>18919167576</td>
+          <td>学员7576</td>
+          <td>竹盟</td>
+          <td>13600550016</td>
+          <td>—</td>
+          <td>—</td>
+          <td>—</td>
+          <td>临时家庭</td>
+          <td>女</td>
+          <td class="row-actions">
+            <a href="#" data-row-act="set-ref">修改推荐人</a>
+            <a href="#" data-row-act="edit">编辑</a>
+            <a href="user-detail.html">查看详情</a>
+            <a href="#" data-row-act="rights">查看权益</a>
+            <a href="#" data-row-act="pteam">所属P团</a>
+            <a href="#" data-row-act="idno">身份证号</a>
+            <a href="#" data-row-act="disable">注销账号</a>
+            <a href="#" data-row-act="finance">财务信息</a>
+            <a href="#" data-row-act="doc">提交接件资料</a>
+          </td>
+        </tr>
+        <tr>
+          <td><input type="checkbox" class="ck-row" /></td>
+          <td><a href="user-detail.html"><b>学员7576</b></a></td>
+          <td>18919167015</td>
+          <td>学员7576</td>
+          <td>竹盟</td>
+          <td>13600550016</td>
+          <td>—</td>
+          <td>—</td>
+          <td>—</td>
+          <td>临时家庭</td>
+          <td>女</td>
+          <td class="row-actions">
+            <a href="#" data-row-act="set-ref">修改推荐人</a>
+            <a href="#" data-row-act="edit">编辑</a>
+            <a href="user-detail.html">查看详情</a>
+            <a href="#" data-row-act="rights">查看权益</a>
+            <a href="#" data-row-act="pteam">所属P团</a>
+            <a href="#" data-row-act="idno">身份证号</a>
+            <a href="#" data-row-act="disable">注销账号</a>
+            <a href="#" data-row-act="finance">财务信息</a>
+            <a href="#" data-row-act="doc">提交接件资料</a>
+          </td>
+        </tr>
+        <tr>
+          <td><input type="checkbox" class="ck-row" /></td>
+          <td><a href="user-detail.html"><b>卂十七</b></a></td>
+          <td>13600550017</td>
+          <td>学员0017</td>
+          <td>—</td>
+          <td>—</td>
+          <td>S 全 HX</td>
+          <td>—</td>
+          <td>—</td>
+          <td>临时家庭</td>
+          <td>女</td>
+          <td class="row-actions">
+            <a href="#" data-row-act="set-ref">修改推荐人</a>
+            <a href="#" data-row-act="edit">编辑</a>
+            <a href="user-detail.html">查看详情</a>
+            <a href="#" data-row-act="rights">查看权益</a>
+            <a href="#" data-row-act="pteam">所属P团</a>
+            <a href="#" data-row-act="idno">身份证号</a>
+            <a href="#" data-row-act="disable">注销账号</a>
+            <a href="#" data-row-act="finance">财务信息</a>
+            <a href="#" data-row-act="doc">提交接件资料</a>
+          </td>
+        </tr>
+        <tr>
+          <td><input type="checkbox" class="ck-row" /></td>
+          <td><a href="user-detail.html"><b>学员1485</b></a></td>
+          <td>18042691485</td>
+          <td>学员1485</td>
+          <td>—</td>
+          <td>—</td>
+          <td>—</td>
+          <td>—</td>
+          <td>—</td>
+          <td>—</td>
+          <td>—</td>
+          <td class="row-actions">
+            <a href="#" data-row-act="set-ref">修改推荐人</a>
+            <a href="#" data-row-act="edit">编辑</a>
+            <a href="user-detail.html">查看详情</a>
+            <a href="#" data-row-act="rights">查看权益</a>
+            <a href="#" data-row-act="pteam">所属P团</a>
+            <a href="#" data-row-act="idno">身份证号</a>
+            <a href="#" data-row-act="disable">注销账号</a>
+            <a href="#" data-row-act="finance">财务信息</a>
+            <a href="#" data-row-act="doc">提交接件资料</a>
+          </td>
+        </tr>
+        <tr>
+          <td><input type="checkbox" class="ck-row" /></td>
+          <td><a href="user-detail.html"><b>学员7553</b></a></td>
+          <td>18919167553</td>
+          <td>学员7553</td>
+          <td>启盟</td>
+          <td>13800001111</td>
+          <td>—</td>
+          <td>—</td>
+          <td>—</td>
+          <td>主理人</td>
+          <td>女</td>
+          <td class="row-actions">
+            <a href="#" data-row-act="set-ref">修改推荐人</a>
+            <a href="#" data-row-act="edit">编辑</a>
+            <a href="user-detail.html">查看详情</a>
+            <a href="#" data-row-act="rights">查看权益</a>
+            <a href="#" data-row-act="pteam">所属P团</a>
+            <a href="#" data-row-act="idno">身份证号</a>
+            <a href="#" data-row-act="disable">注销账号</a>
+            <a href="#" data-row-act="finance">财务信息</a>
+            <a href="#" data-row-act="doc">提交接件资料</a>
+          </td>
+        </tr>
       </tbody>
     </table>
+
+    <!-- 分页 -->
+    <div class="ua-pagination">
+      <span class="muted">已选 <b id="ck-count">0</b> 项 · 共 <b>5,316</b> 条</span>
+      <div class="spacer"></div>
+      <select class="ua-size">
+        <option>10条/页</option><option>20条/页</option><option>50条/页</option>
+      </select>
+      <button class="ua-page" disabled>‹</button>
+      <button class="ua-page active">1</button>
+      <button class="ua-page">2</button>
+      <button class="ua-page">3</button>
+      <span class="muted">…</span>
+      <button class="ua-page">532</button>
+      <button class="ua-page">›</button>
+    </div>
   </div></div>
 </div>
+
+<!-- ============ 弹窗 ============ -->
+<div class="proto-mask" id="mask"></div>
+
+<!-- 手动导入弹窗 -->
+<div class="proto-modal" id="modal-import" style="width:520px">
+  <div class="proto-modal-hd">
+    <h3 style="font-size:16px;font-weight:600">手动导入用户</h3>
+    <button class="btn btn-sm btn-ghost" data-close>×</button>
+  </div>
+  <div class="proto-modal-bd">
+    <p class="muted" style="margin:0 0 8px;font-size:12px">按模版填写用户信息后上传，平台将按手机号去重并写入。仅新增已勾选「已注册」状态的用户。</p>
+    <div class="ua-upload" id="upload-area">
+      <div class="ua-upload-icon">⇪</div>
+      <p style="margin:8px 0 4px">将文件拖到此处或<span class="ua-upload-link">点击上传</span></p>
+      <p class="muted" style="margin:0;font-size:12px">单个文件不能超过 5M，仅支持 .xlsx / .xls</p>
+      <input type="file" id="upload-input" style="display:none" />
+    </div>
+    <p style="margin:12px 0 0;font-size:13px;text-align:center">
+      <a href="#" id="download-tpl" style="color:var(--color-primary)">下载导入模版</a>
+    </p>
+  </div>
+  <div class="proto-modal-ft" style="border-top:1px solid var(--color-border);padding:12px 20px;display:flex;gap:8px;justify-content:flex-end">
+    <button class="btn" data-close>取消</button>
+    <button class="btn btn-primary" id="import-submit" data-close data-toast="导入任务已提交，完成后通知（原型）">确认导入</button>
+  </div>
+</div>
+
+<!-- 选择导出弹窗 -->
+<div class="proto-modal" id="modal-export" style="width:480px">
+  <div class="proto-modal-hd">
+    <h3 style="font-size:16px;font-weight:600">选择导出字段</h3>
+    <button class="btn btn-sm btn-ghost" data-close>×</button>
+  </div>
+  <div class="proto-modal-bd">
+    <div class="tag-pick" id="export-pick">
+      <label class="tp-item"><input type="checkbox" checked /> 姓名</label>
+      <label class="tp-item"><input type="checkbox" checked /> 手机号码</label>
+      <label class="tp-item"><input type="checkbox" checked /> 昵称</label>
+      <label class="tp-item"><input type="checkbox" /> 推荐人</label>
+      <label class="tp-item"><input type="checkbox" /> 推荐人手机号码</label>
+      <label class="tp-item"><input type="checkbox" /> 所属S</label>
+      <label class="tp-item"><input type="checkbox" /> 所属K</label>
+      <label class="tp-item"><input type="checkbox" /> 所属G</label>
+      <label class="tp-item"><input type="checkbox" /> 家庭身份</label>
+      <label class="tp-item"><input type="checkbox" /> 性别</label>
+    </div>
+  </div>
+  <div class="proto-modal-ft" style="border-top:1px solid var(--color-border);padding:12px 20px;display:flex;gap:8px;justify-content:flex-end">
+    <button class="btn" data-close>取消</button>
+    <button class="btn btn-primary" data-close data-toast="导出任务已生成，下载链接将发送到站内信（原型）">确认导出</button>
+  </div>
+</div>
+
+<!-- 新增/编辑用户弹窗 -->
+<div class="proto-modal" id="modal-edit" style="width:560px">
+  <div class="proto-modal-hd">
+    <h3 style="font-size:16px;font-weight:600" id="edit-title">编辑用户</h3>
+    <button class="btn btn-sm btn-ghost" data-close>×</button>
+  </div>
+  <div class="proto-modal-bd">
+    <div class="form-grid">
+      <div class="field"><label>姓名 *</label><input id="ed-name" /></div>
+      <div class="field"><label>手机号码 *</label><input id="ed-phone" /></div>
+      <div class="field"><label>昵称</label><input id="ed-nick" /></div>
+      <div class="field"><label>性别</label>
+        <select id="ed-gender" style="width:100%;padding:6px 8px;border:1px solid var(--color-border);border-radius:6px">
+          <option>男</option><option>女</option><option>—</option>
+        </select>
+      </div>
+      <div class="field"><label>推荐人</label><input id="ed-ref" /></div>
+      <div class="field"><label>推荐人手机号码</label><input id="ed-ref-phone" /></div>
+      <div class="field"><label>所属S</label><input id="ed-s" placeholder="如 S 全 HX" /></div>
+      <div class="field"><label>所属K</label><input id="ed-k" /></div>
+      <div class="field"><label>所属G</label><input id="ed-g" /></div>
+      <div class="field"><label>家庭身份</label>
+        <select id="ed-family" style="width:100%;padding:6px 8px;border:1px solid var(--color-border);border-radius:6px">
+          <option>主理人</option><option>成员</option><option>临时家庭</option><option>—</option>
+        </select>
+      </div>
+      <div class="field" style="grid-column:1/-1"><label>备注</label>
+        <textarea rows="2" style="width:100%;padding:8px;border:1px solid var(--color-border);border-radius:6px"></textarea>
+      </div>
+    </div>
+    <p class="muted" style="margin:10px 0 0;font-size:12px">手机号作为平台唯一标识；身份证号、权益、订单等详情请进入「查看详情」维护。</p>
+  </div>
+  <div class="proto-modal-ft" style="border-top:1px solid var(--color-border);padding:12px 20px;display:flex;gap:8px;justify-content:flex-end">
+    <button class="btn" data-close>取消</button>
+    <button class="btn btn-primary" data-close data-toast="用户信息已保存（原型）">保存</button>
+  </div>
+</div>
+
+<!-- 修改推荐人弹窗 -->
+<div class="proto-modal" id="modal-ref" style="width:420px">
+  <div class="proto-modal-hd">
+    <h3 style="font-size:16px;font-weight:600">修改推荐人</h3>
+    <button class="btn btn-sm btn-ghost" data-close>×</button>
+  </div>
+  <div class="proto-modal-bd">
+    <p class="muted" style="margin:0 0 10px;font-size:13px">用户：<b id="ref-name">—</b></p>
+    <div class="form-grid">
+      <div class="field"><label>推荐人 *</label><input id="ref-name-input" placeholder="推荐人姓名" /></div>
+      <div class="field"><label>推荐人手机号 *</label><input id="ref-phone-input" placeholder="推荐人手机号" /></div>
+    </div>
+  </div>
+  <div class="proto-modal-ft" style="border-top:1px solid var(--color-border);padding:12px 20px;display:flex;gap:8px;justify-content:flex-end">
+    <button class="btn" data-close>取消</button>
+    <button class="btn btn-primary" data-close data-toast="推荐人已更新（原型）">保存</button>
+  </div>
+</div>
+
+<!-- 打标弹窗 -->
+<div class="proto-modal" id="modal-tag" style="width:480px">
+  <div class="proto-modal-hd">
+    <h3 style="font-size:16px;font-weight:600">用户打标</h3>
+    <button class="btn btn-sm btn-ghost" data-close>×</button>
+  </div>
+  <div class="proto-modal-bd">
+    <div class="field" style="margin-bottom:10px"><label>用户</label><div id="tag-user">—</div></div>
+    <div class="field"><label>选择标签（可多选）</label>
+      <div class="tag-pick" id="tag-pick">
+        <label class="tp-item"><input type="checkbox" checked /> 高意向</label>
+        <label class="tp-item"><input type="checkbox" /> 已购引流课</label>
+        <label class="tp-item"><input type="checkbox" /> 训练营学员</label>
+        <label class="tp-item"><input type="checkbox" /> 直播高活跃</label>
+        <label class="tp-item"><input type="checkbox" /> 流失预警</label>
+      </div>
+    </div>
+    <p class="muted" style="margin:8px 0 0;font-size:12px">仅支持手动标签；自动标签规则 MVP 暂不实现，由系统在用户行为满足条件时自动打标（后续版本）</p>
+  </div>
+  <div class="proto-modal-ft" style="border-top:1px solid var(--color-border);padding:12px 20px;display:flex;gap:8px;justify-content:flex-end">
+    <button class="btn" data-close>取消</button>
+    <button class="btn btn-primary" id="tag-save">保存标签</button>
+  </div>
+</div>
+
+<style>
+/* ===== 搜索区 ===== */
+.ua-search-row { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 12px 24px; }
+.ua-field { display: flex; align-items: center; gap: 0; font-size: 13px; }
+.ua-field label { white-space: nowrap; color: var(--color-text-secondary); flex-shrink: 0; }
+.ua-field input, .ua-field select {
+  flex: 1; min-width: 0; padding: 6px 10px; border: 1px solid var(--color-border);
+  border-radius: 6px; font-family: inherit; font-size: 13px;
+}
+.ua-search-btns { display: flex; gap: 8px; margin-top: 14px; }
+.ua-pagination {
+  display: flex; align-items: center; gap: 12px; padding: 12px 14px;
+  border-top: 1px solid var(--color-border); font-size: 13px; flex-wrap: wrap;
+}
+.ua-pages { display: flex; gap: 4px; }
+.ua-page {
+  min-width: 28px; height: 28px; padding: 0 6px; border: 1px solid var(--color-border);
+  background: #fff; border-radius: 4px; cursor: pointer; font-size: 13px;
+  font-family: inherit; color: var(--color-text);
+}
+.ua-page:hover:not(:disabled) { color: var(--color-primary); border-color: var(--color-primary); }
+.ua-page.active { background: var(--color-primary); border-color: var(--color-primary); color: #fff; }
+.ua-page:disabled { color: var(--color-text-muted); cursor: not-allowed; }
+.ua-size { padding: 5px 8px; border: 1px solid var(--color-border); border-radius: 6px; font-family: inherit; font-size: 13px; }
+.ua-upload {
+  border: 1px dashed var(--color-border); border-radius: 8px; padding: 28px 16px;
+  text-align: center; font-size: 13px; background: #fafafa; cursor: pointer;
+}
+.ua-upload:hover { border-color: var(--color-primary); }
+.ua-upload-icon { width: 40px; height: 40px; margin: 0 auto; border-radius: 50%; background: #e8f3ff; color: #165dff; font-size: 20px; display: flex; align-items: center; justify-content: center; }
+.ua-upload-link { color: var(--color-primary); cursor: pointer; }
+.tag-pick { display: flex; flex-wrap: wrap; gap: 8px; }
+.tp-item {
+  display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px;
+  border: 1px solid var(--color-border); border-radius: 6px; font-size: 13px; cursor: pointer;
+}
+.tp-item:has(input:checked) { border-color: var(--color-primary); color: var(--color-primary); background: #f0f5ff; }
+</style>
+
 <script src="../assets/js/proto.js"></script>
 <script src="../assets/js/admin-shell.js"></script>
+<script>
+(function () {
+  var mask = document.getElementById("mask");
+  function closeAll() {
+    mask.classList.remove("open");
+    document.querySelectorAll(".proto-modal").forEach(function (n) { n.classList.remove("open"); });
+  }
+  function open(node) { mask.classList.add("open"); node.classList.add("open"); }
+  mask.addEventListener("click", closeAll);
+  document.querySelectorAll("[data-close]").forEach(function (n) { n.addEventListener("click", closeAll); });
+
+  // 展开/收起
+  var more = document.getElementById("search-more");
+  var toggle = document.getElementById("btn-toggle");
+  toggle.addEventListener("click", function () {
+    var show = more.style.display === "none";
+    more.style.display = show ? "grid" : "none";
+    toggle.textContent = show ? "收起" : "展开";
+  });
+
+  // 搜索/重置
+  document.getElementById("btn-query").addEventListener("click", function () { Proto.toast("已按条件查询（原型）"); });
+  document.getElementById("btn-reset").addEventListener("click", function () {
+    ["f-name", "f-phone", "f-idno", "f-s", "f-k", "f-g"].forEach(function (id) { document.getElementById(id).value = ""; });
+    ["f-gender", "f-family"].forEach(function (id) { document.getElementById(id).value = ""; });
+    more.style.display = "none"; toggle.textContent = "展开";
+    Proto.toast("已重置");
+  });
+
+  // 全选
+  var ckAll = document.getElementById("ck-all");
+  ckAll.addEventListener("change", function () {
+    document.querySelectorAll(".ck-row").forEach(function (c) { c.checked = ckAll.checked; });
+    updateCount();
+  });
+  document.querySelectorAll(".ck-row").forEach(function (c) { c.addEventListener("change", updateCount); });
+  function updateCount() {
+    document.getElementById("ck-count").textContent =
+      document.querySelectorAll(".ck-row:checked").length;
+  }
+
+  // 行操作
+  document.querySelectorAll("tbody tr").forEach(function (tr) {
+    var name = tr.querySelector("td a b") ? tr.querySelector("td a b").textContent.trim()
+              : (tr.querySelector("td b") ? tr.querySelector("td b").textContent.trim() : "—");
+    tr.querySelectorAll("[data-row-act]").forEach(function (a) {
+      a.addEventListener("click", function (e) {
+        e.preventDefault();
+        var act = a.getAttribute("data-row-act");
+        if (act === "set-ref") {
+          document.getElementById("ref-name").textContent = name;
+          document.getElementById("ref-name-input").value = "";
+          document.getElementById("ref-phone-input").value = "";
+          open(document.getElementById("modal-ref"));
+        } else if (act === "edit") {
+          document.getElementById("edit-title").textContent = "编辑用户 · " + name;
+          open(document.getElementById("modal-edit"));
+        } else if (act === "rights") {
+          Proto.toast("「" + name + "」查看权益（原型）");
+        } else if (act === "pteam") {
+          Proto.toast("「" + name + "」所属 P 团（原型）");
+        } else if (act === "idno") {
+          Proto.toast("「" + name + "」身份证号（原型）");
+        } else if (act === "disable") {
+          if (confirm("确定注销「" + name + "」账号？该操作不可恢复。")) {
+            Proto.toast("账号已注销（原型）");
+          }
+        } else if (act === "finance") {
+          Proto.toast("「" + name + "」财务信息（原型）");
+        } else if (act === "doc") {
+          Proto.toast("「" + name + "」提交接件资料（原型）");
+        }
+      });
+    });
+  });
+
+  // 顶部：新增 / 手动导入 / 批量打标 / 导出
+  document.getElementById("btn-add").addEventListener("click", function () {
+    document.getElementById("edit-title").textContent = "新增用户";
+    open(document.getElementById("modal-edit"));
+  });
+  document.getElementById("btn-import").addEventListener("click", function () {
+    open(document.getElementById("modal-import"));
+  });
+  document.getElementById("btn-export").addEventListener("click", function () {
+    open(document.getElementById("modal-export"));
+  });
+  document.getElementById("btn-batch-tag").addEventListener("click", function () {
+    var n = document.querySelectorAll(".ck-row:checked").length;
+    if (!n) { Proto.toast("请先勾选用户"); return; }
+    document.getElementById("tag-user").textContent = "已选 " + n + " 位用户（批量打标）";
+    open(document.getElementById("modal-tag"));
+  });
+  document.getElementById("tag-save").addEventListener("click", function () {
+    closeAll(); Proto.toast("标签已保存（原型）");
+  });
+
+  // 手动导入：上传交互
+  var upload = document.getElementById("upload-area");
+  var uploadInput = document.getElementById("upload-input");
+  upload.addEventListener("click", function () { uploadInput.click(); });
+  uploadInput.addEventListener("change", function () {
+    if (uploadInput.files.length) Proto.toast("已选择文件：" + uploadInput.files[0].name);
+  });
+  document.getElementById("download-tpl").addEventListener("click", function (e) {
+    e.preventDefault();
+    Proto.toast("导入模版下载中（原型）");
+  });
+
+  // 分页
+  document.querySelectorAll(".ua-page").forEach(function (b) {
+    if (b.disabled) return;
+    b.addEventListener("click", function () {
+      document.querySelectorAll(".ua-page").forEach(function (n) { n.classList.remove("active"); });
+      b.classList.add("active");
+      Proto.toast("已切换到第 " + b.textContent + " 页（原型）");
+    });
+  });
+})();
+</script>
 </body>
 </html>

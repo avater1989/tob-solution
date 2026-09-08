@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>运营工作台 · 运营后台</title>
+<link rel="stylesheet" href="../assets/css/proto.css" />
+</head>
+<body class="admin-body" data-module="workbench" data-nav="dashboard" data-title="运营工作台" data-crumb="运营后台 / 工作台" data-assist="1">
+<div id="header-actions">
+  <button class="btn" data-toast="已刷新（原型）">刷新</button>
+  <button class="btn btn-primary" id="btn-open-tenant">开通租户</button>
+</div>
+<div id="page-content" style="display:none">
+
+  <!-- 全局统计卡 -->
+  <div class="grid-4" style="margin-bottom:16px">
+    <div class="stat"><div class="label">接入租户</div><div class="value">18</div><div class="hint">正式 12 · 试用 6</div></div>
+    <div class="stat"><div class="label">待审核内容</div><div class="value">12</div><div class="hint">线上课 7 · 直播 5</div></div>
+    <div class="stat"><div class="label">今日平台 GMV</div><div class="value">¥48,213.60</div><div class="hint">462 笔已支付</div></div>
+    <div class="stat"><div class="label">进行中直播</div><div class="value">3</div><div class="hint">观礼 1,284 人</div></div>
+    <div class="stat"><div class="label">待处理结算</div><div class="value">5</div><div class="hint">差异待确认 2</div></div>
+  </div>
+
+  <!-- 平台待办 -->
+  <div class="card" style="margin-bottom:16px">
+    <div class="card-hd"><h2>平台待办</h2></div>
+    <div class="card-bd" style="padding:0">
+      <table class="data">
+        <thead><tr><th style="width:90px">类型</th><th>事项</th><th>来源租户</th><th>等待时长</th><th>优先级</th><th style="width:120px">操作</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><span class="badge badge-warn">开通申请</span></td>
+            <td><b>「星启家庭教育咨询」</b> 提交入驻申请，手机号已验证</td>
+            <td>注册留资</td>
+            <td>2 小时</td>
+            <td><span class="badge badge-danger">高</span></td>
+            <td class="row-actions"><a href="tenants.html">去开通</a></td>
+          </tr>
+          <tr>
+            <td><span class="badge badge-info">内容审核</span></td>
+            <td>线上课《青春期沟通训练营》提交上架，共 12 节课</td>
+            <td><a href="tenant-detail.html">星启家庭教育</a></td>
+            <td>5 小时</td>
+            <td><span class="badge badge-warn">中</span></td>
+            <td class="row-actions"><a href="audit.html">去审核</a></td>
+          </tr>
+          <tr>
+            <td><span class="badge badge-info">内容审核</span></td>
+            <td>直播「家长公开课 03 期」提交开播审核</td>
+            <td><a href="tenant-detail.html">晨光少儿成长</a></td>
+            <td>8 小时</td>
+            <td><span class="badge badge-warn">中</span></td>
+            <td class="row-actions"><a href="audit.html">去审核</a></td>
+          </tr>
+          <tr>
+            <td><span class="badge badge-success">结算确认</span></td>
+            <td>9月1日账期结算单复核（对账差异已处理）</td>
+            <td><a href="tenant-detail.html">星启家庭教育</a></td>
+            <td>1 天</td>
+            <td><span class="badge">低</span></td>
+            <td class="row-actions"><a href="data.html">查看</a></td>
+          </tr>
+          <tr>
+            <td><span class="badge badge-danger">风控预警</span></td>
+            <td>租户「某某成长中心」退款率 7 日达 21%，超过阈值 15%</td>
+            <td><a href="tenant-detail.html">某某成长中心</a></td>
+            <td>3 小时</td>
+            <td><span class="badge badge-danger">高</span></td>
+            <td class="row-actions"><a href="tenant-detail.html">去处理</a></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- 租户动态 -->
+  <div class="card">
+    <div class="card-hd">
+      <h2>租户动态</h2>
+      <a href="tenants.html" style="font-size:13px;color:var(--color-primary);text-decoration:none">全部租户 →</a>
+    </div>
+    <div class="card-bd" style="padding:0">
+      <table class="data">
+        <thead><tr><th>时间</th><th>租户</th><th>动态</th></tr></thead>
+        <tbody>
+          <tr><td>10:24</td><td><a href="tenant-detail.html">星启家庭教育</a></td><td>新增线上课《卓越家族培养计划》并提交审核</td></tr>
+          <tr><td>09:58</td><td><a href="tenant-detail.html">晨光少儿成长</a></td><td>直播「家长公开课」开播，在线 412 人</td></tr>
+          <tr><td>09:31</td><td><a href="tenant-detail.html">慧心教育</a></td><td>试用套餐到期，进入只读状态</td></tr>
+          <tr><td>08:47</td><td>新租户</td><td>注册留资「某某成长中心」进入开通申请队列</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<script src="../assets/js/proto.js"></script>
+<script src="../assets/js/ops-shell.js"></script>
+<script>
+(function () {
+  document.getElementById("btn-open-tenant").addEventListener("click", function () {
+    location.href = "tenants.html";
+  });
+})();
+</script>
+</body>
+</html>

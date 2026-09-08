@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>租户用户 · 运营后台</title>
+<link rel="stylesheet" href="../assets/css/proto.css" />
+</head>
+<body class="admin-body" data-module="tenant" data-nav="users" data-title="租户用户" data-crumb="运营后台 / 租户管理 / 租户用户" data-assist="1">
+<div id="page-content" style="display:none">
+
+  <!-- 搜索区 -->
+  <div class="card" style="margin-bottom:12px"><div class="card-bd">
+    <div class="ua-search">
+      <div class="ua-search-row">
+        <div class="ua-field"><label>用户账号：</label><input id="f-account" placeholder="请输入用户账号" /></div>
+        <div class="ua-field"><label>用户姓名：</label><input id="f-name" placeholder="请输入用户姓名" /></div>
+        <div class="ua-field"><label>手机号码：</label><input id="f-phone" placeholder="请输入手机号码" /></div>
+        <div class="ua-field"><label>租户单位：</label>
+          <select id="f-unit">
+            <option value="">请选择</option>
+            <option>星启家庭教育（10001）</option>
+            <option>晨光少儿成长（10002）</option>
+            <option>慧心教育（10004）</option>
+            <option>某旧商户（10008）</option>
+          </select>
+        </div>
+        <div class="ua-field"><label>用户状态：</label>
+          <select id="f-status">
+            <option value="">请选择</option>
+            <option>正常</option>
+            <option>锁定</option>
+            <option>停用</option>
+          </select>
+        </div>
+      </div>
+      <div class="ua-search-row ua-more" id="search-more" style="display:none">
+        <div class="ua-field"><label>所属部门：</label>
+          <select>
+            <option value="">请选择</option>
+            <option>运营部</option><option>销售部</option><option>财务部</option><option>教学部</option>
+          </select>
+        </div>
+        <div class="ua-field"><label>关联角色：</label>
+          <select>
+            <option value="">请选择</option>
+            <option>商户管理员</option><option>内容运营</option><option>销售</option><option>财务</option>
+          </select>
+        </div>
+        <div class="ua-field"><label>添加时间：</label><input placeholder="2026-03-01 ~ 2026-09-06" /></div>
+      </div>
+      <div class="ua-search-btns">
+        <button class="btn btn-primary" id="btn-query">查询</button>
+        <button class="btn" id="btn-reset">重置</button>
+        <button class="btn btn-ghost" id="btn-toggle">展开</button>
+      </div>
+    </div>
+  </div></div>
+
+  <!-- 操作条 -->
+  <div class="toolbar" style="margin-bottom:12px">
+    <button class="btn btn-primary" id="btn-add">新增用户</button>
+    <div class="spacer"></div>
+    <span class="muted" style="font-size:12px">用户即商家管理后台的登录账号，按租户隔离数据权限</span>
+  </div>
+
+  <!-- 表格 -->
+  <div class="card"><div class="card-bd" style="padding:0">
+    <table class="data">
+      <thead>
+        <tr>
+          <th>用户账号</th>
+          <th>用户姓名</th>
+          <th>手机号码</th>
+          <th>租户单位</th>
+          <th>部门</th>
+          <th>职位</th>
+          <th>角色</th>
+          <th>状态</th>
+          <th style="width:110px">操作</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><a href="user-detail.html">138****2610</a></td>
+          <td>赵老师</td>
+          <td>138****2610</td>
+          <td>星启家庭教育（10001）</td>
+          <td>运营部</td>
+          <td>运营负责人</td>
+          <td>商户管理员</td>
+          <td><span class="badge badge-success">正常</span></td>
+          <td class="row-actions"><a href="#" data-row-act="edit">编辑</a><a href="user-detail.html">查看</a></td>
+        </tr>
+        <tr>
+          <td><a href="user-detail.html">139****8811</a></td>
+          <td>阮荣均</td>
+          <td>139****8811</td>
+          <td>星启家庭教育（10001）</td>
+          <td>运营部／内容组</td>
+          <td>内容运营</td>
+          <td>内容运营</td>
+          <td><span class="badge badge-warn">正常(锁定)</span></td>
+          <td class="row-actions"><a href="#" data-row-act="edit">编辑</a><a href="user-detail.html">查看</a></td>
+        </tr>
+        <tr>
+          <td><a href="user-detail.html">137****5522</a></td>
+          <td>王助教</td>
+          <td>137****5522</td>
+          <td>晨光少儿成长（10002）</td>
+          <td>销售部</td>
+          <td>课程顾问</td>
+          <td>销售</td>
+          <td><span class="badge badge-success">正常</span></td>
+          <td class="row-actions"><a href="#" data-row-act="edit">编辑</a><a href="user-detail.html">查看</a></td>
+        </tr>
+        <tr>
+          <td><a href="user-detail.html">135****9933</a></td>
+          <td>钱财务</td>
+          <td>135****9933</td>
+          <td>星启家庭教育（10001）</td>
+          <td>财务部</td>
+          <td>财务专员</td>
+          <td>财务</td>
+          <td><span class="badge">停用</span></td>
+          <td class="row-actions"><a href="#" data-row-act="edit">编辑</a><a href="user-detail.html">查看</a></td>
+        </tr>
+        <tr>
+          <td><a href="user-detail.html">136****3305</a></td>
+          <td>孙校长</td>
+          <td>136****3305</td>
+          <td>慧心教育（10004）</td>
+          <td>教学部</td>
+          <td>校长</td>
+          <td>商户管理员</td>
+          <td><span class="badge badge-success">正常</span></td>
+          <td class="row-actions"><a href="#" data-row-act="edit">编辑</a><a href="user-detail.html">查看</a></td>
+        </tr>
+        <tr>
+          <td><a href="user-detail.html">188****4506</a></td>
+          <td>吴主管</td>
+          <td>188****4506</td>
+          <td>乐学伴家庭（10006）</td>
+          <td>—</td>
+          <td>—</td>
+          <td>—</td>
+          <td><span class="badge badge-warn">正常(锁定)</span></td>
+          <td class="row-actions"><a href="#" data-row-act="edit">编辑</a><a href="user-detail.html">查看</a></td>
+        </tr>
+        <tr>
+          <td><a href="user-detail.html">137****2210</a></td>
+          <td>李经理</td>
+          <td>137****2210</td>
+          <td>—</td>
+          <td>—</td>
+          <td>—</td>
+          <td>—</td>
+          <td><span class="badge badge-success">正常</span></td>
+          <td class="row-actions"><a href="#" data-row-act="edit">编辑</a><a href="user-detail.html">查看</a></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- 分页 -->
+    <div class="ua-pagination">
+      <span class="muted">共 <b>23</b> 条</span>
+      <div class="ua-pages">
+        <button class="ua-page" disabled>‹</button>
+        <button class="ua-page active">1</button>
+        <button class="ua-page">2</button>
+        <button class="ua-page">3</button>
+        <button class="ua-page">›</button>
+      </div>
+      <select class="ua-size">
+        <option>10条/页</option><option>20条/页</option><option>30条/页</option><option>40条/页</option>
+      </select>
+    </div>
+  </div></div>
+</div>
+
+<!-- ============ 弹窗 ============ -->
+<div class="proto-mask" id="mask"></div>
+
+<!-- 新增用户弹窗 -->
+<div class="proto-modal" id="modal-add" style="width:540px">
+  <div class="proto-modal-hd">
+    <h3 style="font-size:16px;font-weight:600">新增用户</h3>
+    <button class="btn btn-sm btn-ghost" data-close>×</button>
+  </div>
+  <div class="proto-modal-bd">
+    <div class="form-grid">
+      <div class="field"><label>用户账号 *</label><input placeholder="手机号作为登录账号" /></div>
+      <div class="field"><label>用户姓名 *</label><input placeholder="请输入姓名" /></div>
+      <div class="field"><label>租户单位 *</label>
+        <select style="width:100%;padding:6px 8px;border:1px solid var(--color-border);border-radius:6px">
+          <option>请选择</option>
+          <option>星启家庭教育（10001）</option>
+          <option>晨光少儿成长（10002）</option>
+          <option>慧心教育（10004）</option>
+        </select>
+      </div>
+      <div class="field"><label>所属部门</label>
+        <select style="width:100%;padding:6px 8px;border:1px solid var(--color-border);border-radius:6px">
+          <option>请选择</option><option>运营部</option><option>销售部</option><option>财务部</option><option>教学部</option>
+        </select>
+      </div>
+      <div class="field"><label>职位</label><input placeholder="选填" /></div>
+      <div class="field"><label>关联角色 *</label>
+        <select style="width:100%;padding:6px 8px;border:1px solid var(--color-border);border-radius:6px">
+          <option>请选择</option><option>商户管理员</option><option>内容运营</option><option>销售</option><option>财务</option>
+        </select>
+      </div>
+      <div class="field" style="grid-column:1/-1"><label>初始密码</label>
+        <input value="Yb@123456（首次登录强制修改）" disabled />
+      </div>
+    </div>
+    <p class="muted" style="margin:10px 0 0;font-size:12px">新增后账号下发短信通知，用户即可登录商家管理后台。</p>
+  </div>
+  <div class="proto-modal-ft" style="border-top:1px solid var(--color-border);padding:12px 20px;display:flex;gap:8px;justify-content:flex-end">
+    <button class="btn" data-close>取消</button>
+    <button class="btn btn-primary" data-close data-toast="用户已创建，账号短信已下发（原型）">确定</button>
+  </div>
+</div>
+
+<!-- 编辑用户弹窗 -->
+<div class="proto-modal" id="modal-edit" style="width:540px">
+  <div class="proto-modal-hd">
+    <h3 style="font-size:16px;font-weight:600">编辑用户</h3>
+    <button class="btn btn-sm btn-ghost" data-close>×</button>
+  </div>
+  <div class="proto-modal-bd">
+    <div class="form-grid">
+      <div class="field"><label>用户账号</label><input id="ed-account" disabled /></div>
+      <div class="field"><label>用户姓名 *</label><input id="ed-name" /></div>
+      <div class="field"><label>所属部门</label>
+        <select style="width:100%;padding:6px 8px;border:1px solid var(--color-border);border-radius:6px">
+          <option selected>运营部</option><option>销售部</option><option>财务部</option><option>教学部</option>
+        </select>
+      </div>
+      <div class="field"><label>职位</label><input id="ed-title" /></div>
+      <div class="field"><label>关联角色</label>
+        <select style="width:100%;padding:6px 8px;border:1px solid var(--color-border);border-radius:6px">
+          <option selected>商户管理员</option><option>内容运营</option><option>销售</option><option>财务</option>
+        </select>
+      </div>
+      <div class="field"><label>用户状态</label>
+        <select style="width:100%;padding:6px 8px;border:1px solid var(--color-border);border-radius:6px">
+          <option selected>正常</option><option>停用</option>
+        </select>
+      </div>
+    </div>
+  </div>
+  <div class="proto-modal-ft" style="border-top:1px solid var(--color-border);padding:12px 20px;display:flex;gap:8px;justify-content:flex-end">
+    <button class="btn" data-close>取消</button>
+    <button class="btn btn-primary" data-close data-toast="用户信息已保存（原型）">保存</button>
+  </div>
+</div>
+
+<style>
+/* ===== user-admin 风格搜索区 ===== */
+.ua-search-row { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 12px 24px; }
+.ua-field { display: flex; align-items: center; gap: 0; font-size: 13px; }
+.ua-field label { white-space: nowrap; color: var(--color-text-secondary); flex-shrink: 0; }
+.ua-field input, .ua-field select {
+  flex: 1; min-width: 0; padding: 6px 10px; border: 1px solid var(--color-border);
+  border-radius: 6px; font-family: inherit; font-size: 13px;
+}
+.ua-search-btns { display: flex; gap: 8px; margin-top: 14px; }
+/* ===== 分页 ===== */
+.ua-pagination {
+  display: flex; align-items: center; gap: 12px; padding: 12px 14px;
+  border-top: 1px solid var(--color-border); font-size: 13px; flex-wrap: wrap;
+}
+.ua-pages { display: flex; gap: 4px; }
+.ua-page {
+  min-width: 28px; height: 28px; padding: 0 6px; border: 1px solid var(--color-border);
+  background: #fff; border-radius: 4px; cursor: pointer; font-size: 13px;
+  font-family: inherit; color: var(--color-text);
+}
+.ua-page:hover:not(:disabled) { color: var(--color-primary); border-color: var(--color-primary); }
+.ua-page.active { background: var(--color-primary); border-color: var(--color-primary); color: #fff; }
+.ua-page:disabled { color: var(--color-text-muted); cursor: not-allowed; }
+.ua-size { padding: 5px 8px; border: 1px solid var(--color-border); border-radius: 6px; font-family: inherit; font-size: 13px; }
+</style>
+
+<script src="../assets/js/proto.js"></script>
+<script src="../assets/js/ops-shell.js"></script>
+<script>
+(function () {
+  var mask = document.getElementById("mask");
+  function closeAll() {
+    mask.classList.remove("open");
+    document.querySelectorAll(".proto-modal").forEach(function (n) { n.classList.remove("open"); });
+  }
+  function open(node) { mask.classList.add("open"); node.classList.add("open"); }
+  mask.addEventListener("click", closeAll);
+  document.querySelectorAll("[data-close]").forEach(function (n) { n.addEventListener("click", closeAll); });
+
+  // 搜索：展开 / 收起
+  var more = document.getElementById("search-more");
+  var toggle = document.getElementById("btn-toggle");
+  toggle.addEventListener("click", function () {
+    var show = more.style.display === "none";
+    more.style.display = show ? "grid" : "none";
+    toggle.textContent = show ? "收起" : "展开";
+  });
+
+  // 分页（原型）
+  document.querySelectorAll(".ua-page").forEach(function (b) {
+    if (b.disabled) return;
+    b.addEventListener("click", function () {
+      document.querySelectorAll(".ua-page").forEach(function (n) { n.classList.remove("active"); });
+      b.classList.add("active");
+      Proto.toast("已切换到第 " + b.textContent + " 页（原型）");
+    });
+  });
+
+  // 行操作
+  document.querySelectorAll("tbody tr").forEach(function (tr) {
+    tr.querySelectorAll("[data-row-act]").forEach(function (a) {
+      a.addEventListener("click", function (e) {
+        e.preventDefault();
+        document.getElementById("ed-account").value = tr.children[0].textContent.trim();
+        document.getElementById("ed-name").value = tr.children[1].textContent.trim();
+        document.getElementById("ed-title").value = tr.children[5].textContent.trim();
+        open(document.getElementById("modal-edit"));
+      });
+    });
+  });
+
+  document.getElementById("btn-add").addEventListener("click", function () { open(document.getElementById("modal-add")); });
+
+  document.getElementById("btn-query").addEventListener("click", function () { Proto.toast("已按条件查询（原型）"); });
+  document.getElementById("btn-reset").addEventListener("click", function () {
+    ["f-account", "f-name", "f-phone"].forEach(function (id) { document.getElementById(id).value = ""; });
+    ["f-unit", "f-status"].forEach(function (id) { document.getElementById(id).value = ""; });
+    Proto.toast("已重置");
+  });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>经营总览 · 运营后台</title>
+<link rel="stylesheet" href="../assets/css/proto.css" />
+</head>
+<body class="admin-body" data-module="data" data-nav="data" data-title="经营总览" data-crumb="运营后台 / 全局数据 / 经营总览" data-assist="1">
+<div id="header-actions">
+  <select id="range-sel" class="btn" style="padding:6px 10px">
+    <option>近 7 天</option><option>近 30 天</option><option>本月</option><option>本季度</option>
+  </select>
+  <button class="btn" id="btn-export">导出报表</button>
+</div>
+<div id="page-content" style="display:none">
+
+  <!-- 全局统计 -->
+  <div class="grid-4" style="margin-bottom:16px">
+    <div class="stat"><div class="label">平台 GMV（已支付）</div><div class="value">¥1,286,430.00</div><div class="hint">环比 +14.2% · 18 个租户</div></div>
+    <div class="stat"><div class="label">平台订单</div><div class="value">9,842</div><div class="hint">小程序 62% · 视频号 28% · 直播间 10%</div></div>
+    <div class="stat"><div class="label">C 端用户</div><div class="value">36,410</div><div class="hint">付费用户 8,216 · 复购率 23%</div></div>
+    <div class="stat"><div class="label">平台服务费收入</div><div class="value">¥12,864.30</div><div class="hint">费率 1% · 退款冲减 ¥6,930</div></div>
+    <div class="stat"><div class="label">在架内容</div><div class="value">214</div><div class="hint">线上课 186 · 直播 28</div></div>
+  </div>
+
+  <div style="display:grid;grid-template-columns:2fr 1fr;gap:16px">
+    <!-- GMV 趋势 -->
+    <div class="card">
+      <div class="card-hd"><h2>平台 GMV 趋势（近 7 天）</h2></div>
+      <div class="card-bd" style="padding-bottom:36px">
+        <div class="chart-bars">
+          <div class="bar" style="height:46%"><span>08-31</span></div>
+          <div class="bar" style="height:58%"><span>09-01</span></div>
+          <div class="bar" style="height:52%"><span>09-02</span></div>
+          <div class="bar" style="height:70%"><span>09-03</span></div>
+          <div class="bar" style="height:86%"><span>09-04</span></div>
+          <div class="bar" style="height:100%"><span>09-05</span></div>
+          <div class="bar" style="height:64%"><span>09-06</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 渠道结构 -->
+    <div class="card">
+      <div class="card-hd"><h2>交易渠道结构</h2></div>
+      <div class="card-bd">
+        <div class="kv-row"><span>小程序（C 端商城）</span><b>62% · ¥797,587</b></div>
+        <div class="kv-row"><span>视频号（公域订单）</span><b>28% · ¥360,200</b></div>
+        <div class="kv-row"><span>直播间下单</span><b>10% · ¥128,643</b></div>
+        <p class="muted" style="font-size:12px;margin-top:10px">公域订单通过渠道对账单同步至商家后台，进入同一交易视图。</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 租户排行榜 -->
+  <div class="card" style="margin-top:16px">
+    <div class="card-hd"><h2>租户排行（按近 30 天 GMV）</h2>
+      <a href="tenants.html" style="font-size:13px;color:var(--color-primary);text-decoration:none">全部租户 →</a>
+    </div>
+    <div class="card-bd" style="padding:0">
+      <table class="data">
+        <thead><tr><th style="width:60px">排名</th><th>租户</th><th>近30天GMV</th><th>订单数</th><th>退款率</th><th>在架内容</th><th>私域线索</th><th>趋势</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td><a href="tenant-detail.html"><b>星启家庭教育</b></a></td><td><b>¥126,480</b></td><td>1,264</td><td>5.5%</td><td>12 课 / 3 直播</td><td>842</td><td><span class="badge badge-success">↑ 12.4%</span></td></tr>
+          <tr><td>2</td><td><a href="tenant-detail.html"><b>晨光少儿成长</b></a></td><td><b>¥98,210</b></td><td>1,020</td><td>4.1%</td><td>9 课 / 4 直播</td><td>615</td><td><span class="badge badge-success">↑ 8.9%</span></td></tr>
+          <tr><td>3</td><td><a href="tenant-detail.html"><b>青藤家长学堂</b></a></td><td><b>¥64,300</b></td><td>688</td><td>6.2%</td><td>7 课 / 1 直播</td><td>402</td><td><span class="badge">→ 持平</span></td></tr>
+          <tr><td>4</td><td><a href="tenant-detail.html"><b>慧心教育</b></a></td><td><b>¥31,860</b></td><td>355</td><td>9.8%</td><td>5 课 / 1 直播</td><td>188</td><td><span class="badge badge-warn">↓ 3.1%</span></td></tr>
+          <tr><td>5</td><td><a href="tenant-detail.html"><b>某某成长中心</b></a></td><td><b>¥18,940</b></td><td>201</td><td>21.0% <span class="badge badge-danger">超阈值</span></td><td>3 课 / 0 直播</td><td>96</td><td><span class="badge badge-danger">↓ 18.2%</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- 结算总览 -->
+  <div class="card" style="margin-top:16px">
+    <div class="card-hd"><h2>平台结算总览（备付金分账）</h2></div>
+    <div class="card-bd" style="padding:0">
+      <table class="data">
+        <thead><tr><th>账期</th><th>平台交易额</th><th>退款</th><th>平台服务费（1%）</th><th>商户应结算</th><th>结算状态</th></tr></thead>
+        <tbody>
+          <tr><td>2026-09-06</td><td>¥48,213.60</td><td>¥1,860.00</td><td>¥463.54</td><td>¥45,890.06</td><td><span class="badge badge-warn">对账中</span></td></tr>
+          <tr><td>2026-09-05</td><td>¥52,880.00</td><td>¥2,110.00</td><td>¥507.70</td><td>¥50,262.30</td><td><span class="badge badge-info">待结算确认 (5)</span></td></tr>
+          <tr><td>2026-09-04</td><td>¥61,200.00</td><td>¥980.00</td><td>¥602.20</td><td>¥59,617.80</td><td><span class="badge badge-success">已结算</span></td></tr>
+        </tbody>
+      </table>
+      <p class="muted" style="margin:10px 14px;font-size:12px">资金口径与商家后台「结算」一致：资金先进平台备付金账户，T+1 对账无差异后按 服务费 + 商户分账 结算。</p>
+    </div>
+  </div>
+</div>
+
+<style>
+.kv-row { display:flex; justify-content:space-between; padding:7px 0; font-size:13px; border-bottom:1px dashed var(--color-border); }
+.kv-row:last-child { border-bottom:none; }
+.kv-row span { color:var(--color-text-secondary); }
+@media (max-width: 1100px) { #page-content > div[style*="grid-template-columns:2fr"] { grid-template-columns:1fr !important; } }
+</style>
+
+<script src="../assets/js/proto.js"></script>
+<script src="../assets/js/ops-shell.js"></script>
+<script>
+(function () {
+  document.getElementById("range-sel").addEventListener("change", function () {
+    Proto.toast("已切换时间范围：" + this.value + "（原型）");
+  });
+  document.getElementById("btn-export").addEventListener("click", function () { Proto.toast("已导出经营报表（原型）"); });
+})();
+</script>
+</body>
+</html>

@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>预约与推送 · 艺博 To-B</title>
+<title>预约与推送 · 商家管理后台</title>
 <link rel="stylesheet" href="../assets/css/proto.css" />
 </head>
 <body class="admin-body" data-module="live" data-nav="live-booking" data-title="预约与推送" data-crumb="直播 / 直播管理 / 预约与推送">
@@ -90,7 +90,7 @@
   <!-- Tabs -->
   <div class="tabs" id="bk-tabs">
     <a class="active" href="#bookings" data-tab="bookings">预约名单</a>
-    <a href="#push-records" data-tab="push-records">推送计划</a>
+    <a href="#push-records" data-tab="push-records">推送记录</a>
     <a href="#subscribers" data-tab="subscribers">开播提醒订阅</a>
   </div>
 
@@ -258,7 +258,7 @@
     </div>
   </div>
 
-  <!-- 推送计划面板 -->
+  <!-- 推送记录面板 -->
   <div class="bk-pane" id="pane-push-records">
 
     <div class="card" style="margin-bottom:8px"><div class="card-bd">
@@ -785,7 +785,7 @@ setTimeout(function() {
           '<td style="width:160px">' +
             '<a class="link-blue" href="live-booking.html?live_id=' + lv.id + '">查看预约</a>' +
             '<span style="color:#e8e8e8;margin:0 6px">|</span>' +
-            '<a class="link-blue" href="live-booking.html?live_id=' + lv.id + '#push-records">推送计划</a>' +
+            '<a class="link-blue" href="live-booking.html?live_id=' + lv.id + '">推送计划</a>' +
           '</td>' +
         '</tr>';
     }).join("");
@@ -829,7 +829,7 @@ setTimeout(function() {
       viewSingle.style.display = "";
       document.getElementById("bk-current-live-text").textContent = lv.name;
       // 同步顶部标题（admin-shell 渲染时用 data-title）
-      document.title = "预约与推送 · " + lv.name + " · 艺博 To-B";
+      document.title = "预约与推送 · " + lv.name + " · 商家管理后台";
       var crumbEl = document.body.getAttribute("data-crumb");
       document.body.setAttribute("data-crumb", "直播 / 直播管理 / 预约与推送 / " + lv.name);
     } else {

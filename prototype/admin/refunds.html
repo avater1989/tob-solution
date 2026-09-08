@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>退款/售后 · 商家管理后台</title>
+<link rel="stylesheet" href="../assets/css/proto.css" />
+</head>
+<body class="admin-body" data-module="trade" data-nav="refunds" data-title="退款/售后" data-crumb="交易 / 订单中心 / 退款售后">
+<div id="header-actions">
+  <button class="btn" id="btn-export">导出退款单</button>
+</div>
+<div id="page-content" style="display:none">
+
+  <!-- 顶部统计 -->
+  <div class="grid-4" style="margin-bottom:16px">
+    <div class="stat"><div class="label">待审核</div><div class="value">1</div><div class="hint">需 24 小时内处理</div></div>
+    <div class="stat"><div class="label">退款中</div><div class="value">2</div><div class="hint">原路退回处理中</div></div>
+    <div class="stat"><div class="label">本月已退款</div><div class="value">¥238.60</div><div class="hint">共 4 笔</div></div>
+    <div class="stat"><div class="label">退款率</div><div class="value">3.1%</div><div class="hint">已支付订单口径</div></div>
+  </div>
+
+  <!-- 状态 Tab -->
+  <div class="tabs" id="rf-tabs">
+    <a class="active" href="#" data-tab="all">全部</a>
+    <a href="#" data-tab="pending">待审核</a>
+    <a href="#" data-tab="refunding">退款中</a>
+    <a href="#" data-tab="done">已退款</a>
+    <a href="#" data-tab="rejected">已驳回</a>
+  </div>
+
+  <!-- 筛选 -->
+  <div class="card" style="margin-bottom:8px"><div class="card-bd">
+    <div class="form-grid" style="grid-template-columns:repeat(5,minmax(0,1fr));gap:8px 12px">
+      <input id="f-refund-no" placeholder="退款单号 / 订单号" />
+      <input id="f-buyer" placeholder="买家（姓名/手机号）" />
+      <select id="f-type">
+        <option value="">退款类型</option>
+        <option>仅退款（回收权益）</option><option>退款不回收权益</option>
+      </select>
+      <select id="f-reason">
+        <option value="">退款原因</option>
+        <option>用户主动申请</option><option>商品/服务问题</option>
+        <option>重复支付</option><option>其他</option>
+      </select>
+      <input id="f-time1" type="datetime-local" />
+      <input id="f-time2" type="datetime-local" />
+      <button class="btn btn-primary" id="btn-query">筛选</button>
+      <button class="btn" id="btn-reset">重置</button>
+    </div>
+  </div></div>
+
+  <!-- 表格 -->
+  <div class="card"><div class="card-bd" style="padding:0">
+    <table class="data">
+      <thead>
+        <tr>
+          <th>退款单号</th>
+          <th>关联订单号</th>
+          <th>买家</th>
+          <th>退款金额</th>
+          <th>退款类型</th>
+          <th>退款原因</th>
+          <th>权益处理</th>
+          <th>状态</th>
+          <th>申请时间</th>
+          <th style="width:150px">操作</th>
+        </tr>
+      </thead>
+      <tbody id="rf-tbody">
+        <tr>
+          <td><a href="#" class="link-mono" data-row-act="detail">RF202604020001</a></td>
+          <td><a href="order-detail.html" class="link-mono">YB20260324100231</a></td>
+          <td>周***<br><span class="muted">133****7788</span></td>
+          <td><b class="danger">¥299.00</b></td>
+          <td>仅退款（回收权益）</td>
+          <td>商品/服务问题</td>
+          <td>退款成功后回收</td>
+          <td><span class="badge badge-warn">待审核</span></td>
+          <td>2026-04-02 10:15</td>
+          <td class="row-actions">
+            <a href="#" data-row-act="audit">审核</a>
+            <a href="#" data-row-act="detail">详情</a>
+          </td>
+        </tr>
+        <tr>
+          <td><a href="#" class="link-mono" data-row-act="detail">RF202604010008</a></td>
+          <td><a href="order-detail.html" class="link-mono">YB20260320100312</a></td>
+          <td>吴***<br><span class="muted">150****3355</span></td>
+          <td><b class="danger">¥9.90</b></td>
+          <td>仅退款（回收权益）</td>
+          <td>用户主动申请</td>
+          <td>退款成功后回收</td>
+          <td><span class="badge badge-info">退款中</span></td>
+          <td>2026-04-01 16:40</td>
+          <td class="row-actions">
+            <a href="#" data-row-act="detail">详情</a>
+          </td>
+        </tr>
+        <tr>
+          <td><a href="#" class="link-mono" data-row-act="detail">RF202603310004</a></td>
+          <td><a href="order-detail.html" class="link-mono">YB20260318000771</a></td>
+          <td>郑***<br><span class="muted">139****2266</span></td>
+          <td><b class="danger">¥9.90</b></td>
+          <td>仅退款（回收权益）</td>
+          <td>重复支付</td>
+          <td>已回收</td>
+          <td><span class="badge badge-success">已退款</span></td>
+          <td>2026-03-31 09:22</td>
+          <td class="row-actions">
+            <a href="#" data-row-act="detail">详情</a>
+          </td>
+        </tr>
+        <tr>
+          <td><a href="#" class="link-mono" data-row-act="detail">RF202603300002</a></td>
+          <td><a href="order-detail.html" class="link-mono">YB20260325000666</a></td>
+          <td>赵***<br><span class="muted">186****2099</span></td>
+          <td><b class="danger">¥9.90</b></td>
+          <td>仅退款（回收权益）</td>
+          <td>用户主动申请</td>
+          <td>已回收</td>
+          <td><span class="badge badge-success">已退款</span></td>
+          <td>2026-03-30 11:08</td>
+          <td class="row-actions">
+            <a href="#" data-row-act="detail">详情</a>
+          </td>
+        </tr>
+        <tr>
+          <td><a href="#" class="link-mono" data-row-act="detail">RF202603290001</a></td>
+          <td><a href="order-detail.html" class="link-mono">YB20260315000218</a></td>
+          <td>孙***<br><span class="muted">188****9911</span></td>
+          <td><b class="danger">¥99.00</b></td>
+          <td>退款不回收权益</td>
+          <td>其他（客诉安抚）</td>
+          <td>保留权益</td>
+          <td><span class="badge badge-danger">已驳回</span></td>
+          <td>2026-03-29 15:33</td>
+          <td class="row-actions">
+            <a href="#" data-row-act="detail">详情</a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div></div>
+  <!-- 分页 -->
+  <div class="toolbar" style="margin-top:8px">
+    <span class="muted">共 <b>12</b> 条</span>
+    <div class="spacer"></div>
+    <select><option>10条/页</option><option>20条/页</option></select>
+    <button class="btn btn-sm" disabled>上一页</button>
+    <button class="btn btn-sm">下一页</button>
+  </div>
+</div>
+
+<!-- ============ 弹窗 / 抽屉 ============ -->
+<div class="proto-mask" id="mask"></div>
+
+<!-- 审核弹窗 -->
+<div class="proto-modal" id="modal-audit" style="width:560px">
+  <div class="proto-modal-hd">
+    <h3 style="font-size:16px;font-weight:600">退款审核</h3>
+    <button class="btn btn-sm btn-ghost" data-close>×</button>
+  </div>
+  <div class="proto-modal-bd">
+    <div class="form-grid" style="grid-template-columns:1fr 1fr">
+      <div class="field"><label>退款单号</label><div id="au-no" class="mono">RF202604020001</div></div>
+      <div class="field"><label>关联订单</label><div id="au-order" class="mono">—</div></div>
+      <div class="field"><label>买家</label><div id="au-buyer">—</div></div>
+      <div class="field"><label>退款金额</label><div id="au-amount" style="color:#cb2634;font-weight:600">—</div></div>
+      <div class="field"><label>退款类型</label><div id="au-type">—</div></div>
+      <div class="field"><label>退款原因</label><div id="au-reason">—</div></div>
+    </div>
+    <div class="field" style="margin-top:8px"><label>审核意见 *</label>
+      <textarea id="au-note" rows="3" style="width:100%;padding:8px;border:1px solid var(--color-border);border-radius:6px" placeholder="填写审核意见">已与买家电话确认，课程仅学习 1 节，同意全额退款并回收权益。</textarea>
+    </div>
+    <p class="muted" style="margin-top:8px">提示：审核通过后将原路退回买家支付账户，并按「退款类型」处理权益。</p>
+  </div>
+  <div class="proto-drawer-ft" style="border-top:1px solid var(--color-border);padding:12px 20px;display:flex;gap:8px;justify-content:flex-end">
+    <button class="btn" data-close>取消</button>
+    <button class="btn" id="au-reject">驳回申请</button>
+    <button class="btn btn-primary" id="au-pass">审核通过并退款</button>
+  </div>
+</div>
+
+<!-- 详情抽屉 -->
+<div class="proto-drawer" id="drawer-detail">
+  <div class="proto-drawer-hd">
+    <h3 id="rd-title">退款单详情</h3>
+    <button class="btn btn-sm btn-ghost" data-close>×</button>
+  </div>
+  <div class="proto-drawer-bd">
+    <h4 style="margin-bottom:8px">退款单信息</h4>
+    <div class="form-grid" style="grid-template-columns:1fr 1fr">
+      <div class="field"><label>退款单号</label><div id="rd-no" class="mono">—</div></div>
+      <div class="field"><label>关联订单号</label><div id="rd-order" class="mono">—</div></div>
+      <div class="field"><label>买家</label><div id="rd-buyer">—</div></div>
+      <div class="field"><label>退款金额</label><div id="rd-amount">—</div></div>
+      <div class="field"><label>退款类型</label><div id="rd-type">—</div></div>
+      <div class="field"><label>退款原因</label><div id="rd-reason">—</div></div>
+      <div class="field"><label>权益处理</label><div id="rd-benefit">—</div></div>
+      <div class="field"><label>状态</label><div id="rd-status">—</div></div>
+      <div class="field"><label>申请时间</label><div id="rd-time">—</div></div>
+      <div class="field"><label>退款完成时间</label><div id="rd-done">—</div></div>
+    </div>
+    <h4 style="margin:16px 0 8px">退款路径</h4>
+    <p class="muted">原路退回：微信支付 → 买家支付账户（预计 1-3 个工作日到账）</p>
+    <h4 style="margin:16px 0 8px">处理记录</h4>
+    <ul class="muted" style="font-size:12px;padding-left:16px;line-height:1.9">
+      <li>2026-04-02 10:15 买家提交退款申请</li>
+      <li>2026-04-02 10:16 系统生成退款单，进入待审核</li>
+    </ul>
+  </div>
+  <div class="proto-drawer-ft">
+    <button class="btn" data-close>关闭</button>
+    <button class="btn" onclick="location.href='order-detail.html'">查看关联订单</button>
+    <button class="btn btn-primary" id="rd-audit">审核</button>
+  </div>
+</div>
+
+<style>
+.link-mono { font-family:ui-monospace,Consolas,monospace; font-size:12px; color:var(--color-primary); text-decoration:none; }
+.link-mono:hover { text-decoration:underline; }
+.mono { font-family:ui-monospace,Consolas,monospace; font-size:12px; }
+.danger { color:#cb2634; }
+</style>
+
+<script src="../assets/js/proto.js"></script>
+<script src="../assets/js/admin-shell.js"></script>
+<script>
+(function () {
+  var mask = document.getElementById("mask");
+  function closeAll() {
+    mask.classList.remove("open");
+    document.querySelectorAll(".proto-modal, .proto-drawer").forEach(function (n) { n.classList.remove("open"); });
+  }
+  function open(node) { mask.classList.add("open"); node.classList.add("open"); }
+  mask.addEventListener("click", closeAll);
+  document.querySelectorAll("[data-close]").forEach(function (n) { n.addEventListener("click", closeAll); });
+
+  // Tabs
+  document.querySelectorAll("#rf-tabs a").forEach(function (a) {
+    a.addEventListener("click", function (e) {
+      e.preventDefault();
+      document.querySelectorAll("#rf-tabs a").forEach(function (n) { n.classList.remove("active"); });
+      a.classList.add("active");
+      Proto.toast("已切换到「" + a.textContent + "」（原型）");
+    });
+  });
+
+  function rowData(tr) {
+    var tds = tr.querySelectorAll("td");
+    return {
+      no: tds[0].textContent.trim(),
+      order: tds[1].textContent.trim(),
+      buyer: tds[2].childNodes[0].textContent.trim(),
+      amount: tds[3].textContent.trim(),
+      type: tds[4].textContent.trim(),
+      reason: tds[5].textContent.trim(),
+      benefit: tds[6].textContent.trim(),
+      status: tds[7].textContent.trim(),
+      time: tds[8].textContent.trim(),
+    };
+  }
+
+  document.querySelectorAll("#rf-tbody tr").forEach(function (tr) {
+    tr.querySelectorAll("[data-row-act]").forEach(function (a) {
+      a.addEventListener("click", function (e) {
+        e.preventDefault();
+        var act = a.getAttribute("data-row-act");
+        var d = rowData(tr);
+        if (act === "audit") {
+          document.getElementById("au-order").textContent = d.order;
+          document.getElementById("au-buyer").textContent = d.buyer + "*";
+          document.getElementById("au-amount").textContent = d.amount;
+          document.getElementById("au-type").textContent = d.type;
+          document.getElementById("au-reason").textContent = d.reason;
+          open(document.getElementById("modal-audit"));
+        } else if (act === "detail") {
+          document.getElementById("rd-title").textContent = "退款单详情 · " + d.no;
+          document.getElementById("rd-no").textContent = d.no;
+          document.getElementById("rd-order").textContent = d.order;
+          document.getElementById("rd-buyer").textContent = d.buyer + "*";
+          document.getElementById("rd-amount").textContent = d.amount;
+          document.getElementById("rd-type").textContent = d.type;
+          document.getElementById("rd-reason").textContent = d.reason;
+          document.getElementById("rd-benefit").textContent = d.benefit;
+          document.getElementById("rd-status").textContent = d.status;
+          document.getElementById("rd-time").textContent = d.time;
+          document.getElementById("rd-done").textContent = d.status === "已退款" ? "申请后 1 个工作日" : "—";
+          open(document.getElementById("drawer-detail"));
+        }
+      });
+    });
+  });
+
+  document.getElementById("au-pass").addEventListener("click", function () { closeAll(); Proto.toast("已通过退款审核，原路退回中（原型）"); });
+  document.getElementById("au-reject").addEventListener("click", function () { closeAll(); Proto.toast("已驳回退款申请（原型）"); });
+  document.getElementById("rd-audit").addEventListener("click", function () {
+    closeAll();
+    open(document.getElementById("modal-audit"));
+  });
+  document.getElementById("btn-export").addEventListener("click", function () { Proto.toast("已导出退款单（原型）"); });
+  document.getElementById("btn-query").addEventListener("click", function () { Proto.toast("已筛选（原型）"); });
+  document.getElementById("btn-reset").addEventListener("click", function () {
+    ["f-refund-no", "f-buyer"].forEach(function (id) { document.getElementById(id).value = ""; });
+    ["f-type", "f-reason"].forEach(function (id) { document.getElementById(id).value = ""; });
+    document.getElementById("f-time1").value = "";
+    document.getElementById("f-time2").value = "";
+    Proto.toast("已重置");
+  });
+})();
+</script>
+</body>
+</html>

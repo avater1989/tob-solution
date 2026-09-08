@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>模板角色 · 运营后台</title>
+<link rel="stylesheet" href="../assets/css/proto.css" />
+</head>
+<body class="admin-body" data-module="tenant" data-nav="template-roles" data-title="模板角色" data-crumb="运营后台 / 租户管理 / 模板角色" data-assist="1">
+<div id="page-content" style="display:none">
+
+  <!-- 搜索区 -->
+  <div class="card" style="margin-bottom:12px"><div class="card-bd">
+    <div class="ua-search">
+      <div class="ua-search-row">
+        <div class="ua-field"><label>模板名称：</label><input id="f-name" placeholder="请输入模板名称" /></div>
+        <div class="ua-field"><label>模板状态：</label>
+          <select id="f-status">
+            <option value="">请选择</option>
+            <option>已发布</option>
+            <option>草稿</option>
+            <option>已下线</option>
+          </select>
+        </div>
+        <div class="ua-field"><label>应用范围：</label>
+          <select id="f-scope">
+            <option value="">请选择</option>
+            <option>全部套餐</option>
+            <option>专业版</option>
+            <option>标准版</option>
+          </select>
+        </div>
+      </div>
+      <div class="ua-search-btns">
+        <button class="btn btn-primary" id="btn-query">查询</button>
+        <button class="btn" id="btn-reset">重置</button>
+      </div>
+    </div>
+  </div></div>
+
+  <!-- 操作条 -->
+  <div class="toolbar" style="margin-bottom:12px">
+    <button class="btn btn-primary" id="btn-add">新增模板角色</button>
+    <div class="spacer"></div>
+    <span class="muted" style="font-size:12px">模板角色随租户开通自动下发为该租户的内置角色；调整模板仅影响新开通租户</span>
+  </div>
+
+  <!-- 表格 -->
+  <div class="card"><div class="card-bd" style="padding:0">
+    <table class="data">
+      <thead>
+        <tr>
+          <th>模板名称</th>
+          <th>模板编码</th>
+          <th>应用范围</th>
+          <th>功能资源数</th>
+          <th>已下发租户数</th>
+          <th>状态</th>
+          <th>更新时间</th>
+          <th style="width:170px">操作</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><b>商户管理员</b><p class="muted" style="margin:2px 0 0;font-size:12px">租户最高权限，含权限配置与敏感操作</p></td>
+          <td>TPL_MCH_ADMIN</td>
+          <td>全部套餐</td>
+          <td>19</td>
+          <td>18</td>
+          <td><span class="badge badge-success">已发布</span></td>
+          <td>2026-08-12 10:20</td>
+          <td class="row-actions"><a href="#" data-row-act="perm">权限配置</a><a href="#" data-row-act="copy">复制</a><a href="#" data-row-act="edit">编辑</a></td>
+        </tr>
+        <tr>
+          <td><b>内容运营</b><p class="muted" style="margin:2px 0 0;font-size:12px">课程/直播/素材管理，含提交上架</p></td>
+          <td>TPL_MCH_CONTENT</td>
+          <td>全部套餐</td>
+          <td>11</td>
+          <td>18</td>
+          <td><span class="badge badge-success">已发布</span></td>
+          <td>2026-08-12 10:20</td>
+          <td class="row-actions"><a href="#" data-row-act="perm">权限配置</a><a href="#" data-row-act="copy">复制</a><a href="#" data-row-act="edit">编辑</a></td>
+        </tr>
+        <tr>
+          <td><b>销售</b><p class="muted" style="margin:2px 0 0;font-size:12px">线索池/跟进/推广链接，数据范围默认本人及下属</p></td>
+          <td>TPL_MCH_SALES</td>
+          <td>全部套餐</td>
+          <td>8</td>
+          <td>18</td>
+          <td><span class="badge badge-success">已发布</span></td>
+          <td>2026-07-30 15:41</td>
+          <td class="row-actions"><a href="#" data-row-act="perm">权限配置</a><a href="#" data-row-act="copy">复制</a><a href="#" data-row-act="edit">编辑</a></td>
+        </tr>
+        <tr>
+          <td><b>财务</b><p class="muted" style="margin:2px 0 0;font-size:12px">订单/对账/结算查看与导出，含结算确认敏感操作</p></td>
+          <td>TPL_MCH_FINANCE</td>
+          <td>全部套餐</td>
+          <td>7</td>
+          <td>18</td>
+          <td><span class="badge badge-success">已发布</span></td>
+          <td>2026-07-18 09:05</td>
+          <td class="row-actions"><a href="#" data-row-act="perm">权限配置</a><a href="#" data-row-act="copy">复制</a><a href="#" data-row-act="edit">编辑</a></td>
+        </tr>
+        <tr>
+          <td><b>数据查看</b><p class="muted" style="margin:2px 0 0;font-size:12px">只读看板与订单查询，不可导出</p></td>
+          <td>TPL_MCH_VIEWER</td>
+          <td>专业版</td>
+          <td>5</td>
+          <td>6</td>
+          <td><span class="badge badge-success">已发布</span></td>
+          <td>2026-09-01 11:00</td>
+          <td class="row-actions"><a href="#" data-row-act="perm">权限配置</a><a href="#" data-row-act="copy">复制</a><a href="#" data-row-act="edit">编辑</a></td>
+        </tr>
+        <tr>
+          <td><b>直播主播</b><p class="muted" style="margin:2px 0 0;font-size:12px">仅直播间操作与本人直播数据，试点中</p></td>
+          <td>TPL_MCH_ANCHOR</td>
+          <td>专业版</td>
+          <td>4</td>
+          <td>1</td>
+          <td><span class="badge badge-warn">草稿</span></td>
+          <td>2026-08-28 14:12</td>
+          <td class="row-actions"><a href="#" data-row-act="perm">权限配置</a><a href="#" data-row-act="edit">编辑</a><a href="#" data-row-act="publish">发布</a></td>
+        </tr>
+        <tr>
+          <td><b>门店店长</b><p class="muted" style="margin:2px 0 0;font-size:12px">连锁门店场景，随标准版迭代</p></td>
+          <td>TPL_MCH_STORE_MGR</td>
+          <td>标准版</td>
+          <td>9</td>
+          <td>0</td>
+          <td><span class="badge">已下线</span></td>
+          <td>2026-06-22 17:36</td>
+          <td class="row-actions"><a href="#" data-row-act="perm">权限配置</a><a href="#" data-row-act="copy">复制</a><a href="#" data-row-act="publish">重新发布</a></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- 分页 -->
+    <div class="ua-pagination">
+      <span class="muted">共 <b>7</b> 条</span>
+      <div class="ua-pages">
+        <button class="ua-page" disabled>‹</button>
+        <button class="ua-page active">1</button>
+        <button class="ua-page">›</button>
+      </div>
+      <select class="ua-size">
+        <option>10条/页</option><option>20条/页</option><option>30条/页</option><option>40条/页</option>
+      </select>
+    </div>
+  </div></div>
+</div>
+
+<!-- ============ 弹窗 ============ -->
+<div class="proto-mask" id="mask"></div>
+
+<!-- 新增模板角色弹窗 -->
+<div class="proto-modal" id="modal-add" style="width:540px">
+  <div class="proto-modal-hd">
+    <h3 style="font-size:16px;font-weight:600">新增模板角色</h3>
+    <button class="btn btn-sm btn-ghost" data-close>×</button>
+  </div>
+  <div class="proto-modal-bd">
+    <div class="form-grid">
+      <div class="field"><label>模板名称 *</label><input placeholder="请输入模板名称" /></div>
+      <div class="field"><label>模板编码 *</label><input placeholder="如 TPL_MCH_MARKETING" /></div>
+      <div class="field"><label>应用范围 *</label>
+        <select style="width:100%;padding:6px 8px;border:1px solid var(--color-border);border-radius:6px">
+          <option>全部套餐</option><option>专业版</option><option>标准版</option>
+        </select>
+      </div>
+      <div class="field"><label>状态</label>
+        <select style="width:100%;padding:6px 8px;border:1px solid var(--color-border);border-radius:6px">
+          <option>草稿</option><option>已发布</option>
+        </select>
+      </div>
+      <div class="field" style="grid-column:1/-1"><label>从已有模板复制权限</label>
+        <select style="width:100%;padding:6px 8px;border:1px solid var(--color-border);border-radius:6px">
+          <option>不复制（空白模板）</option>
+          <option>商户管理员</option><option>内容运营</option><option>销售</option><option>财务</option><option>数据查看</option>
+        </select>
+      </div>
+      <div class="field" style="grid-column:1/-1"><label>模板说明</label><input placeholder="选填" /></div>
+    </div>
+    <p class="muted" style="margin:10px 0 0;font-size:12px">「已发布」的模板会在新租户开通时自动下发；草稿不生效。</p>
+  </div>
+  <div class="proto-modal-ft" style="border-top:1px solid var(--color-border);padding:12px 20px;display:flex;gap:8px;justify-content:flex-end">
+    <button class="btn" data-close>取消</button>
+    <button class="btn btn-primary" data-close data-toast="模板已创建（原型）">确定</button>
+  </div>
+</div>
+
+<!-- 编辑模板弹窗 -->
+<div class="proto-modal" id="modal-edit" style="width:540px">
+  <div class="proto-modal-hd">
+    <h3 style="font-size:16px;font-weight:600">编辑模板角色</h3>
+    <button class="btn btn-sm btn-ghost" data-close>×</button>
+  </div>
+  <div class="proto-modal-bd">
+    <div class="form-grid">
+      <div class="field"><label>模板名称 *</label><input id="ed-name" /></div>
+      <div class="field"><label>模板编码</label><input id="ed-code" disabled /></div>
+      <div class="field"><label>应用范围</label>
+        <select style="width:100%;padding:6px 8px;border:1px solid var(--color-border);border-radius:6px">
+          <option selected>全部套餐</option><option>专业版</option><option>标准版</option>
+        </select>
+      </div>
+      <div class="field"><label>状态</label>
+        <select style="width:100%;padding:6px 8px;border:1px solid var(--color-border);border-radius:6px">
+          <option selected>已发布</option><option>草稿</option><option>已下线</option>
+        </select>
+      </div>
+      <div class="field" style="grid-column:1/-1"><label>模板说明</label><input placeholder="选填" /></div>
+    </div>
+    <p class="muted" style="margin:10px 0 0;font-size:12px">调整已发布模板的权限，仅影响此后新开通的租户，存量租户需单独同步。</p>
+  </div>
+  <div class="proto-modal-ft" style="border-top:1px solid var(--color-border);padding:12px 20px;display:flex;gap:8px;justify-content:flex-end">
+    <button class="btn" data-close>取消</button>
+    <button class="btn btn-primary" data-close data-toast="模板已保存（原型）">保存</button>
+  </div>
+</div>
+
+<!-- 权限配置弹窗 -->
+<div class="proto-modal" id="modal-perm" style="width:680px">
+  <div class="proto-modal-hd">
+    <h3 style="font-size:16px;font-weight:600">模板权限配置 · <span id="perm-role-name">商户管理员</span></h3>
+    <button class="btn btn-sm btn-ghost" data-close>×</button>
+  </div>
+  <div class="proto-modal-bd">
+    <p class="muted" style="margin:0 0 10px;font-size:12px">定义该模板角色开通时自带的功能资源权限。</p>
+    <table class="data" style="font-size:12px">
+      <thead>
+        <tr><th style="text-align:left">功能模块</th><th>页面</th><th>查看</th><th>编辑</th><th>审核</th><th>导出</th></tr>
+      </thead>
+      <tbody>
+        <tr><td style="text-align:left" rowspan="2"><b>内容</b></td><td>课程管理</td><td><input type="checkbox" checked /></td><td><input type="checkbox" checked /></td><td>—</td><td><input type="checkbox" checked /></td></tr>
+        <tr><td>直播管理</td><td><input type="checkbox" checked /></td><td><input type="checkbox" checked /></td><td>—</td><td><input type="checkbox" checked /></td></tr>
+        <tr><td style="text-align:left"><b>交易</b></td><td>订单中心</td><td><input type="checkbox" checked /></td><td><input type="checkbox" checked /></td><td>—</td><td><input type="checkbox" checked /></td></tr>
+        <tr><td style="text-align:left"><b>用户</b></td><td>用户列表</td><td><input type="checkbox" checked /></td><td><input type="checkbox" /></td><td>—</td><td><input type="checkbox" /></td></tr>
+        <tr><td style="text-align:left"><b>SCRM</b></td><td>线索池</td><td><input type="checkbox" checked /></td><td><input type="checkbox" checked /></td><td>—</td><td><input type="checkbox" /></td></tr>
+        <tr><td style="text-align:left"><b>系统</b></td><td>权限配置</td><td><input type="checkbox" checked /></td><td><input type="checkbox" checked /></td><td>—</td><td>—</td></tr>
+      </tbody>
+    </table>
+    <div style="margin-top:12px;padding:10px 12px;background:#f7f8fa;border-radius:6px;font-size:12px">
+      <label style="display:flex;align-items:center;gap:6px"><input type="checkbox" checked /> 敏感操作：手机号解密留痕</label>
+      <label style="display:flex;align-items:center;gap:6px;margin-top:6px"><input type="checkbox" checked /> 敏感操作：退款审核</label>
+      <label style="display:flex;align-items:center;gap:6px;margin-top:6px"><input type="checkbox" checked /> 敏感操作：结算确认</label>
+    </div>
+  </div>
+  <div class="proto-modal-ft" style="border-top:1px solid var(--color-border);padding:12px 20px;display:flex;gap:8px;justify-content:flex-end">
+    <button class="btn" data-close>取消</button>
+    <button class="btn btn-primary" data-close data-toast="模板权限已保存，影响后续新开租户（原型）">保存</button>
+  </div>
+</div>
+
+<!-- 复制模板确认弹窗 -->
+<div class="proto-modal" id="modal-copy" style="width:460px">
+  <div class="proto-modal-hd">
+    <h3 style="font-size:16px;font-weight:600">复制模板角色</h3>
+    <button class="btn btn-sm btn-ghost" data-close>×</button>
+  </div>
+  <div class="proto-modal-bd">
+    <p style="margin:0 0 10px;font-size:13px">将「<span id="copy-name">数据查看</span>」复制为新模板，可在此基础上调整权限。</p>
+    <div class="field"><label style="font-size:13px">新模板名称 *</label><input id="copy-new-name" placeholder="如：市场推广（只读）" /></div>
+  </div>
+  <div class="proto-modal-ft" style="border-top:1px solid var(--color-border);padding:12px 20px;display:flex;gap:8px;justify-content:flex-end">
+    <button class="btn" data-close>取消</button>
+    <button class="btn btn-primary" data-close data-toast="已复制为新模板（草稿），请继续调整权限（原型）">复制</button>
+  </div>
+</div>
+
+<!-- 发布确认弹窗 -->
+<div class="proto-modal" id="modal-publish" style="width:440px">
+  <div class="proto-modal-hd">
+    <h3 style="font-size:16px;font-weight:600" id="publish-title">发布模板</h3>
+    <button class="btn btn-sm btn-ghost" data-close>×</button>
+  </div>
+  <div class="proto-modal-bd">
+    <p style="margin:0;font-size:13px" id="publish-text">确认发布「直播主播」？发布后新开通的专业版租户将自动获得该内置角色。</p>
+  </div>
+  <div class="proto-modal-ft" style="border-top:1px solid var(--color-border);padding:12px 20px;display:flex;gap:8px;justify-content:flex-end">
+    <button class="btn" data-close>取消</button>
+    <button class="btn btn-primary" data-close data-toast="模板已发布，随新租户开通自动下发（原型）">确认发布</button>
+  </div>
+</div>
+
+<style>
+/* ===== user-admin 风格搜索区 ===== */
+.ua-search-row { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 12px 24px; }
+.ua-field { display: flex; align-items: center; gap: 0; font-size: 13px; }
+.ua-field label { white-space: nowrap; color: var(--color-text-secondary); flex-shrink: 0; }
+.ua-field input, .ua-field select {
+  flex: 1; min-width: 0; padding: 6px 10px; border: 1px solid var(--color-border);
+  border-radius: 6px; font-family: inherit; font-size: 13px;
+}
+.ua-search-btns { display: flex; gap: 8px; margin-top: 14px; }
+/* ===== 分页 ===== */
+.ua-pagination {
+  display: flex; align-items: center; gap: 12px; padding: 12px 14px;
+  border-top: 1px solid var(--color-border); font-size: 13px; flex-wrap: wrap;
+}
+.ua-pages { display: flex; gap: 4px; }
+.ua-page {
+  min-width: 28px; height: 28px; padding: 0 6px; border: 1px solid var(--color-border);
+  background: #fff; border-radius: 4px; cursor: pointer; font-size: 13px;
+  font-family: inherit; color: var(--color-text);
+}
+.ua-page:hover:not(:disabled) { color: var(--color-primary); border-color: var(--color-primary); }
+.ua-page.active { background: var(--color-primary); border-color: var(--color-primary); color: #fff; }
+.ua-page:disabled { color: var(--color-text-muted); cursor: not-allowed; }
+.ua-size { padding: 5px 8px; border: 1px solid var(--color-border); border-radius: 6px; font-family: inherit; font-size: 13px; }
+</style>
+
+<script src="../assets/js/proto.js"></script>
+<script src="../assets/js/ops-shell.js"></script>
+<script>
+(function () {
+  var mask = document.getElementById("mask");
+  function closeAll() {
+    mask.classList.remove("open");
+    document.querySelectorAll(".proto-modal").forEach(function (n) { n.classList.remove("open"); });
+  }
+  function open(node) { mask.classList.add("open"); node.classList.add("open"); }
+  mask.addEventListener("click", closeAll);
+  document.querySelectorAll("[data-close]").forEach(function (n) { n.addEventListener("click", closeAll); });
+
+  // 分页（原型）
+  document.querySelectorAll(".ua-page").forEach(function (b) {
+    if (b.disabled) return;
+    b.addEventListener("click", function () {
+      document.querySelectorAll(".ua-page").forEach(function (n) { n.classList.remove("active"); });
+      b.classList.add("active");
+      Proto.toast("已切换到第 " + b.textContent + " 页（原型）");
+    });
+  });
+
+  // 行操作
+  document.querySelectorAll("tbody tr").forEach(function (tr) {
+    tr.querySelectorAll("[data-row-act]").forEach(function (a) {
+      a.addEventListener("click", function (e) {
+        e.preventDefault();
+        var act = a.getAttribute("data-row-act");
+        var name = tr.children[0].textContent.trim();
+        if (act === "edit") {
+          document.getElementById("ed-name").value = name;
+          document.getElementById("ed-code").value = tr.children[1].textContent.trim();
+          open(document.getElementById("modal-edit"));
+        } else if (act === "perm") {
+          document.getElementById("perm-role-name").textContent = name;
+          open(document.getElementById("modal-perm"));
+        } else if (act === "copy") {
+          document.getElementById("copy-name").textContent = name;
+          document.getElementById("copy-new-name").value = name + "（副本）";
+          open(document.getElementById("modal-copy"));
+        } else if (act === "publish") {
+          var re = tr.children[5].textContent.trim() === "已下线";
+          document.getElementById("publish-title").textContent = re ? "重新发布模板" : "发布模板";
+          document.getElementById("publish-text").textContent = re
+            ? "确认重新发布「" + name + "」？发布后将随适用套餐的新租户开通自动下发。"
+            : "确认发布「" + name + "」？发布后新开通的适用套餐租户将自动获得该内置角色。";
+          open(document.getElementById("modal-publish"));
+        }
+      });
+    });
+  });
+
+  document.getElementById("btn-add").addEventListener("click", function () { open(document.getElementById("modal-add")); });
+  document.getElementById("btn-query").addEventListener("click", function () { Proto.toast("已按条件查询（原型）"); });
+  document.getElementById("btn-reset").addEventListener("click", function () {
+    document.getElementById("f-name").value = "";
+    ["f-status", "f-scope"].forEach(function (id) { document.getElementById(id).value = ""; });
+    Proto.toast("已重置");
+  });
+})();
+</script>
+</body>
+</html>

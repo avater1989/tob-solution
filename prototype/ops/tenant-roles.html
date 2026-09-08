@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>租户角色 · 运营后台</title>
+<link rel="stylesheet" href="../assets/css/proto.css" />
+</head>
+<body class="admin-body" data-module="tenant" data-nav="tenant-roles" data-title="租户角色" data-crumb="运营后台 / 租户管理 / 租户角色" data-assist="1">
+<div id="page-content" style="display:none">
+
+  <!-- 搜索区 -->
+  <div class="card" style="margin-bottom:12px"><div class="card-bd">
+    <div class="ua-search">
+      <div class="ua-search-row">
+        <div class="ua-field"><label>角色名称：</label><input id="f-role" placeholder="请输入角色名称" /></div>
+        <div class="ua-field"><label>所属租户：</label>
+          <select id="f-unit">
+            <option value="">请选择</option>
+            <option>星启家庭教育（10001）</option>
+            <option>晨光少儿成长（10002）</option>
+            <option>慧心教育（10004）</option>
+            <option>乐学伴家庭（10006）</option>
+          </select>
+        </div>
+        <div class="ua-field"><label>角色状态：</label>
+          <select id="f-status">
+            <option value="">请选择</option>
+            <option>启用</option>
+            <option>停用</option>
+          </select>
+        </div>
+      </div>
+      <div class="ua-search-row ua-more" id="search-more" style="display:none">
+        <div class="ua-field"><label>角色类型：</label>
+          <select>
+            <option value="">请选择</option>
+            <option>内置角色</option>
+            <option>自定义角色</option>
+          </select>
+        </div>
+        <div class="ua-field"><label>数据范围：</label>
+          <select>
+            <option value="">请选择</option>
+            <option>全部数据</option><option>本部门数据</option><option>本人数据</option>
+          </select>
+        </div>
+        <div class="ua-field"><label>创建时间：</label><input placeholder="2026-03-01 ~ 2026-09-06" /></div>
+      </div>
+      <div class="ua-search-btns">
+        <button class="btn btn-primary" id="btn-query">查询</button>
+        <button class="btn" id="btn-reset">重置</button>
+        <button class="btn btn-ghost" id="btn-toggle">展开</button>
+      </div>
+    </div>
+  </div></div>
+
+  <!-- 操作条 -->
+  <div class="toolbar" style="margin-bottom:12px">
+    <button class="btn btn-primary" id="btn-add">新增角色</button>
+    <div class="spacer"></div>
+    <span class="muted" style="font-size:12px">内置角色由模板角色下发，不可删除；自定义角色由商家在商家后台创建</span>
+  </div>
+
+  <!-- 表格 -->
+  <div class="card"><div class="card-bd" style="padding:0">
+    <table class="data">
+      <thead>
+        <tr>
+          <th>角色名称</th>
+          <th>角色编码</th>
+          <th>所属租户</th>
+          <th>角色类型</th>
+          <th>成员数</th>
+          <th>数据范围</th>
+          <th>状态</th>
+          <th>更新时间</th>
+          <th style="width:150px">操作</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><b>商户管理员</b></td>
+          <td>MCH_ADMIN</td>
+          <td>星启家庭教育（10001）</td>
+          <td><span class="tag tag-blue">内置角色</span></td>
+          <td>2</td>
+          <td>全部数据</td>
+          <td><span class="badge badge-success">启用</span></td>
+          <td>2026-08-12 10:20</td>
+          <td class="row-actions"><a href="#" data-row-act="perm">权限配置</a><a href="#" data-row-act="edit">编辑</a><a href="#" data-row-act="view">查看</a></td>
+        </tr>
+        <tr>
+          <td><b>内容运营</b></td>
+          <td>MCH_CONTENT</td>
+          <td>星启家庭教育（10001）</td>
+          <td><span class="tag tag-blue">内置角色</span></td>
+          <td>3</td>
+          <td>全部数据</td>
+          <td><span class="badge badge-success">启用</span></td>
+          <td>2026-08-12 10:20</td>
+          <td class="row-actions"><a href="#" data-row-act="perm">权限配置</a><a href="#" data-row-act="edit">编辑</a><a href="#" data-row-act="view">查看</a></td>
+        </tr>
+        <tr>
+          <td><b>销售</b></td>
+          <td>MCH_SALES</td>
+          <td>晨光少儿成长（10002）</td>
+          <td><span class="tag tag-blue">内置角色</span></td>
+          <td>5</td>
+          <td>本人及下属数据</td>
+          <td><span class="badge badge-success">启用</span></td>
+          <td>2026-07-30 15:41</td>
+          <td class="row-actions"><a href="#" data-row-act="perm">权限配置</a><a href="#" data-row-act="edit">编辑</a><a href="#" data-row-act="view">查看</a></td>
+        </tr>
+        <tr>
+          <td><b>财务</b></td>
+          <td>MCH_FINANCE</td>
+          <td>星启家庭教育（10001）</td>
+          <td><span class="tag tag-blue">内置角色</span></td>
+          <td>1</td>
+          <td>全部数据</td>
+          <td><span class="badge badge-success">启用</span></td>
+          <td>2026-07-18 09:05</td>
+          <td class="row-actions"><a href="#" data-row-act="perm">权限配置</a><a href="#" data-row-act="edit">编辑</a><a href="#" data-row-act="view">查看</a></td>
+        </tr>
+        <tr>
+          <td><b>直播主播</b></td>
+          <td>MCH_ANCHOR</td>
+          <td>晨光少儿成长（10002）</td>
+          <td><span class="tag">自定义角色</span></td>
+          <td>2</td>
+          <td>本人数据</td>
+          <td><span class="badge badge-success">启用</span></td>
+          <td>2026-08-28 14:12</td>
+          <td class="row-actions"><a href="#" data-row-act="perm">权限配置</a><a href="#" data-row-act="edit">编辑</a><a href="#" data-row-act="view">查看</a><a href="#" data-row-act="disable">停用</a></td>
+        </tr>
+        <tr>
+          <td><b>门店店长</b></td>
+          <td>MCH_STORE_MGR</td>
+          <td>慧心教育（10004）</td>
+          <td><span class="tag">自定义角色</span></td>
+          <td>4</td>
+          <td>本部门数据</td>
+          <td><span class="badge badge-warn">停用</span></td>
+          <td>2026-06-22 17:36</td>
+          <td class="row-actions"><a href="#" data-row-act="perm">权限配置</a><a href="#" data-row-act="edit">编辑</a><a href="#" data-row-act="view">查看</a><a href="#" data-row-act="enable">启用</a></td>
+        </tr>
+        <tr>
+          <td><b>数据查看</b></td>
+          <td>MCH_VIEWER</td>
+          <td>乐学伴家庭（10006）</td>
+          <td><span class="tag tag-blue">内置角色</span></td>
+          <td>0</td>
+          <td>全部数据</td>
+          <td><span class="badge badge-success">启用</span></td>
+          <td>2026-09-01 11:00</td>
+          <td class="row-actions"><a href="#" data-row-act="perm">权限配置</a><a href="#" data-row-act="edit">编辑</a><a href="#" data-row-act="view">查看</a></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- 分页 -->
+    <div class="ua-pagination">
+      <span class="muted">共 <b>12</b> 条</span>
+      <div class="ua-pages">
+        <button class="ua-page" disabled>‹</button>
+        <button class="ua-page active">1</button>
+        <button class="ua-page">2</button>
+        <button class="ua-page">›</button>
+      </div>
+      <select class="ua-size">
+        <option>10条/页</option><option>20条/页</option><option>30条/页</option><option>40条/页</option>
+      </select>
+    </div>
+  </div></div>
+</div>
+
+<!-- ============ 弹窗 ============ -->
+<div class="proto-mask" id="mask"></div>
+
+<!-- 新增角色弹窗 -->
+<div class="proto-modal" id="modal-add" style="width:540px">
+  <div class="proto-modal-hd">
+    <h3 style="font-size:16px;font-weight:600">新增角色</h3>
+    <button class="btn btn-sm btn-ghost" data-close>×</button>
+  </div>
+  <div class="proto-modal-bd">
+    <div class="form-grid">
+      <div class="field"><label>角色名称 *</label><input placeholder="请输入角色名称" /></div>
+      <div class="field"><label>角色编码 *</label><input placeholder="如 MCH_MARKETING" /></div>
+      <div class="field"><label>所属租户 *</label>
+        <select style="width:100%;padding:6px 8px;border:1px solid var(--color-border);border-radius:6px">
+          <option>请选择</option>
+          <option>星启家庭教育（10001）</option>
+          <option>晨光少儿成长（10002）</option>
+          <option>慧心教育（10004）</option>
+          <option>乐学伴家庭（10006）</option>
+        </select>
+      </div>
+      <div class="field"><label>数据范围 *</label>
+        <select style="width:100%;padding:6px 8px;border:1px solid var(--color-border);border-radius:6px">
+          <option>全部数据</option><option>本部门数据</option><option>本人数据</option>
+        </select>
+      </div>
+      <div class="field" style="grid-column:1/-1"><label>从模板角色复制权限</label>
+        <select style="width:100%;padding:6px 8px;border:1px solid var(--color-border);border-radius:6px">
+          <option>不复制（空白角色）</option>
+          <option>商户管理员</option><option>内容运营</option><option>销售</option><option>财务</option><option>数据查看</option>
+        </select>
+      </div>
+      <div class="field" style="grid-column:1/-1"><label>角色描述</label><input placeholder="选填" /></div>
+    </div>
+    <p class="muted" style="margin:10px 0 0;font-size:12px">新增后可在「权限配置」中为该角色分配功能资源。</p>
+  </div>
+  <div class="proto-modal-ft" style="border-top:1px solid var(--color-border);padding:12px 20px;display:flex;gap:8px;justify-content:flex-end">
+    <button class="btn" data-close>取消</button>
+    <button class="btn btn-primary" data-close data-toast="角色已创建，请继续配置权限（原型）">确定</button>
+  </div>
+</div>
+
+<!-- 编辑角色弹窗 -->
+<div class="proto-modal" id="modal-edit" style="width:540px">
+  <div class="proto-modal-hd">
+    <h3 style="font-size:16px;font-weight:600">编辑角色</h3>
+    <button class="btn btn-sm btn-ghost" data-close>×</button>
+  </div>
+  <div class="proto-modal-bd">
+    <div class="form-grid">
+      <div class="field"><label>角色名称 *</label><input id="ed-role" /></div>
+      <div class="field"><label>角色编码</label><input id="ed-code" disabled /></div>
+      <div class="field"><label>数据范围</label>
+        <select style="width:100%;padding:6px 8px;border:1px solid var(--color-border);border-radius:6px">
+          <option selected>全部数据</option><option>本部门数据</option><option>本人数据</option>
+        </select>
+      </div>
+      <div class="field"><label>角色状态</label>
+        <select style="width:100%;padding:6px 8px;border:1px solid var(--color-border);border-radius:6px">
+          <option selected>启用</option><option>停用</option>
+        </select>
+      </div>
+      <div class="field" style="grid-column:1/-1"><label>角色描述</label><input placeholder="选填" /></div>
+    </div>
+    <p class="muted" style="margin:10px 0 0;font-size:12px">停用后该角色成员登录将仅保留只读权限（原型）。</p>
+  </div>
+  <div class="proto-modal-ft" style="border-top:1px solid var(--color-border);padding:12px 20px;display:flex;gap:8px;justify-content:flex-end">
+    <button class="btn" data-close>取消</button>
+    <button class="btn btn-primary" data-close data-toast="角色信息已保存（原型）">保存</button>
+  </div>
+</div>
+
+<!-- 权限配置弹窗 -->
+<div class="proto-modal" id="modal-perm" style="width:680px">
+  <div class="proto-modal-hd">
+    <h3 style="font-size:16px;font-weight:600">权限配置 · <span id="perm-role-name">商户管理员</span></h3>
+    <button class="btn btn-sm btn-ghost" data-close>×</button>
+  </div>
+  <div class="proto-modal-bd">
+    <p class="muted" style="margin:0 0 10px;font-size:12px">勾选该角色可用的功能资源；资源清单在「功能资源配置」中维护。</p>
+    <table class="data" style="font-size:12px">
+      <thead>
+        <tr><th style="text-align:left">功能模块</th><th>页面</th><th>查看</th><th>编辑</th><th>审核</th><th>导出</th></tr>
+      </thead>
+      <tbody>
+        <tr><td style="text-align:left" rowspan="2"><b>内容</b></td><td>课程管理</td><td><input type="checkbox" checked /></td><td><input type="checkbox" checked /></td><td>—</td><td><input type="checkbox" checked /></td></tr>
+        <tr><td>直播管理</td><td><input type="checkbox" checked /></td><td><input type="checkbox" checked /></td><td>—</td><td><input type="checkbox" checked /></td></tr>
+        <tr><td style="text-align:left"><b>交易</b></td><td>订单中心</td><td><input type="checkbox" checked /></td><td><input type="checkbox" /></td><td>—</td><td><input type="checkbox" checked /></td></tr>
+        <tr><td style="text-align:left"><b>用户</b></td><td>用户列表</td><td><input type="checkbox" checked /></td><td><input type="checkbox" /></td><td>—</td><td><input type="checkbox" /></td></tr>
+        <tr><td style="text-align:left"><b>SCRM</b></td><td>线索池</td><td><input type="checkbox" checked /></td><td><input type="checkbox" checked /></td><td>—</td><td><input type="checkbox" /></td></tr>
+        <tr><td style="text-align:left"><b>系统</b></td><td>权限配置</td><td><input type="checkbox" checked /></td><td><input type="checkbox" checked /></td><td>—</td><td>—</td></tr>
+      </tbody>
+    </table>
+    <div style="margin-top:12px;padding:10px 12px;background:#f7f8fa;border-radius:6px;font-size:12px">
+      <label style="display:flex;align-items:center;gap:6px"><input type="checkbox" checked /> 敏感操作：手机号解密留痕</label>
+      <label style="display:flex;align-items:center;gap:6px;margin-top:6px"><input type="checkbox" /> 敏感操作：退款审核</label>
+      <label style="display:flex;align-items:center;gap:6px;margin-top:6px"><input type="checkbox" /> 敏感操作：结算确认</label>
+    </div>
+  </div>
+  <div class="proto-modal-ft" style="border-top:1px solid var(--color-border);padding:12px 20px;display:flex;gap:8px;justify-content:flex-end">
+    <button class="btn" data-close>取消</button>
+    <button class="btn btn-primary" data-close data-toast="权限已保存，即时生效（原型）">保存</button>
+  </div>
+</div>
+
+<!-- 查看角色弹窗 -->
+<div class="proto-modal" id="modal-view" style="width:560px">
+  <div class="proto-modal-hd">
+    <h3 style="font-size:16px;font-weight:600">角色详情 · <span id="view-role-name">商户管理员</span></h3>
+    <button class="btn btn-sm btn-ghost" data-close>×</button>
+  </div>
+  <div class="proto-modal-bd">
+    <div class="kv-row" style="display:grid;grid-template-columns:1fr 1fr;gap:10px 24px;font-size:13px">
+      <div><span class="muted">角色编码：</span>MCH_ADMIN</div>
+      <div><span class="muted">所属租户：</span>星启家庭教育（10001）</div>
+      <div><span class="muted">角色类型：</span>内置角色</div>
+      <div><span class="muted">数据范围：</span>全部数据</div>
+      <div><span class="muted">成员数：</span>2（赵老师、阮荣均）</div>
+      <div><span class="muted">状态：</span>启用</div>
+    </div>
+    <h4 style="font-size:13px;margin:16px 0 8px">已授权功能资源</h4>
+    <div style="display:flex;flex-wrap:wrap;gap:6px">
+      <span class="tag tag-blue">课程管理（查看/编辑/导出）</span>
+      <span class="tag tag-blue">直播管理（查看/编辑/导出）</span>
+      <span class="tag tag-blue">订单中心（查看/导出）</span>
+      <span class="tag tag-blue">用户列表（查看）</span>
+      <span class="tag tag-blue">线索池（查看/编辑）</span>
+      <span class="tag tag-blue">权限配置（查看/编辑）</span>
+    </div>
+    <p class="muted" style="margin:12px 0 0;font-size:12px">最近变更：2026-08-12 10:20，由平台运营 操作。</p>
+  </div>
+  <div class="proto-modal-ft" style="border-top:1px solid var(--color-border);padding:12px 20px;display:flex;gap:8px;justify-content:flex-end">
+    <button class="btn" data-close>关闭</button>
+  </div>
+</div>
+
+<!-- 停用/启用确认弹窗 -->
+<div class="proto-modal" id="modal-disable" style="width:420px">
+  <div class="proto-modal-hd">
+    <h3 style="font-size:16px;font-weight:600" id="disable-title">停用角色</h3>
+    <button class="btn btn-sm btn-ghost" data-close>×</button>
+  </div>
+  <div class="proto-modal-bd">
+    <p style="margin:0;font-size:13px" id="disable-text">确认停用「直播主播」？停用后该角色下的 2 名成员将仅保留只读权限。</p>
+  </div>
+  <div class="proto-modal-ft" style="border-top:1px solid var(--color-border);padding:12px 20px;display:flex;gap:8px;justify-content:flex-end">
+    <button class="btn" data-close>取消</button>
+    <button class="btn btn-primary" data-close data-toast="已停用，成员权限即时生效（原型）">确认</button>
+  </div>
+</div>
+
+<style>
+/* ===== user-admin 风格搜索区 ===== */
+.ua-search-row { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 12px 24px; }
+.ua-field { display: flex; align-items: center; gap: 0; font-size: 13px; }
+.ua-field label { white-space: nowrap; color: var(--color-text-secondary); flex-shrink: 0; }
+.ua-field input, .ua-field select {
+  flex: 1; min-width: 0; padding: 6px 10px; border: 1px solid var(--color-border);
+  border-radius: 6px; font-family: inherit; font-size: 13px;
+}
+.ua-search-btns { display: flex; gap: 8px; margin-top: 14px; }
+/* ===== 分页 ===== */
+.ua-pagination {
+  display: flex; align-items: center; gap: 12px; padding: 12px 14px;
+  border-top: 1px solid var(--color-border); font-size: 13px; flex-wrap: wrap;
+}
+.ua-pages { display: flex; gap: 4px; }
+.ua-page {
+  min-width: 28px; height: 28px; padding: 0 6px; border: 1px solid var(--color-border);
+  background: #fff; border-radius: 4px; cursor: pointer; font-size: 13px;
+  font-family: inherit; color: var(--color-text);
+}
+.ua-page:hover:not(:disabled) { color: var(--color-primary); border-color: var(--color-primary); }
+.ua-page.active { background: var(--color-primary); border-color: var(--color-primary); color: #fff; }
+.ua-page:disabled { color: var(--color-text-muted); cursor: not-allowed; }
+.ua-size { padding: 5px 8px; border: 1px solid var(--color-border); border-radius: 6px; font-family: inherit; font-size: 13px; }
+</style>
+
+<script src="../assets/js/proto.js"></script>
+<script src="../assets/js/ops-shell.js"></script>
+<script>
+(function () {
+  var mask = document.getElementById("mask");
+  function closeAll() {
+    mask.classList.remove("open");
+    document.querySelectorAll(".proto-modal").forEach(function (n) { n.classList.remove("open"); });
+  }
+  function open(node) { mask.classList.add("open"); node.classList.add("open"); }
+  mask.addEventListener("click", closeAll);
+  document.querySelectorAll("[data-close]").forEach(function (n) { n.addEventListener("click", closeAll); });
+
+  // 搜索：展开 / 收起
+  var more = document.getElementById("search-more");
+  var toggle = document.getElementById("btn-toggle");
+  toggle.addEventListener("click", function () {
+    var show = more.style.display === "none";
+    more.style.display = show ? "grid" : "none";
+    toggle.textContent = show ? "收起" : "展开";
+  });
+
+  // 分页（原型）
+  document.querySelectorAll(".ua-page").forEach(function (b) {
+    if (b.disabled) return;
+    b.addEventListener("click", function () {
+      document.querySelectorAll(".ua-page").forEach(function (n) { n.classList.remove("active"); });
+      b.classList.add("active");
+      Proto.toast("已切换到第 " + b.textContent + " 页（原型）");
+    });
+  });
+
+  // 行操作
+  document.querySelectorAll("tbody tr").forEach(function (tr) {
+    tr.querySelectorAll("[data-row-act]").forEach(function (a) {
+      a.addEventListener("click", function (e) {
+        e.preventDefault();
+        var act = a.getAttribute("data-row-act");
+        var name = tr.children[0].textContent.trim();
+        if (act === "edit") {
+          document.getElementById("ed-role").value = name;
+          document.getElementById("ed-code").value = tr.children[1].textContent.trim();
+          open(document.getElementById("modal-edit"));
+        } else if (act === "perm") {
+          document.getElementById("perm-role-name").textContent = name;
+          open(document.getElementById("modal-perm"));
+        } else if (act === "view") {
+          document.getElementById("view-role-name").textContent = name;
+          open(document.getElementById("modal-view"));
+        } else if (act === "disable" || act === "enable") {
+          var isDisable = act === "disable";
+          document.getElementById("disable-title").textContent = isDisable ? "停用角色" : "启用角色";
+          document.getElementById("disable-text").textContent = isDisable
+            ? "确认停用「" + name + "」？停用后该角色成员将仅保留只读权限。"
+            : "确认启用「" + name + "」？启用后角色权限即时恢复。";
+          open(document.getElementById("modal-disable"));
+        }
+      });
+    });
+  });
+
+  document.getElementById("btn-add").addEventListener("click", function () { open(document.getElementById("modal-add")); });
+  document.getElementById("btn-query").addEventListener("click", function () { Proto.toast("已按条件查询（原型）"); });
+  document.getElementById("btn-reset").addEventListener("click", function () {
+    ["f-role"].forEach(function (id) { document.getElementById(id).value = ""; });
+    ["f-unit", "f-status"].forEach(function (id) { document.getElementById(id).value = ""; });
+    Proto.toast("已重置");
+  });
+})();
+</script>
+</body>
+</html>

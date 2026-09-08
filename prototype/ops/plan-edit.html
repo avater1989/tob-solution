@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>新增套餐版本 · 运营后台</title>
+<link rel="stylesheet" href="../assets/css/proto.css" />
+</head>
+<body class="admin-body" data-module="tenant" data-nav="plans" data-title="新增套餐版本" data-crumb="运营后台 / 租户管理 / 套餐管理 / 新增套餐版本" data-assist="1">
+<div id="page-content" style="display:none">
+
+  <!-- 基础信息 -->
+  <div class="card" style="margin-bottom:16px">
+    <div class="card-hd"><h2>基础信息</h2></div>
+    <div class="card-bd">
+      <div class="form-grid">
+        <div class="field"><label>套餐版本名称 *</label><input id="f-name" placeholder="例：体验版 / 成长版" /></div>
+        <div class="field"><label>版本说明</label><input id="f-desc" placeholder="选填，例：个人讲师起步版" /></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 套餐范围 -->
+  <div class="card" style="margin-bottom:16px">
+    <div class="card-hd">
+      <h2>套餐范围</h2>
+      <span class="muted" style="font-size:12px">配置该套餐版本可用的应用，勾选即「包含」</span>
+    </div>
+    <div class="card-bd">
+      <div class="scope-row">
+        <div class="sr-info"><b>商家管理后台</b><span class="muted">内容发布 / 直播管理 / SCRM / 交易与用户</span></div>
+        <span class="badge badge-info">必含</span>
+      </div>
+      <div class="scope-row">
+        <div class="sr-info"><b>C 端小程序</b><span class="muted">线上课售卖、直播观看的 C 端承接</span></div>
+        <span class="badge badge-info">必含</span>
+      </div>
+      <div class="scope-row">
+        <div class="sr-info"><b>视频号助手</b><span class="muted">公域订单同步与推广链接管理</span></div>
+        <label class="sr-ctrl"><input type="checkbox" id="app-video" /> 包含</label>
+      </div>
+      <div class="scope-row">
+        <div class="sr-info"><b>开放接口（OpenAPI）</b><span class="muted">商品 / 订单 / 用户数据开放，供商家自有系统对接</span></div>
+        <label class="sr-ctrl"><input type="checkbox" id="app-open" /> 包含</label>
+      </div>
+      <div class="scope-row">
+        <div class="sr-info"><b>企微 SCRM 连接器</b><span class="muted">企业微信侧边栏与群运营能力</span><span class="tag" style="margin-left:6px">规划中</span></div>
+        <label class="sr-ctrl"><input type="checkbox" id="app-wecom" /> 包含</label>
+      </div>
+    </div>
+  </div>
+
+  <!-- 容量与权益 -->
+  <div class="card">
+    <div class="card-hd"><h2>容量与权益</h2></div>
+    <div class="card-bd">
+      <div class="form-grid">
+        <div class="field"><label>商家账号数</label><input id="cap-accounts" placeholder="可创建的后台登录账号上限，例：10" /></div>
+        <div class="field"><label>直播场次（/月）</label><input id="cap-live" placeholder="按自然月统计，例：10" /></div>
+        <div class="field"><label>线上课 / 图文内容发布</label><input id="cap-courses" placeholder="同时上架上限，不限则填「不限」" /></div>
+        <div class="field"><label>SCRM 线索池容量</label><input id="cap-leads" placeholder="线索与客户档案总量上限，例：5000" /></div>
+        <div class="field" style="grid-column:1/-1"><label>服务费率策略</label>
+          <select id="cap-rate" style="width:100%;padding:6px 8px;border:1px solid var(--color-border);border-radius:6px">
+            <option>1%（默认）</option><option>1% 或 0.6%（战略可签）</option><option>0.6% ~ 1%</option><option>待定</option>
+          </select>
+        </div>
+      </div>
+      <p class="muted" style="margin:10px 0 0;font-size:12px">容量为单项上限；保存后即在该套餐版本列生效，租户详情可查看用量。</p>
+    </div>
+  </div>
+
+  <!-- 提交 -->
+  <div class="form-actions">
+    <button class="btn" id="btn-cancel">取消</button>
+    <button class="btn btn-primary" id="btn-save">保存</button>
+  </div>
+
+</div>
+
+<style>
+.scope-row {
+  display: flex; align-items: center; justify-content: space-between; gap: 16px;
+  padding: 9px 0; border-bottom: 1px dashed var(--color-border); font-size: 13px;
+}
+.scope-row:last-child { border-bottom: none; }
+.sr-info { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.sr-info .muted { color: var(--color-text-secondary); font-size: 12px; }
+.sr-ctrl { display: inline-flex; align-items: center; gap: 5px; font-size: 13px; color: var(--color-text); cursor: pointer; white-space: nowrap; }
+.sr-ctrl input { accent-color: var(--color-primary); width: 15px; height: 15px; }
+.form-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 16px; }
+</style>
+
+<script src="../assets/js/proto.js"></script>
+<script src="../assets/js/ops-shell.js"></script>
+<script>
+(function () {
+  var params = new URLSearchParams(location.search);
+  var plan = params.get("plan") || "";
+  var isEdit = !!plan;
+  var disp = {
+    "试用版": "试用版（14 天）",
+    "标准版": "标准版",
+    "专业版": "专业版",
+    "旗舰版": "旗舰版"
+  };
+  var presets = {
+    "试用版": { apps: { video: false, open: false, wecom: false }, caps: { accounts: "2", courses: "3", live: "1", leads: "100", rate: "1%（默认）" } },
+    "标准版": { apps: { video: false, open: false, wecom: false }, caps: { accounts: "5", courses: "10", live: "3", leads: "1,000", rate: "1%（默认）" } },
+    "专业版": { apps: { video: true, open: true, wecom: true }, caps: { accounts: "10", courses: "50", live: "10", leads: "5,000", rate: "1% 或 0.6%（战略可签）" } },
+    "旗舰版": { apps: { video: true, open: true, wecom: true }, caps: { accounts: "20", courses: "不限", live: "30", leads: "20,000", rate: "0.6% ~ 1%" } }
+  };
+
+  function applyHead() {
+    var h1 = document.getElementById("page-title");
+    var crumb = document.querySelector(".breadcrumb");
+    if (isEdit) {
+      document.title = "编辑套餐范围 · 运营后台";
+      if (h1) h1.textContent = "编辑套餐范围：" + (disp[plan] || plan);
+      if (crumb) crumb.textContent = "运营后台 / 租户管理 / 套餐管理 / 编辑套餐范围";
+    } else {
+      if (h1) h1.textContent = "新增套餐版本";
+      if (crumb) crumb.textContent = "运营后台 / 租户管理 / 套餐管理 / 新增套餐版本";
+    }
+  }
+
+  function fillEdit() {
+    var p = presets[plan];
+    if (!p) return;
+    var nameEl = document.getElementById("f-name");
+    nameEl.value = disp[plan] || plan;
+    nameEl.disabled = true;
+    var d = p.apps;
+    document.getElementById("app-video").checked = d.video;
+    document.getElementById("app-open").checked = d.open;
+    document.getElementById("app-wecom").checked = d.wecom;
+    var c = p.caps;
+    document.getElementById("cap-accounts").value = c.accounts;
+    document.getElementById("cap-courses").value = c.courses;
+    document.getElementById("cap-live").value = c.live;
+    document.getElementById("cap-leads").value = c.leads;
+    var sel = document.getElementById("cap-rate");
+    Array.prototype.forEach.call(sel.options, function (o) { o.selected = (o.textContent === c.rate); });
+  }
+
+  applyHead();
+  if (isEdit) fillEdit();
+
+  document.getElementById("btn-cancel").addEventListener("click", function () { history.back(); });
+  document.getElementById("btn-save").addEventListener("click", function () {
+    if (!isEdit && !document.getElementById("f-name").value.trim()) {
+      Proto.toast("请输入套餐版本名称");
+      return;
+    }
+    Proto.toast("已保存" + (isEdit ? "，「" + (disp[plan] || plan) + "」套餐范围已生效" : "，新套餐版本已创建，可回到套餐管理补充定价") + "（原型）");
+    setTimeout(function () {
+      if (history.length > 1) history.back();
+      else location.href = "plans.html";
+    }, 900);
+  });
+})();
+</script>
+</body>
+</html>

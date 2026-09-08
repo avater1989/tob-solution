@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>部门管理 · 运营后台</title>
+<link rel="stylesheet" href="../assets/css/proto.css" />
+</head>
+<body class="admin-body" data-module="sys" data-nav="sys-depts" data-title="部门管理" data-crumb="运营后台 / 系统管理 / 部门管理" data-assist="1">
+<div id="page-content" style="display:none">
+
+  <!-- 搜索区 -->
+  <div class="card" style="margin-bottom:12px"><div class="card-bd">
+    <div class="ua-search">
+      <div class="ua-search-row">
+        <div class="ua-field"><label>部门名称：</label><input id="f-name" placeholder="请输入部门名称" /></div>
+        <div class="ua-field"><label>部门编码：</label><input id="f-code" placeholder="如 ORG_OPS" /></div>
+        <div class="ua-field"><label>部门状态：</label>
+          <select id="f-status">
+            <option value="">请选择</option>
+            <option>启用</option>
+            <option>停用</option>
+          </select>
+        </div>
+      </div>
+      <div class="ua-search-btns">
+        <button class="btn btn-primary" id="btn-query">查询</button>
+        <button class="btn" id="btn-reset">重置</button>
+      </div>
+    </div>
+  </div></div>
+
+  <!-- 操作条 -->
+  <div class="toolbar" style="margin-bottom:12px">
+    <button class="btn btn-primary" id="btn-add">新增部门</button>
+    <div class="spacer"></div>
+    <span class="muted" style="font-size:12px">部门为三级结构：一级中心 → 二级部门 → 三级小组；下级停用前需先处理下级部门与人员</span>
+  </div>
+
+  <!-- 表格 -->
+  <div class="card"><div class="card-bd" style="padding:0">
+    <table class="data">
+      <thead>
+        <tr>
+          <th style="width:280px">部门名称</th>
+          <th>部门编码</th>
+          <th>负责人</th>
+          <th>在职人数</th>
+          <th>层级</th>
+          <th>排序</th>
+          <th>状态</th>
+          <th>更新时间</th>
+          <th style="width:200px">操作</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="dept-name" data-level="1"><b>平台运营中心</b></td>
+          <td>ORG_ROOT</td>
+          <td>平台运营</td>
+          <td>5</td>
+          <td><span class="tag tag-blue">一级</span></td>
+          <td>1</td>
+          <td><span class="badge badge-success">启用</span></td>
+          <td>2026-01-02 10:00</td>
+          <td class="row-actions"><a href="#" data-act="add-child">新增子部门</a><a href="#" data-act="edit">编辑</a><a href="#" data-act="disable">停用</a></td>
+        </tr>
+        <tr>
+          <td class="dept-name" data-level="2">├─ 平台运营部</td>
+          <td>ORG_OPS</td>
+          <td>平台运营</td>
+          <td>3</td>
+          <td><span class="tag">二级</span></td>
+          <td>1</td>
+          <td><span class="badge badge-success">启用</span></td>
+          <td>2026-03-12 14:20</td>
+          <td class="row-actions"><a href="#" data-act="add-child">新增子部门</a><a href="#" data-act="edit">编辑</a><a href="#" data-act="disable">停用</a></td>
+        </tr>
+        <tr>
+          <td class="dept-name" data-level="3">│&nbsp;&nbsp;&nbsp;├─ 商户成功组</td>
+          <td>ORG_OPS_CS</td>
+          <td>冯开通</td>
+          <td>2</td>
+          <td><span class="tag">三级</span></td>
+          <td>1</td>
+          <td><span class="badge badge-success">启用</span></td>
+          <td>2026-08-20 14:32</td>
+          <td class="row-actions"><a href="#" data-act="edit">编辑</a><a href="#" data-act="disable">停用</a></td>
+        </tr>
+        <tr>
+          <td class="dept-name" data-level="3">│&nbsp;&nbsp;&nbsp;└─ 渠道拓展组</td>
+          <td>ORG_OPS_CH</td>
+          <td>—</td>
+          <td>1</td>
+          <td><span class="tag">三级</span></td>
+          <td>2</td>
+          <td><span class="badge badge-success">启用</span></td>
+          <td>2026-08-20 14:35</td>
+          <td class="row-actions"><a href="#" data-act="edit">编辑</a><a href="#" data-act="disable">停用</a></td>
+        </tr>
+        <tr>
+          <td class="dept-name" data-level="2">└─ 内容运营组</td>
+          <td>ORG_OPS_CONTENT</td>
+          <td>—</td>
+          <td>0</td>
+          <td><span class="tag">二级</span></td>
+          <td>2</td>
+          <td><span class="badge">停用</span></td>
+          <td>2026-05-06 09:44</td>
+          <td class="row-actions"><a href="#" data-act="edit">编辑</a><a href="#" data-act="enable">启用</a><a href="#" data-act="del">删除</a></td>
+        </tr>
+        <tr>
+          <td class="dept-name" data-level="1"><b>风控审核中心</b></td>
+          <td>ORG_RISK</td>
+          <td>周审核</td>
+          <td>2</td>
+          <td><span class="tag tag-blue">一级</span></td>
+          <td>2</td>
+          <td><span class="badge badge-success">启用</span></td>
+          <td>2026-02-18 11:02</td>
+          <td class="row-actions"><a href="#" data-act="add-child">新增子部门</a><a href="#" data-act="edit">编辑</a><a href="#" data-act="disable">停用</a></td>
+        </tr>
+        <tr>
+          <td class="dept-name" data-level="2">└─ 内容审核组</td>
+          <td>ORG_RISK_AUDIT</td>
+          <td>周审核</td>
+          <td>2</td>
+          <td><span class="tag">二级</span></td>
+          <td>1</td>
+          <td><span class="badge badge-success">启用</span></td>
+          <td>2026-08-28 09:15</td>
+          <td class="row-actions"><a href="#" data-act="add-child">新增子部门</a><a href="#" data-act="edit">编辑</a><a href="#" data-act="disable">停用</a></td>
+        </tr>
+        <tr>
+          <td class="dept-name" data-level="3">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└─ 直播审核组</td>
+          <td>ORG_RISK_AUDIT_LIVE</td>
+          <td>吴审核</td>
+          <td>1</td>
+          <td><span class="tag">三级</span></td>
+          <td>1</td>
+          <td><span class="badge badge-success">启用</span></td>
+          <td>2026-08-28 09:18</td>
+          <td class="row-actions"><a href="#" data-act="edit">编辑</a><a href="#" data-act="disable">停用</a></td>
+        </tr>
+        <tr>
+          <td class="dept-name" data-level="1"><b>财务结算中心</b></td>
+          <td>ORG_FIN</td>
+          <td>郑结算</td>
+          <td>1</td>
+          <td><span class="tag tag-blue">一级</span></td>
+          <td>3</td>
+          <td><span class="badge badge-success">启用</span></td>
+          <td>2026-02-18 11:10</td>
+          <td class="row-actions"><a href="#" data-act="add-child">新增子部门</a><a href="#" data-act="edit">编辑</a><a href="#" data-act="disable">停用</a></td>
+        </tr>
+        <tr>
+          <td class="dept-name" data-level="2">└─ 财务结算组</td>
+          <td>ORG_FIN_SETTLE</td>
+          <td>郑结算</td>
+          <td>1</td>
+          <td><span class="tag">二级</span></td>
+          <td>1</td>
+          <td><span class="badge badge-success">启用</span></td>
+          <td>2026-09-01 11:08</td>
+          <td class="row-actions"><a href="#" data-act="add-child">新增子部门</a><a href="#" data-act="edit">编辑</a><a href="#" data-act="disable">停用</a></td>
+        </tr>
+        <tr>
+          <td class="dept-name" data-level="1"><b>数据中心</b></td>
+          <td>ORG_DATA</td>
+          <td>何数据</td>
+          <td>1</td>
+          <td><span class="tag tag-blue">一级</span></td>
+          <td>4</td>
+          <td><span class="badge badge-success">启用</span></td>
+          <td>2026-06-10 15:22</td>
+          <td class="row-actions"><a href="#" data-act="add-child">新增子部门</a><a href="#" data-act="edit">编辑</a><a href="#" data-act="disable">停用</a></td>
+        </tr>
+        <tr>
+          <td class="dept-name" data-level="2">└─ 数据组</td>
+          <td>ORG_DATA_ANALYST</td>
+          <td>何数据</td>
+          <td>1</td>
+          <td><span class="tag">二级</span></td>
+          <td>1</td>
+          <td><span class="badge badge-success">启用</span></td>
+          <td>2026-07-15 16:40</td>
+          <td class="row-actions"><a href="#" data-act="add-child">新增子部门</a><a href="#" data-act="edit">编辑</a><a href="#" data-act="disable">停用</a></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="ua-pagination">
+      <span class="muted">共 <b>12</b> 条</span>
+      <div class="ua-pages">
+        <button class="ua-page" disabled>‹</button>
+        <button class="ua-page active">1</button>
+        <button class="ua-page">›</button>
+      </div>
+      <select class="ua-size">
+        <option>10条/页</option><option>20条/页</option><option>30条/页</option><option>40条/页</option>
+      </select>
+    </div>
+  </div></div>
+</div>
+
+<!-- ============ 弹窗 ============ -->
+<div class="proto-mask" id="mask"></div>
+
+<!-- 新增/编辑部门弹窗 -->
+<div class="proto-modal" id="modal-dept" style="width:540px">
+  <div class="proto-modal-hd">
+    <h3 style="font-size:16px;font-weight:600" id="dept-title">新增部门</h3>
+    <button class="btn btn-sm btn-ghost" data-close>×</button>
+  </div>
+  <div class="proto-modal-bd">
+    <div class="form-grid">
+      <div class="field" style="grid-column:1/-1"><label>上级部门</label>
+        <select id="dept-parent" style="width:100%;padding:6px 8px;border:1px solid var(--color-border);border-radius:6px">
+          <option value="">无（作为一级中心）</option>
+          <optgroup label="一级">
+            <option>平台运营中心</option>
+            <option>风控审核中心</option>
+            <option>财务结算中心</option>
+            <option>数据中心</option>
+          </optgroup>
+          <optgroup label="二级">
+            <option>平台运营中心 / 平台运营部</option>
+            <option>平台运营中心 / 内容运营组</option>
+            <option>风控审核中心 / 内容审核组</option>
+            <option>财务结算中心 / 财务结算组</option>
+            <option>数据中心 / 数据组</option>
+          </optgroup>
+        </select>
+      </div>
+      <div class="field"><label>部门名称 *</label><input id="dept-name-input" placeholder="请输入部门名称" /></div>
+      <div class="field"><label>部门编码 *</label><input id="dept-code" placeholder="如 ORG_OPS_CS" /></div>
+      <div class="field"><label>负责人</label>
+        <select style="width:100%;padding:6px 8px;border:1px solid var(--color-border);border-radius:6px">
+          <option>请选择</option>
+          <option>平台运营</option><option>周审核</option><option>吴审核</option>
+          <option>郑结算</option><option>冯开通</option><option>何数据</option>
+        </select>
+      </div>
+      <div class="field"><label>排序</label><input id="dept-sort" placeholder="数字越小越靠前" value="1" /></div>
+      <div class="field"><label>部门状态</label>
+        <select style="width:100%;padding:6px 8px;border:1px solid var(--color-border);border-radius:6px">
+          <option selected>启用</option><option>停用</option>
+        </select>
+      </div>
+    </div>
+    <p class="muted" style="margin:10px 0 0;font-size:12px" id="dept-tip">三级部门下不可再新增子部门；部门删除前需先转移该部门下的用户。</p>
+  </div>
+  <div class="proto-modal-ft" style="border-top:1px solid var(--color-border);padding:12px 20px;display:flex;gap:8px;justify-content:flex-end">
+    <button class="btn" data-close>取消</button>
+    <button class="btn btn-primary" id="dept-submit" data-close data-toast="部门已保存（原型）">确定</button>
+  </div>
+</div>
+
+<style>
+/* ===== user-admin 风格搜索区 ===== */
+.ua-search-row { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 12px 24px; }
+.ua-field { display: flex; align-items: center; gap: 0; font-size: 13px; }
+.ua-field label { white-space: nowrap; color: var(--color-text-secondary); flex-shrink: 0; }
+.ua-field input, .ua-field select {
+  flex: 1; min-width: 0; padding: 6px 10px; border: 1px solid var(--color-border);
+  border-radius: 6px; font-family: inherit; font-size: 13px;
+}
+.ua-search-btns { display: flex; gap: 8px; margin-top: 14px; }
+/* ===== 分页 ===== */
+.ua-pagination {
+  display: flex; align-items: center; gap: 12px; padding: 12px 14px;
+  border-top: 1px solid var(--color-border); font-size: 13px; flex-wrap: wrap;
+}
+.ua-pages { display: flex; gap: 4px; }
+.ua-page {
+  min-width: 28px; height: 28px; padding: 0 6px; border: 1px solid var(--color-border);
+  background: #fff; border-radius: 4px; cursor: pointer; font-size: 13px;
+  font-family: inherit; color: var(--color-text);
+}
+.ua-page:hover:not(:disabled) { color: var(--color-primary); border-color: var(--color-primary); }
+.ua-page.active { background: var(--color-primary); border-color: var(--color-primary); color: #fff; }
+.ua-page:disabled { color: var(--color-text-muted); cursor: not-allowed; }
+.ua-size { padding: 5px 8px; border: 1px solid var(--color-border); border-radius: 6px; font-family: inherit; font-size: 13px; }
+/* ===== 部门树缩进 ===== */
+.dept-name[data-level="2"] { padding-left: 12px; color: var(--color-text); }
+.dept-name[data-level="3"] { padding-left: 24px; color: var(--color-text-secondary); }
+</style>
+
+<script src="../assets/js/proto.js"></script>
+<script src="../assets/js/ops-shell.js"></script>
+<script>
+(function () {
+  var mask = document.getElementById("mask");
+  function closeAll() {
+    mask.classList.remove("open");
+    document.querySelectorAll(".proto-modal").forEach(function (n) { n.classList.remove("open"); });
+  }
+  function open(node) { mask.classList.add("open"); node.classList.add("open"); }
+  mask.addEventListener("click", closeAll);
+  document.querySelectorAll("[data-close]").forEach(function (n) { n.addEventListener("click", closeAll); });
+
+  var modal = document.getElementById("modal-dept");
+  var title = document.getElementById("dept-title");
+  var tip = document.getElementById("dept-tip");
+
+  // 新增部门
+  document.getElementById("btn-add").addEventListener("click", function () {
+    title.textContent = "新增部门";
+    tip.textContent = "三级部门下不可再新增子部门；部门删除前需先转移该部门下的用户。";
+    open(modal);
+  });
+
+  // 行操作
+  document.querySelectorAll("tbody tr").forEach(function (tr) {
+    var name = tr.querySelector(".dept-name").textContent.trim().replace(/^[│├└─\s]+/, "");
+    var level = parseInt(tr.querySelector(".dept-name").getAttribute("data-level"), 10);
+    tr.querySelectorAll("[data-act]").forEach(function (a) {
+      a.addEventListener("click", function (e) {
+        e.preventDefault();
+        var act = a.getAttribute("data-act");
+        if (act === "add-child") {
+          title.textContent = "新增子部门 · " + name;
+          tip.textContent = level >= 3
+            ? "当前已是最深层级，不可再新增子部门。"
+            : "将挂在「" + name + "」下，作为第 " + (level + 1) + " 级部门。";
+          open(modal);
+        } else if (act === "edit") {
+          title.textContent = "编辑部门 · " + name;
+          tip.textContent = "调整层级将同步影响该部门下用户的部门归属。";
+          document.getElementById("dept-name-input").value = name;
+          open(modal);
+        } else if (act === "disable") {
+          Proto.toast("部门已停用，部门下用户保留但不可再分配至该部门（原型）");
+        } else if (act === "enable") {
+          Proto.toast("部门已启用（原型）");
+        } else if (act === "del") {
+          Proto.toast("删除前需先转移该部门下的用户（原型）");
+        }
+      });
+    });
+  });
+
+  document.getElementById("btn-query").addEventListener("click", function () { Proto.toast("已按条件查询（原型）"); });
+  document.getElementById("btn-reset").addEventListener("click", function () {
+    ["f-name", "f-code"].forEach(function (id) { document.getElementById(id).value = ""; });
+    document.getElementById("f-status").value = "";
+    Proto.toast("已重置");
+  });
+
+  // 分页（原型）
+  document.querySelectorAll(".ua-page").forEach(function (b) {
+    if (b.disabled) return;
+    b.addEventListener("click", function () {
+      document.querySelectorAll(".ua-page").forEach(function (n) { n.classList.remove("active"); });
+      b.classList.add("active");
+      Proto.toast("已切换到第 " + b.textContent + " 页（原型）");
+    });
+  });
+})();
+</script>
+</body>
+</html>

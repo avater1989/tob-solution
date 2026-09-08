@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>套餐管理 · 运营后台</title>
+<link rel="stylesheet" href="../assets/css/proto.css" />
+</head>
+<body class="admin-body" data-module="tenant" data-nav="plans" data-title="套餐管理" data-crumb="运营后台 / 租户管理 / 套餐管理" data-assist="1">
+<div id="page-content" style="display:none">
+
+  <!-- 操作条 -->
+  <div class="toolbar" style="margin-bottom:12px">
+    <a class="btn btn-primary" href="plan-edit.html" style="text-decoration:none">新建套餐版本</a>
+    <div class="spacer"></div>
+    <span class="muted" style="font-size:12px">套餐范围定义各版本可用的应用与容量权益，套餐定价定义年付售价与费率；租户开通 / 续费时引用本页配置</span>
+  </div>
+
+  <!-- ===== 套餐范围 ===== -->
+  <div class="card" style="margin-bottom:16px">
+    <div class="card-hd">
+      <h2>套餐范围</h2>
+    </div>
+    <div class="card-bd" style="padding:0">
+      <table class="plans-matrix">
+        <thead>
+          <tr>
+            <th style="text-align:left">功能项</th>
+            <th>
+              <div>试用版<br /><span class="muted">（14 天）</span></div>
+              <a class="plan-edit-link" href="plan-edit.html?plan=试用版">编辑范围</a>
+            </th>
+            <th>
+              <div>标准版</div>
+              <a class="plan-edit-link" href="plan-edit.html?plan=标准版">编辑范围</a>
+            </th>
+            <th>
+              <div>专业版</div>
+              <a class="plan-edit-link" href="plan-edit.html?plan=专业版">编辑范围</a>
+            </th>
+            <th>
+              <div>旗舰版</div>
+              <a class="plan-edit-link" href="plan-edit.html?plan=旗舰版">编辑范围</a>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="grp"><td colspan="5">应用范围</td></tr>
+          <tr>
+            <td class="name"><b>商家管理后台</b><p class="muted">内容发布 / 直播管理 / SCRM / 交易与用户</p></td>
+            <td class="ok">✓</td><td class="ok">✓</td><td class="ok">✓</td><td class="ok">✓</td>
+          </tr>
+          <tr>
+            <td class="name"><b>C 端小程序</b><p class="muted">线上课售卖、直播观看的 C 端承接</p></td>
+            <td class="ok">✓</td><td class="ok">✓</td><td class="ok">✓</td><td class="ok">✓</td>
+          </tr>
+          <tr>
+            <td class="name"><b>视频号助手</b><p class="muted">公域订单同步与推广链接管理</p></td>
+            <td class="no">—</td><td class="no">—</td><td class="ok">✓</td><td class="ok">✓</td>
+          </tr>
+          <tr>
+            <td class="name"><b>开放接口（OpenAPI）</b><p class="muted">商品 / 订单 / 用户数据开放</p></td>
+            <td class="no">—</td><td class="no">—</td><td class="ok">✓</td><td class="ok">✓</td>
+          </tr>
+          <tr>
+            <td class="name"><b>企微 SCRM 连接器</b><p class="muted">企业微信侧边栏与群运营</p></td>
+            <td class="no">—</td><td class="no">—</td><td class="ok">✓ <span class="tag">规划中</span></td><td class="ok">✓ <span class="tag">规划中</span></td>
+          </tr>
+          <tr class="grp"><td colspan="5">容量与权益</td></tr>
+          <tr>
+            <td class="name"><b>商家账号数</b><p class="muted">可创建的后台登录账号上限</p></td>
+            <td>2</td><td>5</td><td>10</td><td>20</td>
+          </tr>
+          <tr>
+            <td class="name"><b>线上课 / 图文内容发布</b><p class="muted">同时上架的课程与图文上限</p></td>
+            <td>3</td><td>10</td><td>50</td><td class="hl">不限</td>
+          </tr>
+          <tr>
+            <td class="name"><b>直播场次</b><p class="muted">按自然月统计</p></td>
+            <td>1</td><td>3</td><td>10</td><td>30</td>
+          </tr>
+          <tr>
+            <td class="name"><b>SCRM 线索池容量</b><p class="muted">线索与客户档案总量上限</p></td>
+            <td>100</td><td>1,000</td><td>5,000</td><td>20,000</td>
+          </tr>
+          <tr>
+            <td class="name"><b>服务费率策略</b><p class="muted">按平台统一 1% 计，战略合作可签 0.6%</p></td>
+            <td>1%</td><td>1%</td><td>1% 或 0.6%</td><td>1% 或 0.6%</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ===== 套餐定价 ===== -->
+  <div class="card">
+    <div class="card-hd">
+      <h2>套餐定价</h2>
+    </div>
+    <div class="card-bd" style="padding:0">
+      <table class="data">
+        <thead>
+          <tr>
+            <th>套餐版本</th>
+            <th>售卖模式</th>
+            <th>建议零售价</th>
+            <th>渠道可调范围</th>
+            <th>服务费率</th>
+            <th>说明</th>
+            <th style="width:120px">操作</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><b>试用版</b><br /><span class="muted" style="font-size:12px">14 天免费试用</span></td>
+            <td><span class="tag">免费试用</span></td>
+            <td><b>¥0</b></td>
+            <td>—</td>
+            <td>不收费</td>
+            <td>试用期到期自动进入只读，转正按目标版本补差定价</td>
+            <td class="row-actions"><a href="#" class="edit-price">编辑</a></td>
+          </tr>
+          <tr>
+            <td><b>标准版</b><br /><span class="muted" style="font-size:12px">个人讲师 / 个体起步</span></td>
+            <td>年付 / 续费</td>
+            <td><b>¥4,980 / 年</b></td>
+            <td>8.5 ~ 10 折</td>
+            <td>1%（默认）</td>
+            <td>含商家管理后台与 C 端小程序，满足单 IP 内容售卖</td>
+            <td class="row-actions"><a href="#" class="edit-price">编辑</a></td>
+          </tr>
+          <tr>
+            <td><b>专业版</b><br /><span class="muted" style="font-size:12px">中小机构标配</span></td>
+            <td>年付 / 续费</td>
+            <td><b>¥9,800 / 年</b></td>
+            <td>8.5 ~ 10 折</td>
+            <td>1%（默认），可签 0.6%</td>
+            <td>解锁视频号助手与开放接口（OpenAPI），内容容量提升</td>
+            <td class="row-actions"><a href="#" class="edit-price">编辑</a></td>
+          </tr>
+          <tr>
+            <td><b>旗舰版</b><br /><span class="muted" style="font-size:12px">连锁 / 集团机构</span></td>
+            <td>年付 / 续费</td>
+            <td><b>¥19,800 / 年</b></td>
+            <td>8.5 ~ 10 折</td>
+            <td>0.6% ~ 1%</td>
+            <td>内容不限量、账号与线索容量最大；可加购子账号与存储包</td>
+            <td class="row-actions"><a href="#" class="edit-price">编辑</a></td>
+          </tr>
+        </tbody>
+      </table>
+      <p class="muted" style="padding:10px 16px;border-top:1px solid var(--color-border);margin:0">价格口径：年付为对外建议零售价，渠道折扣与战略费率需在合同审批中确认；租户续费 / 转正按当前生效定价快照计费。</p>
+    </div>
+  </div>
+
+  <!-- ===== 操作日志 ===== -->
+  <div class="card" style="margin-top:16px">
+    <div class="card-hd">
+      <h2>操作日志</h2>
+      <span class="muted" style="font-size:12px">套餐范围 / 容量权益 / 定价的增改记录</span>
+    </div>
+    <div class="card-bd" style="padding:0">
+      <table class="data">
+        <thead>
+          <tr>
+            <th>时间</th>
+            <th>操作人</th>
+            <th>操作类型</th>
+            <th>对象</th>
+            <th>操作内容</th>
+            <th>结果</th>
+          </tr>
+        </thead>
+        <tbody id="oplog-tbody">
+          <tr><td>今天 10:18</td><td>王顾问</td><td>定价编辑</td><td>旗舰版</td><td>建议零售价 ¥19,800 / 年，渠道折扣 8.5 ~ 10 折</td><td><span class="badge badge-success">成功</span></td></tr>
+          <tr><td>今天 09:52</td><td>王顾问</td><td>新增套餐版本</td><td>新套餐（草稿）</td><td>新建套餐版本草稿，待补充范围与定价</td><td><span class="badge badge-warn">待提交</span></td></tr>
+          <tr><td>昨天 17:40</td><td>平台运营</td><td>编辑套餐范围</td><td>试用版</td><td>容量调整：直播场次 1 → 2 / 月，线索池 100 → 500</td><td><span class="badge badge-success">成功</span></td></tr>
+          <tr><td>昨天 11:22</td><td>平台运营</td><td>编辑套餐范围</td><td>专业版</td><td>解锁开放接口（OpenAPI），企微 SCRM 连接器标记「规划中」</td><td><span class="badge badge-success">成功</span></td></tr>
+          <tr><td>2026-09-05 15:04</td><td>王顾问</td><td>定价编辑</td><td>标准版</td><td>建议零售价 ¥4,980 / 年，服务费率 1%（默认）</td><td><span class="badge badge-success">成功</span></td></tr>
+          <tr><td>2026-09-04 16:30</td><td>王顾问</td><td>定价编辑</td><td>试用版</td><td>定价策略调整：免费试用 14 天，到期转只读</td><td><span class="badge badge-success">成功</span></td></tr>
+          <tr><td>2026-09-04 10:12</td><td>平台运营</td><td>编辑套餐范围</td><td>旗舰版</td><td>线上课 / 图文发布上限 50 → 不限</td><td><span class="badge badge-success">成功</span></td></tr>
+          <tr><td>2026-09-03 18:45</td><td>王顾问</td><td>定价编辑</td><td>专业版</td><td>建议零售价 ¥9,800 / 年，费率支持 1% 或 0.6%</td><td><span class="badge badge-success">成功</span></td></tr>
+          <tr><td>2026-09-03 09:20</td><td>平台运营</td><td>新增套餐版本</td><td>旗舰版</td><td>创建「旗舰版」，补充应用范围与容量权益</td><td><span class="badge badge-success">成功</span></td></tr>
+          <tr><td>2026-09-02 16:08</td><td>平台运营</td><td>编辑套餐范围</td><td>标准版</td><td>SCRM 线索池容量 500 → 1,000</td><td><span class="badge badge-success">成功</span></td></tr>
+          <tr><td>2026-09-02 11:33</td><td>王顾问</td><td>定价编辑</td><td>标准版</td><td>渠道可调范围下限 9 折 → 8.5 折</td><td><span class="badge badge-success">成功</span></td></tr>
+          <tr><td>2026-09-01 15:50</td><td>平台运营</td><td>编辑套餐范围</td><td>专业版</td><td>商家账号数 8 → 10</td><td><span class="badge badge-success">成功</span></td></tr>
+        </tbody>
+      </table>
+      <div class="ua-pagination" id="oplog-pager" style="border-top:1px solid var(--color-border)">
+        <span class="muted">共 <b id="oplog-total">12</b> 条</span>
+        <div class="ua-pages" id="oplog-pages"></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ============ 弹窗 ============ -->
+<div class="proto-mask" id="mask"></div>
+
+<!-- 定价编辑弹窗 -->
+<div class="proto-modal" id="modal-price" style="width:520px">
+  <div class="proto-modal-hd">
+    <h3 style="font-size:16px;font-weight:600">编辑定价</h3>
+    <button class="btn btn-sm btn-ghost" data-close>×</button>
+  </div>
+  <div class="proto-modal-bd">
+    <div class="form-grid">
+      <div class="field"><label>套餐版本</label><input id="price-plan" disabled /></div>
+      <div class="field"><label>售卖模式 *</label>
+        <select id="price-mode" style="width:100%;padding:6px 8px;border:1px solid var(--color-border);border-radius:6px">
+          <option>免费试用</option><option>年付 / 续费</option><option>月付</option><option>年付</option>
+        </select>
+      </div>
+      <div class="field"><label>建议零售价</label><input id="price-amount" placeholder="例：¥4,980 / 年" /></div>
+      <div class="field"><label>渠道可调范围</label><input id="price-channel" placeholder="例：8.5 ~ 10 折" /></div>
+      <div class="field"><label>服务费率</label><input id="price-fee" placeholder="例：1%（默认）" /></div>
+      <div class="field" style="grid-column:1/-1"><label>说明</label>
+        <textarea id="price-desc" rows="2" style="width:100%;padding:8px;border:1px solid var(--color-border);border-radius:6px"></textarea>
+      </div>
+    </div>
+    <p class="muted" style="margin-top:8px;font-size:12px">定价快照在租户续费 / 转正时引用，修改后次日生效；历史价格按快照留存。</p>
+  </div>
+  <div class="proto-modal-ft" style="border-top:1px solid var(--color-border);padding:12px 20px;display:flex;gap:8px;justify-content:flex-end">
+    <button class="btn" data-close>取消</button>
+    <button class="btn btn-primary" data-close data-toast="定价已保存（原型）">保存</button>
+  </div>
+</div>
+
+<style>
+/* ===== 套餐范围矩阵 ===== */
+.plans-matrix { width: 100%; border-collapse: collapse; font-size: 13px; }
+.plans-matrix th, .plans-matrix td {
+  padding: 9px 12px; border-bottom: 1px solid var(--color-border);
+  text-align: center; vertical-align: middle; font-weight: 400;
+}
+.plans-matrix thead th { background: #fafbfc; font-weight: 600; color: var(--color-text-secondary); }
+.plans-matrix td.name { text-align: left; width: 34%; color: var(--color-text); }
+.plans-matrix td.name .muted { display: block; margin-top: 2px; }
+.plans-matrix tr.grp td {
+  background: #f7f8fa; font-size: 12px; font-weight: 600;
+  color: var(--color-text-secondary); text-align: left;
+  padding: 6px 12px; letter-spacing: 1px;
+}
+.plans-matrix .ok { color: #009a29; font-weight: 600; }
+.plans-matrix .no { color: var(--color-text-muted); }
+.plans-matrix .hl { color: var(--color-primary); font-weight: 600; }
+.plans-matrix .tag { margin-right: 0; }
+.plans-matrix thead th a.plan-edit-link { display: block; }
+.plan-edit-link {
+  display: inline-block; margin-top: 5px; font-size: 11px; font-weight: 400;
+  color: var(--color-primary); text-decoration: none;
+}
+.plan-edit-link:hover { text-decoration: underline; }
+/* ===== 分页 ===== */
+.ua-pagination {
+  display: flex; align-items: center; gap: 12px; padding: 12px 14px;
+  border-top: 1px solid var(--color-border); font-size: 13px; flex-wrap: wrap;
+}
+.ua-pages { display: flex; gap: 4px; }
+.ua-page {
+  min-width: 28px; height: 28px; padding: 0 6px; border: 1px solid var(--color-border);
+  background: #fff; border-radius: 4px; cursor: pointer; font-size: 13px;
+  font-family: inherit; color: var(--color-text);
+}
+.ua-page:hover:not(:disabled) { color: var(--color-primary); border-color: var(--color-primary); }
+.ua-page.active { background: var(--color-primary); border-color: var(--color-primary); color: #fff; }
+.ua-page:disabled { color: var(--color-text-muted); cursor: not-allowed; }
+</style>
+
+<script src="../assets/js/proto.js"></script>
+<script src="../assets/js/ops-shell.js"></script>
+<script>
+(function () {
+  var mask = document.getElementById("mask");
+  function closeAll() {
+    mask.classList.remove("open");
+    document.querySelectorAll(".proto-modal").forEach(function (n) { n.classList.remove("open"); });
+  }
+  function open(node) { mask.classList.add("open"); node.classList.add("open"); }
+  mask.addEventListener("click", closeAll);
+  document.querySelectorAll("[data-close]").forEach(function (n) { n.addEventListener("click", closeAll); });
+
+  // 定价按行编辑：根据该行内容回填弹窗
+  document.querySelectorAll(".edit-price").forEach(function (a) {
+    a.addEventListener("click", function (e) {
+      e.preventDefault();
+      var tr = a.closest("tr");
+      var cells = tr.children;
+      document.getElementById("price-plan").value = cells[0].querySelector("b").textContent.trim();
+      var modeText = cells[1].textContent.trim();
+      var modeSel = document.getElementById("price-mode");
+      var hit = false;
+      Array.prototype.forEach.call(modeSel.options, function (o) { if (o.textContent === modeText) { o.selected = true; hit = true; } });
+      if (!hit) { modeSel.selectedIndex = 1; }
+      document.getElementById("price-amount").value = cells[2].textContent.trim();
+      document.getElementById("price-channel").value = cells[3].textContent.trim();
+      document.getElementById("price-fee").value = cells[4].textContent.trim();
+      document.getElementById("price-desc").value = cells[5].textContent.trim();
+      open(document.getElementById("modal-price"));
+    });
+  });
+
+  // 操作日志分页（10 条 / 页）
+  var logRows = Array.prototype.slice.call(document.querySelectorAll("#oplog-tbody tr"));
+  var PER_PAGE = 10;
+  var pageWrap = document.getElementById("oplog-pages");
+  var curPage = 0;
+
+  function renderLog() {
+    var pages = Math.max(1, Math.ceil(logRows.length / PER_PAGE));
+    if (curPage > pages - 1) curPage = pages - 1;
+    logRows.forEach(function (r, i) {
+      r.style.display = (i >= curPage * PER_PAGE && i < curPage * PER_PAGE + PER_PAGE) ? "" : "none";
+    });
+    pageWrap.innerHTML = "";
+    function btn(label, page, isActive, disabled) {
+      var b = document.createElement("button");
+      b.type = "button";
+      b.className = "ua-page" + (isActive ? " active" : "");
+      b.textContent = label;
+      b.disabled = !!disabled;
+      if (!disabled && !isActive) {
+        b.addEventListener("click", function () { curPage = page; renderLog(); });
+      }
+      return b;
+    }
+    pageWrap.appendChild(btn("‹", curPage - 1, false, curPage === 0));
+    for (var p = 0; p < pages; p++) {
+      pageWrap.appendChild(btn(String(p + 1), p, p === curPage, false));
+    }
+    pageWrap.appendChild(btn("›", curPage + 1, false, curPage >= pages - 1));
+  }
+  renderLog();
+})();
+</script>
+</body>
+</html>

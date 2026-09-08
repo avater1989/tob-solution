@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>登录 · 商家管理后台</title>
+<link rel="stylesheet" href="assets/css/proto.css" />
+<style>
+html { overflow: auto; }
+body {
+  margin: 0; min-height: 100vh; display: flex; flex-direction: column;
+  background: linear-gradient(160deg, #165dff 0%, #0e42d2 55%, #061a4a 100%);
+  font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
+  box-sizing: border-box; overflow: visible;
+}
+.review-bar { width: 100%; box-sizing: border-box; }
+.page-center { flex: 1; display: flex; align-items: center; justify-content: center; padding: 24px 16px; box-sizing: border-box; }
+.login-wrap { width: 400px; max-width: 100%; }
+.login-brand { text-align: center; color: #fff; margin-bottom: 24px; }
+.login-brand .logo {
+  width: 52px; height: 52px; border-radius: 14px; background: rgba(255,255,255,.16);
+  border: 1px solid rgba(255,255,255,.3); display: inline-flex; align-items: center;
+  justify-content: center; font-size: 26px; margin-bottom: 12px;
+}
+.login-brand h1 { font-size: 22px; margin: 0 0 6px; letter-spacing: -.01em; }
+.login-brand p { margin: 0; font-size: 13px; opacity: .75; }
+.login-card {
+  background: #fff; border-radius: 14px; padding: 28px 28px 22px;
+  box-shadow: 0 16px 48px rgba(0,0,0,.18);
+}
+.login-card h2 { margin: 0 0 4px; font-size: 18px; }
+.login-card .sub { margin: 0 0 20px; font-size: 13px; color: #86909c; }
+.lg-field { margin-bottom: 14px; }
+.lg-field label { display: block; font-size: 13px; color: #4e5969; margin-bottom: 6px; }
+.lg-field input {
+  width: 100%; box-sizing: border-box; padding: 10px 12px;
+  border: 1px solid #e5e6eb; border-radius: 8px; font-size: 14px;
+}
+.lg-field input:focus { outline: none; border-color: #165dff; box-shadow: 0 0 0 2px rgba(22,93,255,.12); }
+.lg-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; font-size: 13px; }
+.lg-row label { color: #4e5969; display: flex; align-items: center; gap: 6px; cursor: pointer; }
+.lg-row a { color: #165dff; text-decoration: none; }
+.lg-row a:hover { text-decoration: underline; }
+.lg-btn {
+  width: 100%; padding: 11px 0; border: none; border-radius: 8px;
+  background: #165dff; color: #fff; font-size: 15px; cursor: pointer; font-family: inherit;
+}
+.lg-btn:hover { background: #4080ff; }
+.lg-demo {
+  margin-top: 14px; padding: 8px 12px; background: #f7f8fa; border-radius: 6px;
+  font-size: 12px; color: #86909c; line-height: 1.7;
+}
+.lg-demo code { background: #e8f3ff; color: #0e42d2; padding: 1px 6px; border-radius: 4px; }
+.lg-foot { text-align: center; margin-top: 18px; padding-top: 16px; border-top: 1px solid #f2f3f5; font-size: 13px; color: #86909c; }
+.lg-foot a { color: #165dff; text-decoration: none; font-weight: 500; }
+.lg-foot a:hover { text-decoration: underline; }
+.login-copy { text-align: center; color: rgba(255,255,255,.55); font-size: 12px; margin-top: 20px; }
+/* 浅灰底 toast（覆盖 proto.css 深色样式） */
+.toast {
+  position: fixed; left: 50%; top: 24px; transform: translateX(-50%);
+  bottom: auto; right: auto; z-index: 9999;
+  background: #f2f3f5; color: #4e5969; border: 1px solid #e5e6eb;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, .08);
+}
+</style>
+</head>
+<body>
+  <div class="review-bar">
+    <strong>评审路径</strong>
+    <a href="admin/courses.html">①内容售卖</a><span class="sep">·</span>
+    <a href="admin/lives.html">②直播转化</a><span class="sep">·</span>
+    <a href="admin/channels-orders.html">③视频号承接</a><span class="sep">·</span>
+    <a href="admin/leads.html">④私域运营</a><span class="sep">|</span>
+    <a href="ops/dashboard.html">运营后台</a><span class="sep">·</span>
+    <a href="miniprogram/home.html">切 C 端</a><span class="sep">·</span>
+    <a href="index.html">导航</a>
+  </div>
+
+  <div class="page-center">
+  <div class="login-wrap">
+    <div class="login-brand">
+      <div class="logo">艺</div>
+      <h1>商家管理后台</h1>
+      <p>内容 · 直播 · SCRM · 交易一体化经营平台</p>
+    </div>
+
+    <div class="login-card">
+      <h2>账号登录</h2>
+      <p class="sub">请输入商家账号与密码登录后台</p>
+
+      <div class="lg-field">
+        <label>账号</label>
+        <input id="lg-account" placeholder="手机号 / 账号名" autocomplete="username" />
+      </div>
+      <div class="lg-field">
+        <label>密码</label>
+        <input id="lg-password" type="password" placeholder="请输入密码" autocomplete="current-password" />
+      </div>
+
+      <div class="lg-row">
+        <label><input type="checkbox" checked style="width:auto" /> 记住我</label>
+        <a href="#" id="lg-forgot">忘记密码？</a>
+      </div>
+
+      <button class="lg-btn" id="lg-submit">登 录</button>
+
+      <div class="lg-demo">
+        演示账号：<code>demo</code> · 密码：<code>123456</code>（原型内任意非空账号均可登录）
+      </div>
+
+      <div class="lg-foot">
+        还没有账号？
+        <a href="register.html" id="lg-register">立即注册 →</a>
+      </div>
+    </div>
+
+    <p class="login-copy">© 2026 商家管理后台 · MVP 原型演示</p>
+  </div>
+  </div>
+
+<script src="assets/js/proto.js"></script>
+<script>
+(function () {
+  function doLogin() {
+    var acc = document.getElementById("lg-account").value.trim();
+    var pwd = document.getElementById("lg-password").value;
+    if (!acc) { Proto.toast("请输入账号"); return; }
+    if (!pwd) { Proto.toast("请输入密码"); return; }
+    Proto.toast("登录成功，正在进入商家管理后台…");
+    setTimeout(function () { location.href = "admin/dashboard.html"; }, 800);
+  }
+  document.getElementById("lg-submit").addEventListener("click", doLogin);
+  document.getElementById("lg-password").addEventListener("keydown", function (e) {
+    if (e.key === "Enter") doLogin();
+  });
+  document.getElementById("lg-forgot").addEventListener("click", function (e) {
+    e.preventDefault();
+    Proto.toast("请联系商户管理员重置密码（原型）");
+  });
+})();
+</script>
+</body>
+</html>

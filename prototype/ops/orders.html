@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>全局订单 · 运营后台</title>
+<link rel="stylesheet" href="../assets/css/proto.css" />
+</head>
+<body class="admin-body" data-module="data" data-nav="orders" data-title="全局订单" data-crumb="运营后台 / 全局交易 / 全局订单" data-assist="1">
+<div id="header-actions">
+  <button class="btn" id="btn-export">导出订单</button>
+</div>
+<div id="page-content" style="display:none">
+
+  <!-- 统计 -->
+  <div class="grid-4" style="margin-bottom:16px">
+    <div class="stat"><div class="label">近 30 天平台 GMV</div><div class="value">¥1,286,430.00</div><div class="hint">9,842 笔已支付</div></div>
+    <div class="stat"><div class="label">今日 GMV</div><div class="value">¥48,213.60</div><div class="hint">462 笔</div></div>
+    <div class="stat"><div class="label">退款中（平台）</div><div class="value">11</div><div class="hint">跨 4 个租户</div></div>
+    <div class="stat"><div class="label">异常订单</div><div class="value">2</div><div class="hint">对账差异待处理</div></div>
+  </div>
+
+  <!-- 筛选 -->
+  <div class="card" style="margin-bottom:8px"><div class="card-bd">
+    <div class="form-grid" style="grid-template-columns:repeat(5,minmax(0,1fr));gap:8px 12px">
+      <input id="f-order-no" placeholder="订单号 / 交易单号" />
+      <select id="f-tenant">
+        <option value="">全部租户</option>
+        <option>星启家庭教育</option><option>晨光少儿成长</option><option>青藤家长学堂</option><option>慧心教育</option><option>某某成长中心</option>
+      </select>
+      <select id="f-channel">
+        <option value="">渠道</option>
+        <option>小程序</option><option>视频号</option><option>直播间</option>
+      </select>
+      <select id="f-status">
+        <option value="">支付状态</option>
+        <option>已支付</option><option>已完成</option><option>退款中</option><option>已退款</option><option>已关闭</option>
+      </select>
+      <button class="btn btn-primary" id="btn-query">筛选</button>
+      <input id="f-time1" type="date" />
+      <input id="f-time2" type="date" />
+      <button class="btn" id="btn-reset" style="grid-column:span 3">重置</button>
+    </div>
+  </div></div>
+
+  <!-- 表格 -->
+  <div class="card"><div class="card-bd" style="padding:0">
+    <table class="data">
+      <thead>
+        <tr>
+          <th>订单号</th>
+          <th>所属租户</th>
+          <th>商品信息</th>
+          <th>买家</th>
+          <th>实付金额</th>
+          <th>平台服务费</th>
+          <th>渠道</th>
+          <th>支付状态</th>
+          <th>退款状态</th>
+          <th>下单时间</th>
+          <th style="width:100px">操作</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="link-mono">YB20260906100123</span></td>
+          <td><a href="tenant-detail.html">星启家庭教育</a></td>
+          <td>青春期沟通训练营<br><span class="muted">线上课 · ¥299</span></td>
+          <td>周***<br><span class="muted">133****7788</span></td>
+          <td><b>¥299.00</b></td>
+          <td>¥2.99</td>
+          <td><span class="tag tag-blue">小程序</span></td>
+          <td><span class="badge badge-success">已完成</span></td>
+          <td class="muted">—</td>
+          <td>2026-09-06 10:12</td>
+          <td class="row-actions"><a href="#" data-row-act="detail">详情</a></td>
+        </tr>
+        <tr>
+          <td><span class="link-mono">YB20260906100088</span></td>
+          <td><a href="tenant-detail.html">晨光少儿成长</a></td>
+          <td>家长公开课 03 期<br><span class="muted">直播 · ¥0 免费</span></td>
+          <td>陈***<br><span class="muted">186****4411</span></td>
+          <td><b>¥0.00</b></td>
+          <td>—</td>
+          <td><span class="tag tag-purple">直播间</span></td>
+          <td><span class="badge badge-success">已完成</span></td>
+          <td class="muted">—</td>
+          <td>2026-09-06 09:40</td>
+          <td class="row-actions"><a href="#" data-row-act="detail">详情</a></td>
+        </tr>
+        <tr>
+          <td><span class="link-mono">YB20260905100231</span></td>
+          <td><a href="tenant-detail.html">青藤家长学堂</a></td>
+          <td>少儿专注力启蒙课<br><span class="muted">线上课 · ¥99</span></td>
+          <td>吴***<br><span class="muted">135****2288</span></td>
+          <td><b>¥99.00</b></td>
+          <td>¥0.99</td>
+          <td><span class="tag tag-green">视频号</span></td>
+          <td><span class="badge badge-success">已支付</span></td>
+          <td><span class="badge badge-warn">退款中</span></td>
+          <td>2026-09-05 21:18</td>
+          <td class="row-actions"><a href="#" data-row-act="detail">详情</a></td>
+        </tr>
+        <tr>
+          <td><span class="link-mono">YB20260905100187</span></td>
+          <td><a href="tenant-detail.html">星启家庭教育</a></td>
+          <td>卓越家族培养计划<br><span class="muted">线上课 · ¥2980</span></td>
+          <td>郑***<br><span class="muted">139****6655</span></td>
+          <td><b>¥2980.00</b></td>
+          <td>¥29.80</td>
+          <td><span class="tag tag-blue">小程序</span></td>
+          <td><span class="badge badge-success">已完成</span></td>
+          <td class="muted">—</td>
+          <td>2026-09-05 15:02</td>
+          <td class="row-actions"><a href="#" data-row-act="detail">详情</a></td>
+        </tr>
+        <tr>
+          <td><span class="link-mono">YB20260904100009</span></td>
+          <td><a href="tenant-detail.html">慧心教育</a></td>
+          <td>家庭教育 21 天打卡营<br><span class="muted">线上课 · ¥199</span></td>
+          <td>冯***<br><span class="muted">188****9900</span></td>
+          <td><b>¥199.00</b></td>
+          <td>¥1.99</td>
+          <td><span class="tag tag-green">视频号</span></td>
+          <td><span class="badge badge-warn">已关闭</span></td>
+          <td class="muted">—</td>
+          <td>2026-09-04 08:31</td>
+          <td class="row-actions"><a href="#" data-row-act="detail">详情</a></td>
+        </tr>
+      </tbody>
+    </table>
+  </div></div>
+
+  <div class="toolbar" style="margin-top:8px">
+    <span class="muted">共 <b>9,842</b> 条（仅展示前 100 页）</span>
+    <div class="spacer"></div>
+    <select><option>10条/页</option><option>20条/页</option><option>50条/页</option></select>
+    <button class="btn btn-sm" disabled>上一页</button>
+    <button class="btn btn-sm">下一页</button>
+  </div>
+</div>
+
+<style>
+.link-mono { font-family: ui-monospace, Consolas, monospace; font-size: 12px; color: var(--color-primary); }
+.tag { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 12px; }
+.tag-blue { background: #e8f3ff; color: #165dff; }
+.tag-purple { background: #f4f0ff; color: #722ed1; }
+.tag-green { background: #e8ffea; color: #009a29; }
+</style>
+
+<script src="../assets/js/proto.js"></script>
+<script src="../assets/js/ops-shell.js"></script>
+<script>
+(function () {
+  document.querySelectorAll("[data-row-act]").forEach(function (a) {
+    a.addEventListener("click", function (e) {
+      e.preventDefault();
+      Proto.toast("平台侧订单详情：含分账与服务费明细（原型）");
+    });
+  });
+  document.getElementById("btn-export").addEventListener("click", function () { Proto.toast("已导出全局订单（原型）"); });
+  document.getElementById("btn-query").addEventListener("click", function () { Proto.toast("已筛选（原型）"); });
+  document.getElementById("btn-reset").addEventListener("click", function () {
+    document.getElementById("f-order-no").value = "";
+    ["f-tenant", "f-channel", "f-status"].forEach(function (id) { document.getElementById(id).value = ""; });
+    document.getElementById("f-time1").value = "";
+    document.getElementById("f-time2").value = "";
+    Proto.toast("已重置");
+  });
+})();
+</script>
+</body>
+</html>

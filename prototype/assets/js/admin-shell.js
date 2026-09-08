@@ -15,7 +15,7 @@
   var active = document.body.getAttribute("data-nav") || "";
   var title = document.body.getAttribute("data-title") || "管理端";
   var crumb = document.body.getAttribute("data-crumb") || "";
-  var showAssist = document.body.getAttribute("data-assist") === "1";
+  var showAssist = false; // 操作助手已隐藏（原 data-assist="1" 开关）
   var showNotice = document.body.getAttribute("data-notice") !== "0";
 
   var modules = [
@@ -25,6 +25,7 @@
     { id: "content", label: "内容", href: "courses.html" },
     { id: "trade", label: "交易", href: "orders.html" },
     { id: "user", label: "用户", href: "users.html" },
+    { id: "sys", label: "系统管理", href: "sys-users.html" },
     { id: "data", label: "数据", href: "board-acquire.html" },
   ];
 
@@ -128,19 +129,42 @@
     ],
     trade: [
       {
-        group: "订单",
+        group: "订单中心",
         links: [
           { id: "orders", href: "orders.html", label: "订单列表" },
           { id: "order-detail", href: "order-detail.html", label: "订单详情" },
+          { id: "refunds", href: "refunds.html", label: "退款/售后" },
+        ],
+      },
+      {
+        group: "对账",
+        links: [
+          { id: "recon", href: "recon.html", label: "对账单", badge: 2 },
+        ],
+      },
+      {
+        group: "结算",
+        links: [
+          { id: "settlement", href: "settlement.html", label: "结算单", badge: 2 },
         ],
       },
     ],
     user: [
       {
-        group: "用户",
+        group: "用户管理",
         links: [
           { id: "users", href: "users.html", label: "用户列表" },
-          { id: "user-detail", href: "user-detail.html", label: "用户详情" },
+        ],
+      },
+    ],
+    sys: [
+      {
+        group: "系统用户管理",
+        links: [
+          { id: "sys-users", href: "sys-users.html", label: "用户列表" },
+          { id: "depts", href: "depts.html", label: "部门管理" },
+          { id: "user-roles", href: "user-roles.html", label: "用户角色权限" },
+          { id: "permissions", href: "permissions.html", label: "功能权限配置" },
         ],
       },
     ],
@@ -192,13 +216,23 @@
       "<li>不做店铺装修与艺博士</li></ul></div>",
     trade:
       "<div class='assist-block'><h3>交易提示</h3><ul>" +
-      "<li>支付成功开通权益</li>" +
-      "<li>退款成功回收权益</li>" +
-      "<li>资金：备付金分账示意</li></ul></div>",
+      "<li>支付成功开通权益，退款成功回收权益</li>" +
+      "<li>资金：备付金分账示意（服务费 1% + 商户 99%）</li>" +
+      "<li>T+1 自动对账，差异处理后才可结算</li></ul></div>" +
+      "<div class='assist-block'><h3>交易路径</h3><ul>" +
+      "<li><a href='orders.html'>① 订单列表</a></li>" +
+      "<li><a href='refunds.html'>② 退款/售后</a></li>" +
+      "<li><a href='recon.html'>③ 对账单</a></li>" +
+      "<li><a href='settlement.html'>④ 结算单</a></li></ul></div>",
     user:
       "<div class='assist-block'><h3>用户提示</h3><ul>" +
       "<li>MVP 支持手动打标</li>" +
-      "<li>公域订单用户进入同一视图</li></ul></div>",
+      "<li>公域订单用户进入同一视图</li>" +
+      "<li>角色与权限：内置 5 角色 + 自定义</li></ul></div>" +
+      "<div class='assist-block'><h3>用户路径</h3><ul>" +
+      "<li><a href='users.html'>① 用户列表</a></li>" +
+      "<li><a href='user-roles.html'>② 用户角色</a></li>" +
+      "<li><a href='permissions.html'>③ 权限配置</a></li></ul></div>",
     data:
       "<div class='assist-block'><h3>看板提示</h3><ul>" +
       "<li>获客 / 直播 / 转化三个专题</li>" +
@@ -235,6 +269,7 @@
     '<a href="lives.html">②直播转化</a><span class="sep">·</span>' +
     '<a href="channels-orders.html">③视频号承接</a><span class="sep">·</span>' +
     '<a href="leads.html">④私域运营</a><span class="sep">|</span>' +
+    '<a href="../ops/dashboard.html">切运营后台</a><span class="sep">·</span>' +
     '<a href="../miniprogram/home.html">切 C 端</a><span class="sep">·</span>' +
     '<a href="../index.html">导航</a>' +
     "</div>";
@@ -258,7 +293,7 @@
   var layout =
     '<div class="admin-app">' +
     '<header class="admin-topbar">' +
-    '<a class="admin-brand" href="dashboard.html"><div class="logo">艺</div>艺博 To-B</a>' +
+    '<a class="admin-brand" href="dashboard.html"><div class="logo">艺</div>商家管理后台</a>' +
     '<div class="admin-tenant">商户 <b>星启家庭教育</b></div>' +
     '<nav class="admin-modules">' +
     modulesHtml() +
@@ -266,10 +301,15 @@
     '<div class="admin-top-actions">' +
     '<button type="button" class="icon-btn" data-toast="全局搜索（后续）" title="搜索">⌕</button>' +
     '<button type="button" class="icon-btn" data-toast="通知中心（示意）" title="通知">◉</button>' +
-    (showAssist
-      ? ""
-      : '<button type="button" class="icon-btn" id="show-assist-btn" title="助手">?</button>') +
-    '<span class="admin-user">赵老师</span>' +
+    '<div class="admin-user-wrap" id="admin-user-wrap">' +
+    '<button type="button" class="admin-user" id="admin-user-btn">赵老师 <i class="caret">▾</i></button>' +
+    '<div class="user-dropdown" id="user-dropdown">' +
+    '<div class="udd-hd"><b>赵老师</b><br><span>商户管理员 · 星启家庭教育</span></div>' +
+    '<button type="button" class="udd-item" id="udd-profile">个人信息</button>' +
+    '<button type="button" class="udd-item" id="udd-password">修改密码</button>' +
+    '<div class="udd-sep"></div>' +
+    '<button type="button" class="udd-item udd-logout" id="udd-logout">退出登录</button>' +
+    "</div></div>" +
     "</div></header>" +
     notice +
     '<div class="admin-body-row">' +
@@ -318,6 +358,80 @@
     hideAssist.addEventListener("click", function () {
       var panel = document.getElementById("assist-panel");
       if (panel) panel.style.display = "none";
+    });
+  }
+
+  // ===== 顶栏用户下拉：修改密码 / 退出登录 =====
+  var userBtn = document.getElementById("admin-user-btn");
+  var userMenu = document.getElementById("user-dropdown");
+  if (userBtn && userMenu) {
+    userBtn.addEventListener("click", function (e) {
+      e.stopPropagation();
+      userMenu.classList.toggle("open");
+    });
+    document.addEventListener("click", function () {
+      userMenu.classList.remove("open");
+    });
+    userMenu.addEventListener("click", function (e) { e.stopPropagation(); });
+
+    // 修改密码弹窗（注入一次）
+    var pwdMask = document.createElement("div");
+    pwdMask.className = "proto-mask";
+    pwdMask.id = "pwd-mask";
+    pwdMask.innerHTML =
+      '<div class="proto-modal" id="pwd-modal" style="width:440px">' +
+      '<div class="proto-modal-hd"><h3 style="font-size:16px;font-weight:600">修改密码</h3>' +
+      '<button type="button" class="btn btn-sm btn-ghost" id="pwd-close">×</button></div>' +
+      '<div class="proto-modal-bd"><div class="field" style="margin-bottom:10px"><label>原密码 *</label>' +
+      '<input type="password" id="pwd-old" placeholder="请输入原密码" style="width:100%" /></div>' +
+      '<div class="field" style="margin-bottom:10px"><label>新密码 *</label>' +
+      '<input type="password" id="pwd-new" placeholder="8-20 位，含字母与数字" style="width:100%" /></div>' +
+      '<div class="field" style="margin-bottom:4px"><label>确认新密码 *</label>' +
+      '<input type="password" id="pwd-new2" placeholder="再次输入新密码" style="width:100%" /></div>' +
+      '<p class="muted" style="font-size:12px">修改成功后将自动退出登录，需使用新密码重新登录。</p></div>' +
+      '<div class="proto-modal-ft" style="padding:12px 20px;display:flex;gap:8px;justify-content:flex-end;border-top:1px solid var(--color-border)">' +
+      '<button type="button" class="btn" id="pwd-cancel">取消</button>' +
+      '<button type="button" class="btn btn-primary" id="pwd-submit">确认修改</button></div></div>';
+    document.body.appendChild(pwdMask);
+
+    function closePwd() {
+      pwdMask.classList.remove("open");
+      document.getElementById("pwd-modal").classList.remove("open");
+    }
+    function openPwd() {
+      ["pwd-old", "pwd-new", "pwd-new2"].forEach(function (id) { document.getElementById(id).value = ""; });
+      pwdMask.classList.add("open");
+      document.getElementById("pwd-modal").classList.add("open");
+    }
+    pwdMask.addEventListener("click", closePwd);
+    document.getElementById("pwd-close").addEventListener("click", closePwd);
+    document.getElementById("pwd-cancel").addEventListener("click", closePwd);
+    document.getElementById("pwd-submit").addEventListener("click", function () {
+      var oldV = document.getElementById("pwd-old").value;
+      var newV = document.getElementById("pwd-new").value;
+      var new2 = document.getElementById("pwd-new2").value;
+      if (!oldV || !newV || !new2) { Proto.toast("请填写完整密码信息"); return; }
+      if (newV !== new2) { Proto.toast("两次输入的新密码不一致"); return; }
+      if (newV.length < 8 || !/[a-zA-Z]/.test(newV) || !/\d/.test(newV)) {
+        Proto.toast("新密码需 8-20 位且包含字母与数字");
+        return;
+      }
+      closePwd();
+      Proto.toast("密码修改成功，即将退出登录（原型）");
+      setTimeout(function () { location.href = "../login.html"; }, 1200);
+    });
+
+    document.getElementById("udd-profile").addEventListener("click", function () {
+      userMenu.classList.remove("open");
+      Proto.toast("个人信息（原型）");
+    });
+    document.getElementById("udd-password").addEventListener("click", function () {
+      userMenu.classList.remove("open");
+      openPwd();
+    });
+    document.getElementById("udd-logout").addEventListener("click", function () {
+      userMenu.classList.remove("open");
+      location.href = "../login.html";
     });
   }
   // 标记加载成功，供外部 watchdog 检测

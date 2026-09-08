@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>租户详情 · 运营后台</title>
+<link rel="stylesheet" href="../assets/css/proto.css" />
+</head>
+<body class="admin-body" data-module="tenant" data-nav="tenants" data-title="租户详情" data-crumb="运营后台 / 租户管理 / 租户列表 / 租户详情" data-assist="1">
+<div id="page-content" style="display:none">
+
+  <!-- 操作条 -->
+  <div class="toolbar" style="margin-bottom:16px">
+    <button class="btn" id="btn-renew">续费</button>
+    <button class="btn" id="btn-edit">编辑信息</button>
+    <button class="btn" id="btn-stop">停用租户</button>
+    <div class="spacer"></div>
+    <button class="btn btn-ghost" onclick="history.back()">返回</button>
+  </div>
+
+  <div class="grid-2" style="gap:16px">
+    <!-- 账号基本信息 -->
+    <div class="card">
+      <div class="card-hd"><h2>租户基本信息</h2></div>
+      <div class="card-bd">
+        <div class="ud-profile">
+          <div class="ud-avatar">星</div>
+          <div>
+            <h3 style="margin:0 0 4px;font-size:16px">星启家庭教育 <span class="badge badge-success" style="margin-left:4px">正常</span></h3>
+            <p class="muted" style="margin:0;font-size:12px">专业版 · 2026-03-12 开通 · 到期 2027-03-12</p>
+          </div>
+        </div>
+        <div class="kv-row"><span>租户编码</span><b>10001</b></div>
+        <div class="kv-row"><span>租户名称</span><b>星启家庭教育</b></div>
+        <div class="kv-row"><span>所属公司</span><b>星启家庭教育咨询有限公司</b></div>
+        <div class="kv-row"><span>开通来源</span><b>注册留资</b></div>
+        <div class="kv-row"><span>套餐版本</span><b><span class="tag tag-blue">专业版</span></b></div>
+        <div class="kv-row"><span>服务费率</span><b>1%</b></div>
+        <div class="kv-row"><span>商家账号数</span><b>6</b></div>
+        <div class="kv-row"><span>开通时间</span><b>2026-03-12</b></div>
+        <div class="kv-row"><span>到期时间</span><b>2027-03-12</b></div>
+      </div>
+    </div>
+
+    <!-- 应用绑定信息 -->
+    <div class="card">
+      <div class="card-hd"><h2>应用绑定信息</h2></div>
+      <div class="card-bd">
+        <div class="ud-tenant">
+          <div class="ud-tenant-hd">
+            <b>商家管理后台</b>
+            <span class="badge badge-success">已绑定</span>
+          </div>
+          <p class="ud-tenant-meta">应用编码：MERCHANT_ADMIN &nbsp;&nbsp; 绑定时间：2026-03-12</p>
+          <p class="ud-tenant-meta">添加用户：王顾问（平台运营）</p>
+          <div class="ud-tenant-tags">
+            <span class="ud-tag-label">关联角色</span>
+            <span class="ud-chip ud-chip-blue">商户管理员</span><span class="ud-chip ud-chip-blue">内容运营</span><span class="ud-chip ud-chip-blue">销售</span><span class="ud-chip ud-chip-blue">财务</span>
+          </div>
+        </div>
+        <div class="ud-tenant">
+          <div class="ud-tenant-hd">
+            <b>C 端小程序（内容发布）</b>
+            <span class="badge badge-success">已绑定</span>
+          </div>
+          <p class="ud-tenant-meta">应用编码：C_MINIPROGRAM &nbsp;&nbsp; 店铺名称：星启家庭教育 &nbsp;&nbsp; 绑定时间：2026-03-12</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 商家账号 -->
+  <div class="card" style="margin-top:16px">
+    <div class="card-hd"><h2>商家账号（6）</h2>
+      <a href="users.html" style="font-size:13px;color:var(--color-primary);text-decoration:none">用户管理 →</a>
+    </div>
+    <div class="card-bd" style="padding:0">
+      <table class="data">
+        <thead><tr><th>用户账号</th><th>姓名</th><th>部门/职位</th><th>角色</th><th>状态</th><th>最近登录</th><th style="width:110px">操作</th></tr></thead>
+        <tbody>
+          <tr><td><a href="user-detail.html">138****2610</a></td><td>赵老师</td><td>运营部 · 运营负责人</td><td>商户管理员</td><td><span class="badge badge-success">正常</span></td><td>今天 09:12</td><td class="row-actions"><a href="user-detail.html">查看</a></td></tr>
+          <tr><td><a href="user-detail.html">139****8811</a></td><td>阮荣均</td><td>运营部 · 内容运营</td><td>内容运营</td><td><span class="badge badge-warn">正常(锁定)</span></td><td>今天 08:40</td><td class="row-actions"><a href="user-detail.html">查看</a> <a href="#" data-toast="账号已解锁（原型）">解锁</a></td></tr>
+          <tr><td><a href="user-detail.html">137****5522</a></td><td>王助教</td><td>销售部 · 课程顾问</td><td>销售</td><td><span class="badge badge-success">正常</span></td><td>昨天 18:22</td><td class="row-actions"><a href="user-detail.html">查看</a></td></tr>
+          <tr><td><a href="user-detail.html">135****9933</a></td><td>钱财务</td><td>财务部 · 财务专员</td><td>财务</td><td><span class="badge">停用</span></td><td>2026-08-30</td><td class="row-actions"><a href="user-detail.html">查看</a></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+
+<!-- ============ 弹窗 ============ -->
+<div class="proto-mask" id="mask"></div>
+
+<!-- 编辑租户弹窗（与租户列表编辑弹窗一致） -->
+<div class="proto-modal" id="modal-edit" style="width:520px">
+  <div class="proto-modal-hd">
+    <h3 style="font-size:16px;font-weight:600">编辑租户</h3>
+    <button class="btn btn-sm btn-ghost" data-close>×</button>
+  </div>
+  <div class="proto-modal-bd">
+    <div class="form-grid">
+      <div class="field"><label>租户名称 *</label><input value="星启家庭教育" /></div>
+      <div class="field"><label>所属公司</label><input value="星启家庭教育咨询有限公司" /></div>
+      <div class="field"><label>服务费率</label>
+        <select style="width:100%;padding:6px 8px;border:1px solid var(--color-border);border-radius:6px">
+          <option selected>1%（默认）</option><option>0.6%（战略合作）</option>
+        </select>
+      </div>
+    </div>
+  </div>
+  <div class="proto-modal-ft" style="border-top:1px solid var(--color-border);padding:12px 20px;display:flex;gap:8px;justify-content:flex-end">
+    <button class="btn" data-close>取消</button>
+    <button class="btn btn-primary" data-close data-toast="租户信息已保存（原型）">保存</button>
+  </div>
+</div>
+
+<!-- 续费弹窗（与租户列表续费弹窗一致） -->
+<div class="proto-modal" id="modal-renew" style="width:460px">
+  <div class="proto-modal-hd">
+    <h3 style="font-size:16px;font-weight:600">租户续费</h3>
+    <button class="btn btn-sm btn-ghost" data-close>×</button>
+  </div>
+  <div class="proto-modal-bd">
+    <div class="form-grid">
+      <div class="field"><label>租户</label><div>星启家庭教育</div></div>
+      <div class="field"><label>当前到期</label><div>2027-03-12</div></div>
+      <div class="field"><label>续费套餐 *</label>
+        <select style="width:100%;padding:6px 8px;border:1px solid var(--color-border);border-radius:6px">
+          <option>专业版</option><option>标准版</option><option>旗舰版</option>
+        </select>
+      </div>
+      <div class="field"><label>续费时长 *</label>
+        <select style="width:100%;padding:6px 8px;border:1px solid var(--color-border);border-radius:6px">
+          <option>1 年</option><option>2 年</option><option>3 个月</option>
+        </select>
+      </div>
+    </div>
+    <p class="muted" style="margin-top:8px;font-size:12px">续费生效后到期时间自动顺延，服务费率保持不变。</p>
+  </div>
+  <div class="proto-modal-ft" style="border-top:1px solid var(--color-border);padding:12px 20px;display:flex;gap:8px;justify-content:flex-end">
+    <button class="btn" data-close>取消</button>
+    <button class="btn btn-primary" data-close data-toast="续费已登记，等待财务确认（原型）">确认续费</button>
+  </div>
+</div>
+
+<!-- 停用确认 -->
+<div class="proto-modal" id="modal-stop" style="width:460px">
+  <div class="proto-modal-hd">
+    <h3 style="font-size:16px;font-weight:600">停用租户</h3>
+    <button class="btn btn-sm btn-ghost" data-close>×</button>
+  </div>
+  <div class="proto-modal-bd">
+    <p style="margin:0 0 10px">确定停用租户 <b>星启家庭教育</b> 吗？停用后：</p>
+    <ul style="margin:0 0 10px 18px;font-size:13px;color:var(--color-text-secondary);line-height:1.9">
+      <li>商家后台全部功能转为<b>只读</b>，不可再创建内容与发起交易</li>
+      <li>该租户在 C 端小程序的课程 / 直播<b>全部下架</b></li>
+      <li>未完结的结算单继续走完清结算流程</li>
+    </ul>
+    <div class="field"><label>停用原因 *</label>
+      <select style="width:100%;padding:6px 8px;border:1px solid var(--color-border);border-radius:6px">
+        <option>合同到期未续费</option><option>违规经营</option><option>商家主动申请</option><option>其他</option>
+      </select>
+    </div>
+  </div>
+  <div class="proto-modal-ft" style="border-top:1px solid var(--color-border);padding:12px 20px;display:flex;gap:8px;justify-content:flex-end">
+    <button class="btn" data-close>取消</button>
+    <button class="btn btn-danger" data-close data-toast="租户已停用，C 端内容已下架（原型）">确认停用</button>
+  </div>
+</div>
+
+<style>
+.kv-row { display:flex; justify-content:space-between; padding:7px 0; font-size:13px; border-bottom:1px dashed var(--color-border); }
+.kv-row:last-child { border-bottom:none; }
+.kv-row span { color:var(--color-text-secondary); }
+.grid-2 { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); }
+@media (max-width: 1100px) { .grid-2 { grid-template-columns:1fr; } }
+.tag { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 12px; }
+.tag-blue { background: #e8f3ff; color: #165dff; }
+.ud-profile { display:flex; gap:14px; align-items:center; padding-bottom:12px; border-bottom:1px solid var(--color-border); margin-bottom:6px; }
+.ud-avatar {
+  width:52px; height:52px; border-radius:50%; background:#e8f3ff; color:#165dff;
+  font-size:20px; display:flex; align-items:center; justify-content:center; flex-shrink:0;
+}
+.ud-tenant { border:1px solid var(--color-border); border-radius:8px; padding:12px 14px; margin-bottom:12px; }
+.ud-tenant:last-child { margin-bottom:0; }
+.ud-tenant-hd { display:flex; justify-content:space-between; align-items:center; margin-bottom:6px; }
+.ud-tenant-hd b { font-size:14px; }
+.ud-tenant-meta { margin:2px 0; font-size:12px; color:var(--color-text-secondary); }
+.ud-tenant-tags { margin-top:8px; font-size:12px; }
+.ud-tag-label { color:var(--color-text-muted); margin-right:6px; }
+.ud-chip {
+  display:inline-block; padding:2px 10px; border-radius:10px; background:#f2f3f5;
+  font-size:12px; margin-right:6px; color:var(--color-text-secondary);
+}
+.ud-chip-blue { background:#e8f3ff; color:#165dff; }
+</style>
+
+<script src="../assets/js/proto.js"></script>
+<script src="../assets/js/ops-shell.js"></script>
+<script>
+(function () {
+  var mask = document.getElementById("mask");
+  function closeAll() {
+    mask.classList.remove("open");
+    document.querySelectorAll(".proto-modal").forEach(function (n) { n.classList.remove("open"); });
+  }
+  function open(node) { mask.classList.add("open"); node.classList.add("open"); }
+  mask.addEventListener("click", closeAll);
+  document.querySelectorAll("[data-close]").forEach(function (n) { n.addEventListener("click", closeAll); });
+
+  document.getElementById("btn-renew").addEventListener("click", function () { open(document.getElementById("modal-renew")); });
+  document.getElementById("btn-edit").addEventListener("click", function () { open(document.getElementById("modal-edit")); });
+  document.getElementById("btn-stop").addEventListener("click", function () { open(document.getElementById("modal-stop")); });
+})();
+</script>
+</body>
+</html>

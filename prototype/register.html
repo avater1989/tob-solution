@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>注册 · 商家管理后台</title>
+<link rel="stylesheet" href="assets/css/proto.css" />
+<style>
+html { overflow: auto; }
+body {
+  margin: 0; min-height: 100vh; display: flex; flex-direction: column;
+  background: linear-gradient(160deg, #165dff 0%, #0e42d2 55%, #061a4a 100%);
+  font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
+  box-sizing: border-box; overflow: visible;
+}
+.review-bar { width: 100%; box-sizing: border-box; }
+.page-center { flex: 1; display: flex; align-items: center; justify-content: center; padding: 24px 16px; box-sizing: border-box; }
+.reg-wrap { width: 460px; max-width: 100%; }
+.reg-brand { text-align: center; color: #fff; margin-bottom: 20px; }
+.reg-brand .logo {
+  width: 52px; height: 52px; border-radius: 14px; background: rgba(255,255,255,.16);
+  border: 1px solid rgba(255,255,255,.3); display: inline-flex; align-items: center;
+  justify-content: center; font-size: 26px; margin-bottom: 12px;
+}
+.reg-brand h1 { font-size: 22px; margin: 0 0 6px; }
+.reg-brand p { margin: 0; font-size: 13px; opacity: .75; }
+.reg-card {
+  background: #fff; border-radius: 14px; padding: 28px 28px 22px;
+  box-shadow: 0 16px 48px rgba(0,0,0,.18);
+}
+.reg-card h2 { margin: 0 0 4px; font-size: 18px; }
+.reg-card .sub { margin: 0 0 20px; font-size: 13px; color: #86909c; }
+.rg-field { margin-bottom: 13px; }
+.rg-field label { display: block; font-size: 13px; color: #4e5969; margin-bottom: 6px; }
+.rg-field label em { color: #cb2634; font-style: normal; margin-left: 2px; }
+.rg-field input, .rg-field select, .rg-field textarea {
+  width: 100%; box-sizing: border-box; padding: 9px 12px;
+  border: 1px solid #e5e6eb; border-radius: 8px; font-size: 14px; font-family: inherit;
+}
+.rg-field textarea { resize: vertical; }
+.rg-field input:focus, .rg-field select:focus, .rg-field textarea:focus {
+  outline: none; border-color: #165dff; box-shadow: 0 0 0 2px rgba(22,93,255,.12);
+}
+.rg-verify { display: flex; gap: 8px; }
+.rg-verify input { flex: 1; }
+.rg-verify button {
+  padding: 0 14px; border: 1px solid #165dff; border-radius: 8px; background: #fff;
+  color: #165dff; font-size: 13px; cursor: pointer; white-space: nowrap; font-family: inherit;
+}
+.rg-verify button:hover { background: #f0f5ff; }
+.rg-verify button:disabled { border-color: #e5e6eb; color: #86909c; cursor: not-allowed; background: #f7f8fa; }
+.rg-agree { display: flex; align-items: flex-start; gap: 8px; font-size: 12px; color: #86909c; margin: 14px 0 16px; }
+.rg-agree input { margin-top: 2px; }
+.rg-agree a { color: #165dff; text-decoration: none; }
+.rg-btn {
+  width: 100%; padding: 11px 0; border: none; border-radius: 8px;
+  background: #165dff; color: #fff; font-size: 15px; cursor: pointer; font-family: inherit;
+}
+.rg-btn:hover { background: #4080ff; }
+.rg-success {
+  display: none; text-align: center; padding: 20px 0 8px;
+}
+.rg-success .ok {
+  width: 56px; height: 56px; border-radius: 50%; background: #e8ffea; color: #009a29;
+  font-size: 28px; display: inline-flex; align-items: center; justify-content: center; margin-bottom: 14px;
+}
+.rg-success h3 { margin: 0 0 8px; font-size: 17px; }
+.rg-success p { margin: 0 0 18px; font-size: 13px; color: #86909c; line-height: 1.8; }
+.rg-success .btn-back {
+  display: inline-block; padding: 9px 28px; border-radius: 8px; background: #165dff;
+  color: #fff; font-size: 14px; text-decoration: none;
+}
+.rg-foot { text-align: center; margin-top: 16px; padding-top: 14px; border-top: 1px solid #f2f3f5; font-size: 13px; color: #86909c; }
+.rg-foot a { color: #165dff; text-decoration: none; font-weight: 500; }
+.reg-copy { text-align: center; color: rgba(255,255,255,.55); font-size: 12px; margin-top: 20px; }
+/* 浅灰底 toast（覆盖 proto.css 深色样式） */
+.toast {
+  position: fixed; left: 50%; top: 24px; transform: translateX(-50%);
+  bottom: auto; right: auto; z-index: 9999;
+  background: #f2f3f5; color: #4e5969; border: 1px solid #e5e6eb;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, .08);
+}
+</style>
+</head>
+<body>
+  <div class="review-bar">
+    <strong>评审路径</strong>
+    <a href="admin/courses.html">①内容售卖</a><span class="sep">·</span>
+    <a href="admin/lives.html">②直播转化</a><span class="sep">·</span>
+    <a href="admin/channels-orders.html">③视频号承接</a><span class="sep">·</span>
+    <a href="admin/leads.html">④私域运营</a><span class="sep">|</span>
+    <a href="ops/dashboard.html">运营后台</a><span class="sep">·</span>
+    <a href="miniprogram/home.html">切 C 端</a><span class="sep">·</span>
+    <a href="index.html">导航</a>
+  </div>
+
+  <div class="page-center">
+  <div class="reg-wrap">
+    <div class="reg-brand">
+      <div class="logo">艺</div>
+      <h1>注册商家账号</h1>
+      <p>留下联系方式，专属顾问将尽快与您联系开通</p>
+    </div>
+
+    <div class="reg-card">
+      <!-- 表单 -->
+      <div id="reg-form">
+        <h2>商家入驻申请</h2>
+        <p class="sub">以下信息将作为合作线索由商务顾问跟进（* 为必填）</p>
+
+        <div class="rg-field">
+          <label>手机号<em>*</em></label>
+          <input id="rg-phone" placeholder="请输入手机号，用于接收验证码与回访" maxlength="11" />
+        </div>
+
+        <div class="rg-field">
+          <label>短信验证码<em>*</em></label>
+          <div class="rg-verify">
+            <input id="rg-code" placeholder="6 位验证码" maxlength="6" />
+            <button type="button" id="rg-send">获取验证码</button>
+          </div>
+        </div>
+
+        <div class="rg-field">
+          <label>姓名<em>*</em></label>
+          <input id="rg-name" placeholder="请输入您的姓名" />
+        </div>
+
+        <div class="rg-field">
+          <label>公司 / 机构名称</label>
+          <input id="rg-company" placeholder="如：星启家庭教育咨询有限公司" />
+        </div>
+
+        <div class="rg-field">
+          <label>您的角色</label>
+          <select id="rg-role">
+            <option value="">请选择</option>
+            <option>创始人 / 负责人</option>
+            <option>市场 / 增长负责人</option>
+            <option>销售负责人</option>
+            <option>运营 / 内容负责人</option>
+            <option>其他</option>
+          </select>
+        </div>
+
+        <div class="rg-field">
+          <label>主营业务 / 需求描述</label>
+          <textarea id="rg-remark" rows="3" placeholder="如：家庭教育课程，希望打通视频号获客 + 私域转化 + 线上课售卖"></textarea>
+        </div>
+
+        <div class="rg-agree">
+          <input type="checkbox" id="rg-agree-ck" />
+          <span>我已阅读并同意 <a href="#">《商家服务协议》</a> 与 <a href="#">《隐私政策》</a>，并同意平台工作人员通过电话/微信与我联系</span>
+        </div>
+
+        <button class="rg-btn" id="rg-submit">提交申请</button>
+
+        <div class="rg-foot">
+          已有账号？
+          <a href="login.html">直接登录 →</a>
+        </div>
+      </div>
+
+      <!-- 成功态 -->
+      <div class="rg-success" id="reg-success">
+        <div class="ok">✓</div>
+        <h3>申请已提交</h3>
+        <p>感谢您的信任！您的信息已作为合作线索提交，<br />
+        专属商务顾问将在 1 个工作日内与您联系，协助开通商家账号。</p>
+        <a class="btn-back" href="login.html">返回登录</a>
+      </div>
+    </div>
+
+    <p class="reg-copy">© 2026 商家管理后台 · MVP 原型演示</p>
+  </div>
+  </div>
+
+<script src="assets/js/proto.js"></script>
+<script>
+(function () {
+  // 发送验证码（60s 倒计时）
+  var sendBtn = document.getElementById("rg-send");
+  var timer = null;
+  sendBtn.addEventListener("click", function () {
+    var phone = document.getElementById("rg-phone").value.trim();
+    if (!/^1\d{10}$/.test(phone)) { Proto.toast("请输入正确的 11 位手机号"); return; }
+    if (timer) return;
+    Proto.toast("验证码已发送（原型，任意填写即可）");
+    var left = 60;
+    sendBtn.disabled = true;
+    sendBtn.textContent = left + "s 后重发";
+    timer = setInterval(function () {
+      left--;
+      if (left <= 0) {
+        clearInterval(timer); timer = null;
+        sendBtn.disabled = false;
+        sendBtn.textContent = "获取验证码";
+      } else {
+        sendBtn.textContent = left + "s 后重发";
+      }
+    }, 1000);
+  });
+
+  // 提交
+  document.getElementById("rg-submit").addEventListener("click", function () {
+    var phone = document.getElementById("rg-phone").value.trim();
+    var code = document.getElementById("rg-code").value.trim();
+    var name = document.getElementById("rg-name").value.trim();
+    if (!/^1\d{10}$/.test(phone)) { Proto.toast("请输入正确的 11 位手机号"); return; }
+    if (!/^\d{6}$/.test(code)) { Proto.toast("请输入 6 位短信验证码"); return; }
+    if (!name) { Proto.toast("请输入姓名"); return; }
+    if (!document.getElementById("rg-agree-ck").checked) { Proto.toast("请先阅读并同意服务协议"); return; }
+    // 提交成功 → 信息作为线索进入 SCRM 线索池（原型示意）
+    document.getElementById("reg-form").style.display = "none";
+    document.getElementById("reg-success").style.display = "block";
+  });
+})();
+</script>
+</body>
+</html>

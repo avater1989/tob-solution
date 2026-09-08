@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>用户详情 · 运营后台</title>
+<link rel="stylesheet" href="../assets/css/proto.css" />
+</head>
+<body class="admin-body" data-module="tenant" data-nav="users" data-title="用户详情" data-crumb="运营后台 / 租户管理 / 租户用户 / 用户详情" data-assist="1">
+<div id="page-content" style="display:none">
+
+  <!-- 操作条 -->
+  <div class="toolbar" style="margin-bottom:16px">
+    <button class="btn btn-primary" id="btn-pwd">修改密码</button>
+    <button class="btn" id="btn-edit">编辑信息</button>
+    <button class="btn" id="btn-stop">停用账号</button>
+    <button class="btn btn-danger" id="btn-del">删除账号</button>
+    <div class="spacer"></div>
+    <button class="btn btn-ghost" onclick="history.back()">返回</button>
+  </div>
+
+  <div class="grid-2" style="gap:16px">
+    <!-- 账号基本信息 -->
+    <div class="card">
+      <div class="card-hd"><h2>账号基本信息</h2></div>
+      <div class="card-bd">
+        <div class="ud-profile">
+          <div class="ud-avatar">赵</div>
+          <div>
+            <h3 style="margin:0 0 4px;font-size:16px">赵老师 <span class="badge badge-success" style="margin-left:4px">正常</span></h3>
+            <p class="muted" style="margin:0;font-size:12px">商户管理员 · 最近登录 今天 09:12</p>
+          </div>
+        </div>
+        <div class="kv-row"><span>用户账号</span><b>138****2610</b></div>
+        <div class="kv-row"><span>用户姓名</span><b>赵老师</b></div>
+        <div class="kv-row"><span>手机号码</span><b>138****2610 <a href="#" id="decrypt-phone" style="font-size:12px;margin-left:6px">解密</a></b></div>
+        <div class="kv-row"><span>头像</span><b><span class="muted">—（未设置，默认取姓名首字）</span></b></div>
+        <div class="kv-row"><span>生日</span><b>—</b></div>
+        <div class="kv-row"><span>性别</span><b>—</b></div>
+        <div class="kv-row"><span>邮箱</span><b>—</b></div>
+        <div class="kv-row"><span>状态</span><b><span class="badge badge-success">正常</span></b></div>
+      </div>
+    </div>
+
+    <!-- 租户信息 -->
+    <div class="card">
+      <div class="card-hd"><h2>租户信息</h2></div>
+      <div class="card-bd">
+        <!-- 已绑定租户卡片 1 -->
+        <div class="ud-tenant">
+          <div class="ud-tenant-hd">
+            <b>星启家庭教育</b>
+            <span class="badge badge-success">已绑定</span>
+          </div>
+          <p class="ud-tenant-meta">租户编码：10001 &nbsp;&nbsp; 工号：XQ0001</p>
+          <p class="ud-tenant-meta">添加用户：王顾问（平台运营） &nbsp;&nbsp; 添加时间：2026-03-12</p>
+          <div class="ud-tenant-tags">
+            <span class="ud-tag-label">部门与职位</span>
+            <span class="ud-chip">运营部</span><span class="ud-chip">运营负责人</span>
+          </div>
+          <div class="ud-tenant-tags">
+            <span class="ud-tag-label">关联角色</span>
+            <span class="ud-chip ud-chip-blue">商户管理员角色</span><span class="ud-chip ud-chip-blue">内容运营角色</span><span class="ud-chip ud-chip-blue">销售角色</span><span class="muted">…</span>
+          </div>
+          <div class="row-actions" style="margin-top:10px">
+            <a href="tenant-detail.html">查看租户</a>
+          </div>
+        </div>
+        <!-- 已解绑租户卡片 2 -->
+        <div class="ud-tenant">
+          <div class="ud-tenant-hd">
+            <b>青藤家长学堂</b>
+            <span class="badge">已解绑</span>
+          </div>
+          <p class="ud-tenant-meta">租户编码：10005 &nbsp;&nbsp; 工号：QT0007</p>
+          <p class="ud-tenant-meta">添加用户：王顾问（平台运营） &nbsp;&nbsp; 添加时间：2026-04-02 &nbsp;&nbsp; 解绑时间：2026-06-15</p>
+          <div class="ud-tenant-tags">
+            <span class="ud-tag-label">部门与职位</span>
+            <span class="muted">无</span>
+          </div>
+          <div class="ud-tenant-tags">
+            <span class="ud-tag-label">关联角色</span>
+            <span class="muted">无</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 登录与操作记录 -->
+  <div class="card" style="margin-top:16px">
+    <div class="card-hd"><h2>登录与操作记录</h2></div>
+    <div class="card-bd" style="padding:0">
+      <table class="data">
+        <thead><tr><th>时间</th><th>行为</th><th>来源</th><th>结果</th></tr></thead>
+        <tbody>
+          <tr><td>2026-09-06 09:12</td><td>登录商家管理后台</td><td>MacBook · Chrome</td><td><span class="badge badge-success">成功</span></td></tr>
+          <tr><td>2026-09-05 08:55</td><td>登录商家管理后台</td><td>MacBook · Chrome</td><td><span class="badge badge-success">成功</span></td></tr>
+          <tr><td>2026-09-04 22:41</td><td>登录商家管理后台</td><td>iPhone · 微信内置浏览器</td><td><span class="badge badge-danger">密码错误 ×5，账号锁定</span></td></tr>
+          <tr><td>2026-09-04 23:02</td><td>解锁账号（平台运营-王顾问）</td><td>运营后台</td><td><span class="badge badge-success">已解锁</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ============ 弹窗 ============ -->
+<div class="proto-mask" id="mask"></div>
+
+<!-- 修改密码弹窗 -->
+<div class="proto-modal" id="modal-pwd" style="width:440px">
+  <div class="proto-modal-hd">
+    <h3 style="font-size:16px;font-weight:600">修改密码</h3>
+    <button class="btn btn-sm btn-ghost" data-close>×</button>
+  </div>
+  <div class="proto-modal-bd">
+    <div class="field" style="margin-bottom:10px"><label>登录账号 *</label><input value="138****2610" disabled /></div>
+    <div class="field" style="margin-bottom:4px"><label>登录密码 *</label>
+      <input type="text" id="pwd-new" placeholder="8-20 位，含字母与数字" />
+    </div>
+    <p class="muted" style="margin:8px 0 0;font-size:12px">重置后原密码立即失效，系统将短信通知用户。</p>
+  </div>
+  <div class="proto-modal-ft" style="border-top:1px solid var(--color-border);padding:12px 20px;display:flex;gap:8px;justify-content:flex-end">
+    <button class="btn" data-close>取消</button>
+    <button class="btn btn-primary" id="pwd-submit">确定</button>
+  </div>
+</div>
+
+<!-- 解锁账号弹窗 -->
+<div class="proto-modal" id="modal-unlock" style="width:440px">
+  <div class="proto-modal-hd">
+    <h3 style="font-size:16px;font-weight:600">解锁账号</h3>
+    <button class="btn btn-sm btn-ghost" data-close>×</button>
+  </div>
+  <div class="proto-modal-bd">
+    <div class="field" style="margin-bottom:4px"><label>登录账号 *</label><input value="138****2610" disabled /></div>
+    <p class="muted" style="margin:10px 0 0;font-size:12px">解锁后账号立即可登录；可同时重置密码（选填）。</p>
+    <div class="field" style="margin-top:10px"><label>重置密码</label><input type="text" placeholder="留空则不重置" /></div>
+  </div>
+  <div class="proto-modal-ft" style="border-top:1px solid var(--color-border);padding:12px 20px;display:flex;gap:8px;justify-content:flex-end">
+    <button class="btn" data-close>取消</button>
+    <button class="btn btn-primary" data-close data-toast="账号已解锁（原型）">确定</button>
+  </div>
+</div>
+
+<!-- 编辑信息弹窗 -->
+<div class="proto-modal" id="modal-edit" style="width:520px">
+  <div class="proto-modal-hd">
+    <h3 style="font-size:16px;font-weight:600">编辑信息</h3>
+    <button class="btn btn-sm btn-ghost" data-close>×</button>
+  </div>
+  <div class="proto-modal-bd">
+    <div class="form-grid">
+      <div class="field"><label>用户账号</label><input value="138****2610" disabled /></div>
+      <div class="field"><label>用户姓名 *</label><input value="赵老师" /></div>
+      <div class="field"><label>手机号码 *</label><input value="138****2610" /></div>
+      <div class="field"><label>生日</label><input placeholder="选填" /></div>
+      <div class="field"><label>性别</label>
+        <select style="width:100%;padding:6px 8px;border:1px solid var(--color-border);border-radius:6px">
+          <option>未设置</option><option>男</option><option>女</option>
+        </select>
+      </div>
+      <div class="field"><label>邮箱</label><input placeholder="选填" /></div>
+      <div class="field" style="grid-column:1/-1"><label>头像</label>
+        <button class="btn btn-ghost" data-toast="上传头像（原型）">上传头像</button>
+      </div>
+    </div>
+  </div>
+  <div class="proto-modal-ft" style="border-top:1px solid var(--color-border);padding:12px 20px;display:flex;gap:8px;justify-content:flex-end">
+    <button class="btn" data-close>取消</button>
+    <button class="btn btn-primary" data-close data-toast="用户信息已保存（原型）">保存</button>
+  </div>
+</div>
+
+<!-- 停用账号确认 -->
+<div class="proto-modal" id="modal-stop" style="width:400px">
+  <div class="proto-modal-hd">
+    <h3 style="font-size:16px;font-weight:600">停用账号</h3>
+    <button class="btn btn-sm btn-ghost" data-close>×</button>
+  </div>
+  <div class="proto-modal-bd">
+    <p style="margin:0 0 8px">确定停用账号？</p>
+    <p class="muted" style="margin:0;font-size:12px;line-height:1.8">停用后该账号无法登录商家管理后台，正在进行的会话将被踢出；租户数据保留，可随时恢复。</p>
+  </div>
+  <div class="proto-modal-ft" style="border-top:1px solid var(--color-border);padding:12px 20px;display:flex;gap:8px;justify-content:flex-end">
+    <button class="btn" data-close>取消</button>
+    <button class="btn btn-danger" data-close data-toast="账号已停用（原型）">停用</button>
+  </div>
+</div>
+
+<!-- 删除账号确认 -->
+<div class="proto-modal" id="modal-del" style="width:400px">
+  <div class="proto-modal-hd">
+    <h3 style="font-size:16px;font-weight:600">删除账号</h3>
+    <button class="btn btn-sm btn-ghost" data-close>×</button>
+  </div>
+  <div class="proto-modal-bd">
+    <p style="margin:0 0 8px">确定删除账号？</p>
+    <p class="muted" style="margin:0;font-size:12px;line-height:1.8">删除为不可逆操作，该账号的登录与操作记录将归档保留，绑定关系一并解除。建议优先使用「停用」。</p>
+  </div>
+  <div class="proto-modal-ft" style="border-top:1px solid var(--color-border);padding:12px 20px;display:flex;gap:8px;justify-content:flex-end">
+    <button class="btn" data-close>取消</button>
+    <button class="btn btn-danger" data-close data-toast="账号已删除（原型）">删除</button>
+  </div>
+</div>
+
+<style>
+.kv-row { display:flex; justify-content:space-between; padding:7px 0; font-size:13px; border-bottom:1px dashed var(--color-border); }
+.kv-row:last-child { border-bottom:none; }
+.kv-row span { color:var(--color-text-secondary); }
+.grid-2 { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); }
+@media (max-width: 1100px) { .grid-2 { grid-template-columns:1fr; } }
+/* 用户资料头 */
+.ud-profile { display:flex; gap:14px; align-items:center; padding-bottom:12px; border-bottom:1px solid var(--color-border); margin-bottom:6px; }
+.ud-avatar {
+  width:52px; height:52px; border-radius:50%; background:#e8f3ff; color:#165dff;
+  font-size:20px; display:flex; align-items:center; justify-content:center; flex-shrink:0;
+}
+/* 租户信息卡片 */
+.ud-tenant { border:1px solid var(--color-border); border-radius:8px; padding:12px 14px; margin-bottom:12px; }
+.ud-tenant:last-child { margin-bottom:0; }
+.ud-tenant-hd { display:flex; justify-content:space-between; align-items:center; margin-bottom:6px; }
+.ud-tenant-hd b { font-size:14px; }
+.ud-tenant-meta { margin:2px 0; font-size:12px; color:var(--color-text-secondary); }
+.ud-tenant-tags { margin-top:8px; font-size:12px; }
+.ud-tag-label { color:var(--color-text-muted); margin-right:6px; }
+.ud-chip {
+  display:inline-block; padding:2px 10px; border-radius:10px; background:#f2f3f5;
+  font-size:12px; margin-right:6px; color:var(--color-text-secondary);
+}
+.ud-chip-blue { background:#e8f3ff; color:#165dff; }
+</style>
+
+<script src="../assets/js/proto.js"></script>
+<script src="../assets/js/ops-shell.js"></script>
+<script>
+(function () {
+  var mask = document.getElementById("mask");
+  function closeAll() {
+    mask.classList.remove("open");
+    document.querySelectorAll(".proto-modal").forEach(function (n) { n.classList.remove("open"); });
+  }
+  function open(node) { mask.classList.add("open"); node.classList.add("open"); }
+  mask.addEventListener("click", closeAll);
+  document.querySelectorAll("[data-close]").forEach(function (n) { n.addEventListener("click", closeAll); });
+
+  document.getElementById("btn-pwd").addEventListener("click", function () { open(document.getElementById("modal-pwd")); });
+  document.getElementById("btn-edit").addEventListener("click", function () { open(document.getElementById("modal-edit")); });
+  document.getElementById("btn-stop").addEventListener("click", function () { open(document.getElementById("modal-stop")); });
+  document.getElementById("btn-del").addEventListener("click", function () { open(document.getElementById("modal-del")); });
+
+  document.getElementById("pwd-submit").addEventListener("click", function () {
+    var v = document.getElementById("pwd-new").value;
+    if (!v) { Proto.toast("请输入登录密码"); return; }
+    if (v.length < 8 || !/[a-zA-Z]/.test(v) || !/\d/.test(v)) { Proto.toast("密码需 8-20 位且包含字母与数字"); return; }
+    closeAll();
+    Proto.toast("密码已重置，短信已通知用户（原型）");
+  });
+
+  document.getElementById("decrypt-phone").addEventListener("click", function (e) {
+    e.preventDefault();
+    Proto.toast("已申请解密，操作已留痕（原型）");
+  });
+})();
+</script>
+</body>
+</html>

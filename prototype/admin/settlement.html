@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>结算 · 商家管理后台</title>
+<link rel="stylesheet" href="../assets/css/proto.css" />
+</head>
+<body class="admin-body" data-module="trade" data-nav="settlement" data-title="结算" data-crumb="交易 / 结算 / 结算单">
+<div id="header-actions">
+  <button class="btn" id="btn-export">导出结算单</button>
+  <button class="btn btn-primary" id="btn-apply">申请结算</button>
+</div>
+<div id="page-content" style="display:none">
+
+  <!-- 顶部统计 -->
+  <div class="grid-4" style="margin-bottom:16px">
+    <div class="stat"><div class="label">待确认结算额</div><div class="value">¥12,285.91</div><div class="hint">账期 03-25 ~ 03-31</div></div>
+    <div class="stat"><div class="label">结算中</div><div class="value">¥0.00</div><div class="hint">无进行中打款</div></div>
+    <div class="stat"><div class="label">累计已结算</div><div class="value">¥46,830.55</div><div class="hint">共 6 期</div></div>
+    <div class="stat"><div class="label">收款账户</div><div class="value" style="font-size:16px">招商银行 ****8842</div><div class="hint">星启家庭教育（对公）</div></div>
+  </div>
+
+  <!-- 筛选 -->
+  <div class="card" style="margin-bottom:8px"><div class="card-bd">
+    <div class="form-grid" style="grid-template-columns:repeat(5,minmax(0,1fr));gap:8px 12px">
+      <input id="f-st-no" placeholder="结算单号" />
+      <select id="f-status">
+        <option value="">结算状态</option>
+        <option>待确认</option><option>结算中</option><option>已打款</option><option>已完结</option>
+      </select>
+      <input id="f-period1" type="date" />
+      <input id="f-period2" type="date" />
+      <button class="btn btn-primary" id="btn-query">筛选</button>
+    </div>
+  </div></div>
+
+  <!-- 结算单列表 -->
+  <div class="card"><div class="card-bd" style="padding:0">
+    <table class="data">
+      <thead>
+        <tr>
+          <th>结算单号</th>
+          <th>账期</th>
+          <th>订单数</th>
+          <th>交易额</th>
+          <th>退款额</th>
+          <th>平台服务费</th>
+          <th>应结算金额</th>
+          <th>状态</th>
+          <th>生成时间</th>
+          <th style="width:120px">操作</th>
+        </tr>
+      </thead>
+      <tbody id="st-tbody">
+        <tr>
+          <td><a href="#" class="link-mono" data-row-act="detail">ST20260407001</a></td>
+          <td>04-01 ~ 04-07</td>
+          <td>86</td>
+          <td>¥8,432.20</td>
+          <td>¥308.80</td>
+          <td>¥81.23</td>
+          <td><b>¥8,042.17</b></td>
+          <td><span class="badge badge-warn">待确认</span></td>
+          <td>2026-04-08 03:00</td>
+          <td class="row-actions">
+            <a href="#" data-row-act="detail">详情</a>
+            <a href="#" data-row-act="confirm">确认</a>
+          </td>
+        </tr>
+        <tr>
+          <td><a href="#" class="link-mono" data-row-act="detail">ST20260331001</a></td>
+          <td>03-25 ~ 03-31</td>
+          <td>128</td>
+          <td>¥12,648.50</td>
+          <td>¥238.60</td>
+          <td>¥124.10</td>
+          <td><b>¥12,285.80</b></td>
+          <td><span class="badge badge-warn">待确认</span></td>
+          <td>2026-04-01 03:00</td>
+          <td class="row-actions">
+            <a href="#" data-row-act="detail">详情</a>
+            <a href="#" data-row-act="confirm">确认</a>
+          </td>
+        </tr>
+        <tr>
+          <td><a href="#" class="link-mono" data-row-act="detail">ST20260324001</a></td>
+          <td>03-18 ~ 03-24</td>
+          <td>96</td>
+          <td>¥9,876.40</td>
+          <td>¥99.00</td>
+          <td>¥97.77</td>
+          <td><b>¥9,679.63</b></td>
+          <td><span class="badge badge-success">已打款</span></td>
+          <td>2026-03-25 03:00</td>
+          <td class="row-actions">
+            <a href="#" data-row-act="detail">详情</a>
+          </td>
+        </tr>
+        <tr>
+          <td><a href="#" class="link-mono" data-row-act="detail">ST20260317001</a></td>
+          <td>03-11 ~ 03-17</td>
+          <td>74</td>
+          <td>¥8,102.30</td>
+          <td>¥0.00</td>
+          <td>¥81.02</td>
+          <td><b>¥8,021.28</b></td>
+          <td><span class="badge badge-success">已完结</span></td>
+          <td>2026-03-18 03:00</td>
+          <td class="row-actions">
+            <a href="#" data-row-act="detail">详情</a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div></div>
+  <div class="toolbar" style="margin-top:8px">
+    <span class="muted">共 <b>7</b> 条</span>
+    <div class="spacer"></div>
+    <button class="btn btn-sm" disabled>上一页</button>
+    <button class="btn btn-sm">下一页</button>
+  </div>
+
+  <!-- 分账规则说明 -->
+  <div class="card" style="margin-top:8px"><div class="card-hd"><h2>分账规则（示意）</h2></div>
+    <div class="card-bd">
+      <div class="split-flow">
+        <div class="split-node">
+          <div class="sn-title">买家支付</div>
+          <div class="sn-amount">¥12,648.50</div>
+          <div class="muted" style="font-size:12px">微信小程序支付</div>
+        </div>
+        <div class="split-arrow">→</div>
+        <div class="split-node">
+          <div class="sn-title">平台备付金账户</div>
+          <div class="sn-amount">¥12,648.50</div>
+          <div class="muted" style="font-size:12px">按账期 T+1 汇总结算</div>
+        </div>
+        <div class="split-arrow">→</div>
+        <div class="split-node node-fee">
+          <div class="sn-title">平台服务费 1%</div>
+          <div class="sn-amount">¥124.10</div>
+          <div class="muted" style="font-size:12px">交易额 × 1%</div>
+        </div>
+        <div class="split-arrow">＋</div>
+        <div class="split-node node-merchant">
+          <div class="sn-title">商户分账 99%</div>
+          <div class="sn-amount">¥12,285.80</div>
+          <div class="muted" style="font-size:12px">打款至商户对公账户</div>
+        </div>
+      </div>
+      <p class="muted" style="margin-top:12px;font-size:12px">应结算 =（交易额 − 退款额 − 平台服务费）；退款在账期内冲抵；商户自有商户号绑定为平台端后续能力。</p>
+    </div>
+  </div>
+</div>
+
+<!-- ============ 弹窗 / 抽屉 ============ -->
+<div class="proto-mask" id="mask"></div>
+
+<!-- 结算详情抽屉 -->
+<div class="proto-drawer" id="drawer-detail">
+  <div class="proto-drawer-hd">
+    <h3 id="sd-title">结算单详情</h3>
+    <button class="btn btn-sm btn-ghost" data-close>×</button>
+  </div>
+  <div class="proto-drawer-bd">
+    <h4 style="margin-bottom:8px">结算信息</h4>
+    <div class="form-grid" style="grid-template-columns:1fr 1fr">
+      <div class="field"><label>结算单号</label><div id="sd-no" class="mono">—</div></div>
+      <div class="field"><label>账期</label><div id="sd-period">—</div></div>
+      <div class="field"><label>订单数</label><div id="sd-count">—</div></div>
+      <div class="field"><label>状态</label><div id="sd-status">—</div></div>
+      <div class="field"><label>生成时间</label><div id="sd-time">—</div></div>
+      <div class="field"><label>关联对账单</label><div><a href="recon.html" class="link" id="sd-recon">查看对账单 →</a></div></div>
+    </div>
+
+    <h4 style="margin:16px 0 8px">结算金额构成</h4>
+    <div class="settle-calc">
+      <div class="calc-row"><span>交易额（已对平）</span><b id="sd-gross">—</b></div>
+      <div class="calc-row"><span>退款冲抵</span><b id="sd-refund" class="danger">—</b></div>
+      <div class="calc-row"><span>平台服务费（1%）</span><b id="sd-fee" class="danger">—</b></div>
+      <div class="calc-row total"><span>应结算金额</span><b id="sd-net">—</b></div>
+    </div>
+
+    <h4 style="margin:16px 0 8px">分账明细</h4>
+    <table class="data">
+      <thead><tr><th>分账方</th><th>比例</th><th>金额</th><th>状态</th></tr></thead>
+      <tbody id="sd-split">
+        <tr><td>星启家庭教育（商户）</td><td>99%</td><td id="sd-split-m">—</td><td><span class="badge" id="sd-split-ms">待分账</span></td></tr>
+        <tr><td>艺博平台</td><td>1%</td><td id="sd-split-p">—</td><td><span class="badge" id="sd-split-ps">待分账</span></td></tr>
+      </tbody>
+    </table>
+
+    <h4 style="margin:16px 0 8px">打款信息</h4>
+    <div class="form-grid" style="grid-template-columns:1fr 1fr">
+      <div class="field"><label>收款账户</label><div>招商银行 ****8842</div></div>
+      <div class="field"><label>账户名称</label><div>星启家庭教育咨询有限公司</div></div>
+      <div class="field"><label>预计打款时间</label><div id="sd-pay-time">—</div></div>
+      <div class="field"><label>打款凭证</label><div id="sd-voucher">—</div></div>
+    </div>
+  </div>
+  <div class="proto-drawer-ft">
+    <button class="btn" data-close>关闭</button>
+    <button class="btn" id="sd-export">导出结算单</button>
+    <button class="btn btn-primary" id="sd-confirm">确认结算</button>
+  </div>
+</div>
+
+<style>
+.link-mono { font-family:ui-monospace,Consolas,monospace; font-size:12px; color:var(--color-primary); text-decoration:none; }
+.link-mono:hover { text-decoration:underline; }
+.mono { font-family:ui-monospace,Consolas,monospace; font-size:12px; }
+.link { color:var(--color-primary); font-size:12px; text-decoration:none; }
+.danger { color:#cb2634; }
+.split-flow { display:flex; align-items:stretch; gap:8px; flex-wrap:wrap; }
+.split-node {
+  flex:1; min-width:130px; border:1px solid var(--color-border); border-radius:8px;
+  padding:12px; text-align:center; background:#fafbfc;
+}
+.split-node .sn-title { font-size:12px; color:var(--color-text-secondary); }
+.split-node .sn-amount { font-size:18px; font-weight:650; margin-top:4px; }
+.split-node.node-fee { background:#fff7e8; border-color:#ffd6a0; }
+.split-node.node-fee .sn-amount { color:#d25f00; }
+.split-node.node-merchant { background:#e8ffea; border-color:#9ff0b3; }
+.split-node.node-merchant .sn-amount { color:#009a29; }
+.split-arrow { align-self:center; color:var(--color-text-muted); font-size:16px; }
+.settle-calc { border:1px solid var(--color-border); border-radius:8px; padding:4px 14px; }
+.calc-row { display:flex; justify-content:space-between; padding:9px 0; font-size:13px; border-bottom:1px dashed var(--color-border); }
+.calc-row:last-child { border-bottom:none; }
+.calc-row span { color:var(--color-text-secondary); }
+.calc-row.total { font-size:15px; }
+.calc-row.total b { color:#cb2634; }
+</style>
+
+<script src="../assets/js/proto.js"></script>
+<script src="../assets/js/admin-shell.js"></script>
+<script>
+(function () {
+  var mask = document.getElementById("mask");
+  function closeAll() {
+    mask.classList.remove("open");
+    document.querySelectorAll(".proto-modal, .proto-drawer").forEach(function (n) { n.classList.remove("open"); });
+  }
+  function open(node) { mask.classList.add("open"); node.classList.add("open"); }
+  mask.addEventListener("click", closeAll);
+  document.querySelectorAll("[data-close]").forEach(function (n) { n.addEventListener("click", closeAll); });
+
+  var bills = {
+    ST20260407001: { period: "04-01 ~ 04-07", count: "86", gross: "¥8,432.20", refund: "¥308.80", fee: "¥81.23", net: "¥8,042.17", status: "待确认", time: "2026-04-08 03:00", payTime: "确认后 T+1", recon: "RC20260407001" },
+    ST20260331001: { period: "03-25 ~ 03-31", count: "128", gross: "¥12,648.50", refund: "¥238.60", fee: "¥124.10", net: "¥12,285.80", status: "待确认", time: "2026-04-01 03:00", payTime: "确认后 T+1", recon: "RC20260331001" },
+    ST20260324001: { period: "03-18 ~ 03-24", count: "96", gross: "¥9,876.40", refund: "¥99.00", fee: "¥97.77", net: "¥9,679.63", status: "已打款", time: "2026-03-25 03:00", payTime: "2026-03-26 10:20", recon: "RC20260324001" },
+    ST20260317001: { period: "03-11 ~ 03-17", count: "74", gross: "¥8,102.30", refund: "¥0.00", fee: "¥81.02", net: "¥8,021.28", status: "已完结", time: "2026-03-18 03:00", payTime: "2026-03-19 09:45", recon: "RC20260317001" },
+  };
+
+  function parseMoney(s) { return parseFloat(s.replace(/[¥,]/g, "")); }
+  function fillDetail(no) {
+    var d = bills[no];
+    if (!d) { Proto.toast("演示数据缺失"); return; }
+    document.getElementById("sd-title").textContent = "结算单详情 · " + no;
+    document.getElementById("sd-no").textContent = no;
+    document.getElementById("sd-period").textContent = d.period;
+    document.getElementById("sd-count").textContent = d.count + " 笔";
+    document.getElementById("sd-status").textContent = d.status;
+    document.getElementById("sd-time").textContent = d.time;
+    document.getElementById("sd-recon").textContent = d.recon + " →";
+    document.getElementById("sd-gross").textContent = d.gross;
+    document.getElementById("sd-refund").textContent = "-" + d.refund;
+    document.getElementById("sd-fee").textContent = "-" + d.fee;
+    document.getElementById("sd-net").textContent = d.net;
+    var net = parseMoney(d.net);
+    document.getElementById("sd-split-m").textContent = "¥" + net.toFixed(2);
+    document.getElementById("sd-split-p").textContent = "¥" + parseMoney(d.fee).toFixed(2);
+    var splitStatus = d.status === "待确认" ? "待分账" : "已分账";
+    document.getElementById("sd-split-ms").textContent = splitStatus;
+    document.getElementById("sd-split-ps").textContent = splitStatus;
+    document.getElementById("sd-pay-time").textContent = d.payTime;
+    document.getElementById("sd-voucher").textContent = d.status === "待确认" ? "—" : "电子回单可下载";
+    var confirmBtn = document.getElementById("sd-confirm");
+    confirmBtn.style.display = d.status === "待确认" ? "" : "none";
+    confirmBtn.setAttribute("data-no", no);
+    open(document.getElementById("drawer-detail"));
+  }
+
+  document.querySelectorAll("[data-row-act]").forEach(function (a) {
+    a.addEventListener("click", function (e) {
+      e.preventDefault();
+      var act = a.getAttribute("data-row-act");
+      var tr = a.closest("tr");
+      var no = tr.querySelector("td").textContent.trim();
+      if (act === "detail") fillDetail(no);
+      else if (act === "confirm") Proto.toast("结算单 " + no + " 已确认，进入结算中（原型）");
+    });
+  });
+
+  document.getElementById("sd-confirm").addEventListener("click", function () {
+    closeAll(); Proto.toast("已确认结算，预计 T+1 打款（原型）");
+  });
+  document.getElementById("sd-export").addEventListener("click", function () { Proto.toast("已导出结算单（原型）"); });
+  document.getElementById("btn-export").addEventListener("click", function () { Proto.toast("已导出结算单列表（原型）"); });
+  document.getElementById("btn-apply").addEventListener("click", function () { Proto.toast("已发起结算申请（原型）"); });
+  document.getElementById("btn-query").addEventListener("click", function () { Proto.toast("已筛选（原型）"); });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>数据字典 · 运营后台</title>
+<link rel="stylesheet" href="../assets/css/proto.css" />
+</head>
+<body class="admin-body" data-module="sys" data-nav="sys-dict" data-title="数据字典" data-crumb="运营后台 / 系统管理 / 数据字典" data-assist="1">
+<div id="page-content" style="display:none">
+
+  <div class="dict-layout">
+
+    <!-- 左侧：字典类型 -->
+    <div class="card dict-types">
+      <div class="card-bd" style="padding:0">
+        <div class="dict-types-hd">
+          <b>字典类型</b>
+          <button class="btn btn-sm btn-primary" id="btn-add-type">新增</button>
+        </div>
+        <ul class="dict-type-list" id="dict-type-list">
+          <li class="active" data-key="sys_user_status" data-name="用户状态">
+            <div><b>用户状态</b><span class="muted">sys_user_status</span></div>
+            <span class="badge badge-success">启用</span>
+          </li>
+          <li data-key="sys_role_status" data-name="角色状态">
+            <div><b>角色状态</b><span class="muted">sys_role_status</span></div>
+            <span class="badge badge-success">启用</span>
+          </li>
+          <li data-key="tenant_status" data-name="租户状态">
+            <div><b>租户状态</b><span class="muted">tenant_status</span></div>
+            <span class="badge badge-success">启用</span>
+          </li>
+          <li data-key="tenant_edition" data-name="租户套餐">
+            <div><b>租户套餐</b><span class="muted">tenant_edition</span></div>
+            <span class="badge badge-success">启用</span>
+          </li>
+          <li data-key="audit_result" data-name="审核结果">
+            <div><b>审核结果</b><span class="muted">audit_result</span></div>
+            <span class="badge badge-success">启用</span>
+          </li>
+          <li data-key="settle_status" data-name="结算状态">
+            <div><b>结算状态</b><span class="muted">settle_status</span></div>
+            <span class="badge badge-success">启用</span>
+          </li>
+          <li data-key="id_type" data-name="证件类型">
+            <div><b>证件类型</b><span class="muted">id_type</span></div>
+            <span class="badge badge-success">启用</span>
+          </li>
+          <li data-key="content_type" data-name="内容类型">
+            <div><b>内容类型</b><span class="muted">content_type</span></div>
+            <span class="badge">停用</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- 右侧：字典项 -->
+    <div class="dict-items">
+      <div class="card" style="margin-bottom:12px"><div class="card-bd">
+        <div class="ua-search">
+          <div class="ua-search-row">
+            <div class="ua-field"><label>字典标签：</label><input id="f-label" placeholder="请输入字典标签" /></div>
+            <div class="ua-field"><label>键值：</label><input id="f-key" placeholder="如 1 / normal" /></div>
+            <div class="ua-field"><label>状态：</label>
+              <select id="f-status">
+                <option value="">请选择</option>
+                <option>启用</option>
+                <option>停用</option>
+              </select>
+            </div>
+          </div>
+          <div class="ua-search-btns">
+            <button class="btn btn-primary" id="btn-query">查询</button>
+            <button class="btn" id="btn-reset">重置</button>
+          </div>
+        </div>
+      </div></div>
+
+      <div class="toolbar" style="margin-bottom:12px">
+        <button class="btn btn-primary" id="btn-add-item">新增字典项</button>
+        <div class="spacer"></div>
+        <span class="muted" style="font-size:12px" id="dict-hint">当前类型：用户状态（sys_user_status）· 已被停用的字典项不再出现在对应下拉中</span>
+      </div>
+
+      <div class="card"><div class="card-bd" style="padding:0">
+        <table class="data">
+          <thead>
+            <tr>
+              <th>字典标签</th>
+              <th>键值</th>
+              <th>排序</th>
+              <th>标签样式</th>
+              <th>备注</th>
+              <th>状态</th>
+              <th>更新时间</th>
+              <th style="width:130px">操作</th>
+            </tr>
+          </thead>
+          <tbody id="dict-tbody">
+            <tr>
+              <td><b>正常</b></td>
+              <td>1</td>
+              <td>1</td>
+              <td><span class="badge badge-success">正常</span></td>
+              <td>默认状态</td>
+              <td><span class="badge badge-success">启用</span></td>
+              <td>2026-01-02 10:00</td>
+              <td class="row-actions"><a href="#" data-item-act="edit">编辑</a><a href="#" data-item-act="disable">停用</a></td>
+            </tr>
+            <tr>
+              <td><b>锁定</b></td>
+              <td>2</td>
+              <td>2</td>
+              <td><span class="badge badge-warn">正常(锁定)</span></td>
+              <td>连续输错密码触发，可解锁</td>
+              <td><span class="badge badge-success">启用</span></td>
+              <td>2026-01-02 10:00</td>
+              <td class="row-actions"><a href="#" data-item-act="edit">编辑</a><a href="#" data-item-act="disable">停用</a></td>
+            </tr>
+            <tr>
+              <td><b>停用</b></td>
+              <td>3</td>
+              <td>3</td>
+              <td><span class="badge">停用</span></td>
+              <td>不可登录，数据保留</td>
+              <td><span class="badge badge-success">启用</span></td>
+              <td>2026-01-02 10:00</td>
+              <td class="row-actions"><a href="#" data-item-act="edit">编辑</a><a href="#" data-item-act="disable">停用</a></td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="ua-pagination">
+          <span class="muted">共 <b>3</b> 条</span>
+          <div class="ua-pages">
+            <button class="ua-page" disabled>‹</button>
+            <button class="ua-page active">1</button>
+            <button class="ua-page">›</button>
+          </div>
+          <select class="ua-size">
+            <option>10条/页</option><option>20条/页</option><option>30条/页</option><option>40条/页</option>
+          </select>
+        </div>
+      </div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ 弹窗 ============ -->
+<div class="proto-mask" id="mask"></div>
+
+<!-- 新增字典类型弹窗 -->
+<div class="proto-modal" id="modal-type" style="width:480px">
+  <div class="proto-modal-hd">
+    <h3 style="font-size:16px;font-weight:600">新增字典类型</h3>
+    <button class="btn btn-sm btn-ghost" data-close>×</button>
+  </div>
+  <div class="proto-modal-bd">
+    <div class="form-grid" style="grid-template-columns:1fr">
+      <div class="field"><label>类型名称 *</label><input placeholder="如 审核渠道" /></div>
+      <div class="field"><label>类型编码 *</label><input placeholder="如 audit_channel，唯一" /></div>
+      <div class="field"><label>备注</label><input placeholder="选填" /></div>
+    </div>
+    <p class="muted" style="margin:10px 0 0;font-size:12px">类型编码创建后不可修改；系统内置类型（用户状态、角色状态）不可删除。</p>
+  </div>
+  <div class="proto-modal-ft" style="border-top:1px solid var(--color-border);padding:12px 20px;display:flex;gap:8px;justify-content:flex-end">
+    <button class="btn" data-close>取消</button>
+    <button class="btn btn-primary" data-close data-toast="字典类型已创建（原型）">确定</button>
+  </div>
+</div>
+
+<!-- 新增/编辑字典项弹窗 -->
+<div class="proto-modal" id="modal-item" style="width:480px">
+  <div class="proto-modal-hd">
+    <h3 style="font-size:16px;font-weight:600" id="item-title">新增字典项</h3>
+    <button class="btn btn-sm btn-ghost" data-close>×</button>
+  </div>
+  <div class="proto-modal-bd">
+    <div class="form-grid" style="grid-template-columns:1fr">
+      <div class="field"><label>所属类型</label><input id="item-type" value="用户状态（sys_user_status）" disabled /></div>
+      <div class="field"><label>字典标签 *</label><input id="item-label" placeholder="展示在下拉中的文本" /></div>
+      <div class="field"><label>键值 *</label><input id="item-key" placeholder="如 1 / normal，类型内唯一" /></div>
+      <div class="field"><label>排序</label><input id="item-sort" value="1" placeholder="数字越小越靠前" /></div>
+      <div class="field"><label>标签样式</label>
+        <select style="width:100%;padding:6px 8px;border:1px solid var(--color-border);border-radius:6px">
+          <option selected>默认（灰）</option>
+          <option>成功（绿）</option>
+          <option>警示（橙）</option>
+          <option>危险（红）</option>
+        </select>
+      </div>
+      <div class="field"><label>状态</label>
+        <select style="width:100%;padding:6px 8px;border:1px solid var(--color-border);border-radius:6px">
+          <option selected>启用</option><option>停用</option>
+        </select>
+      </div>
+      <div class="field"><label>备注</label><input placeholder="选填" /></div>
+    </div>
+  </div>
+  <div class="proto-modal-ft" style="border-top:1px solid var(--color-border);padding:12px 20px;display:flex;gap:8px;justify-content:flex-end">
+    <button class="btn" data-close>取消</button>
+    <button class="btn btn-primary" data-close data-toast="字典项已保存（原型）">确定</button>
+  </div>
+</div>
+
+<style>
+/* ===== 左右布局 ===== */
+.dict-layout { display: grid; grid-template-columns: 280px minmax(0,1fr); gap: 12px; align-items: start; }
+@media (max-width: 960px) { .dict-layout { grid-template-columns: 1fr; } }
+/* ===== 字典类型列表 ===== */
+.dict-types-hd {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 12px 14px; border-bottom: 1px solid var(--color-border); font-size: 14px;
+}
+.dict-type-list { list-style: none; margin: 0; padding: 4px 0; max-height: 520px; overflow-y: auto; }
+.dict-type-list li {
+  display: flex; justify-content: space-between; align-items: center; gap: 8px;
+  padding: 10px 14px; cursor: pointer; border-left: 3px solid transparent; font-size: 13px;
+}
+.dict-type-list li:hover { background: #f7f8fa; }
+.dict-type-list li.active { background: #f0f6ff; border-left-color: var(--color-primary); }
+.dict-type-list li b { display: block; }
+.dict-type-list li .muted { font-size: 12px; font-family: monospace; }
+/* ===== user-admin 风格搜索区 ===== */
+.ua-search-row { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 12px 24px; }
+.ua-field { display: flex; align-items: center; gap: 0; font-size: 13px; }
+.ua-field label { white-space: nowrap; color: var(--color-text-secondary); flex-shrink: 0; }
+.ua-field input, .ua-field select {
+  flex: 1; min-width: 0; padding: 6px 10px; border: 1px solid var(--color-border);
+  border-radius: 6px; font-family: inherit; font-size: 13px;
+}
+.ua-search-btns { display: flex; gap: 8px; margin-top: 14px; }
+/* ===== 分页 ===== */
+.ua-pagination {
+  display: flex; align-items: center; gap: 12px; padding: 12px 14px;
+  border-top: 1px solid var(--color-border); font-size: 13px; flex-wrap: wrap;
+}
+.ua-pages { display: flex; gap: 4px; }
+.ua-page {
+  min-width: 28px; height: 28px; padding: 0 6px; border: 1px solid var(--color-border);
+  background: #fff; border-radius: 4px; cursor: pointer; font-size: 13px;
+  font-family: inherit; color: var(--color-text);
+}
+.ua-page:hover:not(:disabled) { color: var(--color-primary); border-color: var(--color-primary); }
+.ua-page.active { background: var(--color-primary); border-color: var(--color-primary); color: #fff; }
+.ua-page:disabled { color: var(--color-text-muted); cursor: not-allowed; }
+.ua-size { padding: 5px 8px; border: 1px solid var(--color-border); border-radius: 6px; font-family: inherit; font-size: 13px; }
+</style>
+
+<script src="../assets/js/proto.js"></script>
+<script src="../assets/js/ops-shell.js"></script>
+<script>
+(function () {
+  var mask = document.getElementById("mask");
+  function closeAll() {
+    mask.classList.remove("open");
+    document.querySelectorAll(".proto-modal").forEach(function (n) { n.classList.remove("open"); });
+  }
+  function open(node) { mask.classList.add("open"); node.classList.add("open"); }
+  mask.addEventListener("click", closeAll);
+  document.querySelectorAll("[data-close]").forEach(function (n) { n.addEventListener("click", closeAll); });
+
+  var hint = document.getElementById("dict-hint");
+  var itemTitle = document.getElementById("item-title");
+  var itemType = document.getElementById("item-type");
+  var current = { name: "用户状态", key: "sys_user_status" };
+
+  // 字典类型切换（演示数据：切换时仅更新标题与提示）
+  document.querySelectorAll("#dict-type-list li").forEach(function (li) {
+    li.addEventListener("click", function () {
+      document.querySelectorAll("#dict-type-list li").forEach(function (n) { n.classList.remove("active"); });
+      li.classList.add("active");
+      current.name = li.getAttribute("data-name");
+      current.key = li.getAttribute("data-key");
+      hint.textContent = "当前类型：" + current.name + "（" + current.key + "）· 已被停用的字典项不再出现在对应下拉中";
+      itemType.value = current.name + "（" + current.key + "）";
+      Proto.toast("已切换到「" + current.name + "」，字典项列表示意（原型）");
+    });
+  });
+
+  // 新增字典类型
+  document.getElementById("btn-add-type").addEventListener("click", function () {
+    open(document.getElementById("modal-type"));
+  });
+
+  // 新增字典项
+  document.getElementById("btn-add-item").addEventListener("click", function () {
+    itemTitle.textContent = "新增字典项 · " + current.name;
+    open(document.getElementById("modal-item"));
+  });
+
+  // 字典项行操作
+  document.querySelectorAll("#dict-tbody [data-item-act]").forEach(function (a) {
+    a.addEventListener("click", function (e) {
+      e.preventDefault();
+      var tr = a.closest("tr");
+      var act = a.getAttribute("data-item-act");
+      if (act === "edit") {
+        itemTitle.textContent = "编辑字典项 · " + current.name;
+        document.getElementById("item-label").value = tr.children[0].textContent.trim();
+        document.getElementById("item-key").value = tr.children[1].textContent.trim();
+        document.getElementById("item-sort").value = tr.children[2].textContent.trim();
+        open(document.getElementById("modal-item"));
+      } else if (act === "disable") {
+        Proto.toast("字典项已停用，即时从下拉中移除（原型）");
+      }
+    });
+  });
+
+  document.getElementById("btn-query").addEventListener("click", function () { Proto.toast("已按条件查询（原型）"); });
+  document.getElementById("btn-reset").addEventListener("click", function () {
+    ["f-label", "f-key"].forEach(function (id) { document.getElementById(id).value = ""; });
+    document.getElementById("f-status").value = "";
+    Proto.toast("已重置");
+  });
+
+  // 分页（原型）
+  document.querySelectorAll(".ua-page").forEach(function (b) {
+    if (b.disabled) return;
+    b.addEventListener("click", function () {
+      document.querySelectorAll(".ua-page").forEach(function (n) { n.classList.remove("active"); });
+      b.classList.add("active");
+      Proto.toast("已切换到第 " + b.textContent + " 页（原型）");
+    });
+  });
+})();
+</script>
+</body>
+</html>

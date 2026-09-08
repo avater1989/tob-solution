@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>功能资源配置 · 运营后台</title>
+<link rel="stylesheet" href="../assets/css/proto.css" />
+</head>
+<body class="admin-body" data-module="tenant" data-nav="resources" data-title="功能资源配置" data-crumb="运营后台 / 租户管理 / 功能资源配置" data-assist="1">
+<div id="page-content" style="display:none">
+
+  <!-- 搜索区 -->
+  <div class="card" style="margin-bottom:12px"><div class="card-bd">
+    <div class="ua-search">
+      <div class="ua-search-row">
+        <div class="ua-field"><label>资源名称：</label><input id="f-name" placeholder="请输入资源名称" /></div>
+        <div class="ua-field"><label>资源标识：</label><input id="f-code" placeholder="如 trade:orders:view" /></div>
+        <div class="ua-field"><label>所属应用：</label>
+          <select id="f-app">
+            <option value="">请选择</option>
+            <option>商家管理后台</option>
+            <option>C 端小程序</option>
+            <option>开放接口（OpenAPI）</option>
+          </select>
+        </div>
+      </div>
+      <div class="ua-search-row">
+        <div class="ua-field"><label>资源类型：</label>
+          <select id="f-type">
+            <option value="">请选择</option>
+            <option>模块</option><option>页面</option><option>按钮</option><option>接口</option>
+          </select>
+        </div>
+        <div class="ua-field"><label>资源状态：</label>
+          <select id="f-status">
+            <option value="">请选择</option>
+            <option>启用</option><option>停用</option>
+          </select>
+        </div>
+        <div class="ua-field"><label>&nbsp;</label><span></span></div>
+      </div>
+      <div class="ua-search-btns">
+        <button class="btn btn-primary" id="btn-query">查询</button>
+        <button class="btn" id="btn-reset">重置</button>
+      </div>
+    </div>
+  </div></div>
+
+  <!-- 操作条 -->
+  <div class="toolbar" style="margin-bottom:12px">
+    <button class="btn btn-primary" id="btn-add">新增资源</button>
+    <button class="btn" id="btn-expand">全部展开</button>
+    <div class="spacer"></div>
+    <span class="muted" style="font-size:12px">资源树：模块 → 页面 → 按钮/接口；角色权限配置即从本资源树勾选</span>
+  </div>
+
+  <!-- 资源树表格 -->
+  <div class="card"><div class="card-bd" style="padding:0">
+    <table class="data">
+      <thead>
+        <tr>
+          <th style="width:34%">资源名称</th>
+          <th>资源标识</th>
+          <th>所属应用</th>
+          <th>类型</th>
+          <th>关联角色数</th>
+          <th>状态</th>
+          <th style="width:130px">操作</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- 模块：交易 -->
+        <tr data-level="0">
+          <td style="text-align:left"><span class="res-toggle" data-toggle>▾</span> <b>交易</b></td>
+          <td>trade</td><td>商家管理后台</td><td><span class="tag tag-blue">模块</span></td><td>4</td>
+          <td><span class="badge badge-success">启用</span></td>
+          <td class="row-actions"><a href="#" data-row-act="edit">编辑</a><a href="#" data-row-act="add-child">加子项</a></td>
+        </tr>
+        <tr data-level="1">
+          <td style="text-align:left;padding-left:38px"><span class="res-toggle" data-toggle>▾</span> 订单中心</td>
+          <td>trade:orders</td><td>商家管理后台</td><td><span class="tag">页面</span></td><td>4</td>
+          <td><span class="badge badge-success">启用</span></td>
+          <td class="row-actions"><a href="#" data-row-act="edit">编辑</a><a href="#" data-row-act="add-child">加子项</a></td>
+        </tr>
+        <tr data-level="2" class="res-leaf">
+          <td style="text-align:left;padding-left:66px">订单查看</td>
+          <td>trade:orders:view</td><td>商家管理后台</td><td><span class="tag">按钮</span></td><td>4</td>
+          <td><span class="badge badge-success">启用</span></td>
+          <td class="row-actions"><a href="#" data-row-act="edit">编辑</a><a href="#" data-row-act="bind">绑角色</a></td>
+        </tr>
+        <tr data-level="2" class="res-leaf">
+          <td style="text-align:left;padding-left:66px">退款审核</td>
+          <td>trade:refunds:audit</td><td>商家管理后台</td><td><span class="tag">按钮</span></td><td>2</td>
+          <td><span class="badge badge-success">启用</span></td>
+          <td class="row-actions"><a href="#" data-row-act="edit">编辑</a><a href="#" data-row-act="bind">绑角色</a></td>
+        </tr>
+        <tr data-level="2" class="res-leaf">
+          <td style="text-align:left;padding-left:66px">结算确认（敏感）</td>
+          <td>trade:settlement:confirm</td><td>商家管理后台</td><td><span class="tag">按钮</span></td><td>2</td>
+          <td><span class="badge badge-success">启用</span></td>
+          <td class="row-actions"><a href="#" data-row-act="edit">编辑</a><a href="#" data-row-act="bind">绑角色</a></td>
+        </tr>
+        <tr data-level="1">
+          <td style="text-align:left;padding-left:38px"><span class="res-toggle" data-toggle>▾</span> 对账</td>
+          <td>trade:recon</td><td>商家管理后台</td><td><span class="tag">页面</span></td><td>2</td>
+          <td><span class="badge badge-success">启用</span></td>
+          <td class="row-actions"><a href="#" data-row-act="edit">编辑</a><a href="#" data-row-act="add-child">加子项</a></td>
+        </tr>
+        <tr data-level="2" class="res-leaf">
+          <td style="text-align:left;padding-left:66px">差异处理</td>
+          <td>trade:recon:diff</td><td>商家管理后台</td><td><span class="tag">按钮</span></td><td>1</td>
+          <td><span class="badge badge-success">启用</span></td>
+          <td class="row-actions"><a href="#" data-row-act="edit">编辑</a><a href="#" data-row-act="bind">绑角色</a></td>
+        </tr>
+        <!-- 模块：内容 -->
+        <tr data-level="0">
+          <td style="text-align:left"><span class="res-toggle" data-toggle>▾</span> <b>内容</b></td>
+          <td>content</td><td>商家管理后台</td><td><span class="tag tag-blue">模块</span></td><td>4</td>
+          <td><span class="badge badge-success">启用</span></td>
+          <td class="row-actions"><a href="#" data-row-act="edit">编辑</a><a href="#" data-row-act="add-child">加子项</a></td>
+        </tr>
+        <tr data-level="1">
+          <td style="text-align:left;padding-left:38px"><span class="res-toggle" data-toggle>▾</span> 课程管理</td>
+          <td>content:courses</td><td>商家管理后台</td><td><span class="tag">页面</span></td><td>4</td>
+          <td><span class="badge badge-success">启用</span></td>
+          <td class="row-actions"><a href="#" data-row-act="edit">编辑</a><a href="#" data-row-act="add-child">加子项</a></td>
+        </tr>
+        <tr data-level="2" class="res-leaf">
+          <td style="text-align:left;padding-left:66px">提交上架</td>
+          <td>content:courses:submit</td><td>商家管理后台</td><td><span class="tag">按钮</span></td><td>2</td>
+          <td><span class="badge badge-success">启用</span></td>
+          <td class="row-actions"><a href="#" data-row-act="edit">编辑</a><a href="#" data-row-act="bind">绑角色</a></td>
+        </tr>
+        <tr data-level="2" class="res-leaf">
+          <td style="text-align:left;padding-left:66px">导出课程</td>
+          <td>content:courses:export</td><td>商家管理后台</td><td><span class="tag">按钮</span></td><td>1</td>
+          <td><span class="badge badge-success">启用</span></td>
+          <td class="row-actions"><a href="#" data-row-act="edit">编辑</a><a href="#" data-row-act="bind">绑角色</a></td>
+        </tr>
+        <!-- 模块：用户 -->
+        <tr data-level="0">
+          <td style="text-align:left"><span class="res-toggle" data-toggle>▾</span> <b>用户</b></td>
+          <td>user</td><td>商家管理后台</td><td><span class="tag tag-blue">模块</span></td><td>3</td>
+          <td><span class="badge badge-success">启用</span></td>
+          <td class="row-actions"><a href="#" data-row-act="edit">编辑</a><a href="#" data-row-act="add-child">加子项</a></td>
+        </tr>
+        <tr data-level="1">
+          <td style="text-align:left;padding-left:38px"><span class="res-toggle" data-toggle>▾</span> 用户列表</td>
+          <td>user:list</td><td>商家管理后台</td><td><span class="tag">页面</span></td><td>3</td>
+          <td><span class="badge badge-success">启用</span></td>
+          <td class="row-actions"><a href="#" data-row-act="edit">编辑</a><a href="#" data-row-act="add-child">加子项</a></td>
+        </tr>
+        <tr data-level="2" class="res-leaf">
+          <td style="text-align:left;padding-left:66px">手机号解密（敏感）</td>
+          <td>user:list:decrypt</td><td>商家管理后台</td><td><span class="tag">接口</span></td><td>1</td>
+          <td><span class="badge badge-warn">启用·留痕</span></td>
+          <td class="row-actions"><a href="#" data-row-act="edit">编辑</a><a href="#" data-row-act="bind">绑角色</a></td>
+        </tr>
+        <tr data-level="2" class="res-leaf">
+          <td style="text-align:left;padding-left:66px">批量打标</td>
+          <td>user:list:tag</td><td>商家管理后台</td><td><span class="tag">按钮</span></td><td>2</td>
+          <td><span class="badge badge-success">启用</span></td>
+          <td class="row-actions"><a href="#" data-row-act="edit">编辑</a><a href="#" data-row-act="bind">绑角色</a></td>
+        </tr>
+        <!-- 模块：SCRM -->
+        <tr data-level="0">
+          <td style="text-align:left"><span class="res-toggle" data-toggle>▾</span> <b>SCRM</b></td>
+          <td>scrm</td><td>商家管理后台</td><td><span class="tag tag-blue">模块</span></td><td>3</td>
+          <td><span class="badge badge-success">启用</span></td>
+          <td class="row-actions"><a href="#" data-row-act="edit">编辑</a><a href="#" data-row-act="add-child">加子项</a></td>
+        </tr>
+        <tr data-level="1">
+          <td style="text-align:left;padding-left:38px">线索池</td>
+          <td>scrm:leads</td><td>商家管理后台</td><td><span class="tag">页面</span></td><td>3</td>
+          <td><span class="badge badge-success">启用</span></td>
+          <td class="row-actions"><a href="#" data-row-act="edit">编辑</a><a href="#" data-row-act="add-child">加子项</a></td>
+        </tr>
+        <!-- 模块：开放接口 -->
+        <tr data-level="0">
+          <td style="text-align:left"><span class="res-toggle" data-toggle>▾</span> <b>开放接口</b></td>
+          <td>openapi</td><td>开放接口（OpenAPI）</td><td><span class="tag tag-blue">模块</span></td><td>1</td>
+          <td><span class="badge badge-success">启用</span></td>
+          <td class="row-actions"><a href="#" data-row-act="edit">编辑</a><a href="#" data-row-act="add-child">加子项</a></td>
+        </tr>
+        <tr data-level="1" class="res-leaf">
+          <td style="text-align:left;padding-left:38px">订单查询接口</td>
+          <td>openapi:orders:query</td><td>开放接口（OpenAPI）</td><td><span class="tag">接口</span></td><td>1</td>
+          <td><span class="badge badge-success">启用</span></td>
+          <td class="row-actions"><a href="#" data-row-act="edit">编辑</a><a href="#" data-row-act="bind">绑角色</a></td>
+        </tr>
+        <tr data-level="1" class="res-leaf">
+          <td style="text-align:left;padding-left:38px">商品同步接口</td>
+          <td>openapi:goods:sync</td><td>开放接口（OpenAPI）</td><td><span class="tag">接口</span></td><td>0</td>
+          <td><span class="badge">停用</span></td>
+          <td class="row-actions"><a href="#" data-row-act="edit">编辑</a><a href="#" data-row-act="enable">启用</a></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- 分页 -->
+    <div class="ua-pagination">
+      <span class="muted">共 <b>19</b> 条资源</span>
+      <div class="spacer" style="flex:1"></div>
+      <span class="muted" style="font-size:12px">资源树共 5 个模块 / 19 个资源；停用资源对所有角色即时失效</span>
+    </div>
+  </div></div>
+</div>
+
+<!-- ============ 弹窗 ============ -->
+<div class="proto-mask" id="mask"></div>
+
+<!-- 新增资源弹窗 -->
+<div class="proto-modal" id="modal-add" style="width:540px">
+  <div class="proto-modal-hd">
+    <h3 style="font-size:16px;font-weight:600">新增资源</h3>
+    <button class="btn btn-sm btn-ghost" data-close>×</button>
+  </div>
+  <div class="proto-modal-bd">
+    <div class="form-grid">
+      <div class="field"><label>资源名称 *</label><input placeholder="请输入资源名称" /></div>
+      <div class="field"><label>资源标识 *</label><input id="add-code" placeholder="如 trade:settlement:view" /></div>
+      <div class="field"><label>所属应用 *</label>
+        <select id="add-app" style="width:100%;padding:6px 8px;border:1px solid var(--color-border);border-radius:6px">
+          <option>商家管理后台</option><option>C 端小程序</option><option>开放接口（OpenAPI）</option>
+        </select>
+      </div>
+      <div class="field"><label>资源类型 *</label>
+        <select id="add-type" style="width:100%;padding:6px 8px;border:1px solid var(--color-border);border-radius:6px">
+          <option>模块</option><option>页面</option><option>按钮</option><option>接口</option>
+        </select>
+      </div>
+      <div class="field" style="grid-column:1/-1"><label>上级资源</label>
+        <select style="width:100%;padding:6px 8px;border:1px solid var(--color-border);border-radius:6px">
+          <option>无（作为模块）</option>
+          <option>交易</option><option>交易 / 订单中心</option><option>交易 / 对账</option>
+          <option>内容 / 课程管理</option><option>用户 / 用户列表</option>
+        </select>
+      </div>
+      <div class="field" style="grid-column:1/-1">
+        <label style="display:flex;align-items:center;gap:6px"><input type="checkbox" /> 标记为敏感资源（使用留痕）</label>
+      </div>
+    </div>
+    <p class="muted" style="margin:10px 0 0;font-size:12px">新增后默认停用，需在角色权限配置中勾选后生效。</p>
+  </div>
+  <div class="proto-modal-ft" style="border-top:1px solid var(--color-border);padding:12px 20px;display:flex;gap:8px;justify-content:flex-end">
+    <button class="btn" data-close>取消</button>
+    <button class="btn btn-primary" data-close data-toast="资源已创建（停用状态），可去角色权限中勾选（原型）">确定</button>
+  </div>
+</div>
+
+<!-- 编辑资源弹窗 -->
+<div class="proto-modal" id="modal-edit" style="width:540px">
+  <div class="proto-modal-hd">
+    <h3 style="font-size:16px;font-weight:600">编辑资源</h3>
+    <button class="btn btn-sm btn-ghost" data-close>×</button>
+  </div>
+  <div class="proto-modal-bd">
+    <div class="form-grid">
+      <div class="field"><label>资源名称 *</label><input id="ed-name" /></div>
+      <div class="field"><label>资源标识</label><input id="ed-code" disabled /></div>
+      <div class="field"><label>资源类型</label><input id="ed-type" disabled /></div>
+      <div class="field"><label>资源状态</label>
+        <select id="ed-status" style="width:100%;padding:6px 8px;border:1px solid var(--color-border);border-radius:6px">
+          <option>启用</option><option>停用</option>
+        </select>
+      </div>
+      <div class="field" style="grid-column:1/-1">
+        <label style="display:flex;align-items:center;gap:6px"><input type="checkbox" /> 标记为敏感资源（使用留痕）</label>
+      </div>
+    </div>
+    <p class="muted" style="margin:10px 0 0;font-size:12px">停用资源后，所有已勾选该资源的角色将即时失去对应入口/按钮/接口。</p>
+  </div>
+  <div class="proto-modal-ft" style="border-top:1px solid var(--color-border);padding:12px 20px;display:flex;gap:8px;justify-content:flex-end">
+    <button class="btn" data-close>取消</button>
+    <button class="btn btn-primary" data-close data-toast="资源已保存，权限即时生效（原型）">保存</button>
+  </div>
+</div>
+
+<!-- 绑定角色弹窗 -->
+<div class="proto-modal" id="modal-bind" style="width:560px">
+  <div class="proto-modal-hd">
+    <h3 style="font-size:16px;font-weight:600">绑定角色 · <span id="bind-res-name">退款审核</span></h3>
+    <button class="btn btn-sm btn-ghost" data-close>×</button>
+  </div>
+  <div class="proto-modal-bd">
+    <p class="muted" style="margin:0 0 10px;font-size:12px">勾选拥有该资源权限的角色（跨租户的内置角色按模板同步）。</p>
+    <div style="border:1px solid var(--color-border);border-radius:8px;padding:12px 16px;font-size:13px">
+      <label style="display:flex;align-items:center;gap:8px;padding:6px 0"><input type="checkbox" checked /> 商户管理员（全部租户）</label>
+      <label style="display:flex;align-items:center;gap:8px;padding:6px 0"><input type="checkbox" checked /> 财务（全部租户）</label>
+      <label style="display:flex;align-items:center;gap:8px;padding:6px 0"><input type="checkbox" /> 内容运营</label>
+      <label style="display:flex;align-items:center;gap:8px;padding:6px 0"><input type="checkbox" /> 销售</label>
+      <label style="display:flex;align-items:center;gap:8px;padding:6px 0"><input type="checkbox" /> 数据查看</label>
+      <label style="display:flex;align-items:center;gap:8px;padding:6px 0;border-top:1px dashed var(--color-border);margin-top:6px;padding-top:12px"><input type="checkbox" /> 直播主播（晨光少儿成长·自定义）</label>
+    </div>
+  </div>
+  <div class="proto-modal-ft" style="border-top:1px solid var(--color-border);padding:12px 20px;display:flex;gap:8px;justify-content:flex-end">
+    <button class="btn" data-close>取消</button>
+    <button class="btn btn-primary" data-close data-toast="角色绑定已保存，权限即时生效（原型）">保存</button>
+  </div>
+</div>
+
+<style>
+/* ===== user-admin 风格搜索区 ===== */
+.ua-search-row { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 12px 24px; }
+.ua-field { display: flex; align-items: center; gap: 0; font-size: 13px; }
+.ua-field label { white-space: nowrap; color: var(--color-text-secondary); flex-shrink: 0; }
+.ua-field input, .ua-field select {
+  flex: 1; min-width: 0; padding: 6px 10px; border: 1px solid var(--color-border);
+  border-radius: 6px; font-family: inherit; font-size: 13px;
+}
+.ua-search-btns { display: flex; gap: 8px; margin-top: 14px; }
+/* ===== 分页 ===== */
+.ua-pagination {
+  display: flex; align-items: center; gap: 12px; padding: 12px 14px;
+  border-top: 1px solid var(--color-border); font-size: 13px; flex-wrap: wrap;
+}
+/* ===== 资源树 ===== */
+.res-toggle {
+  display: inline-block; width: 16px; cursor: pointer; color: var(--color-text-muted);
+  user-select: none; font-size: 11px;
+}
+tr[data-collapsed="1"] + tr[data-level="1"],
+tr[data-collapsed="1"] + tr[data-level="2"],
+tr.collapsed { display: none; }
+</style>
+
+<script src="../assets/js/proto.js"></script>
+<script src="../assets/js/ops-shell.js"></script>
+<script>
+(function () {
+  var mask = document.getElementById("mask");
+  function closeAll() {
+    mask.classList.remove("open");
+    document.querySelectorAll(".proto-modal").forEach(function (n) { n.classList.remove("open"); });
+  }
+  function open(node) { mask.classList.add("open"); node.classList.add("open"); }
+  mask.addEventListener("click", closeAll);
+  document.querySelectorAll("[data-close]").forEach(function (n) { n.addEventListener("click", closeAll); });
+
+  // 树折叠：点击模块/页面的箭头，隐藏其下一级（原型示意：折叠所有更深层级行）
+  document.querySelectorAll("[data-toggle]").forEach(function (t) {
+    t.addEventListener("click", function () {
+      var tr = t.closest("tr");
+      var level = parseInt(tr.getAttribute("data-level"), 10);
+      var collapsed = tr.getAttribute("data-collapsed") === "1";
+      t.textContent = collapsed ? "▾" : "▸";
+      if (collapsed) { tr.removeAttribute("data-collapsed"); } else { tr.setAttribute("data-collapsed", "1"); }
+      var next = tr.nextElementSibling;
+      while (next) {
+        var nl = parseInt(next.getAttribute("data-level"), 10);
+        if (isNaN(nl) || nl <= level) break;
+        next.style.display = collapsed ? "" : "none";
+        next = next.nextElementSibling;
+      }
+    });
+  });
+
+  // 全部展开
+  document.getElementById("btn-expand").addEventListener("click", function () {
+    document.querySelectorAll("tbody tr").forEach(function (tr) {
+      tr.style.display = ""; tr.removeAttribute("data-collapsed");
+    });
+    document.querySelectorAll("[data-toggle]").forEach(function (t) { t.textContent = "▾"; });
+    Proto.toast("已展开全部资源");
+  });
+
+  // 行操作
+  document.querySelectorAll("tbody tr").forEach(function (tr) {
+    tr.querySelectorAll("[data-row-act]").forEach(function (a) {
+      a.addEventListener("click", function (e) {
+        e.preventDefault();
+        var act = a.getAttribute("data-row-act");
+        var nameCell = tr.children[0];
+        var name = nameCell.textContent.replace(/[▾▸]/g, "").trim();
+        var code = tr.children[1].textContent.trim();
+        if (act === "edit") {
+          document.getElementById("ed-name").value = name;
+          document.getElementById("ed-code").value = code;
+          document.getElementById("ed-type").value = tr.children[3].textContent.trim();
+          document.getElementById("ed-status").value = tr.children[5].textContent.trim().indexOf("停用") === 0 ? "停用" : "启用";
+          open(document.getElementById("modal-edit"));
+        } else if (act === "bind") {
+          document.getElementById("bind-res-name").textContent = name;
+          open(document.getElementById("modal-bind"));
+        } else if (act === "add-child") {
+          document.getElementById("add-code").value = code + ":";
+          open(document.getElementById("modal-add"));
+          Proto.toast("已带入上级资源标识（原型）");
+        } else if (act === "enable") {
+          Proto.toast("资源已启用（原型）");
+        }
+      });
+    });
+  });
+
+  document.getElementById("btn-add").addEventListener("click", function () {
+    document.getElementById("add-code").value = "";
+    open(document.getElementById("modal-add"));
+  });
+  document.getElementById("btn-query").addEventListener("click", function () { Proto.toast("已按条件查询（原型）"); });
+  document.getElementById("btn-reset").addEventListener("click", function () {
+    ["f-name", "f-code"].forEach(function (id) { document.getElementById(id).value = ""; });
+    ["f-app", "f-type", "f-status"].forEach(function (id) { document.getElementById(id).value = ""; });
+    Proto.toast("已重置");
+  });
+})();
+</script>
+</body>
+</html>

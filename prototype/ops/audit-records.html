@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>审核记录 · 运营后台</title>
+<link rel="stylesheet" href="../assets/css/proto.css" />
+</head>
+<body class="admin-body" data-module="audit" data-nav="audit-records" data-title="审核记录" data-crumb="运营后台 / 内容审核 / 审核记录" data-assist="1">
+<div id="header-actions">
+  <button class="btn" id="btn-export">导出记录</button>
+</div>
+<div id="page-content" style="display:none">
+
+  <!-- 统计 -->
+  <div class="grid-4" style="margin-bottom:16px">
+    <div class="stat"><div class="label">累计审核</div><div class="value">486</div><div class="hint">全部租户</div></div>
+    <div class="stat"><div class="label">通过率</div><div class="value">91.4%</div><div class="hint">通过 444 / 驳回 42</div></div>
+    <div class="stat"><div class="label">商家申诉</div><div class="value">3</div><div class="hint">待复核 2</div></div>
+    <div class="stat"><div class="label">本月审核</div><div class="value">76</div><div class="hint">环比 +12%</div></div>
+  </div>
+
+  <!-- Tab -->
+  <div class="tabs" id="rec-tabs">
+    <a class="active" href="#" data-tab="all">全部</a>
+    <a href="#" data-tab="passed">已通过</a>
+    <a href="#" data-tab="rejected">已驳回</a>
+    <a href="#" data-tab="appeal">申诉复核</a>
+  </div>
+
+  <!-- 筛选 -->
+  <div class="card" style="margin-bottom:8px"><div class="card-bd">
+    <div class="form-grid" style="grid-template-columns:repeat(5,minmax(0,1fr));gap:8px 12px">
+      <input id="f-title" placeholder="内容标题" />
+      <select id="f-tenant">
+        <option value="">来源租户</option>
+        <option>星启家庭教育</option><option>晨光少儿成长</option><option>慧心教育</option><option>青藤家长学堂</option>
+      </select>
+      <select id="f-type"><option value="">内容类型</option><option>线上课</option><option>直播</option></select>
+      <select id="f-result"><option value="">审核结果</option><option>通过</option><option>驳回</option></select>
+      <button class="btn btn-primary" id="btn-query">筛选</button>
+      <button class="btn" id="btn-reset">重置</button>
+    </div>
+  </div></div>
+
+  <!-- 表格 -->
+  <div class="card"><div class="card-bd" style="padding:0">
+    <table class="data">
+      <thead>
+        <tr>
+          <th>内容</th>
+          <th>类型</th>
+          <th>来源租户</th>
+          <th>审核结果</th>
+          <th>驳回原因 / 备注</th>
+          <th>审核人</th>
+          <th>审核时间</th>
+          <th style="width:110px">操作</th>
+        </tr>
+      </thead>
+      <tbody id="rec-tbody">
+        <tr>
+          <td><b>少儿专注力训练营</b></td>
+          <td><span class="tag tag-blue">线上课</span></td>
+          <td><a href="tenant-detail.html">晨光少儿成长</a></td>
+          <td><span class="badge badge-success">通过</span></td>
+          <td class="muted">—</td>
+          <td>平台运营</td>
+          <td>今天 11:02</td>
+          <td class="row-actions"><a href="#" data-row-act="view">查看</a></td>
+        </tr>
+        <tr>
+          <td><b>家庭教育 21 天打卡营</b></td>
+          <td><span class="tag tag-blue">线上课</span></td>
+          <td><a href="tenant-detail.html">慧心教育</a></td>
+          <td><span class="badge badge-danger">驳回</span></td>
+          <td>A-03 宣传用语含绝对化承诺（"100% 提升成绩"）</td>
+          <td>平台运营</td>
+          <td>今天 09:48</td>
+          <td class="row-actions"><a href="#" data-row-act="view">查看</a><a href="#" data-row-act="appeal">申诉</a></td>
+        </tr>
+        <tr>
+          <td><b>家长情绪管理直播</b></td>
+          <td><span class="tag tag-purple">直播</span></td>
+          <td><a href="tenant-detail.html">青藤家长学堂</a></td>
+          <td><span class="badge badge-success">通过</span></td>
+          <td>备注：直播全程需录像留痕</td>
+          <td>平台运营</td>
+          <td>昨天 18:20</td>
+          <td class="row-actions"><a href="#" data-row-act="view">查看</a></td>
+        </tr>
+        <tr>
+          <td><b>春启 03 期家长必修课</b></td>
+          <td><span class="tag tag-blue">线上课</span></td>
+          <td><a href="tenant-detail.html">星启家庭教育</a></td>
+          <td><span class="badge badge-success">通过</span></td>
+          <td class="muted">—</td>
+          <td>平台运营</td>
+          <td>09-02 14:31</td>
+          <td class="row-actions"><a href="#" data-row-act="view">查看</a></td>
+        </tr>
+        <tr>
+          <td><b>儿童时间管理课</b></td>
+          <td><span class="tag tag-blue">线上课</span></td>
+          <td><a href="tenant-detail.html">晨光少儿成长</a></td>
+          <td><span class="badge badge-danger">驳回</span></td>
+          <td>C-02 封面图与课程内容不符</td>
+          <td>平台运营</td>
+          <td>09-01 10:15</td>
+          <td class="row-actions"><a href="#" data-row-act="view">查看</a><a href="#" data-row-act="appeal">申诉</a></td>
+        </tr>
+      </tbody>
+    </table>
+  </div></div>
+
+  <div class="toolbar" style="margin-top:8px">
+    <span class="muted">共 <b>486</b> 条</span>
+    <div class="spacer"></div>
+    <select><option>10条/页</option><option>20条/页</option></select>
+    <button class="btn btn-sm" disabled>上一页</button>
+    <button class="btn btn-sm">下一页</button>
+  </div>
+</div>
+
+<style>
+.tag { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 12px; }
+.tag-blue { background: #e8f3ff; color: #165dff; }
+.tag-purple { background: #f4f0ff; color: #722ed1; }
+</style>
+
+<script src="../assets/js/proto.js"></script>
+<script src="../assets/js/ops-shell.js"></script>
+<script>
+(function () {
+  document.querySelectorAll("#rec-tabs a").forEach(function (a) {
+    a.addEventListener("click", function (e) {
+      e.preventDefault();
+      document.querySelectorAll("#rec-tabs a").forEach(function (n) { n.classList.remove("active"); });
+      a.classList.add("active");
+      Proto.toast("已切换到「" + a.textContent + "」（原型）");
+    });
+  });
+  document.querySelectorAll("#rec-tbody [data-row-act]").forEach(function (a) {
+    a.addEventListener("click", function (e) {
+      e.preventDefault();
+      if (a.getAttribute("data-row-act") === "view") Proto.toast("审核详情（原型）");
+      else Proto.toast("已登记商家申诉，进入复核队列（原型）");
+    });
+  });
+  document.getElementById("btn-export").addEventListener("click", function () { Proto.toast("已导出审核记录（原型）"); });
+  document.getElementById("btn-query").addEventListener("click", function () { Proto.toast("已筛选（原型）"); });
+  document.getElementById("btn-reset").addEventListener("click", function () {
+    document.getElementById("f-title").value = "";
+    ["f-tenant", "f-type", "f-result"].forEach(function (id) { document.getElementById(id).value = ""; });
+    Proto.toast("已重置");
+  });
+})();
+</script>
+</body>
+</html>

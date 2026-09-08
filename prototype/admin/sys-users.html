@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>用户列表 · 商家管理后台</title>
+<link rel="stylesheet" href="../assets/css/proto.css" />
+</head>
+<body class="admin-body" data-module="sys" data-nav="sys-users" data-title="用户列表" data-crumb="系统管理 / 系统用户管理 / 用户列表">
+<div id="header-actions">
+  <button class="btn btn-primary" id="btn-add">新增用户</button>
+  <button class="btn" id="btn-sync">同步用户</button>
+</div>
+<div id="page-content" style="display:none">
+
+  <!-- 搜索区 -->
+  <div class="card" style="margin-bottom:12px"><div class="card-bd">
+    <div class="ua-search">
+      <div class="ua-search-row">
+        <div class="ua-field"><label>用户账号：</label><input id="f-account" placeholder="请输入用户账号" /></div>
+        <div class="ua-field"><label>用户姓名：</label><input id="f-name" placeholder="请输入姓名" /></div>
+        <div class="ua-field"><label>手机号码：</label><input id="f-phone" placeholder="请输入手机号码" /></div>
+        <div class="ua-field"><label>所属部门：</label>
+          <select id="f-dept">
+            <option value="">请选择</option>
+            <option>运营部</option><option>销售部</option><option>财务部</option><option>内容运营组</option>
+          </select>
+        </div>
+        <div class="ua-field"><label>用户状态：</label>
+          <select id="f-status">
+            <option value="">请选择</option>
+            <option>正常</option>
+            <option>锁定</option>
+            <option>停用</option>
+          </select>
+        </div>
+      </div>
+      <div class="ua-search-btns">
+        <button class="btn btn-primary" id="btn-query">查询</button>
+        <button class="btn" id="btn-reset">重置</button>
+      </div>
+    </div>
+  </div></div>
+
+  <!-- 操作条 -->
+  <div class="toolbar" style="margin-bottom:12px">
+    <button class="btn btn-primary" id="btn-add2">新增用户</button>
+    <button class="btn" id="btn-sync2">同步用户</button>
+    <div class="spacer"></div>
+    <span class="muted" style="font-size:12px">管理本商户（星启家庭教育）后台登录账号与部门归属；「同步用户」从指定系统拉取新增账号</span>
+  </div>
+
+  <!-- 表格 -->
+  <div class="card"><div class="card-bd" style="padding:0">
+    <table class="data">
+      <thead>
+        <tr>
+          <th>用户账号</th>
+          <th>用户姓名</th>
+          <th>手机号码</th>
+          <th>部门/职位</th>
+          <th>角色</th>
+          <th>状态</th>
+          <th>最近登录</th>
+          <th style="width:170px">操作</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>138****2610</td><td>赵老师</td><td>138****2610</td>
+          <td>运营部 · 运营负责人</td><td><span class="tag tag-blue">商户管理员</span></td>
+          <td><span class="badge badge-success">正常</span></td><td>今天 09:12</td>
+          <td class="row-actions"><a href="#" data-row-act="view">查看</a><a href="#" data-row-act="edit">编辑</a><a href="#" data-row-act="pwd">重置密码</a></td>
+        </tr>
+        <tr>
+          <td>139****8811</td><td>阮荣均</td><td>139****8811</td>
+          <td>运营部 · 内容运营</td><td><span class="tag tag-blue">内容运营</span></td>
+          <td><span class="badge badge-success">正常</span></td><td>今天 08:40</td>
+          <td class="row-actions"><a href="#" data-row-act="view">查看</a><a href="#" data-row-act="edit">编辑</a><a href="#" data-row-act="pwd">重置密码</a></td>
+        </tr>
+        <tr>
+          <td>137****5522</td><td>王助教</td><td>137****5522</td>
+          <td>销售部 · 课程顾问</td><td><span class="tag tag-blue">销售</span></td>
+          <td><span class="badge badge-warn">正常(锁定)</span></td><td>昨天 18:22</td>
+          <td class="row-actions"><a href="#" data-row-act="view">查看</a><a href="#" data-row-act="edit">编辑</a><a href="#" data-row-act="unlock">解锁</a></td>
+        </tr>
+        <tr>
+          <td>135****9933</td><td>钱财务</td><td>135****9933</td>
+          <td>财务部 · 财务专员</td><td><span class="tag tag-blue">财务</span></td>
+          <td><span class="badge">停用</span></td><td>2026-08-30</td>
+          <td class="row-actions"><a href="#" data-row-act="view">查看</a><a href="#" data-row-act="edit">编辑</a><a href="#" data-row-act="enable">启用</a></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- 分页 -->
+    <div class="ua-pagination">
+      <span class="muted">共 <b>9</b> 条</span>
+      <div class="ua-pages">
+        <button class="ua-page" disabled>‹</button>
+        <button class="ua-page active">1</button>
+        <button class="ua-page">›</button>
+      </div>
+      <select class="ua-size">
+        <option>10条/页</option><option>20条/页</option><option>30条/页</option><option>40条/页</option>
+      </select>
+    </div>
+  </div></div>
+</div>
+
+<!-- ============ 弹窗 ============ -->
+<div class="proto-mask" id="mask"></div>
+
+<!-- 新增/编辑用户弹窗 -->
+<div class="proto-modal" id="modal-user" style="width:520px">
+  <div class="proto-modal-hd">
+    <h3 style="font-size:16px;font-weight:600" id="user-title">新增用户</h3>
+    <button class="btn btn-sm btn-ghost" data-close>×</button>
+  </div>
+  <div class="proto-modal-bd">
+    <div class="form-grid">
+      <div class="field" style="grid-column:1/-1"><label>所属租户</label><input value="星启家庭教育（10001）" disabled /></div>
+      <div class="field"><label>用户账号 *</label><input id="u-account" placeholder="手机号作为登录账号" /></div>
+      <div class="field"><label>用户姓名 *</label><input id="u-name" placeholder="请输入姓名" /></div>
+      <div class="field"><label>所属部门</label>
+        <select id="u-dept" style="width:100%;padding:6px 8px;border:1px solid var(--color-border);border-radius:6px">
+          <option>运营部</option><option>内容运营组</option><option>销售部</option><option>财务部</option>
+        </select>
+      </div>
+      <div class="field"><label>关联角色 *</label>
+        <select id="u-role" style="width:100%;padding:6px 8px;border:1px solid var(--color-border);border-radius:6px">
+          <option>商户管理员</option><option>内容运营</option><option>销售</option><option>财务</option><option>只读访客</option>
+        </select>
+      </div>
+      <div class="field" style="grid-column:1/-1"><label>初始密码</label>
+        <input value="Yb@123456（首次登录强制修改）" disabled />
+      </div>
+    </div>
+    <p class="muted" style="margin:10px 0 0;font-size:12px">新增后账号下发短信通知，用户即可登录商家管理后台。</p>
+  </div>
+  <div class="proto-modal-ft" style="border-top:1px solid var(--color-border);padding:12px 20px;display:flex;gap:8px;justify-content:flex-end">
+    <button class="btn" data-close>取消</button>
+    <button class="btn btn-primary" data-close data-toast="用户已保存（原型）">确定</button>
+  </div>
+</div>
+
+<!-- 同步用户弹窗 -->
+<div class="proto-modal" id="modal-sync" style="width:520px">
+  <div class="proto-modal-hd">
+    <h3 style="font-size:16px;font-weight:600">同步用户</h3>
+    <button class="btn btn-sm btn-ghost" data-close>×</button>
+  </div>
+  <div class="proto-modal-bd">
+    <div class="form-grid">
+      <div class="field" style="grid-column:1/-1"><label>来源系统 *</label>
+        <select id="sync-source" style="width:100%;padding:6px 8px;border:1px solid var(--color-border);border-radius:6px">
+          <option>统一身份中心（SSO）</option><option>企业微信通讯录</option><option>人事系统对接</option><option>其他（开放接口）</option>
+        </select>
+      </div>
+      <div class="field" style="grid-column:1/-1"><label>同步策略</label>
+        <p style="margin:0;font-size:13px;line-height:1.7"><b>增量同步新增用户</b>：仅拉取来源系统内本平台不存在的新增账号（按手机号去重），不覆盖已存在用户信息。</p>
+        <p class="muted" style="margin:6px 0 0">账号同步后默认停用，需在列表中确认「启用」并分配部门 / 角色。</p>
+      </div>
+      <div class="field" style="grid-column:1/-1"><label>最近同步</label>
+        <div class="muted" style="font-size:13px">2026-09-06 10:30 · 来源：统一身份中心（SSO）· 新增 2 人</div>
+      </div>
+    </div>
+  </div>
+  <div class="proto-modal-ft" style="border-top:1px solid var(--color-border);padding:12px 20px;display:flex;gap:8px;justify-content:flex-end">
+    <button class="btn" data-close>取消</button>
+    <button class="btn btn-primary" id="sync-submit">执行同步</button>
+  </div>
+</div>
+
+<style>
+/* ===== user-admin 风格搜索区 ===== */
+.ua-search-row { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 12px 24px; }
+.ua-field { display: flex; align-items: center; gap: 0; font-size: 13px; }
+.ua-field label { white-space: nowrap; color: var(--color-text-secondary); flex-shrink: 0; }
+.ua-field input, .ua-field select {
+  flex: 1; min-width: 0; padding: 6px 10px; border: 1px solid var(--color-border);
+  border-radius: 6px; font-family: inherit; font-size: 13px;
+}
+.ua-search-btns { display: flex; gap: 8px; margin-top: 14px; }
+/* ===== 分页 ===== */
+.ua-pagination {
+  display: flex; align-items: center; gap: 12px; padding: 12px 14px;
+  border-top: 1px solid var(--color-border); font-size: 13px; flex-wrap: wrap;
+}
+.ua-pages { display: flex; gap: 4px; }
+.ua-page {
+  min-width: 28px; height: 28px; padding: 0 6px; border: 1px solid var(--color-border);
+  background: #fff; border-radius: 4px; cursor: pointer; font-size: 13px;
+  font-family: inherit; color: var(--color-text);
+}
+.ua-page:hover:not(:disabled) { color: var(--color-primary); border-color: var(--color-primary); }
+.ua-page.active { background: var(--color-primary); border-color: var(--color-primary); color: #fff; }
+.ua-page:disabled { color: var(--color-text-muted); cursor: not-allowed; }
+.ua-size { padding: 5px 8px; border: 1px solid var(--color-border); border-radius: 6px; font-family: inherit; font-size: 13px; }
+</style>
+
+<script src="../assets/js/proto.js"></script>
+<script src="../assets/js/admin-shell.js"></script>
+<script>
+(function () {
+  var mask = document.getElementById("mask");
+  function closeAll() {
+    mask.classList.remove("open");
+    document.querySelectorAll(".proto-modal").forEach(function (n) { n.classList.remove("open"); });
+  }
+  function open(node) { mask.classList.add("open"); node.classList.add("open"); }
+  mask.addEventListener("click", closeAll);
+  document.querySelectorAll("[data-close]").forEach(function (n) { n.addEventListener("click", closeAll); });
+
+  function openUser(title) {
+    document.getElementById("user-title").textContent = title;
+    open(document.getElementById("modal-user"));
+  }
+  document.getElementById("btn-add").addEventListener("click", function () { openUser("新增用户"); });
+  document.getElementById("btn-add2").addEventListener("click", function () { openUser("新增用户"); });
+
+  document.querySelectorAll("tbody tr").forEach(function (tr) {
+    var name = tr.children[1].textContent.trim();
+    tr.querySelectorAll("[data-row-act]").forEach(function (a) {
+      a.addEventListener("click", function (e) {
+        e.preventDefault();
+        var act = a.getAttribute("data-row-act");
+        if (act === "view") {
+          Proto.toast("「" + name + "」用户信息（原型）");
+        } else if (act === "edit") {
+          document.getElementById("u-name").value = name;
+          openUser("编辑用户 · " + name);
+        } else if (act === "pwd") {
+          Proto.toast("密码已重置并短信通知（原型）");
+        } else if (act === "unlock") {
+          Proto.toast("账号已解锁（原型）");
+        } else if (act === "enable") {
+          Proto.toast("账号已启用（原型）");
+        }
+      });
+    });
+  });
+
+  function openSync() {
+    document.getElementById("sync-source").selectedIndex = 0;
+    open(document.getElementById("modal-sync"));
+  }
+  document.getElementById("btn-sync").addEventListener("click", openSync);
+  document.getElementById("btn-sync2").addEventListener("click", openSync);
+  document.getElementById("sync-submit").addEventListener("click", function () {
+    closeAll();
+    Proto.toast("已从「" + document.getElementById("sync-source").value + "」同步新增用户（原型）");
+  });
+
+  document.getElementById("btn-query").addEventListener("click", function () { Proto.toast("已按条件查询（原型）"); });
+  document.getElementById("btn-reset").addEventListener("click", function () {
+    ["f-account", "f-name", "f-phone"].forEach(function (id) { document.getElementById(id).value = ""; });
+    ["f-dept", "f-status"].forEach(function (id) { document.getElementById(id).value = ""; });
+    Proto.toast("已重置");
+  });
+
+  document.querySelectorAll(".ua-page").forEach(function (b) {
+    if (b.disabled) return;
+    b.addEventListener("click", function () {
+      document.querySelectorAll(".ua-page").forEach(function (n) { n.classList.remove("active"); });
+      b.classList.add("active");
+      Proto.toast("已切换到第 " + b.textContent + " 页（原型）");
+    });
+  });
+})();
+</script>
+</body>
+</html>

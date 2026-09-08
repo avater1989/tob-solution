@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>创建直播 · 艺博 To-B</title>
+<title>创建直播 · 商家管理后台</title>
 <link rel="stylesheet" href="../assets/css/proto.css" />
 </head>
 <body class="admin-body" data-module="live" data-nav="live-edit" data-title="创建直播" data-crumb="直播 / 直播管理 / 新建直播">
@@ -615,14 +615,14 @@
   if (audit === "rejected") {
     document.getElementById("audit-banner").style.display = "flex";
     document.getElementById("btn-save").textContent = "重新提交审核";
-    document.title = "编辑直播（已驳回） · 艺博 To-B";
+    document.title = "编辑直播（已驳回） · 商家管理后台";
   } else if (audit === "pending") {
     document.getElementById("audit-banner-pending").style.display = "flex";
     document.body.classList.add("is-readonly");
     document.getElementById("btn-save-draft").style.display = "none";
     document.getElementById("btn-save").textContent = "撤回审核";
     document.getElementById("btn-save").classList.remove("btn-primary");
-    document.title = "查看直播（审核中） · 艺博 To-B";
+    document.title = "查看直播（审核中） · 商家管理后台";
   }
 
   // ===== Header buttons =====
