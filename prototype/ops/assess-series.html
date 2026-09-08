@@ -28,12 +28,12 @@
   <table class="as-table">
     <thead>
       <tr>
-        <th style="width:56px">排序</th>
+        <th style="width:56px">序号</th>
         <th>系列名称</th>
         <th style="width:90px">项目数</th>
         <th style="width:90px">状态</th>
         <th style="width:90px">上下架</th>
-        <th style="width:320px">操作</th>
+        <th style="width:360px">操作</th>
       </tr>
     </thead>
     <tbody id="tbody"></tbody>
@@ -131,12 +131,14 @@ function render(){
   document.getElementById("cnt").textContent = list.length;
   document.getElementById("tbody").innerHTML = list.map(function(s,i){
     return '<tr>' +
-      '<td><button class="btn" data-move="'+s.id+'" data-dir="-1">↑</button> '+(i+1)+' <button class="btn" data-move="'+s.id+'" data-dir="1">↓</button></td>' +
+      '<td style="color:#8c8c8c">'+(i+1)+'</td>' +
       '<td><div class="as-name">'+esc(s.name)+'</div><div class="as-desc">'+esc(s.desc)+'</div></td>' +
       '<td>'+s.items.length+'</td>' +
       '<td><button class="btn" data-enable="'+s.id+'"><span class="as-tag '+(s.enabled?'green':'gray')+'">'+(s.enabled?'已启用':'已停用')+'</span></button></td>' +
       '<td><span class="as-tag '+(s.shelf==='已上架'?'green':'orange')+'">'+esc(s.shelf)+'</span></td>' +
       '<td><div class="as-acts">' +
+        '<button class="btn" data-move="'+s.id+'" data-dir="-1"'+(i===0?' disabled':'')+'>上移</button>' +
+        '<button class="btn" data-move="'+s.id+'" data-dir="1"'+(i===list.length-1?' disabled':'')+'>下移</button>' +
         '<button class="btn" data-view="'+s.id+'">查看系列</button>' +
         '<button class="btn" data-edit="'+s.id+'">编辑系列</button>' +
         '<button class="btn" data-report="'+s.id+'">报告配置</button>' +

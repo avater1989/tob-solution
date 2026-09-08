@@ -35,11 +35,11 @@
   <table class="cc-table">
     <thead>
       <tr>
-        <th style="width:72px">排序</th>
+        <th style="width:72px">序号</th>
         <th>分组名称</th>
         <th style="width:120px">使用商品</th>
         <th style="width:100px">状态</th>
-        <th style="width:260px">操作</th>
+        <th style="width:280px">操作</th>
       </tr>
     </thead>
     <tbody id="cc-body"></tbody>
@@ -107,13 +107,13 @@ function esc(s) {
 function render() {
   var html = GROUPS.map(function(g, i) {
     return '<tr data-id="' + esc(g.id) + '">' +
-      '<td>' + (i + 1) + '</td>' +
+      '<td style="color:#8c8c8c">' + (i + 1) + '</td>' +
       '<td class="cc-name">' + esc(g.name) + '</td>' +
       '<td>' + g.count + ' 个</td>' +
       '<td><span class="cc-status' + (g.enabled ? '' : ' off') + '">' + (g.enabled ? '启用' : '停用') + '</span></td>' +
       '<td><div class="cc-acts">' +
-        '<button class="btn" data-move="' + i + '" data-dir="-1">↑</button>' +
-        '<button class="btn" data-move="' + i + '" data-dir="1">↓</button>' +
+        '<button class="btn" data-move="' + i + '" data-dir="-1"' + (i === 0 ? ' disabled' : '') + '>上移</button>' +
+        '<button class="btn" data-move="' + i + '" data-dir="1"' + (i === GROUPS.length - 1 ? ' disabled' : '') + '>下移</button>' +
         '<button class="btn" data-edit="' + g.id + '">编辑</button>' +
         '<button class="btn" data-toggle="' + g.id + '">' + (g.enabled ? '停用' : '启用') + '</button>' +
         '<button class="btn" style="color:#f53f3f;border-color:#ffa39e" data-del="' + g.id + '">删除</button>' +

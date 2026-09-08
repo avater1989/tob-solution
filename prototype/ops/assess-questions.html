@@ -170,7 +170,7 @@ function render(){
     var opts = normOpts(q);
     var jumpN = (q.jumps||[]).length;
     return '<div class="as-q-card">' +
-      '<div class="as-q-ord"><button class="btn" data-move="'+i+'" data-dir="-1">↑</button><div class="as-q-num">'+(i+1)+'</div><button class="btn" data-move="'+i+'" data-dir="1">↓</button></div>' +
+      '<div class="as-q-ord"><div class="as-q-num">'+(i+1)+'</div></div>' +
       '<div class="as-q-bd">' +
         '<div class="as-q-title">'+esc(q.text)+'</div>' +
         '<div>' +
@@ -183,6 +183,8 @@ function render(){
         '<div class="as-q-opts">选项：'+esc(opts.map(function(o){return o.t+"("+o.s+"分)";}).join(" / "))+'</div>' +
       '</div>' +
       '<div class="as-acts">' +
+        '<button class="btn" data-move="'+i+'" data-dir="-1"'+(i===0?' disabled':'')+'>上移</button>' +
+        '<button class="btn" data-move="'+i+'" data-dir="1"'+(i===list.length-1?' disabled':'')+'>下移</button>' +
         '<button class="btn" data-qjump="'+i+'">配置题目跳转</button>' +
         '<button class="btn" data-edit="'+i+'">编辑题目</button>' +
         '<button class="btn" style="color:#f53f3f;border-color:#ffa39e" data-del="'+i+'">删除</button>' +

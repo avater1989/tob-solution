@@ -31,14 +31,14 @@
   <table class="as-table">
     <thead>
       <tr>
-        <th style="width:56px">排序</th>
+        <th style="width:56px">序号</th>
         <th>项目名称</th>
         <th style="width:70px">题目数</th>
         <th style="width:80px">状态</th>
         <th style="width:80px">上下架</th>
         <th style="width:140px">项目级报告</th>
         <th style="width:110px">创建时间</th>
-        <th style="width:320px">操作</th>
+        <th style="width:380px">操作</th>
       </tr>
     </thead>
     <tbody id="tbody"></tbody>
@@ -134,7 +134,7 @@ function render() {
   document.getElementById("cnt").textContent = list.length;
   document.getElementById("tbody").innerHTML = list.map(function(p,i){
     return '<tr>' +
-      '<td><button class="btn" data-move="'+p.id+'" data-dir="-1">↑</button> '+(i+1)+' <button class="btn" data-move="'+p.id+'" data-dir="1">↓</button></td>' +
+      '<td style="color:#8c8c8c">'+(i+1)+'</td>' +
       '<td><div class="as-name">'+esc(p.name)+'</div><div class="as-desc">'+esc(p.desc)+'</div></td>' +
       '<td>'+p.questions+'</td>' +
       '<td><span class="as-tag '+(p.status==='已发布'?'green':'gray')+'">'+esc(p.status)+'</span></td>' +
@@ -142,6 +142,8 @@ function render() {
       '<td style="font-size:12px">'+esc(p.report)+'</td>' +
       '<td style="font-size:12px;color:#8c8c8c">'+esc(p.created)+'</td>' +
       '<td><div class="as-acts">' +
+        '<button class="btn" data-move="'+p.id+'" data-dir="-1"'+(i===0?' disabled':'')+'>上移</button>' +
+        '<button class="btn" data-move="'+p.id+'" data-dir="1"'+(i===list.length-1?' disabled':'')+'>下移</button>' +
         '<a class="btn" href="assess-questions.html?id='+p.id+'">配置题目</a>' +
         '<a class="btn" href="assess-scoring.html?id='+p.id+'">评分规则</a>' +
         '<a class="btn" href="assess-relations.html?from=project&id='+p.id+'">关联规则'+(p.rules?' ('+p.rules+')':'')+'</a>' +
