@@ -120,8 +120,33 @@
   width: 140px; height: 84px; border: 1px dashed #d9d9d9; border-radius: 8px;
   display: flex; align-items: center; justify-content: center;
   color: #bfbfbf; font-size: 12px; cursor: pointer; background: #fafafa;
+  overflow: hidden; position: relative; padding: 0;
 }
 .cm-cover-up:hover { border-color: #165dff; color: #165dff; }
+.cm-cover-up.has-img {
+  border-style: solid; border-color: #e5e6eb; background: #f2f3f5;
+}
+.cm-cover-up img {
+  width: 100%; height: 100%; object-fit: cover; display: block;
+}
+.cm-cover-up .cm-cover-tip {
+  position: absolute; inset: auto 0 0; padding: 4px;
+  background: rgba(0,0,0,.45); color: #fff; font-size: 11px; text-align: center;
+}
+
+/* 内容列表实景封面 */
+.cs-cover, .cv-thumb, .ca-cover {
+  overflow: hidden; padding: 0 !important;
+  background: #f2f3f5 !important;
+  color: transparent !important;
+}
+.cs-cover img, .cv-thumb img, .ca-cover img {
+  width: 100%; height: 100%; object-fit: cover; display: block;
+}
+.cv-thumb { position: relative; }
+.cv-thumb .cv-duration {
+  position: absolute; bottom: 4px; right: 4px; z-index: 2;
+}
 
 .rt-editor { border: 1px solid #e8e8e8; border-radius: 6px; background: #fff; }
 .rt-toolbar {

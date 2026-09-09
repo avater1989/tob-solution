@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>私域转化分析 · 商家管理后台</title>
+<link rel="stylesheet" href="../assets/css/proto.css?v=10" />
+<style>
+.board-tabs { display:flex; gap:0; border-bottom:1px solid var(--color-border); margin-bottom:16px; }
+.board-tabs button {
+  border:0; background:transparent; padding:10px 16px; font-size:14px; cursor:pointer;
+  color: var(--color-text-secondary); border-bottom:2px solid transparent; margin-bottom:-1px;
+}
+.board-tabs button.active { color: var(--color-primary); border-bottom-color: var(--color-primary); font-weight:600; }
+.tab-pane { display:none; }
+.tab-pane.active { display:block; }
+#active-filters { margin: 0 0 12px; font-size:12px; }
+</style>
+</head>
+<body class="admin-body" data-module="data" data-nav="board-p" data-title="私域转化分析" data-crumb="经营分析 / 私域转化" data-assist="1">
+<div id="header-actions">
+  <span class="muted" id="board-updated" style="margin-right:8px;font-size:12px"></span>
+  <button class="btn" id="btn-refresh">刷新</button>
+  <button class="btn" id="btn-export">导出</button>
+</div>
+<div id="page-content" style="display:none">
+
+
+  <div class="board-tip">
+    <b>私域转化：</b>承接效率看「是否接住」，跟进质量看「是否运营起来」。
+    二者共享筛选，但不是所有用户必经的线性主链台阶。
+  </div>
+
+  <div class="board-filter">
+    <div class="segmented" id="range-seg">
+      <button type="button" class="active" data-range="7d">近7日</button>
+      <button type="button" data-range="30d">近30日</button>
+      <button type="button" data-range="today">今日</button>
+      <button type="button" data-range="yesterday">昨日</button>
+    </div>
+    <select id="f-channel"></select>
+    <select id="f-term"></select>
+    <button class="btn btn-primary" id="btn-query">查询</button>
+    <button class="btn" id="btn-reset">重置</button>
+  </div>
+  <div id="active-filters"></div>
+
+  <div class="board-tabs" id="private-tabs">
+    <button type="button" class="active" data-tab="handoff">承接效率</button>
+    <button type="button" data-tab="follow">跟进质量</button>
+  </div>
+
+  <div class="tab-pane active" id="pane-handoff">
+    <div class="stat-cards board-stats" style="grid-template-columns:repeat(4,1fr)">
+      <a class="stat-card" href="leads.html?focus=unassigned">
+        <div class="stat-label">待分配积压</div>
+        <div class="stat-value" style="color:#ff7d00" data-m="backlog">23</div>
+        <div class="stat-hint">超时 <span data-m="backlogLate">8</span></div>
+      </a>
+      <div class="stat-card">
+        <div class="stat-label">4h 内及时率</div>
+        <div class="stat-value" id="timely-rate">86%</div>
+        <div class="stat-hint">= 时效桶 &lt;1h + 1–4h</div>
+      </div>
+      <a class="stat-card" href="leads.html">
+        <div class="stat-label">加微率（相对入池）</div>
+        <div class="stat-value" id="wecom-pool">64%</div>
+        <div class="stat-hint"><span data-m="wecom">392</span> / <span data-m="pool">612</span></div>
+      </a>
+      <a class="stat-card" href="channels-orders.html?focus=sms_fail">
+        <div class="stat-label">领课率</div>
+        <div class="stat-value" id="claim-rate">82%</div>
+        <div class="stat-hint"><span class="board-scope aux">视频号辅</span> 失败 <span data-m="vxSmsFail">18</span></div>
+      </a>
+    </div>
+
+    <div class="card" style="margin-bottom:16px">
+      <div class="card-hd"><h2>承接段漏斗</h2><span class="muted" style="font-size:12px;font-weight:400"><span data-range-label>近7日</span></span></div>
+      <div class="card-bd">
+        <div class="board-funnel slope lg">
+          <div class="step" data-m-h="pool" style="--h:100%"><div class="n" data-m="pool">612</div><div class="l">入池</div><div class="r">100%</div></div>
+          <div class="step" data-m-h="assign" style="--h:96%"><div class="n" data-m="assign">589</div><div class="l">已分配</div><div class="r" data-m="stepAssign">96%</div></div>
+          <div class="step drop" data-m-h="wecom" style="--h:64%"><div class="n" data-m="wecom">392</div><div class="l">已加微</div><div class="r" data-m="stepWecom">67%</div></div>
+        </div>
+        <p class="board-attr" data-board-attr></p>
+      </div>
+    </div>
+
+    <div class="board-two">
+      <div class="card">
+        <div class="card-hd"><h2>分配时效</h2></div>
+        <div class="card-bd" style="padding:0">
+          <table class="data">
+            <thead><tr><th>时效桶</th><th>占比</th><th>说明</th></tr></thead>
+            <tbody id="timing-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hd"><h2>视频号领课</h2><span class="board-scope aux">辅</span></div>
+        <div class="card-bd">
+          <p style="font-size:13px;margin:0 0 8px">流入 <b data-m="vxLeads">241</b> → 领课 <b data-m="vxClaim">198</b> → 短信失败 <b data-m="vxSmsFail">18</b></p>
+          <a class="btn btn-sm" href="channels-orders.html?focus=sms_fail">处理失败短信</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:16px">
+      <div class="card-hd">
+        <h2>跟进人 · 承接结果</h2>
+        <span class="muted" style="font-size:12px;font-weight:400">合计须与顶部已分配 / 已加微一致</span>
+      </div>
+      <div class="card-bd" style="padding:0">
+        <table class="data">
+          <thead><tr><th>跟进人</th><th>分配数</th><th>已加微</th><th>加微率</th><th style="width:100px">操作</th></tr></thead>
+          <tbody id="handoff-staff"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="tab-pane" id="pane-follow">
+    <div class="stat-cards board-stats" style="grid-template-columns:repeat(4,1fr)">
+      <div class="stat-card">
+        <div class="stat-label">跟进覆盖率</div>
+        <div class="stat-value" data-m="coverRate">78%</div>
+        <div class="stat-hint">有跟进人数 / 在跟人数</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">已加微（承接交出）</div>
+        <div class="stat-value" data-m="wecom">392</div>
+        <div class="stat-hint">本专题分析底数</div>
+      </div>
+      <a class="stat-card" href="follow-ups.html?focus=no_follow">
+        <div class="stat-label">无跟进（风险）</div>
+        <div class="stat-value" style="color:#ff7d00" data-m="noFollow">86</div>
+        <div class="stat-hint">与下表明细合计一致</div>
+      </a>
+      <a class="stat-card" href="wecom-churn.html">
+        <div class="stat-label">企微流失</div>
+        <div class="stat-value" style="color:#f53f3f" data-m="churn">36</div>
+        <div class="stat-hint">去流失提醒</div>
+      </a>
+    </div>
+
+    <div class="card" style="margin-bottom:16px">
+      <div class="card-hd">
+        <h2>人效明细</h2>
+        <span class="muted" style="font-size:12px;font-weight:400">跟进次数 · <span data-range-label>近7日</span></span>
+      </div>
+      <div class="card-bd" style="padding:0">
+        <table class="data">
+          <thead>
+            <tr><th>跟进人</th><th>在跟（已加微）</th><th>跟进次数</th><th>覆盖率</th><th>无跟进</th><th>流失</th><th style="width:160px">操作</th></tr>
+          </thead>
+          <tbody id="follow-staff"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="board-two">
+      <div class="card">
+        <div class="card-hd"><h2>阶段分布</h2><span class="muted" style="font-size:12px;font-weight:400">分母：当前筛选范围内已加微用户</span></div>
+        <div class="card-bd" style="padding:0">
+          <table class="data">
+            <thead><tr><th>阶段</th><th>占比</th></tr></thead>
+            <tbody>
+              <tr><td>新加微 / 待首跟</td><td>12%</td></tr>
+              <tr><td>跟进中</td><td>43%</td></tr>
+              <tr><td>高意向</td><td>24%</td></tr>
+              <tr><td>已转化</td><td>13%</td></tr>
+              <tr><td>无效 / 战败</td><td>8%</td></tr>
+            </tbody>
+          </table>
+          <p class="muted" style="padding:8px 16px;font-size:12px;margin:0">五阶段合计 100%。</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hd"><h2>下钻</h2></div>
+        <div class="card-bd" style="display:flex;gap:8px;flex-wrap:wrap">
+          <a class="btn" href="follow-ups.html?focus=no_follow">跟进管理</a>
+          <a class="btn" href="todo-calendar.html">待办日历</a>
+          <a class="btn" href="wecom-churn.html">流失提醒</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+<script src="../assets/js/proto.js"></script>
+<script src="../assets/js/board-data.js?v=3"></script>
+<script src="../assets/js/board-metrics.js?v=7"></script>
+<script src="../assets/js/admin-shell.js?v=13"></script>
+<script>
+(function () {
+  BoardMetrics.fillAttr();
+
+  function setTab(tab) {
+    tab = tab === "follow" ? "follow" : "handoff";
+    BoardMetrics.setFilters({ tab: tab });
+    document.querySelectorAll("#private-tabs button").forEach(function (b) {
+      b.classList.toggle("active", b.getAttribute("data-tab") === tab);
+    });
+    document.getElementById("pane-handoff").classList.toggle("active", tab === "handoff");
+    document.getElementById("pane-follow").classList.toggle("active", tab === "follow");
+  }
+
+  function renderStaff() {
+    var staff = BoardMetrics.getStaffRows();
+    var hs = document.getElementById("handoff-staff");
+    var fs = document.getElementById("follow-staff");
+    if (!staff.length) {
+      BoardMetrics.renderEmpty(hs, 5);
+      BoardMetrics.renderEmpty(fs, 7);
+      return;
+    }
+    hs.innerHTML = staff.map(function (s) {
+      return "<tr><td>" + s.name + "</td><td>" + BoardMetrics.fmt(s.assigned) + "</td><td>" + BoardMetrics.fmt(s.wecom) + "</td><td>" + BoardMetrics.pct(s.wecom, s.assigned) + '</td><td class="row-actions"><a href="leads.html">线索</a></td></tr>';
+    }).join("");
+    fs.innerHTML = staff.map(function (s) {
+      return "<tr><td>" + s.name + "</td><td>" + BoardMetrics.fmt(s.wecom) + "</td><td>" + BoardMetrics.fmt(s.followed) + "</td><td>" + (s.cover || "—") + "</td><td>" + BoardMetrics.fmt(s.noFollow) + "</td><td>" + BoardMetrics.fmt(s.churn) + '</td><td class="row-actions"><a href="follow-ups.html">跟进</a><a href="todo-calendar.html">待办</a></td></tr>';
+    }).join("");
+  }
+
+  function renderDetails(d) {
+    var buckets = BoardMetrics.getTimingBuckets();
+    var timely = 0;
+    document.getElementById("timing-tbody").innerHTML = buckets.map(function (b, i) {
+      if (i < 2) timely += b.pct;
+      var color = b.tone === "ok" ? "color:#00b42a" : b.tone === "warn" ? "color:#ff7d00" : b.tone === "danger" ? "color:#f53f3f" : "";
+      var note = b.tone === "danger" ? '<a href="leads.html?focus=unassigned">' + b.note + "</a>" : b.note;
+      return "<tr><td>" + b.label + "</td><td>" + b.pct + '%</td><td style="' + color + '">' + note + "</td></tr>";
+    }).join("");
+    document.getElementById("timely-rate").textContent = timely + "%";
+    document.getElementById("wecom-pool").textContent = BoardMetrics.pct(d.wecomLeads, d.poolLeads);
+    document.getElementById("claim-rate").textContent = BoardMetrics.pct(d.vxClaim, d.vxLeads);
+    renderStaff();
+    BoardMetrics.wireBoardLinks();
+  }
+
+  var bootTab = BoardMetrics.getFilters().tab || new URLSearchParams(location.search).get("tab") || "handoff";
+  setTab(bootTab);
+
+  document.getElementById("private-tabs").addEventListener("click", function (e) {
+    var b = e.target.closest("button[data-tab]");
+    if (!b) return;
+    setTab(b.getAttribute("data-tab"));
+  });
+
+  BoardMetrics.bindRange("range-seg", function (k, d) { renderDetails(d); });
+  BoardMetrics.bindFilterBar({ onApply: function (k, d) { renderDetails(d); } });
+
+  document.getElementById("btn-export").onclick = function () {
+    var rows = BoardMetrics.getStaffRows().map(function (s) {
+      return [s.name, s.assigned, s.wecom, s.followed, s.cover, s.noFollow, s.churn];
+    });
+    if (!rows.length) { Proto.toast("暂无导出数据"); return; }
+    BoardMetrics.exportCsv(BoardMetrics.exportFileName("private"), ["跟进人", "分配", "已加微", "跟进次数", "覆盖率", "无跟进", "流失"], rows);
+  };
+})();
+</script>
+</body>
+</html>

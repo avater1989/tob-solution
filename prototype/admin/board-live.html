@@ -3,29 +3,184 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>直播看板 · 商家管理后台</title>
-<link rel="stylesheet" href="../assets/css/proto.css" />
+<title>直播分析 · 商家管理后台</title>
+<link rel="stylesheet" href="../assets/css/proto.css?v=10" />
 </head>
-<body class="admin-body" data-module="data" data-nav="board-l" data-title="Live Board" data-crumb="Data / Live">
+<body class="admin-body" data-module="data" data-nav="board-l" data-title="直播分析" data-crumb="经营分析 / 直播" data-assist="1">
 <div id="header-actions">
-  <button class="btn" data-toast="Demo only">Refresh</button>
-  <button class="btn btn-primary" data-toast="Demo only">Create</button>
+  <span class="muted" id="board-updated" style="margin-right:8px;font-size:12px"></span>
+  <button class="btn" id="btn-refresh">刷新</button>
+  <button class="btn" id="btn-export">导出</button>
 </div>
 <div id="page-content" style="display:none">
-  <div class="card"><div class="card-hd"><h2>Live Board</h2></div>
-  <div class="card-bd">
-    <p class="muted">Data / Live</p>
-    <table class="data">
-      <thead><tr><th>Item</th><th>Status</th><th>Updated</th><th>Actions</th></tr></thead>
-      <tbody>
-        <tr><td>Sample row 1</td><td><span class="badge badge-success">OK</span></td><td>2026-03-29</td><td><a href="#" data-toast="Demo">Edit</a></td></tr>
-        <tr><td>Sample row 2</td><td><span class="badge badge-warn">Pending</span></td><td>2026-03-29</td><td><a href="#" data-toast="Demo">Edit</a></td></tr>
-        <tr><td>Sample row 3</td><td><span class="badge">Draft</span></td><td>2026-03-28</td><td><a href="#" data-toast="Demo">Edit</a></td></tr>
-      </tbody>
-    </table>
-  </div></div>
+
+
+  <div class="board-tip">
+    <b>直播分析：</b>场次是否有效、私域促到是否触达。「到课」服务增长但不进主漏斗。
+    <span class="muted">获客渠道筛选仅影响关联人群指标，不影响直播场次统计。</span>
+  </div>
+
+  <div class="board-filter">
+    <div class="segmented" id="range-seg">
+      <button type="button" class="active" data-range="7d">近7日</button>
+      <button type="button" data-range="30d">近30日</button>
+      <button type="button" data-range="today">今日</button>
+      <button type="button" data-range="yesterday">昨日</button>
+    </div>
+    <select id="f-channel"></select>
+    <select id="f-term"></select>
+    <button class="btn btn-primary" id="btn-query">查询</button>
+    <button class="btn" id="btn-reset">重置</button>
+    <a class="btn" href="live-invite.html">新建私域触达活动</a>
+  </div>
+
+  <div class="stat-cards board-stats" style="grid-template-columns:repeat(4,1fr)">
+    <div class="stat-card">
+      <div class="stat-label">直播场次</div>
+      <div class="stat-value" data-m="lives">18</div>
+      <div class="stat-hint"><span class="board-scope aux">场次口径</span> · <span data-range-label>近7日</span></div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">场均到课率</div>
+      <div class="stat-value" data-m="liveAttendAvg">41%</div>
+      <div class="stat-hint">预约→到课 · 场次平均</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">促到场次到课差</div>
+      <div class="stat-value" style="color:#00b42a" id="invite-lift">+9pt</div>
+      <div class="stat-hint" id="invite-lift-hint">有私域促到场次的平均到课率比未促到场次高 9 个百分点（相关，非因果）</div>
+    </div>
+    <a class="stat-card" data-board-link="board-convert.html" href="board-convert.html">
+      <div class="stat-label">加微人群到课</div>
+      <div class="stat-value" data-m="attend">186</div>
+      <div class="stat-hint"><span class="board-scope main">旁路</span> / 已加微 <span data-m="wecom">392</span></div>
+    </a>
+  </div>
+
+  <div class="card" style="margin-bottom:16px">
+    <div class="card-hd"><h2>场次明细</h2><a href="live-stats.html" style="font-size:13px;color:var(--color-primary);text-decoration:none;font-weight:400">直播数据 →</a></div>
+    <div class="card-bd" style="padding:0;overflow-x:auto">
+      <table class="data">
+        <thead>
+          <tr>
+            <th>直播名称</th><th>开播</th><th>预约人数</th><th>预约提醒</th><th>提醒送达</th>
+            <th>私域促到目标</th><th>私域实际触达</th><th>到课人数</th><th>到课率</th>
+            <th>直播支付用户</th><th>直播GMV</th><th style="width:200px">操作</th>
+          </tr>
+        </thead>
+        <tbody id="live-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="board-two">
+    <div class="card">
+      <div class="card-hd"><h2>与主漏斗衔接</h2><span class="board-scope main">旁路</span></div>
+      <div class="card-bd">
+        <div class="board-funnel slope">
+          <div class="step" style="--h:100%"><div class="n" data-m="wecom">392</div><div class="l">已加微</div></div>
+          <div class="step drop" style="--h:47%"><div class="n" data-m="attend">186</div><div class="l">有到课</div></div>
+          <div class="step" style="--h:33%"><div class="n" data-m="pay">128</div><div class="l">可归因支付（含未到课）</div><div class="sub"><a data-board-link="board-convert.html" href="board-convert.html">交易分析</a></div></div>
+        </div>
+        <p class="muted" style="margin:8px 0 0">支付人数可大于「到课后支付」：未到课也有成交。</p>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-hd"><h2>私域促到效果（解释全部场次）</h2><span class="board-scope aux">场次</span></div>
+      <div class="card-bd" style="padding:0">
+        <table class="data">
+          <thead><tr><th>分组</th><th>场次</th><th>场均到课率</th></tr></thead>
+          <tbody id="invite-groups"></tbody>
+        </table>
+        <p class="muted" style="padding:8px 16px;font-size:12px;margin:0" id="invite-note"></p>
+      </div>
+    </div>
+  </div>
+  <p class="board-attr" data-board-attr style="padding:12px 0"></p>
+
 </div>
 <script src="../assets/js/proto.js"></script>
-<script src="../assets/js/admin-shell.js?v=3"></script>
+<script src="../assets/js/board-data.js?v=3"></script>
+<script src="../assets/js/board-metrics.js?v=7"></script>
+<script src="../assets/js/admin-shell.js?v=13"></script>
+<script>
+(function () {
+  BoardMetrics.fillAttr();
+
+  function actionsFor(row) {
+    if (row.status === "upcoming") {
+      return '<a href="live-booking.html">配置预约提醒</a><a href="live-invite.html">新建私域触达活动</a>';
+    }
+    return '<a href="live-stats.html">查看数据</a><a href="live-replay.html">查看回放</a><a href="live-invite.html">创建回放触达</a>';
+  }
+
+  function renderDetails(d) {
+    var sum = BoardMetrics.getLiveSummary();
+    var liftEl = document.getElementById("invite-lift");
+    var hintEl = document.getElementById("invite-lift-hint");
+    if (!sum.sampleOk) {
+      liftEl.textContent = "—";
+      liftEl.style.color = "";
+      if (hintEl) hintEl.textContent = "样本不足，暂无法比较促到场次到课差（相关，非因果）";
+    } else {
+      liftEl.textContent = d.inviteLift || sum.inviteLift || "—";
+      liftEl.style.color = "#00b42a";
+      var liftNum = String(d.inviteLift || sum.inviteLift || "").replace("+", "").replace("pt", "");
+      if (hintEl) hintEl.textContent = "有私域促到场次的平均到课率比未促到场次高 " + liftNum + " 个百分点（相关，非因果）";
+    }
+    var rows = BoardMetrics.getLiveRows();
+    var tbody = document.getElementById("live-tbody");
+    if (!rows.length) {
+      BoardMetrics.renderEmpty(tbody, 12);
+    } else {
+      tbody.innerHTML = rows.map(function (r) {
+        return "<tr>" +
+          "<td>" + r.name + "</td><td>" + r.startAt + "</td>" +
+          "<td>" + BoardMetrics.fmt(r.booked) + "</td><td>" + (r.remindStatus || "—") + "</td>" +
+          "<td>" + BoardMetrics.fmt(r.remindReached) + "</td>" +
+          "<td>" + BoardMetrics.fmt(r.inviteTarget) + "</td><td>" + BoardMetrics.fmt(r.inviteReached) + "</td>" +
+          "<td>" + (r.attend == null ? "—" : BoardMetrics.fmt(r.attend)) + "</td>" +
+          "<td>" + (r.attendRate || "—") + "</td>" +
+          "<td>" + BoardMetrics.fmt(r.payUsers) + "</td><td>" + BoardMetrics.money(r.gmv) + "</td>" +
+          '<td class="row-actions">' + actionsFor(r) + "</td></tr>";
+      }).join("");
+    }
+
+    var g = d.inviteGroups || BoardMetrics.getLiveSummary();
+    var total = (g.sent || 0) + (g.miss || 0) + (g.pending || 0);
+    document.getElementById("invite-groups").innerHTML =
+      "<tr><td>已发送私域促到</td><td>" + (g.sent || 0) + '</td><td style="color:#00b42a">' + (g.sentAvg || "—") + "</td></tr>" +
+      "<tr><td>未发送 / 漏发</td><td>" + (g.miss || 0) + '</td><td style="color:#f53f3f">' + (g.missAvg || "—") + "</td></tr>" +
+      "<tr><td>未开播或数据不足</td><td>" + (g.pending || 0) + "</td><td>—</td></tr>" +
+      "<tr><td>差值</td><td>—</td><td><b>" + (g.sampleOk ? (d.inviteLift || "—") : "—") + "</b></td></tr>";
+    var note = "共解释 " + total + " 场（指标卡场次 " + d.liveSessions + "）。获客渠道不影响场次统计。";
+    if (!g.sampleOk) note += " 样本不足，暂无法比较促到场次到课差。";
+    else {
+      var liftTxt = String(d.inviteLift || g.inviteLift || "").replace("+", "").replace("pt", "");
+      note += " 有私域促到场次的平均到课率比未促到场次高 " + (liftTxt || "—") + " 个百分点，为相关观察而非确定因果。";
+    }
+    document.getElementById("invite-note").textContent = note;
+
+    document.querySelectorAll(".board-two .board-funnel.slope .step").forEach(function (el, i) {
+      var keys = ["wecom", "attend", "pay"];
+      var base = d.wecomLeads || 1;
+      var pct = Math.max(28, Math.round((d[keys[i]] / base) * 100));
+      el.style.setProperty("--h", pct + "%");
+    });
+    BoardMetrics.wireBoardLinks();
+  }
+
+  BoardMetrics.bindRange("range-seg", function (k, d) { renderDetails(d); });
+  BoardMetrics.bindFilterBar({ onApply: function (k, d) { renderDetails(d); } });
+
+  document.getElementById("btn-export").onclick = function () {
+    var rows = BoardMetrics.getLiveRows().map(function (r) {
+      return [r.name, r.startAt, r.booked, r.remindStatus, r.remindReached, r.inviteTarget, r.inviteReached, r.attend, r.attendRate, r.payUsers, r.gmv];
+    });
+    if (!rows.length) { Proto.toast("暂无导出数据"); return; }
+    BoardMetrics.exportCsv(BoardMetrics.exportFileName("live"), ["名称", "开播", "预约", "提醒状态", "提醒送达", "促到目标", "促到触达", "到课", "到课率", "支付用户", "GMV"], rows);
+  };
+})();
+</script>
 </body>
 </html>

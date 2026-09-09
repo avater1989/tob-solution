@@ -17,24 +17,22 @@
   var crumb = document.body.getAttribute("data-crumb") || "";
   var showAssist = false; // 操作助手已隐藏（原 data-assist="1" 开关）
   var showNotice = document.body.getAttribute("data-notice") !== "0";
+  var showReview = document.body.getAttribute("data-review") !== "0"; // data-review="0" 可隐藏评审路径
 
   var modules = [
     { id: "workbench", label: "工作台", href: "dashboard.html" },
-    { id: "scrm", label: "SCRM", href: "scrm-overview.html" },
+    { id: "scrm", label: "SCRM", href: "leads.html" },
     { id: "live", label: "直播", href: "lives.html" },
     { id: "content", label: "内容", href: "content-series.html" },
     { id: "trade", label: "交易", href: "orders.html" },
     { id: "user", label: "用户", href: "users.html" },
+    { id: "data", label: "经营分析", href: "board-overview.html" },
     { id: "sys", label: "系统管理", href: "sys-users.html" },
-    { id: "data", label: "数据", href: "board-acquire.html" },
   ];
 
   var sidebars = {
     workbench: [
       { group: "概览", links: [{ id: "dashboard", href: "dashboard.html", label: "工作台" }] },
-    ],
-    "live-invite": [
-      { group: "直播促到", links: [{ id: "invite", href: "live-invite.html", label: "直播促到SOP" }] },
     ],
     scrm: [
       {
@@ -68,6 +66,7 @@
           { id: "mass-customer", href: "mass-customer.html", label: "客户群发" },
           { id: "mass-group", href: "mass-group.html", label: "客户群群发" },
           { id: "mass-moment", href: "mass-moment.html", label: "群发朋友圈" },
+          { id: "invite", href: "live-invite.html", label: "直播促到" },
           { id: "quick-task", href: "quick-tasks.html", label: "快捷任务" },
           { id: "sop-personal", href: "sop-personal.html", label: "个人SOP" },
           { id: "sop-group", href: "sop-group.html", label: "群SOP" },
@@ -96,7 +95,7 @@
         links: [
           { id: "lives", href: "lives.html", label: "直播列表" },
           { id: "live-edit", href: "live-edit.html", label: "创建直播" },
-          { id: "live-booking", href: "live-booking.html", label: "预约与推送" },
+          { id: "live-booking", href: "live-booking.html", label: "预约管理" },
           { id: "live-share", href: "live-share.html", label: "分享邀请" },
           { id: "live-replay", href: "live-replay.html", label: "直播回放" },
           { id: "live-stats", href: "live-stats.html", label: "直播数据" },
@@ -112,10 +111,6 @@
           { id: "live-rejected", href: "live-rejected.html", label: "驳回记录" },
           { id: "live-audit-detail", href: "live-audit-detail.html", label: "审核详情" },
         ],
-      },
-      {
-        group: "直播促到",
-        links: [{ id: "invite", href: "live-invite.html", label: "直播促到SOP" }],
       },
     ],
     content: [
@@ -199,11 +194,13 @@
     ],
     data: [
       {
-        group: "专题看板",
+        group: "经营分析",
         links: [
+          { id: "board-o", href: "board-overview.html", label: "总览" },
           { id: "board-a", href: "board-acquire.html", label: "获客" },
+          { id: "board-p", href: "board-private.html", label: "私域转化" },
           { id: "board-l", href: "board-live.html", label: "直播" },
-          { id: "board-c", href: "board-convert.html", label: "转化" },
+          { id: "board-c", href: "board-convert.html", label: "交易" },
         ],
       },
     ],
@@ -220,10 +217,10 @@
       "<li><a href='channels-orders.html'>③ 视频号承接</a></li>" +
       "<li><a href='leads.html'>④ 私域运营</a></li></ul></div>",
     "live-invite":
-      "<div class='assist-block'><h3>主播促到</h3><ul>" +
-      "<li>视频号直播开播前短信催到</li>" +
-      "<li>支持按客户标签 / 期次筛选</li>" +
-      "<li>避免同一客户重复触达</li></ul></div>",
+      "<div class='assist-block'><h3>直播促到</h3><ul>" +
+      "<li>面向私域线索的预约邀约、催到与会后跟进</li>" +
+      "<li>支持按标签 / 期次 / 阶段筛选并排除已购等</li>" +
+      "<li>与预约管理中的系统提醒职责分离</li></ul></div>",
     scrm:
       "<div class='assist-block'><h3>现网对齐</h3><ol>" +
       "<li>客户中心 / 营销管理 / 内容中心</li>" +
@@ -264,9 +261,10 @@
       "<li><a href='user-roles.html'>② 用户角色</a></li>" +
       "<li><a href='permissions.html'>③ 权限配置</a></li></ul></div>",
     data:
-      "<div class='assist-block'><h3>看板提示</h3><ul>" +
-      "<li>获客 / 直播 / 转化三个专题</li>" +
-      "<li>一期不做自助分析</li></ul></div>",
+      "<div class='assist-block'><h3>链路看板</h3><ul>" +
+      "<li>业务主链：获客→承接→跟进→直播→转化</li>" +
+      "<li>主漏斗：入池→分配→加微→支付</li>" +
+      "<li>到课/跟进为旁路，详见口径文档</li></ul></div>",
   };
 
   function modulesHtml() {
@@ -284,8 +282,12 @@
       html += '<div class="nav-group"><div class="nav-label">' + g.group + "</div>";
       g.links.forEach(function (l) {
         var cls = "nav-item" + (l.id === active ? " active" : "");
-        var badge = l.badge ? '<span class="nav-badge">' + l.badge + '</span>' : '';
-        html += '<a class="' + cls + '" href="' + l.href + '">' + l.label + badge + "</a>";
+        var badge = l.badge ? '<span class="nav-badge">' + l.badge + "</span>" : "";
+        var href = l.href;
+        if (window.BoardMetrics && /^board-/.test(href)) {
+          href = BoardMetrics.buildDrilldownUrl(href);
+        }
+        html += '<a class="' + cls + '" href="' + href + '"><span class="nav-text">' + l.label + "</span>" + badge + "</a>";
       });
       html += "</div>";
     });
@@ -363,7 +365,7 @@
   }
 
   var headerActions = document.getElementById("header-actions");
-  document.body.insertAdjacentHTML("afterbegin", review);
+  if (showReview) document.body.insertAdjacentHTML("afterbegin", review);
   var wrap = document.createElement("div");
   wrap.innerHTML = layout;
   document.body.appendChild(wrap.firstChild);
@@ -375,6 +377,15 @@
     while (headerActions.firstChild) slot.appendChild(headerActions.firstChild);
     headerActions.remove();
   }
+
+  // 整页跳转后侧栏 scrollTop 会归零；把当前选中项滚入可视区
+  (function scrollActiveNavIntoView() {
+    var activeNav = document.querySelector(".sidebar .nav-item.active");
+    if (!activeNav) return;
+    if (typeof activeNav.scrollIntoView === "function") {
+      activeNav.scrollIntoView({ block: "center", inline: "nearest" });
+    }
+  })();
 
   var closeNotice = document.getElementById("close-notice");
   if (closeNotice) {

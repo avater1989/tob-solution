@@ -1,31 +1,1029 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>工作台 · 商家管理后台</title>
-<link rel="stylesheet" href="../assets/css/proto.css" />
+<link rel="stylesheet" href="../assets/css/proto.css?v=10" />
+<style>
+/* 工作台页内样式：沿用现有卡片/指标语言，仅补布局与状态 */
+.wb-tip {
+  display: flex; align-items: center; justify-content: space-between; gap: 16px;
+  padding: 12px 16px; margin-bottom: 16px;
+  background: #f7f8fa; border: 1px solid var(--color-border); border-radius: 8px;
+}
+.wb-tip p { margin: 0; font-size: 13px; color: var(--color-text-secondary); }
+.wb-tip b { color: var(--color-text); font-weight: 600; }
+.wb-meta {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  margin-bottom: 12px; flex-wrap: wrap;
+}
+.wb-meta h2 { margin: 0; font-size: 14px; font-weight: 600; }
+.wb-meta .muted { font-weight: 400; }
+.wb-updated { font-size: 12px; color: var(--color-text-muted); }
+.wb-stats { grid-template-columns: repeat(4, 1fr); margin-bottom: 16px; }
+@media (max-width: 1100px) { .wb-stats { grid-template-columns: repeat(2, 1fr); } }
+.wb-stats .stat-card { cursor: pointer; transition: border-color .15s, box-shadow .15s; }
+.wb-stats .stat-card:hover { border-color: #94bfff; box-shadow: 0 2px 8px rgba(22,93,255,.08); }
+.wb-stats a.stat-card { text-decoration: none; color: inherit; display: block; }
+.wb-stats.realtime .stat-value.warn { color: #ff7d00; }
+.wb-stats.realtime .stat-value.danger { color: #f53f3f; }
+.wb-section-gap { margin-top: 4px; }
+.wb-quick-block { margin-bottom: 16px; }
+.wb-quick-block .wb-meta { margin-bottom: 8px; }
+.wb-quick {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px;
+}
+@media (max-width: 900px) { .wb-quick { grid-template-columns: repeat(2, 1fr); } }
+.wb-quick a {
+  display: block; padding: 16px 18px;
+  background: #fff; border: 1px solid var(--color-border); border-radius: 8px;
+  text-decoration: none; color: inherit; transition: border-color .15s, box-shadow .15s;
+}
+.wb-quick a:hover { border-color: #94bfff; box-shadow: 0 2px 8px rgba(22,93,255,.08); text-decoration: none; }
+.wb-quick .q-tag {
+  display: inline-block; font-size: 11px; color: var(--color-primary);
+  background: var(--color-primary-soft); padding: 2px 8px; border-radius: 4px; margin-bottom: 8px;
+}
+.wb-quick .q-tag.create { color: #009a29; background: #e8ffea; }
+.wb-quick .q-title { font-size: 15px; font-weight: 600; color: var(--color-text); }
+.wb-quick .q-desc { font-size: 12px; color: var(--color-text-muted); margin-top: 4px; line-height: 1.5; }
+.wb-grid {
+  display: grid; grid-template-columns: 1.45fr 1fr; gap: 16px; margin-bottom: 16px;
+}
+@media (max-width: 1100px) { .wb-grid { grid-template-columns: 1fr; } }
+.wb-todo-tabs { display: flex; gap: 4px; }
+.wb-todo-tabs button {
+  border: none; background: transparent; padding: 4px 10px; border-radius: 4px;
+  font-size: 12px; color: var(--color-text-secondary); cursor: pointer;
+}
+.wb-todo-tabs button.active { background: var(--color-primary-soft); color: var(--color-primary); font-weight: 600; }
+.sla-ok { color: #00b42a; }
+.sla-near { color: #ff7d00; }
+.sla-over { color: #f53f3f; font-weight: 600; }
+.wb-funnel { display: flex; flex-direction: column; gap: 0; }
+.wb-funnel-step {
+  display: flex; align-items: center; gap: 10px; padding: 10px 0;
+  border-bottom: 1px solid var(--color-border); text-decoration: none; color: inherit;
+}
+.wb-funnel-step:last-of-type { border-bottom: none; }
+.wb-funnel-step:hover { background: #f7f8fa; margin: 0 -12px; padding-left: 12px; padding-right: 12px; border-radius: 6px; }
+.wb-funnel-step .idx {
+  width: 22px; height: 22px; border-radius: 50%; background: var(--color-primary-soft);
+  color: var(--color-primary); font-size: 12px; font-weight: 600;
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+.wb-funnel-step.worst .idx { background: #ffece8; color: #cb2634; }
+.wb-funnel-step .name { flex: 1; font-size: 13px; }
+.wb-funnel-step .name small { display: block; font-size: 11px; color: var(--color-text-muted); font-weight: 400; margin-top: 2px; }
+.wb-funnel-step .cnt { font-weight: 600; font-size: 14px; min-width: 48px; text-align: right; }
+.wb-funnel-step .rate { font-size: 12px; min-width: 56px; text-align: right; color: var(--color-text-secondary); }
+.wb-funnel-step.worst .rate { color: #cb2634; font-weight: 600; }
+.wb-funnel-note {
+  margin-top: 10px; padding: 8px 10px; font-size: 12px; line-height: 1.5;
+  background: #f7f8fa; border-radius: 6px; color: var(--color-text-secondary);
+}
+.wb-funnel-drop {
+  margin-top: 8px; font-size: 12px; color: #cb2634;
+}
+.wb-live-list { display: flex; flex-direction: column; gap: 10px; }
+.wb-live-item {
+  display: grid; grid-template-columns: 1fr auto; gap: 8px 16px;
+  padding: 12px 14px; border: 1px solid var(--color-border); border-radius: 8px; background: #fff;
+}
+.wb-live-item .title { font-size: 14px; font-weight: 600; }
+.wb-live-item .meta { font-size: 12px; color: var(--color-text-secondary); margin-top: 4px; line-height: 1.6; }
+.wb-live-item .actions { display: flex; align-items: center; gap: 8px; align-self: center; }
+.wb-live-item .prog {
+  height: 6px; background: #f2f3f5; border-radius: 3px; margin-top: 8px; overflow: hidden; max-width: 220px;
+}
+.wb-live-item .prog > i { display: block; height: 100%; background: var(--color-primary); border-radius: 3px; }
+.wb-role-select {
+  height: 32px; border: 1px solid var(--color-border); border-radius: 6px;
+  padding: 0 8px; font-size: 13px; margin-right: 8px; background: #fff;
+}
+#btn-refresh.is-loading { opacity: .65; pointer-events: none; }
+.wb-empty {
+  padding: 28px 16px; text-align: center; color: var(--color-text-muted); font-size: 13px;
+}
+.wb-error {
+  display: none; padding: 10px 14px; margin-bottom: 16px;
+  background: #fff1f0; border: 1px solid #ffa39e; border-radius: 8px;
+  color: #cb2634; font-size: 13px;
+}
+.wb-error.show { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.wb-flash { animation: wbFlash .6s ease; }
+@keyframes wbFlash {
+  0% { background: #e8f3ff; }
+  100% { background: transparent; }
+}
+.wb-hidden { display: none !important; }
+</style>
 </head>
-<body class="admin-body" data-module="workbench" data-nav="dashboard" data-title="Workbench" data-crumb="Dashboard">
+<body class="admin-body" data-module="workbench" data-nav="dashboard" data-title="工作台" data-crumb="工作台" data-assist="0" data-notice="1">
+<!-- 原型配置：data-review="0" / data-notice="0" 可隐藏评审路径与公告（见 admin-shell） -->
 <div id="header-actions">
-  <button class="btn" data-toast="Demo only">Refresh</button>
-  <button class="btn btn-primary" data-toast="Demo only">Create</button>
+  <label class="muted" style="font-size:12px;margin-right:4px">角色</label>
+  <select class="wb-role-select" id="role-select" title="原型角色切换" aria-label="原型角色切换">
+    <option value="admin">商户管理员</option>
+    <option value="sales">助教/销售</option>
+    <option value="auditor">审核员</option>
+    <option value="content">内容运营</option>
+  </select>
+  <div class="segmented" id="range-seg" style="margin-right:8px">
+    <button type="button" class="active" data-range="today">今日</button>
+    <button type="button" data-range="yesterday">昨日</button>
+    <button type="button" data-range="7d">近7日</button>
+  </div>
+  <button class="btn" id="btn-refresh" type="button">刷新</button>
 </div>
+
 <div id="page-content" style="display:none">
-  <div class="card"><div class="card-hd"><h2>Workbench</h2></div>
-  <div class="card-bd">
-    <p class="muted">Dashboard</p>
-    <table class="data">
-      <thead><tr><th>Item</th><th>Status</th><th>Updated</th><th>Actions</th></tr></thead>
-      <tbody>
-        <tr><td>Sample row 1</td><td><span class="badge badge-success">OK</span></td><td>2026-03-29</td><td><a href="#" data-toast="Demo">Edit</a></td></tr>
-        <tr><td>Sample row 2</td><td><span class="badge badge-warn">Pending</span></td><td>2026-03-29</td><td><a href="#" data-toast="Demo">Edit</a></td></tr>
-        <tr><td>Sample row 3</td><td><span class="badge">Draft</span></td><td>2026-03-28</td><td><a href="#" data-toast="Demo">Edit</a></td></tr>
-      </tbody>
-    </table>
-  </div></div>
+
+  <div class="wb-error" id="wb-error" role="alert">
+    <span>数据加载失败（原型示意）。请重试或检查网络。</span>
+    <button type="button" class="btn btn-sm" id="btn-error-retry">重试</button>
+  </div>
+
+  <div class="wb-tip" id="wb-tip">
+    <p id="wb-tip-text"><b>星启家庭教育</b> · 建议优先处理待内部复核直播与未分配线索，再推进今晚公开课私域触达。</p>
+    <a class="btn btn-sm" id="wb-tip-cta" href="live-audit.html?status=pending">去内部复核工作台</a>
+  </div>
+
+  <!-- 一、经营结果（受时间筛选） -->
+  <div class="wb-meta">
+    <h2>经营结果 <span class="muted" id="range-label">· 今日</span></h2>
+    <div style="display:flex;align-items:center;gap:12px">
+      <span class="wb-updated" id="last-updated">最后更新 —</span>
+      <a id="link-board-overview" href="board-overview.html" style="font-size:13px;color:var(--color-primary);text-decoration:none">查看数据看板 →</a>
+    </div>
+  </div>
+  <div class="stat-cards wb-stats" id="result-stats">
+    <a class="stat-card" id="metric-leads" href="leads.html">
+      <div class="stat-label">新增线索</div>
+      <div class="stat-value" data-field="leads.value">86</div>
+      <div class="stat-hint" data-field="leads.hint"><span class="up">+12%</span> 较昨日</div>
+    </a>
+    <a class="stat-card" id="metric-orders" href="orders.html">
+      <div class="stat-label">支付订单</div>
+      <div class="stat-value" data-field="orders.value">42</div>
+      <div class="stat-hint" data-field="orders.hint"><span class="up">+8%</span> 较昨日 · 实收 ¥18,620</div>
+    </a>
+    <a class="stat-card" id="metric-gmv" href="orders.html">
+      <div class="stat-label">成交 GMV</div>
+      <div class="stat-value" style="font-size:22px" data-field="gmv.value">¥18,620</div>
+      <div class="stat-hint" data-field="gmv.hint"><span class="up">+15%</span> 较昨日 · 42 笔</div>
+    </a>
+    <a class="stat-card" id="metric-refund" href="aftersales.html">
+      <div class="stat-label">退款率</div>
+      <div class="stat-value" data-field="refund.value">2.1%</div>
+      <div class="stat-hint" data-field="refund.hint"><span class="down">-0.3pp</span> 较昨日 · 退款 1 笔</div>
+    </a>
+  </div>
+
+  <!-- 实时待处理（不受时间筛选） -->
+  <div class="wb-meta wb-section-gap">
+    <h2>实时待处理 <span class="muted" style="font-weight:400">· 不受日期筛选影响</span></h2>
+  </div>
+  <div class="stat-cards wb-stats realtime" id="realtime-stats">
+    <a class="stat-card" id="rt-unassigned" href="leads.html?focus=unassigned">
+      <div class="stat-label">未分配线索</div>
+      <div class="stat-value warn" data-rt="unassigned">36</div>
+      <div class="stat-hint">视频号流入待认领</div>
+    </a>
+    <a class="stat-card" id="rt-audit" href="live-audit.html?status=pending">
+      <div class="stat-label">待内部复核直播</div>
+      <div class="stat-value warn" data-rt="audit">2</div>
+      <div class="stat-hint">含今晚开播场次</div>
+    </a>
+    <a class="stat-card" id="rt-urge" href="live-invite.html?focus=pending">
+      <div class="stat-label">待执行私域触达</div>
+      <div class="stat-value" data-rt="urgeTasks">3</div>
+      <div class="stat-hint">目标人群 <span data-rt="urgePeople">1,284</span> 人</div>
+    </a>
+    <a class="stat-card" id="rt-aftersale" href="aftersales.html?status=pending">
+      <div class="stat-label">待处理售后</div>
+      <div class="stat-value danger" data-rt="aftersale">5</div>
+      <div class="stat-hint">退款 3 · 纠纷 2</div>
+    </a>
+  </div>
+
+  <!-- 快捷创建 -->
+  <div class="wb-quick-block" id="block-create">
+    <div class="wb-meta"><h2>快捷创建</h2></div>
+    <div class="wb-quick" id="quick-create"></div>
+  </div>
+
+  <!-- 核心业务入口 -->
+  <div class="wb-quick-block" id="block-entry">
+    <div class="wb-meta"><h2>核心业务入口</h2></div>
+    <div class="wb-quick" id="quick-entry"></div>
+  </div>
+
+  <div class="wb-grid">
+    <!-- 待办中心 -->
+    <div class="card" id="block-todo">
+      <div class="card-hd">
+        <h2>待办中心 <span class="badge badge-danger" id="todo-count" style="margin-left:6px;font-weight:500">0</span></h2>
+        <div class="wb-todo-tabs" id="todo-tabs">
+          <button type="button" class="active" data-filter="all">全部</button>
+          <button type="button" data-filter="mine">我的待办</button>
+          <button type="button" data-filter="overdue">已超时</button>
+        </div>
+      </div>
+      <div class="card-bd" style="padding:0">
+        <table class="data">
+          <thead>
+            <tr>
+              <th style="width:72px">类型</th>
+              <th>事项</th>
+              <th style="width:72px">负责人</th>
+              <th style="width:110px">截止/开播</th>
+              <th style="width:72px">SLA</th>
+              <th style="width:72px">状态</th>
+              <th style="width:120px">操作</th>
+            </tr>
+          </thead>
+          <tbody id="todo-body"></tbody>
+        </table>
+        <div class="wb-empty wb-hidden" id="todo-empty">暂无待办。可切换「全部 / 我的待办 / 已超时」，或完成任务后在此查看空态。</div>
+      </div>
+    </div>
+
+    <!-- 业务漏斗 -->
+    <div class="card" id="block-funnel">
+      <div class="card-hd">
+        <h2>业务漏斗 <span class="muted" id="funnel-range-label" style="font-weight:400">· 今日</span></h2>
+        <a id="link-board-convert" href="board-convert.html" style="font-size:13px;color:var(--color-primary);text-decoration:none;font-weight:400">交易分析 →</a>
+      </div>
+      <div class="card-bd">
+        <div class="wb-funnel" id="funnel-list"></div>
+        <div class="wb-funnel-drop" id="funnel-drop"></div>
+        <div class="wb-funnel-note">说明：主漏斗为入池 → 已分配 → 已加微 → 可归因支付。到课与退款为旁路，不阻断支付。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 今日直播日程 -->
+  <div class="card" id="block-live" style="margin-bottom:16px">
+    <div class="card-hd">
+      <h2>今日直播日程</h2>
+      <a id="link-board-live" href="board-live.html" style="font-size:13px;color:var(--color-primary);text-decoration:none;font-weight:400">全部场次 →</a>
+    </div>
+    <div class="card-bd">
+      <div class="wb-live-list" id="live-schedule"></div>
+      <div class="wb-empty wb-hidden" id="live-empty">今日暂无直播场次。</div>
+    </div>
+  </div>
+
 </div>
 <script src="../assets/js/proto.js"></script>
-<script src="../assets/js/admin-shell.js?v=3"></script>
+<script src="../assets/js/board-data.js?v=3"></script>
+<script src="../assets/js/board-metrics.js?v=7"></script>
+<script src="../assets/js/admin-shell.js?v=14"></script>
+<script>
+(function () {
+  /* ========== 原型配置 ========== */
+  var WB_CONFIG = {
+    /* 评审路径 / 公告：由 body data-review / data-notice 控制（见 admin-shell） */
+    storageTodo: "wb_todo_done_v1",
+    storageBiz: "wb_todo_biz_v1",
+    storageRole: "wb_role_v1",
+    storageRange: "wb_range_v1",
+    currentUser: "赵老师"
+  };
+
+  /* ========== 角色 ========== */
+  var ROLES = {
+    admin: {
+      id: "admin",
+      label: "商户管理员",
+      tip: "<b>星启家庭教育</b> · 建议优先处理待内部复核直播与未分配线索，再推进今晚公开课私域触达。",
+      tipCta: { href: "live-audit.html?status=pending", text: "去内部复核工作台" },
+      create: ["series", "live", "urge", "lead"],
+      entry: ["content", "lives", "channels", "leads"],
+      todoTypes: null,
+      showAuditRealtime: true,
+      showLiveSchedule: true,
+      showFunnel: true,
+      showAftersale: true
+    },
+    sales: {
+      id: "sales",
+      label: "助教/销售",
+      tip: "<b>助教视角</b> · 先消化未分配线索与私域触达任务，跟进加微后再推进成交。",
+      tipCta: { href: "leads.html?focus=unassigned", text: "去线索池" },
+      create: ["urge", "lead"],
+      entry: ["leads", "lives", "channels"],
+      todoTypes: ["lead", "urge", "follow", "sms"],
+      showAuditRealtime: false,
+      showLiveSchedule: true,
+      showFunnel: true,
+      showAftersale: false
+    },
+    auditor: {
+      id: "auditor",
+      label: "审核员",
+      tip: "<b>审核视角</b> · 优先处理临近开播的待内部复核场次，避免卡场。",
+      tipCta: { href: "live-audit.html?status=pending", text: "去内部复核工作台" },
+      create: [],
+      entry: ["lives", "content"],
+      todoTypes: ["audit"],
+      showAuditRealtime: true,
+      showLiveSchedule: true,
+      showFunnel: false,
+      showAftersale: false
+    },
+    content: {
+      id: "content",
+      label: "内容运营",
+      tip: "<b>内容视角</b> · 推进系列课上架与直播场次创建，保证售卖货盘充足。",
+      tipCta: { href: "content-series-edit.html", text: "新建系列课" },
+      create: ["series", "live"],
+      entry: ["content", "lives"],
+      todoTypes: ["content", "audit"],
+      showAuditRealtime: true,
+      showLiveSchedule: true,
+      showFunnel: false,
+      showAftersale: false
+    }
+  };
+
+  var CREATE_ITEMS = {
+    series: { tag: "创建", title: "新建系列课", desc: "创建线上系列课并进入上架流程", href: "content-series-edit.html" },
+    live: { tag: "创建", title: "新建直播", desc: "创建场次并提交内部复核", href: "live-edit.html" },
+    urge: { tag: "创建", title: "新建私域触达活动", desc: "面向私域人群配置直播前、开播中或回放触达", href: "live-invite.html" },
+    lead: { tag: "创建", title: "新建线索", desc: "手工录入或导入线索", href: "leads.html?action=create" }
+  };
+
+  var ENTRY_ITEMS = {
+    content: { tag: "内容", title: "内容管理", desc: "系列课 / 视频 / 文章列表", href: "content-series.html" },
+    lives: { tag: "直播", title: "直播管理", desc: "场次列表、中控与数据", href: "lives.html" },
+    channels: { tag: "交易", title: "视频号订单", desc: "领课短信、兑换与加微", href: "channels-orders.html" },
+    leads: { tag: "SCRM", title: "线索池", desc: "分配跟进人，推进转化", href: "leads.html" }
+  };
+
+  /* ========== 实时待处理（固定，不随日期变） ========== */
+  var REALTIME = {
+    unassigned: 36,
+    audit: 2,
+    urgePeople: "1,284",
+    urgeTasks: 3,
+    aftersale: 5
+  };
+
+  /* ========== 经营结果 + 漏斗：按时间范围结构化 ========== */
+  var RANGE_DATA = {
+    today: {
+      key: "today",
+      label: "今日",
+      titleSuffix: "· 今日",
+      compareLabel: "较昨日",
+      rangeParam: "today",
+      results: {
+        leads: { value: "86", delta: "+12%", deltaDir: "up", extra: "" },
+        orders: { value: "42", delta: "+8%", deltaDir: "up", extra: "实收 ¥18,620" },
+        gmv: { value: "¥18,620", delta: "+15%", deltaDir: "up", extra: "42 笔" },
+        refund: { value: "2.1%", delta: "-0.3pp", deltaDir: "down", extra: "退款 1 笔", refundCount: 1 }
+      },
+      funnel: [
+        { id: "pool", name: "入池线索", count: 86, href: "leads.html" },
+        { id: "assigned", name: "已分配", count: 72, href: "leads.html?status=assigned" },
+        { id: "wecom", name: "已加微", count: 41, href: "leads.html?status=wecom" },
+        { id: "paid", name: "可归因支付", count: 9, href: "board-convert.html" }
+      ]
+    },
+    yesterday: {
+      key: "yesterday",
+      label: "昨日",
+      titleSuffix: "· 昨日",
+      compareLabel: "较前日",
+      rangeParam: "yesterday",
+      results: {
+        leads: { value: "74", delta: "+5%", deltaDir: "up", extra: "" },
+        orders: { value: "38", delta: "-3%", deltaDir: "down", extra: "实收 ¥17,240" },
+        gmv: { value: "¥17,240", delta: "-2%", deltaDir: "down", extra: "38 笔" },
+        refund: { value: "2.6%", delta: "+0.2pp", deltaDir: "up", extra: "退款 1 笔", refundCount: 1 }
+      },
+      funnel: [
+        { id: "pool", name: "入池线索", count: 74, href: "leads.html" },
+        { id: "assigned", name: "已分配", count: 64, href: "leads.html?status=assigned" },
+        { id: "wecom", name: "已加微", count: 39, href: "leads.html?status=wecom" },
+        { id: "paid", name: "可归因支付", count: 11, href: "board-convert.html" }
+      ]
+    },
+    "7d": {
+      key: "7d",
+      label: "近7日",
+      titleSuffix: "· 近7日",
+      compareLabel: "较上周期",
+      rangeParam: "7d",
+      results: {
+        leads: { value: "612", delta: "+18%", deltaDir: "up", extra: "" },
+        orders: { value: "428", delta: "+11%", deltaDir: "up", extra: "实收 ¥96,430" },
+        gmv: { value: "¥96,430", delta: "+12%", deltaDir: "up", extra: "428 笔" },
+        refund: { value: "3.2%", delta: "+0.4pp", deltaDir: "up", extra: "退款 9 笔", refundCount: 9 }
+      },
+      funnel: [
+        { id: "pool", name: "入池线索", count: 612, href: "leads.html" },
+        { id: "assigned", name: "已分配", count: 589, href: "leads.html?status=assigned" },
+        { id: "wecom", name: "已加微", count: 392, href: "leads.html?status=wecom" },
+        { id: "paid", name: "可归因支付", count: 128, href: "board-convert.html" }
+      ]
+    }
+  };
+
+  /* ========== 待办（含负责人 / SLA / 状态 / 深链） ========== */
+  var TODOS = [
+    {
+      id: "t1", type: "audit", typeLabel: "内部复核", badge: "badge-warn", completeMode: "business",
+      title: "春启 03 期家长公开课 待内部复核",
+      owner: "阮荣均", mine: false, dueLabel: "今晚 20:00", dueSort: 1,
+      sla: "over", slaLabel: "已超时", status: "pending", statusLabel: "待处理",
+      href: "live-audit-detail.html?id=live-spring-03",
+      roles: ["admin", "auditor", "content"]
+    },
+    {
+      id: "t2", type: "lead", typeLabel: "线索", badge: "badge-info", completeMode: "business",
+      title: "视频号订单流入 23 条未分配 · 春启 03 期",
+      owner: "赵老师", mine: true, dueLabel: "今天 18:00", dueSort: 2,
+      sla: "near", slaLabel: "临近超时", status: "processing", statusLabel: "处理中",
+      href: "leads.html?focus=unassigned&batch=spring03",
+      roles: ["admin", "sales"]
+    },
+    {
+      id: "t3", type: "urge", typeLabel: "私域触达", badge: "badge-info", completeMode: "business",
+      title: "今晚直播私域触达任务未发送 · 目标 1,284 人",
+      owner: "赵老师", mine: true, dueLabel: "今天 17:30", dueSort: 2,
+      sla: "near", slaLabel: "临近超时", status: "pending", statusLabel: "待处理",
+      href: "live-invite.html?liveId=spring03&focus=pending",
+      roles: ["admin", "sales"]
+    },
+    {
+      id: "t4", type: "aftersale", typeLabel: "售后", badge: "badge-danger", completeMode: "business",
+      title: "退款单 RO20260904012 超 24h 未处理",
+      owner: "财务小陈", mine: false, dueLabel: "昨天 15:00", dueSort: 0,
+      sla: "over", slaLabel: "已超时", status: "pending", statusLabel: "待处理",
+      href: "aftersale-detail.html?id=RO20260904012",
+      roles: ["admin"]
+    },
+    {
+      id: "t5", type: "sms", typeLabel: "短信", badge: "badge-warn", completeMode: "business",
+      title: "领课短信失败 18 条 · 需重发",
+      owner: "赵老师", mine: true, dueLabel: "今天 19:00", dueSort: 3,
+      sla: "near", slaLabel: "临近超时", status: "pending", statusLabel: "待处理",
+      href: "channels-orders.html?sms=failed",
+      roles: ["admin", "sales"]
+    },
+    {
+      id: "t6", type: "follow", typeLabel: "跟进", badge: "", completeMode: "manual",
+      title: "企微流失提醒 6 人 · 建议挽回",
+      owner: "赵老师", mine: true, dueLabel: "明天 12:00", dueSort: 5,
+      sla: "ok", slaLabel: "正常", status: "pending", statusLabel: "待处理",
+      href: "wecom-churn.html?focus=today",
+      roles: ["admin", "sales"]
+    },
+    {
+      id: "t7", type: "content", typeLabel: "内容", badge: "badge-info", completeMode: "business",
+      title: "系列课《边界感训练营》草稿未上架",
+      owner: "内容小周", mine: false, dueLabel: "周五 18:00", dueSort: 6,
+      sla: "ok", slaLabel: "正常", status: "processing", statusLabel: "处理中",
+      href: "content-series-edit.html?id=boundary",
+      roles: ["admin", "content"]
+    },
+    {
+      id: "t8", type: "audit", typeLabel: "内部复核", badge: "badge-warn", completeMode: "business",
+      title: "周末答疑场 · 待内部复核",
+      owner: "阮荣均", mine: false, dueLabel: "周六 10:00", dueSort: 4,
+      sla: "ok", slaLabel: "正常", status: "pending", statusLabel: "待处理",
+      href: "live-audit-detail.html?id=weekend-qa",
+      roles: ["admin", "auditor"]
+    }
+  ];
+
+  function todayLiveSchedule() {
+    if (!window.BoardData) return [];
+    return BoardData.liveRows.filter(function (r) { return r.range === "today"; }).map(function (r) {
+      var state = r.wbState || (r.status === "ended" ? "ended" : r.audit === "pending" ? "pending_audit" : "upcoming");
+      var actions = [];
+      if (state === "pending_audit") {
+        actions.push({ label: "去内部复核", href: "live-audit-detail.html?id=" + r.id });
+      } else if (state === "live") {
+        actions.push({ label: "进入中控台", href: "live-control.html?id=" + r.id });
+        actions.push({ label: "查看大屏", href: "live-screen.html?id=" + r.id });
+      } else if (state === "ended") {
+        actions.push({ label: "查看数据", href: "live-stats.html?id=" + r.id });
+        actions.push({ label: "查看回放", href: "live-replay.html?id=" + r.id });
+        actions.push({ label: "创建回放触达", href: "live-invite.html?liveId=" + r.id });
+      } else {
+        actions.push({ label: "配置预约提醒", href: "live-booking.html?id=" + r.id });
+        actions.push({ label: "新建私域触达", href: "live-invite.html?liveId=" + r.id });
+      }
+      return {
+        id: r.id,
+        name: r.name,
+        time: r.time || (r.startAt || "").replace("今天 ", ""),
+        audit: r.audit || "",
+        auditLabel: r.auditLabel || (r.audit === "pending" ? "待内部复核" : (r.status === "ended" ? "已结束" : "待开播")),
+        booked: r.booked || 0,
+        remindStatus: r.remindStatus || "—",
+        remindReached: r.remindReached || 0,
+        inviteTarget: r.inviteTarget || 0,
+        inviteReached: r.inviteReached || 0,
+        state: state,
+        actions: actions,
+        roles: ["admin", "auditor", "content", "sales"]
+      };
+    });
+  }
+
+
+
+  /* ========== 状态 ========== */
+  var state = {
+    range: "today",
+    role: "admin",
+    todoFilter: "all",
+    doneIds: {},
+    bizIds: {},
+    refreshing: false
+  };
+
+  function loadDone() {
+    try {
+      var raw = sessionStorage.getItem(WB_CONFIG.storageTodo);
+      var arr = raw ? JSON.parse(raw) : [];
+      state.doneIds = {};
+      (arr || []).forEach(function (id) { state.doneIds[id] = true; });
+    } catch (e) {
+      state.doneIds = {};
+    }
+    try {
+      var raw2 = sessionStorage.getItem(WB_CONFIG.storageBiz);
+      state.bizIds = raw2 ? JSON.parse(raw2) : {};
+    } catch (e2) {
+      state.bizIds = {};
+    }
+  }
+
+  function saveBiz() {
+    sessionStorage.setItem(WB_CONFIG.storageBiz, JSON.stringify(state.bizIds || {}));
+  }
+
+  function saveDone() {
+    sessionStorage.setItem(WB_CONFIG.storageTodo, JSON.stringify(Object.keys(state.doneIds)));
+  }
+
+  function loadRole() {
+    var r = sessionStorage.getItem(WB_CONFIG.storageRole);
+    if (r && ROLES[r]) state.role = r;
+  }
+
+  function saveRole() {
+    sessionStorage.setItem(WB_CONFIG.storageRole, state.role);
+  }
+
+  function loadRange() {
+    var r = sessionStorage.getItem(WB_CONFIG.storageRange);
+    if (r && RANGE_DATA[r]) state.range = r;
+  }
+
+  function saveRange() {
+    sessionStorage.setItem(WB_CONFIG.storageRange, state.range);
+  }
+
+  function withRange(href, rangeKey) {
+    var data = RANGE_DATA[rangeKey] || RANGE_DATA.today;
+    var rp = data && data.rangeParam;
+    if (!rp || rp === "undefined") return href;
+    try {
+      var u = new URL(href, location.href);
+      u.searchParams.set("range", rp);
+      return u.pathname.split("/").pop() + u.search + u.hash;
+    } catch (e) {
+      return href + (href.indexOf("?") >= 0 ? "&" : "?") + "range=" + encodeURIComponent(rp);
+    }
+  }
+
+  function deltaHtml(delta, dir) {
+    var cls = dir === "down" ? "down" : "up";
+    return '<span class="' + cls + '">' + delta + "</span>";
+  }
+
+  function formatHint(metric, compareLabel) {
+    var parts = [deltaHtml(metric.delta, metric.deltaDir) + " " + compareLabel];
+    if (metric.extra) parts.push(metric.extra);
+    return parts.join(" · ");
+  }
+
+  function slaClass(sla) {
+    if (sla === "over") return "sla-over";
+    if (sla === "near") return "sla-near";
+    return "sla-ok";
+  }
+
+  function sortTodos(list) {
+    var slaRank = { over: 0, near: 1, ok: 2 };
+    return list.slice().sort(function (a, b) {
+      var sa = slaRank[a.sla] != null ? slaRank[a.sla] : 9;
+      var sb = slaRank[b.sla] != null ? slaRank[b.sla] : 9;
+      if (sa !== sb) return sa - sb;
+      return (a.dueSort || 99) - (b.dueSort || 99);
+    });
+  }
+
+  function visibleTodos() {
+    var role = ROLES[state.role];
+    var list = TODOS.filter(function (t) {
+      if (state.doneIds[t.id]) return false;
+      if (t.roles && t.roles.indexOf(state.role) < 0) return false;
+      if (role.todoTypes && role.todoTypes.indexOf(t.type) < 0) return false;
+      return true;
+    });
+    if (state.todoFilter === "mine") {
+      list = list.filter(function (t) { return t.mine; });
+    } else if (state.todoFilter === "overdue") {
+      list = list.filter(function (t) { return t.sla === "over"; });
+    }
+    return sortTodos(list);
+  }
+
+  function setUpdatedNow() {
+    var d = new Date();
+    var pad = function (n) { return n < 10 ? "0" + n : "" + n; };
+    document.getElementById("last-updated").textContent =
+      "最后更新 " + pad(d.getHours()) + ":" + pad(d.getMinutes()) + ":" + pad(d.getSeconds());
+  }
+
+  /* ========== 渲染 ========== */
+  function renderTip() {
+    var role = ROLES[state.role];
+    document.getElementById("wb-tip-text").innerHTML = role.tip;
+    var cta = document.getElementById("wb-tip-cta");
+    if (role.tipCta) {
+      cta.href = role.tipCta.href;
+      cta.textContent = role.tipCta.text;
+      cta.classList.remove("wb-hidden");
+    } else {
+      cta.classList.add("wb-hidden");
+    }
+  }
+
+  function renderResults() {
+    var data = RANGE_DATA[state.range];
+    var r = data.results;
+    document.getElementById("range-label").textContent = data.titleSuffix;
+    document.getElementById("funnel-range-label").textContent = data.titleSuffix;
+
+    document.querySelector('[data-field="leads.value"]').textContent = r.leads.value;
+    document.querySelector('[data-field="leads.hint"]').innerHTML = formatHint(r.leads, data.compareLabel);
+    document.querySelector('[data-field="orders.value"]').textContent = r.orders.value;
+    document.querySelector('[data-field="orders.hint"]').innerHTML = formatHint(r.orders, data.compareLabel);
+    document.querySelector('[data-field="gmv.value"]').textContent = r.gmv.value;
+    document.querySelector('[data-field="gmv.hint"]').innerHTML = formatHint(r.gmv, data.compareLabel);
+    document.querySelector('[data-field="refund.value"]').textContent = r.refund.value;
+    document.querySelector('[data-field="refund.hint"]').innerHTML = formatHint(r.refund, data.compareLabel);
+
+    var rp = data.rangeParam;
+    document.getElementById("metric-leads").href = "leads.html?range=" + rp;
+    document.getElementById("metric-orders").href = "orders.html?range=" + rp + "&status=paid";
+    document.getElementById("metric-gmv").href = "orders.html?range=" + rp + "&status=paid";
+    document.getElementById("metric-refund").href = "aftersales.html?range=" + rp + "&status=refund";
+    var ov = document.getElementById("link-board-overview");
+    var cv = document.getElementById("link-board-convert");
+    var lv = document.getElementById("link-board-live");
+    if (ov) ov.href = withRange("board-overview.html", state.range);
+    if (cv) cv.href = withRange("board-convert.html", state.range);
+    if (lv) lv.href = withRange("board-live.html", "today");
+
+
+    var box = document.getElementById("result-stats");
+    box.classList.remove("wb-flash");
+    void box.offsetWidth;
+    box.classList.add("wb-flash");
+  }
+
+  function renderRealtime() {
+    var role = ROLES[state.role];
+    document.querySelector('[data-rt="unassigned"]').textContent = REALTIME.unassigned;
+    document.querySelector('[data-rt="audit"]').textContent = REALTIME.audit;
+    document.querySelector('[data-rt="urgePeople"]').textContent = REALTIME.urgePeople;
+    document.querySelector('[data-rt="urgeTasks"]').textContent = REALTIME.urgeTasks;
+    document.querySelector('[data-rt="aftersale"]').textContent = REALTIME.aftersale;
+
+    document.getElementById("rt-unassigned").classList.toggle("wb-hidden", state.role === "auditor" || state.role === "content");
+    document.getElementById("rt-audit").classList.toggle("wb-hidden", !role.showAuditRealtime);
+    document.getElementById("rt-urge").classList.toggle("wb-hidden", state.role === "auditor");
+    document.getElementById("rt-aftersale").classList.toggle("wb-hidden", !role.showAftersale);
+  }
+
+  function renderQuick() {
+    var role = ROLES[state.role];
+    var createEl = document.getElementById("quick-create");
+    var entryEl = document.getElementById("quick-entry");
+    createEl.innerHTML = "";
+    entryEl.innerHTML = "";
+
+    (role.create || []).forEach(function (key) {
+      var item = CREATE_ITEMS[key];
+      if (!item) return;
+      var a = document.createElement("a");
+      a.href = item.href;
+      a.innerHTML =
+        '<span class="q-tag create">' + item.tag + "</span>" +
+        '<div class="q-title">' + item.title + "</div>" +
+        '<div class="q-desc">' + item.desc + "</div>";
+      createEl.appendChild(a);
+    });
+    document.getElementById("block-create").classList.toggle("wb-hidden", !(role.create && role.create.length));
+
+    (role.entry || []).forEach(function (key) {
+      var item = ENTRY_ITEMS[key];
+      if (!item) return;
+      var a = document.createElement("a");
+      a.href = item.href;
+      a.innerHTML =
+        '<span class="q-tag">' + item.tag + "</span>" +
+        '<div class="q-title">' + item.title + "</div>" +
+        '<div class="q-desc">' + item.desc + "</div>";
+      entryEl.appendChild(a);
+    });
+    document.getElementById("block-entry").classList.toggle("wb-hidden", !(role.entry && role.entry.length));
+  }
+
+  function renderTodos() {
+    var list = visibleTodos();
+    var body = document.getElementById("todo-body");
+    var empty = document.getElementById("todo-empty");
+    var openCount = TODOS.filter(function (t) {
+      if (state.doneIds[t.id]) return false;
+      if (t.roles && t.roles.indexOf(state.role) < 0) return false;
+      var role = ROLES[state.role];
+      if (role.todoTypes && role.todoTypes.indexOf(t.type) < 0) return false;
+      return true;
+    }).length;
+    document.getElementById("todo-count").textContent = String(openCount);
+
+    body.innerHTML = "";
+    if (!list.length) {
+      empty.classList.remove("wb-hidden");
+      return;
+    }
+    empty.classList.add("wb-hidden");
+    list.forEach(function (t) {
+      var tr = document.createElement("tr");
+      var badgeCls = t.badge ? "badge " + t.badge : "badge";
+      var mode = t.completeMode || "business";
+      var st = state.doneIds[t.id] ? "done" : (state.bizIds[t.id] || t.status);
+      var statusLabel = st === "done" ? "已完成" : (st === "processing" ? "处理中" : t.statusLabel);
+      var actions = '<a href="' + t.href + '" data-biz="' + t.id + '">去处理</a>';
+      if (mode === "manual" && st !== "done") {
+        actions += ' <button type="button" class="btn btn-sm btn-ghost" data-done="' + t.id + '">完成</button>';
+      }
+      tr.innerHTML =
+        '<td><span class="' + badgeCls + '">' + t.typeLabel + "</span></td>" +
+        "<td><b>" + t.title + "</b></td>" +
+        "<td>" + t.owner + "</td>" +
+        "<td>" + t.dueLabel + "</td>" +
+        '<td class="' + slaClass(t.sla) + '">' + t.slaLabel + "</td>" +
+        "<td>" + statusLabel + "</td>" +
+        '<td class="row-actions">' + actions + "</td>";
+      body.appendChild(tr);
+    });
+  }
+
+  function renderFunnel() {
+    var role = ROLES[state.role];
+    var block = document.getElementById("block-funnel");
+    if (!role.showFunnel) {
+      block.classList.add("wb-hidden");
+      return;
+    }
+    block.classList.remove("wb-hidden");
+
+    var data = RANGE_DATA[state.range];
+    var steps = data.funnel;
+    var rates = [];
+    var worstIdx = -1;
+    var worstRate = 101;
+    for (var i = 1; i < steps.length; i++) {
+      var prev = steps[i - 1].count || 0;
+      var rate = prev > 0 ? Math.round((steps[i].count / prev) * 1000) / 10 : 0;
+      rates[i] = rate;
+      if (rate < worstRate) {
+        worstRate = rate;
+        worstIdx = i;
+      }
+    }
+
+    var list = document.getElementById("funnel-list");
+    list.innerHTML = "";
+    steps.forEach(function (step, idx) {
+      var a = document.createElement("a");
+      a.className = "wb-funnel-step" + (idx === worstIdx ? " worst" : "");
+      a.href = withRange(step.href, state.range);
+      var rateText = idx === 0 ? "—" : rates[idx] + "%";
+      var bypass = step.bypass
+        ? '<small>直播运营旁路 · 不阻断支付</small>'
+        : "";
+      a.innerHTML =
+        '<span class="idx">' + (idx + 1) + "</span>" +
+        '<span class="name">' + step.name + bypass + "</span>" +
+        '<span class="cnt">' + step.count + "</span>" +
+        '<span class="rate">' + (idx === 0 ? "基数" : "转化 " + rateText) + "</span>";
+      list.appendChild(a);
+    });
+
+    var drop = document.getElementById("funnel-drop");
+    if (worstIdx > 0) {
+      var from = steps[worstIdx - 1].name;
+      var to = steps[worstIdx].name;
+      drop.textContent = "最大转化掉点：" + from + " → " + to + "（" + worstRate + "%）";
+    } else {
+      drop.textContent = "";
+    }
+  }
+
+  function renderLive() {
+    var role = ROLES[state.role];
+    var block = document.getElementById("block-live");
+    if (!role.showLiveSchedule) {
+      block.classList.add("wb-hidden");
+      return;
+    }
+    block.classList.remove("wb-hidden");
+    var wrap = document.getElementById("live-schedule");
+    var empty = document.getElementById("live-empty");
+    var list = todayLiveSchedule().filter(function (l) {
+      return !l.roles || l.roles.indexOf(state.role) >= 0;
+    });
+    wrap.innerHTML = "";
+    if (!list.length) {
+      empty.classList.remove("wb-hidden");
+      return;
+    }
+    empty.classList.add("wb-hidden");
+    list.forEach(function (l) {
+      var showAction = true;
+      if (state.role === "auditor" && l.state !== "pending_audit") showAction = l.state === "ended";
+      if (state.role === "sales" && l.state === "pending_audit") showAction = false;
+      var invitePct = l.inviteTarget ? Math.round((l.inviteReached / l.inviteTarget) * 100) : 0;
+      var actionsHtml = "";
+      if (showAction) {
+        actionsHtml = l.actions.map(function (a) {
+          return '<a class="btn btn-sm" href="' + a.href + '">' + a.label + "</a>";
+        }).join(" ");
+      }
+      var div = document.createElement("div");
+      div.className = "wb-live-item";
+      div.innerHTML =
+        "<div>" +
+        '<div class="title">' + l.name +
+        ' <span class="badge ' + (l.audit === "pending" ? "badge-warn" : l.state === "live" ? "badge-success" : "") + '" style="margin-left:6px;font-weight:500">' +
+        l.auditLabel + "</span></div>" +
+        '<div class="meta">开播 ' + l.time +
+        " · 预约 " + l.booked + " 人" +
+        " · 预约提醒：" + l.remindStatus + (l.remindReached ? (" " + l.remindReached + " 人") : "") +
+        " · 私域触达：" + l.inviteReached + "/" + l.inviteTarget + " 人</div>" +
+        '<div class="prog" title="私域触达进度"><i style="width:' + invitePct + '%"></i></div>' +
+        "</div>" +
+        (actionsHtml ? '<div class="wb-live-actions">' + actionsHtml + "</div>" : "");
+      wrap.appendChild(div);
+    });
+  }
+
+
+
+  function renderAll() {
+    renderTip();
+    renderResults();
+    renderRealtime();
+    renderQuick();
+    renderTodos();
+    renderFunnel();
+    renderLive();
+  }
+
+  function applyRangeUI() {
+    var seg = document.getElementById("range-seg");
+    seg.querySelectorAll("button").forEach(function (b) {
+      b.classList.toggle("active", b.getAttribute("data-range") === state.range);
+    });
+  }
+
+  /* ========== 事件 ========== */
+  document.getElementById("range-seg").addEventListener("click", function (e) {
+    var btn = e.target.closest("button[data-range]");
+    if (!btn) return;
+    state.range = btn.getAttribute("data-range");
+    saveRange();
+    applyRangeUI();
+    renderResults();
+    renderFunnel();
+  });
+
+  document.getElementById("todo-tabs").addEventListener("click", function (e) {
+    var btn = e.target.closest("button[data-filter]");
+    if (!btn) return;
+    state.todoFilter = btn.getAttribute("data-filter");
+    document.querySelectorAll("#todo-tabs button").forEach(function (b) {
+      b.classList.toggle("active", b === btn);
+    });
+    renderTodos();
+  });
+
+  document.getElementById("todo-body").addEventListener("click", function (e) {
+    var biz = e.target.closest("[data-biz]");
+    if (biz) {
+      var bid = biz.getAttribute("data-biz");
+      state.bizIds[bid] = "processing";
+      saveBiz();
+      return;
+    }
+    var btn = e.target.closest("[data-done]");
+    if (!btn) return;
+    e.preventDefault();
+    var id = btn.getAttribute("data-done");
+    var todo = TODOS.filter(function (x) { return x.id === id; })[0];
+    if (!todo || todo.completeMode !== "manual") {
+      Proto.toast("该任务需在业务页完成后才会关闭");
+      return;
+    }
+    if (state.doneIds[id]) return;
+    state.doneIds[id] = true;
+    saveDone();
+    renderTodos();
+    Proto.toast("已标记完成");
+  });
+
+  document.getElementById("role-select").addEventListener("change", function () {
+    state.role = this.value;
+    saveRole();
+    renderAll();
+    Proto.toast("已切换为「" + ROLES[state.role].label + "」视角");
+  });
+
+  function doRefresh(simulateError) {
+    if (state.refreshing) return;
+    var btn = document.getElementById("btn-refresh");
+    var err = document.getElementById("wb-error");
+    state.refreshing = true;
+    btn.classList.add("is-loading");
+    btn.textContent = "刷新中…";
+    err.classList.remove("show");
+
+    setTimeout(function () {
+      state.refreshing = false;
+      btn.classList.remove("is-loading");
+      btn.textContent = "刷新";
+      if (simulateError) {
+        err.classList.add("show");
+        Proto.toast("刷新失败（示意）");
+        return;
+      }
+      /* 刷新保留时间范围；实时库存可微调示意变化 */
+      REALTIME.unassigned = Math.max(20, REALTIME.unassigned + (Math.random() > 0.5 ? 1 : -1));
+      setUpdatedNow();
+      renderResults();
+      renderRealtime();
+      renderTodos();
+      renderFunnel();
+      Proto.toast("工作台已更新");
+    }, 650);
+  }
+
+  document.getElementById("btn-refresh").addEventListener("click", function () {
+    doRefresh(false);
+  });
+  document.getElementById("btn-error-retry").addEventListener("click", function () {
+    doRefresh(false);
+  });
+
+  /* 双击刷新按钮可演示错误态（原型调试，不打扰常规使用） */
+  document.getElementById("btn-refresh").addEventListener("dblclick", function (e) {
+    e.preventDefault();
+    doRefresh(true);
+  });
+
+  /* ========== 初始化 ========== */
+  loadDone();
+  loadRole();
+  loadRange();
+  (function syncUrlRange() {
+    try {
+      var q = new URLSearchParams(location.search);
+      var r = q.get("range");
+      if (r && RANGE_DATA[r]) {
+        state.range = r;
+        saveRange();
+      }
+    } catch (e) {}
+  })();
+  document.getElementById("role-select").value = state.role;
+  applyRangeUI();
+  setUpdatedNow();
+  renderAll();
+})();
+</script>
 </body>
 </html>

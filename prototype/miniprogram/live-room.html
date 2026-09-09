@@ -1,53 +1,60 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>直播间 · To-B 小程序</title>
+  <title>直播间 · 星启家庭教育</title>
   <link rel="stylesheet" href="../assets/css/proto.css" />
+  <link rel="stylesheet" href="../assets/css/mp.css?v=taste2" />
 </head>
 <body class="mp-page" data-tabbar="0">
-  <div class="mp-frame">
-    <div class="mp-status" style="background:#0f172a;color:#fff"><span>9:41</span><span>直播中</span><span>100%</span></div>
-    <div class="live-player">
-      <span class="live-tag">LIVE 1,286</span>
-      <div style="font-size:14px;opacity:.9">亲子沟通 90 分钟</div>
-      <div style="font-size:12px;opacity:.55;margin-top:6px">主讲画面占位（小程序直播方案）</div>
-      <div style="position:absolute;top:10px;right:10px">
-        <a href="lives.html" style="color:#fff;font-size:12px;background:rgba(0,0,0,.4);padding:4px 8px;border-radius:4px">关闭</a>
+  <div class="mp-frame" style="background:#0f172a">
+    <div class="mp-status" style="background:#0f172a;color:#fff">
+      <span>9:41</span>
+      <span class="mp-notch" aria-hidden="true"></span>
+      <span>100%</span>
+    </div>
+    <div class="live-player" style="background-image:linear-gradient(180deg,rgba(12,18,32,.2),rgba(12,18,32,.7)),url('../assets/img/covers/live.jpg')">
+      <span class="live-tag"><i style="display:inline-block;width:6px;height:6px;border-radius:50%;background:#fff"></i>LIVE 1,286</span>
+      <a href="lives.html" style="position:absolute;top:12px;right:12px;color:#fff;font-size:12px;font-weight:600;background:rgba(0,0,0,.45);padding:6px 12px;border-radius:999px;text-decoration:none;backdrop-filter:blur(6px)">关闭</a>
+      <div style="width:68px;height:68px;border-radius:50%;border:2px solid rgba(255,255,255,.4);overflow:hidden;margin-bottom:12px;box-shadow:0 8px 24px rgba(0,0,0,.35)">
+        <img src="../assets/img/covers/live-host.jpg" alt="" style="width:100%;height:100%;object-fit:cover" />
       </div>
+      <div style="font-size:16px;font-weight:750;letter-spacing:-0.02em">亲子沟通 90 分钟</div>
+      <div style="font-size:12px;opacity:.6;margin-top:6px">林老师主讲 · 小程序直播示意</div>
     </div>
     <div class="live-chat">
-      <div class="msg"><b>系统</b> 欢迎进入直播间</div>
-      <div class="msg"><b>李女士</b> 老师讲得太实用了</div>
-      <div class="msg"><b>助教小王</b> 今晚下单课程有优惠哦</div>
-      <div class="msg"><b>张妈妈</b> 求挂课链接</div>
+      <div class="msg"><b>系统</b>欢迎进入直播间，文明互动</div>
+      <div class="msg"><b>李女士</b>老师讲得太实用了</div>
+      <div class="msg"><b>助教小王</b>今晚下单课程有优惠哦</div>
+      <div class="msg"><b>张妈妈</b>求挂课链接</div>
+      <div class="msg"><b>陈爸爸</b>第二节那个话术能再讲一遍吗</div>
     </div>
     <div class="goods-sheet">
-      <div style="font-size:12px;color:#888;margin-bottom:6px">本场商品</div>
+      <div style="font-size:12px;color:var(--mp-muted);margin-bottom:6px;font-weight:650">本场商品</div>
       <div class="goods-row">
-        <div class="course-cover" style="width:56px;height:42px;font-size:10px">沟通课</div>
-        <div style="flex:1">
-          <div style="font-size:13px;font-weight:600">亲子沟通基础</div>
-          <div style="color:#dc2626;font-size:13px">¥199</div>
+        <div class="mp-cover" style="width:58px;height:44px;border-radius:8px"><img src="../assets/img/covers/comm.jpg" alt="" /></div>
+        <div style="flex:1;min-width:0">
+          <div style="font-size:13px;font-weight:650">亲子沟通基础</div>
+          <div class="mp-price" style="font-size:14px"><small>¥</small>199</div>
         </div>
-        <a class="btn btn-primary btn-sm" href="pay-result.html?from=live">购买</a>
+        <a class="mp-btn" href="pay-result.html?from=live" style="width:auto;padding:8px 16px;font-size:12px;box-shadow:none">购买</a>
       </div>
-      <div class="goods-row" style="border:0">
-        <div class="course-cover live" style="width:56px;height:42px;font-size:10px">本场</div>
-        <div style="flex:1">
-          <div style="font-size:13px;font-weight:600">本场直播门票</div>
-          <div style="color:#dc2626;font-size:13px">¥19.9 · 未购可买</div>
+      <div class="goods-row">
+        <div class="mp-cover" style="width:58px;height:44px;border-radius:8px"><img src="../assets/img/covers/live.jpg" alt="" /></div>
+        <div style="flex:1;min-width:0">
+          <div style="font-size:13px;font-weight:650">本场直播门票</div>
+          <div class="mp-price" style="font-size:14px"><small>¥</small>19.9</div>
         </div>
-        <a class="btn btn-sm" href="pay-result.html?from=ticket">购买入场</a>
+        <a class="mp-btn mp-btn-outline" href="pay-result.html?from=ticket" style="width:auto;padding:7px 14px;font-size:12px">入场</a>
       </div>
-      <div style="display:flex;gap:8px;margin-top:8px">
-        <input placeholder="说点什么…" style="flex:1" />
-        <button class="btn btn-sm" data-toast="评论已发送（原型）">发送</button>
+      <div style="display:flex;gap:8px;margin-top:12px;align-items:center">
+        <input placeholder="说点什么…" style="flex:1;margin:0;border-radius:999px;background:#f2f3f5;border:0;padding:11px 16px;font-size:13px;font-family:inherit" />
+        <button class="mp-btn" style="width:auto;padding:10px 18px;font-size:13px;box-shadow:none" data-toast="评论已发送（原型）">发送</button>
       </div>
     </div>
   </div>
-  <p class="mp-hint">未购用户可买直播或挂载课 · <a href="../admin/live-edit.html">管理端配置</a></p>
+  <p class="mp-hint"><a href="../admin/live-edit.html">管理端配置</a></p>
   <script src="../assets/js/proto.js"></script>
   <script src="../assets/js/mp-shell.js"></script>
 </body>

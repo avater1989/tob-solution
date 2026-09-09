@@ -1,503 +1,10 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>预约与推送 · 商家管理后台</title>
-<link rel="stylesheet" href="../assets/css/proto.css" />
-</head>
-<body class="admin-body" data-module="live" data-nav="live-booking" data-title="预约与推送" data-crumb="直播 / 直播管理 / 预约与推送">
-<div id="header-actions">
-  <button class="btn" id="btn-export">导出</button>
-  <button class="btn btn-primary" id="btn-push">+ 新建推送</button>
-</div>
-<div id="page-content" style="display:none">
-
-  <!-- ========== 直播列表视图（无 live_id 时显示） ========== -->
-  <div id="view-list" style="display:none">
-    <div class="bk-list-tip">
-      <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
-      点击直播名称进入，配置其预约用户管理和推送计划。当前共 <b id="bk-list-count" style="margin:0 4px">3</b> 场有推送计划的直播
-    </div>
-
-    <!-- 筛选条 -->
-    <div class="card" style="margin-bottom:12px"><div class="card-bd" style="padding:12px 16px">
-      <div class="toolbar" style="border:none;padding:0;background:transparent">
-        <select class="input" style="width:140px">
-          <option>全部状态</option><option>已上架</option><option>审核中</option><option>已结束</option>
-        </select>
-        <select class="input" style="width:140px">
-          <option>全部模式</option><option>视频直播</option><option>语音直播</option>
-        </select>
-        <input class="input" type="text" placeholder="直播名称 / ID" style="width:220px" />
-        <button class="btn btn-primary">查询</button>
-        <button class="btn">重置</button>
-        <div style="margin-left:auto;display:flex;gap:6px">
-          <button class="btn">批量推送</button>
-          <button class="btn btn-primary">+ 新建推送</button>
-        </div>
-      </div>
-    </div></div>
-
-    <div id="bk-lives-grid">
-      <!-- JS 动态渲染 -->
-    </div>
-  </div>
-
-  <!-- ========== 单一直播视图（有 live_id 时显示） ========== -->
-  <div id="view-single" style="display:none">
-
-  <!-- 顶部直播选择器 -->
-  <div class="bk-selector">
-    <span class="bk-selector-label">
-      <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z"/></svg>
-      当前直播
-    </span>
-    <span class="bk-selector-current" id="bk-current-live-name">
-      <svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></svg>
-      <span id="bk-current-live-text">—</span>
-    </span>
-    <a class="bk-selector-back" href="live-booking.html">
-      <svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
-      切换其他直播
-    </a>
-  </div>
-
-  <!-- 4 个统计卡片 -->
-  <div class="stat-cards" style="margin-bottom:8px">
-    <div class="stat-card">
-      <div class="stat-label">累计预约</div>
-      <div class="stat-value">1,287</div>
-      <div class="stat-sub">较上月 <span class="up">+18%</span></div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-label">预约转化观看率</div>
-      <div class="stat-value" style="color:#00b42a">62.5%</div>
-      <div class="stat-sub">预约→实际观看</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-label">推送送达率</div>
-      <div class="stat-value">96.8%</div>
-      <div class="stat-sub">短信 + 站内信 + 企微</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-label">推送转化</div>
-      <div class="stat-value" style="color:#fa8c16">¥48,260</div>
-      <div class="stat-sub">推送带来的 GMV</div>
-    </div>
-  </div>
-
-  <!-- Tabs -->
-  <div class="tabs" id="bk-tabs">
-    <a class="active" href="#bookings" data-tab="bookings">预约名单</a>
-    <a href="#push-records" data-tab="push-records">推送记录</a>
-    <a href="#subscribers" data-tab="subscribers">开播提醒订阅</a>
-  </div>
-
-  <!-- 预约名单面板 -->
-  <div class="bk-pane active" id="pane-bookings">
-
-    <!-- 筛选 + 直播选择 -->
-    <div class="card" style="margin-bottom:8px"><div class="card-bd">
-      <div class="form-grid" style="grid-template-columns:repeat(5,minmax(0,1fr));gap:8px 12px">
-        <select id="f-live">
-          <option value="">全部直播</option>
-          <option>春启 03 期家长公开课</option>
-          <option>9.9 引流试听课</option>
-          <option>明日直播·春启04 招生</option>
-          <option>家长答疑会·音频直播</option>
-        </select>
-        <select id="f-status">
-          <option value="">全部状态</option>
-          <option>已预约</option>
-          <option>已观看</option>
-          <option>未观看</option>
-          <option>已取消</option>
-        </select>
-        <select id="f-channel">
-          <option value="">全部渠道</option>
-          <option>课程详情页</option>
-          <option>直播预告页</option>
-          <option>课程详情页弹窗</option>
-          <option>老师主页</option>
-        </select>
-        <input id="f-keyword" placeholder="姓名 / 手机号" />
-        <select id="f-time">
-          <option value="">全部时间</option>
-          <option>今日</option>
-          <option>近 7 天</option>
-          <option>近 30 天</option>
-        </select>
-      </div>
-      <div class="toolbar" style="margin-top:8px">
-        <button class="btn btn-primary" id="btn-bk-query">查询</button>
-        <button class="btn" id="btn-bk-reset">重置</button>
-        <div class="spacer"></div>
-        <span class="muted" style="font-size:12px">提示：预约用户将在开播前 1 小时收到短信 + 站内信提醒</span>
-      </div>
-    </div></div>
-
-    <!-- 预约名单表格 -->
-    <div class="card"><div class="card-bd" style="padding:0">
-      <table class="data">
-        <thead>
-          <tr>
-            <th style="width:36px"><input type="checkbox" id="bk-check-all" /></th>
-            <th>用户</th><th>手机号</th><th>预约直播</th>
-            <th>预约渠道</th><th>预约时间</th>
-            <th>状态</th><th>观看时长</th><th>是否下单</th>
-            <th style="width:160px">操作</th>
-          </tr>
-        </thead>
-        <tbody id="bk-tbody">
-          <tr data-status="watched">
-            <td><input type="checkbox" class="row-check" /></td>
-            <td><div class="user-cell"><div class="user-avatar" style="background:#165dff">张</div><b>张妈妈</b></div></td>
-            <td>138****1234</td>
-            <td><a href="live-edit.html" class="link-blue">春启 03 期家长公开课</a></td>
-            <td>课程详情页</td>
-            <td>2026-09-03 10:24</td>
-            <td><span class="audit-badge audit-approved">已观看 · 48 分钟</span></td>
-            <td>48 分钟</td>
-            <td><span class="audit-badge audit-approved">¥298 已下单</span></td>
-            <td class="row-actions">
-              <a href="#" data-bk-act="msg">私信</a>
-              <a href="#" data-bk-act="tag">打标签</a>
-              <a href="#" data-bk-act="detail">详情</a>
-            </td>
-          </tr>
-          <tr data-status="booked">
-            <td><input type="checkbox" class="row-check" /></td>
-            <td><div class="user-cell"><div class="user-avatar" style="background:#00b42a">李</div><b>李爸爸</b></div></td>
-            <td>139****5678</td>
-            <td><a href="live-edit.html" class="link-blue">春启 03 期家长公开课</a></td>
-            <td>直播预告页</td>
-            <td>2026-09-03 14:08</td>
-            <td><span class="audit-badge audit-pending">已预约</span></td>
-            <td>—</td>
-            <td>—</td>
-            <td class="row-actions">
-              <a href="#" data-bk-act="msg">私信</a>
-              <a href="#" data-bk-act="cancel">取消预约</a>
-            </td>
-          </tr>
-          <tr data-status="notwatched">
-            <td><input type="checkbox" class="row-check" /></td>
-            <td><div class="user-cell"><div class="user-avatar" style="background:#722ed1">王</div><b>王同学妈</b></div></td>
-            <td>136****9012</td>
-            <td><a href="live-edit.html" class="link-blue">9.9 引流试听课</a></td>
-            <td>课程详情页弹窗</td>
-            <td>2026-09-02 18:42</td>
-            <td><span class="audit-badge audit-rejected">未观看</span></td>
-            <td>0 分钟</td>
-            <td>—</td>
-            <td class="row-actions">
-              <a href="#" data-bk-act="msg">私信</a>
-              <a href="#" data-bk-act="repush">重新推送</a>
-            </td>
-          </tr>
-          <tr data-status="watched">
-            <td><input type="checkbox" class="row-check" /></td>
-            <td><div class="user-cell"><div class="user-avatar" style="background:#fa8c16">周</div><b>周妈妈</b></div></td>
-            <td>137****3456</td>
-            <td><a href="live-edit.html" class="link-blue">春启 03 期家长公开课</a></td>
-            <td>老师主页</td>
-            <td>2026-09-01 09:15</td>
-            <td><span class="audit-badge audit-approved">已观看 · 60 分钟</span></td>
-            <td>60 分钟</td>
-            <td><span class="audit-badge audit-approved">¥1,288 已下单</span></td>
-            <td class="row-actions">
-              <a href="#" data-bk-act="msg">私信</a>
-              <a href="#" data-bk-act="tag">打标签</a>
-              <a href="#" data-bk-act="detail">详情</a>
-            </td>
-          </tr>
-          <tr data-status="cancelled">
-            <td><input type="checkbox" class="row-check" /></td>
-            <td><div class="user-cell"><div class="user-avatar" style="background:#f53f3f">陈</div><b>陈妈妈</b></div></td>
-            <td>135****7890</td>
-            <td><a href="live-edit.html" class="link-blue">9.9 引流试听课</a></td>
-            <td>课程详情页</td>
-            <td>2026-08-30 16:33</td>
-            <td><span class="audit-badge audit-cancelled">已取消</span></td>
-            <td>—</td>
-            <td>—</td>
-            <td class="row-actions">
-              <a href="#" data-bk-act="msg">私信</a>
-              <a href="#" data-bk-act="rebook">重新预约</a>
-            </td>
-          </tr>
-          <tr data-status="booked">
-            <td><input type="checkbox" class="row-check" /></td>
-            <td><div class="user-cell"><div class="user-avatar" style="background:#13c2c2">刘</div><b>刘爸爸</b></div></td>
-            <td>188****4321</td>
-            <td><a href="live-edit.html" class="link-blue">明日直播·春启04 招生</a></td>
-            <td>直播预告页</td>
-            <td>2026-09-04 08:20</td>
-            <td><span class="audit-badge audit-pending">已预约</span></td>
-            <td>—</td>
-            <td>—</td>
-            <td class="row-actions">
-              <a href="#" data-bk-act="msg">私信</a>
-              <a href="#" data-bk-act="cancel">取消预约</a>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div></div>
-
-    <div class="toolbar" style="margin-top:8px">
-      <span class="muted">共 <b>1,287</b> 条预约 · 已观看 805 · 未观看 482</span>
-      <div class="spacer"></div>
-      <select><option>10条/页</option><option>20条/页</option></select>
-      <button class="btn btn-sm" disabled>‹</button>
-      <button class="btn btn-sm btn-primary">1</button>
-      <button class="btn btn-sm">2</button>
-      <button class="btn btn-sm">3</button>
-      <button class="btn btn-sm">›</button>
-    </div>
-  </div>
-
-  <!-- 推送记录面板 -->
-  <div class="bk-pane" id="pane-push-records">
-
-    <div class="card" style="margin-bottom:8px"><div class="card-bd">
-      <div class="form-grid" style="grid-template-columns:repeat(4,minmax(0,1fr));gap:8px 12px">
-        <select id="pr-live">
-          <option value="">全部直播</option>
-          <option>春启 03 期家长公开课</option>
-          <option>9.9 引流试听课</option>
-        </select>
-        <select id="pr-type">
-          <option value="">全部类型</option>
-          <option>开播前提醒</option>
-          <option>开播提醒</option>
-          <option>回放生成提醒</option>
-          <option>营销推送</option>
-        </select>
-        <select id="pr-channel">
-          <option value="">全部渠道</option>
-          <option>短信</option>
-          <option>站内信</option>
-          <option>企微</option>
-        </select>
-        <select id="pr-status">
-          <option value="">全部状态</option>
-          <option>已送达</option>
-          <option>已读</option>
-          <option>已点击</option>
-          <option>已转化</option>
-          <option>失败</option>
-        </select>
-      </div>
-      <div class="toolbar" style="margin-top:8px">
-        <button class="btn btn-primary">查询</button>
-        <button class="btn">重置</button>
-      </div>
-    </div></div>
-
-    <div class="card"><div class="card-bd" style="padding:0">
-      <table class="data">
-        <thead>
-          <tr>
-            <th>推送名称</th><th>类型</th><th>渠道</th>
-            <th>目标用户</th><th>推送时间</th>
-            <th>送达率</th><th>点击率</th>
-            <th>转化 GMV</th><th>状态</th>
-            <th style="width:140px">操作</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td><b>春启 03 期·开播前 1 小时提醒</b></td>
-            <td><span class="pr-type pr-type-start">开播前提醒</span></td>
-            <td>短信 + 站内信</td>
-            <td>已预约 805 人</td>
-            <td>2026-03-29 19:00</td>
-            <td>96.8%</td>
-            <td>78.5%</td>
-            <td>¥32,180</td>
-            <td><span class="audit-badge audit-approved">已完成</span></td>
-            <td class="row-actions">
-              <a href="#">详情</a>
-              <a href="#">复制</a>
-            </td>
-          </tr>
-          <tr>
-            <td><b>9.9 引流试听课·开播提醒</b></td>
-            <td><span class="pr-type pr-type-onlive">开播提醒</span></td>
-            <td>企微 + 站内信</td>
-            <td>订阅用户 286 人</td>
-            <td>2026-03-30 19:30</td>
-            <td>98.2%</td>
-            <td>82.1%</td>
-            <td>¥14,080</td>
-            <td><span class="audit-badge audit-approved">已完成</span></td>
-            <td class="row-actions">
-              <a href="#">详情</a>
-              <a href="#">复制</a>
-            </td>
-          </tr>
-          <tr>
-            <td><b>春启 03 期·回放生成提醒</b></td>
-            <td><span class="pr-type pr-type-replay">回放提醒</span></td>
-            <td>站内信</td>
-            <td>未观看 482 人</td>
-            <td>2026-03-30 22:30</td>
-            <td>100%</td>
-            <td>62.3%</td>
-            <td>¥2,000</td>
-            <td><span class="audit-badge audit-approved">已完成</span></td>
-            <td class="row-actions">
-              <a href="#">详情</a>
-              <a href="#">复制</a>
-            </td>
-          </tr>
-          <tr>
-            <td><b>明日直播·开播前 1 小时提醒</b></td>
-            <td><span class="pr-type pr-type-start">开播前提醒</span></td>
-            <td>短信 + 站内信</td>
-            <td>已预约 200 人</td>
-            <td>—</td>
-            <td>—</td>
-            <td>—</td>
-            <td>—</td>
-            <td><span class="audit-badge audit-pending">待发送</span></td>
-            <td class="row-actions">
-              <a href="#">编辑</a>
-              <a href="#">取消</a>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div></div>
-  </div>
-
-  <!-- 订阅开播提醒 -->
-  <div class="bk-pane" id="pane-subscribers">
-    <div class="card" style="margin-bottom:8px"><div class="card-bd">
-      <p class="muted" style="margin:0 0 12px">
-        用户在 C 端点击「开播提醒我」后会自动加入此列表。当主播开启直播前 30 分钟会自动推送提醒通知。
-      </p>
-      <div class="form-grid" style="grid-template-columns:repeat(3,minmax(0,1fr));gap:8px 12px">
-        <input placeholder="搜索用户" />
-        <select><option>全部时间</option><option>近 7 天</option><option>近 30 天</option></select>
-        <div></div>
-      </div>
-    </div></div>
-
-    <div class="card"><div class="card-bd" style="padding:0">
-      <table class="data">
-        <thead>
-          <tr><th>用户</th><th>订阅时间</th><th>订阅方式</th><th>已推送次数</th><th>最近推送</th><th style="width:140px">操作</th></tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td><div class="user-cell"><div class="user-avatar" style="background:#165dff">张</div><b>张妈妈</b></div></td>
-            <td>2026-08-25 14:32</td>
-            <td>企微 + 站内信</td>
-            <td>3 次</td>
-            <td>2026-09-01 09:00</td>
-            <td class="row-actions"><a href="#">私信</a> <a href="#">取消订阅</a></td>
-          </tr>
-          <tr>
-            <td><div class="user-cell"><div class="user-avatar" style="background:#00b42a">李</div><b>李爸爸</b></div></td>
-            <td>2026-08-28 20:15</td>
-            <td>短信 + 站内信</td>
-            <td>1 次</td>
-            <td>2026-09-03 19:00</td>
-            <td class="row-actions"><a href="#">私信</a> <a href="#">取消订阅</a></td>
-          </tr>
-          <tr>
-            <td><div class="user-cell"><div class="user-avatar" style="background:#722ed1">王</div><b>王同学妈</b></div></td>
-            <td>2026-09-01 11:20</td>
-            <td>站内信</td>
-            <td>2 次</td>
-            <td>2026-09-02 18:30</td>
-            <td class="row-actions"><a href="#">私信</a> <a href="#">取消订阅</a></td>
-          </tr>
-        </tbody>
-      </table>
-    </div></div>
-  </div>
-
-</div>
-
-<!-- ============ 弹窗 ============ -->
-<div class="proto-mask" id="mask"></div>
-
-<!-- 新建推送弹窗 -->
-<div class="proto-modal" id="modal-push">
-  <div class="proto-modal-hd">
-    <h3>新建推送</h3>
-    <button class="btn btn-sm btn-ghost" data-close>×</button>
-  </div>
-  <div class="proto-modal-bd">
-    <div class="form-grid" style="grid-template-columns:1fr 1fr;gap:12px">
-      <div class="field" style="grid-column:1/-1"><label>推送名称</label><input placeholder="如：春启 03 期·开播前 1 小时提醒" /></div>
-      <div class="field"><label>推送类型</label>
-        <select><option>开播前提醒</option><option>开播提醒</option><option>回放生成提醒</option><option>营销推送</option></select>
-      </div>
-      <div class="field"><label>关联直播</label>
-        <select><option>春启 03 期家长公开课</option><option>明日直播·春启04 招生</option></select>
-      </div>
-      <div class="field"><label>推送时间</label><input type="datetime-local" /></div>
-      <div class="field"><label>目标用户</label>
-        <select><option>已预约用户</option><option>订阅开播提醒用户</option><option>全部关注用户</option><option>自定义标签</option></select>
-      </div>
-      <div class="field" style="grid-column:1/-1"><label>推送渠道</label>
-        <div style="display:flex;gap:16px;padding:6px 0">
-          <label><input type="checkbox" checked /> 站内信</label>
-          <label><input type="checkbox" checked /> 短信</label>
-          <label><input type="checkbox" /> 企微</label>
-          <label><input type="checkbox" /> 公众号模板消息</label>
-        </div>
-      </div>
-      <div class="field" style="grid-column:1/-1"><label>推送文案</label>
-        <textarea rows="4" placeholder="支持变量：{昵称} {直播名称} {开播时间}"></textarea>
-      </div>
-    </div>
-  </div>
-  <div class="proto-modal-ft">
-    <button class="btn" data-close>取消</button>
-    <button class="btn">保存为草稿</button>
-    <button class="btn btn-primary">✓ 立即推送</button>
-  </div>
-</div>
-
-<!-- 用户详情抽屉 -->
-<div class="proto-drawer" id="drawer-bk-detail">
-  <div class="proto-drawer-hd">
-    <h3 id="bk-detail-title">用户预约详情</h3>
-    <button class="btn btn-sm btn-ghost" data-close>×</button>
-  </div>
-  <div class="proto-drawer-bd">
-    <div class="form-grid readonly" style="grid-template-columns:1fr 1fr">
-      <div class="field"><label>用户</label><div id="bk-d-name">—</div></div>
-      <div class="field"><label>手机号</label><div id="bk-d-phone">—</div></div>
-      <div class="field" style="grid-column:1/-1"><label>预约直播</label><div id="bk-d-live">—</div></div>
-      <div class="field"><label>预约渠道</label><div id="bk-d-channel">—</div></div>
-      <div class="field"><label>预约时间</label><div id="bk-d-time">—</div></div>
-      <div class="field"><label>状态</label><div id="bk-d-status">—</div></div>
-      <div class="field"><label>观看时长</label><div id="bk-d-duration">—</div></div>
-      <div class="field"><label>下单金额</label><div id="bk-d-amount">—</div></div>
-      <div class="field" style="grid-column:1/-1"><label>推送触达记录</label>
-        <div id="bk-d-push" style="display:flex;flex-direction:column;gap:6px">
-          <div class="bk-push-item"><span>2026-09-04 19:00 · 开播前 1 小时提醒</span><span class="bk-push-ok">已送达</span></div>
-          <div class="bk-push-item"><span>2026-03-30 19:30 · 开播提醒</span><span class="bk-push-ok">已送达</span></div>
-          <div class="bk-push-item"><span>2026-03-30 22:30 · 回放生成</span><span class="bk-push-ok">已送达</span></div>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="proto-drawer-ft">
-    <button class="btn" data-close>关闭</button>
-    <button class="btn btn-primary">发私信</button>
-  </div>
-</div>
-
-  </div><!-- /#view-single -->
-
+<title>预约管理 · 商家管理后台</title>
+<link rel="stylesheet" href="../assets/css/proto.css?v=9" />
 <style>
 .user-cell { display: flex; align-items: center; gap: 8px; }
 .user-avatar {
@@ -506,37 +13,21 @@
   color: #fff; font-size: 12px; font-weight: 600;
   flex-shrink: 0;
 }
-
-/* Tabs */
 .bk-pane { display: none; }
 .bk-pane.active { display: block; }
-
-/* 推送类型标签 */
-.pr-type {
-  display: inline-block; padding: 2px 8px; border-radius: 3px;
-  font-size: 12px; font-weight: 500;
-}
-.pr-type-start   { background: rgba(22,93,255,.15); color: #4d8aff; }
-.pr-type-onlive  { background: rgba(245,63,63,.15); color: #ff7875; }
-.pr-type-replay  { background: rgba(0,180,42,.15); color: #5fd068; }
-.pr-type-promo   { background: rgba(250,140,22,.15); color: #ffc857; }
-
-/* 详情抽屉内推送记录 */
 .bk-push-item {
   display: flex; align-items: center; justify-content: space-between;
   padding: 6px 10px; background: #f7f8fa; border-radius: 4px;
-  font-size: 12px;
+  font-size: 12px; gap: 8px;
 }
 .bk-push-ok {
   color: #00b42a; font-size: 11px;
-  padding: 2px 6px; background: #e8f5e9; border-radius: 3px;
+  padding: 2px 6px; background: #e8f5e9; border-radius: 3px; white-space: nowrap;
 }
 .bk-push-fail {
   color: #f53f3f; font-size: 11px;
-  padding: 2px 6px; background: #fff1f0; border-radius: 3px;
+  padding: 2px 6px; background: #fff1f0; border-radius: 3px; white-space: nowrap;
 }
-
-/* ===== 直播选择器（顶部） ===== */
 .bk-selector {
   display: flex; align-items: center; gap: 12px;
   padding: 14px 18px;
@@ -548,310 +39,1359 @@
   display: flex; align-items: center; gap: 6px;
 }
 .bk-selector-current {
-  font-size: 14px; font-weight: 600; color: #1d2129;
+  font-size: 14px; font-weight: 600;
   padding: 6px 12px; background: #f0f5ff; border-radius: 4px;
   border: 1px solid #d6e4ff; color: #165dff;
   display: inline-flex; align-items: center; gap: 8px;
 }
-.bk-selector-current svg { color: #165dff; }
 .bk-selector-back {
   margin-left: auto;
   font-size: 12px; color: #165dff; cursor: pointer;
   display: inline-flex; align-items: center; gap: 4px;
-  padding: 4px 10px; border-radius: 4px;
+  padding: 4px 10px; border-radius: 4px; text-decoration: none;
 }
 .bk-selector-back:hover { background: #f0f5ff; }
-
-/* ===== 直播列表视图（表格） ===== */
-.bk-live-thumb-mini {
-  width: 36px; height: 24px; border-radius: 4px;
-  display: inline-flex; align-items: center; justify-content: center;
-  color: #fff; font-size: 14px; flex-shrink: 0;
-  vertical-align: middle;
-}
-.bk-live-thumb-mini.blue   { background: linear-gradient(135deg, #165dff, #4080ff); }
-.bk-live-thumb-mini.orange { background: linear-gradient(135deg, #fa8c16, #ffc53d); }
-.bk-live-thumb-mini.green  { background: linear-gradient(135deg, #00b42a, #4ed679); }
-.bk-live-thumb-mini.purple { background: linear-gradient(135deg, #722ed1, #b577ff); }
-
-.bk-live-name-cell {
-  display: inline-flex; align-items: center; gap: 8px;
-}
-.bk-live-name-cell b {
-  color: #1d2129; font-weight: 600;
-}
-.bk-live-name-cell a { color: inherit; text-decoration: none; }
-.bk-live-name-cell a:hover b { color: #165dff; }
-
-.bk-mono { font-family: ui-monospace, Consolas, monospace; }
-.bk-num  { color: #165dff; font-weight: 600; }
-
 .bk-list-tip {
   display: flex; align-items: center; gap: 8px;
   padding: 10px 14px; background: #f0f5ff; border-radius: 6px;
   color: #165dff; font-size: 12px; margin-bottom: 14px;
   border-left: 3px solid #165dff;
 }
-.bk-empty {
-  text-align: center; padding: 60px 20px; color: #8c8c8c;
-  background: #fff; border-radius: 8px; border: 1px dashed #e8e8e8;
+.bk-mono { font-family: ui-monospace, Consolas, monospace; }
+.bk-num { color: #165dff; font-weight: 600; }
+.bk-pause-tip {
+  font-size: 12px; color: #d25f00; margin-top: 4px;
 }
+.rm-type {
+  display: inline-block; padding: 2px 8px; border-radius: 3px;
+  font-size: 12px; font-weight: 500;
+}
+.rm-type-pre { background: rgba(22,93,255,.12); color: #165dff; }
+.rm-type-start { background: rgba(245,63,63,.12); color: #f53f3f; }
+.rm-type-replay { background: rgba(0,180,42,.12); color: #00b42a; }
+.rm-type-changed { background: rgba(250,140,22,.12); color: #fa8c16; }
+.rm-type-cancel { background: rgba(134,144,156,.15); color: #4e5969; }
+.demo-bar {
+  display: flex; flex-wrap: wrap; gap: 6px; align-items: center;
+  margin-top: 8px; padding-top: 8px; border-top: 1px dashed #e5e6eb;
+}
+.demo-bar .muted { font-size: 11px; margin-right: 4px; }
+.link-blue { color: #165dff; text-decoration: none; cursor: pointer; }
+.link-blue:hover { text-decoration: underline; }
+.row-actions a { margin-right: 8px; white-space: nowrap; }
+.row-actions a:last-child { margin-right: 0; }
 </style>
+</head>
+<body class="admin-body" data-module="live" data-nav="live-booking" data-title="预约管理" data-crumb="直播 / 直播管理 / 预约管理">
+<div id="header-actions">
+  <button class="btn" type="button" id="btn-export">导出</button>
+  <a class="btn" id="btn-invite" href="live-invite.html">创建私域促到计划</a>
+  <button class="btn btn-primary" type="button" id="btn-new-reminder">+ 新建提醒规则</button>
+</div>
+
+<div id="page-content" style="display:none">
+
+  <!-- ========== 列表视图 ========== -->
+  <div id="view-list" style="display:none">
+    <div class="bk-list-tip">
+      <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+      管理各场直播的预约用户与标准系统提醒。系统提醒面向已预约/已订阅用户，私域营销请使用「创建私域促到计划」。当前共 <b id="bk-list-count" style="margin:0 4px">0</b> 场直播
+    </div>
+
+    <div class="card" style="margin-bottom:12px"><div class="card-bd" style="padding:12px 16px">
+      <div class="toolbar" style="border:none;padding:0;background:transparent">
+        <select class="input" id="list-f-live-status" style="width:140px">
+          <option value="">全部直播状态</option>
+          <option value="upcoming">待开播</option>
+          <option value="ended">已结束</option>
+          <option value="draft_pending">待审核</option>
+          <option value="cancelled">已取消</option>
+        </select>
+        <select class="input" id="list-f-audit" style="width:140px">
+          <option value="">全部审核状态</option>
+          <option value="approved">已通过</option>
+          <option value="pending">审核中</option>
+          <option value="rejected">已驳回</option>
+        </select>
+        <input class="input" id="list-f-keyword" type="text" placeholder="直播名称 / ID" style="width:220px" />
+        <button class="btn btn-primary" type="button" id="list-btn-query">查询</button>
+        <button class="btn" type="button" id="list-btn-reset">重置</button>
+      </div>
+      <div class="demo-bar">
+        <span class="muted">原型联动：</span>
+        <button class="btn btn-sm" type="button" data-demo="approve" data-live="L003">模拟审核通过上架 (L003)</button>
+        <button class="btn btn-sm" type="button" data-demo="reschedule" data-live="L001">模拟改期 (L001)</button>
+        <button class="btn btn-sm" type="button" data-demo="cancel" data-live="L001">模拟取消直播 (L001)</button>
+      </div>
+    </div></div>
+
+    <div class="card"><div class="card-bd" style="padding:0">
+      <table class="data">
+        <thead>
+          <tr>
+            <th>直播名称</th>
+            <th>直播状态</th>
+            <th>审核状态</th>
+            <th>开播时间</th>
+            <th>预约用户</th>
+            <th>订阅提醒用户</th>
+            <th>已触达用户</th>
+            <th>消息发送条数</th>
+            <th>到课用户</th>
+            <th>成交用户</th>
+            <th style="width:220px">操作</th>
+          </tr>
+        </thead>
+        <tbody id="list-tbody"></tbody>
+      </table>
+    </div></div>
+    <div class="toolbar" style="margin-top:8px">
+      <span class="muted" id="list-summary">共 0 条</span>
+      <div class="spacer"></div>
+      <button class="btn btn-sm" type="button" disabled>上一页</button>
+      <button class="btn btn-sm btn-primary" type="button">1</button>
+      <button class="btn btn-sm" type="button" disabled>下一页</button>
+    </div>
+  </div>
+
+  <!-- ========== 单场详情视图 ========== -->
+  <div id="view-single" style="display:none">
+
+    <div class="bk-selector">
+      <span class="bk-selector-label">
+        <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z"/></svg>
+        当前直播
+      </span>
+      <span class="bk-selector-current">
+        <svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></svg>
+        <span id="bk-current-live-text">—</span>
+      </span>
+      <span id="bk-current-live-meta" class="muted" style="font-size:12px"></span>
+      <a class="bk-selector-back" href="live-booking.html">
+        <svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
+        返回直播列表
+      </a>
+    </div>
+
+    <div class="stat-cards" style="margin-bottom:8px">
+      <div class="stat-card">
+        <div class="stat-label">预约用户</div>
+        <div class="stat-value" id="st-booked">0</div>
+        <div class="stat-sub">已预约本场直播</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">订阅提醒用户</div>
+        <div class="stat-value" id="st-subscribed">0</div>
+        <div class="stat-sub">开启开播提醒</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">已触达用户</div>
+        <div class="stat-value" id="st-reached">0</div>
+        <div class="stat-sub">去重后的用户数</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">消息发送条数</div>
+        <div class="stat-value" id="st-messages">0</div>
+        <div class="stat-sub">多轮 / 多渠道合计</div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-bottom:8px"><div class="card-bd" style="padding:10px 16px">
+      <div class="demo-bar" style="border:none;margin:0;padding:0">
+        <span class="muted">原型联动：</span>
+        <button class="btn btn-sm" type="button" id="demo-approve">模拟审核通过上架</button>
+        <button class="btn btn-sm" type="button" id="demo-reschedule">模拟改期</button>
+        <button class="btn btn-sm" type="button" id="demo-cancel">模拟取消直播</button>
+      </div>
+    </div></div>
+
+    <div class="tabs" id="bk-tabs">
+      <a class="active" href="#bookings" data-tab="bookings">预约用户</a>
+      <a href="#reminders" data-tab="reminders">提醒计划</a>
+      <a href="#records" data-tab="records">发送记录</a>
+    </div>
+
+    <!-- Tab: 预约用户 -->
+    <div class="bk-pane active" id="pane-bookings">
+      <div class="card" style="margin-bottom:8px"><div class="card-bd">
+        <div class="form-grid" style="grid-template-columns:repeat(6,minmax(0,1fr));gap:8px 12px">
+          <select id="f-status">
+            <option value="">全部状态</option>
+            <option value="booked">已预约</option>
+            <option value="watched">已观看</option>
+            <option value="ordered">已下单</option>
+            <option value="cancelled">已取消</option>
+            <option value="fail">发送失败</option>
+          </select>
+          <select id="f-subscribed">
+            <option value="">是否订阅提醒</option>
+            <option value="1">已订阅</option>
+            <option value="0">未订阅</option>
+          </select>
+          <select id="f-watched">
+            <option value="">是否观看</option>
+            <option value="1">已观看</option>
+            <option value="0">未观看</option>
+          </select>
+          <select id="f-ordered">
+            <option value="">是否下单</option>
+            <option value="1">已下单</option>
+            <option value="0">未下单</option>
+          </select>
+          <select id="f-channel">
+            <option value="">全部渠道</option>
+          </select>
+          <input id="f-keyword" placeholder="姓名 / 手机号" />
+        </div>
+        <div class="toolbar" style="margin-top:8px">
+          <button class="btn btn-primary" type="button" id="btn-bk-query">查询</button>
+          <button class="btn" type="button" id="btn-bk-reset">重置</button>
+          <div class="spacer"></div>
+          <span class="muted" style="font-size:12px">系统提醒仅面向已预约 / 已订阅用户，不含营销群发</span>
+        </div>
+      </div></div>
+
+      <div class="card"><div class="card-bd" style="padding:0">
+        <table class="data">
+          <thead>
+            <tr>
+              <th>用户</th>
+              <th>手机号</th>
+              <th>预约渠道</th>
+              <th>预约时间</th>
+              <th>订阅提醒</th>
+              <th>状态</th>
+              <th>是否观看</th>
+              <th>首次进入</th>
+              <th>观看时长</th>
+              <th>是否下单</th>
+              <th>下单金额</th>
+              <th style="width:180px">操作</th>
+            </tr>
+          </thead>
+          <tbody id="bk-tbody"></tbody>
+        </table>
+      </div></div>
+      <div class="toolbar" style="margin-top:8px">
+        <span class="muted" id="bk-summary">共 0 条</span>
+        <div class="spacer"></div>
+        <button class="btn btn-sm" type="button" disabled>上一页</button>
+        <button class="btn btn-sm btn-primary" type="button">1</button>
+        <button class="btn btn-sm" type="button" disabled>下一页</button>
+      </div>
+    </div>
+
+    <!-- Tab: 提醒计划 -->
+    <div class="bk-pane" id="pane-reminders">
+      <div class="card" style="margin-bottom:8px"><div class="card-bd">
+        <div class="toolbar" style="border:none;padding:0;background:transparent">
+          <span class="muted" style="font-size:12px">仅展示标准系统提醒（system_reminder）。直播审核通过并上架后自动生成默认计划。</span>
+          <div class="spacer"></div>
+          <button class="btn btn-primary" type="button" id="btn-new-reminder-tab">+ 新建提醒规则</button>
+        </div>
+        <div id="rem-pause-banner" class="bk-pause-tip" style="display:none"></div>
+      </div></div>
+
+      <div class="card"><div class="card-bd" style="padding:0">
+        <table class="data">
+          <thead>
+            <tr>
+              <th>提醒名称</th>
+              <th>提醒类型</th>
+              <th>触发条件</th>
+              <th>目标人群</th>
+              <th>预计触达</th>
+              <th>渠道</th>
+              <th>执行状态</th>
+              <th>预计执行时间</th>
+              <th>实际执行时间</th>
+              <th style="width:240px">操作</th>
+            </tr>
+          </thead>
+          <tbody id="rem-tbody"></tbody>
+        </table>
+      </div></div>
+    </div>
+
+    <!-- Tab: 发送记录 -->
+    <div class="bk-pane" id="pane-records">
+      <div class="card" style="margin-bottom:8px"><div class="card-bd">
+        <div class="form-grid" style="grid-template-columns:repeat(3,minmax(0,1fr));gap:8px 12px">
+          <select id="rec-f-type">
+            <option value="">全部类型</option>
+            <option value="pre_live">开播前提醒</option>
+            <option value="live_start">开播提醒</option>
+            <option value="replay_ready">回放生成提醒</option>
+            <option value="live_changed">直播时间变更通知</option>
+            <option value="live_cancelled">直播取消通知</option>
+          </select>
+          <select id="rec-f-status">
+            <option value="">全部状态</option>
+            <option value="pending">待执行</option>
+            <option value="running">执行中</option>
+            <option value="completed">已完成</option>
+            <option value="partial_fail">部分失败</option>
+            <option value="failed">已失败</option>
+            <option value="cancelled">已取消</option>
+          </select>
+          <input id="rec-f-keyword" placeholder="提醒名称" />
+        </div>
+        <div class="toolbar" style="margin-top:8px">
+          <button class="btn btn-primary" type="button" id="rec-btn-query">查询</button>
+          <button class="btn" type="button" id="rec-btn-reset">重置</button>
+        </div>
+      </div></div>
+
+      <div class="card"><div class="card-bd" style="padding:0">
+        <table class="data">
+          <thead>
+            <tr>
+              <th>提醒名称</th>
+              <th>提醒类型</th>
+              <th>直播名称</th>
+              <th>渠道</th>
+              <th>目标用户数</th>
+              <th>已触达用户数</th>
+              <th>消息发送条数</th>
+              <th>送达率</th>
+              <th>点击率</th>
+              <th>进入直播</th>
+              <th>失败人数</th>
+              <th>执行时间</th>
+              <th>状态</th>
+              <th style="width:100px">操作</th>
+            </tr>
+          </thead>
+          <tbody id="rec-tbody"></tbody>
+        </table>
+      </div></div>
+    </div>
+
+  </div><!-- /#view-single -->
+</div>
+
+<!-- ============ Mask / Modals / Drawers ============ -->
+<div class="proto-mask" id="mask"></div>
+
+<!-- 新建 / 编辑提醒规则 -->
+<div class="proto-modal" id="modal-reminder" style="width:720px">
+  <div class="proto-modal-hd">
+    <h3 id="modal-reminder-title">新建提醒规则</h3>
+    <button class="btn btn-sm btn-ghost" type="button" data-close>×</button>
+  </div>
+  <div class="proto-modal-bd">
+    <input type="hidden" id="rm-id" />
+    <div class="form-grid" style="grid-template-columns:1fr 1fr;gap:12px">
+      <div class="field" style="grid-column:1/-1">
+        <label>提醒名称 *</label>
+        <input id="rm-name" placeholder="如：开播前 1 小时提醒" />
+      </div>
+      <div class="field">
+        <label>提醒类型 *</label>
+        <select id="rm-type">
+          <option value="pre_live">开播前提醒</option>
+          <option value="live_start">开播提醒</option>
+          <option value="replay_ready">回放生成提醒</option>
+          <option value="live_changed">直播时间变更通知</option>
+          <option value="live_cancelled">直播取消通知</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>关联直播 *</label>
+        <select id="rm-live"></select>
+      </div>
+      <div class="field" id="rm-trigger-wrap">
+        <label>触发时机 *</label>
+        <select id="rm-trigger">
+          <option value="24h">开播前 24 小时</option>
+          <option value="1h" selected>开播前 1 小时</option>
+          <option value="30m">开播前 30 分钟</option>
+          <option value="10m">开播前 10 分钟</option>
+          <option value="live_started">正式开播时</option>
+          <option value="replay_ready">回放生成时</option>
+          <option value="live_changed">直播时间变更时</option>
+          <option value="live_cancelled">直播取消时</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>目标人群 *</label>
+        <select id="rm-audience">
+          <option value="booked">已预约用户</option>
+          <option value="subscribed">已订阅开播提醒用户</option>
+          <option value="not_attended">已预约但未观看用户</option>
+          <option value="watched">已观看用户</option>
+          <option value="failed">发送失败用户</option>
+        </select>
+      </div>
+      <div class="field" style="grid-column:1/-1">
+        <label>提醒渠道 *</label>
+        <div style="display:flex;gap:16px;padding:6px 0;flex-wrap:wrap">
+          <label><input type="checkbox" name="rm-ch" value="短信" checked /> 短信</label>
+          <label><input type="checkbox" name="rm-ch" value="站内信" checked /> 站内信</label>
+          <label><input type="checkbox" name="rm-ch" value="企微" /> 企微</label>
+        </div>
+      </div>
+      <div class="field" style="grid-column:1/-1">
+        <label>提醒文案 *</label>
+        <textarea id="rm-template" rows="4" placeholder="支持变量：{昵称} {直播名称} {开播时间}"></textarea>
+      </div>
+      <div class="field">
+        <label>是否启用</label>
+        <select id="rm-enabled">
+          <option value="1">启用</option>
+          <option value="0">关闭</option>
+        </select>
+      </div>
+    </div>
+    <p class="muted" style="font-size:12px;margin:12px 0 0">仅支持标准系统提醒，不提供立即推送或营销人群圈选。私域转化请使用「创建私域促到计划」。</p>
+  </div>
+  <div class="proto-modal-ft">
+    <button class="btn" type="button" data-close>取消</button>
+    <button class="btn btn-primary" type="button" id="btn-save-reminder">保存</button>
+  </div>
+</div>
+
+<!-- 编辑提醒时间 -->
+<div class="proto-modal" id="modal-edit-time" style="width:480px">
+  <div class="proto-modal-hd">
+    <h3>编辑提醒时间</h3>
+    <button class="btn btn-sm btn-ghost" type="button" data-close>×</button>
+  </div>
+  <div class="proto-modal-bd">
+    <input type="hidden" id="et-id" />
+    <div class="form-grid" style="grid-template-columns:1fr;gap:12px">
+      <div class="field">
+        <label>提醒名称</label>
+        <div id="et-name">—</div>
+      </div>
+      <div class="field" id="et-offset-wrap">
+        <label>开播前偏移</label>
+        <select id="et-offset">
+          <option value="24h">开播前 24 小时</option>
+          <option value="1h">开播前 1 小时</option>
+          <option value="30m">开播前 30 分钟</option>
+          <option value="10m">开播前 10 分钟</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>预计执行时间</label>
+        <input id="et-time" type="text" placeholder="YYYY-MM-DD HH:mm" />
+      </div>
+    </div>
+  </div>
+  <div class="proto-modal-ft">
+    <button class="btn" type="button" data-close>取消</button>
+    <button class="btn btn-primary" type="button" id="btn-save-time">保存</button>
+  </div>
+</div>
+
+<!-- 查看文案 -->
+<div class="proto-modal" id="modal-template" style="width:520px">
+  <div class="proto-modal-hd">
+    <h3>提醒文案</h3>
+    <button class="btn btn-sm btn-ghost" type="button" data-close>×</button>
+  </div>
+  <div class="proto-modal-bd">
+    <div class="field"><label>提醒名称</label><div id="tp-name">—</div></div>
+    <div class="field" style="margin-top:12px"><label>文案内容</label>
+      <div id="tp-body" style="padding:12px;background:#f7f8fa;border-radius:6px;line-height:1.6;white-space:pre-wrap"></div>
+    </div>
+  </div>
+  <div class="proto-modal-ft">
+    <button class="btn" type="button" data-close>关闭</button>
+  </div>
+</div>
+
+<!-- 确认对话框 -->
+<div class="proto-modal" id="modal-confirm" style="width:420px">
+  <div class="proto-modal-hd">
+    <h3 id="cf-title">确认操作</h3>
+    <button class="btn btn-sm btn-ghost" type="button" data-close>×</button>
+  </div>
+  <div class="proto-modal-bd">
+    <p id="cf-msg" style="margin:0;line-height:1.6"></p>
+  </div>
+  <div class="proto-modal-ft">
+    <button class="btn" type="button" data-close>取消</button>
+    <button class="btn btn-primary" type="button" id="btn-confirm-ok">确认</button>
+  </div>
+</div>
+
+<!-- 用户详情抽屉 -->
+<div class="proto-drawer" id="drawer-user">
+  <div class="proto-drawer-hd">
+    <h3 id="du-title">用户预约详情</h3>
+    <button class="btn btn-sm btn-ghost" type="button" data-close>×</button>
+  </div>
+  <div class="proto-drawer-bd">
+    <div class="form-grid readonly" style="grid-template-columns:1fr 1fr">
+      <div class="field"><label>用户</label><div id="du-name">—</div></div>
+      <div class="field"><label>手机号</label><div id="du-phone">—</div></div>
+      <div class="field"><label>预约渠道</label><div id="du-channel">—</div></div>
+      <div class="field"><label>预约时间</label><div id="du-booked-at">—</div></div>
+      <div class="field"><label>预约状态</label><div id="du-status">—</div></div>
+      <div class="field"><label>订阅开播提醒</label><div id="du-subscribed">—</div></div>
+      <div class="field"><label>是否观看</label><div id="du-watched">—</div></div>
+      <div class="field"><label>首次进入</label><div id="du-first">—</div></div>
+      <div class="field"><label>观看时长</label><div id="du-mins">—</div></div>
+      <div class="field"><label>是否下单</label><div id="du-ordered">—</div></div>
+      <div class="field" style="grid-column:1/-1"><label>下单金额</label><div id="du-amount">—</div></div>
+      <div class="field" style="grid-column:1/-1"><label>提醒触达记录</label>
+        <div id="du-logs" style="display:flex;flex-direction:column;gap:6px"></div>
+      </div>
+    </div>
+  </div>
+  <div class="proto-drawer-ft">
+    <button class="btn" type="button" data-close>关闭</button>
+  </div>
+</div>
+
+<!-- 发送记录详情抽屉 -->
+<div class="proto-drawer" id="drawer-record">
+  <div class="proto-drawer-hd">
+    <h3 id="dr-title">发送记录详情</h3>
+    <button class="btn btn-sm btn-ghost" type="button" data-close>×</button>
+  </div>
+  <div class="proto-drawer-bd">
+    <div class="form-grid readonly" style="grid-template-columns:1fr 1fr">
+      <div class="field"><label>提醒名称</label><div id="dr-name">—</div></div>
+      <div class="field"><label>提醒类型</label><div id="dr-type">—</div></div>
+      <div class="field"><label>直播名称</label><div id="dr-live">—</div></div>
+      <div class="field"><label>渠道</label><div id="dr-channel">—</div></div>
+      <div class="field"><label>目标用户数</label><div id="dr-target">—</div></div>
+      <div class="field"><label>已触达用户数</label><div id="dr-reached">—</div></div>
+      <div class="field"><label>消息发送条数</label><div id="dr-msg">—</div></div>
+      <div class="field"><label>送达率 / 点击率</label><div id="dr-rates">—</div></div>
+      <div class="field"><label>进入直播人数</label><div id="dr-enter">—</div></div>
+      <div class="field"><label>失败人数</label><div id="dr-fail">—</div></div>
+      <div class="field"><label>执行时间</label><div id="dr-time">—</div></div>
+      <div class="field"><label>状态</label><div id="dr-status">—</div></div>
+      <div class="field" style="grid-column:1/-1"><label>触发原因</label><div id="dr-trigger">系统提醒任务按计划执行</div></div>
+      <div class="field" style="grid-column:1/-1"><label>目标人群口径</label><div id="dr-audience">—</div></div>
+      <div class="field" style="grid-column:1/-1"><label>失败原因</label><div id="dr-fail-reasons">—</div></div>
+    </div>
+  </div>
+  <div class="proto-drawer-ft">
+    <button class="btn" type="button" data-close>关闭</button>
+  </div>
+</div>
 
 <script src="../assets/js/proto.js"></script>
-<script src="../assets/js/admin-shell.js?v=3"></script>
-<script>
-// 兜底：如果 1.5 秒后 admin-shell 未注入成功，给出明确提示
-setTimeout(function() {
-  if (document.documentElement.getAttribute('data-shell-ready') === '1') return;
-  if (document.querySelector('aside.sidebar')) return;
-  var err = document.createElement('div');
-  err.style.cssText = 'position:fixed;top:0;left:0;right:0;background:#fff1f0;color:#f53f3f;padding:14px 24px;border-bottom:2px solid #f53f3f;z-index:99999;font-size:14px;font-family:system-ui;line-height:1.6;';
-  err.innerHTML =
-    '<b style="font-size:15px;">⚠ admin-shell.js 未加载</b><br>' +
-    '<span style="color:#86909c;">页面是用 <code>file://</code> 协议打开的，Chrome/Edge 会因同源策略阻止加载 <code>../assets/js/admin-shell.js</code>。</span><br>' +
-    '<b>解决方法：</b>用本地服务打开 → 双击项目根目录的 <code>启动原型服务.bat</code>（一键启动 http://127.0.0.1:8765）<br>' +
-    '<button onclick="location.reload();" style="background:#165dff;color:#fff;border:none;padding:6px 16px;border-radius:4px;cursor:pointer;margin-top:6px;">如果已在 http:// 下访问，点击此处重试</button>';
-  document.body.appendChild(err);
-}, 1500);
-</script>
+<script src="../assets/js/live-reach.js"></script>
+<script src="../assets/js/admin-shell.js?v=13"></script>
 <script>
 (function () {
-  // ===== Mask =====
-  var mask = document.getElementById("mask");
-  function closeAll() {
-    mask.classList.remove("open");
-    document.querySelectorAll(".proto-modal, .proto-drawer").forEach(function (n) { n.classList.remove("open"); });
+  var LR = window.LiveReach;
+  if (!LR) {
+    console.error("LiveReach not loaded");
+    return;
   }
-  function open(node) { mask.classList.add("open"); node.classList.add("open"); }
-  mask.addEventListener("click", closeAll);
-  document.querySelectorAll("[data-close]").forEach(function (n) { n.addEventListener("click", closeAll); });
 
-  // ===== Tabs =====
-  document.querySelectorAll("#bk-tabs a").forEach(function (a) {
-    a.addEventListener("click", function (e) {
-      e.preventDefault();
-      document.querySelectorAll("#bk-tabs a").forEach(function (x) { x.classList.remove("active"); });
-      a.classList.add("active");
-      var tab = a.getAttribute("data-tab");
-      document.querySelectorAll(".bk-pane").forEach(function (p) { p.classList.remove("active"); });
-      document.getElementById("pane-" + tab).classList.add("active");
-    });
-  });
+  var mask = document.getElementById("mask");
+  var confirmCb = null;
+  var currentLiveId = null;
+  var currentTab = "bookings";
+  var AVATAR_COLORS = ["#165dff", "#00b42a", "#722ed1", "#fa8c16", "#f53f3f", "#13c2c2"];
 
-  // ===== Push modal =====
-  document.getElementById("btn-push").addEventListener("click", function () {
-    open(document.getElementById("modal-push"));
-  });
-
-  // ===== User detail drawer =====
-  var userDetails = {
-    "张妈妈":   { phone: "138****1234", live: "春启 03 期家长公开课", channel: "课程详情页",   time: "2026-09-03 10:24", status: "已观看 · 48 分钟", duration: "48 分钟", amount: "¥298" },
-    "李爸爸":   { phone: "139****5678", live: "春启 03 期家长公开课", channel: "直播预告页",   time: "2026-09-03 14:08", status: "已预约",           duration: "—",      amount: "—" },
-    "王同学妈": { phone: "136****9012", live: "9.9 引流试听课",       channel: "课程详情页弹窗", time: "2026-09-02 18:42", status: "未观看",           duration: "0 分钟",  amount: "—" },
-    "周妈妈":   { phone: "137****3456", live: "春启 03 期家长公开课", channel: "老师主页",       time: "2026-09-01 09:15", status: "已观看 · 60 分钟", duration: "60 分钟", amount: "¥1,288" },
-    "陈妈妈":   { phone: "135****7890", live: "9.9 引流试听课",       channel: "课程详情页",     time: "2026-08-30 16:33", status: "已取消",           duration: "—",      amount: "—" },
-    "刘爸爸":   { phone: "188****4321", live: "明日直播·春启04 招生", channel: "直播预告页",     time: "2026-09-04 08:20", status: "已预约",           duration: "—",      amount: "—" }
+  var TYPE_LABEL = {
+    pre_live: "开播前提醒",
+    live_start: "开播提醒",
+    replay_ready: "回放生成提醒",
+    live_changed: "直播时间变更通知",
+    live_cancelled: "直播取消通知"
+  };
+  var TYPE_CLASS = {
+    pre_live: "rm-type-pre",
+    live_start: "rm-type-start",
+    replay_ready: "rm-type-replay",
+    live_changed: "rm-type-changed",
+    live_cancelled: "rm-type-cancel"
+  };
+  var AUDIENCE_LABEL = {
+    booked: "已预约用户",
+    subscribed: "已订阅开播提醒用户",
+    not_attended: "已预约但未观看用户",
+    watched: "已观看用户",
+    failed: "发送失败用户"
+  };
+  var BOOKING_STATUS = {
+    booked: "已预约",
+    watched: "已观看",
+    ordered: "已下单",
+    cancelled: "已取消",
+    fail: "发送失败"
   };
 
-  // ===== Row actions =====
-  document.querySelectorAll("#bk-tbody tr").forEach(function (tr) {
-    tr.querySelectorAll("[data-bk-act]").forEach(function (a) {
-      a.addEventListener("click", function (e) {
-        e.preventDefault();
-        var act = a.getAttribute("data-bk-act");
-        var name = tr.querySelectorAll("td")[1].querySelector("b").textContent.trim();
-        var d = userDetails[name];
-        if (!d) return;
-        if (act === "detail") {
-          document.getElementById("bk-detail-title").textContent = "预约详情 · " + name;
-          document.getElementById("bk-d-name").textContent    = name;
-          document.getElementById("bk-d-phone").textContent   = d.phone;
-          document.getElementById("bk-d-live").textContent    = d.live;
-          document.getElementById("bk-d-channel").textContent = d.channel;
-          document.getElementById("bk-d-time").textContent    = d.time;
-          document.getElementById("bk-d-status").textContent  = d.status;
-          document.getElementById("bk-d-duration").textContent = d.duration;
-          document.getElementById("bk-d-amount").textContent   = d.amount;
-          open(document.getElementById("drawer-bk-detail"));
-        } else if (act === "msg") {
-          Proto.toast("打开私信面板（原型）");
-        } else if (act === "cancel") {
-          if (confirm("确认取消「" + name + "」的预约？")) Proto.toast("已取消预约（原型）");
-        } else if (act === "rebook") {
-          Proto.toast("已重新发送预约链接（原型）");
-        } else if (act === "repush") {
-          Proto.toast("已重新推送提醒（原型）");
-        } else if (act === "tag") {
-          Proto.toast("打开打标签面板（原型）");
-        }
-      });
-    });
-  });
-
-  // ===== Header buttons =====
-  document.getElementById("btn-export").addEventListener("click", function () { Proto.toast("已导出预约名单（原型）"); });
-  document.getElementById("btn-bk-query").addEventListener("click", function () { Proto.toast("已查询（原型）"); });
-  document.getElementById("btn-bk-reset").addEventListener("click", function () {
-    ["f-live","f-status","f-channel","f-keyword","f-time"].forEach(function (id) {
-      var el = document.getElementById(id); if (el) el.value = "";
-    });
-    Proto.toast("已重置");
-  });
-})();
-</script>
-<script>
-// 兜底：如果 1 秒后 admin-shell 仍未注入成功，提示用户刷新
-setTimeout(function() {
-  if (document.documentElement.getAttribute('data-shell-ready') === '1') return;
-  if (document.querySelector('aside.sidebar')) return;
-  var err = document.createElement('div');
-  err.style.cssText = 'position:fixed;top:0;left:0;right:0;background:#fff1f0;color:#f53f3f;padding:12px 20px;border-bottom:1px solid #ffa39e;z-index:99999;font-size:13px;font-family:system-ui;';
-  err.innerHTML = '<b>⚠ 页面初始化失败</b>：可能是浏览器缓存了旧版本。请按 <kbd style="background:#fff;padding:2px 6px;border-radius:3px;border:1px solid #ffa39e;font-family:monospace;">Ctrl+Shift+R</kbd> 强制刷新，或 <button onclick="location.reload();" style="background:#165dff;color:#fff;border:none;padding:4px 12px;border-radius:4px;cursor:pointer;margin-left:8px;">点击重试</button>';
-  document.body.appendChild(err);
-}, 1500);
-</script>
-<script>
-// ========== 视图切换：直播列表 vs 单一直播 ==========
-(function () {
-  // 演示数据：全部有推送计划的直播
-  var lives = [
-    {
-      id: "L001",
-      name: "9.9 引流试听课 · 开学季专场",
-      time: "2026-09-08 20:00",
-      mode: "视频直播",
-      status: "已上架",
-      statusType: "live",
-      thumb: "blue", emoji: "🎓",
-      reserve: 234, plans: 3, sent: 1280, converted: 68
-    },
-    {
-      id: "L002",
-      name: "家长答疑·音频年卡限时特惠",
-      time: "2026-09-10 19:30",
-      mode: "语音直播",
-      status: "审核中",
-      statusType: "audit",
-      thumb: "orange", emoji: "🎙",
-      reserve: 89, plans: 1, sent: 0, converted: 0
-    },
-    {
-      id: "L003",
-      name: "明日直播·春启04 招生启动会",
-      time: "2026-09-04 20:00",
-      mode: "视频直播",
-      status: "已结束",
-      statusType: "end",
-      thumb: "green", emoji: "📚",
-      reserve: 512, plans: 4, sent: 3450, converted: 142
-    }
-  ];
-
-  function escapeHtml(s) {
-    return String(s).replace(/[&<>"']/g, function (c) {
+  function esc(s) {
+    return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) {
       return ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c];
     });
   }
-
-  function statusBadge(type, text) {
-    if (type === "live")  return '<span class="audit-badge pass">已上架</span>';
-    if (type === "audit") return '<span class="audit-badge review">审核中</span>';
-    if (type === "end")   return '<span class="audit-badge reject">已结束</span>';
-    return '<span class="audit-badge">' + escapeHtml(text) + '</span>';
+  function num(n) {
+    n = Number(n) || 0;
+    return n.toLocaleString("zh-CN");
+  }
+  function qs() {
+    return new URLSearchParams(window.location.search);
+  }
+  function getTabFromUrl() {
+    var sp = qs();
+    var t = sp.get("tab");
+    if (!t && location.hash) {
+      t = location.hash.replace(/^#/, "");
+    }
+    if (t === "push-records" || t === "subscribers") t = "records";
+    if (t === "reminders" || t === "records" || t === "bookings") return t;
+    return "bookings";
+  }
+  function setUrl(liveId, tab, replace) {
+    var url = "live-booking.html";
+    var parts = [];
+    if (liveId) parts.push("live_id=" + encodeURIComponent(liveId));
+    if (tab && tab !== "bookings") parts.push("tab=" + encodeURIComponent(tab));
+    if (parts.length) url += "?" + parts.join("&");
+    if (tab) url += "#" + tab;
+    if (replace) history.replaceState(null, "", url);
+    else history.pushState(null, "", url);
   }
 
+  function closeAll() {
+    mask.classList.remove("open");
+    document.querySelectorAll(".proto-modal, .proto-drawer").forEach(function (n) {
+      n.classList.remove("open");
+    });
+    confirmCb = null;
+  }
+  function openNode(node) {
+    mask.classList.add("open");
+    node.classList.add("open");
+  }
+  function askConfirm(title, msg, onOk) {
+    document.getElementById("cf-title").textContent = title || "确认操作";
+    document.getElementById("cf-msg").textContent = msg || "";
+    confirmCb = onOk;
+    openNode(document.getElementById("modal-confirm"));
+  }
+
+  mask.addEventListener("click", closeAll);
+  document.querySelectorAll("[data-close]").forEach(function (n) {
+    n.addEventListener("click", closeAll);
+  });
+  document.getElementById("btn-confirm-ok").addEventListener("click", function () {
+    var cb = confirmCb;
+    closeAll();
+    if (cb) cb();
+  });
+
+  function liveStatusBadge(live) {
+    var map = {
+      upcoming: "badge-info",
+      live: "badge-success",
+      ended: "badge",
+      draft_pending: "badge-warn",
+      cancelled: "badge-danger"
+    };
+    return '<span class="badge ' + (map[live.liveStatus] || "badge") + '">' + esc(live.liveStatusLabel || live.liveStatus) + "</span>";
+  }
+  function auditBadge(live) {
+    var map = {
+      approved: "badge-success",
+      pending: "badge-warn",
+      rejected: "badge-danger"
+    };
+    return '<span class="badge ' + (map[live.auditStatus] || "badge") + '">' + esc(live.auditStatusLabel || live.auditStatus) + "</span>";
+  }
+  function typeBadge(type) {
+    return '<span class="rm-type ' + (TYPE_CLASS[type] || "") + '">' + esc(TYPE_LABEL[type] || type) + "</span>";
+  }
+  function bookingStatusBadge(st) {
+    var map = {
+      booked: "badge-info",
+      watched: "badge-success",
+      ordered: "badge-success",
+      cancelled: "badge",
+      fail: "badge-danger"
+    };
+    return '<span class="badge ' + (map[st] || "badge") + '">' + esc(BOOKING_STATUS[st] || st) + "</span>";
+  }
+  function avatarHtml(name) {
+    var ch = (name || "?").charAt(0);
+    var color = AVATAR_COLORS[ch.charCodeAt(0) % AVATAR_COLORS.length];
+    return '<div class="user-cell"><div class="user-avatar" style="background:' + color + '">' + esc(ch) + "</div><b>" + esc(name) + "</b></div>";
+  }
+
+  /* ---------- List view ---------- */
   function renderList() {
-    var grid = document.getElementById("bk-lives-grid");
+    var statusF = document.getElementById("list-f-live-status").value;
+    var auditF = document.getElementById("list-f-audit").value;
+    var kw = (document.getElementById("list-f-keyword").value || "").trim().toLowerCase();
+    var lives = LR.getLives().filter(function (l) {
+      if (statusF && l.liveStatus !== statusF) return false;
+      if (auditF && l.auditStatus !== auditF) return false;
+      if (kw && String(l.name).toLowerCase().indexOf(kw) < 0 && String(l.id).toLowerCase().indexOf(kw) < 0) return false;
+      return true;
+    });
     document.getElementById("bk-list-count").textContent = lives.length;
-    var rows = lives.map(function (lv) {
-      return '' +
-        '<tr>' +
-          '<td><input type="checkbox" /></td>' +
-          '<td>' +
-            '<div class="bk-live-name-cell">' +
-              '<span class="bk-live-thumb-mini ' + lv.thumb + '">' + lv.emoji + '</span>' +
-              '<a href="live-booking.html?live_id=' + lv.id + '"><b>' + escapeHtml(lv.name) + '</b></a>' +
-              statusBadge(lv.statusType, lv.status) +
-            '</div>' +
-          '</td>' +
-          '<td class="bk-mono">' + escapeHtml(lv.id) + '</td>' +
-          '<td>' + escapeHtml(lv.time) + '</td>' +
-          '<td>' + escapeHtml(lv.mode) + '</td>' +
-          '<td class="bk-num">' + lv.reserve + '</td>' +
-          '<td class="bk-num">' + lv.plans + '</td>' +
-          '<td class="bk-mono">' + lv.sent.toLocaleString() + '</td>' +
-          '<td class="bk-num">' + lv.converted + '</td>' +
-          '<td style="width:160px">' +
-            '<a class="link-blue" href="live-booking.html?live_id=' + lv.id + '">查看预约</a>' +
-            '<span style="color:#e8e8e8;margin:0 6px">|</span>' +
-            '<a class="link-blue" href="live-booking.html?live_id=' + lv.id + '">推送计划</a>' +
-          '</td>' +
-        '</tr>';
+    document.getElementById("list-summary").innerHTML = "共 <b>" + lives.length + "</b> 条";
+    var tbody = document.getElementById("list-tbody");
+    if (!lives.length) {
+      tbody.innerHTML = '<tr><td colspan="11" class="muted" style="text-align:center;padding:40px">暂无直播</td></tr>';
+      return;
+    }
+    tbody.innerHTML = lives.map(function (l) {
+      return "<tr>" +
+        "<td><a class=\"link-blue\" href=\"live-booking.html?live_id=" + esc(l.id) + "\"><b>" + esc(l.name) + "</b></a><div class=\"muted bk-mono\" style=\"font-size:11px\">" + esc(l.id) + "</div></td>" +
+        "<td>" + liveStatusBadge(l) + "</td>" +
+        "<td>" + auditBadge(l) + "</td>" +
+        "<td>" + esc(l.startAt) + "</td>" +
+        "<td class=\"bk-num\">" + num(l.bookedUsers) + "</td>" +
+        "<td class=\"bk-num\">" + num(l.subscribedUsers) + "</td>" +
+        "<td class=\"bk-num\">" + num(l.reachedUsers) + "</td>" +
+        "<td class=\"bk-mono\">" + num(l.messageCount) + "</td>" +
+        "<td class=\"bk-num\">" + num(l.attendedUsers) + "</td>" +
+        "<td class=\"bk-num\">" + num(l.orderedUsers) + "</td>" +
+        "<td class=\"row-actions\">" +
+          "<a class=\"link-blue\" href=\"live-booking.html?live_id=" + esc(l.id) + "&tab=bookings\">进入详情</a>" +
+          "<a class=\"link-blue\" href=\"live-booking.html?live_id=" + esc(l.id) + "&tab=reminders\">提醒计划</a>" +
+          "<a class=\"link-blue\" href=\"live-invite.html?live_id=" + esc(l.id) + "\">创建促到</a>" +
+        "</td></tr>";
     }).join("");
-
-    grid.innerHTML = '' +
-      '<div class="card"><div class="card-bd" style="padding:0">' +
-        '<table class="data">' +
-          '<thead><tr>' +
-            '<th style="width:36px"><input type="checkbox" /></th>' +
-            '<th>直播</th>' +
-            '<th style="width:80px">ID</th>' +
-            '<th style="width:160px">开播时间</th>' +
-            '<th style="width:90px">模式</th>' +
-            '<th style="width:90px">预约</th>' +
-            '<th style="width:80px">推送计划</th>' +
-            '<th style="width:90px">已推送</th>' +
-            '<th style="width:80px">转化</th>' +
-            '<th style="width:160px">操作</th>' +
-          '</tr></thead>' +
-          '<tbody>' + rows + '</tbody>' +
-        '</table>' +
-      '</div></div>' +
-      '<div style="margin-top:14px;display:flex;align-items:center;gap:12px">' +
-        '<span style="color:#8c8c8c;font-size:12px">共 ' + lives.length +  ' 条</span>' +
-        '<div style="margin-left:auto;display:flex;gap:6px">' +
-          '<button class="btn" disabled>上一页</button>' +
-          '<button class="btn btn-primary">1</button>' +
-          '<button class="btn" disabled>下一页</button>' +
-        '</div>' +
-      '</div>';
   }
 
-  function showView() {
-    var sp = new URLSearchParams(window.location.search);
-    var liveId = sp.get("live_id");
-    var viewList = document.getElementById("view-list");
-    var viewSingle = document.getElementById("view-single");
-    if (liveId) {
-      var lv = lives.find(function (x) { return x.id === liveId; }) || lives[0];
-      viewList.style.display = "none";
-      viewSingle.style.display = "";
-      document.getElementById("bk-current-live-text").textContent = lv.name;
-      // 同步顶部标题（admin-shell 渲染时用 data-title）
-      document.title = "预约与推送 · " + lv.name + " · 商家管理后台";
-      var crumbEl = document.body.getAttribute("data-crumb");
-      document.body.setAttribute("data-crumb", "直播 / 直播管理 / 预约与推送 / " + lv.name);
+  /* ---------- Single view ---------- */
+  function updateHeaderInvite(liveId) {
+    var a = document.getElementById("btn-invite");
+    a.href = liveId ? ("live-invite.html?live_id=" + encodeURIComponent(liveId)) : "live-invite.html";
+  }
+
+  function switchTab(tab, push) {
+    currentTab = tab || "bookings";
+    document.querySelectorAll("#bk-tabs a").forEach(function (a) {
+      a.classList.toggle("active", a.getAttribute("data-tab") === currentTab);
+    });
+    document.querySelectorAll(".bk-pane").forEach(function (p) {
+      p.classList.remove("active");
+    });
+    var pane = document.getElementById("pane-" + currentTab);
+    if (pane) pane.classList.add("active");
+    if (currentLiveId) setUrl(currentLiveId, currentTab, !push);
+    if (currentTab === "bookings") renderBookings();
+    if (currentTab === "reminders") renderReminders();
+    if (currentTab === "records") renderRecords();
+  }
+
+  function renderStats(live) {
+    document.getElementById("st-booked").textContent = num(live.bookedUsers);
+    document.getElementById("st-subscribed").textContent = num(live.subscribedUsers);
+    document.getElementById("st-reached").textContent = num(live.reachedUsers);
+    document.getElementById("st-messages").textContent = num(live.messageCount);
+  }
+
+  function fillChannelFilter(liveId) {
+    var sel = document.getElementById("f-channel");
+    var channels = {};
+    LR.getBookings(liveId).forEach(function (b) {
+      if (b.channel) channels[b.channel] = true;
+    });
+    var cur = sel.value;
+    sel.innerHTML = '<option value="">全部渠道</option>' +
+      Object.keys(channels).map(function (c) {
+        return '<option value="' + esc(c) + '">' + esc(c) + "</option>";
+      }).join("");
+    sel.value = cur || "";
+  }
+
+  function bookingActions(b) {
+    var acts = ['<a href="#" data-bk-act="detail" data-id="' + esc(b.id) + '">查看详情</a>'];
+    if (b.status === "booked" && !b.watched) {
+      acts.push('<a href="#" data-bk-act="reremind" data-id="' + esc(b.id) + '">重新提醒</a>');
+    } else if (b.status === "watched" && !b.ordered) {
+      acts.push('<a href="#" data-bk-act="follow" data-id="' + esc(b.id) + '">创建跟进任务</a>');
+    } else if (b.status === "ordered" || (b.watched && b.ordered)) {
+      acts.push('<a href="#" data-bk-act="tag" data-id="' + esc(b.id) + '">打标签</a>');
+    } else if (b.status === "fail") {
+      acts.push('<a href="#" data-bk-act="resend" data-id="' + esc(b.id) + '">重新发送</a>');
+    }
+    return acts.join("");
+  }
+
+  function renderBookings() {
+    if (!currentLiveId) return;
+    var status = document.getElementById("f-status").value;
+    var sub = document.getElementById("f-subscribed").value;
+    var watched = document.getElementById("f-watched").value;
+    var ordered = document.getElementById("f-ordered").value;
+    var channel = document.getElementById("f-channel").value;
+    var kw = (document.getElementById("f-keyword").value || "").trim().toLowerCase();
+    var rows = LR.getBookings(currentLiveId).filter(function (b) {
+      if (status && b.status !== status) return false;
+      if (sub === "1" && !b.subscribed) return false;
+      if (sub === "0" && b.subscribed) return false;
+      if (watched === "1" && !b.watched) return false;
+      if (watched === "0" && b.watched) return false;
+      if (ordered === "1" && !b.ordered) return false;
+      if (ordered === "0" && b.ordered) return false;
+      if (channel && b.channel !== channel) return false;
+      if (kw && String(b.name).toLowerCase().indexOf(kw) < 0 && String(b.phone).indexOf(kw) < 0) return false;
+      return true;
+    });
+    document.getElementById("bk-summary").innerHTML = "共 <b>" + rows.length + "</b> 条";
+    var tbody = document.getElementById("bk-tbody");
+    if (!rows.length) {
+      tbody.innerHTML = '<tr><td colspan="12" class="muted" style="text-align:center;padding:36px">暂无预约用户</td></tr>';
+      return;
+    }
+    tbody.innerHTML = rows.map(function (b) {
+      return "<tr>" +
+        "<td>" + avatarHtml(b.name) + "</td>" +
+        "<td>" + esc(b.phone) + "</td>" +
+        "<td>" + esc(b.channel) + "</td>" +
+        "<td>" + esc(b.bookedAt) + "</td>" +
+        "<td>" + (b.subscribed ? '<span class="badge badge-success">已订阅</span>' : '<span class="badge">未订阅</span>') + "</td>" +
+        "<td>" + bookingStatusBadge(b.status) + "</td>" +
+        "<td>" + (b.watched ? "是" : "否") + "</td>" +
+        "<td>" + esc(b.firstEnterAt || "—") + "</td>" +
+        "<td>" + (b.watchMinutes ? (b.watchMinutes + " 分钟") : "—") + "</td>" +
+        "<td>" + (b.ordered ? "是" : "否") + "</td>" +
+        "<td>" + (b.ordered ? ("¥" + num(b.orderAmount)) : "—") + "</td>" +
+        "<td class=\"row-actions\">" + bookingActions(b) + "</td>" +
+        "</tr>";
+    }).join("");
+  }
+
+  function openUserDrawer(id) {
+    var b = LR.getBookings(currentLiveId).find(function (x) { return x.id === id; });
+    if (!b) return;
+    document.getElementById("du-title").textContent = "预约详情 · " + b.name;
+    document.getElementById("du-name").textContent = b.name;
+    document.getElementById("du-phone").textContent = b.phone;
+    document.getElementById("du-channel").textContent = b.channel || "—";
+    document.getElementById("du-booked-at").textContent = b.bookedAt || "—";
+    document.getElementById("du-status").innerHTML = bookingStatusBadge(b.status);
+    document.getElementById("du-subscribed").textContent = b.subscribed ? "已订阅" : "未订阅";
+    document.getElementById("du-watched").textContent = b.watched ? "已观看" : "未观看";
+    document.getElementById("du-first").textContent = b.firstEnterAt || "—";
+    document.getElementById("du-mins").textContent = b.watchMinutes ? (b.watchMinutes + " 分钟") : "—";
+    document.getElementById("du-ordered").textContent = b.ordered ? "已下单" : "未下单";
+    document.getElementById("du-amount").textContent = b.ordered ? ("¥" + num(b.orderAmount)) : "—";
+    var logs = b.touchLogs || [];
+    var box = document.getElementById("du-logs");
+    if (!logs.length) {
+      box.innerHTML = '<div class="muted">暂无触达记录</div>';
     } else {
-      viewList.style.display = "";
-      viewSingle.style.display = "none";
+      box.innerHTML = logs.map(function (log) {
+        var ok = String(log.result || "").indexOf("失败") < 0;
+        return '<div class="bk-push-item"><span>' + esc(log.at) + " · " + esc(log.type) + " · " + esc(log.channel) +
+          '</span><span class="' + (ok ? "bk-push-ok" : "bk-push-fail") + '">' + esc(log.result) + "</span></div>";
+      }).join("");
+    }
+    openNode(document.getElementById("drawer-user"));
+  }
+
+  function renderReminders() {
+    if (!currentLiveId) return;
+    var live = LR.getLive(currentLiveId);
+    var rem = LR.getReminders(currentLiveId);
+    var banner = document.getElementById("rem-pause-banner");
+    if (live && live.auditStatus === "pending") {
+      banner.style.display = "";
+      banner.textContent = "直播审核中，提醒任务暂停。审核通过并上架后将自动恢复 / 生成正式提醒计划。";
+    } else if (live && !live.shelf) {
+      banner.style.display = "";
+      banner.textContent = "直播未上架，提醒任务暂停。";
+    } else {
+      banner.style.display = "none";
+    }
+    var tbody = document.getElementById("rem-tbody");
+    if (!rem.length) {
+      tbody.innerHTML = '<tr><td colspan="10" class="muted" style="text-align:center;padding:36px">暂无提醒计划</td></tr>';
+      return;
+    }
+    tbody.innerHTML = rem.map(function (r) {
+      var pause = r.pauseReason ? ('<div class="bk-pause-tip">' + esc(r.pauseReason) + "</div>") : "";
+      var canEdit = r.status === "pending" || r.status === "paused";
+      var acts = [];
+      if (canEdit) {
+        acts.push('<a href="#" data-rem-act="edit-time" data-id="' + esc(r.id) + '">编辑时间</a>');
+        acts.push('<a href="#" data-rem-act="toggle" data-id="' + esc(r.id) + '">' + (r.enabled ? "关闭" : "开启") + "</a>");
+      }
+      acts.push('<a href="#" data-rem-act="template" data-id="' + esc(r.id) + '">查看文案</a>');
+      if (canEdit && r.status !== "cancelled") {
+        acts.push('<a href="#" data-rem-act="cancel" data-id="' + esc(r.id) + '">取消待执行</a>');
+      }
+      if (r.status === "completed" || r.status === "partial_fail") {
+        acts.push('<a href="#" data-rem-act="resend-fail" data-id="' + esc(r.id) + '">重发失败</a>');
+      }
+      return "<tr>" +
+        "<td><b>" + esc(r.name) + "</b>" + pause + "</td>" +
+        "<td>" + typeBadge(r.remindType) + "</td>" +
+        "<td>" + esc(r.triggerLabel) + "</td>" +
+        "<td>" + esc(r.audienceLabel || AUDIENCE_LABEL[r.audienceType] || r.audienceType) + "</td>" +
+        "<td class=\"bk-num\">" + num(r.estimatedUsers) + "</td>" +
+        "<td>" + esc((r.channels || []).join(" + ")) + "</td>" +
+        "<td><span class=\"badge " + LR.statusBadge(r.status) + "\">" + esc(LR.statusLabel(r.status)) + "</span>" +
+          (r.enabled === false && r.status !== "cancelled" ? ' <span class="badge">已关闭</span>' : "") + "</td>" +
+        "<td>" + esc(r.triggerTime || "—") + "</td>" +
+        "<td>" + esc(r.executedAt || "—") + "</td>" +
+        "<td class=\"row-actions\">" + acts.join("") + "</td>" +
+        "</tr>";
+    }).join("");
+  }
+
+  function renderRecords() {
+    if (!currentLiveId) return;
+    var typeF = document.getElementById("rec-f-type").value;
+    var statusF = document.getElementById("rec-f-status").value;
+    var kw = (document.getElementById("rec-f-keyword").value || "").trim().toLowerCase();
+    var rows = LR.getSendRecords(currentLiveId).filter(function (s) {
+      if (s.category && s.category !== "system_reminder") return false;
+      if (typeF && s.remindType !== typeF) return false;
+      if (statusF && s.status !== statusF) return false;
+      if (kw && String(s.name).toLowerCase().indexOf(kw) < 0) return false;
+      return true;
+    });
+    var tbody = document.getElementById("rec-tbody");
+    if (!rows.length) {
+      tbody.innerHTML = '<tr><td colspan="14" class="muted" style="text-align:center;padding:36px">暂无发送记录</td></tr>';
+      return;
+    }
+    tbody.innerHTML = rows.map(function (s) {
+      return "<tr>" +
+        "<td><b>" + esc(s.name) + "</b></td>" +
+        "<td>" + typeBadge(s.remindType) + "</td>" +
+        "<td>" + esc(s.liveName) + "</td>" +
+        "<td>" + esc(s.channel) + "</td>" +
+        "<td class=\"bk-num\">" + num(s.targetUsers) + "</td>" +
+        "<td class=\"bk-num\">" + num(s.reachedUsers) + "</td>" +
+        "<td class=\"bk-mono\">" + num(s.messageCount) + "</td>" +
+        "<td>" + esc(s.deliveryRate || "—") + "</td>" +
+        "<td>" + esc(s.clickRate || "—") + "</td>" +
+        "<td class=\"bk-num\">" + num(s.enteredLiveUsers) + "</td>" +
+        "<td>" + num(s.failedUsers) + "</td>" +
+        "<td>" + esc(s.executedAt || "—") + "</td>" +
+        "<td><span class=\"badge " + LR.statusBadge(s.status) + "\">" + esc(LR.statusLabel(s.status)) + "</span></td>" +
+        "<td class=\"row-actions\"><a href=\"#\" data-rec-act=\"detail\" data-id=\"" + esc(s.id) + "\">详情</a></td>" +
+        "</tr>";
+    }).join("");
+  }
+
+  function openRecordDrawer(id) {
+    var s = LR.getSendRecords(currentLiveId).find(function (x) { return x.id === id; });
+    if (!s) return;
+    var rem = s.reminderId ? LR.getReminder(s.reminderId) : null;
+    document.getElementById("dr-title").textContent = "发送记录 · " + s.name;
+    document.getElementById("dr-name").textContent = s.name;
+    document.getElementById("dr-type").textContent = TYPE_LABEL[s.remindType] || s.remindType;
+    document.getElementById("dr-live").textContent = s.liveName || "—";
+    document.getElementById("dr-channel").textContent = s.channel || "—";
+    document.getElementById("dr-target").textContent = num(s.targetUsers);
+    document.getElementById("dr-reached").textContent = num(s.reachedUsers);
+    document.getElementById("dr-msg").textContent = num(s.messageCount);
+    document.getElementById("dr-rates").textContent = (s.deliveryRate || "—") + " / " + (s.clickRate || "—");
+    document.getElementById("dr-enter").textContent = num(s.enteredLiveUsers);
+    document.getElementById("dr-fail").textContent = num(s.failedUsers);
+    document.getElementById("dr-time").textContent = s.executedAt || "—";
+    document.getElementById("dr-status").innerHTML = '<span class="badge ' + LR.statusBadge(s.status) + '">' + esc(LR.statusLabel(s.status)) + "</span>";
+    document.getElementById("dr-trigger").textContent = rem ? ("触发条件：" + (rem.triggerLabel || "—") + " · 预计时间 " + (rem.triggerTime || "—")) : "系统提醒任务按计划执行";
+    document.getElementById("dr-audience").textContent = rem ? (rem.audienceLabel || AUDIENCE_LABEL[rem.audienceType] || "—") : "—";
+    document.getElementById("dr-fail-reasons").textContent = (s.failReasons && s.failReasons.length) ? s.failReasons.join("；") : "无";
+    openNode(document.getElementById("drawer-record"));
+  }
+
+  /* ---------- Reminder modal ---------- */
+  function fillLiveSelect(sel, selected) {
+    sel.innerHTML = LR.getLives().map(function (l) {
+      return '<option value="' + esc(l.id) + '"' + (l.id === selected ? " selected" : "") + ">" + esc(l.name) + " (" + esc(l.id) + ")</option>";
+    }).join("");
+  }
+
+  function syncTriggerOptions() {
+    var type = document.getElementById("rm-type").value;
+    var trigger = document.getElementById("rm-trigger");
+    var map = {
+      pre_live: [
+        { v: "24h", t: "开播前 24 小时" },
+        { v: "1h", t: "开播前 1 小时" },
+        { v: "30m", t: "开播前 30 分钟" },
+        { v: "10m", t: "开播前 10 分钟" }
+      ],
+      live_start: [{ v: "live_started", t: "正式开播时" }],
+      replay_ready: [{ v: "replay_ready", t: "回放生成时" }],
+      live_changed: [{ v: "live_changed", t: "直播时间变更时" }],
+      live_cancelled: [{ v: "live_cancelled", t: "直播取消时" }]
+    };
+    var opts = map[type] || map.pre_live;
+    trigger.innerHTML = opts.map(function (o) {
+      return '<option value="' + o.v + '">' + o.t + "</option>";
+    }).join("");
+  }
+
+  function openReminderModal(editId) {
+    fillLiveSelect(document.getElementById("rm-live"), currentLiveId || "L001");
+    document.getElementById("rm-id").value = "";
+    document.getElementById("modal-reminder-title").textContent = editId ? "编辑提醒规则" : "新建提醒规则";
+    if (editId) {
+      var r = LR.getReminder(editId);
+      if (!r) return;
+      document.getElementById("rm-id").value = r.id;
+      document.getElementById("rm-name").value = r.name || "";
+      document.getElementById("rm-type").value = r.remindType || "pre_live";
+      syncTriggerOptions();
+      document.getElementById("rm-live").value = r.liveId;
+      var offsetKey = "1h";
+      if (r.triggerLabel && r.triggerLabel.indexOf("24") >= 0) offsetKey = "24h";
+      else if (r.triggerLabel && r.triggerLabel.indexOf("30") >= 0) offsetKey = "30m";
+      else if (r.triggerLabel && r.triggerLabel.indexOf("10") >= 0) offsetKey = "10m";
+      else if (r.remindType === "live_start") offsetKey = "live_started";
+      else if (r.remindType === "replay_ready") offsetKey = "replay_ready";
+      else if (r.remindType === "live_changed") offsetKey = "live_changed";
+      else if (r.remindType === "live_cancelled") offsetKey = "live_cancelled";
+      document.getElementById("rm-trigger").value = offsetKey;
+      document.getElementById("rm-audience").value = r.audienceType || "booked";
+      document.getElementById("rm-template").value = r.template || "";
+      document.getElementById("rm-enabled").value = r.enabled ? "1" : "0";
+      document.querySelectorAll('input[name="rm-ch"]').forEach(function (cb) {
+        cb.checked = (r.channels || []).indexOf(cb.value) >= 0;
+      });
+    } else {
+      document.getElementById("rm-name").value = "";
+      document.getElementById("rm-type").value = "pre_live";
+      syncTriggerOptions();
+      document.getElementById("rm-audience").value = "booked";
+      document.getElementById("rm-template").value = "";
+      document.getElementById("rm-enabled").value = "1";
+      document.querySelectorAll('input[name="rm-ch"]').forEach(function (cb) {
+        cb.checked = cb.value === "短信" || cb.value === "站内信";
+      });
+    }
+    openNode(document.getElementById("modal-reminder"));
+  }
+
+  function saveReminderFromModal() {
+    var name = (document.getElementById("rm-name").value || "").trim();
+    var liveId = document.getElementById("rm-live").value;
+    var type = document.getElementById("rm-type").value;
+    var trigger = document.getElementById("rm-trigger").value;
+    var audience = document.getElementById("rm-audience").value;
+    var template = (document.getElementById("rm-template").value || "").trim();
+    var enabled = document.getElementById("rm-enabled").value === "1";
+    var channels = [];
+    document.querySelectorAll('input[name="rm-ch"]:checked').forEach(function (cb) {
+      channels.push(cb.value);
+    });
+    if (!name) { Proto.toast("请填写提醒名称"); return; }
+    if (!liveId) { Proto.toast("请选择关联直播"); return; }
+    if (!channels.length) { Proto.toast("请至少选择一个渠道"); return; }
+    if (!template) { Proto.toast("请填写提醒文案"); return; }
+
+    var live = LR.getLive(liveId);
+    var id = document.getElementById("rm-id").value;
+    var existing = id ? LR.getReminder(id) : null;
+    var triggerLabel = document.getElementById("rm-trigger").selectedOptions[0].textContent;
+    var triggerType = "relative_to_live";
+    var triggerTime = live ? live.startAt : "";
+    if (type === "pre_live") {
+      triggerType = "relative_to_live";
+      triggerTime = live ? LR.calcPreTime(live.startAt, trigger) : "";
+    } else if (type === "live_start") {
+      triggerType = "live_started";
+      triggerTime = live ? live.startAt : "";
+    } else if (type === "replay_ready") {
+      triggerType = "replay_ready";
+      triggerTime = "直播结束后自动";
+    } else if (type === "live_changed") {
+      triggerType = "live_changed";
+      triggerTime = "直播改期时";
+    } else if (type === "live_cancelled") {
+      triggerType = "live_cancelled";
+      triggerTime = "直播取消时";
+    }
+
+    var canRun = live && live.auditStatus === "approved" && live.shelf;
+    var status = existing && (existing.status === "completed" || existing.status === "cancelled")
+      ? existing.status
+      : (canRun && enabled ? "pending" : "paused");
+    var pauseReason = "";
+    if (!canRun) {
+      pauseReason = live && live.auditStatus === "pending" ? "直播审核中，提醒任务暂停" : "直播未上架，提醒任务暂停";
+    }
+
+    var rem = {
+      id: id || ("R" + Date.now().toString(36)),
+      liveId: liveId,
+      name: name,
+      category: "system_reminder",
+      remindType: type,
+      triggerType: triggerType,
+      triggerLabel: triggerLabel,
+      triggerTime: triggerTime,
+      audienceType: audience,
+      audienceLabel: AUDIENCE_LABEL[audience] || audience,
+      channels: channels,
+      template: template,
+      owner: "系统",
+      status: status,
+      pauseReason: pauseReason,
+      estimatedUsers: live ? (
+        audience === "subscribed" ? (live.subscribedUsers || 0) :
+        audience === "not_attended" ? Math.max(0, (live.bookedUsers || 0) - (live.attendedUsers || 0)) :
+        (live.bookedUsers || 0)
+      ) : 0,
+      reachedUsers: existing ? (existing.reachedUsers || 0) : 0,
+      messageCount: existing ? (existing.messageCount || 0) : 0,
+      deliveredUsers: existing ? (existing.deliveredUsers || 0) : 0,
+      clickedUsers: existing ? (existing.clickedUsers || 0) : 0,
+      enteredLiveUsers: existing ? (existing.enteredLiveUsers || 0) : 0,
+      bookedUsers: 0, orderedUsers: 0, gmv: 0,
+      enabled: !!enabled && !!canRun,
+      createdAt: existing ? existing.createdAt : new Date().toISOString().slice(0, 16).replace("T", " "),
+      executedAt: existing ? existing.executedAt : null
+    };
+    LR.saveReminder(rem);
+    closeAll();
+    Proto.toast(id ? "提醒规则已更新" : "提醒规则已创建");
+    if (currentLiveId) {
+      if (liveId !== currentLiveId) {
+        location.href = "live-booking.html?live_id=" + encodeURIComponent(liveId) + "&tab=reminders";
+        return;
+      }
+      switchTab("reminders", false);
+      renderReminders();
+    } else {
       renderList();
     }
   }
 
-  // 等 admin-shell 注入完成后再切视图
-  function tryShow() {
-    if (document.documentElement.getAttribute("data-shell-ready") === "1" || document.getElementById("page-content").style.display !== "none") {
-      showView();
+  function openEditTime(id) {
+    var r = LR.getReminder(id);
+    if (!r) return;
+    document.getElementById("et-id").value = r.id;
+    document.getElementById("et-name").textContent = r.name;
+    var wrap = document.getElementById("et-offset-wrap");
+    if (r.remindType === "pre_live") {
+      wrap.style.display = "";
+      var offset = "1h";
+      if (r.triggerLabel.indexOf("24") >= 0) offset = "24h";
+      else if (r.triggerLabel.indexOf("30") >= 0) offset = "30m";
+      else if (r.triggerLabel.indexOf("10") >= 0) offset = "10m";
+      document.getElementById("et-offset").value = offset;
     } else {
-      setTimeout(tryShow, 80);
+      wrap.style.display = "none";
+    }
+    document.getElementById("et-time").value = r.triggerTime || "";
+    openNode(document.getElementById("modal-edit-time"));
+  }
+
+  function saveEditTime() {
+    var id = document.getElementById("et-id").value;
+    var r = LR.getReminder(id);
+    if (!r) return;
+    var live = LR.getLive(r.liveId);
+    if (r.remindType === "pre_live") {
+      var offset = document.getElementById("et-offset").value;
+      r.triggerLabel = LR.OFFSET_LABEL[offset] || r.triggerLabel;
+      r.triggerTime = live ? LR.calcPreTime(live.startAt, offset) : document.getElementById("et-time").value;
+      document.getElementById("et-time").value = r.triggerTime;
+    } else {
+      r.triggerTime = (document.getElementById("et-time").value || "").trim() || r.triggerTime;
+    }
+    LR.saveReminder(r);
+    closeAll();
+    Proto.toast("提醒时间已更新");
+    renderReminders();
+  }
+
+  /* ---------- Demo state linkage ---------- */
+  function runDemo(action, liveId) {
+    liveId = liveId || currentLiveId;
+    if (!liveId) { Proto.toast("请先选择直播"); return; }
+    if (action === "approve") {
+      askConfirm("模拟审核通过上架", "确认将「" + liveId + "」标记为审核通过并上架，并生成正式提醒计划？", function () {
+        LR.approveAndShelf(liveId);
+        Proto.toast("已审核通过并上架，提醒计划已生成");
+        boot(true);
+      });
+    } else if (action === "reschedule") {
+      askConfirm("模拟改期", "确认将「" + liveId + "」开播时间改为 2026-09-11 20:00，并重算未执行提醒？", function () {
+        var changed = LR.rescheduleReminders(liveId, "2026-09-11 20:00");
+        Proto.toast("已改期，重算 " + changed.length + " 条提醒");
+        boot(true);
+      });
+    } else if (action === "cancel") {
+      askConfirm("模拟取消直播", "确认取消「" + liveId + "」？将取消未执行提醒并生成取消通知。", function () {
+        LR.cancelLiveTasks(liveId);
+        Proto.toast("直播已取消，相关任务已处理");
+        boot(true);
+      });
     }
   }
-  // DOM ready
+
+  /* ---------- Boot / routing ---------- */
+  function showSingle(liveId, tab) {
+    var live = LR.getLive(liveId);
+    if (!live) {
+      Proto.toast("未找到直播 " + liveId);
+      currentLiveId = null;
+      document.getElementById("view-list").style.display = "";
+      document.getElementById("view-single").style.display = "none";
+      renderList();
+      return;
+    }
+    currentLiveId = liveId;
+    document.getElementById("view-list").style.display = "none";
+    document.getElementById("view-single").style.display = "";
+    document.getElementById("bk-current-live-text").textContent = live.name;
+    document.getElementById("bk-current-live-meta").innerHTML =
+      liveStatusBadge(live) + " " + auditBadge(live) + " · 开播 " + esc(live.startAt);
+    document.title = "预约管理 · " + live.name + " · 商家管理后台";
+    document.body.setAttribute("data-crumb", "直播 / 直播管理 / 预约管理 / " + live.name);
+    updateHeaderInvite(liveId);
+    renderStats(live);
+    fillChannelFilter(liveId);
+    switchTab(tab || getTabFromUrl(), false);
+  }
+
+  function showList() {
+    currentLiveId = null;
+    document.getElementById("view-list").style.display = "";
+    document.getElementById("view-single").style.display = "none";
+    document.title = "预约管理 · 商家管理后台";
+    document.body.setAttribute("data-crumb", "直播 / 直播管理 / 预约管理");
+    updateHeaderInvite(null);
+    renderList();
+  }
+
+  function boot(keepUrl) {
+    var sp = qs();
+    var liveId = sp.get("live_id") || sp.get("liveId");
+    var tab = getTabFromUrl();
+    if (liveId) showSingle(liveId, tab);
+    else showList();
+    if (!keepUrl && liveId) setUrl(liveId, tab, true);
+  }
+
+  /* ---------- Events ---------- */
+  document.getElementById("btn-export").addEventListener("click", function () {
+    Proto.toast(currentLiveId ? "已导出本场预约与提醒数据（原型）" : "已导出预约管理列表（原型）");
+  });
+  document.getElementById("btn-new-reminder").addEventListener("click", function () {
+    openReminderModal(null);
+  });
+  document.getElementById("btn-new-reminder-tab").addEventListener("click", function () {
+    openReminderModal(null);
+  });
+  document.getElementById("rm-type").addEventListener("change", syncTriggerOptions);
+  document.getElementById("btn-save-reminder").addEventListener("click", saveReminderFromModal);
+  document.getElementById("btn-save-time").addEventListener("click", saveEditTime);
+
+  document.getElementById("list-btn-query").addEventListener("click", renderList);
+  document.getElementById("list-btn-reset").addEventListener("click", function () {
+    document.getElementById("list-f-live-status").value = "";
+    document.getElementById("list-f-audit").value = "";
+    document.getElementById("list-f-keyword").value = "";
+    renderList();
+  });
+
+  document.getElementById("btn-bk-query").addEventListener("click", renderBookings);
+  document.getElementById("btn-bk-reset").addEventListener("click", function () {
+    ["f-status", "f-subscribed", "f-watched", "f-ordered", "f-channel", "f-keyword"].forEach(function (id) {
+      var el = document.getElementById(id);
+      if (el) el.value = "";
+    });
+    renderBookings();
+  });
+  document.getElementById("rec-btn-query").addEventListener("click", renderRecords);
+  document.getElementById("rec-btn-reset").addEventListener("click", function () {
+    document.getElementById("rec-f-type").value = "";
+    document.getElementById("rec-f-status").value = "";
+    document.getElementById("rec-f-keyword").value = "";
+    renderRecords();
+  });
+
+  document.querySelectorAll("#bk-tabs a").forEach(function (a) {
+    a.addEventListener("click", function (e) {
+      e.preventDefault();
+      switchTab(a.getAttribute("data-tab"), true);
+    });
+  });
+
+  document.getElementById("bk-tbody").addEventListener("click", function (e) {
+    var a = e.target.closest("[data-bk-act]");
+    if (!a) return;
+    e.preventDefault();
+    var act = a.getAttribute("data-bk-act");
+    var id = a.getAttribute("data-id");
+    if (act === "detail") openUserDrawer(id);
+    else if (act === "reremind") Proto.toast("已重新排队系统提醒（原型）");
+    else if (act === "follow") {
+      location.href = "live-invite.html?live_id=" + encodeURIComponent(currentLiveId);
+    } else if (act === "tag") Proto.toast("已打开打标签面板（原型）");
+    else if (act === "resend") Proto.toast("已重新发送失败消息（原型）");
+  });
+
+  document.getElementById("rem-tbody").addEventListener("click", function (e) {
+    var a = e.target.closest("[data-rem-act]");
+    if (!a) return;
+    e.preventDefault();
+    var act = a.getAttribute("data-rem-act");
+    var id = a.getAttribute("data-id");
+    var r = LR.getReminder(id);
+    if (!r) return;
+    if (act === "edit-time") openEditTime(id);
+    else if (act === "template") {
+      document.getElementById("tp-name").textContent = r.name;
+      document.getElementById("tp-body").textContent = r.template || "（无文案）";
+      openNode(document.getElementById("modal-template"));
+    } else if (act === "toggle") {
+      var next = !r.enabled;
+      askConfirm(next ? "开启提醒" : "关闭提醒",
+        "确认" + (next ? "开启" : "关闭") + "「" + r.name + "」？",
+        function () {
+          LR.toggleReminder(id, next);
+          Proto.toast(next ? "已开启" : "已关闭");
+          renderReminders();
+        });
+    } else if (act === "cancel") {
+      askConfirm("取消待执行", "确认取消「" + r.name + "」？取消后不可恢复执行。", function () {
+        LR.cancelReminder(id);
+        Proto.toast("已取消待执行任务");
+        renderReminders();
+      });
+    } else if (act === "resend-fail") {
+      Proto.toast("已对失败用户重新发送（原型）");
+    }
+  });
+
+  document.getElementById("rec-tbody").addEventListener("click", function (e) {
+    var a = e.target.closest("[data-rec-act]");
+    if (!a) return;
+    e.preventDefault();
+    if (a.getAttribute("data-rec-act") === "detail") openRecordDrawer(a.getAttribute("data-id"));
+  });
+
+  document.querySelectorAll("[data-demo]").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      runDemo(btn.getAttribute("data-demo"), btn.getAttribute("data-live"));
+    });
+  });
+  document.getElementById("demo-approve").addEventListener("click", function () { runDemo("approve"); });
+  document.getElementById("demo-reschedule").addEventListener("click", function () { runDemo("reschedule"); });
+  document.getElementById("demo-cancel").addEventListener("click", function () { runDemo("cancel"); });
+
+  window.addEventListener("popstate", function () { boot(true); });
+
+  function waitShell() {
+    if (document.documentElement.getAttribute("data-shell-ready") === "1" ||
+        document.getElementById("page-content").style.display !== "none") {
+      boot(true);
+    } else {
+      setTimeout(waitShell, 60);
+    }
+  }
   if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", tryShow);
+    document.addEventListener("DOMContentLoaded", waitShell);
   } else {
-    tryShow();
+    waitShell();
   }
 })();
 </script>

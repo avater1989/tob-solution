@@ -1,129 +1,129 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>直播促到SOP · 商家管理后台</title>
-<link rel="stylesheet" href="../assets/css/proto.css" />
+<title>直播促到 · 商家管理后台</title>
+<link rel="stylesheet" href="../assets/css/proto.css?v=9" />
 </head>
-<body class="admin-body" data-module="live" data-nav="invite" data-title="直播促到SOP" data-crumb="直播 / 直播促到 / 直播促到SOP">
+<body class="admin-body" data-module="scrm" data-nav="invite" data-title="直播促到" data-crumb="SCRM / 营销管理 / 直播促到">
 <div id="header-actions">
-  <button class="btn btn-primary" id="btn-create">+ 新建促到计划</button>
+  <button class="btn btn-primary" id="btn-create">+ 新建促到 SOP</button>
 </div>
 <div id="page-content" style="display:none">
 
+  <div class="alert alert-info" style="margin-bottom:8px;align-items:flex-start">
+    <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" style="flex-shrink:0;margin-top:2px"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+    <div>
+      <div style="font-weight:600">直播促到 SOP</div>
+      <div style="margin-top:2px;opacity:.9">面向私域线索的直播邀约、催到和会后跟进</div>
+      <div class="muted" style="margin-top:4px;font-size:12px;color:inherit;opacity:.75">
+        标准预约提醒（开播前 / 开播时 / 回放）请到
+        <a class="link-blue" href="live-booking.html" id="tip-booking-link">预约管理</a> 配置，本页不做系统提醒，避免职责重复。
+      </div>
+    </div>
+  </div>
+
   <!-- 筛选 -->
   <div class="card" style="margin-bottom:8px"><div class="card-bd">
-    <div class="form-grid" style="grid-template-columns:repeat(5,minmax(0,1fr));gap:8px 12px">
-      <input id="f-name" placeholder="计划名称" />
-      <select id="f-live">
-        <option value="">直播</option>
-        <option>春启03·家长公开课</option>
-        <option>春启04·家长公开课</option>
-      </select>
-      <select id="f-stage">
-        <option value="">客户阶段</option>
-        <option>全部</option>
-        <option>新线索</option>
-        <option>跟进中</option>
-        <option>已转化</option>
-      </select>
-      <select id="f-channel">
-        <option value="">触达方式</option>
-        <option>短信</option>
-        <option>企微</option>
-        <option>站内信</option>
-      </select>
-      <select id="f-status">
-        <option value="">状态</option>
-        <option>待执行</option>
-        <option>执行中</option>
-        <option>已完成</option>
-        <option>已取消</option>
-      </select>
+    <div class="form-grid" style="grid-template-columns:repeat(4,minmax(0,1fr));gap:8px 12px">
+      <div class="field"><label>关联直播</label>
+        <select id="f-live"><option value="">全部直播</option></select>
+      </div>
+      <div class="field"><label>推广期次</label>
+        <select id="f-period">
+          <option value="">全部期次</option>
+          <option>春启 03 期</option>
+          <option>春启 04 期</option>
+        </select>
+      </div>
+      <div class="field"><label>来源渠道</label>
+        <select id="f-channel">
+          <option value="">全部渠道</option>
+          <option>视频号+企微</option>
+          <option>视频号</option>
+          <option>企微</option>
+          <option>短信</option>
+        </select>
+      </div>
+      <div class="field"><label>客户阶段</label>
+        <select id="f-stage">
+          <option value="">全部阶段</option>
+          <option>新线索</option>
+          <option>跟进中</option>
+          <option>已转化</option>
+        </select>
+      </div>
+      <div class="field"><label>是否加微</label>
+        <select id="f-wecom">
+          <option value="">不限</option>
+          <option value="1">已加微</option>
+          <option value="0">未加微</option>
+        </select>
+      </div>
+      <div class="field"><label>是否预约</label>
+        <select id="f-booked">
+          <option value="">不限</option>
+          <option value="1">已预约</option>
+          <option value="0">未预约</option>
+        </select>
+      </div>
+      <div class="field"><label>是否到场</label>
+        <select id="f-attended">
+          <option value="">不限</option>
+          <option value="1">已到场</option>
+          <option value="0">未到场</option>
+        </select>
+      </div>
+      <div class="field"><label>是否下单</label>
+        <select id="f-ordered">
+          <option value="">不限</option>
+          <option value="1">已下单</option>
+          <option value="0">未下单</option>
+        </select>
+      </div>
+      <div class="field"><label>状态</label>
+        <select id="f-status">
+          <option value="">全部状态</option>
+          <option value="draft">草稿</option>
+          <option value="running">执行中</option>
+          <option value="paused">已暂停</option>
+          <option value="completed">已完成</option>
+          <option value="cancelled">已取消</option>
+        </select>
+      </div>
     </div>
     <div class="toolbar" style="margin-top:8px">
       <button class="btn btn-primary" id="btn-query">查询</button>
       <button class="btn" id="btn-reset">重置</button>
+      <div class="spacer"></div>
+      <span class="muted" style="font-size:12px">排除条件（已购买 / 已退订 / 近期已触达等）在新建表单中配置</span>
     </div>
   </div></div>
 
   <!-- 表格 -->
-  <div class="card"><div class="card-bd" style="padding:0">
+  <div class="card"><div class="card-bd" style="padding:0;overflow-x:auto">
     <table class="data">
       <thead>
         <tr>
-          <th>计划名称</th><th>关联直播</th><th>触达方式</th>
-          <th>目标客户</th><th>发送成功</th><th>打开数</th>
-          <th>状态</th><th>执行时间</th>
-          <th style="width:160px">操作</th>
+          <th>计划名称</th>
+          <th>关联直播</th>
+          <th>步骤数</th>
+          <th>目标客户</th>
+          <th>实际触达</th>
+          <th>新增预约</th>
+          <th>到课人数</th>
+          <th>下单人数</th>
+          <th>成交金额</th>
+          <th>状态</th>
+          <th style="width:200px">操作</th>
         </tr>
       </thead>
-      <tbody id="li-tbody">
-        <tr>
-          <td>今晚 8 点直播催到</td>
-          <td>春启03·家长公开课</td>
-          <td>短信</td>
-          <td>186</td>
-          <td>176</td>
-          <td>94</td>
-          <td><span class="badge badge-success">已完成</span></td>
-          <td>2026-03-29 19:00</td>
-          <td class="row-actions">
-            <a href="#" data-row-act="detail">详情</a>
-            <a href="#" data-row-act="stat">数据</a>
-            <a href="#" data-row-act="edit">编辑</a>
-          </td>
-        </tr>
-        <tr>
-          <td>开课前 30 分钟提醒</td>
-          <td>春启03·家长公开课</td>
-          <td>企微</td>
-          <td>186</td>
-          <td>182</td>
-          <td>108</td>
-          <td><span class="badge badge-success">已完成</span></td>
-          <td>2026-03-29 19:30</td>
-          <td class="row-actions">
-            <a href="#" data-row-act="detail">详情</a>
-            <a href="#" data-row-act="stat">数据</a>
-            <a href="#" data-row-act="edit">编辑</a>
-          </td>
-        </tr>
-        <tr>
-          <td>明日直播预告</td>
-          <td>春启04·家长公开课</td>
-          <td>短信</td>
-          <td>92</td>
-          <td>—</td>
-          <td>—</td>
-          <td><span class="badge">待执行</span></td>
-          <td>2026-03-30 19:00</td>
-          <td class="row-actions">
-            <a href="#" data-row-act="edit">编辑</a>
-            <a href="#" data-row-act="cancel">取消</a>
-          </td>
-        </tr>
-        <tr>
-          <td>回放提醒</td>
-          <td>春启03·家长公开课</td>
-          <td>站内信</td>
-          <td>186</td>
-          <td>180</td>
-          <td>76</td>
-          <td><span class="badge badge-success">已完成</span></td>
-          <td>2026-03-29 22:00</td>
-          <td class="row-actions">
-            <a href="#" data-row-act="detail">详情</a>
-            <a href="#" data-row-act="stat">数据</a>
-          </td>
-        </tr>
-      </tbody>
+      <tbody id="sop-tbody"></tbody>
     </table>
   </div></div>
-  <!-- 分页 -->
   <div class="toolbar" style="margin-top:8px">
-    <span class="muted">共 <b>4</b> 条</span>
+    <span class="muted">共 <b id="sop-count">0</b> 条</span>
     <div class="spacer"></div>
     <button class="btn btn-sm" disabled>上一页</button>
     <button class="btn btn-sm" disabled>下一页</button>
@@ -133,202 +133,753 @@
 <!-- ============ 弹窗 / 抽屉 ============ -->
 <div class="proto-mask" id="mask"></div>
 
-<!-- 新建 / 编辑 促到计划 弹窗 -->
-<div class="proto-modal" id="modal-create" style="width:680px">
+<!-- 新建 / 编辑 促到 SOP -->
+<div class="proto-modal" id="modal-create" style="width:820px;max-height:90vh">
   <div class="proto-modal-hd">
-    <h3 id="li-title" style="font-size:16px;font-weight:600">新建促到计划</h3>
+    <h3 id="modal-create-title" style="margin:0;font-size:16px;font-weight:600">新建促到 SOP</h3>
     <button class="btn btn-sm btn-ghost" data-close>×</button>
   </div>
-  <div class="proto-modal-bd">
-    <div class="form-grid">
-      <div class="field"><label>计划名称 *</label><input id="cli-name" placeholder="如：今晚 8 点直播催到" /></div>
+  <div class="proto-modal-bd" style="max-height:calc(90vh - 120px);overflow:auto">
+    <div class="alert alert-info" style="margin-bottom:12px;font-size:12px">
+      本 SOP 面向私域营销触达。标准预约提醒请到
+      <a class="link-blue" href="live-booking.html">预约管理</a>，此处不会创建系统提醒，也不提供「立即推送」。
+    </div>
+    <div class="form-grid" style="grid-template-columns:1fr 1fr;gap:10px 14px">
+      <div class="field"><label>计划名称 *</label>
+        <input id="c-name" placeholder="如：春启03 私域预约+催到 SOP" />
+      </div>
       <div class="field"><label>关联直播 *</label>
-        <select>
-          <option>春启03·家长公开课</option>
-          <option>春启04·家长公开课</option>
+        <select id="c-live"></select>
+      </div>
+      <div class="field"><label>推广期次</label>
+        <select id="c-period">
+          <option value="">请选择</option>
+          <option>春启 03 期</option>
+          <option>春启 04 期</option>
         </select>
       </div>
-      <div class="field"><label>触达方式 *</label>
-        <select>
-          <option>短信</option>
+      <div class="field"><label>来源渠道</label>
+        <select id="c-channel">
+          <option value="">请选择</option>
+          <option>视频号+企微</option>
+          <option>视频号</option>
           <option>企微</option>
-          <option>站内信</option>
+          <option>短信</option>
         </select>
       </div>
-      <div class="field"><label>发送时机</label>
-        <select>
-          <option>直播前 1 小时</option>
-          <option>直播前 30 分钟</option>
-          <option>直播开始时</option>
-          <option>直播结束后 2 小时</option>
-          <option>自定义时间</option>
+    </div>
+
+    <h4 style="margin:16px 0 8px;font-size:14px">人群筛选</h4>
+    <div class="form-grid" style="grid-template-columns:repeat(4,minmax(0,1fr));gap:8px 12px">
+      <div class="field"><label>客户阶段</label>
+        <select id="c-stage">
+          <option value="">不限</option>
+          <option>新线索</option>
+          <option>跟进中</option>
+          <option>已转化</option>
         </select>
       </div>
-      <div class="field"><label>执行时间 *</label><input type="datetime-local" /></div>
-      <div class="field" style="grid-column:1/-1"><label>目标客户条件</label>
-        <textarea rows="2" style="width:100%;padding:8px;border:1px solid var(--color-border);border-radius:6px" placeholder="如：未到课 / 已加微 / 直播期间未到访"></textarea>
+      <div class="field"><label>是否加微</label>
+        <select id="c-wecom">
+          <option value="">不限</option>
+          <option value="1">已加微</option>
+          <option value="0">未加微</option>
+        </select>
       </div>
-      <div class="field"><label>短信模板</label>
-        <select><option>默认直播催到</option><option>开播提醒</option><option>回放提醒</option></select>
+      <div class="field"><label>是否预约</label>
+        <select id="c-booked">
+          <option value="">不限</option>
+          <option value="1">已预约</option>
+          <option value="0">未预约</option>
+        </select>
       </div>
-      <div class="field"><label>客户去重</label>
-        <select><option>是</option><option>否</option></select>
+      <div class="field"><label>意向</label>
+        <select id="c-intent">
+          <option value="">不限</option>
+          <option>高</option>
+          <option>中高</option>
+          <option>中</option>
+        </select>
       </div>
+    </div>
+
+    <h4 style="margin:16px 0 8px;font-size:14px">排除条件</h4>
+    <div style="display:flex;flex-wrap:wrap;gap:12px 20px;font-size:13px">
+      <label><input type="checkbox" class="c-exclude" value="已购买" checked /> 已购买</label>
+      <label><input type="checkbox" class="c-exclude" value="已退订营销" checked /> 已退订</label>
+      <label><input type="checkbox" class="c-exclude" value="近期已触达" checked /> 近期已触达</label>
+      <label><input type="checkbox" class="c-exclude" value="已流失" /> 已流失</label>
+      <label><input type="checkbox" class="c-exclude" value="黑名单" /> 黑名单</label>
+    </div>
+
+    <div class="toolbar" style="margin:16px 0 8px;padding:0;border:none;background:transparent">
+      <h4 style="margin:0;font-size:14px">促到步骤（可编辑）</h4>
+      <div class="spacer"></div>
+      <button type="button" class="btn btn-sm" id="c-add-step">+ 添加步骤</button>
+    </div>
+    <div style="overflow-x:auto">
+      <table class="data" id="c-steps-table">
+        <thead>
+          <tr>
+            <th>步骤名称</th><th>触发时机</th><th>受众</th><th>渠道</th><th>目标</th><th>自动</th><th style="width:100px">操作</th>
+          </tr>
+        </thead>
+        <tbody id="c-steps-tbody"></tbody>
+      </table>
     </div>
   </div>
   <div class="proto-modal-ft">
     <button class="btn" data-close>取消</button>
-    <button class="btn btn-primary" id="cli-submit">保存</button>
+    <button class="btn btn-primary" id="c-submit">保存 SOP</button>
+  </div>
+</div>
+
+<!-- 步骤编辑弹窗 -->
+<div class="proto-modal" id="modal-step" style="width:520px">
+  <div class="proto-modal-hd">
+    <h3 id="modal-step-title" style="margin:0;font-size:16px;font-weight:600">编辑步骤</h3>
+    <button class="btn btn-sm btn-ghost" data-close-step>×</button>
+  </div>
+  <div class="proto-modal-bd">
+    <div class="form-grid" style="grid-template-columns:1fr 1fr;gap:10px 14px">
+      <div class="field" style="grid-column:1/-1"><label>步骤名称 *</label>
+        <input id="st-name" placeholder="如：开播前催到" />
+      </div>
+      <div class="field"><label>触发时机</label>
+        <input id="st-timing" placeholder="如：直播前 1 小时" />
+      </div>
+      <div class="field"><label>目标</label>
+        <input id="st-goal" placeholder="如：进入直播间" />
+      </div>
+      <div class="field" style="grid-column:1/-1"><label>受众</label>
+        <input id="st-audience" placeholder="如：已预约用户" />
+      </div>
+      <div class="field" style="grid-column:1/-1"><label>渠道（逗号分隔）</label>
+        <input id="st-channels" placeholder="企微,短信" />
+      </div>
+      <div class="field"><label>自动执行</label>
+        <select id="st-auto">
+          <option value="1">是</option>
+          <option value="0">否（助教任务）</option>
+        </select>
+      </div>
+      <div class="field"><label>状态</label>
+        <select id="st-status">
+          <option value="draft">草稿</option>
+          <option value="pending">待执行</option>
+          <option value="running">执行中</option>
+          <option value="completed">已完成</option>
+        </select>
+      </div>
+    </div>
+  </div>
+  <div class="proto-modal-ft">
+    <button class="btn" data-close-step>取消</button>
+    <button class="btn btn-primary" id="st-submit">确定</button>
   </div>
 </div>
 
 <!-- 详情抽屉 -->
-<div class="proto-drawer" id="drawer-detail">
+<div class="proto-drawer" id="drawer-detail" style="width:560px">
   <div class="proto-drawer-hd">
-    <h3 id="ld-title">促到计划详情</h3>
+    <h3 id="d-title">促到 SOP 详情</h3>
     <button class="btn btn-sm btn-ghost" data-close>×</button>
   </div>
   <div class="proto-drawer-bd">
-    <h4 style="margin-bottom:8px">基础信息</h4>
-    <div class="form-grid" style="grid-template-columns:1fr 1fr">
-      <div class="field"><label>计划名称</label><div id="ld-name">—</div></div>
-      <div class="field"><label>关联直播</label><div id="ld-live">—</div></div>
-      <div class="field"><label>触达方式</label><div id="ld-channel">—</div></div>
-      <div class="field"><label>执行时间</label><div id="ld-time">—</div></div>
-      <div class="field"><label>状态</label><div id="ld-status">—</div></div>
-      <div class="field"><label>客户去重</label><div id="ld-dedup">—</div></div>
+    <h4 style="margin:0 0 8px;font-size:14px">基础信息</h4>
+    <div class="form-grid" style="grid-template-columns:1fr 1fr;gap:8px 12px">
+      <div class="field"><label>计划名称</label><div id="d-name">—</div></div>
+      <div class="field"><label>关联直播</label><div id="d-live">—</div></div>
+      <div class="field"><label>推广期次</label><div id="d-period">—</div></div>
+      <div class="field"><label>来源渠道</label><div id="d-channel">—</div></div>
+      <div class="field"><label>负责人</label><div id="d-owner">—</div></div>
+      <div class="field"><label>状态</label><div id="d-status">—</div></div>
+      <div class="field" style="grid-column:1/-1"><label>排除条件</label><div id="d-excludes">—</div></div>
     </div>
-    <h4 style="margin:16px 0 8px">执行数据</h4>
-    <div class="grid-4" style="margin:0">
-      <div class="stat"><div class="label">目标客户</div><div class="value" id="ld-target">—</div></div>
-      <div class="stat"><div class="label">发送成功</div><div class="value" id="ld-success">—</div></div>
-      <div class="stat"><div class="label">打开数</div><div class="value" id="ld-open">—</div></div>
-      <div class="stat"><div class="label">打开率</div><div class="value" id="ld-rate">—</div></div>
+
+    <h4 style="margin:18px 0 8px;font-size:14px">转化漏斗</h4>
+    <div class="funnel" id="d-funnel"></div>
+
+    <h4 style="margin:18px 0 8px;font-size:14px">效果指标</h4>
+    <div class="grid-4" style="margin:0;display:grid;grid-template-columns:repeat(2,1fr);gap:10px">
+      <div class="stat"><div class="label">到课率</div><div class="value" id="d-attend-rate">—</div></div>
+      <div class="stat"><div class="label">触达→预约率</div><div class="value" id="d-book-rate">—</div></div>
+      <div class="stat"><div class="label">到场→下单率</div><div class="value" id="d-order-rate">—</div></div>
+      <div class="stat"><div class="label">单次触达成本</div><div class="value" id="d-cost">—</div></div>
     </div>
-    <h4 style="margin:16px 0 8px">短信预览</h4>
-    <div class="msg-mock">
-      <div class="msg-bubble">
-        <div class="msg-text">【艺博教育】春启03·家长公开课今晚 20:00 开播，点击链接进入直播间 [链接]</div>
-        <div class="muted" style="font-size:12px;margin-top:6px">— 来自 艺博教育</div>
-      </div>
+
+    <div class="toolbar" style="margin:18px 0 8px;padding:0;border:none;background:transparent">
+      <h4 style="margin:0;font-size:14px">步骤列表</h4>
+      <div class="spacer"></div>
+      <button type="button" class="btn btn-sm" id="d-add-step">+ 添加步骤</button>
     </div>
+    <div id="d-steps"></div>
   </div>
-  <div class="proto-drawer-bd"></div>
-  <div class="proto-drawer-ft">
+  <div class="proto-drawer-ft" style="flex-wrap:wrap;gap:8px">
     <button class="btn" data-close>关闭</button>
-    <a class="btn btn-primary" href="#" id="ld-edit">编辑</a>
+    <button class="btn" id="d-edit">编辑</button>
+    <button class="btn btn-primary" id="d-start">启动</button>
+    <button class="btn" id="d-pause">暂停</button>
+    <button class="btn" id="d-cancel" style="color:var(--color-danger)">取消</button>
   </div>
 </div>
 
 <style>
-.msg-mock {
-  padding: 16px; background: #ededed; border-radius: 6px;
-  display: flex; flex-direction: column; align-items: flex-start;
+.funnel { display: flex; flex-direction: column; gap: 6px; }
+.funnel-row {
+  display: flex; align-items: center; gap: 10px;
+  padding: 8px 12px; background: #f7f8fa; border-radius: 6px;
+  font-size: 13px;
 }
-.msg-bubble {
-  max-width: 80%;
-  padding: 10px 12px; background: #fff;
-  border-radius: 6px; box-shadow: 0 1px 2px rgba(0,0,0,.08);
+.funnel-row .fn-label { width: 72px; color: #4e5969; flex-shrink: 0; }
+.funnel-row .fn-bar-wrap {
+  flex: 1; height: 8px; background: #e5e6eb; border-radius: 4px; overflow: hidden;
 }
+.funnel-row .fn-bar { height: 100%; background: #165dff; border-radius: 4px; }
+.funnel-row .fn-num { width: 56px; text-align: right; font-weight: 600; color: #1d2129; }
+.funnel-row .fn-rate { width: 52px; text-align: right; color: #86909c; font-size: 12px; }
+.funnel-arrow { text-align: center; color: #c9cdd4; font-size: 11px; line-height: 1; }
+
+.step-card {
+  border: 1px solid var(--color-border); border-radius: 8px;
+  padding: 12px 14px; margin-bottom: 8px; background: #fff;
+}
+.step-card-hd {
+  display: flex; align-items: center; gap: 8px; margin-bottom: 6px;
+}
+.step-card-hd b { font-size: 13px; }
+.step-meta { font-size: 12px; color: #86909c; line-height: 1.7; }
+.step-actions { margin-left: auto; display: flex; gap: 8px; }
+.step-actions a { font-size: 12px; }
 .row-actions a.danger { color: var(--color-danger); }
+.chk-row { display: flex; flex-wrap: wrap; gap: 8px 16px; }
 </style>
 
 <script src="../assets/js/proto.js"></script>
-<script src="../assets/js/admin-shell.js?v=3"></script>
+<script src="../assets/js/live-reach.js"></script>
+<script src="../assets/js/admin-shell.js?v=13"></script>
 <script>
 (function () {
-  // ===== Mask / drawer / modal =====
   var mask = document.getElementById("mask");
+  var currentSopId = null;
+  var draftSteps = [];
+  var stepEditCtx = null; // { mode: 'create'|'detail', index: number|null }
+
+  function qs() {
+    try { return new URLSearchParams(location.search); } catch (e) { return new URLSearchParams(); }
+  }
+  function liveIdFromUrl() {
+    var p = qs();
+    return p.get("live_id") || p.get("liveId") || "";
+  }
   function closeAll() {
     mask.classList.remove("open");
-    document.querySelectorAll(".proto-modal, .proto-drawer").forEach(function (n) { n.classList.remove("open"); });
+    document.querySelectorAll(".proto-modal, .proto-drawer").forEach(function (n) {
+      n.classList.remove("open");
+    });
   }
-  function open(node) { mask.classList.add("open"); node.classList.add("open"); }
-  mask.addEventListener("click", closeAll);
-  document.querySelectorAll("[data-close]").forEach(function (n) { n.addEventListener("click", closeAll); });
+  function open(node) {
+    mask.classList.add("open");
+    node.classList.add("open");
+  }
+  function openNested(node) {
+    node.classList.add("open");
+  }
+  function closeStepModal() {
+    document.getElementById("modal-step").classList.remove("open");
+    var others = document.querySelectorAll(".proto-modal.open, .proto-drawer.open");
+    if (!others.length) mask.classList.remove("open");
+  }
 
-  // ===== Row data =====
-  function rowData(tr) {
-    var tds = tr.querySelectorAll("td");
-    return {
-      name: tds[0] ? tds[0].textContent.trim() : "",
-      live: tds[1] ? tds[1].textContent.trim() : "",
-      channel: tds[2] ? tds[2].textContent.trim() : "",
-      target: tds[3] ? tds[3].textContent.trim() : "0",
-      success: tds[4] ? tds[4].textContent.trim() : "0",
-      open: tds[5] ? tds[5].textContent.trim() : "0",
-      status: tds[6] ? tds[6].textContent.trim() : "",
-      time: tds[7] ? tds[7].textContent.trim() : "",
-    };
+  mask.addEventListener("click", closeAll);
+  document.querySelectorAll("[data-close]").forEach(function (n) {
+    n.addEventListener("click", closeAll);
+  });
+  document.querySelectorAll("[data-close-step]").forEach(function (n) {
+    n.addEventListener("click", closeStepModal);
+  });
+
+  function fmtMoney(n) {
+    n = Number(n) || 0;
+    return "¥" + n.toLocaleString("zh-CN");
+  }
+  function pct(a, b) {
+    if (!b) return "—";
+    return (Math.round((a / b) * 1000) / 10) + "%";
+  }
+  function liveName(id) {
+    var live = LiveReach.getLive(id);
+    return live ? live.name : (id || "—");
+  }
+  function boolFilter(val, flag) {
+    if (val === "" || val == null) return true;
+    var want = val === "1" || val === true;
+    return !!flag === want;
+  }
+  function estimateTarget(liveId) {
+    var live = LiveReach.getLive(liveId);
+    if (!live) return 200;
+    return Math.max(80, Math.round((live.bookedUsers || 100) * 1.6));
+  }
+
+  // ===== Live selects =====
+  function fillLiveSelects(preselect) {
+    var lives = LiveReach.getLives();
+    var fLive = document.getElementById("f-live");
+    var cLive = document.getElementById("c-live");
+    var fVal = fLive.value;
+    var cVal = cLive.value;
+    fLive.innerHTML = '<option value="">全部直播</option>';
+    cLive.innerHTML = '<option value="">请选择直播</option>';
+    lives.forEach(function (l) {
+      var label = l.name + "（" + (l.liveStatusLabel || "") + "）";
+      fLive.appendChild(new Option(label, l.id));
+      cLive.appendChild(new Option(label, l.id));
+    });
+    if (preselect) fLive.value = preselect;
+    else if (fVal) fLive.value = fVal;
+    if (cVal) cLive.value = cVal;
+    else if (preselect) cLive.value = preselect;
+
+    var tipLink = document.getElementById("tip-booking-link");
+    if (tipLink && preselect) tipLink.href = "live-booking.html?live_id=" + encodeURIComponent(preselect);
+  }
+
+  // ===== List =====
+  function getFilteredSops() {
+    var liveId = document.getElementById("f-live").value;
+    var period = document.getElementById("f-period").value;
+    var channel = document.getElementById("f-channel").value;
+    var stage = document.getElementById("f-stage").value;
+    var wecom = document.getElementById("f-wecom").value;
+    var booked = document.getElementById("f-booked").value;
+    var attended = document.getElementById("f-attended").value;
+    var ordered = document.getElementById("f-ordered").value;
+    var status = document.getElementById("f-status").value;
+
+    return LiveReach.getSops(liveId || null).filter(function (s) {
+      if (period && s.period !== period) return false;
+      if (channel && s.channel !== channel) return false;
+      if (status && s.status !== status) return false;
+      var f = s.filters || {};
+      if (stage && f.stage !== stage) return false;
+      if (!boolFilter(wecom, f.wecom)) return false;
+      if (!boolFilter(booked, f.booked)) return false;
+      // list-level 到场/下单：有结果数据时按是否产生对应转化粗筛
+      if (attended === "1" && !(s.attendedUsers > 0)) return false;
+      if (attended === "0" && s.attendedUsers > 0) return false;
+      if (ordered === "1" && !(s.orderUsers > 0)) return false;
+      if (ordered === "0" && s.orderUsers > 0) return false;
+      return true;
+    });
+  }
+
+  function renderList() {
+    var list = getFilteredSops();
+    var tb = document.getElementById("sop-tbody");
+    document.getElementById("sop-count").textContent = list.length;
+    if (!list.length) {
+      tb.innerHTML = '<tr><td colspan="11" class="muted" style="text-align:center;padding:32px">暂无促到 SOP，点击右上角新建</td></tr>';
+      return;
+    }
+    tb.innerHTML = list.map(function (s) {
+      var steps = (s.steps && s.steps.length) || 0;
+      var acts = [];
+      acts.push('<a href="#" data-act="detail" data-id="' + s.id + '">详情</a>');
+      if (s.status === "draft" || s.status === "paused") {
+        acts.push('<a href="#" data-act="start" data-id="' + s.id + '">启动</a>');
+      }
+      if (s.status === "running") {
+        acts.push('<a href="#" data-act="pause" data-id="' + s.id + '">暂停</a>');
+      }
+      if (s.status !== "cancelled" && s.status !== "completed") {
+        acts.push('<a href="#" data-act="cancel" data-id="' + s.id + '" class="danger">取消</a>');
+      }
+      acts.push('<a href="#" data-act="edit" data-id="' + s.id + '">编辑</a>');
+      return "<tr>" +
+        "<td><b>" + esc(s.name) + "</b></td>" +
+        "<td>" + esc(liveName(s.liveId)) + "</td>" +
+        "<td>" + steps + "</td>" +
+        "<td>" + (s.targetUsers || 0) + "</td>" +
+        "<td>" + (s.reachedUsers || 0) + "</td>" +
+        "<td>" + (s.newBookings || 0) + "</td>" +
+        "<td>" + (s.attendedUsers || 0) + "</td>" +
+        "<td>" + (s.orderUsers || 0) + "</td>" +
+        "<td>" + fmtMoney(s.gmv) + "</td>" +
+        '<td><span class="badge ' + LiveReach.statusBadge(s.status) + '">' + LiveReach.statusLabel(s.status) + "</span></td>" +
+        '<td class="row-actions">' + acts.join("") + "</td>" +
+        "</tr>";
+    }).join("");
+  }
+
+  function esc(s) {
+    return String(s == null ? "" : s)
+      .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;");
+  }
+
+  document.getElementById("sop-tbody").addEventListener("click", function (e) {
+    var a = e.target.closest("[data-act]");
+    if (!a) return;
+    e.preventDefault();
+    var id = a.getAttribute("data-id");
+    var act = a.getAttribute("data-act");
+    if (act === "detail") openDetail(id);
+    else if (act === "edit") openCreate(id);
+    else if (act === "start") doSetStatus(id, "running");
+    else if (act === "pause") doSetStatus(id, "paused");
+    else if (act === "cancel") {
+      if (confirm("确认取消该促到 SOP？")) doSetStatus(id, "cancelled");
+    }
+  });
+
+  function doSetStatus(id, status) {
+    var res = LiveReach.setSopStatus(id, status);
+    if (res && res.error) {
+      Proto.toast(res.error);
+      return;
+    }
+    var msg = { running: "已启动", paused: "已暂停", cancelled: "已取消" }[status] || "状态已更新";
+    Proto.toast(msg);
+    renderList();
+    if (currentSopId === id && document.getElementById("drawer-detail").classList.contains("open")) {
+      openDetail(id);
+    }
   }
 
   // ===== Detail =====
-  function fillDetail(d) {
-    document.getElementById("ld-title").textContent = "促到计划详情 · " + d.name;
-    document.getElementById("ld-name").textContent = d.name;
-    document.getElementById("ld-live").textContent = d.live;
-    document.getElementById("ld-channel").textContent = d.channel;
-    document.getElementById("ld-time").textContent = d.time;
-    document.getElementById("ld-status").textContent = d.status;
-    document.getElementById("ld-dedup").textContent = "是";
-    document.getElementById("ld-target").textContent = d.target;
-    document.getElementById("ld-success").textContent = d.success;
-    document.getElementById("ld-open").textContent = d.open;
-    var rate = (parseInt(d.success) > 0 ? Math.round(parseInt(d.open) / parseInt(d.success) * 100) : 0);
-    document.getElementById("ld-rate").textContent = rate + "%";
+  function openDetail(id) {
+    var sop = LiveReach.getSop(id);
+    if (!sop) { Proto.toast("未找到该 SOP"); return; }
+    currentSopId = id;
+    document.getElementById("d-title").textContent = "促到 SOP · " + sop.name;
+    document.getElementById("d-name").textContent = sop.name;
+    document.getElementById("d-live").textContent = liveName(sop.liveId);
+    document.getElementById("d-period").textContent = sop.period || "—";
+    document.getElementById("d-channel").textContent = sop.channel || "—";
+    document.getElementById("d-owner").textContent = sop.owner || "—";
+    document.getElementById("d-status").innerHTML =
+      '<span class="badge ' + LiveReach.statusBadge(sop.status) + '">' + LiveReach.statusLabel(sop.status) + "</span>";
+    document.getElementById("d-excludes").textContent =
+      (sop.excludes && sop.excludes.length) ? sop.excludes.join("、") : "无";
+
+    var target = sop.targetUsers || 0;
+    var reached = sop.reachedUsers || 0;
+    var booked = sop.newBookings || 0;
+    var attended = sop.attendedUsers || 0;
+    var ordered = sop.orderUsers || 0;
+    var funnel = [
+      { label: "目标客户", n: target },
+      { label: "成功触达", n: reached },
+      { label: "完成预约", n: booked },
+      { label: "实际到场", n: attended },
+      { label: "支付成功", n: ordered }
+    ];
+    var maxN = Math.max.apply(null, funnel.map(function (x) { return x.n; }).concat([1]));
+    var html = "";
+    funnel.forEach(function (row, i) {
+      if (i) html += '<div class="funnel-arrow">↓</div>';
+      var prev = i ? funnel[i - 1].n : row.n;
+      var rate = i ? pct(row.n, prev) : "100%";
+      var w = Math.max(4, Math.round((row.n / maxN) * 100));
+      html += '<div class="funnel-row">' +
+        '<span class="fn-label">' + row.label + "</span>" +
+        '<div class="fn-bar-wrap"><div class="fn-bar" style="width:' + w + '%"></div></div>' +
+        '<span class="fn-num">' + row.n + "</span>" +
+        '<span class="fn-rate">' + rate + "</span>" +
+        "</div>";
+    });
+    document.getElementById("d-funnel").innerHTML = html;
+
+    document.getElementById("d-attend-rate").textContent = pct(attended, booked || reached || target);
+    document.getElementById("d-book-rate").textContent = pct(booked, reached || target);
+    document.getElementById("d-order-rate").textContent = pct(ordered, attended || booked);
+    document.getElementById("d-cost").textContent =
+      sop.costPerTouch ? ("¥" + Number(sop.costPerTouch).toFixed(2)) : "—";
+
+    renderDetailSteps(sop);
     open(document.getElementById("drawer-detail"));
   }
 
-  // ===== Row actions =====
-  document.querySelectorAll("#li-tbody tr").forEach(function (tr) {
-    tr.querySelectorAll("[data-row-act]").forEach(function (a) {
-      a.addEventListener("click", function (e) {
-        e.preventDefault();
-        var act = a.getAttribute("data-row-act");
-        var d = rowData(tr);
-        if (act === "detail") fillDetail(d);
-        else if (act === "stat") Proto.toast("打开数据明细（原型）");
-        else if (act === "edit") {
-          document.getElementById("li-title").textContent = "编辑促到计划 · " + d.name;
-          document.getElementById("cli-name").value = d.name;
-          open(document.getElementById("modal-create"));
-        } else if (act === "cancel") {
-          if (confirm("确认取消「" + d.name + "」?")) {
-            tr.querySelector(".badge").outerHTML = '<span class="badge">已取消</span>';
-            Proto.toast("已取消（原型）");
-          }
-        }
-      });
-    });
-  });
+  function renderDetailSteps(sop) {
+    var box = document.getElementById("d-steps");
+    var steps = sop.steps || [];
+    if (!steps.length) {
+      box.innerHTML = '<div class="muted" style="padding:12px;text-align:center">暂无步骤</div>';
+      return;
+    }
+    box.innerHTML = steps.map(function (st, i) {
+      return '<div class="step-card" data-step-i="' + i + '">' +
+        '<div class="step-card-hd">' +
+          "<b>" + (i + 1) + ". " + esc(st.name) + "</b>" +
+          '<span class="badge ' + LiveReach.statusBadge(st.status) + '">' + LiveReach.statusLabel(st.status) + "</span>" +
+          '<div class="step-actions">' +
+            '<a href="#" data-d-step="edit" data-i="' + i + '">编辑</a>' +
+            '<a href="#" data-d-step="del" data-i="' + i + '" class="danger">删除</a>' +
+          "</div>" +
+        "</div>" +
+        '<div class="step-meta">' +
+          "时机：" + esc(st.timing || "—") + "　·　受众：" + esc(st.audience || "—") + "<br>" +
+          "渠道：" + esc((st.channels || []).join(" / ") || "—") +
+          "　·　目标：" + esc(st.goal || "—") +
+          "　·　" + (st.auto ? "自动执行" : "助教任务") +
+          (st.target ? ("　·　触达 " + st.reached + "/" + st.target + "，转化 " + (st.converted || 0)) : "") +
+        "</div>" +
+      "</div>";
+    }).join("");
+  }
 
-  // ===== Create =====
-  document.getElementById("btn-create").addEventListener("click", function () {
-    document.getElementById("li-title").textContent = "新建促到计划";
-    document.getElementById("cli-name").value = "";
-    open(document.getElementById("modal-create"));
-  });
-  document.getElementById("cli-submit").addEventListener("click", function () {
-    var n = document.getElementById("cli-name").value.trim();
-    if (!n) { Proto.toast("请输入计划名称"); return; }
-    closeAll(); Proto.toast("促到计划已保存（原型）");
-  });
-
-  // ===== Detail edit =====
-  document.getElementById("ld-edit").addEventListener("click", function (e) {
+  document.getElementById("d-steps").addEventListener("click", function (e) {
+    var a = e.target.closest("[data-d-step]");
+    if (!a) return;
     e.preventDefault();
-    closeAll();
-    document.getElementById("li-title").textContent = "编辑促到计划";
-    open(document.getElementById("modal-create"));
+    var sop = LiveReach.getSop(currentSopId);
+    if (!sop) return;
+    var i = parseInt(a.getAttribute("data-i"), 10);
+    var act = a.getAttribute("data-d-step");
+    if (act === "del") {
+      if (!confirm("确认删除该步骤？")) return;
+      sop.steps.splice(i, 1);
+      LiveReach.saveSop(sop);
+      Proto.toast("步骤已删除");
+      openDetail(currentSopId);
+      renderList();
+      return;
+    }
+    if (act === "edit") openStepEditor("detail", i, sop.steps[i]);
   });
 
-  // ===== Other buttons =====
-  document.getElementById("btn-query").addEventListener("click", function () { Proto.toast("已查询（原型）"); });
+  document.getElementById("d-add-step").addEventListener("click", function () {
+    openStepEditor("detail", null, null);
+  });
+  document.getElementById("d-edit").addEventListener("click", function () {
+    closeAll();
+    openCreate(currentSopId);
+  });
+  document.getElementById("d-start").addEventListener("click", function () {
+    if (currentSopId) doSetStatus(currentSopId, "running");
+  });
+  document.getElementById("d-pause").addEventListener("click", function () {
+    if (currentSopId) doSetStatus(currentSopId, "paused");
+  });
+  document.getElementById("d-cancel").addEventListener("click", function () {
+    if (currentSopId && confirm("确认取消该促到 SOP？")) doSetStatus(currentSopId, "cancelled");
+  });
+
+  // ===== Create / Edit modal =====
+  function openCreate(editId) {
+    var title = document.getElementById("modal-create-title");
+    var sop = editId ? LiveReach.getSop(editId) : null;
+    currentSopId = editId || null;
+    title.textContent = sop ? ("编辑促到 SOP · " + sop.name) : "新建促到 SOP";
+
+    document.getElementById("c-name").value = sop ? sop.name : "";
+    var prefLive = (sop && sop.liveId) || document.getElementById("f-live").value || liveIdFromUrl();
+    fillLiveSelects(document.getElementById("f-live").value || liveIdFromUrl());
+    document.getElementById("c-live").value = prefLive || "";
+    document.getElementById("c-period").value = sop ? (sop.period || "") : "";
+    document.getElementById("c-channel").value = sop ? (sop.channel || "") : "";
+
+    var f = (sop && sop.filters) || {};
+    document.getElementById("c-stage").value = f.stage || "";
+    document.getElementById("c-wecom").value = f.wecom === true ? "1" : (f.wecom === false ? "0" : "");
+    document.getElementById("c-booked").value = f.booked === true ? "1" : (f.booked === false ? "0" : "");
+    document.getElementById("c-intent").value = f.intent || "";
+
+    var excludes = sop ? (sop.excludes || []) : ["已购买", "已退订营销", "近期已触达"];
+    document.querySelectorAll(".c-exclude").forEach(function (cb) {
+      cb.checked = excludes.indexOf(cb.value) >= 0;
+    });
+
+    draftSteps = sop && sop.steps
+      ? JSON.parse(JSON.stringify(sop.steps))
+      : LiveReach.defaultSopSteps();
+    renderCreateSteps();
+    open(document.getElementById("modal-create"));
+  }
+
+  function renderCreateSteps() {
+    var tb = document.getElementById("c-steps-tbody");
+    if (!draftSteps.length) {
+      tb.innerHTML = '<tr><td colspan="7" class="muted" style="text-align:center">请添加步骤</td></tr>';
+      return;
+    }
+    tb.innerHTML = draftSteps.map(function (st, i) {
+      return "<tr>" +
+        "<td>" + esc(st.name) + "</td>" +
+        "<td>" + esc(st.timing) + "</td>" +
+        "<td>" + esc(st.audience) + "</td>" +
+        "<td>" + esc((st.channels || []).join(" / ")) + "</td>" +
+        "<td>" + esc(st.goal) + "</td>" +
+        "<td>" + (st.auto ? "是" : "否") + "</td>" +
+        '<td class="row-actions">' +
+          '<a href="#" data-c-step="edit" data-i="' + i + '">编辑</a>' +
+          '<a href="#" data-c-step="del" data-i="' + i + '" class="danger">删除</a>' +
+        "</td></tr>";
+    }).join("");
+  }
+
+  document.getElementById("c-steps-tbody").addEventListener("click", function (e) {
+    var a = e.target.closest("[data-c-step]");
+    if (!a) return;
+    e.preventDefault();
+    var i = parseInt(a.getAttribute("data-i"), 10);
+    if (a.getAttribute("data-c-step") === "del") {
+      draftSteps.splice(i, 1);
+      renderCreateSteps();
+      return;
+    }
+    openStepEditor("create", i, draftSteps[i]);
+  });
+
+  document.getElementById("c-add-step").addEventListener("click", function () {
+    openStepEditor("create", null, null);
+  });
+
+  document.getElementById("btn-create").addEventListener("click", function () {
+    openCreate(null);
+  });
+
+  document.getElementById("c-submit").addEventListener("click", function () {
+    var name = document.getElementById("c-name").value.trim();
+    var liveId = document.getElementById("c-live").value;
+    if (!name) { Proto.toast("请输入计划名称"); return; }
+    if (!liveId) { Proto.toast("请选择关联直播"); return; }
+    if (!draftSteps.length) { Proto.toast("请至少保留一个步骤"); return; }
+
+    var wecomV = document.getElementById("c-wecom").value;
+    var bookedV = document.getElementById("c-booked").value;
+    var filters = {
+      stage: document.getElementById("c-stage").value || "",
+      intent: document.getElementById("c-intent").value || ""
+    };
+    if (wecomV !== "") filters.wecom = wecomV === "1";
+    if (bookedV !== "") filters.booked = bookedV === "1";
+
+    var excludes = [];
+    document.querySelectorAll(".c-exclude:checked").forEach(function (cb) {
+      excludes.push(cb.value);
+    });
+
+    var payload = {
+      name: name,
+      liveId: liveId,
+      period: document.getElementById("c-period").value,
+      channel: document.getElementById("c-channel").value,
+      filters: filters,
+      excludes: excludes,
+      targetUsers: estimateTarget(liveId),
+      steps: draftSteps
+    };
+
+    if (currentSopId) {
+      var sop = LiveReach.getSop(currentSopId);
+      if (!sop) { Proto.toast("SOP 不存在"); return; }
+      sop.name = payload.name;
+      sop.liveId = payload.liveId;
+      sop.period = payload.period;
+      sop.channel = payload.channel;
+      sop.filters = payload.filters;
+      sop.excludes = payload.excludes;
+      sop.steps = payload.steps;
+      if (!sop.targetUsers) sop.targetUsers = payload.targetUsers;
+      LiveReach.saveSop(sop);
+      Proto.toast("促到 SOP 已保存");
+    } else {
+      LiveReach.createSop(payload);
+      Proto.toast("促到 SOP 已创建");
+    }
+    closeAll();
+    renderList();
+  });
+
+  // ===== Step editor =====
+  function openStepEditor(mode, index, step) {
+    stepEditCtx = { mode: mode, index: index };
+    document.getElementById("modal-step-title").textContent =
+      index == null ? "添加步骤" : "编辑步骤";
+    document.getElementById("st-name").value = step ? (step.name || "") : "";
+    document.getElementById("st-timing").value = step ? (step.timing || "") : "";
+    document.getElementById("st-goal").value = step ? (step.goal || "") : "";
+    document.getElementById("st-audience").value = step ? (step.audience || "") : "";
+    document.getElementById("st-channels").value = step ? ((step.channels || []).join(",")) : "";
+    document.getElementById("st-auto").value = step && step.auto === false ? "0" : "1";
+    document.getElementById("st-status").value = step ? (step.status || "draft") : "draft";
+    openNested(document.getElementById("modal-step"));
+    mask.classList.add("open");
+  }
+
+  document.getElementById("st-submit").addEventListener("click", function () {
+    var name = document.getElementById("st-name").value.trim();
+    if (!name) { Proto.toast("请输入步骤名称"); return; }
+    var channels = document.getElementById("st-channels").value
+      .split(/[,，]/).map(function (s) { return s.trim(); }).filter(Boolean);
+    var step = {
+      id: (stepEditCtx && stepEditCtx.index != null && stepEditCtx.mode === "create" && draftSteps[stepEditCtx.index])
+        ? draftSteps[stepEditCtx.index].id
+        : ("ST" + Date.now().toString(36)),
+      name: name,
+      timing: document.getElementById("st-timing").value.trim() || "自定义",
+      audience: document.getElementById("st-audience").value.trim() || "目标客户",
+      channels: channels.length ? channels : ["企微"],
+      goal: document.getElementById("st-goal").value.trim() || "完成触达",
+      auto: document.getElementById("st-auto").value === "1",
+      status: document.getElementById("st-status").value,
+      target: 0, reached: 0, converted: 0
+    };
+
+    if (stepEditCtx.mode === "create") {
+      if (stepEditCtx.index == null) draftSteps.push(step);
+      else {
+        step.target = draftSteps[stepEditCtx.index].target || 0;
+        step.reached = draftSteps[stepEditCtx.index].reached || 0;
+        step.converted = draftSteps[stepEditCtx.index].converted || 0;
+        step.id = draftSteps[stepEditCtx.index].id;
+        draftSteps[stepEditCtx.index] = step;
+      }
+      renderCreateSteps();
+    } else {
+      var sop = LiveReach.getSop(currentSopId);
+      if (!sop) return;
+      if (!sop.steps) sop.steps = [];
+      if (stepEditCtx.index == null) {
+        sop.steps.push(step);
+      } else {
+        var old = sop.steps[stepEditCtx.index];
+        step.id = old.id;
+        step.target = old.target || 0;
+        step.reached = old.reached || 0;
+        step.converted = old.converted || 0;
+        sop.steps[stepEditCtx.index] = step;
+      }
+      LiveReach.saveSop(sop);
+      openDetail(currentSopId);
+      renderList();
+    }
+    closeStepModal();
+    Proto.toast("步骤已保存");
+  });
+
+  // ===== Filters =====
+  document.getElementById("btn-query").addEventListener("click", function () {
+    renderList();
+    Proto.toast("已按条件筛选");
+  });
   document.getElementById("btn-reset").addEventListener("click", function () {
-    document.getElementById("f-name").value = "";
-    ["f-live","f-stage","f-channel","f-status"].forEach(function (id) { document.getElementById(id).value = ""; });
+    var urlLive = liveIdFromUrl();
+    ["f-period", "f-channel", "f-stage", "f-wecom", "f-booked", "f-attended", "f-ordered", "f-status"].forEach(function (id) {
+      document.getElementById(id).value = "";
+    });
+    document.getElementById("f-live").value = urlLive || "";
+    renderList();
     Proto.toast("已重置");
   });
+
+  // ===== Init =====
+  var initLive = liveIdFromUrl();
+  fillLiveSelects(initLive);
+  if (initLive) document.getElementById("f-live").value = initLive;
+  renderList();
 })();
 </script>
 </body>

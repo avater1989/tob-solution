@@ -1,10 +1,10 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>系列课 · 艺博 To-B</title>
-<link rel="stylesheet" href="../assets/css/proto.css?v=3" />
+<link rel="stylesheet" href="../assets/css/proto.css?v=9" />
 <style>
 .cs-card {
   background: #fff; border: 1px solid #e8e8e8; border-radius: 8px;
@@ -14,13 +14,11 @@
 .cs-card:hover { border-color: #165dff; box-shadow: 0 4px 14px rgba(22,93,255,.1); }
 .cs-cover {
   width: 160px; height: 100px; border-radius: 6px;
-  background: linear-gradient(135deg, #165dff, #4080ff);
-  display: flex; align-items: center; justify-content: center;
-  color: #fff; font-size: 36px; flex-shrink: 0;
+  background: #f2f3f5;
+  overflow: hidden;
+  flex-shrink: 0;
 }
-.cs-cover.green  { background: linear-gradient(135deg, #00b42a, #4ed679); }
-.cs-cover.orange { background: linear-gradient(135deg, #fa8c16, #ffc53d); }
-.cs-cover.purple { background: linear-gradient(135deg, #722ed1, #b577ff); }
+.cs-cover img { width: 100%; height: 100%; object-fit: cover; display: block; }
 .cs-info { flex: 1; min-width: 0; }
 .cs-title {
   font-size: 15px; font-weight: 600; color: #1d2129;
@@ -129,7 +127,7 @@
 </div>
 
 <script src="../assets/js/proto.js"></script>
-<script src="../assets/js/admin-shell.js?v=3"></script>
+<script src="../assets/js/admin-shell.js?v=13"></script>
 <script>
 // ===== 兜底 =====
 setTimeout(function() {
@@ -143,15 +141,15 @@ setTimeout(function() {
 
 // ===== 数据 =====
 var SERIES = [
-  { id: "S001", name: "小学语文阅读启蒙系列", emoji: "📚", thumb: "blue",
+  { id: "S001", name: "小学语文阅读启蒙系列", cover: "../assets/img/covers/reading.jpg",
     teacher: "张老师", desc: "针对 6-12 岁儿童阅读兴趣培养，从绘本到章节书的进阶路径。",
     videos: 6, articles: 3, goods: 1, students: 1287, duration: "2.5h",
     status: "已上架", statusType: "pass", onShelf: true },
-  { id: "S002", name: "家长情绪管理训练营", emoji: "💝", thumb: "green",
+  { id: "S002", name: "家长情绪管理训练营", cover: "../assets/img/covers/emotion.jpg",
     teacher: "李老师", desc: "8 周系统训练，帮助家长识别情绪、管理情绪、与孩子正向沟通。",
     videos: 4, articles: 2, goods: 2, students: 0, duration: "1.8h",
     status: "已下架", statusType: "review", onShelf: false },
-  { id: "S003", name: "AI 学习规划入门", emoji: "🤖", thumb: "orange",
+  { id: "S003", name: "AI 学习规划入门", cover: "../assets/img/covers/ai.jpg",
     teacher: "王博士", desc: "AI 助力学习规划，10 节实操课让孩子学会用 AI 工具提升学习效率。",
     videos: 5, articles: 1, goods: 1, students: 856, duration: "3.2h",
     status: "已上架", statusType: "pass", onShelf: true }
@@ -167,7 +165,7 @@ function renderList() {
   var html = SERIES.map(function(s) {
     return '' +
       '<div class="cs-card">' +
-        '<div class="cs-cover ' + s.thumb + '">' + s.emoji + '</div>' +
+        '<div class="cs-cover"><img src="' + s.cover + '" alt="" /></div>' +
         '<div class="cs-info">' +
           '<div class="cs-title">' + esc(s.name) +
             '<span class="audit-badge ' + s.statusType + '">' + esc(s.status) + '</span>' +

@@ -1,20 +1,32 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>支付结果 · To-B 小程序</title>
+  <title>支付结果 · 星启家庭教育</title>
   <link rel="stylesheet" href="../assets/css/proto.css" />
+  <link rel="stylesheet" href="../assets/css/mp.css?v=taste2" />
 </head>
 <body class="mp-page" data-tabbar="0">
   <div class="mp-frame">
-    <div class="mp-status"><span>9:41</span><span>支付</span><span>100%</span></div>
+    <div class="mp-status">
+      <span>9:41</span>
+      <span class="mp-notch" aria-hidden="true"></span>
+      <span>100%</span>
+    </div>
     <div class="mp-nav">支付结果</div>
     <div class="mp-body">
-      <div style="padding:48px 24px;text-align:center">
-        <div style="width:64px;height:64px;border-radius:50%;background:#d1fae5;color:#059669;display:grid;place-items:center;margin:0 auto;font-size:28px">✓</div>
-        <h3 style="margin-top:16px;font-size:20px">支付成功</h3>
-        <p style="font-size:13px;color:#888;margin-top:8px" id="pay-desc">权益已开通 · 资金进入艺博备付金待分账（示意）</p>
+      <div class="mp-result">
+        <div class="mp-result-ico ok">✓</div>
+        <h3 style="margin-top:18px;font-size:22px;font-weight:750;letter-spacing:-0.03em;color:var(--mp-ink)">支付成功</h3>
+        <p style="font-size:13px;color:var(--mp-muted);margin-top:10px;line-height:1.6" id="pay-desc">
+          权益已开通 · 资金进入艺博备付金待分账（示意）
+        </p>
+        <div style="margin-top:16px;background:#f7f8fa;border-radius:14px;padding:14px 16px;text-align:left;font-size:12px;color:#5c6575;line-height:1.8">
+          <div style="display:flex;justify-content:space-between"><span>订单状态</span><span style="color:var(--mp-success);font-weight:650">已支付</span></div>
+          <div style="display:flex;justify-content:space-between"><span>支付方式</span><span>微信支付</span></div>
+          <div style="display:flex;justify-content:space-between"><span>到账说明</span><span>备付金待分账</span></div>
+        </div>
         <div style="margin-top:28px">
           <a class="mp-btn" href="learn.html" id="go-learn">去学习</a>
           <a class="mp-btn mp-btn-outline" href="mine.html" style="margin-top:10px">返回我的</a>

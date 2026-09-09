@@ -1,10 +1,10 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>用户列表 · 商家管理后台</title>
-<link rel="stylesheet" href="../assets/css/proto.css" />
+<link rel="stylesheet" href="../assets/css/proto.css?v=9" />
 </head>
 <body class="admin-body" data-module="user" data-nav="users" data-title="用户列表" data-crumb="用户 / 用户管理 / 用户列表">
 <div id="header-actions">
@@ -19,7 +19,6 @@
       <div class="ua-search-row">
         <div class="ua-field"><label>姓名：</label><input id="f-name" placeholder="请输入姓名" /></div>
         <div class="ua-field"><label>手机号码：</label><input id="f-phone" placeholder="请输入学员手机号" /></div>
-        <div class="ua-field"><label>身份证号：</label><input id="f-idno" placeholder="请输入身份证号" /></div>
         <div class="ua-field"><label>性别：</label>
           <select id="f-gender">
             <option value="">请选择性别</option>
@@ -27,11 +26,6 @@
             <option>女</option>
           </select>
         </div>
-      </div>
-      <div class="ua-search-row ua-more" id="search-more" style="display:none">
-        <div class="ua-field"><label>所属S：</label><input id="f-s" placeholder="所属 S" /></div>
-        <div class="ua-field"><label>所属K：</label><input id="f-k" placeholder="所属 K" /></div>
-        <div class="ua-field"><label>所属G：</label><input id="f-g" placeholder="所属 G" /></div>
         <div class="ua-field"><label>家庭身份：</label>
           <select id="f-family">
             <option value="">请选择</option>
@@ -41,6 +35,12 @@
             <option>—</option>
           </select>
         </div>
+      </div>
+      <div class="ua-search-row ua-more" id="search-more" style="display:none">
+        <div class="ua-field"><label>所属S：</label><input id="f-s" placeholder="所属 S" /></div>
+        <div class="ua-field"><label>所属K：</label><input id="f-k" placeholder="所属 K" /></div>
+        <div class="ua-field"><label>所属G：</label><input id="f-g" placeholder="所属 G" /></div>
+        <div class="ua-field"><label>昵称：</label><input id="f-nick" placeholder="请输入昵称" /></div>
       </div>
       <div class="ua-search-btns">
         <button class="btn btn-primary" id="btn-query">搜索</button>
@@ -55,7 +55,7 @@
     <button class="btn btn-primary" id="btn-add">+ 新增</button>
     <button class="btn" id="btn-import">手动导入</button>
     <div class="spacer"></div>
-    <span class="muted" style="font-size:12px">全量用户管理（与营销驾驶舱-线索池区分）；支持手动/自动打标、批量打标、批量导出；自动标签规则 MVP 暂不实现</span>
+    <span class="muted" style="font-size:12px">全量用户管理（与营销驾驶舱-线索池区分）；支持手动打标、批量打标、批量导出</span>
   </div>
 
   <!-- 表格 -->
@@ -67,14 +67,12 @@
           <th>姓名</th>
           <th>手机号码</th>
           <th>昵称</th>
-          <th>推荐人</th>
-          <th>推荐人手机号码</th>
           <th>所属S</th>
           <th>所属K</th>
           <th>所属G</th>
           <th>家庭身份</th>
           <th>性别</th>
-          <th style="width:230px">操作</th>
+          <th style="width:200px">操作</th>
         </tr>
       </thead>
       <tbody>
@@ -83,23 +81,16 @@
           <td><a href="user-detail.html"><b>学员7576</b></a></td>
           <td>18919167576</td>
           <td>学员7576</td>
-          <td>竹盟</td>
-          <td>13600550016</td>
           <td>—</td>
           <td>—</td>
           <td>—</td>
           <td>临时家庭</td>
           <td>女</td>
           <td class="row-actions">
-            <a href="#" data-row-act="set-ref">修改推荐人</a>
             <a href="#" data-row-act="edit">编辑</a>
             <a href="user-detail.html">查看详情</a>
             <a href="#" data-row-act="rights">查看权益</a>
-            <a href="#" data-row-act="pteam">所属P团</a>
-            <a href="#" data-row-act="idno">身份证号</a>
             <a href="#" data-row-act="disable">注销账号</a>
-            <a href="#" data-row-act="finance">财务信息</a>
-            <a href="#" data-row-act="doc">提交接件资料</a>
           </td>
         </tr>
         <tr>
@@ -107,23 +98,16 @@
           <td><a href="user-detail.html"><b>学员7576</b></a></td>
           <td>18919167015</td>
           <td>学员7576</td>
-          <td>竹盟</td>
-          <td>13600550016</td>
           <td>—</td>
           <td>—</td>
           <td>—</td>
           <td>临时家庭</td>
           <td>女</td>
           <td class="row-actions">
-            <a href="#" data-row-act="set-ref">修改推荐人</a>
             <a href="#" data-row-act="edit">编辑</a>
             <a href="user-detail.html">查看详情</a>
             <a href="#" data-row-act="rights">查看权益</a>
-            <a href="#" data-row-act="pteam">所属P团</a>
-            <a href="#" data-row-act="idno">身份证号</a>
             <a href="#" data-row-act="disable">注销账号</a>
-            <a href="#" data-row-act="finance">财务信息</a>
-            <a href="#" data-row-act="doc">提交接件资料</a>
           </td>
         </tr>
         <tr>
@@ -131,23 +115,16 @@
           <td><a href="user-detail.html"><b>卂十七</b></a></td>
           <td>13600550017</td>
           <td>学员0017</td>
-          <td>—</td>
-          <td>—</td>
           <td>S 全 HX</td>
           <td>—</td>
           <td>—</td>
           <td>临时家庭</td>
           <td>女</td>
           <td class="row-actions">
-            <a href="#" data-row-act="set-ref">修改推荐人</a>
             <a href="#" data-row-act="edit">编辑</a>
             <a href="user-detail.html">查看详情</a>
             <a href="#" data-row-act="rights">查看权益</a>
-            <a href="#" data-row-act="pteam">所属P团</a>
-            <a href="#" data-row-act="idno">身份证号</a>
             <a href="#" data-row-act="disable">注销账号</a>
-            <a href="#" data-row-act="finance">财务信息</a>
-            <a href="#" data-row-act="doc">提交接件资料</a>
           </td>
         </tr>
         <tr>
@@ -160,18 +137,11 @@
           <td>—</td>
           <td>—</td>
           <td>—</td>
-          <td>—</td>
-          <td>—</td>
           <td class="row-actions">
-            <a href="#" data-row-act="set-ref">修改推荐人</a>
             <a href="#" data-row-act="edit">编辑</a>
             <a href="user-detail.html">查看详情</a>
             <a href="#" data-row-act="rights">查看权益</a>
-            <a href="#" data-row-act="pteam">所属P团</a>
-            <a href="#" data-row-act="idno">身份证号</a>
             <a href="#" data-row-act="disable">注销账号</a>
-            <a href="#" data-row-act="finance">财务信息</a>
-            <a href="#" data-row-act="doc">提交接件资料</a>
           </td>
         </tr>
         <tr>
@@ -179,23 +149,16 @@
           <td><a href="user-detail.html"><b>学员7553</b></a></td>
           <td>18919167553</td>
           <td>学员7553</td>
-          <td>启盟</td>
-          <td>13800001111</td>
           <td>—</td>
           <td>—</td>
           <td>—</td>
           <td>主理人</td>
           <td>女</td>
           <td class="row-actions">
-            <a href="#" data-row-act="set-ref">修改推荐人</a>
             <a href="#" data-row-act="edit">编辑</a>
             <a href="user-detail.html">查看详情</a>
             <a href="#" data-row-act="rights">查看权益</a>
-            <a href="#" data-row-act="pteam">所属P团</a>
-            <a href="#" data-row-act="idno">身份证号</a>
             <a href="#" data-row-act="disable">注销账号</a>
-            <a href="#" data-row-act="finance">财务信息</a>
-            <a href="#" data-row-act="doc">提交接件资料</a>
           </td>
         </tr>
       </tbody>
@@ -257,8 +220,6 @@
       <label class="tp-item"><input type="checkbox" checked /> 姓名</label>
       <label class="tp-item"><input type="checkbox" checked /> 手机号码</label>
       <label class="tp-item"><input type="checkbox" checked /> 昵称</label>
-      <label class="tp-item"><input type="checkbox" /> 推荐人</label>
-      <label class="tp-item"><input type="checkbox" /> 推荐人手机号码</label>
       <label class="tp-item"><input type="checkbox" /> 所属S</label>
       <label class="tp-item"><input type="checkbox" /> 所属K</label>
       <label class="tp-item"><input type="checkbox" /> 所属G</label>
@@ -288,8 +249,6 @@
           <option>男</option><option>女</option><option>—</option>
         </select>
       </div>
-      <div class="field"><label>推荐人</label><input id="ed-ref" /></div>
-      <div class="field"><label>推荐人手机号码</label><input id="ed-ref-phone" /></div>
       <div class="field"><label>所属S</label><input id="ed-s" placeholder="如 S 全 HX" /></div>
       <div class="field"><label>所属K</label><input id="ed-k" /></div>
       <div class="field"><label>所属G</label><input id="ed-g" /></div>
@@ -302,30 +261,11 @@
         <textarea rows="2" style="width:100%;padding:8px;border:1px solid var(--color-border);border-radius:6px"></textarea>
       </div>
     </div>
-    <p class="muted" style="margin:10px 0 0;font-size:12px">手机号作为平台唯一标识；身份证号、权益、订单等详情请进入「查看详情」维护。</p>
+    <p class="muted" style="margin:10px 0 0;font-size:12px">手机号作为平台唯一标识；权益、订单等详情请进入「查看详情」维护。</p>
   </div>
   <div class="proto-modal-ft" style="border-top:1px solid var(--color-border);padding:12px 20px;display:flex;gap:8px;justify-content:flex-end">
     <button class="btn" data-close>取消</button>
     <button class="btn btn-primary" data-close data-toast="用户信息已保存（原型）">保存</button>
-  </div>
-</div>
-
-<!-- 修改推荐人弹窗 -->
-<div class="proto-modal" id="modal-ref" style="width:420px">
-  <div class="proto-modal-hd">
-    <h3 style="font-size:16px;font-weight:600">修改推荐人</h3>
-    <button class="btn btn-sm btn-ghost" data-close>×</button>
-  </div>
-  <div class="proto-modal-bd">
-    <p class="muted" style="margin:0 0 10px;font-size:13px">用户：<b id="ref-name">—</b></p>
-    <div class="form-grid">
-      <div class="field"><label>推荐人 *</label><input id="ref-name-input" placeholder="推荐人姓名" /></div>
-      <div class="field"><label>推荐人手机号 *</label><input id="ref-phone-input" placeholder="推荐人手机号" /></div>
-    </div>
-  </div>
-  <div class="proto-modal-ft" style="border-top:1px solid var(--color-border);padding:12px 20px;display:flex;gap:8px;justify-content:flex-end">
-    <button class="btn" data-close>取消</button>
-    <button class="btn btn-primary" data-close data-toast="推荐人已更新（原型）">保存</button>
   </div>
 </div>
 
@@ -346,7 +286,7 @@
         <label class="tp-item"><input type="checkbox" /> 流失预警</label>
       </div>
     </div>
-    <p class="muted" style="margin:8px 0 0;font-size:12px">仅支持手动标签；自动标签规则 MVP 暂不实现，由系统在用户行为满足条件时自动打标（后续版本）</p>
+    <p class="muted" style="margin:8px 0 0;font-size:12px">仅支持手动标签；自动标签规则 MVP 暂不实现</p>
   </div>
   <div class="proto-modal-ft" style="border-top:1px solid var(--color-border);padding:12px 20px;display:flex;gap:8px;justify-content:flex-end">
     <button class="btn" data-close>取消</button>
@@ -394,7 +334,7 @@
 </style>
 
 <script src="../assets/js/proto.js"></script>
-<script src="../assets/js/admin-shell.js?v=3"></script>
+<script src="../assets/js/admin-shell.js?v=13"></script>
 <script>
 (function () {
   var mask = document.getElementById("mask");
@@ -418,7 +358,10 @@
   // 搜索/重置
   document.getElementById("btn-query").addEventListener("click", function () { Proto.toast("已按条件查询（原型）"); });
   document.getElementById("btn-reset").addEventListener("click", function () {
-    ["f-name", "f-phone", "f-idno", "f-s", "f-k", "f-g"].forEach(function (id) { document.getElementById(id).value = ""; });
+    ["f-name", "f-phone", "f-s", "f-k", "f-g", "f-nick"].forEach(function (id) {
+      var el = document.getElementById(id);
+      if (el) el.value = "";
+    });
     ["f-gender", "f-family"].forEach(function (id) { document.getElementById(id).value = ""; });
     more.style.display = "none"; toggle.textContent = "展开";
     Proto.toast("已重置");
@@ -444,28 +387,15 @@
       a.addEventListener("click", function (e) {
         e.preventDefault();
         var act = a.getAttribute("data-row-act");
-        if (act === "set-ref") {
-          document.getElementById("ref-name").textContent = name;
-          document.getElementById("ref-name-input").value = "";
-          document.getElementById("ref-phone-input").value = "";
-          open(document.getElementById("modal-ref"));
-        } else if (act === "edit") {
+        if (act === "edit") {
           document.getElementById("edit-title").textContent = "编辑用户 · " + name;
           open(document.getElementById("modal-edit"));
         } else if (act === "rights") {
           Proto.toast("「" + name + "」查看权益（原型）");
-        } else if (act === "pteam") {
-          Proto.toast("「" + name + "」所属 P 团（原型）");
-        } else if (act === "idno") {
-          Proto.toast("「" + name + "」身份证号（原型）");
         } else if (act === "disable") {
           if (confirm("确定注销「" + name + "」账号？该操作不可恢复。")) {
             Proto.toast("账号已注销（原型）");
           }
-        } else if (act === "finance") {
-          Proto.toast("「" + name + "」财务信息（原型）");
-        } else if (act === "doc") {
-          Proto.toast("「" + name + "」提交接件资料（原型）");
         }
       });
     });

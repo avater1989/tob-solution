@@ -1,10 +1,10 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>直播列表 · 商家管理后台</title>
-<link rel="stylesheet" href="../assets/css/proto.css" />
+<link rel="stylesheet" href="../assets/css/proto.css?v=9" />
 </head>
 <body class="admin-body" data-module="live" data-nav="lives" data-title="直播列表" data-crumb="直播 / 直播管理 / 直播列表">
 <div id="header-actions">
@@ -171,9 +171,9 @@
           <td>阮荣均</td>
           <td>李管理</td><td>2026-09-03 11:30</td>
           <td class="row-actions">
-            <a href="live-screen.html?live_id=LV20260904001" data-row-act="screen" style="color:#165dff;font-weight:600">📺 大屏</a>
+            <a href="live-screen.html?live_id=LV20260904001" data-row-act="screen" style="color:#165dff;font-weight:600">大屏</a>
             <a href="live-stats.html" data-row-act="data">数据</a>
-            <a href="live-control.html?live_id=LV20260904001" data-row-act="control">🎛 中控台</a>
+            <a href="live-control.html?live_id=LV20260904001" data-row-act="control">中控台</a>
             <a href="#" data-row-act="takedown" class="danger">强制下架</a>
           </td>
         </tr>
@@ -190,7 +190,7 @@
           <td>赵老师</td>
           <td>李管理</td><td>2026-09-03 18:00</td>
           <td class="row-actions">
-            <a href="live-control.html?live_id=LV20260905002" data-row-act="control" style="color:#165dff;font-weight:600">▶ 中控台</a>
+            <a href="live-control.html?live_id=LV20260905002" data-row-act="control" style="color:#165dff;font-weight:600">中控台</a>
             <a href="live-edit.html" data-row-act="edit">编辑</a>
             <a href="#" data-row-act="cancel" class="danger">取消上架</a>
           </td>
@@ -281,12 +281,13 @@
 
 <style>
 .thumb {
-  width: 36px; height: 28px; border-radius: 4px;
-  background: linear-gradient(135deg,#722ed1,#a066f5);
+  width: 48px; height: 32px; border-radius: 4px;
+  background: #f2f3f5 center/cover no-repeat;
   flex-shrink: 0;
+  overflow: hidden;
 }
-.thumb.video { background: linear-gradient(135deg,#165dff,#4080ff); }
-.thumb.audio { background: linear-gradient(135deg,#00b42a,#5fd068); }
+.thumb.video { background-image: url("../assets/img/covers/live.jpg"); }
+.thumb.audio { background-image: url("../assets/img/covers/emotion.jpg"); }
 .course-cell { display: flex; align-items: center; gap: 8px; font-size: 12px; }
 .status-dot {
   display: inline-block; width: 8px; height: 8px; border-radius: 50%;
@@ -332,7 +333,7 @@
 </style>
 
 <script src="../assets/js/proto.js"></script>
-<script src="../assets/js/admin-shell.js?v=3"></script>
+<script src="../assets/js/admin-shell.js?v=13"></script>
 <script>
 (function () {
   // ===== Tabs =====

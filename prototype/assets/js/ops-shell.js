@@ -25,8 +25,8 @@
     { id: "workbench", label: "工作台", href: "dashboard.html" },
     { id: "tenant", label: "租户管理", href: "tenants.html" },
     { id: "content", label: "内容", href: "content-series.html" },
-    { id: "data", label: "全局数据", href: "data.html" },
     { id: "sys", label: "系统管理", href: "sys-users.html" },
+    { id: "data", label: "全局数据", href: "data.html" },
   ];
 
   var sidebars = {
@@ -84,7 +84,7 @@
       {
         group: "计划管理",
         links: [
-          { id: "assess-plans", href: "assess-plans.html", label: "测评计划" },
+          { id: "assess-plans", href: "assess-plans.html", label: "定制化计划" },
         ],
       },
       {
@@ -149,7 +149,7 @@
     content:
       "<div class='assist-block'><h3>内容中台</h3><ul>" +
       "<li>内容管理：平台标准系列课 / 视频 / 图文 / 商品分组</li>" +
-      "<li>测评与计划：测试项目、系列测评、结果与测评计划（后续迭代）</li>" +
+      "<li>测评与计划：测试项目、系列测评、结果与定制化计划（后续迭代）</li>" +
       "<li>内容审核：商家提交上架的内容进入审核队列</li>" +
       "<li>与商家后台「内容」双轨：此处为平台侧，商家侧为租户售卖</li></ul></div>" +
       "<div class='assist-block'><h3>审核规则</h3><ul>" +
@@ -275,6 +275,15 @@
     while (headerActions.firstChild) slot.appendChild(headerActions.firstChild);
     headerActions.remove();
   }
+
+  // 整页跳转后侧栏 scrollTop 会归零；把当前选中项滚入可视区
+  (function scrollActiveNavIntoView() {
+    var activeNav = document.querySelector(".sidebar .nav-item.active");
+    if (!activeNav) return;
+    if (typeof activeNav.scrollIntoView === "function") {
+      activeNav.scrollIntoView({ block: "center", inline: "nearest" });
+    }
+  })();
 
   var closeNotice = document.getElementById("close-notice");
   if (closeNotice) {

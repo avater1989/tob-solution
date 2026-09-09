@@ -1,10 +1,10 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>视频 · 艺博 To-B</title>
-<link rel="stylesheet" href="../assets/css/proto.css?v=3" />
+<link rel="stylesheet" href="../assets/css/proto.css?v=9" />
 <style>
 .cv-list { background: #fff; border: 1px solid #e8e8e8; border-radius: 8px; overflow: hidden; }
 .cv-row {
@@ -16,19 +16,16 @@
 .cv-row:hover { background: #fafbff; }
 .cv-thumb {
   width: 120px; height: 70px; border-radius: 6px; flex-shrink: 0;
-  background: linear-gradient(135deg, #165dff, #4080ff);
+  background: #f2f3f5;
   position: relative; cursor: pointer;
-  display: flex; align-items: center; justify-content: center;
-  color: #fff; font-size: 24px;
+  overflow: hidden;
 }
-.cv-thumb.green  { background: linear-gradient(135deg, #00b42a, #4ed679); }
-.cv-thumb.orange { background: linear-gradient(135deg, #fa8c16, #ffc53d); }
-.cv-thumb.purple { background: linear-gradient(135deg, #722ed1, #b577ff); }
+.cv-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
 .cv-thumb::after {
   content: "▶"; position: absolute; inset: 0;
   display: flex; align-items: center; justify-content: center;
   background: rgba(0,0,0,.3); border-radius: 6px; opacity: 0;
-  transition: opacity .15s; font-size: 20px;
+  transition: opacity .15s; font-size: 20px; color: #fff;
 }
 .cv-thumb:hover::after { opacity: 1; }
 .cv-duration {
@@ -121,7 +118,7 @@
 </div>
 
 <script src="../assets/js/proto.js"></script>
-<script src="../assets/js/admin-shell.js?v=3"></script>
+<script src="../assets/js/admin-shell.js?v=13"></script>
 <script>
 setTimeout(function() {
   if (document.documentElement.getAttribute('data-shell-ready') === '1') return;
@@ -133,13 +130,13 @@ setTimeout(function() {
 }, 1500);
 
 var VIDEOS = [
-  { id: "V001", title: "如何让孩子爱上阅读", emoji: "📖", thumb: "blue",
+  { id: "V001", title: "如何让孩子爱上阅读", cover: "../assets/img/covers/reading.jpg",
     teacher: "张老师", duration: "8:24", size: "156 MB", date: "2026-09-01",
     status: "已上架", statusType: "pass", encoding: null, onShelf: true },
-  { id: "V002", title: "亲子沟通的5 个关键", emoji: "💬", thumb: "green",
+  { id: "V002", title: "亲子沟通的5 个关键", cover: "../assets/img/covers/comm.jpg",
     teacher: "李老师", duration: "12:35", size: "245 MB", date: "2026-08-28",
     status: "已上架", statusType: "pass", encoding: null, onShelf: true },
-  { id: "V003", title: "AI 助力学习规划", emoji: "🤖", thumb: "orange",
+  { id: "V003", title: "AI 助力学习规划", cover: "../assets/img/covers/ai.jpg",
     teacher: "王博士", duration: "15:20", size: "312 MB", date: "2026-09-04",
     status: "转码中", statusType: "review", encoding: 68, onShelf: false }
 ];
@@ -158,7 +155,7 @@ function renderList() {
     }
     return '' +
       '<div class="cv-row">' +
-        '<div class="cv-thumb ' + v.thumb + '">' + v.emoji +
+        '<div class="cv-thumb"><img src="' + v.cover + '" alt="" />' +
           '<span class="cv-duration">' + esc(v.duration) + '</span>' +
         '</div>' +
         '<div class="cv-info">' +

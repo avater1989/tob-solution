@@ -1,10 +1,10 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>编辑视频 · 艺博 To-B</title>
-<link rel="stylesheet" href="../assets/css/proto.css?v=3" />
+<link rel="stylesheet" href="../assets/css/proto.css?v=9" />
 <link rel="stylesheet" href="../assets/css/content-mgmt.css?v=3" />
 </head>
 <body class="admin-body" data-module="content" data-nav="content-video" data-title="编辑视频" data-crumb="内容 / 内容管理 / 视频 / 编辑">
@@ -43,7 +43,7 @@
         <label>课程分类</label>
         <select class="input" id="f-cat"><option>未分类</option><option>K12 教育</option><option>家庭教育</option><option>学习能力</option></select>
       </div>
-      <div class="field"><label>封面</label><div class="cm-cover-up">点击选择图片</div></div>
+      <div class="field"><label>封面</label><div class="cm-cover-up has-img"><img src="../assets/img/covers/comm.jpg" alt="" /><span class="cm-cover-tip">更换封面</span></div></div>
       <div class="field" style="grid-column:1/-1">
         <label>视频简介</label>
         <textarea class="input" id="f-intro" rows="3" maxlength="256" placeholder="建议256字内"></textarea>
@@ -132,7 +132,7 @@
 </div>
 
 <script src="../assets/js/proto.js"></script>
-<script src="../assets/js/admin-shell.js?v=3"></script>
+<script src="../assets/js/admin-shell.js?v=13"></script>
 <script>
 var PRESET = {
   V001: { name:"如何让孩子爱上阅读", cat:"K12 教育", intro:"通过一个短视频掌握亲子阅读引导方法。", src:"reading.mp4", dur:"8分钟" },

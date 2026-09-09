@@ -1,10 +1,10 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>图文 · 艺博 To-B</title>
-<link rel="stylesheet" href="../assets/css/proto.css?v=3" />
+<link rel="stylesheet" href="../assets/css/proto.css?v=9" />
 <style>
 .ca-list { background: #fff; border: 1px solid #e8e8e8; border-radius: 8px; overflow: hidden; }
 .ca-row {
@@ -16,13 +16,9 @@
 .ca-row:hover { background: #fafbff; }
 .ca-cover {
   width: 96px; height: 64px; border-radius: 6px; flex-shrink: 0;
-  background: linear-gradient(135deg, #722ed1, #b577ff);
-  display: flex; align-items: center; justify-content: center;
-  color: #fff; font-size: 24px;
+  background: #f2f3f5; overflow: hidden;
 }
-.ca-cover.blue  { background: linear-gradient(135deg, #165dff, #4080ff); }
-.ca-cover.green { background: linear-gradient(135deg, #00b42a, #4ed679); }
-.ca-cover.orange{ background: linear-gradient(135deg, #fa8c16, #ffc53d); }
+.ca-cover img { width: 100%; height: 100%; object-fit: cover; display: block; }
 .ca-info { flex: 1; min-width: 0; }
 .ca-title {
   font-size: 14px; font-weight: 500; color: #1d2129;
@@ -82,7 +78,7 @@
 </div>
 
 <script src="../assets/js/proto.js"></script>
-<script src="../assets/js/admin-shell.js?v=3"></script>
+<script src="../assets/js/admin-shell.js?v=13"></script>
 <script>
 setTimeout(function() {
   if (document.documentElement.getAttribute('data-shell-ready') === '1') return;
@@ -94,13 +90,13 @@ setTimeout(function() {
 }, 1500);
 
 var ARTICLES = [
-  { id: "A001", title: "9 月新学期家长指南", emoji: "📚", thumb: "purple",
+  { id: "A001", title: "9 月新学期家长指南", cover: "../assets/img/covers/term.jpg",
     author: "编辑部", date: "2026-08-25", reads: 2340, words: 1280,
     status: "已上架", statusType: "pass", onShelf: true },
-  { id: "A002", title: "孩子注意力训练方法论", emoji: "🎯", thumb: "blue",
+  { id: "A002", title: "孩子注意力训练方法论", cover: "../assets/img/covers/focus.jpg",
     author: "张老师", date: "2026-08-30", reads: 1560, words: 980,
     status: "已上架", statusType: "pass", onShelf: true },
-  { id: "A003", title: "家庭情绪急救指南", emoji: "💝", thumb: "green",
+  { id: "A003", title: "家庭情绪急救指南", cover: "../assets/img/covers/emotion.jpg",
     author: "李老师", date: "—", reads: 0, words: 320,
     status: "已下架", statusType: "review", onShelf: false }
 ];
@@ -115,7 +111,7 @@ function renderList() {
   var html = ARTICLES.map(function(a) {
     return '' +
       '<div class="ca-row">' +
-        '<div class="ca-cover ' + a.thumb + '">' + a.emoji + '</div>' +
+        '<div class="ca-cover"><img src="' + a.cover + '" alt="" /></div>' +
         '<div class="ca-info">' +
           '<div class="ca-title">' + esc(a.title) +
             '<span class="audit-badge ' + a.statusType + '">' + esc(a.status) + '</span>' +

@@ -1,20 +1,20 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>测评计划 · 运营后台</title>
-<link rel="stylesheet" href="../assets/css/proto.css?v=3" />
+<title>定制化计划 · 运营后台</title>
+<link rel="stylesheet" href="../assets/css/proto.css?v=4" />
 <link rel="stylesheet" href="../assets/css/assess.css?v=3" />
 </head>
-<body class="admin-body" data-module="content" data-nav="assess-plans" data-title="测评计划" data-crumb="运营后台 / 内容 / 计划管理 / 测评计划">
+<body class="admin-body" data-module="content" data-nav="assess-plans" data-title="定制化计划" data-crumb="运营后台 / 内容 / 计划管理 / 定制化计划">
 
 <div id="header-actions">
   <button class="btn btn-primary" id="btn-new">+ 新建计划</button>
 </div>
 
 <div id="page-content" style="display:none">
-  <div class="as-banner">创建和管理测评执行计划（与租户「套餐管理」相互独立）。草稿可配置关卡，发布后进入执行。</div>
+  <div class="as-banner">创建和管理定制化执行计划（与租户「套餐管理」相互独立）。草稿可配置关卡，发布后进入执行。</div>
 
   <div class="card" style="margin-bottom:14px"><div class="card-bd" style="padding:12px 16px">
     <div class="toolbar" style="border:none;padding:0;background:transparent">
@@ -46,7 +46,7 @@
   <div style="background:#fff;border-radius:10px;width:560px;max-width:94vw;max-height:88vh;overflow:auto">
     <div class="proto-modal-hd"><h3 style="margin:0;font-size:16px" id="m-title">新建计划</h3><button class="ctrl-icon-btn" data-close>×</button></div>
     <div class="proto-modal-bd">
-      <div class="field"><label>计划名称 *</label><input class="input" id="m-name" placeholder="如：2025春季心理健康测评计划" /></div>
+      <div class="field"><label>计划名称 *</label><input class="input" id="m-name" placeholder="如：2025春季心理健康定制化计划" /></div>
       <div class="field"><label>计划描述</label><textarea class="input" id="m-desc" rows="2"></textarea></div>
       <div class="field">
         <label>创建方式 *</label>
@@ -85,7 +85,7 @@
 <div class="proto-mask" id="mask"></div>
 
 <script src="../assets/js/proto.js"></script>
-<script src="../assets/js/ops-shell.js?v=2"></script>
+<script src="../assets/js/ops-shell.js?v=6"></script>
 <script>
 var ASSESS_POOL = ["心理健康测评","学习能力诊断","情绪调节问卷","新生入学心理系列"];
 var TASK_POOL = ["AI 助手自我介绍","情绪管理基础课 · 第1章","心理健康测评","三分钟呼吸放松","班级破冰对话","学习习惯打卡"];
@@ -97,7 +97,7 @@ var STAGES = {
   PL5:[]
 };
 var PLANS = [
-  { id:"PL1", name:"2025春季心理健康测评计划", desc:"面向全校学生的春季心理健康状况评估", mode:"关联测评", status:"已发布", links:["心理健康测评"] },
+  { id:"PL1", name:"2025春季心理健康定制化计划", desc:"面向全校学生的春季心理健康状况评估", mode:"关联测评", status:"已发布", links:["心理健康测评"] },
   { id:"PL2", name:"六年级毕业生职业规划测评", desc:"帮助六年级学生了解职业兴趣和性格特点", mode:"关联测评", status:"进行中", links:["学习能力诊断","情绪调节问卷"] },
   { id:"PL3", name:"一年级AI助手培训计划", desc:"通过AI智能体帮助一年级学生适应学习环境", mode:"直接选择任务", status:"草稿", links:["AI 助手自我介绍","情绪管理基础课 · 第1章","班级破冰对话","三分钟呼吸放松"] },
   { id:"PL4", name:"春季学习能力测评（草稿）", desc:"测评学生的学习能力和学习风格", mode:"关联测评", status:"草稿", links:["学习能力诊断"] },

@@ -1,0 +1,36 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>跳转中 · 私域转化</title>
+<script>
+(function () {
+  try {
+    var params = new URLSearchParams(location.search || "");
+    params.set("tab", "handoff");
+    var qs = params.toString();
+    var target = "board-private.html" + (qs ? "?" + qs : "") + (location.hash || "");
+    location.replace(target);
+  } catch (e) {
+    location.replace("board-private.html?tab=handoff");
+  }
+})();
+</script>
+</head>
+<body style="font-family:sans-serif;padding:24px;color:#1d2129">
+  <p>承接看板已合并至「私域转化 · 承接效率」，正在跳转…</p>
+  <p><a id="fallback" href="board-private.html?tab=handoff">点击进入私域转化</a></p>
+  <script>
+  (function () {
+    try {
+      var params = new URLSearchParams(location.search || "");
+      params.set("tab", "handoff");
+      var qs = params.toString();
+      document.getElementById("fallback").href =
+        "board-private.html" + (qs ? "?" + qs : "") + (location.hash || "");
+    } catch (e) {}
+  })();
+  </script>
+</body>
+</html>

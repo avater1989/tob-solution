@@ -1,36 +1,92 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>课程详情 · To-B 小程序</title>
+  <title>课程详情 · 星启家庭教育</title>
   <link rel="stylesheet" href="../assets/css/proto.css" />
+  <link rel="stylesheet" href="../assets/css/mp.css?v=taste2" />
 </head>
 <body class="mp-page" data-tabbar="0">
-  <div class="mp-frame" style="padding-bottom:64px">
-    <div class="mp-status"><span>9:41</span><span>课程</span><span>100%</span></div>
-    <div class="mp-nav"><a class="back" href="home.html">←</a>课程详情</div>
+  <div class="mp-frame" style="padding-bottom:72px">
+    <div class="mp-status">
+      <span>9:41</span>
+      <span class="mp-notch" aria-hidden="true"></span>
+      <span>100%</span>
+    </div>
+    <div class="mp-nav"><a class="back" href="home.html" aria-label="返回">‹</a>课程详情</div>
     <div class="mp-body">
-      <div style="height:160px;background:linear-gradient(135deg,#99f6e4,#0f766e);display:grid;place-items:center;color:#fff;font-weight:650">
-        试看封面 · 第 1 节可试看
+      <div class="mp-detail-cover">
+        <img src="../assets/img/covers/comm.jpg" alt="" />
+        <span class="try">第 1 节可试看</span>
+        <div style="font-size:12px;opacity:.85;margin-bottom:6px">星启家庭教育 · 精品课</div>
+        <div style="font-size:22px;font-weight:750;letter-spacing:-0.03em">亲子沟通基础</div>
       </div>
-      <div style="background:#fff;padding:14px 16px">
-        <h3 style="font-size:18px">亲子沟通基础</h3>
-        <p style="font-size:12px;color:#888;margin-top:6px">8 节视频 · 312 人已学</p>
-        <div style="color:#dc2626;font-size:22px;font-weight:700;margin-top:8px">¥199 <s style="font-size:13px;color:#aaa;font-weight:400">¥299</s></div>
+
+      <div class="mp-panel">
+        <h1>亲子沟通基础</h1>
+        <p style="font-size:12px;color:var(--mp-muted);margin-top:8px">8 节视频 · 312 人已学 · 适合 3-12 岁家庭</p>
+        <div style="display:flex;align-items:baseline;gap:8px;margin-top:12px;flex-wrap:wrap">
+          <div class="mp-price" style="font-size:26px"><small>¥</small>199</div>
+          <s style="color:#c5cad3;font-size:13px">¥299</s>
+          <span class="mp-tag hot">限时优惠</span>
+        </div>
+        <div class="mp-teacher">
+          <div class="av"><img src="../assets/img/covers/live-host.jpg" alt="" /></div>
+          <div>
+            <div style="font-size:13px;font-weight:650">林老师</div>
+            <div style="font-size:11px;color:var(--mp-muted)">资深家庭教育顾问 · 12 年一线经验</div>
+          </div>
+        </div>
       </div>
-      <div class="mp-section">
-        <div class="mp-section-title">目录</div>
-        <div style="background:#fff;border-radius:10px;overflow:hidden">
-          <div style="padding:12px;border-bottom:1px solid #f3f4f6;font-size:13px">1. 为什么孩子不听你说话 <span class="badge badge-teal">试看</span></div>
-          <div style="padding:12px;border-bottom:1px solid #f3f4f6;font-size:13px;color:#999">2. 情绪先于道理 🔒</div>
-          <div style="padding:12px;border-bottom:1px solid #f3f4f6;font-size:13px;color:#999">3. 边界与规则 🔒</div>
-          <div style="padding:12px;font-size:13px;color:#999">… 共 8 节</div>
+
+      <div class="mp-panel" style="padding-bottom:10px">
+        <div style="font-size:15px;font-weight:700;margin-bottom:6px;letter-spacing:-0.02em">你会学到</div>
+        <p style="font-size:13px;color:#5c6575;line-height:1.7;margin:0">
+          听懂孩子情绪背后的需求，用可落地的沟通话术减少对抗，建立有边界又有温度的亲子关系。
+        </p>
+      </div>
+
+      <div class="mp-section" style="padding-top:0">
+        <div class="mp-section-hd">
+          <div class="mp-section-title">课程目录</div>
+          <span class="mp-section-more">共 8 节</span>
+        </div>
+        <div class="mp-outline" style="border-radius:var(--mp-radius);overflow:hidden;box-shadow:var(--mp-shadow)">
+          <div class="mp-outline-item on">
+            <span class="n">1</span>
+            <span>为什么孩子不听你说话</span>
+            <span class="right"><span class="mp-tag">试看</span></span>
+          </div>
+          <div class="mp-outline-item lock">
+            <span class="n">2</span>
+            <span>情绪先于道理</span>
+            <span class="right">锁定</span>
+          </div>
+          <div class="mp-outline-item lock">
+            <span class="n">3</span>
+            <span>边界与规则</span>
+            <span class="right">锁定</span>
+          </div>
+          <div class="mp-outline-item lock">
+            <span class="n">4</span>
+            <span>家庭会议怎么开</span>
+            <span class="right">锁定</span>
+          </div>
+          <div class="mp-outline-item lock">
+            <span class="n">5</span>
+            <span>冲突后的修复对话</span>
+            <span class="right">锁定</span>
+          </div>
         </div>
       </div>
     </div>
     <div class="mp-bottom-bar">
-      <a class="mp-btn" href="pay-result.html?from=course" style="flex:1">立即购买</a>
+      <a class="mp-fav" href="#" data-toast="已收藏（原型）">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 17.3 6.2 20.5l1.1-6.5L2.5 9.5l6.6-1L12 2.5l2.9 6 6.6 1-4.8 4.5 1.1 6.5z"/></svg>
+        收藏
+      </a>
+      <a class="mp-btn" href="pay-result.html?from=course" style="flex:1">立即购买 ¥199</a>
     </div>
   </div>
   <p class="mp-hint"><a href="home.html">返回首页</a> · <a href="../admin/content-series.html">管理端系列课</a></p>

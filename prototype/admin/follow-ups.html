@@ -1,10 +1,10 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>跟进管理 · 商家管理后台</title>
-<link rel="stylesheet" href="../assets/css/proto.css" />
+<link rel="stylesheet" href="../assets/css/proto.css?v=9" />
 </head>
 <body class="admin-body" data-module="scrm" data-nav="follow" data-title="跟进管理" data-crumb="SCRM / 客户中心 / 跟进管理">
 <div id="header-actions">
@@ -329,13 +329,14 @@
   cursor: pointer; padding: 0; font-size: 13px;
 }
 .link-btn:hover { color: var(--color-primary-hover); text-decoration: underline; }
-.row-actions { display:flex; gap:6px; flex-wrap:wrap; max-width:280px }
+td.row-actions { max-width:280px }
+.row-actions a { margin-right: 6px; }
 .row-actions a.danger { color: var(--color-danger); }
 .row-actions .muted { color: var(--color-text-muted); }
 </style>
 
 <script src="../assets/js/proto.js"></script>
-<script src="../assets/js/admin-shell.js?v=3"></script>
+<script src="../assets/js/admin-shell.js?v=13"></script>
 <script>
 (function () {
   // ===== Group tabs =====

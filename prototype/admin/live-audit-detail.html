@@ -1,12 +1,12 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>审核详情 · 商家管理后台</title>
-<link rel="stylesheet" href="../assets/css/proto.css" />
+<title>内部复核详情 · 商家管理后台</title>
+<link rel="stylesheet" href="../assets/css/proto.css?v=9" />
 </head>
-<body class="admin-body" data-module="live" data-nav="live-audit-detail" data-title="审核详情" data-crumb="直播 / 直播审核 / 审核详情">
+<body class="admin-body" data-module="live" data-nav="live-audit-detail" data-title="内部复核详情" data-crumb="直播 / 内部复核 / 复核详情">
 <div id="header-actions">
   <a class="btn" href="live-audit.html">返回工作台</a>
   <button class="btn" id="btn-preview">预览直播</button>
@@ -16,7 +16,7 @@
   <!-- 顶部状态信息条 -->
   <div class="audit-status-bar">
     <div class="audit-status-info">
-      <span class="audit-badge audit-pending">待审核</span>
+      <span class="audit-badge audit-pending">待内部复核</span>
       <span class="audit-status-title">春启 03 期家长公开课</span>
       <span class="audit-status-sub">提交人：阮荣均　·　提交时间：2026-09-04 14:30　·　等待 2 小时</span>
     </div>
@@ -95,17 +95,17 @@
     <aside class="audit-side">
       <!-- 当前状态 -->
       <div class="audit-side-card">
-        <h3>审核状态</h3>
+        <h3>复核状态</h3>
         <div class="audit-current">
-          <span class="audit-badge audit-pending">待审核</span>
+          <span class="audit-badge audit-pending">待内部复核</span>
           <span class="muted">等待 <b>刘管理</b> 处理</span>
         </div>
         <div class="audit-current-meta">提交时间：2026-09-04 14:30</div>
       </div>
 
-      <!-- 审核维度 -->
+      <!-- 复核维度 -->
       <div class="audit-side-card">
-        <h3>审核维度 <span class="muted" style="font-size:12px;font-weight:400">至少勾选 4 项</span></h3>
+        <h3>复核维度 <span class="muted" style="font-size:12px;font-weight:400">至少勾选 4 项</span></h3>
         <div class="audit-checks" id="audit-checks">
           <label><input type="checkbox" checked /> <span>内容合规</span><i class="muted">封面、详情、暖场无违规</i></label>
           <label><input type="checkbox" checked /> <span>主讲资质</span><i class="muted">老师身份已认证</i></label>
@@ -114,27 +114,27 @@
         </div>
       </div>
 
-      <!-- 审核意见 -->
+      <!-- 复核意见 -->
       <div class="audit-side-card">
-        <h3>审核意见</h3>
+        <h3>复核意见</h3>
         <textarea id="audit-comment" rows="4" placeholder="驳回时必填，请写明具体原因"></textarea>
       </div>
 
       <!-- 操作按钮 -->
       <div class="audit-side-card audit-side-actions">
-        <button class="btn btn-primary" id="btn-approve" style="width:100%;margin-bottom:8px">✓ 通过</button>
-        <button class="btn btn-danger" id="btn-reject" style="width:100%">✕ 驳回</button>
+        <button class="btn btn-primary" id="btn-approve" style="width:100%;margin-bottom:8px">✓ 内部复核通过</button>
+        <button class="btn btn-danger" id="btn-reject" style="width:100%">✕ 复核驳回</button>
         <button class="btn" id="btn-cancel-link" style="width:100%;margin-top:8px">取消</button>
       </div>
 
-      <!-- 审核历史 -->
+      <!-- 复核历史 -->
       <div class="audit-side-card">
-        <h3>审核历史</h3>
+        <h3>复核历史</h3>
         <div class="audit-history">
           <div class="audit-history-item">
             <div class="audit-history-dot dot-submit"></div>
             <div class="audit-history-bd">
-              <div class="audit-history-title">提交审核</div>
+              <div class="audit-history-title">提交内部复核</div>
               <div class="audit-history-meta">阮荣均 · 2026-09-04 14:30</div>
             </div>
           </div>
@@ -166,17 +166,17 @@
 <!-- 通过确认 -->
 <div class="proto-modal" id="modal-approve">
   <div class="proto-modal-hd">
-    <h3>确认通过审核</h3>
+    <h3>确认内部复核通过</h3>
     <button class="btn btn-sm btn-ghost" data-close>×</button>
   </div>
   <div class="proto-modal-bd">
-    <p>通过后该直播将自动上架，业务人员将收到审核通过通知。</p>
+    <p>内部复核通过后，可提交平台审核；平台通过后才会上架。</p>
     <ul style="background:#f7f8fa;border-radius:4px;padding:12px 24px;margin:8px 0;color:#4e5969">
       <li>直播名称：春启 03 期家长公开课</li>
       <li>创建人：阮荣均</li>
       <li>开始时间：2026-03-30 20:00</li>
     </ul>
-    <div class="field"><label>审核备注（选填）</label>
+    <div class="field"><label>复核备注（选填）</label>
       <textarea rows="2" placeholder="如有补充说明请填写"></textarea>
     </div>
   </div>
@@ -286,7 +286,7 @@
 </style>
 
 <script src="../assets/js/proto.js"></script>
-<script src="../assets/js/admin-shell.js?v=3"></script>
+<script src="../assets/js/admin-shell.js?v=13"></script>
 <script>
 (function () {
   // ===== Mask =====
@@ -305,7 +305,7 @@
   });
   document.getElementById("btn-confirm-approve").addEventListener("click", function () {
     closeAll();
-    Proto.toast("已通过审核（原型）");
+    Proto.toast("内部复核已通过，可提交平台审核（原型）");
     setTimeout(function () { location.href = "live-audit.html"; }, 600);
   });
 
@@ -324,7 +324,7 @@
     Proto.toast("打开预览（原型）");
   });
   document.getElementById("btn-cancel-link").addEventListener("click", function () {
-    if (confirm("放弃本次审核？已填写的内容将丢失")) location.href = "live-audit.html";
+    if (confirm("放弃本次内部复核？已填写的内容将丢失")) location.href = "live-audit.html";
   });
 })();
 </script>

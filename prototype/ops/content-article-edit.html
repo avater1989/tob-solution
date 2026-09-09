@@ -1,10 +1,10 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>编辑图文 · 运营后台</title>
-<link rel="stylesheet" href="../assets/css/proto.css?v=3" />
+<link rel="stylesheet" href="../assets/css/proto.css?v=4" />
 <link rel="stylesheet" href="../assets/css/content-mgmt.css?v=3" />
 </head>
 <body class="admin-body" data-module="content" data-nav="content-article" data-title="编辑图文" data-crumb="运营后台 / 内容 / 图文 / 编辑">
@@ -47,7 +47,7 @@
         <label>作者</label>
         <select class="input" id="f-author"><option>编辑部</option><option>张老师</option><option>李老师</option></select>
       </div>
-      <div class="field"><label>封面</label><div class="cm-cover-up">点击选择图片</div></div>
+      <div class="field"><label>封面</label><div class="cm-cover-up has-img"><img src="../assets/img/covers/term.jpg" alt="" /><span class="cm-cover-tip">更换封面</span></div></div>
       <div class="field" style="grid-column:1/-1">
         <label>图文简介</label>
         <textarea class="input" id="f-intro" rows="2" maxlength="256" placeholder="建议256字内"></textarea>
@@ -123,7 +123,7 @@
 </div>
 
 <script src="../assets/js/proto.js"></script>
-<script src="../assets/js/ops-shell.js?v=2"></script>
+<script src="../assets/js/ops-shell.js?v=6"></script>
 <script>
 var PRESET = {
   A001: { name:"9 月新学期家长指南", cat:"K12 教育", author:"编辑部", intro:"用一篇图文快速了解新学期家长准备事项。", body:"新学期开始，家长可以从作息、书包整理、情绪陪伴三个维度做准备。" },

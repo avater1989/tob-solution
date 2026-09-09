@@ -3,29 +3,157 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>获客看板 · 商家管理后台</title>
-<link rel="stylesheet" href="../assets/css/proto.css" />
+<title>获客分析 · 商家管理后台</title>
+<link rel="stylesheet" href="../assets/css/proto.css?v=10" />
 </head>
-<body class="admin-body" data-module="data" data-nav="board-a" data-title="Acquire Board" data-crumb="Data / Acquire">
+<body class="admin-body" data-module="data" data-nav="board-a" data-title="获客分析" data-crumb="经营分析 / 获客" data-assist="1">
 <div id="header-actions">
-  <button class="btn" data-toast="Demo only">Refresh</button>
-  <button class="btn btn-primary" data-toast="Demo only">Create</button>
+  <span class="muted" id="board-updated" style="margin-right:8px;font-size:12px"></span>
+  <button class="btn" id="btn-refresh">刷新</button>
+  <button class="btn" id="btn-export">导出</button>
 </div>
 <div id="page-content" style="display:none">
-  <div class="card"><div class="card-hd"><h2>Acquire Board</h2></div>
-  <div class="card-bd">
-    <p class="muted">Data / Acquire</p>
-    <table class="data">
-      <thead><tr><th>Item</th><th>Status</th><th>Updated</th><th>Actions</th></tr></thead>
-      <tbody>
-        <tr><td>Sample row 1</td><td><span class="badge badge-success">OK</span></td><td>2026-03-29</td><td><a href="#" data-toast="Demo">Edit</a></td></tr>
-        <tr><td>Sample row 2</td><td><span class="badge badge-warn">Pending</span></td><td>2026-03-29</td><td><a href="#" data-toast="Demo">Edit</a></td></tr>
-        <tr><td>Sample row 3</td><td><span class="badge">Draft</span></td><td>2026-03-28</td><td><a href="#" data-toast="Demo">Edit</a></td></tr>
-      </tbody>
-    </table>
-  </div></div>
+
+
+  <div class="board-tip"><b>获客专题：</b>人从哪来？只看入池来源。「视频号获客首单」为前端辅指标，不能直接计入入池→支付后链路。</div>
+
+  <div class="board-filter">
+    <div class="segmented" id="range-seg">
+      <button type="button" class="active" data-range="7d">近7日</button>
+      <button type="button" data-range="30d">近30日</button>
+      <button type="button" data-range="today">今日</button>
+      <button type="button" data-range="yesterday">昨日</button>
+    </div>
+    <select id="f-channel"></select>
+    <select id="f-term"></select>
+    <button class="btn btn-primary" id="btn-query">查询</button>
+    <button class="btn" id="btn-reset">重置</button>
+  </div>
+  <div id="active-filters" style="margin:0 0 12px;font-size:12px"></div>
+
+  <div class="stat-cards board-stats" style="grid-template-columns:repeat(4,1fr)">
+    <a class="stat-card" href="leads.html">
+      <div class="stat-label">入池线索</div>
+      <div class="stat-value" data-m="pool">612</div>
+      <div class="stat-hint"><span data-range-label>近7日</span></div>
+    </a>
+    <a class="stat-card" href="channels-orders.html">
+      <div class="stat-label">视频号获客首单</div>
+      <div class="stat-value" data-m="vxOrders">286</div>
+      <div class="stat-hint">辅口径 · 流入 <span data-m="vxLeads">241</span></div>
+    </a>
+    <div class="stat-card">
+      <div class="stat-label">有效入池率</div>
+      <div class="stat-value" id="valid-rate">75%</div>
+      <div class="stat-hint">留资/下单 <span data-m="validLeadIn">812</span> → 入池 <span data-m="pool">612</span></div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">头部渠道</div>
+      <div class="stat-value" style="font-size:20px" id="top-channel">视频号 —</div>
+      <div class="stat-hint">当前筛选下入池结构</div>
+    </div>
+  </div>
+
+  <div class="board-two">
+    <div class="card">
+      <div class="card-hd"><h2>渠道结构（入池）</h2><span class="board-scope main">主口径</span></div>
+      <div class="card-bd">
+        <div class="channel-bars" id="channel-bars"></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-hd"><h2>视频号辅漏斗</h2><span class="board-scope aux">辅口径</span></div>
+      <div class="card-bd">
+        <div class="board-funnel slope">
+          <div class="step" data-m-h="vxOrders" style="--h:100%"><div class="n" data-m="vxOrders">286</div><div class="l">获客首单</div><div class="r">100%</div></div>
+          <div class="step" data-m-h="vxLeads" style="--h:84%"><div class="n" data-m="vxLeads">241</div><div class="l">流入线索</div><div class="r" id="r-vxLeads">84%</div></div>
+          <div class="step drop" data-m-h="vxClaim" style="--h:69%"><div class="n" data-m="vxClaim">198</div><div class="l">领课成功</div><div class="r" id="r-vxClaim">82%</div></div>
+        </div>
+        <div style="margin-top:10px;display:flex;gap:8px">
+          <a class="btn btn-sm" href="channels-orders.html?focus=sms_fail">短信失败 <span data-m="vxSmsFail">18</span></a>
+          <a class="btn btn-sm" href="channels-orders.html">全部订单</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:16px">
+    <div class="card-hd"><h2>渠道 × 期次</h2><a href="leads.html" style="font-size:13px;color:var(--color-primary);text-decoration:none;font-weight:400">线索池 →</a></div>
+    <div class="card-bd" style="padding:0">
+      <table class="data">
+        <thead><tr><th>渠道</th><th>期次</th><th>入池</th><th>占比</th><th style="width:140px">操作</th></tr></thead>
+        <tbody id="ch-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+  <p class="board-attr" data-board-attr style="padding:12px 0"></p>
+
 </div>
 <script src="../assets/js/proto.js"></script>
-<script src="../assets/js/admin-shell.js?v=3"></script>
+<script src="../assets/js/board-data.js?v=3"></script>
+<script src="../assets/js/board-metrics.js?v=7"></script>
+<script src="../assets/js/admin-shell.js?v=13"></script>
+<script>
+(function () {
+  BoardMetrics.fillAttr();
+  var LINK = { video: "channels-orders.html", livecode: "channel-livecode.html", link: "acquire-links.html", redbook: "redbook.html", import: "leads.html" };
+
+  function renderDetails(d) {
+    var slices = BoardMetrics.getLeadSlices();
+    var pool = d.poolLeads || 0;
+    var byCh = {};
+    slices.forEach(function (s) {
+      byCh[s.channelLabel] = (byCh[s.channelLabel] || 0) + (s.pool || 0);
+    });
+    var bars = document.getElementById("channel-bars");
+    var keys = Object.keys(byCh).sort(function (a, b) { return byCh[b] - byCh[a]; });
+    if (!keys.length || !pool) {
+      bars.innerHTML = '<div class="muted" style="padding:12px 0">当前筛选条件下暂无数据</div>';
+      document.getElementById("top-channel").textContent = "—";
+    } else {
+      bars.innerHTML = keys.map(function (name) {
+        var pct = Math.round((byCh[name] / pool) * 100);
+        return '<div class="row"><span>' + name + '</span><div class="track"><div class="fill" style="width:' + pct + '%"></div></div><span class="pct">' + pct + '%</span></div>';
+      }).join("");
+      var top = keys[0];
+      document.getElementById("top-channel").textContent = top + " " + Math.round((byCh[top] / pool) * 100) + "%";
+    }
+
+    var tbody = document.getElementById("ch-tbody");
+    if (!slices.length) {
+      BoardMetrics.renderEmpty(tbody, 5);
+    } else {
+      tbody.innerHTML = slices.map(function (s) {
+        var pct = pool ? Math.round((s.pool / pool) * 100) + "%" : "—";
+        var href = LINK[s.channel] || "leads.html";
+        return "<tr><td>" + s.channelLabel + "</td><td>" + (s.termLabel || "—") + "</td><td>" + BoardMetrics.fmt(s.pool) + "</td><td>" + pct + '</td><td class="row-actions"><a href="' + href + '">查看</a></td></tr>';
+      }).join("");
+    }
+
+    var valid = d.validLeadIn ? Math.round((d.poolLeads / d.validLeadIn) * 100) + "%" : "—";
+    document.getElementById("valid-rate").textContent = valid;
+    var base = d.vxOrders || 0;
+    document.getElementById("r-vxLeads").textContent = BoardMetrics.pct(d.vxLeads, base);
+    document.getElementById("r-vxClaim").textContent = BoardMetrics.pct(d.vxClaim, d.vxLeads);
+    document.querySelectorAll('.board-funnel.slope .step[data-m-h^="vx"]').forEach(function (el) {
+      var k = el.getAttribute("data-m-h");
+      var pctH = base ? Math.max(28, Math.round((d[k] / base) * 100)) : 28;
+      el.style.setProperty("--h", pctH + "%");
+    });
+    BoardMetrics.wireBoardLinks();
+  }
+
+  BoardMetrics.bindRange("range-seg", function (k, d) { renderDetails(d); });
+  BoardMetrics.bindFilterBar({ onApply: function (k, d) { renderDetails(d); } });
+
+  document.getElementById("btn-export").onclick = function () {
+    var rows = BoardMetrics.getLeadSlices().map(function (s) {
+      return [s.channelLabel, s.termLabel, s.pool, s.assigned, s.wecom, s.attributedPay];
+    });
+    if (!rows.length) { Proto.toast("暂无导出数据"); return; }
+    BoardMetrics.exportCsv(BoardMetrics.exportFileName("acquire"), ["渠道", "期次", "入池", "已分配", "已加微", "可归因支付"], rows);
+  };
+})();
+</script>
 </body>
 </html>

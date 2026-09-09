@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>创建直播 · 商家管理后台</title>
-<link rel="stylesheet" href="../assets/css/proto.css" />
+<link rel="stylesheet" href="../assets/css/proto.css?v=9" />
 </head>
 <body class="admin-body" data-module="live" data-nav="live-edit" data-title="创建直播" data-crumb="直播 / 直播管理 / 新建直播">
 <div id="header-actions">
@@ -87,7 +87,7 @@
   <div class="card"><div class="card-bd">
     <div class="cover-row">
       <div class="cover-preview">
-        <div class="cover-placeholder">详情封面</div>
+        <img src="../assets/img/covers/live.jpg" alt="详情封面" style="width:100%;height:100%;object-fit:cover;display:block;border-radius:inherit" />
       </div>
       <div class="cover-side">
         <a href="#" data-act="design" class="link-blue">在线设计 ⓘ</a>
@@ -143,7 +143,7 @@
     </div>
     <div class="cover-row" style="margin-top:12px">
       <div class="cover-preview warmup-img">
-        <div class="cover-placeholder">暖场</div>
+        <img src="../assets/img/covers/emotion.jpg" alt="暖场图" style="width:100%;height:100%;object-fit:cover;display:block;border-radius:inherit" />
       </div>
       <div class="cover-side">
         <a href="#" data-act="design" class="link-blue">在线设计 ⓘ</a>
@@ -309,30 +309,37 @@
     </div>
   </div></div>
 
-  <h2 class="page-section-title">推送设置</h2>
+  <h2 class="page-section-title">预约提醒</h2>
   <div class="card"><div class="card-bd">
+    <p class="muted" style="margin:0 0 12px;font-size:13px;line-height:1.6">
+      此处仅配置本场直播的<strong>标准预约提醒</strong>（服务已预约/已订阅用户）。
+      直播通过审核并上架后，系统将根据直播时间自动生成预约提醒任务。
+      高级规则、预约用户及发送记录可在预约管理中查看。
+      面向私域线索的营销促到请到 <a href="live-invite.html">SCRM · 直播促到</a> 配置。
+    </p>
     <div class="form-grid" style="grid-template-columns:1fr 1fr">
+      <div class="field"><label>启用预约提醒</label>
+        <select id="le-remind-enable"><option value="1" selected>开启</option><option value="0">关闭</option></select>
+      </div>
       <div class="field"><label>开播前提醒</label>
-        <select><option>发送</option><option>不发送</option></select>
+        <select id="le-remind-pre">
+          <option value="24h">开播前 24 小时</option>
+          <option value="1h" selected>开播前 1 小时</option>
+          <option value="30m">开播前 30 分钟</option>
+          <option value="10m">开播前 10 分钟</option>
+        </select>
       </div>
-      <div class="field"><label>提醒时间</label>
-        <select><option>开播前 1 小时</option><option>开播前 30 分钟</option><option>开播前 10 分钟</option></select>
+      <div class="field"><label>正式开播提醒</label>
+        <select id="le-remind-start"><option value="1" selected>开启（提醒订阅用户）</option><option value="0">关闭</option></select>
       </div>
-      <div class="field"><label>提醒对象</label>
-        <select><option>所有订阅用户</option><option>已购课用户</option><option>近 7 天访问用户</option></select>
+      <div class="field"><label>回放生成提醒</label>
+        <select id="le-remind-replay"><option value="1" selected>开启（提醒已预约未观看）</option><option value="0">关闭</option></select>
       </div>
-      <div class="field"><label>提醒方式</label>
-        <select><option>站内信</option><option>企微</option><option>短信</option></select>
-      </div>
-      <div class="field" style="grid-column:1/-1"><label>提醒文案模板</label>
-        <textarea rows="3" style="width:100%;padding:8px;border:1px solid var(--color-border);border-radius:6px">【艺博教育】您预约的《{直播名称}》将在 {开播时间} 开始，点击进入直播间</textarea>
-      </div>
-      <div class="field"><label>回放推送</label>
-        <select><option>开启</option><option>关闭</option></select>
-      </div>
-      <div class="field"><label>回放推送时间</label>
-        <select><option>直播结束立即</option><option>直播结束 1 小时后</option></select>
-      </div>
+    </div>
+    <div class="toolbar" style="margin-top:12px;border:none;padding:0;background:transparent">
+      <button type="button" class="btn" id="btn-view-booking" disabled title="保存直播后可进入预约管理">查看预约与提醒</button>
+      <span class="muted" id="le-booking-hint" style="font-size:12px;margin-left:8px">保存直播后可进入预约管理。</span>
+      <a class="btn" id="btn-advanced-remind" href="live-booking.html" style="margin-left:auto">查看高级配置</a>
     </div>
   </div></div>
 
@@ -606,12 +613,56 @@
 </style>
 
 <script src="../assets/js/proto.js"></script>
-<script src="../assets/js/admin-shell.js?v=3"></script>
+<script src="../assets/js/live-reach.js"></script>
+<script src="../assets/js/admin-shell.js?v=13"></script>
 <script>
 (function () {
-  // ===== Audit state detection =====
   var params = new URLSearchParams(location.search);
-  var audit = params.get("status") || "new"; // new | pending | rejected
+  var audit = params.get("status") || "new";
+  var liveId = params.get("live_id") || params.get("id") || "";
+
+  // 统一示例时间为 2026-09
+  var startEl = document.querySelector('input[type="datetime-local"]');
+  var endEls = document.querySelectorAll('input[type="datetime-local"]');
+  if (startEl && !liveId) {
+    startEl.value = "2026-09-12T20:00";
+    if (endEls[1]) endEls[1].value = "2026-09-12T22:00";
+  }
+
+  function collectRemind() {
+    return {
+      reminderEnabled: document.getElementById("le-remind-enable").value === "1",
+      preRemindOffset: document.getElementById("le-remind-pre").value,
+      remindOnStart: document.getElementById("le-remind-start").value === "1",
+      remindReplay: document.getElementById("le-remind-replay").value === "1"
+    };
+  }
+
+  function enableBookingLink(id) {
+    var btn = document.getElementById("btn-view-booking");
+    var hint = document.getElementById("le-booking-hint");
+    var adv = document.getElementById("btn-advanced-remind");
+    btn.disabled = false;
+    btn.removeAttribute("title");
+    hint.textContent = "已关联直播 " + id;
+    btn.onclick = function () {
+      location.href = "live-booking.html?live_id=" + encodeURIComponent(id) + "&tab=reminders";
+    };
+    adv.href = "live-booking.html?live_id=" + encodeURIComponent(id) + "&tab=reminders";
+  }
+
+  if (liveId) {
+    var existing = LiveReach.getLive(liveId);
+    if (existing) {
+      document.getElementById("le-name").value = existing.name;
+      document.getElementById("le-remind-enable").value = existing.reminderEnabled === false ? "0" : "1";
+      document.getElementById("le-remind-pre").value = existing.preRemindOffset || "1h";
+      document.getElementById("le-remind-start").value = existing.remindOnStart === false ? "0" : "1";
+      document.getElementById("le-remind-replay").value = existing.remindReplay === false ? "0" : "1";
+      enableBookingLink(liveId);
+    }
+  }
+
   if (audit === "rejected") {
     document.getElementById("audit-banner").style.display = "flex";
     document.getElementById("btn-save").textContent = "重新提交审核";
@@ -625,21 +676,55 @@
     document.title = "查看直播（审核中） · 商家管理后台";
   }
 
-  // ===== Header buttons =====
   document.getElementById("btn-cancel").addEventListener("click", function () { location.href = "lives.html"; });
   document.getElementById("btn-save-draft").addEventListener("click", function () {
     var n = document.getElementById("le-name").value.trim();
     if (!n) { Proto.toast("请输入直播名称"); return; }
-    Proto.toast("已存草稿（原型）");
+    var remind = collectRemind();
+    LiveReach.saveEditDraft({ name: n, remind: remind, savedAt: Date.now() });
+    Proto.toast("已存草稿（预约提醒配置已保留）");
   });
   document.getElementById("btn-save").addEventListener("click", function () {
     var n = document.getElementById("le-name").value.trim();
     if (!n) { Proto.toast("请输入直播名称"); return; }
-    Proto.toast("已保存并提交审核（原型）");
-    setTimeout(function () { location.href = "lives.html"; }, 600);
+    var remind = collectRemind();
+    var starts = document.querySelectorAll('input[type="datetime-local"]');
+    var startAt = (starts[0] && starts[0].value) ? starts[0].value.replace("T", " ") : "2026-09-12 20:00";
+    var endAt = (starts[1] && starts[1].value) ? starts[1].value.replace("T", " ") : "2026-09-12 22:00";
+
+    var live;
+    if (liveId && LiveReach.getLive(liveId)) {
+      live = LiveReach.getLive(liveId);
+      live.name = n;
+      live.startAt = startAt;
+      live.endAt = endAt;
+      Object.assign(live, remind);
+      LiveReach.saveLive(live);
+      LiveReach.createDefaultReminders(live, true);
+    } else {
+      live = LiveReach.createLiveFromEdit({
+        name: n, startAt: startAt, endAt: endAt,
+        reminderEnabled: remind.reminderEnabled,
+        preRemindOffset: remind.preRemindOffset,
+        remindOnStart: remind.remindOnStart,
+        remindReplay: remind.remindReplay
+      });
+      liveId = live.id;
+    }
+    enableBookingLink(live.id);
+    Proto.toast("已保存并提交审核 · 已生成标准提醒草稿");
+    setTimeout(function () {
+      location.href = "live-booking.html?live_id=" + encodeURIComponent(live.id) + "&tab=reminders";
+    }, 700);
   });
 
-  // ===== Section buttons =====
+  document.getElementById("btn-view-booking").addEventListener("click", function () {
+    if (this.disabled) {
+      Proto.toast("保存直播后可进入预约管理");
+      return;
+    }
+  });
+
   document.getElementById("btn-add-role").addEventListener("click", function () { Proto.toast("打开添加角色（原型）"); });
   document.getElementById("btn-pick-owner").addEventListener("click", function () { Proto.toast("选择员工（原型）"); });
   document.getElementById("btn-pick-course").addEventListener("click", function () { Proto.toast("选择课程/专栏/训练营/会员（原型）"); });

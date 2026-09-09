@@ -11,7 +11,7 @@
 即可进入导航页，再分别进入：
 
 - **商家管理端**：`prototype/admin/dashboard.html`（布局见 [`docs/DESIGN.md`](docs/DESIGN.md)：顶栏模块 + 左侧二级 + 主区 + 右侧助手）
-- **SCRM 概览**：`prototype/admin/scrm-overview.html`
+- **SCRM 线索池**：`prototype/admin/leads.html`（顶栏 SCRM 默认进入此页）
 - **C 端 To-B 小程序模拟**：`prototype/miniprogram/home.html`
 
 无需安装依赖、无需本地服务器（若浏览器限制本地 `file://` 脚本，可用任意静态服，例如 VS Code Live Server）。

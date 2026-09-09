@@ -19,11 +19,53 @@
   if (!showTab) return;
   var frame = document.querySelector(".mp-frame");
   if (!frame) return;
+
+  function icon(name, active) {
+    var c = active ? "#165dff" : "#9aa3b2";
+    if (name === "home") {
+      return (
+        '<svg viewBox="0 0 24 24" fill="' +
+        (active ? "#165dff" : "none") +
+        '" stroke="' +
+        c +
+        '" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10.5 12 4l8 6.5V20a1 1 0 0 1-1 1h-5v-6H10v6H5a1 1 0 0 1-1-1v-9.5z" fill-opacity="' +
+        (active ? "0.15" : "0") +
+        '"/></svg>'
+      );
+    }
+    if (name === "live") {
+      return (
+        '<svg viewBox="0 0 24 24" fill="none" stroke="' +
+        c +
+        '" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="13" height="12" rx="2.2"/><path d="m16 10.2 5-2.8v9.2l-5-2.8v-3.6z"/><circle cx="9.5" cy="12" r="1.5" fill="' +
+        (active ? "#165dff" : "none") +
+        '" stroke="none"/></svg>'
+      );
+    }
+    return (
+      '<svg viewBox="0 0 24 24" fill="none" stroke="' +
+      c +
+      '" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.3"/><path d="M5.2 19.4c1.3-3.3 3.7-5 6.8-5s5.5 1.7 6.8 5"/></svg>'
+    );
+  }
+
   var bar = document.createElement("div");
   bar.className = "mp-tabbar";
   bar.innerHTML =
-    '<a class="' + (tab === "home" ? "active" : "") + '" href="home.html"><span class="ico">⌂</span>首页</a>' +
-    '<a class="' + (tab === "live" ? "active" : "") + '" href="lives.html"><span class="ico">◉</span>直播</a>' +
-    '<a class="' + (tab === "mine" ? "active" : "") + '" href="mine.html"><span class="ico">☺</span>我的</a>';
+    '<a class="' +
+    (tab === "home" ? "active" : "") +
+    '" href="home.html"><span class="ico">' +
+    icon("home", tab === "home") +
+    "</span>首页</a>" +
+    '<a class="' +
+    (tab === "live" ? "active" : "") +
+    '" href="lives.html"><span class="ico">' +
+    icon("live", tab === "live") +
+    "</span>直播</a>" +
+    '<a class="' +
+    (tab === "mine" ? "active" : "") +
+    '" href="mine.html"><span class="ico">' +
+    icon("mine", tab === "mine") +
+    "</span>我的</a>";
   frame.appendChild(bar);
 })();
