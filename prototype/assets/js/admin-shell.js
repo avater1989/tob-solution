@@ -55,7 +55,6 @@
         group: "全域获客",
         links: [
           { id: "videos", href: "videos.html", label: "视频号" },
-          { id: "redbook", href: "redbook.html", label: "小红书" },
         ],
       },
       {
@@ -150,16 +149,9 @@
         ],
       },
       {
-        group: "渠道订单",
-        links: [
-          { id: "channels-products", href: "channels-products.html", label: "视频号商品" },
-          { id: "channels-orders", href: "channels-orders.html", label: "视频号订单" },
-        ],
-      },
-      {
         group: "商品管理",
         links: [
-          { id: "goods", href: "goods.html", label: "商品列表" },
+          { id: "goods", href: "goods.html", label: "我的商品" },
           { id: "goods-edit", href: "goods-edit.html", label: "新建商品" },
         ],
       },
@@ -204,8 +196,8 @@
         links: [
           { id: "sys-users", href: "sys-users.html", label: "用户列表" },
           { id: "depts", href: "depts.html", label: "部门管理" },
-          { id: "user-roles", href: "user-roles.html", label: "用户角色权限" },
-          { id: "permissions", href: "permissions.html", label: "功能权限配置" },
+          { id: "user-roles", href: "user-roles.html", label: "用户角色" },
+          { id: "permissions", href: "permissions.html", label: "权限配置" },
         ],
       },
     ],
@@ -231,7 +223,7 @@
       "<div class='assist-block'><h3>评审路径</h3><ul>" +
       "<li><a href='content-series.html'>① 内容售卖</a></li>" +
       "<li><a href='lives.html'>② 直播转化</a></li>" +
-      "<li><a href='channels-orders.html'>③ 视频号承接</a></li>" +
+      "<li><a href='orders.html'>③ 订单管理</a></li>" +
       "<li><a href='leads.html'>④ 私域运营</a></li></ul></div>",
     "live-invite":
       "<div class='assist-block'><h3>直播促到SOP</h3><ul>" +
@@ -332,7 +324,7 @@
     "<strong>评审路径</strong>" +
     '<a href="content-series.html">①内容售卖</a><span class="sep">·</span>' +
     '<a href="lives.html">②直播转化</a><span class="sep">·</span>' +
-    '<a href="channels-orders.html">③视频号承接</a><span class="sep">·</span>' +
+    '<a href="orders.html">③订单管理</a><span class="sep">·</span>' +
     '<a href="leads.html">④私域运营</a><span class="sep">|</span>' +
     '<a href="../ops/dashboard.html">切运营后台</a><span class="sep">·</span>' +
     '<a href="../miniprogram/home.html">切 C 端</a><span class="sep">·</span>' +

@@ -42,7 +42,7 @@
       <div class="stat-value" data-m="pool">612</div>
       <div class="stat-hint"><span data-range-label>近7日</span></div>
     </a>
-    <a class="stat-card" data-board-link="channels-orders.html" href="channels-orders.html">
+    <a class="stat-card" data-board-link="orders.html" href="orders.html">
       <div class="stat-label" id="lbl-vx-orders">视频号获客首单</div>
       <div class="stat-value" data-m="vxOrders">286</div>
       <div class="stat-hint">辅口径 · 流入 <span data-m="vxLeads">241</span></div>
@@ -80,8 +80,8 @@
             · 当前待重发 <b data-m="smsFailedPending">18</b>
           </p>
           <div style="display:flex;gap:8px">
-            <a class="btn btn-sm" data-board-link="channels-orders.html" data-board-focus="sms_failed" href="channels-orders.html?focus=sms_failed">短信失败</a>
-            <a class="btn btn-sm" data-board-link="channels-orders.html" href="channels-orders.html">全部订单</a>
+            <a class="btn btn-sm" data-board-link="orders.html" data-board-focus="sms_failed" href="orders.html">短信失败</a>
+            <a class="btn btn-sm" data-board-link="orders.html" href="orders.html">全部订单</a>
           </div>
         </div>
       </div>
@@ -112,7 +112,7 @@
   var brief = document.getElementById("scope-help-brief");
   if (brief) brief.textContent = " · " + (BoardMetrics.FILTER_SCOPE_HELP || "").slice(0, 48) + "…";
 
-  var LINK = { video: "channels-orders.html", livecode: "channel-livecode.html", link: "acquire-links.html", redbook: "redbook.html", import: "leads.html" };
+  var LINK = { video: "orders.html", livecode: "channel-livecode.html", link: "acquire-links.html", import: "leads.html" };
 
   function updateScopeLabels(d, filters) {
     filters = filters || BoardMetrics.getFilters();

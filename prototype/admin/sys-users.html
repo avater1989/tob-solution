@@ -9,7 +9,6 @@
 <body class="admin-body" data-module="sys" data-nav="sys-users" data-title="用户列表" data-crumb="系统管理 / 系统用户管理 / 用户列表">
 <div id="header-actions">
   <button class="btn btn-primary" id="btn-add">新增用户</button>
-  <button class="btn" id="btn-sync">同步用户</button>
 </div>
 <div id="page-content" style="display:none">
 
@@ -45,9 +44,8 @@
   <!-- 操作条 -->
   <div class="toolbar" style="margin-bottom:12px">
     <button class="btn btn-primary" id="btn-add2">新增用户</button>
-    <button class="btn" id="btn-sync2">同步用户</button>
     <div class="spacer"></div>
-    <span class="muted" style="font-size:12px">管理本商户（星启家庭教育）后台登录账号与部门归属；「同步用户」从指定系统拉取新增账号</span>
+    <span class="muted" style="font-size:12px">管理本商户（星启家庭教育）后台登录账号、部门与职位归属；点击行内「查看 / 编辑」维护用户信息</span>
   </div>
 
   <!-- 表格 -->
@@ -58,7 +56,8 @@
           <th>用户账号</th>
           <th>用户姓名</th>
           <th>手机号码</th>
-          <th>部门/职位</th>
+          <th>部门</th>
+          <th>职位</th>
           <th>角色</th>
           <th>状态</th>
           <th>最近登录</th>
@@ -68,25 +67,25 @@
       <tbody>
         <tr>
           <td>138****2610</td><td>赵老师</td><td>138****2610</td>
-          <td>运营部 · 运营负责人</td><td><span class="tag tag-blue">商户管理员</span></td>
+          <td>运营部</td><td>运营负责人</td><td><span class="tag tag-blue">商户管理员</span></td>
           <td><span class="badge badge-success">正常</span></td><td>今天 09:12</td>
           <td class="row-actions"><a href="#" data-row-act="view">查看</a><a href="#" data-row-act="edit">编辑</a><a href="#" data-row-act="pwd">重置密码</a></td>
         </tr>
         <tr>
           <td>139****8811</td><td>阮荣均</td><td>139****8811</td>
-          <td>运营部 · 内容运营</td><td><span class="tag tag-blue">内容运营</span></td>
+          <td>运营部</td><td>内容运营</td><td><span class="tag tag-blue">内容运营</span></td>
           <td><span class="badge badge-success">正常</span></td><td>今天 08:40</td>
           <td class="row-actions"><a href="#" data-row-act="view">查看</a><a href="#" data-row-act="edit">编辑</a><a href="#" data-row-act="pwd">重置密码</a></td>
         </tr>
         <tr>
           <td>137****5522</td><td>王助教</td><td>137****5522</td>
-          <td>销售部 · 课程顾问</td><td><span class="tag tag-blue">销售</span></td>
+          <td>销售部</td><td>课程顾问</td><td><span class="tag tag-blue">销售</span></td>
           <td><span class="badge badge-warn">正常(锁定)</span></td><td>昨天 18:22</td>
           <td class="row-actions"><a href="#" data-row-act="view">查看</a><a href="#" data-row-act="edit">编辑</a><a href="#" data-row-act="unlock">解锁</a></td>
         </tr>
         <tr>
           <td>135****9933</td><td>钱财务</td><td>135****9933</td>
-          <td>财务部 · 财务专员</td><td><span class="tag tag-blue">财务</span></td>
+          <td>财务部</td><td>财务专员</td><td><span class="tag tag-blue">财务</span></td>
           <td><span class="badge">停用</span></td><td>2026-08-30</td>
           <td class="row-actions"><a href="#" data-row-act="view">查看</a><a href="#" data-row-act="edit">编辑</a><a href="#" data-row-act="enable">启用</a></td>
         </tr>
@@ -127,6 +126,11 @@
           <option>运营部</option><option>内容运营组</option><option>销售部</option><option>财务部</option>
         </select>
       </div>
+      <div class="field"><label>职位</label>
+        <select id="u-position" style="width:100%;padding:6px 8px;border:1px solid var(--color-border);border-radius:6px">
+          <option>运营负责人</option><option>内容运营</option><option>课程顾问</option><option>财务专员</option>
+        </select>
+      </div>
       <div class="field"><label>关联角色 *</label>
         <select id="u-role" style="width:100%;padding:6px 8px;border:1px solid var(--color-border);border-radius:6px">
           <option>商户管理员</option><option>内容运营</option><option>销售</option><option>财务</option><option>只读访客</option>
@@ -141,34 +145,6 @@
   <div class="proto-modal-ft" style="border-top:1px solid var(--color-border);padding:12px 20px;display:flex;gap:8px;justify-content:flex-end">
     <button class="btn" data-close>取消</button>
     <button class="btn btn-primary" data-close data-toast="用户已保存（原型）">确定</button>
-  </div>
-</div>
-
-<!-- 同步用户弹窗 -->
-<div class="proto-modal" id="modal-sync" style="width:520px">
-  <div class="proto-modal-hd">
-    <h3 style="font-size:16px;font-weight:600">同步用户</h3>
-    <button class="btn btn-sm btn-ghost" data-close>×</button>
-  </div>
-  <div class="proto-modal-bd">
-    <div class="form-grid">
-      <div class="field" style="grid-column:1/-1"><label>来源系统 *</label>
-        <select id="sync-source" style="width:100%;padding:6px 8px;border:1px solid var(--color-border);border-radius:6px">
-          <option>统一身份中心（SSO）</option><option>企业微信通讯录</option><option>人事系统对接</option><option>其他（开放接口）</option>
-        </select>
-      </div>
-      <div class="field" style="grid-column:1/-1"><label>同步策略</label>
-        <p style="margin:0;font-size:13px;line-height:1.7"><b>增量同步新增用户</b>：仅拉取来源系统内本平台不存在的新增账号（按手机号去重），不覆盖已存在用户信息。</p>
-        <p class="muted" style="margin:6px 0 0">账号同步后默认停用，需在列表中确认「启用」并分配部门 / 角色。</p>
-      </div>
-      <div class="field" style="grid-column:1/-1"><label>最近同步</label>
-        <div class="muted" style="font-size:13px">2026-09-06 10:30 · 来源：统一身份中心（SSO）· 新增 2 人</div>
-      </div>
-    </div>
-  </div>
-  <div class="proto-modal-ft" style="border-top:1px solid var(--color-border);padding:12px 20px;display:flex;gap:8px;justify-content:flex-end">
-    <button class="btn" data-close>取消</button>
-    <button class="btn btn-primary" id="sync-submit">执行同步</button>
   </div>
 </div>
 
@@ -225,10 +201,17 @@
       a.addEventListener("click", function (e) {
         e.preventDefault();
         var act = a.getAttribute("data-row-act");
+        var dept = tr.children[3] ? tr.children[3].textContent.trim() : "";
+        var pos = tr.children[4] ? tr.children[4].textContent.trim() : "";
         if (act === "view") {
-          Proto.toast("「" + name + "」用户信息（原型）");
+          document.getElementById("u-name").value = name;
+          document.getElementById("u-dept").value = dept;
+          document.getElementById("u-position").value = pos;
+          openUser("查看用户 · " + name);
         } else if (act === "edit") {
           document.getElementById("u-name").value = name;
+          document.getElementById("u-dept").value = dept;
+          document.getElementById("u-position").value = pos;
           openUser("编辑用户 · " + name);
         } else if (act === "pwd") {
           Proto.toast("密码已重置并短信通知（原型）");
@@ -239,17 +222,6 @@
         }
       });
     });
-  });
-
-  function openSync() {
-    document.getElementById("sync-source").selectedIndex = 0;
-    open(document.getElementById("modal-sync"));
-  }
-  document.getElementById("btn-sync").addEventListener("click", openSync);
-  document.getElementById("btn-sync2").addEventListener("click", openSync);
-  document.getElementById("sync-submit").addEventListener("click", function () {
-    closeAll();
-    Proto.toast("已从「" + document.getElementById("sync-source").value + "」同步新增用户（原型）");
   });
 
   document.getElementById("btn-query").addEventListener("click", function () { Proto.toast("已按条件查询（原型）"); });

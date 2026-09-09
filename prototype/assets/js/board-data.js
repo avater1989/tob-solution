@@ -208,27 +208,23 @@
     { range: "7d", channel: "video", term: "spring04", channelLabel: "视频号", termLabel: "春启 04 期", pool: 54, assigned: 50, wecom: 32, attributedPay: 10, attributedOrders: 14, attributedGmv: 1680, attributedRefundUsers: 1, attributedRefundAmount: 64, videoOrders: 106, videoLeads: 89, videoClaims: 72, videoSmsFailed: 8, noFollow: 9, churn: 4, attend: 25, payWithAttend: 8 },
     { range: "7d", channel: "livecode", term: "spring03", channelLabel: "渠道活码", termLabel: "春启 03 期", pool: 128, assigned: 124, wecom: 82, attributedPay: 28, attributedOrders: 34, attributedGmv: 13600, attributedRefundUsers: 2, attributedRefundAmount: 408, noFollow: 18, churn: 8, attend: 20, payWithAttend: 18 },
     { range: "7d", channel: "link", term: "trial", channelLabel: "获客链接", termLabel: "试听公开课", pool: 96, assigned: 92, wecom: 58, attributedPay: 18, attributedOrders: 22, attributedGmv: 4840, attributedRefundUsers: 1, attributedRefundAmount: 92, noFollow: 12, churn: 5, attend: 12, payWithAttend: 12 },
-    { range: "7d", channel: "redbook", term: "spring04", channelLabel: "小红书", termLabel: "春启 04 期", pool: 54, assigned: 52, wecom: 34, attributedPay: 12, attributedOrders: 15, attributedGmv: 3600, attributedRefundUsers: 1, attributedRefundAmount: 108, noFollow: 8, churn: 3, attend: 6, payWithAttend: 6 },
     { range: "7d", channel: "import", term: "", channelLabel: "手动导入", termLabel: "多期次", pool: 40, assigned: 39, wecom: 28, attributedPay: 8, attributedOrders: 10, attributedGmv: 2200, attributedRefundUsers: 0, attributedRefundAmount: 0, noFollow: 7, churn: 3, attend: 3, payWithAttend: 3 },
     /* —— 今日 · 合计 86 / 无跟进 12 / 流失 2 —— */
     { range: "today", channel: "video", term: "spring03", channelLabel: "视频号", termLabel: "春启 03 期", pool: 36, assigned: 30, wecom: 18, attributedPay: 4, attributedOrders: null, attributedGmv: null, videoOrders: 28, videoLeads: 22, videoClaims: 17, videoSmsFailed: 3, noFollow: 5, churn: 1, attend: 6, payWithAttend: 2 },
     { range: "today", channel: "video", term: "spring04", channelLabel: "视频号", termLabel: "春启 04 期", pool: 8, assigned: 6, wecom: 3, attributedPay: 1, attributedOrders: 2, attributedGmv: 240, attributedRefundUsers: 0, attributedRefundAmount: 0, videoOrders: 8, videoLeads: 7, videoClaims: 5, videoSmsFailed: 1, noFollow: 1, churn: 0, attend: 1, payWithAttend: 1 },
     { range: "today", channel: "livecode", term: "spring03", channelLabel: "渠道活码", termLabel: "春启 03 期", pool: 18, assigned: 16, wecom: 9, attributedPay: 2, attributedOrders: 3, attributedGmv: 1320, attributedRefundUsers: 0, attributedRefundAmount: 0, noFollow: 3, churn: 0, attend: 2, payWithAttend: 1 },
     { range: "today", channel: "link", term: "trial", channelLabel: "获客链接", termLabel: "试听公开课", pool: 12, assigned: 10, wecom: 6, attributedPay: 1, attributedOrders: 1, attributedGmv: 420, attributedRefundUsers: 0, attributedRefundAmount: 0, noFollow: 2, churn: 1, attend: 2, payWithAttend: 1 },
-    { range: "today", channel: "redbook", term: "spring04", channelLabel: "小红书", termLabel: "春启 04 期", pool: 7, assigned: 6, wecom: 3, attributedPay: 1, attributedOrders: 1, attributedGmv: 380, attributedRefundUsers: 0, attributedRefundAmount: 0, noFollow: 1, churn: 0, attend: 1, payWithAttend: 0 },
     { range: "today", channel: "import", term: "", channelLabel: "手动导入", termLabel: "多期次", pool: 5, assigned: 4, wecom: 2, attributedPay: 0, attributedOrders: 0, attributedGmv: 0, attributedRefundUsers: 0, attributedRefundAmount: 0, noFollow: 0, churn: 0, attend: 0, payWithAttend: 0 },
     /* —— 昨日 · 合计 74 —— */
     { range: "yesterday", channel: "video", term: "spring03", channelLabel: "视频号", termLabel: "春启 03 期", pool: 30, assigned: 28, wecom: 16, attributedPay: 3, attributedOrders: 5, attributedGmv: 600, attributedRefundUsers: 1, attributedRefundAmount: 36, videoOrders: 24, videoLeads: 19, videoClaims: 15, videoSmsFailed: 2, noFollow: 4, churn: 1, attend: 6, payWithAttend: 2 },
     { range: "yesterday", channel: "livecode", term: "spring03", channelLabel: "渠道活码", termLabel: "春启 03 期", pool: 18, assigned: 16, wecom: 10, attributedPay: 2, attributedOrders: 3, attributedGmv: 1200, attributedRefundUsers: 0, attributedRefundAmount: 0, noFollow: 2, churn: 1, attend: 4, payWithAttend: 1 },
     { range: "yesterday", channel: "link", term: "trial", channelLabel: "获客链接", termLabel: "试听公开课", pool: 12, assigned: 11, wecom: 6, attributedPay: 1, attributedOrders: 2, attributedGmv: 680, attributedRefundUsers: 0, attributedRefundAmount: 0, noFollow: 2, churn: 0, attend: 2, payWithAttend: 1 },
-    { range: "yesterday", channel: "redbook", term: "spring04", channelLabel: "小红书", termLabel: "春启 04 期", pool: 8, assigned: 7, wecom: 4, attributedPay: 1, attributedOrders: 1, attributedGmv: 360, attributedRefundUsers: 0, attributedRefundAmount: 0, noFollow: 1, churn: 1, attend: 1, payWithAttend: 1 },
     { range: "yesterday", channel: "import", term: "", channelLabel: "手动导入", termLabel: "多期次", pool: 6, assigned: 6, wecom: 3, attributedPay: 1, attributedOrders: 1, attributedGmv: 400, attributedRefundUsers: 0, attributedRefundAmount: 0, noFollow: 1, churn: 0, attend: 1, payWithAttend: 0 },
     /* —— 近30日 · 合计 2184 —— */
     { range: "30d", channel: "video", term: "spring03", channelLabel: "视频号", termLabel: "春启 03 期", pool: 820, assigned: 790, wecom: 520, attributedPay: 160, attributedOrders: 210, attributedGmv: 25200, attributedRefundUsers: 8, attributedRefundAmount: 907, videoOrders: 620, videoLeads: 520, videoClaims: 430, videoSmsFailed: 30, noFollow: 120, churn: 40, attend: 280, payWithAttend: 110 },
     { range: "30d", channel: "video", term: "spring04", channelLabel: "视频号", termLabel: "春启 04 期", pool: 280, assigned: 265, wecom: 170, attributedPay: 50, attributedOrders: 68, attributedGmv: 8160, attributedRefundUsers: 3, attributedRefundAmount: 294, videoOrders: 360, videoLeads: 300, videoClaims: 240, videoSmsFailed: 22, noFollow: 40, churn: 15, attend: 90, payWithAttend: 40 },
     { range: "30d", channel: "livecode", term: "spring03", channelLabel: "渠道活码", termLabel: "春启 03 期", pool: 420, assigned: 405, wecom: 260, attributedPay: 80, attributedOrders: 105, attributedGmv: 42000, attributedRefundUsers: 6, attributedRefundAmount: 1470, noFollow: 60, churn: 18, attend: 100, payWithAttend: 50 },
     { range: "30d", channel: "link", term: "trial", channelLabel: "获客链接", termLabel: "试听公开课", pool: 320, assigned: 305, wecom: 200, attributedPay: 55, attributedOrders: 72, attributedGmv: 15840, attributedRefundUsers: 3, attributedRefundAmount: 476, noFollow: 45, churn: 12, attend: 80, payWithAttend: 35 },
-    { range: "30d", channel: "redbook", term: "spring04", channelLabel: "小红书", termLabel: "春启 04 期", pool: 210, assigned: 200, wecom: 130, attributedPay: 40, attributedOrders: 52, attributedGmv: 12480, attributedRefundUsers: 2, attributedRefundAmount: 374, noFollow: 28, churn: 8, attend: 40, payWithAttend: 20 },
     { range: "30d", channel: "import", term: "", channelLabel: "手动导入", termLabel: "多期次", pool: 134, assigned: 125, wecom: 80, attributedPay: 25, attributedOrders: 32, attributedGmv: 7040, attributedRefundUsers: 1, attributedRefundAmount: 211, noFollow: 17, churn: 5, attend: 30, payWithAttend: 13 }
   ];
 
@@ -312,9 +308,6 @@
     /* 7d · link */
     { range: "7d", channel: "link", term: "trial", name: "阮荣均", assigned: 30, wecom: 20, wecomDone: 20, followed: 36, followedPeople: 16, noFollow: 4, churn: 1 },
     { range: "7d", channel: "link", term: "trial", name: "其他人员", assigned: 62, wecom: 38, wecomDone: 38, followed: 55, followedPeople: 26, noFollow: 8, churn: 4, isOther: true },
-    /* 7d · redbook */
-    { range: "7d", channel: "redbook", term: "spring04", name: "王助教", assigned: 28, wecom: 18, wecomDone: 18, followed: 28, followedPeople: 12, noFollow: 4, churn: 2 },
-    { range: "7d", channel: "redbook", term: "spring04", name: "其他人员", assigned: 24, wecom: 16, wecomDone: 16, followed: 24, followedPeople: 10, noFollow: 4, churn: 1, isOther: true },
     /* 7d · import */
     { range: "7d", channel: "import", term: "", name: "李管理", assigned: 22, wecom: 16, wecomDone: 16, followed: 28, followedPeople: 12, noFollow: 3, churn: 1 },
     { range: "7d", channel: "import", term: "", name: "其他人员", assigned: 17, wecom: 12, wecomDone: 12, followed: 20, followedPeople: 8, noFollow: 4, churn: 2, isOther: true },
@@ -328,7 +321,6 @@
     { range: "today", channel: "livecode", term: "spring03", name: "其他人员", assigned: 8, wecom: 4, wecomDone: 4, followed: 5, followedPeople: 3, noFollow: 2, churn: 0, isOther: true },
     { range: "today", channel: "link", term: "trial", name: "赵老师", assigned: 6, wecom: 4, wecomDone: 4, followed: 5, followedPeople: 3, noFollow: 1, churn: 0 },
     { range: "today", channel: "link", term: "trial", name: "其他人员", assigned: 4, wecom: 2, wecomDone: 2, followed: 3, followedPeople: 1, noFollow: 1, churn: 1, isOther: true },
-    { range: "today", channel: "redbook", term: "spring04", name: "其他人员", assigned: 6, wecom: 3, wecomDone: 3, followed: 3, followedPeople: 2, noFollow: 1, churn: 0, isOther: true },
     { range: "today", channel: "import", term: "", name: "其他人员", assigned: 4, wecom: 2, wecomDone: 2, followed: 2, followedPeople: 2, noFollow: 0, churn: 0, isOther: true },
 
     /* yesterday */
@@ -336,7 +328,6 @@
     { range: "yesterday", channel: "video", term: "spring03", name: "其他人员", assigned: 12, wecom: 6, wecomDone: 6, followed: 8, followedPeople: 4, noFollow: 2, churn: 0, isOther: true },
     { range: "yesterday", channel: "livecode", term: "spring03", name: "赵老师", assigned: 16, wecom: 10, wecomDone: 10, followed: 12, followedPeople: 8, noFollow: 2, churn: 1 },
     { range: "yesterday", channel: "link", term: "trial", name: "其他人员", assigned: 11, wecom: 6, wecomDone: 6, followed: 8, followedPeople: 4, noFollow: 2, churn: 0, isOther: true },
-    { range: "yesterday", channel: "redbook", term: "spring04", name: "其他人员", assigned: 7, wecom: 4, wecomDone: 4, followed: 5, followedPeople: 3, noFollow: 1, churn: 1, isOther: true },
     { range: "yesterday", channel: "import", term: "", name: "其他人员", assigned: 6, wecom: 3, wecomDone: 3, followed: 4, followedPeople: 2, noFollow: 1, churn: 0, isOther: true },
 
     /* 30d */
@@ -347,7 +338,6 @@
     { range: "30d", channel: "livecode", term: "spring03", name: "阮荣均", assigned: 150, wecom: 100, wecomDone: 100, followed: 160, followedPeople: 80, noFollow: 20, churn: 6 },
     { range: "30d", channel: "livecode", term: "spring03", name: "其他人员", assigned: 255, wecom: 160, wecomDone: 160, followed: 240, followedPeople: 110, noFollow: 40, churn: 12, isOther: true },
     { range: "30d", channel: "link", term: "trial", name: "其他人员", assigned: 305, wecom: 200, wecomDone: 200, followed: 300, followedPeople: 140, noFollow: 45, churn: 12, isOther: true },
-    { range: "30d", channel: "redbook", term: "spring04", name: "其他人员", assigned: 200, wecom: 130, wecomDone: 130, followed: 180, followedPeople: 90, noFollow: 28, churn: 8, isOther: true },
     { range: "30d", channel: "import", term: "", name: "其他人员", assigned: 125, wecom: 80, wecomDone: 80, followed: 120, followedPeople: 55, noFollow: 17, churn: 5, isOther: true }
   ];
 
@@ -404,7 +394,6 @@
     channelOptions: [
       { value: "", label: "全部渠道" },
       { value: "video", label: "视频号" },
-      { value: "redbook", label: "小红书" },
       { value: "link", label: "获客链接" },
       { value: "livecode", label: "渠道活码" },
       { value: "import", label: "手动导入" }

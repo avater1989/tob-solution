@@ -3,12 +3,11 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>功能权限配置 · 商家管理后台</title>
+<title>权限配置 · 商家管理后台</title>
 <link rel="stylesheet" href="../assets/css/proto.css?v=9" />
 </head>
-<body class="admin-body" data-module="sys" data-nav="permissions" data-title="功能权限配置" data-crumb="系统管理 / 系统用户管理 / 功能权限配置">
+<body class="admin-body" data-module="sys" data-nav="permissions" data-title="权限配置" data-crumb="系统管理 / 系统用户管理 / 权限配置">
 <div id="header-actions">
-  <button class="btn" id="btn-copy">复制当前配置</button>
   <button class="btn btn-primary" id="btn-save">保存配置</button>
 </div>
 <div id="page-content" style="display:none">
@@ -53,7 +52,7 @@
     <div class="card-bd">
       <div class="scope-options" id="scope-options">
         <label class="tp-item"><input type="radio" name="scope" value="self" /> 仅本人数据</label>
-        <label class="tp-item"><input type="radio" name="scope" value="team" checked /> 本人及下属数据</label>
+        <label class="tp-item"><input type="radio" name="scope" value="team" checked /> 本人及下级数据</label>
         <label class="tp-item"><input type="radio" name="scope" value="dept" /> 本部门数据</label>
         <label class="tp-item"><input type="radio" name="scope" value="all" /> 全部数据</label>
       </div>
@@ -185,9 +184,6 @@
   document.getElementById("btn-save").addEventListener("click", function () {
     dirty = false;
     Proto.toast("「" + curRole + "」权限配置已保存并即时生效（原型）");
-  });
-  document.getElementById("btn-copy").addEventListener("click", function () {
-    Proto.toast("已复制当前配置，可粘贴到其他角色（原型）");
   });
 
   render();

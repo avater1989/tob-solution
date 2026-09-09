@@ -662,7 +662,7 @@
         slaLabel: "临近超时",
         status: "pending",
         statusLabel: "待处理",
-        href: "channels-orders.html?focus=sms_failed&todo_id=TODO_SMS_001",
+        href: "orders.html?focus=sms_failed",
         roles: ["admin", "sales"]
       });
     }

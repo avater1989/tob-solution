@@ -3,21 +3,14 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>用户角色权限 · 商家管理后台</title>
+<title>用户角色 · 商家管理后台</title>
 <link rel="stylesheet" href="../assets/css/proto.css?v=9" />
 </head>
-<body class="admin-body" data-module="sys" data-nav="user-roles" data-title="用户角色权限" data-crumb="系统管理 / 系统用户管理 / 用户角色权限">
+<body class="admin-body" data-module="sys" data-nav="user-roles" data-title="用户角色" data-crumb="系统管理 / 系统用户管理 / 用户角色">
 <div id="header-actions">
-  <button class="btn" id="btn-invite">邀请成员</button>
   <button class="btn btn-primary" id="btn-new-role">新建角色</button>
 </div>
 <div id="page-content" style="display:none">
-
-  <!-- Tab -->
-  <div class="tabs" id="ur-tabs">
-    <a class="active" href="#" data-tab="roles">角色列表</a>
-    <a href="#" data-tab="members">成员管理</a>
-  </div>
 
   <!-- 角色列表 -->
   <div id="panel-roles">
@@ -43,6 +36,7 @@
             <td><span class="badge badge-success">启用</span></td>
             <td>2026-03-01</td>
             <td class="row-actions">
+              <a href="#" data-row-act="copy">复制</a>
               <a href="#" data-row-act="detail">查看成员</a>
               <a href="permissions.html">权限配置</a>
             </td>
@@ -55,6 +49,7 @@
             <td><span class="badge badge-success">启用</span></td>
             <td>2026-03-02</td>
             <td class="row-actions">
+              <a href="#" data-row-act="copy">复制</a>
               <a href="#" data-row-act="detail">查看成员</a>
               <a href="permissions.html">权限配置</a>
             </td>
@@ -63,10 +58,11 @@
             <td><b>销售顾问</b> <span class="tag tag-orange">内置</span></td>
             <td>线索跟进、客户沟通、群发触达</td>
             <td>8</td>
-            <td>本人及下属数据</td>
+            <td>本人及下级数据</td>
             <td><span class="badge badge-success">启用</span></td>
             <td>2026-03-02</td>
             <td class="row-actions">
+              <a href="#" data-row-act="copy">复制</a>
               <a href="#" data-row-act="detail">查看成员</a>
               <a href="permissions.html">权限配置</a>
             </td>
@@ -79,6 +75,7 @@
             <td><span class="badge badge-success">启用</span></td>
             <td>2026-03-05</td>
             <td class="row-actions">
+              <a href="#" data-row-act="copy">复制</a>
               <a href="#" data-row-act="detail">查看成员</a>
               <a href="permissions.html">权限配置</a>
             </td>
@@ -91,6 +88,7 @@
             <td><span class="badge badge-success">启用</span></td>
             <td>2026-03-10</td>
             <td class="row-actions">
+              <a href="#" data-row-act="copy">复制</a>
               <a href="#" data-row-act="detail">查看成员</a>
               <a href="permissions.html">权限配置</a>
               <a href="#" data-row-act="disable">停用</a>
@@ -104,6 +102,7 @@
             <td><span class="badge">停用</span></td>
             <td>2026-03-20</td>
             <td class="row-actions">
+              <a href="#" data-row-act="copy">复制</a>
               <a href="#" data-row-act="enable">启用</a>
               <a href="#" data-row-act="del" class="danger-link">删除</a>
             </td>
@@ -112,59 +111,6 @@
       </table>
     </div></div>
     <p class="muted" style="margin-top:8px;font-size:12px">内置角色不可删除；自定义角色删除前需先移除角色下的全部成员。</p>
-  </div>
-
-  <!-- 成员管理 -->
-  <div id="panel-members" style="display:none">
-    <div class="card" style="margin-bottom:8px"><div class="card-bd">
-      <div class="form-grid" style="grid-template-columns:repeat(4,minmax(0,1fr));gap:8px 12px">
-        <input id="f-member" placeholder="姓名 / 手机号" />
-        <select id="f-role"><option value="">所属角色</option><option>商户管理员</option><option>内容运营</option><option>销售顾问</option><option>财务</option><option>主播</option></select>
-        <select id="f-m-status"><option value="">状态</option><option>已启用</option><option>已禁用</option><option>待激活</option></select>
-        <button class="btn btn-primary" id="btn-m-query">筛选</button>
-      </div>
-    </div></div>
-    <div class="card"><div class="card-bd" style="padding:0">
-      <table class="data">
-        <thead>
-          <tr>
-            <th>成员</th><th>手机号</th><th>所属角色</th><th>所属部门</th><th>状态</th><th>最近登录</th><th style="width:150px">操作</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td><b>赵老师</b></td><td>139****0001</td><td>商户管理员</td><td>管理层</td>
-            <td><span class="badge badge-success">已启用</span></td><td>2026-04-02 09:12</td>
-            <td class="row-actions"><a href="#" data-toast="编辑成员（原型）">编辑</a><a href="permissions.html">角色权限</a></td>
-          </tr>
-          <tr>
-            <td><b>阮荣均</b></td><td>139****0002</td><td>内容运营 · 主播</td><td>内容部</td>
-            <td><span class="badge badge-success">已启用</span></td><td>2026-04-02 08:40</td>
-            <td class="row-actions"><a href="#" data-toast="编辑成员（原型）">编辑</a><a href="permissions.html">角色权限</a></td>
-          </tr>
-          <tr>
-            <td><b>王助教</b></td><td>139****0003</td><td>销售顾问</td><td>销售一部</td>
-            <td><span class="badge badge-success">已启用</span></td><td>2026-04-01 21:02</td>
-            <td class="row-actions"><a href="#" data-toast="编辑成员（原型）">编辑</a><a href="permissions.html">角色权限</a></td>
-          </tr>
-          <tr>
-            <td><b>周销售</b></td><td>139****0004</td><td>销售顾问</td><td>销售二部</td>
-            <td><span class="badge badge-success">已启用</span></td><td>2026-04-01 19:33</td>
-            <td class="row-actions"><a href="#" data-toast="编辑成员（原型）">编辑</a><a href="permissions.html">角色权限</a></td>
-          </tr>
-          <tr>
-            <td><b>钱会计</b></td><td>139****0005</td><td>财务</td><td>财务部</td>
-            <td><span class="badge badge-success">已启用</span></td><td>2026-04-01 09:00</td>
-            <td class="row-actions"><a href="#" data-toast="编辑成员（原型）">编辑</a><a href="permissions.html">角色权限</a></td>
-          </tr>
-          <tr>
-            <td><b>孙运营</b></td><td>139****0006</td><td>内容运营</td><td>内容部</td>
-            <td><span class="badge badge-warn">待激活</span></td><td>—</td>
-            <td class="row-actions"><a href="#" data-toast="已重发激活邀请（原型）">重发邀请</a><a href="#" data-toast="已移除成员（原型）">移除</a></td>
-          </tr>
-        </tbody>
-      </table>
-    </div></div>
   </div>
 </div>
 
@@ -195,7 +141,7 @@
   <div class="proto-drawer-ft">
     <button class="btn" data-close>关闭</button>
     <button class="btn" onclick="location.href='permissions.html'">配置权限</button>
-    <button class="btn btn-primary" data-toast="打开添加成员（原型）">添加成员</button>
+    <button class="btn btn-primary" onclick="location.href='sys-users.html'">去用户列表分配成员</button>
   </div>
 </div>
 
@@ -218,61 +164,96 @@
   mask.addEventListener("click", closeAll);
   document.querySelectorAll("[data-close]").forEach(function (n) { n.addEventListener("click", closeAll); });
 
-  // Tab 切换
-  var tabs = document.querySelectorAll("#ur-tabs a");
-  function switchTab(key) {
-    tabs.forEach(function (n) { n.classList.remove("active"); });
-    document.querySelector('#ur-tabs a[data-tab="' + key + '"]').classList.add("active");
-    document.getElementById("panel-roles").style.display = key === "roles" ? "block" : "none";
-    document.getElementById("panel-members").style.display = key === "members" ? "block" : "none";
-  }
-  tabs.forEach(function (a) {
-    a.addEventListener("click", function (e) {
-      e.preventDefault();
-      switchTab(a.getAttribute("data-tab"));
-    });
-  });
-
   // 角色数据
   var roles = {
     "商户管理员": { desc: "商户内全部功能与数据的管理权限", scope: "全部数据", perms: "全部模块：查看/编辑/导出；含订单退款审核、对账结算确认、成员与角色管理", members: [["赵老师", "管理层", "已启用"], ["创始人-孙总", "管理层", "已启用"]] },
     "内容运营": { desc: "课程/直播的创建与管理，不含交易与资金", scope: "全部数据", perms: "内容：查看/编辑；直播：查看/编辑/中控；SCRM：查看；交易与结算：不可见", members: [["阮荣均", "内容部", "已启用"], ["孙运营", "内容部", "待激活"], ["李编辑", "内容部", "已启用"]] },
-    "销售顾问": { desc: "线索跟进、客户沟通、群发触达", scope: "本人及下属数据", perms: "SCRM：线索/跟进/群发（仅本人与下属数据）；数据看板：本人业绩；交易：仅本人订单", members: [["王助教", "销售一部", "已启用"], ["周销售", "销售二部", "已启用"], ["吴顾问", "销售一部", "已启用"], ["郑顾问", "销售二部", "已启用"], ["冯顾问", "销售一部", "已启用"], ["陈顾问", "销售三部", "已启用"], ["褚顾问", "销售三部", "已启用"], ["卫顾问", "销售二部", "已启用"]] },
+    "销售顾问": { desc: "线索跟进、客户沟通、群发触达", scope: "本人及下级数据", perms: "SCRM：线索/跟进/群发（仅本人与下级数据）；数据看板：本人业绩；交易：仅本人订单", members: [["王助教", "销售一部", "已启用"], ["周销售", "销售二部", "已启用"], ["吴顾问", "销售一部", "已启用"], ["郑顾问", "销售二部", "已启用"], ["冯顾问", "销售一部", "已启用"], ["陈顾问", "销售三部", "已启用"], ["褚顾问", "销售三部", "已启用"], ["卫顾问", "销售二部", "已启用"]] },
     "财务": { desc: "订单、退款、对账与结算的查看与导出", scope: "全部数据", perms: "交易：查看/导出（订单、退款、对账、结算）；结算确认：可操作；其余模块只读", members: [["钱会计", "财务部", "已启用"]] },
     "主播": { desc: "直播开播、中控台与直播数据查看", scope: "本人数据", perms: "直播：开播/中控/本人直播数据；内容：查看；其余不可见", members: [["阮荣均", "内容部", "已启用"], ["主播-小艺", "内容部", "已启用"], ["主播-阿博", "内容部", "已启用"], ["主播-星星", "内容部", "已启用"]] },
   };
 
-  // 行操作
-  document.querySelectorAll("#ur-tbody [data-row-act]").forEach(function (a) {
-    a.addEventListener("click", function (e) {
-      e.preventDefault();
-      var act = a.getAttribute("data-row-act");
-      var tr = a.closest("tr");
-      var name = tr.querySelector("td b").textContent;
-      if (act === "detail") {
-        var r = roles[name];
-        document.getElementById("rm-title").textContent = "角色成员 · " + name;
-        document.getElementById("rm-name").textContent = name;
-        document.getElementById("rm-scope").textContent = r.scope;
-        document.getElementById("rm-desc").textContent = r.desc;
-        document.getElementById("rm-perms").textContent = r.perms;
-        document.getElementById("rm-tbody").innerHTML = r.members.map(function (m) {
-          return "<tr><td><b>" + m[0] + "</b></td><td>" + m[1] + "</td><td><span class='badge " + (m[2] === "已启用" ? "badge-success" : "badge-warn") + "'>" + m[2] + "</span></td></tr>";
-        }).join("");
-        open(document.getElementById("drawer-members"));
-      } else if (act === "disable") {
-        Proto.toast("角色「" + name + "」已停用（原型）");
-      } else if (act === "enable") {
-        Proto.toast("角色「" + name + "」已启用（原型）");
-      } else if (act === "del") {
-        Proto.toast("角色「" + name + "」已删除（原型）");
-      }
+  var tbody = document.getElementById("ur-tbody");
+
+  // 给每行操作列注入「复制」
+  function ensureCopyLink(row) {
+    var actions = row.querySelector(".row-actions");
+    if (!actions || actions.querySelector('[data-row-act="copy"]')) return;
+    var a = document.createElement("a");
+    a.href = "#";
+    a.setAttribute("data-row-act", "copy");
+    a.textContent = "复制";
+    actions.insertBefore(a, actions.firstChild);
+  }
+  tbody.querySelectorAll("tr").forEach(ensureCopyLink);
+
+  function roleNameOf(row) {
+    return row.querySelector("td b").textContent.trim();
+  }
+
+  // 复制角色：在列表末尾增加一行副本
+  function copyRole(row) {
+    var base = roleNameOf(row);
+    var name = base + "（副本）";
+    var tr = row.cloneNode(true);
+    // 重置名称（原内置/自定义 tag 统一替换为「自定义」）
+    var firstTd = tr.querySelector("td");
+    var nameCell = firstTd.querySelector("b");
+    firstTd.querySelectorAll(".tag").forEach(function (t) { t.parentNode.removeChild(t); });
+    nameCell.textContent = name;
+    var sp = document.createElement("span");
+    sp.className = "tag";
+    sp.style.cssText = "background:#f2f3f5;color:#4e5969";
+    sp.textContent = "自定义";
+    firstTd.appendChild(sp);
+    // 成员数清零、置为启用
+    var tds = tr.querySelectorAll("td");
+    if (tds[2]) tds[2].textContent = "0";
+    tbody.appendChild(tr);
+    ensureCopyLink(tr);
+    tr.querySelectorAll(".row-actions a").forEach(function (link) {
+      if (link.getAttribute("data-row-act") === "del") link.classList.add("danger-link");
     });
+    roles[name] = {
+      desc: "复制自「" + base + "」，可独立调整权限与数据范围",
+      scope: row.children[3] ? row.children[3].textContent.trim() : "全部数据",
+      perms: "继承自「" + base + "」的权限点，可进入权限配置调整",
+      members: []
+    };
+    Proto.toast("已复制角色「" + base + "」为「" + name + "」（原型）");
+  }
+
+  // 行操作（事件委托，兼容动态新增行）
+  tbody.addEventListener("click", function (e) {
+    var link = e.target.closest ? e.target.closest("[data-row-act]") : null;
+    if (!link) return;
+    e.preventDefault();
+    var act = link.getAttribute("data-row-act");
+    var tr = link.closest("tr");
+    var name = roleNameOf(tr);
+    if (act === "copy") {
+      copyRole(tr);
+    } else if (act === "detail") {
+      var r = roles[name] || { desc: "—", scope: "—", perms: "—", members: [] };
+      document.getElementById("rm-title").textContent = "角色成员 · " + name;
+      document.getElementById("rm-name").textContent = name;
+      document.getElementById("rm-scope").textContent = r.scope;
+      document.getElementById("rm-desc").textContent = r.desc;
+      document.getElementById("rm-perms").textContent = r.perms;
+      document.getElementById("rm-tbody").innerHTML = r.members.map(function (m) {
+        return "<tr><td><b>" + m[0] + "</b></td><td>" + m[1] + "</td><td><span class='badge " + (m[2] === "已启用" ? "badge-success" : "badge-warn") + "'>" + m[2] + "</span></td></tr>";
+      }).join("");
+      open(document.getElementById("drawer-members"));
+    } else if (act === "disable") {
+      Proto.toast("角色「" + name + "」已停用（原型）");
+    } else if (act === "enable") {
+      Proto.toast("角色「" + name + "」已启用（原型）");
+    } else if (act === "del") {
+      Proto.toast("角色「" + name + "」已删除（原型）");
+    }
   });
 
   document.getElementById("btn-new-role").addEventListener("click", function () { Proto.toast("打开新建角色（原型）"); });
-  document.getElementById("btn-invite").addEventListener("click", function () { Proto.toast("打开邀请成员（原型）"); });
-  document.getElementById("btn-m-query").addEventListener("click", function () { Proto.toast("已筛选（原型）"); });
 })();
 </script>
 </body>
