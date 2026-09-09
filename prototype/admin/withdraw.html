@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>提现管理 · 商家管理后台</title>
+<link rel="stylesheet" href="../assets/css/proto.css" />
+</head>
+<body class="admin-body" data-module="trade" data-nav="withdraw" data-title="提现管理" data-crumb="交易 / 资产管理 / 提现管理">
+<div id="header-actions">
+  <button class="btn" id="btn-export">导出提现记录</button>
+  <button class="btn" id="btn-auto">自动提现设置</button>
+  <button class="btn btn-primary" id="btn-withdraw">发起提现</button>
+</div>
+<div id="page-content" style="display:none">
+
+  <!-- 顶部余额卡 -->
+  <div class="card" style="margin-bottom:12px"><div class="card-bd">
+    <div class="wd-hero">
+      <div>
+        <div class="muted" style="font-size:13px">可提现金额</div>
+        <div class="big-num">¥3,286.50</div>
+        <div class="muted" style="font-size:12px">微信支付结算账户</div>
+      </div>
+      <div class="wd-set">
+        <div class="row"><span>提现中金额</span><b>¥0.00</b></div>
+        <div class="row"><span>自动提现</span><span class="badge badge-success">已开启</span> <span class="muted" style="font-size:12px">每日 08:00</span></div>
+        <div class="row"><span>结算银行账户</span><b>招商银行（****8888）</b> <a href="payment.html" class="link">修改</a></div>
+      </div>
+    </div>
+  </div></div>
+
+  <!-- Tab -->
+  <div class="tabs" id="wd-tabs">
+    <a class="active" href="#" data-tab="list">提现记录</a>
+    <a href="#" data-tab="guide">规则说明</a>
+  </div>
+
+  <!-- 提现记录表 -->
+  <div class="card" id="panel-list"><div class="card-bd" style="padding:0">
+    <table class="data">
+      <thead>
+        <tr><th>提现单号</th><th>提现方式</th><th>金额</th><th>到账账户</th><th>状态</th><th>申请时间</th><th>到账时间</th><th style="width:100px">操作</th></tr>
+      </thead>
+      <tbody>
+        <tr><td class="mono">WD20260901001</td><td>自动提现</td><td><b>¥5,200.00</b></td><td>招商银行（****8888）</td><td><span class="badge badge-success">已到账</span></td><td>2026-09-01 08:00</td><td>2026-09-02 10:12</td><td><a href="#" data-toast="查看详情（原型）">详情</a></td></tr>
+        <tr><td class="mono">WD20260825002</td><td>手动提现</td><td><b>¥2,000.00</b></td><td>招商银行（****8888）</td><td><span class="badge badge-success">已到账</span></td><td>2026-08-25 14:20</td><td>2026-08-27 09:40</td><td><a href="#" data-toast="查看详情（原型）">详情</a></td></tr>
+        <tr><td class="mono">WD20260801001</td><td>自动提现</td><td><b>¥6,300.00</b></td><td>招商银行（****8888）</td><td><span class="badge badge-success">已到账</span></td><td>2026-08-01 08:00</td><td>2026-08-02 15:22</td><td><a href="#" data-toast="查看详情（原型）">详情</a></td></tr>
+        <tr><td class="mono">WD20260701002</td><td>自动提现</td><td><b>¥4,100.00</b></td><td>招商银行（****8888）</td><td><span class="badge badge-warn">处理中</span></td><td>2026-07-01 08:00</td><td>—</td><td><a href="#" data-toast="查看详情（原型）">详情</a></td></tr>
+      </tbody>
+    </table>
+  </div></div>
+
+  <!-- 规则说明 -->
+  <div class="card" id="panel-guide" style="display:none"><div class="card-bd">
+    <div class="kv">
+      <div class="kv-row"><span>提现时间</span><b>每日 08:00 自动提现至银行卡，24 小时内到账</b></div>
+      <div class="kv-row"><span>最低提现金额</span><b>满 1 元即可提现</b></div>
+      <div class="kv-row"><span>手动提现</span><b>可在任意时间发起，1-5 个工作日审核到账</b></div>
+      <div class="kv-row"><span>留存金额</span><b>可设置保留金额不自动提现（当前 ¥0.00）</b></div>
+      <div class="kv-row"><span>手续费发票</span><b>支付手续费可申请开具发票（服务商账户）</b></div>
+    </div>
+    <p class="muted" style="margin-top:8px;font-size:12px">修改结算/提现银行账户需前往收款账户页（同主体非同名卡需提交银行账户证明）。</p>
+  </div></div>
+
+  <div class="toolbar" style="margin-top:8px">
+    <span class="muted">共 <b>18</b> 条提现记录</span>
+    <div class="spacer"></div>
+    <select><option>10条/页</option><option>20条/页</option></select>
+    <button class="btn btn-sm" disabled>上一页</button><button class="btn btn-sm">下一页</button>
+  </div>
+</div>
+
+<!-- 弹窗 -->
+<div class="proto-mask" id="mask"></div>
+
+<!-- 提现弹窗 -->
+<div class="proto-modal" id="modal-withdraw" style="width:520px">
+  <div class="proto-modal-hd"><h3 style="font-size:16px;font-weight:600">手动提现</h3><button class="btn btn-sm btn-ghost" data-close>×</button></div>
+  <div class="proto-modal-bd">
+    <div class="form-grid" style="grid-template-columns:1fr 1fr">
+      <div class="field"><label>提现账户</label><div>招商银行（****8888）</div></div>
+      <div class="field"><label>可提现</label><div>¥3,286.50</div></div>
+      <div class="field" style="grid-column:1/-1"><label>提现金额 *</label><input type="number" value="2000" style="width:100%;padding:7px 8px;border:1px solid var(--color-border);border-radius:6px" /></div>
+    </div>
+    <p class="muted" style="margin-top:8px">提现申请提交后预计 1-5 个工作日到账。</p>
+  </div>
+  <div class="proto-drawer-ft" style="border-top:1px solid var(--color-border);padding:12px 20px;display:flex;gap:8px;justify-content:flex-end">
+    <button class="btn" data-close>取消</button>
+    <button class="btn btn-primary" id="wd-submit">确认提现</button>
+  </div>
+</div>
+
+<!-- 自动提现设置弹窗 -->
+<div class="proto-modal" id="modal-auto" style="width:520px">
+  <div class="proto-modal-hd"><h3 style="font-size:16px;font-weight:600">自动提现设置</h3><button class="btn btn-sm btn-ghost" data-close>×</button></div>
+  <div class="proto-modal-bd">
+    <div class="field" style="margin-bottom:10px"><label>自动提现开关</label>
+      <select style="width:100%;padding:7px 8px;border:1px solid var(--color-border);border-radius:6px"><option>开启（每日 08:00 自动提现）</option><option>关闭</option></select>
+    </div>
+    <div class="field" style="margin-bottom:10px"><label>留存金额（元）</label><input value="500" style="width:100%;padding:7px 8px;border:1px solid var(--color-border);border-radius:6px" /><span class="muted" style="font-size:12px">账户余额高于留存金额部分才会提现</span></div>
+    <div class="field"><label>提现附言</label><input value="艺博课程结算提现" style="width:100%;padding:7px 8px;border:1px solid var(--color-border);border-radius:6px" /></div>
+  </div>
+  <div class="proto-drawer-ft" style="border-top:1px solid var(--color-border);padding:12px 20px;display:flex;gap:8px;justify-content:flex-end">
+    <button class="btn" data-close>取消</button>
+    <button class="btn btn-primary" id="auto-submit">保存设置</button>
+  </div>
+</div>
+
+<style>
+.wd-hero{display:flex;justify-content:space-between;align-items:flex-start;gap:24px;flex-wrap:wrap}
+.big-num{font-size:30px;font-weight:600;margin:6px 0}
+.wd-set{min-width:280px;background:#fafbfc;border:1px solid var(--color-border);border-radius:8px;padding:14px 16px}
+.wd-set .row{display:flex;justify-content:space-between;padding:6px 0;font-size:13px;border-bottom:1px dashed var(--color-border)}
+.wd-set .row:last-child{border-bottom:none}
+.kv-row{display:flex;justify-content:space-between;padding:7px 0;font-size:13px;border-bottom:1px dashed var(--color-border)}
+.kv-row:last-child{border-bottom:none}
+.kv-row span{color:var(--color-text-secondary)}
+.mono{font-family:ui-monospace,Consolas,monospace;font-size:12px}
+.link{color:var(--color-primary);text-decoration:none;font-size:12px}
+</style>
+
+<script src="../assets/js/proto.js"></script>
+<script src="../assets/js/admin-shell.js?v=3"></script>
+<script>
+(function () {
+  var mask=document.getElementById("mask");
+  function closeAll(){ mask.classList.remove("open"); document.querySelectorAll(".proto-modal,.proto-drawer").forEach(function(n){n.classList.remove("open");}); }
+  function open(n){ mask.classList.add("open"); n.classList.add("open"); }
+  mask.addEventListener("click", closeAll);
+  document.querySelectorAll("[data-close]").forEach(function(n){ n.addEventListener("click", closeAll); });
+
+  document.querySelectorAll("#wd-tabs a").forEach(function(a){
+    a.addEventListener("click", function(e){
+      e.preventDefault();
+      document.querySelectorAll("#wd-tabs a").forEach(function(n){n.classList.remove("active");});
+      a.classList.add("active");
+      document.getElementById("panel-list").style.display = a.getAttribute("data-tab")==="list" ? "" : "none";
+      document.getElementById("panel-guide").style.display = a.getAttribute("data-tab")==="guide" ? "" : "none";
+    });
+  });
+
+  document.getElementById("btn-withdraw").addEventListener("click", function(){ open(document.getElementById("modal-withdraw")); });
+  document.getElementById("btn-auto").addEventListener("click", function(){ open(document.getElementById("modal-auto")); });
+  document.getElementById("wd-submit").addEventListener("click", function(){ closeAll(); Proto.toast("提现申请已提交（原型）"); });
+  document.getElementById("auto-submit").addEventListener("click", function(){ closeAll(); Proto.toast("自动提现设置已保存（原型）"); });
+  document.getElementById("btn-export").addEventListener("click", function(){ Proto.toast("已导出提现记录（原型）"); });
+})();
+</script>
+</body>
+</html>

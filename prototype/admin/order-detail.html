@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8" />
@@ -6,11 +6,11 @@
 <title>订单详情 · 商家管理后台</title>
 <link rel="stylesheet" href="../assets/css/proto.css" />
 </head>
-<body class="admin-body" data-module="trade" data-nav="order-detail" data-title="订单详情" data-crumb="交易 / 订单中心 / 订单详情">
+<body class="admin-body" data-module="trade" data-nav="orders" data-title="订单详情" data-crumb="交易 / 订单管理 / 订单详情">
 <div id="header-actions">
+  <button class="btn" onclick="location.href='orders.html'">返回订单列表</button>
   <button class="btn" id="btn-copy">复制订单号</button>
-  <button class="btn" id="btn-refund">发起退款</button>
-  <button class="btn btn-primary" id="btn-benefit">重发权益</button>
+  <button class="btn btn-primary" id="btn-refund">发起退款</button>
 </div>
 <div id="page-content" style="display:none">
 
@@ -18,37 +18,26 @@
   <div class="card" style="margin-bottom:8px"><div class="card-bd">
     <div class="order-status-bar">
       <div class="os-main">
-        <span class="badge badge-success" style="font-size:13px">已完成</span>
-        <b>YB20260329100123</b>
-        <span class="tag tag-blue">小程序</span>
+        <span class="badge badge-info" style="font-size:13px">已支付 · 履约中</span>
+        <b>YB20260907000331</b>
+        <span class="tag tag-green">视频号</span>
+        <span class="tag tag-orange">合单（知识 + 实物）</span>
       </div>
       <div class="os-flow">
         <div class="os-step done"><i>1</i>确认订单</div>
         <div class="os-step done"><i>2</i>支付成功</div>
-        <div class="os-step done"><i>3</i>权益开通</div>
-        <div class="os-step done"><i>4</i>订单完成</div>
+        <div class="os-step cur"><i>3</i>履约中</div>
+        <div class="os-step"><i>4</i>订单完成</div>
       </div>
+    </div>
+    <div class="alert alert-info" style="margin-top:10px;font-size:13px">
+      本单同时含<b>知识商品</b>（权益已开通）与<b>实物商品</b>（待发货）。实物商品在「交易-订单管理-发货管理」中发货，知识部分直接开通权益。
     </div>
   </div></div>
 
-  <!-- 基本信息 + 商品信息 -->
+  <!-- 履约拆分 -->
   <div class="detail-cols">
-    <div class="card"><div class="card-hd"><h2>基本信息</h2></div>
-      <div class="card-bd">
-        <div class="kv">
-          <div class="kv-row"><span>订单号</span><b class="mono">YB20260329100123</b></div>
-          <div class="kv-row"><span>微信支付交易单号</span><b class="mono">4200002388202603299871</b></div>
-          <div class="kv-row"><span>订单类型</span><b>线上课购买</b></div>
-          <div class="kv-row"><span>渠道来源</span><b>小程序 · 课程详情页</b></div>
-          <div class="kv-row"><span>推广人</span><b>赵老师</b></div>
-          <div class="kv-row"><span>下单时间</span><b>2026-03-29 09:12:05</b></div>
-          <div class="kv-row"><span>支付时间</span><b>2026-03-29 09:12:38</b></div>
-          <div class="kv-row"><span>完成时间</span><b>2026-03-29 09:12:40</b></div>
-        </div>
-      </div>
-    </div>
-
-    <div class="card"><div class="card-hd"><h2>商品信息</h2></div>
+    <div class="card"><div class="card-hd"><h2>履约① · 知识商品（权益已开通）</h2></div>
       <div class="card-bd">
         <div class="prod-line">
           <div class="thumb thumb-course"></div>
@@ -56,23 +45,54 @@
             <b>春启 03 期家长必修课</b>
             <div class="muted" style="font-size:12px;margin-top:2px">线上课 · 12 节 · 规格：默认</div>
           </div>
-          <div class="prod-price">
-            <div class="muted" style="text-decoration:line-through">¥99.00</div>
-            <b>¥9.90</b>
-          </div>
+          <div class="prod-price"><b>¥9.90</b></div>
         </div>
         <div class="kv" style="margin-top:12px">
-          <div class="kv-row"><span>商品数量</span><b>1</b></div>
-          <div class="kv-row"><span>优惠方式</span><b>引流价立减</b></div>
-          <div class="kv-row"><span>原价</span><b>¥99.00</b></div>
-          <div class="kv-row"><span>优惠金额</span><b>-¥89.10</b></div>
-          <div class="kv-row"><span>实付金额</span><b class="price">¥9.90</b></div>
+          <div class="kv-row"><span>权益状态</span><b><span class="badge badge-info">已开通</span></b></div>
+          <div class="kv-row"><span>开通时间</span><b>2026-09-07 14:23:01</b></div>
+          <div class="kv-row"><span>有效期</span><b>永久有效</b></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card"><div class="card-hd"><h2>履约② · 实物商品（待发货）</h2><a href="ship.html" class="link" style="font-size:12px">去发货 →</a></div>
+      <div class="card-bd">
+        <div class="prod-line">
+          <div class="thumb thumb-book"></div>
+          <div>
+            <b>青春期沟通家长手册（纸书）</b>
+            <div class="muted" style="font-size:12px;margin-top:2px">实物 · SKU-001 · 数量 2</div>
+          </div>
+          <div class="prod-price"><b>¥78.00</b></div>
+        </div>
+        <div class="kv" style="margin-top:12px">
+          <div class="kv-row"><span>发货状态</span><b><span class="badge badge-warn">待发货</span></b></div>
+          <div class="kv-row"><span>收货人</span><b>李女士 138****2610</b></div>
+          <div class="kv-row"><span>收货地址</span><b>广东省深圳市南山区 ×× 路 8 号</b></div>
+          <div class="kv-row"><span>物流信息</span><b class="muted">未发货</b></div>
+          <div class="kv-row"><span>售后状态</span><b><a href="aftersales.html" class="link">查看售后单 →</a></b></div>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- 买家 + 权益 -->
+  <!-- 基本信息 -->
+  <div class="card" style="margin-bottom:8px"><div class="card-hd"><h2>订单信息</h2></div>
+    <div class="card-bd">
+      <div class="kv-grid">
+        <div class="kv-row"><span>订单号</span><b class="mono">YB20260907000331</b></div>
+        <div class="kv-row"><span>微信支付交易单号</span><b class="mono">4200002388202609070XX</b></div>
+        <div class="kv-row"><span>订单类型</span><b>合单支付（拆单：知识 1 + 实物 1）</b></div>
+        <div class="kv-row"><span>渠道来源</span><b>视频号直播间带货</b></div>
+        <div class="kv-row"><span>推广人</span><b>—</b></div>
+        <div class="kv-row"><span>下单时间</span><b>2026-09-07 14:22:10</b></div>
+        <div class="kv-row"><span>支付时间</span><b>2026-09-07 14:22:58</b></div>
+        <div class="kv-row"><span>支付方式</span><b>微信小程序支付</b></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 买家 + 金额 -->
   <div class="detail-cols">
     <div class="card"><div class="card-hd"><h2>买家信息</h2></div>
       <div class="card-bd">
@@ -85,14 +105,13 @@
       </div>
     </div>
 
-    <div class="card"><div class="card-hd"><h2>权益状态</h2></div>
+    <div class="card"><div class="card-hd"><h2>金额明细</h2></div>
       <div class="card-bd">
         <div class="kv">
-          <div class="kv-row"><span>权益内容</span><b>春启 03 期家长必修课 · 全部 12 节</b></div>
-          <div class="kv-row"><span>权益状态</span><b><span class="badge badge-info">已开通</span></b></div>
-          <div class="kv-row"><span>开通时间</span><b>2026-03-29 09:12:40</b></div>
-          <div class="kv-row"><span>有效期</span><b>永久有效</b></div>
-          <div class="kv-row"><span>退款后权益</span><b>退款成功自动回收</b></div>
+          <div class="kv-row"><span>商品总额</span><b>¥87.90</b></div>
+          <div class="kv-row"><span>运费</span><b>¥0.00（满 99 包邮优惠已免）</b></div>
+          <div class="kv-row"><span>优惠券</span><b>-¥0.00</b></div>
+          <div class="kv-row"><span>实付金额</span><b class="price">¥87.90</b></div>
         </div>
       </div>
     </div>
@@ -103,15 +122,13 @@
     <div class="card"><div class="card-hd"><h2>支付与退款</h2></div>
       <div class="card-bd">
         <div class="kv">
-          <div class="kv-row"><span>支付方式</span><b>微信小程序支付</b></div>
           <div class="kv-row"><span>支付状态</span><b><span class="badge badge-success">支付成功</span></b></div>
-          <div class="kv-row"><span>实付金额</span><b class="price">¥9.90</b></div>
           <div class="kv-row"><span>退款状态</span><b>无退款</b></div>
           <div class="kv-row"><span>累计退款金额</span><b>¥0.00</b></div>
         </div>
         <div class="toolbar" style="margin-top:12px">
           <button class="btn btn-sm" data-toast="打开发起退款（原型）">发起退款</button>
-          <button class="btn btn-sm" data-toast="跳转退款/售后列表（原型）" onclick="location.href='refunds.html'">查看退款单</button>
+          <button class="btn btn-sm" onclick="location.href='refunds.html'">查看退款单</button>
         </div>
       </div>
     </div>
@@ -120,12 +137,11 @@
       <div class="card-bd">
         <div class="kv">
           <div class="kv-row"><span>备付金账户</span><b>艺博平台备付金账户</b></div>
-          <div class="kv-row"><span>分账状态</span><b><span class="badge badge-warn">待分账</span> <span class="muted">随账期 T+1 结算</span></b></div>
-          <div class="kv-row"><span>平台服务费（1%）</span><b>¥0.10</b></div>
-          <div class="kv-row"><span>商户分账（99%）</span><b>¥9.80</b></div>
-          <div class="kv-row"><span>所属结算单</span><b><a href="settlement.html" class="link">ST20260331001（待确认）</a></b></div>
+          <div class="kv-row"><span>分账状态</span><b><span class="badge badge-warn">待分账</span> 随账期 T+1 结算</b></div>
+          <div class="kv-row"><span>平台服务费（1%）</span><b>¥0.88</b></div>
+          <div class="kv-row"><span>商户分账（99%）</span><b>¥87.02</b></div>
+          <div class="kv-row"><span>所属结算单</span><b><a href="settlement.html" class="link">ST20260908001（待确认）</a></b></div>
         </div>
-        <p class="muted" style="margin-top:12px;font-size:12px">支付资金先进平台备付金账户，按账期扣除平台服务费后分账给商户；商户自有商户号绑定为后续能力。</p>
       </div>
     </div>
   </div>
@@ -134,10 +150,10 @@
   <div class="card"><div class="card-hd"><h2>操作日志</h2></div>
     <div class="card-bd">
       <ul class="log-list">
-        <li><span class="log-time">2026-03-29 09:12:40</span>系统自动开通课程权益（全部 12 节）<span class="muted">· 系统</span></li>
-        <li><span class="log-time">2026-03-29 09:12:38</span>微信支付回调成功，实付 ¥9.90<span class="muted">· 支付系统</span></li>
-        <li><span class="log-time">2026-03-29 09:12:05</span>买家提交订单，进入待支付<span class="muted">· C 端小程序</span></li>
-        <li><span class="log-time">2026-03-29 09:10:22</span>买家通过推广人「赵老师」分享链接进入课程详情页<span class="muted">· 埋点</span></li>
+        <li><span class="log-time">2026-09-07 14:23:01</span>系统自动开通课程权益（线上课 · 全部 12 节）<span class="muted">· 系统</span></li>
+        <li><span class="log-time">2026-09-07 14:22:58</span>微信支付回调成功，实付 ¥87.90<span class="muted">· 支付系统</span></li>
+        <li><span class="log-time">2026-09-07 14:22:30</span>系统按商品类型拆单：知识订单 + 实物订单<span class="muted">· 系统</span></li>
+        <li><span class="log-time">2026-09-07 14:22:10</span>买家通过直播间购物车合并下单<span class="muted">· 视频号直播间</span></li>
       </ul>
     </div>
   </div>
@@ -152,18 +168,15 @@
 .os-main { display:flex; align-items:center; gap:10px; font-size:14px; }
 .os-flow { display:flex; align-items:center; gap:0; }
 .os-step { display:flex; align-items:center; gap:6px; font-size:12px; color:var(--color-text-muted); }
-.os-step i {
-  font-style:normal; width:18px; height:18px; border-radius:50%;
-  background:#e5e6eb; color:#86909c; font-size:11px; display:inline-flex;
-  align-items:center; justify-content:center;
-}
+.os-step i { font-style:normal; width:18px; height:18px; border-radius:50%; background:#e5e6eb; color:#86909c; font-size:11px; display:inline-flex; align-items:center; justify-content:center; }
 .os-step.done { color:#009a29; }
 .os-step.done i { background:#e8ffea; color:#009a29; }
+.os-step.cur { color:#165dff; }
+.os-step.cur i { background:#e8f3ff; color:#165dff; }
 .os-step + .os-step { margin-left:4px; padding-left:14px; position:relative; }
-.os-step + .os-step::before {
-  content:""; position:absolute; left:0; top:50%; width:10px; height:1px; background:#e5e6eb;
-}
+.os-step + .os-step::before { content:""; position:absolute; left:0; top:50%; width:10px; height:1px; background:#e5e6eb; }
 .detail-cols { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:8px; }
+.kv-grid { display:grid; grid-template-columns:1fr 1fr; gap:0 32px; }
 .kv-row { display:flex; justify-content:space-between; padding:7px 0; font-size:13px; border-bottom:1px dashed var(--color-border); }
 .kv-row:last-child { border-bottom:none; }
 .kv-row span { color:var(--color-text-secondary); }
@@ -173,29 +186,26 @@
 .prod-line .prod-price { margin-left:auto; text-align:right; font-size:14px; }
 .thumb { width:44px; height:44px; border-radius:6px; flex:none; }
 .thumb-course { background:linear-gradient(135deg,#165dff,#4080ff); }
-.link { color:var(--color-primary); font-size:12px; }
+.thumb-book { background:linear-gradient(135deg,#00b42a,#4ed679); }
+.link { color:var(--color-primary); font-size:12px; text-decoration:none; }
 .log-list { list-style:none; margin:0; padding:0; font-size:13px; }
 .log-list li { padding:8px 0; border-bottom:1px dashed var(--color-border); }
 .log-list li:last-child { border-bottom:none; }
 .log-time { font-family:ui-monospace,Consolas,monospace; font-size:12px; color:var(--color-text-muted); margin-right:12px; }
 .tag { display:inline-block; padding:2px 8px; border-radius:4px; font-size:12px; }
-.tag-blue { background:#e8f3ff; color:#165dff; }
-@media (max-width:1100px) { .detail-cols { grid-template-columns:1fr; } }
+.tag-green { background:#e8ffea; color:#009a29; }
+.tag-orange { background:#fff3e0; color:#ad6800; }
+.alert { position:relative; padding:8px 14px; border-radius:8px; font-size:13px; }
+.alert-info { background:#e8f3ff; border:1px solid #a0cfff; color:#165dff; }
+@media (max-width:1100px) { .detail-cols,.kv-grid { grid-template-columns:1fr; } }
 </style>
 
 <script src="../assets/js/proto.js"></script>
 <script src="../assets/js/admin-shell.js?v=3"></script>
 <script>
 (function () {
-  document.getElementById("btn-copy").addEventListener("click", function () {
-    Proto.toast("订单号已复制（原型）");
-  });
-  document.getElementById("btn-refund").addEventListener("click", function () {
-    Proto.toast("打开发起退款（原型）");
-  });
-  document.getElementById("btn-benefit").addEventListener("click", function () {
-    Proto.toast("权益已重发（原型）");
-  });
+  document.getElementById("btn-copy").addEventListener("click", function () { Proto.toast("订单号已复制（原型）"); });
+  document.getElementById("btn-refund").addEventListener("click", function () { Proto.toast("打开发起退款（原型）"); });
 })();
 </script>
 </body>

@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8" />
@@ -6,7 +6,7 @@
 <title>视频号订单 · 商家管理后台</title>
 <link rel="stylesheet" href="../assets/css/proto.css" />
 </head>
-<body class="admin-body" data-module="scrm" data-nav="channels-orders" data-title="视频号订单" data-crumb="SCRM / 公域获客 / 视频号订单">
+<body class="admin-body" data-module="trade" data-nav="channels-orders" data-title="视频号订单" data-crumb="交易 / 渠道订单 / 视频号订单">
 <div id="header-actions">
   <button class="btn btn-primary" id="btn-import">导入手机号</button>
   <button class="btn" id="btn-export">导出列表</button>
@@ -29,7 +29,7 @@
   <div class="card" style="margin-bottom:8px"><div class="card-bd">
     <div class="form-grid" style="grid-template-columns:repeat(5,minmax(0,1fr));gap:8px 12px">
       <input id="f-order-public" placeholder="公域订单号" />
-      <input id="f-order-local" placeholder="小鹅通订单号" />
+      <input id="f-order-local" placeholder="艺博订单号" />
       <select id="f-status">
         <option value="">订单状态</option>
         <option>全部</option><option>已支付</option><option>待付款</option>
@@ -198,7 +198,7 @@
     <h4 style="margin-bottom:8px">订单信息</h4>
     <div class="form-grid" style="grid-template-columns:1fr 1fr">
       <div class="field"><label>公域订单号</label><div id="cod-public">—</div></div>
-      <div class="field"><label>小鹅通订单号</label><div id="cod-local">—</div></div>
+      <div class="field"><label>艺博订单号</label><div id="cod-local">—</div></div>
       <div class="field"><label>订单来源</label><div id="cod-source">—</div></div>
       <div class="field"><label>订单状态</label><div id="cod-status">—</div></div>
       <div class="field"><label>下单时间</label><div id="cod-time">—</div></div>

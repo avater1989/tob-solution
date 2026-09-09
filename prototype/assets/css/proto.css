@@ -622,6 +622,7 @@ table.data tr:hover td { background: #fafbfc; }
   border-bottom: 1px solid var(--color-border);
   margin-bottom: 16px;
 }
+.tabs .spacer { flex: 1; }
 .tabs a {
   padding: 10px 14px;
   color: var(--color-text-secondary);

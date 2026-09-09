@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>资产总览 · 商家管理后台</title>
+<link rel="stylesheet" href="../assets/css/proto.css" />
+</head>
+<body class="admin-body" data-module="trade" data-nav="assets" data-title="资产总览" data-crumb="交易 / 资产管理 / 资产总览">
+<div id="header-actions">
+  <button class="btn" id="btn-bill">查看交易账单</button>
+  <button class="btn btn-primary" id="btn-withdraw">发起提现</button>
+</div>
+<div id="page-content" style="display:none">
+
+  <!-- 顶部账户余额概况 -->
+  <div class="card" style="margin-bottom:12px"><div class="card-bd">
+    <div class="asset-hero">
+      <div>
+        <div class="muted" style="font-size:13px">可提现余额</div>
+        <div class="big-num">¥3,286.50</div>
+        <div class="muted" style="font-size:12px;margin-top:4px">账户余额 = 可用余额 + 待结算 + 待分账</div>
+      </div>
+      <div class="asset-metrics">
+        <div class="am"><span>可用余额</span><b>¥3,286.50</b></div>
+        <div class="am"><span>待结算金额</span><b>¥1,042.00</b></div>
+        <div class="am"><span>提现中</span><b>¥0.00</b></div>
+        <div class="am"><span>累计收入</span><b>¥52,880.60</b></div>
+      </div>
+    </div>
+  </div></div>
+
+  <!-- 收款账户 -->
+  <div class="card" style="margin-bottom:12px"><div class="card-hd"><h2>收款账户</h2><span class="muted" style="font-size:12px">各支付渠道账户余额与昨日收支</span></div>
+    <div class="card-bd" style="padding:0">
+      <table class="data">
+        <thead><tr><th>账户</th><th>商户号</th><th>账户余额（实时）</th><th>昨日收入</th><th>昨日支出</th><th>账户状态</th><th style="width:170px">操作</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><b>微信支付（服务商模式）</b><br><span class="muted" style="font-size:12px">艺博教育科技服务商</span></td>
+            <td><span class="mono">19000xxxx</span></td>
+            <td><b>¥3,286.50</b></td>
+            <td>¥1,028.90</td>
+            <td>-¥63.40</td>
+            <td><span class="badge badge-success">正常</span></td>
+            <td class="row-actions"><a href="#" data-toast="查看账户明细（原型）">账单</a><a href="withdraw.html">提现</a><a href="payment.html">账户设置</a></td>
+          </tr>
+          <tr>
+            <td><b>支付宝（直付通）</b><br><span class="muted" style="font-size:12px">支付宝二级商户</span></td>
+            <td><span class="mono">2088xxxx</span></td>
+            <td><b>¥0.00</b></td>
+            <td>—</td>
+            <td>—</td>
+            <td><span class="badge badge-warn">未开通收单</span></td>
+            <td class="row-actions"><a href="payment.html">去开通</a></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- 昨日收支 -->
+  <div class="detail-cols">
+    <div class="card"><div class="card-hd"><h2>昨日收支概况</h2><span class="muted" style="font-size:12px">按支付时间口径</span></div>
+      <div class="card-bd">
+        <div class="kv">
+          <div class="kv-row"><span>昨日收入（订单支付）</span><b>¥1,028.90</b></div>
+          <div class="kv-row"><span>昨日退款</span><b>-¥18.40</b></div>
+          <div class="kv-row"><span>昨日手续费</span><b>-¥45.00</b></div>
+          <div class="kv-row"><span>昨日净收入</span><b class="price">¥965.50</b></div>
+        </div>
+      </div>
+    </div>
+    <div class="card"><div class="card-hd"><h2>交易概况（近 30 天）</h2></div>
+      <div class="card-bd">
+        <div class="kv">
+          <div class="kv-row"><span>交易收入</span><b>¥24,650.00</b></div>
+          <div class="kv-row"><span>退款合计</span><b>-¥486.20</b></div>
+          <div class="kv-row"><span>支付手续费</span><b>-¥246.50</b></div>
+          <div class="kv-row"><span>分销分成支出</span><b>-¥1,520.00</b></div>
+          <div class="kv-row"><span>净收入</span><b class="price">¥22,397.30</b></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 说明 -->
+  <div class="card"><div class="card-bd">
+    <p class="muted" style="font-size:12px;line-height:1.8">
+      <b>口径说明：</b>新版资产管理交易账单按「订单支付时间」入账，与微信支付/支付宝流水一致；
+      概况页累计支付金额≠账户余额（余额已剔除退款、手续费、分成）。跨平台对账请下载交易账单与支付渠道资金账单核对，详见「对账管理」。
+    </p>
+  </div></div>
+</div>
+
+<!-- 提现弹窗 -->
+<div class="proto-mask" id="mask"></div>
+<div class="proto-modal" id="modal-withdraw" style="width:520px">
+  <div class="proto-modal-hd"><h3 style="font-size:16px;font-weight:600">发起提现</h3><button class="btn btn-sm btn-ghost" data-close>×</button></div>
+  <div class="proto-modal-bd">
+    <div class="form-grid" style="grid-template-columns:1fr 1fr">
+      <div class="field"><label>提现账户</label><div>微信支付结算账户</div></div>
+      <div class="field"><label>可提现金额</label><div>¥3,286.50</div></div>
+      <div class="field"><label>提现金额 *</label><input id="wd-amount" type="number" value="3000" /></div>
+      <div class="field"><label>到账时间</label><div>提交后 1-5 个工作日</div></div>
+    </div>
+    <p class="muted" style="margin-top:8px">每日 08:00 自动提现已默认开启？可在「提现管理」中配置自动提现与留存金额。</p>
+  </div>
+  <div class="proto-drawer-ft" style="border-top:1px solid var(--color-border);padding:12px 20px;display:flex;gap:8px;justify-content:flex-end">
+    <button class="btn" data-close>取消</button>
+    <button class="btn btn-primary" id="wd-submit">确认提现</button>
+  </div>
+</div>
+
+<style>
+.asset-hero{display:flex;justify-content:space-between;align-items:center;gap:24px;flex-wrap:wrap}
+.big-num{font-size:30px;font-weight:600;color:#1d2129;margin:6px 0}
+.asset-metrics{display:grid;grid-template-columns:repeat(4,minmax(120px,1fr));gap:24px}
+.am b{display:block;font-size:17px;margin-top:2px}
+.am span{font-size:12px;color:var(--color-text-muted)}
+.detail-cols{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px}
+.kv-row{display:flex;justify-content:space-between;padding:7px 0;font-size:13px;border-bottom:1px dashed var(--color-border)}
+.kv-row:last-child{border-bottom:none}
+.kv-row span{color:var(--color-text-secondary)} .kv-row .price{color:#cb2634;font-size:15px}
+.mono{font-family:ui-monospace,Consolas,monospace;font-size:12px}
+@media(max-width:1100px){.detail-cols{grid-template-columns:1fr}.asset-metrics{grid-template-columns:repeat(2,1fr)}}
+</style>
+
+<script src="../assets/js/proto.js"></script>
+<script src="../assets/js/admin-shell.js?v=3"></script>
+<script>
+(function () {
+  var mask=document.getElementById("mask");
+  function closeAll(){ mask.classList.remove("open"); document.querySelectorAll(".proto-modal,.proto-drawer").forEach(function(n){n.classList.remove("open");}); }
+  function open(n){ mask.classList.add("open"); n.classList.add("open"); }
+  mask.addEventListener("click", closeAll);
+  document.querySelectorAll("[data-close]").forEach(function(n){ n.addEventListener("click", closeAll); });
+  document.getElementById("btn-withdraw").addEventListener("click", function(){ open(document.getElementById("modal-withdraw")); });
+  document.getElementById("wd-submit").addEventListener("click", function(){ closeAll(); Proto.toast("提现申请已提交（原型）"); });
+  document.getElementById("btn-bill").addEventListener("click", function(){ location.href="bills.html"; });
+})();
+</script>
+</body>
+</html>

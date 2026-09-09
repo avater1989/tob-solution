@@ -1,6 +1,5 @@
-/* Mix shell per docs/DESIGN.md: Top modules + Side + Main + Assist */
+﻿/* Mix shell per docs/DESIGN.md: Top modules + Side + Main + Assist */
 /* v4 (2026-09-04): 精简侧栏，移除公客池/工单中心/系统管理/加群/组织角色权限；提升"主播促到"为顶级模块 */
-/* v6 (2026-09-08): 内容模块入口改为 content-series；兼容旧缓存 */
 /* v5 (2026-09-05): 增强容错 - 缺失 page-content 时显示重试提示而非静默失败 */
 (function () {
   // 全局错误捕获 - 避免脚本异常导致页面全裸
@@ -39,14 +38,10 @@
     ],
     scrm: [
       {
-        group: "直播促到",
-        links: [{ id: "invite", href: "live-invite.html", label: "直播促到SOP" }],
-      },
-      {
-        group: "公域获客",
+        group: "全域获客",
         links: [
-          { id: "ch-products", href: "channels-products.html", label: "视频号商品" },
-          { id: "ch-orders", href: "channels-orders.html", label: "视频号订单" },
+          { id: "videos", href: "videos.html", label: "视频号" },
+          { id: "redbook", href: "redbook.html", label: "小红书" },
         ],
       },
       {
@@ -118,6 +113,10 @@
           { id: "live-audit-detail", href: "live-audit-detail.html", label: "审核详情" },
         ],
       },
+      {
+        group: "直播促到",
+        links: [{ id: "invite", href: "live-invite.html", label: "直播促到SOP" }],
+      },
     ],
     content: [
       {
@@ -132,23 +131,50 @@
     ],
     trade: [
       {
-        group: "订单中心",
+        group: "订单管理",
         links: [
           { id: "orders", href: "orders.html", label: "订单列表" },
-          { id: "order-detail", href: "order-detail.html", label: "订单详情" },
-          { id: "refunds", href: "refunds.html", label: "退款/售后" },
+          { id: "ship", href: "ship.html", label: "发货管理", badge: 3 },
+          { id: "refunds", href: "refunds.html", label: "订单退款" },
         ],
       },
       {
-        group: "对账",
+        group: "渠道订单",
         links: [
-          { id: "recon", href: "recon.html", label: "对账单", badge: 2 },
+          { id: "channels-products", href: "channels-products.html", label: "视频号商品" },
+          { id: "channels-orders", href: "channels-orders.html", label: "视频号订单" },
         ],
       },
       {
-        group: "结算",
+        group: "商品管理",
         links: [
+          { id: "goods", href: "goods.html", label: "商品列表" },
+          { id: "goods-edit", href: "goods-edit.html", label: "新建商品" },
+        ],
+      },
+      {
+        group: "售后管理",
+        links: [
+          { id: "aftersales", href: "aftersales.html", label: "售后维权", badge: 4 },
+        ],
+      },
+      {
+        group: "资产管理",
+        links: [
+          { id: "assets", href: "assets.html", label: "资产总览" },
+          { id: "bills", href: "bills.html", label: "交易账单" },
+          { id: "withdraw", href: "withdraw.html", label: "提现管理" },
+          { id: "recon", href: "recon.html", label: "对账管理", badge: 2 },
           { id: "settlement", href: "settlement.html", label: "结算单", badge: 2 },
+        ],
+      },
+      {
+        group: "交易设置",
+        links: [
+          { id: "freight", href: "freight.html", label: "运费模板" },
+          { id: "payment", href: "payment.html", label: "收款账户" },
+          { id: "invoice", href: "invoice.html", label: "开票设置" },
+          { id: "trade-opts", href: "trade-settings.html", label: "交易选项" },
         ],
       },
     ],
@@ -224,9 +250,10 @@
       "<li>T+1 自动对账，差异处理后才可结算</li></ul></div>" +
       "<div class='assist-block'><h3>交易路径</h3><ul>" +
       "<li><a href='orders.html'>① 订单列表</a></li>" +
-      "<li><a href='refunds.html'>② 退款/售后</a></li>" +
-      "<li><a href='recon.html'>③ 对账单</a></li>" +
-      "<li><a href='settlement.html'>④ 结算单</a></li></ul></div>",
+      "<li><a href='goods.html'>② 商品管理</a></li>" +
+      "<li><a href='aftersales.html'>③ 售后维权</a></li>" +
+      "<li><a href='assets.html'>④ 资产管理</a></li>" +
+      "<li><a href='trade-settings.html'>⑤ 交易设置</a></li></ul></div>",
     user:
       "<div class='assist-block'><h3>用户提示</h3><ul>" +
       "<li>MVP 支持手动打标</li>" +

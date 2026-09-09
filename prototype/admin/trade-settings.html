@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>交易选项 · 商家管理后台</title>
+<link rel="stylesheet" href="../assets/css/proto.css" />
+</head>
+<body class="admin-body" data-module="trade" data-nav="trade-opts" data-title="交易选项" data-crumb="交易 / 交易设置 / 交易选项">
+<div id="header-actions">
+  <button class="btn" id="btn-reset">恢复默认</button>
+  <button class="btn btn-primary" id="btn-save">保存设置</button>
+</div>
+<div id="page-content" style="display:none">
+
+  <!-- 购物车设置 -->
+  <div class="card" style="margin-bottom:12px"><div class="card-hd"><h2>购物车设置</h2><span class="muted" style="font-size:12px">合并下单、提升客单价</span></div>
+    <div class="card-bd">
+      <div class="setting-row">
+        <div><b>开启购物车</b><p class="muted" style="font-size:12px;margin-top:2px">开启后 C 端详情页展示「加入购物车」，支持多商品合单支付与组合运费</p></div>
+        <span class="switch on" id="sw-cart"></span>
+      </div>
+      <div class="field" style="margin-top:14px"><label>支持加入购物车的商品类型</label>
+        <div class="checks">
+          <label><input type="checkbox" checked /> 实物商品</label>
+          <label><input type="checkbox" checked /> 知识商品</label>
+          <label><input type="checkbox" /> 服务商品</label>
+          <label><input type="checkbox" /> 组合商品</label>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 订单与支付设置 -->
+  <div class="card" style="margin-bottom:12px"><div class="card-hd"><h2>订单与支付</h2></div>
+    <div class="card-bd">
+      <div class="form-grid" style="grid-template-columns:1fr 1fr;gap:12px 16px">
+        <div class="field"><label>待付款订单关闭时间</label>
+          <select style="width:100%;padding:7px 8px;border:1px solid var(--color-border);border-radius:6px"><option>30 分钟</option><option selected>2 小时</option><option>24 小时</option></select>
+        </div>
+        <div class="field"><label>取消后商品库存释放</label>
+          <select style="width:100%;padding:7px 8px;border:1px solid var(--color-border);border-radius:6px"><option>关闭订单后立即释放</option><option>订单关闭 24h 后释放</option></select>
+        </div>
+        <div class="field"><label>收货确认方式</label>
+          <select style="width:100%;padding:7px 8px;border:1px solid var(--color-border);border-radius:6px"><option>买家确认收货</option><option selected>自动确认收货（发货后 15 天）</option></select>
+        </div>
+        <div class="field"><label>可退款订单时长</label>
+          <select style="width:100%;padding:7px 8px;border:1px solid var(--color-border);border-radius:6px"><option>1 年内订单可发起</option><option>不限制</option></select>
+        </div>
+      </div>
+      <p class="muted" style="font-size:12px;margin-top:6px">付款成功提醒已开启（设置-消息推送）。服务商模式账户余额不足时无法退款。</p>
+    </div>
+  </div>
+
+  <!-- 售后设置 -->
+  <div class="card" style="margin-bottom:12px"><div class="card-hd"><h2>售后设置</h2></div>
+    <div class="card-bd">
+      <div class="setting-row">
+        <div><b>7 天无理由退货（实物商品）</b><p class="muted" style="font-size:12px;margin-top:2px">符合规则的商品在 C 端展示服务标识，签收后 168 小时内可申请</p></div>
+        <span class="switch on"></span>
+      </div>
+      <div class="setting-row" style="margin-top:12px">
+        <div><b>支持上门取件退货</b><p class="muted" style="font-size:12px;margin-top:2px">需接入快递上门取件服务/运费险</p></div>
+        <span class="switch"></span>
+      </div>
+      <div class="form-grid" style="grid-template-columns:1fr 1fr 1fr;gap:12px 16px;margin-top:14px">
+        <div class="field"><label>商家处理超时</label>
+          <select style="width:100%;padding:7px 8px;border:1px solid var(--color-border);border-radius:6px"><option selected>7 天自动同意</option><option>3 天自动同意</option><option>不自动同意</option></select>
+        </div>
+        <div class="field"><label>买家退货超时</label>
+          <select style="width:100%;padding:7px 8px;border:1px solid var(--color-border);border-radius:6px"><option selected>7 天自动关闭</option><option>15 天自动关闭</option></select>
+        </div>
+        <div class="field"><label>售后申请时限</label>
+          <select style="width:100%;padding:7px 8px;border:1px solid var(--color-border);border-radius:6px"><option>确认收货后 7 天</option><option selected>确认收货后 14 天</option></select>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 评价与其他 -->
+  <div class="card"><div class="card-hd"><h2>评价与其他</h2></div>
+    <div class="card-bd">
+      <div class="setting-row">
+        <div><b>实物商品收货后评价</b><p class="muted" style="font-size:12px;margin-top:2px">收货后 30 天内可评价，支持图文与评分；商家可回复一次</p></div>
+        <span class="switch on"></span>
+      </div>
+      <div class="setting-row" style="margin-top:12px">
+        <div><b>隐藏商品销量</b><p class="muted" style="font-size:12px;margin-top:2px">开启后 C 端详情页不展示销量数据</p></div>
+        <span class="switch"></span>
+      </div>
+      <div class="field" style="margin-top:14px"><label>买家开票设置</label>
+        <div><a href="invoice.html" class="link">前往开票设置 →</a></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+.card-hd{display:flex;justify-content:space-between;align-items:center}
+.setting-row{display:flex;justify-content:space-between;align-items:center;gap:16px}
+.setting-row p{margin:0}
+.switch{width:40px;height:22px;border-radius:11px;background:#c9cdd4;position:relative;cursor:pointer;flex:none}
+.switch::after{content:"";position:absolute;top:2px;left:2px;width:18px;height:18px;border-radius:50%;background:#fff;transition:all .15s}
+.switch.on{background:#165dff}
+.switch.on::after{left:20px}
+.checks label{display:inline-flex;align-items:center;gap:6px;margin-right:18px;font-size:13px}
+.link{color:var(--color-primary);text-decoration:none;font-size:13px}
+</style>
+
+<script src="../assets/js/proto.js"></script>
+<script src="../assets/js/admin-shell.js?v=3"></script>
+<script>
+(function () {
+  document.querySelectorAll(".switch").forEach(function(s){ s.addEventListener("click", function(){ this.classList.toggle("on"); }); });
+  document.getElementById("btn-save").addEventListener("click", function(){ Proto.toast("交易选项已保存（原型）"); });
+  document.getElementById("btn-reset").addEventListener("click", function(){ Proto.toast("已恢复默认设置（原型）"); });
+})();
+</script>
+</body>
+</html>

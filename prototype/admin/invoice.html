@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>开票设置 · 商家管理后台</title>
+<link rel="stylesheet" href="../assets/css/proto.css" />
+</head>
+<body class="admin-body" data-module="trade" data-nav="invoice" data-title="开票设置" data-crumb="交易 / 交易设置 / 开票设置">
+<div id="header-actions">
+  <button class="btn" id="btn-records">开票记录</button>
+  <button class="btn btn-primary" id="btn-save">保存设置</button>
+</div>
+<div id="page-content" style="display:none">
+
+  <!-- 买家开票设置 -->
+  <div class="card" style="margin-bottom:12px"><div class="card-hd"><h2>买家开票设置</h2></div>
+    <div class="card-bd">
+      <div class="setting-row">
+        <div><b>开启买家开票</b><p class="muted" style="font-size:12px;margin-top:2px">开启后买家可在订单/个人中心申请开票，发票信息随订单记录并导出</p></div>
+        <span class="switch on" id="sw-invoice"></span>
+      </div>
+      <div class="field" style="margin-top:14px"><label>支持的发票类型</label>
+        <div class="checks">
+          <label><input type="checkbox" checked /> 电子普通发票</label>
+          <label><input type="checkbox" checked /> 增值税电子专用发票（需企业资质）</label>
+          <label><input type="checkbox" /> 纸质发票（邮寄）</label>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 开票主体信息 -->
+  <div class="card" style="margin-bottom:12px"><div class="card-hd"><h2>开票主体信息</h2></div>
+    <div class="card-bd">
+      <div class="form-grid" style="grid-template-columns:1fr 1fr;gap:12px 16px">
+        <div class="field"><label>开票主体名称 *</label><input value="艺博教育科技（××）有限公司" style="width:100%;padding:7px 8px;border:1px solid var(--color-border);border-radius:6px" /></div>
+        <div class="field"><label>纳税人识别号 *</label><input value="91440300MA5XXXXXXX" style="width:100%;padding:7px 8px;border:1px solid var(--color-border);border-radius:6px" /></div>
+        <div class="field"><label>注册地址</label><input value="广东省深圳市南山区××街道××大厦8楼" style="width:100%;padding:7px 8px;border:1px solid var(--color-border);border-radius:6px" /></div>
+        <div class="field"><label>注册电话</label><input value="0755-8888 8888" style="width:100%;padding:7px 8px;border:1px solid var(--color-border);border-radius:6px" /></div>
+        <div class="field"><label>开户银行</label><input value="招商银行深圳分行" style="width:100%;padding:7px 8px;border:1px solid var(--color-border);border-radius:6px" /></div>
+        <div class="field"><label>银行账号</label><input value="7559 **** **** 8888" style="width:100%;padding:7px 8px;border:1px solid var(--color-border);border-radius:6px" /></div>
+        <div class="field" style="grid-column:1/-1"><label>发票备注</label><input value="仅支持开具课程服务费发票，明细以订单为准" style="width:100%;padding:7px 8px;border:1px solid var(--color-border);border-radius:6px" /></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 自动开票与审核 -->
+  <div class="card"><div class="card-hd"><h2>自动开票与审核</h2></div>
+    <div class="card-bd">
+      <div class="field" style="margin-bottom:12px"><label>开票时机</label>
+        <select style="width:100%;padding:7px 8px;border:1px solid var(--color-border);border-radius:6px">
+          <option>订单完成后自动开票</option><option>人工审核后开票</option><option>按账期合并开票</option>
+        </select>
+      </div>
+      <div class="setting-row">
+        <div><b>买家可自助申请红冲</b><p class="muted" style="font-size:12px;margin-top:2px">退款后自动冲红原发票，重新按实际支付金额开票</p></div>
+        <span class="switch on"></span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+.card-hd{display:flex;justify-content:space-between;align-items:center}
+.setting-row{display:flex;justify-content:space-between;align-items:center;gap:16px}
+.setting-row p{margin:0}
+.switch{width:40px;height:22px;border-radius:11px;background:#c9cdd4;position:relative;cursor:pointer;flex:none}
+.switch::after{content:"";position:absolute;top:2px;left:2px;width:18px;height:18px;border-radius:50%;background:#fff;transition:all .15s}
+.switch.on{background:#165dff}
+.switch.on::after{left:20px}
+.checks label{display:inline-flex;align-items:center;gap:6px;margin-right:18px;font-size:13px}
+</style>
+
+<script src="../assets/js/proto.js"></script>
+<script src="../assets/js/admin-shell.js?v=3"></script>
+<script>
+(function () {
+  document.getElementById("sw-invoice").addEventListener("click", function(){ this.classList.toggle("on"); });
+  document.querySelectorAll(".switch").forEach(function(s){ if(s!==document.getElementById("sw-invoice")) s.addEventListener("click", function(){ this.classList.toggle("on"); }); });
+  document.getElementById("btn-save").addEventListener("click", function(){ Proto.toast("开票设置已保存（原型）"); });
+  document.getElementById("btn-records").addEventListener("click", function(){ Proto.toast("打开开票记录列表（原型）"); });
+})();
+</script>
+</body>
+</html>

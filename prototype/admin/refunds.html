@@ -6,11 +6,16 @@
 <title>退款/售后 · 商家管理后台</title>
 <link rel="stylesheet" href="../assets/css/proto.css" />
 </head>
-<body class="admin-body" data-module="trade" data-nav="refunds" data-title="退款/售后" data-crumb="交易 / 订单中心 / 退款售后">
+<body class="admin-body" data-module="trade" data-nav="refunds" data-title="订单退款" data-crumb="交易 / 订单管理 / 订单退款">
 <div id="header-actions">
   <button class="btn" id="btn-export">导出退款单</button>
 </div>
 <div id="page-content" style="display:none">
+
+  <div class="alert alert-info" style="margin-bottom:12px;font-size:13px">
+    <b>订单退款</b>：商家在订单维度主动发起的退款（含权益回收/保留），可直接退款或部分退款；买家在 C 端发起的 <b>仅退款 / 退货退款 / 换货</b> 请前往
+    <a href="aftersales.html" style="color:inherit;text-decoration:underline">售后维权 →</a>
+  </div>
 
   <!-- 顶部统计 -->
   <div class="grid-4" style="margin-bottom:16px">
@@ -222,6 +227,8 @@
 .link-mono:hover { text-decoration:underline; }
 .mono { font-family:ui-monospace,Consolas,monospace; font-size:12px; }
 .danger { color:#cb2634; }
+.alert { padding:10px 14px; border-radius:8px; line-height:1.7; }
+.alert-info { background:#e8f3ff; border:1px solid #a0cfff; color:#165dff; }
 </style>
 
 <script src="../assets/js/proto.js"></script>

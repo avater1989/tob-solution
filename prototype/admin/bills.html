@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>交易账单 · 商家管理后台</title>
+<link rel="stylesheet" href="../assets/css/proto.css" />
+</head>
+<body class="admin-body" data-module="trade" data-nav="bills" data-title="交易账单" data-crumb="交易 / 资产管理 / 交易账单">
+<div id="header-actions">
+  <button class="btn" id="btn-export">导出账单</button>
+  <button class="btn" id="btn-recon">去对账</button>
+</div>
+<div id="page-content" style="display:none">
+
+  <!-- 顶部统计 -->
+  <div class="grid-4" style="margin-bottom:16px">
+    <div class="stat"><div class="label">本期收入</div><div class="value">¥24,650.00</div><div class="hint">近 30 天</div></div>
+    <div class="stat"><div class="label">本期支出</div><div class="value">¥2,252.70</div><div class="hint">退款 + 手续费 + 分成</div></div>
+    <div class="stat"><div class="label">净收入</div><div class="value">¥22,397.30</div><div class="hint">按支付时间口径</div></div>
+    <div class="stat"><div class="label">待核对差异</div><div class="value">2</div><div class="hint"><a href="recon.html" style="color:inherit">去对账 →</a></div></div>
+  </div>
+
+  <!-- Tab -->
+  <div class="tabs" id="bl-tabs">
+    <a class="active" href="#" data-tab="txn">交易明细</a>
+    <a href="#" data-tab="bill">交易账单</a>
+    <a href="#" data-tab="summary">汇总报表</a>
+  </div>
+
+  <!-- 筛选 -->
+  <div class="card" style="margin-bottom:8px"><div class="card-bd">
+    <div class="form-grid" style="grid-template-columns:repeat(6,minmax(0,1fr));gap:8px 12px">
+      <select id="f-account">
+        <option value="">收款账户</option><option>微信支付</option><option>支付宝</option>
+      </select>
+      <select id="f-type">
+        <option value="">收支类型</option><option>订单收入</option><option>退款</option><option>支付手续费</option><option>分销分成</option><option>提现</option>
+      </select>
+      <input id="f-no" placeholder="交易单号 / 关联订单号" />
+      <input id="f-time1" type="datetime-local" />
+      <input id="f-time2" type="datetime-local" />
+      <button class="btn btn-primary" id="btn-query">筛选</button>
+      <button class="btn" id="btn-reset">重置</button>
+    </div>
+  </div></div>
+
+  <!-- 交易明细表 -->
+  <div class="card" id="panel-txn"><div class="card-bd" style="padding:0">
+    <table class="data">
+      <thead>
+        <tr>
+          <th>交易时间</th><th>交易单号</th><th>关联订单</th><th>收支类型</th><th>收入</th><th>支出</th><th>账户</th><th>说明</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>2026-09-07 16:22</td><td class="mono">TXN0920210233</td><td class="mono">YB20260907000331</td><td>订单收入</td><td><b class="success">+¥78.00</b></td><td>—</td><td>微信支付</td><td>家长手册 ×2</td></tr>
+        <tr><td>2026-09-07 16:22</td><td class="mono">TXN0920210234</td><td class="mono">YB20260907000331</td><td>支付手续费</td><td>—</td><td class="danger">-¥0.78</td><td>微信支付</td><td>费率 1%</td></tr>
+        <tr><td>2026-09-07 14:22</td><td class="mono">TXN0920209871</td><td class="mono">YB20260907000215</td><td>订单收入</td><td><b class="success">+¥299.00</b></td><td>—</td><td>微信支付</td><td>线上课</td></tr>
+        <tr><td>2026-09-07 14:22</td><td class="mono">TXN0920209872</td><td class="mono">YB20260907000215</td><td>支付手续费</td><td>—</td><td class="danger">-¥2.99</td><td>微信支付</td><td>费率 1%</td></tr>
+        <tr><td>2026-09-06 20:19</td><td class="mono">TXN0920188666</td><td class="mono">YB20260906000892</td><td>退款</td><td>—</td><td class="danger">-¥9.90</td><td>微信支付</td><td>售后 AS202609070005</td></tr>
+        <tr><td>2026-09-06 20:19</td><td class="mono">TXN0920188667</td><td class="mono">YB20260906000892</td><td>手续费返还</td><td><b class="success">+¥0.10</b></td><td>—</td><td>微信支付</td><td>退款返还手续费</td></tr>
+      </tbody>
+    </table>
+  </div></div>
+
+  <!-- 交易账单表 -->
+  <div class="card" id="panel-bill" style="display:none"><div class="card-bd" style="padding:0">
+    <table class="data">
+      <thead>
+        <tr><th>账期日</th><th>收入</th><th>支出</th><th>手续费</th><th>净额</th><th>状态</th><th style="width:120px">操作</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>2026-09-07</td><td>¥1,028.90</td><td>-¥63.40</td><td>-¥15.00</td><td><b>¥950.50</b></td><td><span class="badge badge-success">已对账</span></td><td><a href="#" data-toast="下载当日账单（原型）">下载</a></td></tr>
+        <tr><td>2026-09-06</td><td>¥842.00</td><td>-¥28.60</td><td>-¥12.20</td><td><b>¥801.20</b></td><td><span class="badge badge-warn">待核对</span></td><td><a href="#" data-toast="下载当日账单（原型）">下载</a></td></tr>
+        <tr><td>2026-09-05</td><td>¥996.30</td><td>—</td><td>-¥9.96</td><td><b>¥986.34</b></td><td><span class="badge badge-success">已对账</span></td><td><a href="#" data-toast="下载当日账单（原型）">下载</a></td></tr>
+      </tbody>
+    </table>
+  </div></div>
+
+  <!-- 汇总报表 -->
+  <div class="card" id="panel-summary" style="display:none"><div class="card-bd">
+    <div class="detail-cols">
+      <div class="kv">
+        <div class="kv-row"><span>订单收入合计</span><b>¥24,650.00</b></div>
+        <div class="kv-row"><span>退款冲减</span><b>-¥486.20</b></div>
+        <div class="kv-row"><span>支付手续费</span><b>-¥246.50</b></div>
+        <div class="kv-row"><span>分销分成</span><b>-¥1,520.00</b></div>
+        <div class="kv-row"><span>净收入</span><b style="color:#cb2634">¥22,397.30</b></div>
+      </div>
+      <p class="muted" style="font-size:12px;line-height:1.9">交易明细按订单「支付时间」逐笔记录收入/支出；交易账单按天聚合，支持与微信支付「资金账单」、
+        支付宝「账单」跨平台对账。数据同步可能存在约 3 秒误差，属正常现象。</p>
+    </div>
+  </div></div>
+
+  <div class="toolbar" style="margin-top:8px">
+    <span class="muted">共 <b>1,024</b> 条交易记录</span>
+    <div class="spacer"></div>
+    <select><option>10条/页</option><option>20条/页</option></select>
+    <button class="btn btn-sm" disabled>上一页</button><button class="btn btn-sm">下一页</button>
+  </div>
+</div>
+
+<style>
+.mono{font-family:ui-monospace,Consolas,monospace;font-size:12px}
+.success{color:#009a29}.danger{color:#cb2634}
+.detail-cols{display:grid;grid-template-columns:340px 1fr;gap:24px}
+.kv-row{display:flex;justify-content:space-between;padding:7px 0;font-size:13px;border-bottom:1px dashed var(--color-border)}
+.kv-row:last-child{border-bottom:none}
+.kv-row span{color:var(--color-text-secondary)}
+</style>
+
+<script src="../assets/js/proto.js"></script>
+<script src="../assets/js/admin-shell.js?v=3"></script>
+<script>
+(function () {
+  document.querySelectorAll("#bl-tabs a").forEach(function(a){
+    a.addEventListener("click", function(e){
+      e.preventDefault();
+      document.querySelectorAll("#bl-tabs a").forEach(function(n){n.classList.remove("active");});
+      a.classList.add("active");
+      var t=a.getAttribute("data-tab");
+      document.getElementById("panel-txn").style.display = t==="txn" ? "" : "none";
+      document.getElementById("panel-bill").style.display = t==="bill" ? "" : "none";
+      document.getElementById("panel-summary").style.display = t==="summary" ? "" : "none";
+    });
+  });
+  document.getElementById("btn-export").addEventListener("click", function(){ Proto.toast("已导出交易账单（原型）"); });
+  document.getElementById("btn-recon").addEventListener("click", function(){ location.href="recon.html"; });
+  document.getElementById("btn-query").addEventListener("click", function(){ Proto.toast("已筛选（原型）"); });
+  document.getElementById("btn-reset").addEventListener("click", function(){ Proto.toast("已重置（原型）"); });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,421 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>视频号 · 商家管理后台</title>
+<link rel="stylesheet" href="../assets/css/proto.css" />
+</head>
+<body class="admin-body" data-module="scrm" data-nav="videos" data-title="视频号" data-crumb="SCRM / 全域获客 / 视频号">
+<div id="page-content" style="display:none">
+
+  <!-- 第一步：选择接入方式 -->
+  <div class="card" style="margin-bottom:12px">
+    <div class="card-hd"><h2>选择接入方式</h2>
+      <span class="muted" style="font-size:12px">两种渠道可同时使用，各自可授权多家店铺</span>
+    </div>
+    <div class="card-bd">
+      <div class="choose-cards" id="way-cards">
+        <a class="way-card active" href="#" data-way="wx">
+          <div class="way-icon">微</div>
+          <div class="way-name"><b>微信小店</b><span class="muted">（原视频号小店）</span></div>
+          <p class="muted">自行开店或使用已有微信小店，授权后可上架商品、绑定橱窗、查看订单</p>
+        </a>
+        <a class="way-card" href="#" data-way="xoe">
+          <div class="way-icon">艺</div>
+          <div class="way-name"><b>艺博小店</b> <span class="tag" style="background:#fff3e0;color:#ad6800;border:1px solid #ffd591">待定</span></div>
+          <p class="muted">需达人号 · 待定（平台官方小店 0 门槛卖课，待达人号能力就绪后开放）</p>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== 微信小店 ===== -->
+  <div class="way-pane" id="way-wx">
+    <!-- 店铺授权列表 -->
+    <div class="card" style="margin-bottom:12px">
+      <div class="card-hd"><h2>店铺授权</h2>
+        <button class="btn btn-primary btn-sm" id="wx-auth">+ 授权微信小店</button>
+      </div>
+      <div class="card-bd" style="padding:0">
+        <table class="data">
+          <thead><tr>
+            <th>店铺名称</th><th>小店ID</th><th>授权状态</th><th>橱窗状态</th><th>授权时间</th><th style="width:230px">操作</th>
+          </tr></thead>
+          <tbody>
+            <tr>
+              <td><b>艺博教育 · 视频号小店</b></td>
+              <td>wx_store_8f21****</td>
+              <td><span class="badge badge-success">已授权</span></td>
+              <td><span class="badge badge-success">已绑定橱窗</span></td>
+              <td>2026-08-20 10:12</td>
+              <td class="row-actions">
+                <a href="#" data-store-act="bind">绑定橱窗</a>
+                <a href="#" data-store-act="renew">重新授权</a>
+                <a href="#" data-store-act="unbind">解绑</a>
+              </td>
+            </tr>
+            <tr>
+              <td><b>区域运营 · 体验店</b></td>
+              <td>wx_store_3c09****</td>
+              <td><span class="badge badge-success">已授权</span></td>
+              <td><span class="badge badge-warn">未绑定橱窗</span></td>
+              <td>2026-09-01 15:40</td>
+              <td class="row-actions">
+                <a href="#" data-store-act="bind">绑定橱窗</a>
+                <a href="#" data-store-act="renew">重新授权</a>
+                <a href="#" data-store-act="unbind">解绑</a>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="guide-box" id="wx-guide">
+        <a class="guide-toggle" href="#" id="wx-guide-toggle">查看授权 / 绑定橱窗指引 ▾</a>
+        <div class="guide-body" id="wx-guide-body" style="display:none">
+          <p class="guide-title">微信小店授权步骤</p>
+          <ol>
+            <li>使用微信小店「店长」微信登录微信小店后台，进入「服务市场 → 经营工具 → 我的服务」，获取 <b>小店ID</b> 与 <b>授权密钥</b>；</li>
+            <li>回到本页点击「+ 授权微信小店」，填写小店信息并完成授权；</li>
+            <li>在本页「小店设置」中开启<b>消息推送</b>，将回调信息填入微信小店后台；</li>
+            <li>微信小店绑定橱窗（见下方指引）；</li>
+            <li>授权完成后可在下方「商品管理」批量上架课程商品（商品需选择「无需配送」）。</li>
+          </ol>
+          <p class="guide-title">微信小店绑定橱窗步骤</p>
+          <ol>
+            <li>点击链接进入 <a href="https://channels.weixin.qq.com/" target="_blank" style="color:var(--color-primary)">视频号助手</a>，用微信小店店长微信登录；</li>
+            <li>进入「直播 → 直播管理 → 开放能力」，查看 <b>橱窗ID</b> 与 <b>橱窗密钥</b>；</li>
+            <li>回到本页点击对应店铺的「绑定橱窗」，填入橱窗ID与密钥；</li>
+            <li>绑定成功后，课程审核通过可自动上架橱窗；未绑定则需手动上架。</li>
+          </ol>
+        </div>
+      </div>
+    </div>
+
+    <!-- 商品管理 -->
+    <div class="card">
+      <div class="card-hd"><h2>商品管理</h2>
+        <button class="btn btn-primary btn-sm" id="wx-add-goods">添加商品</button>
+      </div>
+      <div class="card-bd" style="padding:0">
+        <table class="data">
+          <thead><tr>
+            <th>所属小店</th><th>微信小店商品</th><th>关联课程</th><th>配送方式</th><th>审核状态</th><th>橱窗</th><th>操作</th>
+          </tr></thead>
+          <tbody>
+            <tr>
+              <td>艺博教育 · 视频号小店</td><td>卓越家族培养计划</td><td>《卓越家族培养计划》</td>
+              <td><span class="tag tag-green">无需配送</span></td>
+              <td><span class="badge badge-success">审核通过</span></td>
+              <td><span class="badge badge-success">已上架</span></td>
+              <td class="row-actions"><a href="#" data-toast="查看详情（原型）">详情</a><a href="#" data-toast="重新导入关联（原型）">重新关联</a></td>
+            </tr>
+            <tr>
+              <td>区域运营 · 体验店</td><td>家长公开课体验课</td><td>《家长公开课 03 期》</td>
+              <td><span class="tag tag-green">无需配送</span></td>
+              <td><span class="badge badge-warn">审核中</span></td>
+              <td><span class="badge">待上架</span></td>
+              <td class="row-actions"><a href="#" data-toast="查看详情（原型）">详情</a><a href="#" data-toast="添加上架橱窗（原型）">添加橱窗</a></td>
+            </tr>
+          </tbody>
+        </table>
+        <p class="muted" style="padding:10px 16px;border-top:1px solid var(--color-border);margin:0">小店订单统一在「交易 → 渠道订单 → 视频号订单」按渠道来源查看；学员用购课手机号登录艺博学员小程序学习。</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== 艺博小店 ===== -->
+  <div class="way-pane" id="way-xoe" style="display:none">
+    <div class="card" style="margin-bottom:12px">
+      <div class="card-hd"><h2>入驻与授权</h2>
+        <button class="btn btn-sm" id="xoe-auth" disabled title="待定：需达人号">授权艺博小店（待定 · 需达人号）</button>
+      </div>
+      <div class="card-bd" style="padding:0">
+        <p class="muted" style="padding:10px 16px;border-bottom:1px solid var(--color-border);margin:0"><b>备注：</b>艺博小店授权入口待定，需达人号能力就绪后开放；下方为规划示意数据，暂不可新增授权。</p>
+        <table class="data">
+          <thead><tr>
+            <th>店铺名称</th><th>店铺标识</th><th>入驻状态</th><th>通用佣金</th><th>授权时间</th><th style="width:160px">操作</th>
+          </tr></thead>
+          <tbody>
+            <tr>
+              <td><b>艺博小店 · 星启家庭教育</b></td><td>store_10001</td>
+              <td><span class="badge badge-success">已入驻</span></td><td>10%</td><td>2026-08-22 09:00</td>
+              <td class="row-actions"><a href="#" data-store-act="renew">重新授权</a><a href="#" data-store-act="unbind">解绑</a></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="guide-box">
+        <a class="guide-toggle" href="#" data-guide="xoe-guide">查看艺博小店授权指引 ▾</a>
+        <div class="guide-body" id="xoe-guide" style="display:none">
+          <ol>
+            <li>满足入驻条件：店铺版本为 AI 专业版 / AI 旗舰版、店铺已完成认证；</li>
+            <li>同意入驻协议与收费规则，设置通用佣金；</li>
+            <li>点击「+ 授权艺博小店」，选择需授权的店铺确认即可；同一主体可多次授权不同店铺；</li>
+            <li>授权后课程一键同步上架到艺博小店，视频号主播可通过「艺博小店小程序」加橱窗带货并自动分佣。</li>
+          </ol>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-bottom:12px">
+      <div class="card-hd"><h2>商品与橱窗</h2>
+        <button class="btn btn-primary btn-sm" id="xoe-add-goods">同步上架课程</button>
+      </div>
+      <div class="card-bd" style="padding:0">
+        <table class="data">
+          <thead><tr>
+            <th>同步课程</th><th>售价</th><th>优选联盟</th><th>橱窗状态</th><th>佣金</th><th>操作</th>
+          </tr></thead>
+          <tbody>
+            <tr>
+              <td>《卓越家族培养计划》</td><td>¥2,980</td>
+              <td><span class="badge badge-success">已上架</span></td>
+              <td><span class="badge badge-success">可加橱窗</span></td>
+              <td>10%</td>
+              <td class="row-actions"><a href="#" data-toast="生成商品分享码（原型）">分享给达人</a><a href="#" data-toast="下架商品（原型）">下架</a></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-hd"><h2>达人分销与收益</h2>
+        <a href="orders.html" style="font-size:13px;color:var(--color-primary);text-decoration:none">提现管理 →</a>
+      </div>
+      <div class="card-bd" style="padding:0">
+        <table class="data">
+          <thead><tr><th>达人</th><th>商品</th><th>成交额</th><th>应结佣金</th><th>状态</th></tr></thead>
+          <tbody>
+            <tr><td>竹盟</td><td>《卓越家族培养计划》</td><td>¥2,980</td><td>¥298.00</td><td><span class="badge badge-warn">待结算</span></td></tr>
+          </tbody>
+        </table>
+        <p class="muted" style="padding:10px 16px;border-top:1px solid var(--color-border);margin:0">达人提现走「艺博小店小程序-我的佣金」；企业主体提现需提供发票，个人/主播免发票。</p>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ============ 弹窗 ============ -->
+<div class="proto-mask" id="mask"></div>
+
+<!-- 授权微信小店弹窗 -->
+<div class="proto-modal" id="modal-wxauth" style="width:560px">
+  <div class="proto-modal-hd">
+    <h3 style="font-size:16px;font-weight:600">授权微信小店</h3>
+    <button class="btn btn-sm btn-ghost" data-close>×</button>
+  </div>
+  <div class="proto-modal-bd">
+    <p class="muted" style="margin:0 0 10px;font-size:12px">可多次授权不同的微信小店，分别独立管理。小店ID 与 密钥需用店长微信在微信小店后台「服务市场 → 经营工具 → 我的服务」获取。</p>
+    <div class="form-grid">
+      <div class="field"><label>小店ID *</label><input placeholder="wx_store_xxxx" /></div>
+      <div class="field"><label>授权密钥 *</label><input type="password" placeholder="请输入授权密钥" /></div>
+      <div class="field"><label>小店名称</label><input placeholder="选填，便于识别" /></div>
+      <div class="field"><label>消息推送</label>
+        <select style="width:100%;padding:6px 8px;border:1px solid var(--color-border);border-radius:6px">
+          <option>稍后配置</option><option>立即配置（展示回调地址）</option>
+        </select>
+      </div>
+    </div>
+    <p class="muted" style="margin:10px 0 0;font-size:12px">授权成功后请继续完成「绑定橱窗」，否则课程审核通过后需手动上架。</p>
+  </div>
+  <div class="proto-modal-ft" style="border-top:1px solid var(--color-border);padding:12px 20px;display:flex;gap:8px;justify-content:flex-end">
+    <button class="btn" data-close>取消</button>
+    <button class="btn btn-primary" id="wxauth-submit">确认授权</button>
+  </div>
+</div>
+
+<!-- 绑定橱窗弹窗 -->
+<div class="proto-modal" id="modal-wxbind" style="width:540px">
+  <div class="proto-modal-hd">
+    <h3 style="font-size:16px;font-weight:600">绑定橱窗 · <span id="bind-store">—</span></h3>
+    <button class="btn btn-sm btn-ghost" data-close>×</button>
+  </div>
+  <div class="proto-modal-bd">
+    <p class="muted" style="margin:0 0 10px;font-size:12px">登录 <a href="https://channels.weixin.qq.com/" target="_blank" style="color:var(--color-primary)">视频号助手</a>（使用小店店长微信）→ 直播 → 直播管理 → 开放能力，查看橱窗ID 与 橱窗密钥。</p>
+    <div class="form-grid">
+      <div class="field"><label>橱窗ID *</label><input placeholder="win_xxxx" /></div>
+      <div class="field"><label>橱窗密钥 *</label><input type="password" placeholder="请输入橱窗密钥" /></div>
+    </div>
+  </div>
+  <div class="proto-modal-ft" style="border-top:1px solid var(--color-border);padding:12px 20px;display:flex;gap:8px;justify-content:flex-end">
+    <button class="btn" data-close>取消</button>
+    <button class="btn btn-primary" data-close data-toast="橱窗绑定成功，课程审核通过将自动上架（原型）">确认绑定</button>
+  </div>
+</div>
+
+<!-- 授权艺博小店弹窗 -->
+<div class="proto-modal" id="modal-xoeauth" style="width:520px">
+  <div class="proto-modal-hd">
+    <h3 style="font-size:16px;font-weight:600">授权艺博小店</h3>
+    <button class="btn btn-sm btn-ghost" data-close>×</button>
+  </div>
+  <div class="proto-modal-bd">
+    <p class="muted" style="margin:0 0 10px;font-size:12px">同一主体可多次授权多个店铺；需为 AI 专业版 / 旗舰版且已完成认证。</p>
+    <div class="tag-pick">
+      <label class="tp-item"><input type="radio" name="xoe" checked /> 星启家庭教育（store_10001）· AI 专业版</label>
+      <label class="tp-item"><input type="radio" name="xoe" /> 晨光少儿成长（store_10002）· AI 旗舰版</label>
+      <label class="tp-item"><input type="radio" name="xoe" /> 慧心教育（store_10004）· AI 基础版 <span class="muted">（不满足）</span></label>
+    </div>
+    <div class="field" style="margin-top:10px"><label>通用佣金</label>
+      <select style="width:100%;padding:6px 8px;border:1px solid var(--color-border);border-radius:6px">
+        <option>10%</option><option>15%</option><option>20%</option>
+      </select>
+    </div>
+  </div>
+  <div class="proto-modal-ft" style="border-top:1px solid var(--color-border);padding:12px 20px;display:flex;gap:8px;justify-content:flex-end">
+    <button class="btn" data-close>取消</button>
+    <button class="btn btn-primary" data-close data-toast="授权申请已提交，完成入驻后店铺出现在下方列表（原型）">确认授权</button>
+  </div>
+</div>
+
+<!-- 添加商品（微信小店） -->
+<div class="proto-modal" id="modal-wxgoods" style="width:520px">
+  <div class="proto-modal-hd">
+    <h3 style="font-size:16px;font-weight:600">添加微信小店商品</h3>
+    <button class="btn btn-sm btn-ghost" data-close>×</button>
+  </div>
+  <div class="proto-modal-bd">
+    <div class="field" style="margin-bottom:10px"><label>所属小店</label>
+      <select style="width:100%;padding:6px 8px;border:1px solid var(--color-border);border-radius:6px">
+        <option>艺博教育 · 视频号小店</option><option>区域运营 · 体验店</option>
+      </select>
+    </div>
+    <p class="muted" style="margin:0 0 10px;font-size:12px">选择微信小店商品后再关联课程；配送方式需为「无需配送」才能自动开通课程权益。</p>
+    <div class="tag-pick">
+      <label class="tp-item"><input type="radio" name="wxg" checked /> 卓越家族培养计划</label>
+      <label class="tp-item"><input type="radio" name="wxg" /> 家长公开课体验课</label>
+      <label class="tp-item"><input type="radio" name="wxg" /> 青春期沟通训练营</label>
+    </div>
+  </div>
+  <div class="proto-modal-ft" style="border-top:1px solid var(--color-border);padding:12px 20px;display:flex;gap:8px;justify-content:flex-end">
+    <button class="btn" data-close>取消</button>
+    <button class="btn btn-primary" data-close data-toast="商品已添加并关联课程（原型）">确认</button>
+  </div>
+</div>
+
+<!-- 同步上架（艺博小店） -->
+<div class="proto-modal" id="modal-xoegoods" style="width:520px">
+  <div class="proto-modal-hd">
+    <h3 style="font-size:16px;font-weight:600">同步上架课程</h3>
+    <button class="btn btn-sm btn-ghost" data-close>×</button>
+  </div>
+  <div class="proto-modal-bd">
+    <p class="muted" style="margin:0 0 10px;font-size:12px">仅付费、已上架、描述非空且价格 ≥ 9.8 元的课程可同步到艺博小店。</p>
+    <div class="tag-pick">
+      <label class="tp-item"><input type="radio" name="xoeg" checked /> 卓越家族培养计划 ¥2,980</label>
+      <label class="tp-item"><input type="radio" name="xoeg" /> 家长公开课 03 期 ¥99</label>
+      <label class="tp-item"><input type="radio" name="xoeg" /> 青春期沟通训练营 ¥499</label>
+    </div>
+  </div>
+  <div class="proto-modal-ft" style="border-top:1px solid var(--color-border);padding:12px 20px;display:flex;gap:8px;justify-content:flex-end">
+    <button class="btn" data-close>取消</button>
+    <button class="btn btn-primary" data-close data-toast="课程已同步，待平台审核后上架优选联盟（原型）">确认同步</button>
+  </div>
+</div>
+
+<style>
+/* 接入方式选择 */
+.choose-cards { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 12px; }
+.way-card {
+  display: block; border: 1px solid var(--color-border); border-radius: 10px;
+  padding: 16px 18px; text-decoration: none; color: var(--color-text); background: #fff;
+}
+.way-card:hover { border-color: var(--color-primary); }
+.way-card.active { border-color: var(--color-primary); background: #f0f5ff; }
+.way-icon {
+  width: 44px; height: 44px; border-radius: 50%; background: #e8f3ff; color: #165dff;
+  font-size: 18px; font-weight: 600; display: flex; align-items: center; justify-content: center;
+}
+.way-name { margin: 8px 0 4px; }
+.way-name .muted { font-size: 12px; }
+@media (max-width: 900px) { .choose-cards { grid-template-columns: 1fr; } }
+
+/* 指引折叠 */
+.guide-box { border-top: 1px solid var(--color-border); padding: 6px 16px; }
+.guide-toggle { display: inline-block; padding: 8px 0; font-size: 13px; color: var(--color-primary); text-decoration: none; }
+.guide-body { padding: 4px 4px 12px; }
+.guide-title { font-size: 13px; font-weight: 600; margin: 8px 0 4px; }
+.guide-body ol { margin: 4px 0 8px 18px; padding: 0; font-size: 13px; color: var(--color-text-secondary); line-height: 2; }
+.tag-pick { display: flex; flex-direction: column; gap: 8px; }
+.tp-item {
+  display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px;
+  border: 1px solid var(--color-border); border-radius: 6px; font-size: 13px; cursor: pointer;
+}
+.tp-item:has(input:checked) { border-color: var(--color-primary); color: var(--color-primary); background: #f0f5ff; }
+</style>
+
+<script src="../assets/js/proto.js"></script>
+<script src="../assets/js/admin-shell.js?v=3"></script>
+<script>
+(function () {
+  var mask = document.getElementById("mask");
+  function closeAll() {
+    mask.classList.remove("open");
+    document.querySelectorAll(".proto-modal").forEach(function (n) { n.classList.remove("open"); });
+  }
+  function open(node) { mask.classList.add("open"); node.classList.add("open"); }
+  mask.addEventListener("click", closeAll);
+  document.querySelectorAll("[data-close]").forEach(function (n) { n.addEventListener("click", closeAll); });
+
+  // 第一步：选择接入方式
+  document.querySelectorAll("#way-cards a").forEach(function (a) {
+    a.addEventListener("click", function (e) {
+      e.preventDefault();
+      document.querySelectorAll("#way-cards a").forEach(function (n) { n.classList.remove("active"); });
+      a.classList.add("active");
+      var way = a.getAttribute("data-way");
+      document.getElementById("way-wx").style.display = way === "wx" ? "block" : "none";
+      document.getElementById("way-xoe").style.display = way === "xoe" ? "block" : "none";
+    });
+  });
+
+  // 指引折叠
+  document.getElementById("wx-guide-toggle").addEventListener("click", function (e) {
+    e.preventDefault();
+    var body = document.getElementById("wx-guide-body");
+    var show = body.style.display === "none";
+    body.style.display = show ? "block" : "none";
+    this.textContent = show ? "收起指引 ▴" : "查看授权 / 绑定橱窗指引 ▾";
+  });
+  document.querySelectorAll("[data-guide]").forEach(function (a) {
+    a.addEventListener("click", function (e) {
+      e.preventDefault();
+      var body = document.getElementById(a.getAttribute("data-guide"));
+      var show = body.style.display === "none";
+      body.style.display = show ? "block" : "none";
+      a.textContent = show ? "收起指引 ▴" : "查看艺博小店授权指引 ▾";
+    });
+  });
+
+  // 店铺行操作（绑定橱窗需取店铺名）
+  document.querySelectorAll("[data-store-act]").forEach(function (a) {
+    a.addEventListener("click", function (e) {
+      e.preventDefault();
+      var act = a.getAttribute("data-store-act");
+      var tr = a.closest("tr");
+      var store = tr ? tr.querySelector("td b").textContent.trim() : "—";
+      if (act === "bind") {
+        document.getElementById("bind-store").textContent = store;
+        open(document.getElementById("modal-wxbind"));
+      } else if (act === "renew") {
+        Proto.toast("重新授权「" + store + "」（原型）");
+      } else if (act === "unbind") {
+        if (confirm("确定解绑「" + store + "」？解绑后该店铺商品将停止同步。")) {
+          Proto.toast("店铺已解绑（原型）");
+        }
+      }
+    });
+  });
+
+  // 按钮接线
+  document.getElementById("wx-auth").addEventListener("click", function () { open(document.getElementById("modal-wxauth")); });
+  document.getElementById("xoe-auth").addEventListener("click", function () { open(document.getElementById("modal-xoeauth")); });
+  document.getElementById("wx-add-goods").addEventListener("click", function () { open(document.getElementById("modal-wxgoods")); });
+  document.getElementById("xoe-add-goods").addEventListener("click", function () { open(document.getElementById("modal-xoegoods")); });
+})();
+</script>
+</body>
+</html>

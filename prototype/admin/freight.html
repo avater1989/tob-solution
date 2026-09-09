@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>运费模板 · 商家管理后台</title>
+<link rel="stylesheet" href="../assets/css/proto.css" />
+</head>
+<body class="admin-body" data-module="trade" data-nav="freight" data-title="运费模板" data-crumb="交易 / 交易设置 / 运费模板">
+<div id="header-actions">
+  <button class="btn btn-primary" id="btn-create">新建运费模板</button>
+</div>
+<div id="page-content" style="display:none">
+
+  <!-- 模板列表 -->
+  <div class="card"><div class="card-hd"><h2>配送设置 · 运费模板</h2><span class="muted" style="font-size:12px">共 5 个模板，修改后关联商品运费同步生效</span></div>
+    <div class="card-bd" style="padding:0">
+      <table class="data">
+        <thead>
+          <tr>
+            <th>模板名称</th><th>计价方式</th><th>配送区域</th><th>运费规则</th><th>关联商品数</th><th>是否默认</th><th>更新时间</th><th style="width:130px">操作</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><b>全国包邮（偏远除外）</b></td>
+            <td>按件计费</td>
+            <td>全国（新疆/西藏除外）</td>
+            <td>首件 ¥0 · 续件 ¥0</td>
+            <td>8</td>
+            <td><span class="badge badge-info">默认</span></td>
+            <td>2026-09-02</td>
+            <td class="row-actions"><a href="#" data-row-act="edit">编辑</a><a href="#" data-row-act="copy">复制</a><a href="#" data-row-act="del">删除</a></td>
+          </tr>
+          <tr>
+            <td><b>江浙沪包邮</b></td>
+            <td>按件计费</td>
+            <td>江浙沪</td>
+            <td>首件 ¥0 · 续件 ¥0</td>
+            <td>2</td>
+            <td>—</td>
+            <td>2026-08-28</td>
+            <td class="row-actions"><a href="#" data-row-act="edit">编辑</a><a href="#" data-row-act="copy">复制</a><a href="#" data-row-act="del">删除</a></td>
+          </tr>
+          <tr>
+            <td><b>教辅通用运费</b></td>
+            <td>按件计费</td>
+            <td>全国</td>
+            <td>首件 ¥6 · 续件 ¥2（每件）</td>
+            <td>6</td>
+            <td>—</td>
+            <td>2026-08-20</td>
+            <td class="row-actions"><a href="#" data-row-act="edit">编辑</a><a href="#" data-row-act="copy">复制</a><a href="#" data-row-act="del">删除</a></td>
+          </tr>
+          <tr>
+            <td><b>不包邮</b></td>
+            <td>按件计费</td>
+            <td>全国</td>
+            <td>首件 ¥8 · 续件 ¥4（每件）</td>
+            <td>1</td>
+            <td>—</td>
+            <td>2026-07-15</td>
+            <td class="row-actions"><a href="#" data-row-act="edit">编辑</a><a href="#" data-row-act="copy">复制</a><a href="#" data-row-act="del">删除</a></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:12px"><div class="card-bd">
+    <p class="muted" style="font-size:12px;line-height:1.9">
+      <b>规则说明：</b>运费计算 = 首件运费 + 续件运费（不足续件按续件计）；商品使用模板后，买家收货地址不在可配送区域将无法提交订单；
+      组合商品运费按各子商品运费叠加；未勾选区域不支持配送。已被商品使用的模板不可删除。
+    </p>
+  </div></div>
+</div>
+
+<!-- 新建/编辑模板弹窗 -->
+<div class="proto-mask" id="mask"></div>
+<div class="proto-modal" id="modal-freight" style="width:640px">
+  <div class="proto-modal-hd"><h3 style="font-size:16px;font-weight:600" id="ft-title">新建运费模板</h3><button class="btn btn-sm btn-ghost" data-close>×</button></div>
+  <div class="proto-modal-bd">
+    <div class="field" style="margin-bottom:10px"><label>模板名称 *</label><input id="ft-name" style="width:100%;padding:7px 8px;border:1px solid var(--color-border);border-radius:6px" placeholder="例如：教辅通用运费" /></div>
+    <div class="field" style="margin-bottom:10px"><label>计价方式 *</label>
+      <select style="width:100%;padding:7px 8px;border:1px solid var(--color-border);border-radius:6px"><option>按件计费</option><option>按重量计费</option></select>
+    </div>
+    <h4 style="margin:6px 0 6px">可配送区域与运费</h4>
+    <table class="data">
+      <thead><tr><th>可配送区域</th><th>首件/首重</th><th>首费</th><th>续件/续重</th><th>续费</th><th style="width:56px"></th></tr></thead>
+      <tbody>
+        <tr>
+          <td><select style="width:150px;padding:5px;border:1px solid var(--color-border);border-radius:6px"><option>全国</option><option>广东</option><option>江浙沪</option><option>自定义</option></select></td>
+          <td><input value="1" style="width:60px;padding:5px;border:1px solid var(--color-border);border-radius:6px" /></td>
+          <td><input value="6" style="width:70px;padding:5px;border:1px solid var(--color-border);border-radius:6px" /> 元</td>
+          <td><input value="1" style="width:60px;padding:5px;border:1px solid var(--color-border);border-radius:6px" /></td>
+          <td><input value="2" style="width:70px;padding:5px;border:1px solid var(--color-border);border-radius:6px" /> 元</td>
+          <td><a href="#" data-toast="删除区域（原型）" style="color:#f53f3f">删除</a></td>
+        </tr>
+        <tr>
+          <td><select style="width:150px;padding:5px;border:1px solid var(--color-border);border-radius:6px"><option>全国</option><option>广东</option><option>江浙沪</option><option selected>新疆/西藏</option></select></td>
+          <td><input value="1" style="width:60px;padding:5px;border:1px solid var(--color-border);border-radius:6px" /></td>
+          <td><input value="8" style="width:70px;padding:5px;border:1px solid var(--color-border);border-radius:6px" /> 元</td>
+          <td><input value="1" style="width:60px;padding:5px;border:1px solid var(--color-border);border-radius:6px" /></td>
+          <td><input value="5" style="width:70px;padding:5px;border:1px solid var(--color-border);border-radius:6px" /> 元</td>
+          <td><a href="#" data-toast="删除区域（原型）" style="color:#f53f3f">删除</a></td>
+        </tr>
+      </tbody>
+    </table>
+    <button class="btn btn-sm" style="margin-top:8px" data-toast="添加可配送区域（原型）">＋ 添加可配送区域</button>
+  </div>
+  <div class="proto-drawer-ft" style="border-top:1px solid var(--color-border);padding:12px 20px;display:flex;gap:8px;justify-content:flex-end">
+    <button class="btn" data-close>取消</button>
+    <button class="btn btn-primary" id="ft-save">保存模板</button>
+  </div>
+</div>
+
+<style>
+.link-mono{font-family:ui-monospace,Consolas,monospace;font-size:12px;color:var(--color-primary)}
+</style>
+
+<script src="../assets/js/proto.js"></script>
+<script src="../assets/js/admin-shell.js?v=3"></script>
+<script>
+(function () {
+  var mask=document.getElementById("mask");
+  function closeAll(){ mask.classList.remove("open"); document.querySelectorAll(".proto-modal,.proto-drawer").forEach(function(n){n.classList.remove("open");}); }
+  function open(n){ mask.classList.add("open"); n.classList.add("open"); }
+  mask.addEventListener("click", closeAll);
+  document.querySelectorAll("[data-close]").forEach(function(n){ n.addEventListener("click", closeAll); });
+  document.getElementById("btn-create").addEventListener("click", function(){
+    document.getElementById("ft-title").textContent="新建运费模板";
+    document.getElementById("ft-name").value="";
+    open(document.getElementById("modal-freight"));
+  });
+  document.querySelectorAll("[data-row-act]").forEach(function(a){
+    a.addEventListener("click", function(e){
+      e.preventDefault();
+      var act=a.getAttribute("data-row-act");
+      if(act==="edit"){ document.getElementById("ft-title").textContent="编辑运费模板"; document.getElementById("ft-name").value=a.closest("tr").querySelector("b").textContent; open(document.getElementById("modal-freight")); }
+      else if(act==="copy") Proto.toast("已复制模板（原型）");
+      else if(act==="del") Proto.toast("该模板正在被商品使用，无法删除（原型）");
+    });
+  });
+  document.getElementById("ft-save").addEventListener("click", function(){ closeAll(); Proto.toast("运费模板已保存（原型）"); });
+})();
+</script>
+</body>
+</html>

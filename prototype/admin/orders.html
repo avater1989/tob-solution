@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8" />
@@ -6,10 +6,11 @@
 <title>订单列表 · 商家管理后台</title>
 <link rel="stylesheet" href="../assets/css/proto.css" />
 </head>
-<body class="admin-body" data-module="trade" data-nav="orders" data-title="订单列表" data-crumb="交易 / 订单中心 / 订单列表">
+<body class="admin-body" data-module="trade" data-nav="orders" data-title="订单列表" data-crumb="交易 / 订单管理 / 订单列表">
 <div id="header-actions">
   <button class="btn" id="btn-export">导出订单</button>
   <button class="btn" id="btn-sync">同步公域订单</button>
+  <button class="btn" onclick="location.href='ship.html'">发货管理</button>
   <button class="btn btn-primary" id="btn-create">手工补单</button>
 </div>
 <div id="page-content" style="display:none">
@@ -18,9 +19,9 @@
   <div class="grid-4" style="margin-bottom:16px">
     <div class="stat"><div class="label">近 30 天交易额</div><div class="value">¥12,648.50</div><div class="hint">128 笔已支付</div></div>
     <div class="stat"><div class="label">待付款</div><div class="value">9</div><div class="hint">超 30 分钟自动关闭</div></div>
+    <div class="stat"><div class="label">待发货（实物）</div><div class="value">3</div><div class="hint"><a href="ship.html" style="color:inherit">去发货 →</a></div></div>
     <div class="stat"><div class="label">退款中</div><div class="value">3</div><div class="hint">含待审核 1 笔</div></div>
     <div class="stat"><div class="label">已完成</div><div class="value">116</div><div class="hint">权益已开通</div></div>
-    <div class="stat"><div class="label">今日新增</div><div class="value">7</div><div class="hint">课程 5 / 直播 2</div></div>
   </div>
 
   <!-- 状态 Tab -->
@@ -86,20 +87,20 @@
       </thead>
       <tbody id="ord-tbody">
         <tr>
-          <td><a href="order-detail.html" class="link-mono">YB20260329100123</a></td>
-          <td>春启 03 期家长必修课<br><span class="muted">线上课 · ¥9.9 引流价</span></td>
+          <td><a href="order-detail.html" class="link-mono">YB20260907000331</a></td>
+          <td>春启 03 期家长必修课 + 家长手册<br><span class="muted">线上课 + 实物 · 合单</span></td>
           <td>李***<br><span class="muted">138****2610</span></td>
-          <td><b>¥9.90</b></td>
-          <td><span class="tag tag-blue">小程序</span></td>
-          <td>赵老师</td>
-          <td><span class="badge badge-success">已完成</span></td>
-          <td><span class="badge badge-info">已开通</span></td>
+          <td><b>¥87.90</b></td>
+          <td><span class="tag tag-green">视频号</span></td>
+          <td>—</td>
+          <td><span class="badge badge-info">已支付</span></td>
+          <td><span class="badge badge-info">已开通</span><br><span class="badge badge-warn">待发货</span></td>
           <td><span class="muted">—</span></td>
-          <td>2026-03-29 09:12</td>
+          <td>2026-09-07 14:22</td>
           <td class="row-actions">
             <a href="order-detail.html">详情</a>
-            <a href="#" data-row-act="refund">退款</a>
-            <a href="#" data-row-act="note">备注</a>
+            <a href="ship.html">去发货</a>
+            <a href="aftersales.html">售后</a>
           </td>
         </tr>
         <tr>
