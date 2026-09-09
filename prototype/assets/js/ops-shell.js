@@ -2,6 +2,21 @@
  * 差异点：品牌「运营后台」、平台标识（非商户）、面向平台侧的模块与侧栏、三端互跳导航
  */
 (function () {
+  if (!window.ProtoBiz) {
+    try {
+      var curBiz = document.currentScript;
+      var bizSrc = (curBiz && curBiz.src)
+        ? curBiz.src.replace(/ops-shell\.js[^/]*$/, "prototype-business-store.js")
+        : "../assets/js/prototype-business-store.js";
+      var xhrBiz = new XMLHttpRequest();
+      xhrBiz.open("GET", bizSrc, false);
+      xhrBiz.send(null);
+      if (xhrBiz.status >= 200 && xhrBiz.status < 300 && xhrBiz.responseText) {
+        (0, eval)(xhrBiz.responseText);
+      }
+    } catch (eLoadBiz) {}
+  }
+
   // 全局错误捕获 - 避免脚本异常导致页面全裸
   window.addEventListener("error", function (e) {
     if (document.body && !document.querySelector(".admin-app")) {
@@ -88,10 +103,10 @@
         ],
       },
       {
-        group: "内容审核",
+        group: "平台审核",
         links: [
-          { id: "audit", href: "audit.html", label: "审核工作台", badge: 12 },
-          { id: "audit-records", href: "audit-records.html", label: "审核记录" },
+          { id: "audit", href: "audit.html", label: "平台审核工作台", badge: 0 },
+          { id: "audit-records", href: "audit-records.html", label: "平台审核记录" },
         ],
       },
     ],
@@ -179,12 +194,22 @@
 
   function sideHtml() {
     var groups = sidebars[moduleId] || [];
+    var pendingPlatform = 0;
+    try {
+      if (window.ProtoBiz) {
+        pendingPlatform = ProtoBiz.getLives().filter(function (l) {
+          return l.auditStatus === "pending_platform_review";
+        }).length;
+      }
+    } catch (e) {}
     var html = '<div class="sidebar-module-label">当前模块</div>';
     groups.forEach(function (g) {
       html += '<div class="nav-group"><div class="nav-label">' + g.group + "</div>";
       g.links.forEach(function (l) {
         var cls = "nav-item" + (l.id === active ? " active" : "");
-        var badge = l.badge ? '<span class="nav-badge">' + l.badge + '</span>' : '';
+        var badgeVal = l.badge;
+        if (l.id === "audit") badgeVal = pendingPlatform || 0;
+        var badge = badgeVal ? '<span class="nav-badge">' + badgeVal + '</span>' : '';
         html += '<a class="' + cls + '" href="' + l.href + '">' + l.label + badge + "</a>";
       });
       html += "</div>";

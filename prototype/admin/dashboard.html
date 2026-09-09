@@ -136,6 +136,7 @@
     <button type="button" data-range="7d">近7日</button>
   </div>
   <button class="btn" id="btn-refresh" type="button">刷新</button>
+  <button class="btn btn-ghost" id="btn-reset-demo" type="button" title="恢复 ProtoBiz 演示种子数据" style="font-size:12px;color:var(--color-text-muted)">重置演示数据</button>
 </div>
 
 <div id="page-content" style="display:none">
@@ -146,7 +147,7 @@
   </div>
 
   <div class="wb-tip" id="wb-tip">
-    <p id="wb-tip-text"><b>星启家庭教育</b> · 建议优先处理待内部复核直播与未分配线索，再推进今晚公开课私域触达。</p>
+    <p id="wb-tip-text"><b>星启家庭教育</b> · 建议优先处理未分配线索与 L003 待内部复核，并推进今晚公开课预约提醒与直播促到SOP。</p>
     <a class="btn btn-sm" id="wb-tip-cta" href="live-audit.html?status=pending">去内部复核工作台</a>
   </div>
 
@@ -193,18 +194,18 @@
     </a>
     <a class="stat-card" id="rt-audit" href="live-audit.html?status=pending">
       <div class="stat-label">待内部复核直播</div>
-      <div class="stat-value warn" data-rt="audit">2</div>
-      <div class="stat-hint">含今晚开播场次</div>
+      <div class="stat-value warn" data-rt="audit">1</div>
+      <div class="stat-hint" id="rt-audit-hint">L003 待内部复核</div>
     </a>
-    <a class="stat-card" id="rt-urge" href="live-invite.html?focus=pending">
-      <div class="stat-label">待执行私域触达</div>
-      <div class="stat-value" data-rt="urgeTasks">3</div>
+    <a class="stat-card" id="rt-urge" href="live-invite.html?live_id=L001&focus=pending">
+      <div class="stat-label">待执行直播促到SOP</div>
+      <div class="stat-value" data-rt="urgeTasks">1</div>
       <div class="stat-hint">目标人群 <span data-rt="urgePeople">1,284</span> 人</div>
     </a>
     <a class="stat-card" id="rt-aftersale" href="aftersales.html?status=pending">
       <div class="stat-label">待处理售后</div>
-      <div class="stat-value danger" data-rt="aftersale">5</div>
-      <div class="stat-hint">退款 3 · 纠纷 2</div>
+      <div class="stat-value danger" data-rt="aftersale">1</div>
+      <div class="stat-hint" id="rt-aftersale-hint">待商家处理</div>
     </a>
   </div>
 
@@ -278,7 +279,7 @@
 
 </div>
 <script src="../assets/js/proto.js"></script>
-<script src="../assets/js/board-data.js?v=3"></script>
+<script src="../assets/js/board-data.js?v=4"></script>
 <script src="../assets/js/board-metrics.js?v=7"></script>
 <script src="../assets/js/admin-shell.js?v=14"></script>
 <script>
@@ -298,7 +299,7 @@
     admin: {
       id: "admin",
       label: "商户管理员",
-      tip: "<b>星启家庭教育</b> · 建议优先处理待内部复核直播与未分配线索，再推进今晚公开课私域触达。",
+      tip: "<b>星启家庭教育</b> · 建议优先处理未分配线索与 L003 待内部复核，并推进今晚公开课预约提醒与直播促到SOP。",
       tipCta: { href: "live-audit.html?status=pending", text: "去内部复核工作台" },
       create: ["series", "live", "urge", "lead"],
       entry: ["content", "lives", "channels", "leads"],
@@ -311,11 +312,11 @@
     sales: {
       id: "sales",
       label: "助教/销售",
-      tip: "<b>助教视角</b> · 先消化未分配线索与私域触达任务，跟进加微后再推进成交。",
+      tip: "<b>助教视角</b> · 先消化未分配线索与直播促到SOP任务，跟进加微后再推进成交；今晚公开课预约提醒待执行。",
       tipCta: { href: "leads.html?focus=unassigned", text: "去线索池" },
       create: ["urge", "lead"],
       entry: ["leads", "lives", "channels"],
-      todoTypes: ["lead", "urge", "follow", "sms"],
+      todoTypes: ["lead", "urge", "follow", "sms", "remind"],
       showAuditRealtime: false,
       showLiveSchedule: true,
       showFunnel: true,
@@ -324,7 +325,7 @@
     auditor: {
       id: "auditor",
       label: "审核员",
-      tip: "<b>审核视角</b> · 优先处理临近开播的待内部复核场次，避免卡场。",
+      tip: "<b>审核视角</b> · 优先处理 L003 待内部复核，避免卡场；今晚 L001 已审核通过，无需再审。",
       tipCta: { href: "live-audit.html?status=pending", text: "去内部复核工作台" },
       create: [],
       entry: ["lives", "content"],
@@ -337,7 +338,7 @@
     content: {
       id: "content",
       label: "内容运营",
-      tip: "<b>内容视角</b> · 推进系列课上架与直播场次创建，保证售卖货盘充足。",
+      tip: "<b>内容视角</b> · 推进系列课上架与直播场次创建，保证售卖货盘充足；L003 仍待内部复核。",
       tipCta: { href: "content-series-edit.html", text: "新建系列课" },
       create: ["series", "live"],
       entry: ["content", "lives"],
@@ -352,7 +353,7 @@
   var CREATE_ITEMS = {
     series: { tag: "创建", title: "新建系列课", desc: "创建线上系列课并进入上架流程", href: "content-series-edit.html" },
     live: { tag: "创建", title: "新建直播", desc: "创建场次并提交内部复核", href: "live-edit.html" },
-    urge: { tag: "创建", title: "新建私域触达活动", desc: "面向私域人群配置直播前、开播中或回放触达", href: "live-invite.html" },
+    urge: { tag: "创建", title: "新建直播促到SOP", desc: "面向私域人群配置直播前邀约、开播催到或回放触达", href: "live-invite.html" },
     lead: { tag: "创建", title: "新建线索", desc: "手工录入或导入线索", href: "leads.html?action=create" }
   };
 
@@ -363,14 +364,32 @@
     leads: { tag: "SCRM", title: "线索池", desc: "分配跟进人，推进转化", href: "leads.html" }
   };
 
-  /* ========== 实时待处理（固定，不随日期变） ========== */
-  var REALTIME = {
-    unassigned: 36,
-    audit: 2,
-    urgePeople: "1,284",
-    urgeTasks: 3,
-    aftersale: 5
-  };
+  /* ========== 实时待处理：以 ProtoBiz.realtimeCounts 为准 ========== */
+  function fmtNum(n) {
+    var s = String(n == null ? 0 : n);
+    return s.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  }
+
+  function getRealtime() {
+    if (window.ProtoBiz && typeof ProtoBiz.realtimeCounts === "function") {
+      var c = ProtoBiz.realtimeCounts();
+      return {
+        unassigned: c.unassigned,
+        audit: c.audit,
+        urgePeople: fmtNum(c.urgePeople),
+        urgeTasks: c.urgeTasks,
+        aftersale: c.aftersale,
+        smsFailed: c.smsFailed || 0
+      };
+    }
+    return { unassigned: 36, audit: 1, urgePeople: "1,284", urgeTasks: 1, aftersale: 1, smsFailed: 3 };
+  }
+
+  function firstScheduledSopLiveId() {
+    if (!window.ProtoBiz || !ProtoBiz.getSops) return "L001";
+    var sops = ProtoBiz.getSops().filter(function (s) { return s.status === "scheduled"; });
+    return (sops[0] && sops[0].liveId) || "L001";
+  }
 
   /* ========== 经营结果 + 漏斗：按时间范围结构化 ========== */
   var RANGE_DATA = {
@@ -433,18 +452,10 @@
     }
   };
 
-  /* ========== 待办（含负责人 / SLA / 状态 / 深链） ========== */
-  var TODOS = [
+  /* 可选静态补充：线索/内容（audit/urge/sms/aftersale/remind 一律走 ProtoBiz） */
+  var STATIC_EXTRA_TODOS = [
     {
-      id: "t1", type: "audit", typeLabel: "内部复核", badge: "badge-warn", completeMode: "business",
-      title: "春启 03 期家长公开课 待内部复核",
-      owner: "阮荣均", mine: false, dueLabel: "今晚 20:00", dueSort: 1,
-      sla: "over", slaLabel: "已超时", status: "pending", statusLabel: "待处理",
-      href: "live-audit-detail.html?id=live-spring-03",
-      roles: ["admin", "auditor", "content"]
-    },
-    {
-      id: "t2", type: "lead", typeLabel: "线索", badge: "badge-info", completeMode: "business",
+      id: "TODO_LEAD_UNASSIGNED", type: "lead", typeLabel: "线索", badge: "badge-info", completeMode: "business",
       title: "视频号订单流入 23 条未分配 · 春启 03 期",
       owner: "赵老师", mine: true, dueLabel: "今天 18:00", dueSort: 2,
       sla: "near", slaLabel: "临近超时", status: "processing", statusLabel: "处理中",
@@ -452,72 +463,112 @@
       roles: ["admin", "sales"]
     },
     {
-      id: "t3", type: "urge", typeLabel: "私域触达", badge: "badge-info", completeMode: "business",
-      title: "今晚直播私域触达任务未发送 · 目标 1,284 人",
-      owner: "赵老师", mine: true, dueLabel: "今天 17:30", dueSort: 2,
-      sla: "near", slaLabel: "临近超时", status: "pending", statusLabel: "待处理",
-      href: "live-invite.html?liveId=spring03&focus=pending",
-      roles: ["admin", "sales"]
-    },
-    {
-      id: "t4", type: "aftersale", typeLabel: "售后", badge: "badge-danger", completeMode: "business",
-      title: "退款单 RO20260904012 超 24h 未处理",
-      owner: "财务小陈", mine: false, dueLabel: "昨天 15:00", dueSort: 0,
-      sla: "over", slaLabel: "已超时", status: "pending", statusLabel: "待处理",
-      href: "aftersale-detail.html?id=RO20260904012",
-      roles: ["admin"]
-    },
-    {
-      id: "t5", type: "sms", typeLabel: "短信", badge: "badge-warn", completeMode: "business",
-      title: "领课短信失败 18 条 · 需重发",
-      owner: "赵老师", mine: true, dueLabel: "今天 19:00", dueSort: 3,
-      sla: "near", slaLabel: "临近超时", status: "pending", statusLabel: "待处理",
-      href: "channels-orders.html?sms=failed",
-      roles: ["admin", "sales"]
-    },
-    {
-      id: "t6", type: "follow", typeLabel: "跟进", badge: "", completeMode: "manual",
-      title: "企微流失提醒 6 人 · 建议挽回",
-      owner: "赵老师", mine: true, dueLabel: "明天 12:00", dueSort: 5,
-      sla: "ok", slaLabel: "正常", status: "pending", statusLabel: "待处理",
-      href: "wecom-churn.html?focus=today",
-      roles: ["admin", "sales"]
-    },
-    {
-      id: "t7", type: "content", typeLabel: "内容", badge: "badge-info", completeMode: "business",
+      id: "TODO_CONTENT_DRAFT", type: "content", typeLabel: "内容", badge: "badge-info", completeMode: "business",
       title: "系列课《边界感训练营》草稿未上架",
       owner: "内容小周", mine: false, dueLabel: "周五 18:00", dueSort: 6,
       sla: "ok", slaLabel: "正常", status: "processing", statusLabel: "处理中",
       href: "content-series-edit.html?id=boundary",
       roles: ["admin", "content"]
-    },
-    {
-      id: "t8", type: "audit", typeLabel: "内部复核", badge: "badge-warn", completeMode: "business",
-      title: "周末答疑场 · 待内部复核",
-      owner: "阮荣均", mine: false, dueLabel: "周六 10:00", dueSort: 4,
-      sla: "ok", slaLabel: "正常", status: "pending", statusLabel: "待处理",
-      href: "live-audit-detail.html?id=weekend-qa",
-      roles: ["admin", "auditor"]
     }
   ];
 
+  function todoBadgeClass(t) {
+    if (t.badge) return t.badge;
+    if (t.type === "aftersale") return "badge-danger";
+    if (t.type === "audit" || t.type === "sms") return "badge-warn";
+    if (t.type === "urge" || t.type === "lead" || t.type === "content" || t.type === "remind") return "badge-info";
+    return "";
+  }
+
+  function getTodos() {
+    var biz = (window.ProtoBiz && typeof ProtoBiz.buildTodos === "function") ? ProtoBiz.buildTodos() : [];
+    var seen = {};
+    biz.forEach(function (t) { seen[t.id] = true; });
+    STATIC_EXTRA_TODOS.forEach(function (t) {
+      if (!seen[t.id]) biz.push(t);
+    });
+    return biz;
+  }
+
+  function demoTodayPrefix() {
+    var now = (window.ProtoBiz && ProtoBiz.DEMO_NOW) || "2026-09-09 16:00:00";
+    return String(now).slice(0, 10);
+  }
+
+  function sopInviteForLive(liveId) {
+    if (!window.ProtoBiz || !ProtoBiz.getSops) return { target: 0, reached: 0 };
+    var sops = ProtoBiz.getSops(liveId);
+    var target = 0, reached = 0;
+    sops.forEach(function (s) {
+      if (s.status === "draft" && liveId === "L003") return;
+      target += (s.targetCount || s.targetUsers || 0);
+      reached += (s.reachedCount || s.reachedUsers || 0);
+    });
+    return { target: target, reached: reached };
+  }
+
   function todayLiveSchedule() {
+    if (window.ProtoBiz && typeof ProtoBiz.getLives === "function") {
+      var today = demoTodayPrefix();
+      var lives = ProtoBiz.getLives().filter(function (l) {
+        var day = String(l.startAt || "").slice(0, 10);
+        return day === today || l.auditStatus === "pending_internal_review";
+      });
+      return lives.map(function (l) {
+        var auditPending = l.auditStatus === "pending_internal_review";
+        var state = l.execStatus === "ended" || l.liveStatus === "ended"
+          ? "ended"
+          : (auditPending ? "pending_audit" : (l.liveStatus === "live" || l.execStatus === "live" ? "live" : "upcoming"));
+        var invite = sopInviteForLive(l.id);
+        var actions = [];
+        if (state === "pending_audit") {
+          actions.push({ label: "去内部复核", href: "live-audit-detail.html?live_id=" + l.id });
+        } else if (state === "live") {
+          actions.push({ label: "进入中控台", href: "live-control.html?live_id=" + l.id });
+          actions.push({ label: "查看大屏", href: "live-screen.html?live_id=" + l.id });
+        } else if (state === "ended") {
+          actions.push({ label: "查看数据", href: "live-stats.html?live_id=" + l.id });
+          actions.push({ label: "查看回放", href: "live-replay.html?live_id=" + l.id });
+          actions.push({ label: "创建回放触达", href: "live-invite.html?live_id=" + l.id });
+        } else {
+          actions.push({ label: "配置预约提醒", href: "live-booking.html?live_id=" + l.id + "&tab=reminders" });
+          actions.push({ label: "新建直播促到SOP", href: "live-invite.html?live_id=" + l.id });
+        }
+        var time = String(l.startAt || "");
+        var timeShort = time.indexOf(" ") >= 0 ? time.split(" ")[1].slice(0, 5) : time;
+        return {
+          id: l.id,
+          name: l.name,
+          time: timeShort,
+          audit: auditPending ? "pending" : (l.auditStatus === "approved" ? "passed" : ""),
+          auditLabel: l.auditStatusLabel || (auditPending ? "待内部复核" : (state === "ended" ? "已结束" : "待开播")),
+          booked: l.bookedUsers || 0,
+          remindStatus: l.remindStatusLabel || "—",
+          remindReached: l.remindReached || 0,
+          inviteTarget: invite.target,
+          inviteReached: invite.reached,
+          state: state,
+          actions: actions,
+          roles: ["admin", "auditor", "content", "sales"]
+        };
+      });
+    }
     if (!window.BoardData) return [];
     return BoardData.liveRows.filter(function (r) { return r.range === "today"; }).map(function (r) {
       var state = r.wbState || (r.status === "ended" ? "ended" : r.audit === "pending" ? "pending_audit" : "upcoming");
       var actions = [];
       if (state === "pending_audit") {
-        actions.push({ label: "去内部复核", href: "live-audit-detail.html?id=" + r.id });
+        actions.push({ label: "去内部复核", href: "live-audit-detail.html?live_id=" + r.id });
       } else if (state === "live") {
-        actions.push({ label: "进入中控台", href: "live-control.html?id=" + r.id });
-        actions.push({ label: "查看大屏", href: "live-screen.html?id=" + r.id });
+        actions.push({ label: "进入中控台", href: "live-control.html?live_id=" + r.id });
+        actions.push({ label: "查看大屏", href: "live-screen.html?live_id=" + r.id });
       } else if (state === "ended") {
-        actions.push({ label: "查看数据", href: "live-stats.html?id=" + r.id });
-        actions.push({ label: "查看回放", href: "live-replay.html?id=" + r.id });
-        actions.push({ label: "创建回放触达", href: "live-invite.html?liveId=" + r.id });
+        actions.push({ label: "查看数据", href: "live-stats.html?live_id=" + r.id });
+        actions.push({ label: "查看回放", href: "live-replay.html?live_id=" + r.id });
+        actions.push({ label: "创建回放触达", href: "live-invite.html?live_id=" + r.id });
       } else {
-        actions.push({ label: "配置预约提醒", href: "live-booking.html?id=" + r.id });
-        actions.push({ label: "新建私域触达", href: "live-invite.html?liveId=" + r.id });
+        actions.push({ label: "配置预约提醒", href: "live-booking.html?live_id=" + r.id + "&tab=reminders" });
+        actions.push({ label: "新建直播促到SOP", href: "live-invite.html?live_id=" + r.id });
       }
       return {
         id: r.id,
@@ -634,7 +685,7 @@
 
   function visibleTodos() {
     var role = ROLES[state.role];
-    var list = TODOS.filter(function (t) {
+    var list = getTodos().filter(function (t) {
       if (state.doneIds[t.id]) return false;
       if (t.roles && t.roles.indexOf(state.role) < 0) return false;
       if (role.todoTypes && role.todoTypes.indexOf(t.type) < 0) return false;
@@ -705,11 +756,27 @@
 
   function renderRealtime() {
     var role = ROLES[state.role];
-    document.querySelector('[data-rt="unassigned"]').textContent = REALTIME.unassigned;
-    document.querySelector('[data-rt="audit"]').textContent = REALTIME.audit;
-    document.querySelector('[data-rt="urgePeople"]').textContent = REALTIME.urgePeople;
-    document.querySelector('[data-rt="urgeTasks"]').textContent = REALTIME.urgeTasks;
-    document.querySelector('[data-rt="aftersale"]').textContent = REALTIME.aftersale;
+    var rt = getRealtime();
+    document.querySelector('[data-rt="unassigned"]').textContent = rt.unassigned;
+    document.querySelector('[data-rt="audit"]').textContent = rt.audit;
+    document.querySelector('[data-rt="urgePeople"]').textContent = rt.urgePeople;
+    document.querySelector('[data-rt="urgeTasks"]').textContent = rt.urgeTasks;
+    document.querySelector('[data-rt="aftersale"]').textContent = rt.aftersale;
+
+    var urgeEl = document.getElementById("rt-urge");
+    if (urgeEl) urgeEl.href = "live-invite.html?live_id=" + firstScheduledSopLiveId() + "&focus=pending";
+    var auditEl = document.getElementById("rt-audit");
+    if (auditEl) auditEl.href = "live-audit.html?status=pending";
+    var afterEl = document.getElementById("rt-aftersale");
+    if (afterEl) afterEl.href = "aftersales.html?status=pending";
+    var auditHint = document.getElementById("rt-audit-hint");
+    if (auditHint) {
+      auditHint.textContent = rt.audit > 0 ? "含 L003 待内部复核" : "暂无待复核场次";
+    }
+    var asHint = document.getElementById("rt-aftersale-hint");
+    if (asHint) {
+      asHint.textContent = "待商家处理" + (rt.smsFailed ? (" · 短信失败 " + rt.smsFailed + " 条") : "");
+    }
 
     document.getElementById("rt-unassigned").classList.toggle("wb-hidden", state.role === "auditor" || state.role === "content");
     document.getElementById("rt-audit").classList.toggle("wb-hidden", !role.showAuditRealtime);
@@ -755,14 +822,14 @@
     var list = visibleTodos();
     var body = document.getElementById("todo-body");
     var empty = document.getElementById("todo-empty");
-    var openCount = TODOS.filter(function (t) {
+    var allOpen = getTodos().filter(function (t) {
       if (state.doneIds[t.id]) return false;
       if (t.roles && t.roles.indexOf(state.role) < 0) return false;
       var role = ROLES[state.role];
       if (role.todoTypes && role.todoTypes.indexOf(t.type) < 0) return false;
       return true;
     }).length;
-    document.getElementById("todo-count").textContent = String(openCount);
+    document.getElementById("todo-count").textContent = String(allOpen);
 
     body.innerHTML = "";
     if (!list.length) {
@@ -772,7 +839,8 @@
     empty.classList.add("wb-hidden");
     list.forEach(function (t) {
       var tr = document.createElement("tr");
-      var badgeCls = t.badge ? "badge " + t.badge : "badge";
+      var badge = todoBadgeClass(t);
+      var badgeCls = badge ? "badge " + badge : "badge";
       var mode = t.completeMode || "business";
       var st = state.doneIds[t.id] ? "done" : (state.bizIds[t.id] || t.status);
       var statusLabel = st === "done" ? "已完成" : (st === "processing" ? "处理中" : t.statusLabel);
@@ -884,8 +952,8 @@
         '<div class="meta">开播 ' + l.time +
         " · 预约 " + l.booked + " 人" +
         " · 预约提醒：" + l.remindStatus + (l.remindReached ? (" " + l.remindReached + " 人") : "") +
-        " · 私域触达：" + l.inviteReached + "/" + l.inviteTarget + " 人</div>" +
-        '<div class="prog" title="私域触达进度"><i style="width:' + invitePct + '%"></i></div>' +
+        " · 直播促到SOP：" + l.inviteReached + "/" + l.inviteTarget + " 人</div>" +
+        '<div class="prog" title="直播促到SOP进度"><i style="width:' + invitePct + '%"></i></div>' +
         "</div>" +
         (actionsHtml ? '<div class="wb-live-actions">' + actionsHtml + "</div>" : "");
       wrap.appendChild(div);
@@ -944,7 +1012,7 @@
     if (!btn) return;
     e.preventDefault();
     var id = btn.getAttribute("data-done");
-    var todo = TODOS.filter(function (x) { return x.id === id; })[0];
+    var todo = getTodos().filter(function (x) { return x.id === id; })[0];
     if (!todo || todo.completeMode !== "manual") {
       Proto.toast("该任务需在业务页完成后才会关闭");
       return;
@@ -952,6 +1020,9 @@
     if (state.doneIds[id]) return;
     state.doneIds[id] = true;
     saveDone();
+    if (window.ProtoBiz && typeof ProtoBiz.markTodoDone === "function") {
+      try { ProtoBiz.markTodoDone(id); } catch (e) {}
+    }
     renderTodos();
     Proto.toast("已标记完成");
   });
@@ -981,13 +1052,13 @@
         Proto.toast("刷新失败（示意）");
         return;
       }
-      /* 刷新保留时间范围；实时库存可微调示意变化 */
-      REALTIME.unassigned = Math.max(20, REALTIME.unassigned + (Math.random() > 0.5 ? 1 : -1));
+      /* 刷新保留时间范围；实时库存以 ProtoBiz 为准 */
       setUpdatedNow();
       renderResults();
       renderRealtime();
       renderTodos();
       renderFunnel();
+      renderLive();
       Proto.toast("工作台已更新");
     }, 650);
   }
@@ -1003,6 +1074,21 @@
   document.getElementById("btn-refresh").addEventListener("dblclick", function (e) {
     e.preventDefault();
     doRefresh(true);
+  });
+
+  document.getElementById("btn-reset-demo").addEventListener("click", function () {
+    if (!confirm("确认重置演示数据？将恢复 ProtoBiz 种子并刷新页面。")) return;
+    try {
+      if (window.ProtoBiz && typeof ProtoBiz.reset === "function") ProtoBiz.reset();
+    } catch (e1) {}
+    try {
+      if (window.LiveReach && typeof LiveReach.reset === "function") LiveReach.reset();
+    } catch (e2) {}
+    try {
+      sessionStorage.removeItem(WB_CONFIG.storageTodo);
+      sessionStorage.removeItem(WB_CONFIG.storageBiz);
+    } catch (e3) {}
+    location.reload();
   });
 
   /* ========== 初始化 ========== */

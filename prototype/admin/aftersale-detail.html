@@ -13,16 +13,22 @@
 </div>
 <div id="page-content" style="display:none">
 
+  <div id="as-empty" style="display:none" class="card"><div class="card-bd" style="padding:48px;text-align:center">
+    <p style="font-size:15px;margin:0 0 16px">未找到对应售后单，请返回列表重新选择。</p>
+    <a class="btn btn-primary" href="aftersales.html">返回售后列表</a>
+  </div></div>
+
+  <div id="as-found" style="display:none">
   <!-- 状态头 + 流程 -->
   <div class="card" style="margin-bottom:8px"><div class="card-bd">
     <div class="order-status-bar">
       <div class="os-main">
-        <span class="badge badge-warn" style="font-size:13px">待商家处理</span>
-        <b class="mono">AS202609080001</b>
-        <span class="tag tag-warn">退货退款</span>
-        <span class="muted">申请于 2026-09-08 10:12</span>
+        <span class="badge" id="as-status-badge" style="font-size:13px">—</span>
+        <b class="mono" id="as-id">—</b>
+        <span class="tag tag-warn" id="as-type">—</span>
+        <span class="muted" id="as-created">—</span>
       </div>
-      <div class="os-flow">
+      <div class="os-flow" id="as-flow">
         <div class="os-step done"><i>1</i>买家申请</div>
         <div class="os-step cur"><i>2</i>商家审核</div>
         <div class="os-step"><i>3</i>买家退货</div>
@@ -35,81 +41,71 @@
   </div></div>
 
   <div class="detail-cols">
-    <!-- 售后信息 -->
     <div class="card"><div class="card-hd"><h2>售后申请信息</h2></div>
       <div class="card-bd">
         <div class="kv">
-          <div class="kv-row"><span>售后类型</span><b>退货退款</b></div>
-          <div class="kv-row"><span>申请件数</span><b>2 件</b></div>
-          <div class="kv-row"><span>退款金额</span><b class="price">¥78.00</b></div>
+          <div class="kv-row"><span>售后类型</span><b id="kv-type">—</b></div>
+          <div class="kv-row"><span>申请件数</span><b>1 件</b></div>
+          <div class="kv-row"><span>退款金额</span><b class="price" id="kv-amount">—</b></div>
           <div class="kv-row"><span>是否退运费</span><b>不退运费（默认）</b></div>
-          <div class="kv-row"><span>申请原因</span><b>尺码/规格不符</b></div>
-          <div class="kv-row"><span>问题描述</span><b>收到两册均为旧版封面，希望更换或退货</b></div>
-          <div class="kv-row"><span>申请凭证</span><b><a href="#" class="link" data-toast="预览凭证图片（原型）">图片凭证 2 张</a></b></div>
-          <div class="kv-row"><span>申请时间</span><b>2026-09-08 10:12:35</b></div>
+          <div class="kv-row"><span>申请原因</span><b id="kv-reason">—</b></div>
+          <div class="kv-row"><span>问题描述</span><b id="kv-desc">—</b></div>
+          <div class="kv-row"><span>申请凭证</span><b><a href="#" class="link" data-toast="预览凭证图片（原型）">图片凭证 1 张</a></b></div>
+          <div class="kv-row"><span>申请时间</span><b id="kv-created">—</b></div>
         </div>
       </div>
     </div>
 
-    <!-- 关联订单与商品 -->
     <div class="card"><div class="card-hd"><h2>关联订单与商品</h2></div>
       <div class="card-bd">
         <div class="kv">
-          <div class="kv-row"><span>订单号</span><b><a href="order-detail.html" class="link mono">YB20260907000331</a></b></div>
+          <div class="kv-row"><span>订单号</span><b><a href="order-detail.html" class="link mono" id="kv-order">—</a></b></div>
           <div class="kv-row"><span>支付方式</span><b>微信小程序支付</b></div>
-          <div class="kv-row"><span>下单时间</span><b>2026-09-07 14:22</b></div>
+          <div class="kv-row"><span>下单时间</span><b>—</b></div>
         </div>
         <div class="prod-line" style="margin-top:10px">
           <div class="thumb thumb-book"></div>
           <div>
-            <b>青春期沟通家长手册（纸书）</b>
-            <div class="muted" style="font-size:12px">实物商品 · SKU-001 · ¥39.00/件 × 2</div>
+            <b id="kv-product">—</b>
+            <div class="muted" style="font-size:12px" id="kv-product-sub">—</div>
           </div>
         </div>
-        <p class="muted" style="margin-top:8px;font-size:12px">订单待发货状态发起退货退款；赠品（如有）需随主商品一并退回。</p>
       </div>
     </div>
   </div>
 
   <div class="detail-cols">
-    <!-- 买家信息 -->
     <div class="card"><div class="card-hd"><h2>买家信息</h2></div>
       <div class="card-bd">
         <div class="kv">
-          <div class="kv-row"><span>买家</span><b>李女士 <a href="user-detail.html" class="link">查看用户 →</a></b></div>
-          <div class="kv-row"><span>手机号</span><b>138****2610</b></div>
-          <div class="kv-row"><span>退货收货地址（待发送）</span><b>商家待同意后提供</b></div>
+          <div class="kv-row"><span>买家</span><b id="kv-buyer">—</b></div>
+          <div class="kv-row"><span>手机号</span><b id="kv-phone">—</b></div>
+          <div class="kv-row"><span>退货收货地址（待发送）</span><b id="kv-addr">商家待同意后提供</b></div>
         </div>
       </div>
     </div>
 
-    <!-- 处理与时效 -->
     <div class="card"><div class="card-hd"><h2>处理时效</h2></div>
       <div class="card-bd">
         <div class="kv">
           <div class="kv-row"><span>商家处理截止</span><b>2026-09-15 10:12</b></div>
           <div class="kv-row"><span>超时规则</span><b>自动同意并退款</b></div>
           <div class="kv-row"><span>当前处理人</span><b>店长（主账号）</b></div>
-          <div class="kv-row"><span>客服备注</span><b class="muted">—</b></div>
+          <div class="kv-row"><span>客服备注</span><b class="muted" id="kv-note">—</b></div>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- 处理记录 -->
   <div class="card"><div class="card-hd"><h2>处理记录</h2></div>
     <div class="card-bd">
-      <ul class="log-list">
-        <li><span class="log-time">2026-09-08 10:12:35</span>买家提交退货退款申请（退款金额 ¥78.00）<span class="muted">· C 端</span></li>
-        <li><span class="log-time">2026-09-08 10:12:36</span>系统生成售后单，进入「待商家处理」<span class="muted">· 系统</span></li>
-      </ul>
+      <ul class="log-list" id="as-logs"></ul>
     </div>
   </div>
 
-  <!-- 操作区 -->
-  <div class="card"><div class="card-bd" style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+  <div class="card" id="as-actions"><div class="card-bd" style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
     <span style="font-weight:600">商家处理：</span>
-    <button class="btn" data-toast="拒绝售后申请（原型）">拒绝申请</button>
+    <button class="btn" id="btn-reject">拒绝申请</button>
     <button class="btn btn-primary" id="btn-agree">同意并发退货地址</button>
     <button class="btn" data-toast="查看商品原下单记录（原型）">查看原订单</button>
   </div></div>
@@ -117,15 +113,15 @@
   <div class="toolbar" style="margin-top:8px">
     <button class="btn" onclick="location.href='aftersales.html'">← 返回售后列表</button>
   </div>
+  </div>
 </div>
 
-<!-- 同意并发送退货地址弹窗 -->
 <div class="proto-mask" id="mask"></div>
 <div class="proto-modal" id="modal-agree" style="width:520px">
   <div class="proto-modal-hd"><h3 style="font-size:16px;font-weight:600">同意退货退款</h3><button class="btn btn-sm btn-ghost" data-close>×</button></div>
   <div class="proto-modal-bd">
     <div class="form-grid" style="grid-template-columns:1fr 1fr">
-      <div class="field" style="grid-column:1/-1"><label>退款金额 *</label><input value="78.00" /><span class="muted" style="font-size:12px">确认收货时按此金额原路退款</span></div>
+      <div class="field" style="grid-column:1/-1"><label>退款金额 *</label><input id="agree-amount" value="" /><span class="muted" style="font-size:12px">确认收货时按此金额原路退款</span></div>
       <div class="field"><label>是否退运费</label>
         <select style="width:100%;padding:7px 8px;border:1px solid var(--color-border);border-radius:6px"><option>不退运费</option><option>退运费 ¥6.00</option></select>
       </div>
@@ -138,6 +134,19 @@
   <div class="proto-drawer-ft" style="border-top:1px solid var(--color-border);padding:12px 20px;display:flex;gap:8px;justify-content:flex-end">
     <button class="btn" data-close>取消</button>
     <button class="btn btn-primary" id="agree-submit">同意并发送退货地址</button>
+  </div>
+</div>
+
+<div class="proto-modal" id="modal-reject" style="width:480px">
+  <div class="proto-modal-hd"><h3 style="font-size:16px;font-weight:600">拒绝售后申请</h3><button class="btn btn-sm btn-ghost" data-close>×</button></div>
+  <div class="proto-modal-bd">
+    <div class="field"><label>拒绝原因 *</label>
+      <textarea id="reject-reason" rows="4" style="width:100%;padding:8px;border:1px solid var(--color-border);border-radius:6px" placeholder="请填写拒绝原因，将通知买家"></textarea>
+    </div>
+  </div>
+  <div class="proto-drawer-ft" style="border-top:1px solid var(--color-border);padding:12px 20px;display:flex;gap:8px;justify-content:flex-end">
+    <button class="btn" data-close>取消</button>
+    <button class="btn btn-danger" id="reject-submit">确认拒绝</button>
   </div>
 </div>
 
@@ -169,21 +178,143 @@
 .tag-warn{background:#fff3e0;color:#ad6800}
 .alert{position:relative;padding:8px 14px;border-radius:8px;font-size:13px}
 .alert-warning{background:#fff7e8;border:1px solid #ffe1ba;color:#ad6800}
+.btn-danger{background:#fff;color:#f53f3f;border:1px solid #ffa39e}
 @media(max-width:1100px){.detail-cols{grid-template-columns:1fr}}
 </style>
 
 <script src="../assets/js/proto.js"></script>
+<script src="../assets/js/prototype-business-store.js"></script>
 <script src="../assets/js/admin-shell.js?v=13"></script>
 <script>
 (function () {
-  var mask=document.getElementById("mask");
-  function closeAll(){ mask.classList.remove("open"); document.querySelectorAll(".proto-modal,.proto-drawer").forEach(function(n){n.classList.remove("open");}); }
-  function open(n){ mask.classList.add("open"); n.classList.add("open"); }
+  var Biz = window.ProtoBiz;
+  var rawId = "";
+  try {
+    var q = new URLSearchParams(location.search);
+    rawId = q.get("id") || q.get("as_id") || q.get("aftersale_id") || "";
+  } catch (e) {}
+  var row = rawId ? Biz.getAftersale(rawId) : null;
+
+  var mask = document.getElementById("mask");
+  function closeAll() {
+    mask.classList.remove("open");
+    document.querySelectorAll(".proto-modal,.proto-drawer").forEach(function (n) { n.classList.remove("open"); });
+  }
+  function open(n) { mask.classList.add("open"); n.classList.add("open"); }
   mask.addEventListener("click", closeAll);
-  document.querySelectorAll("[data-close]").forEach(function(n){ n.addEventListener("click", closeAll); });
-  document.getElementById("btn-agree").addEventListener("click", function(){ open(document.getElementById("modal-agree")); });
-  document.getElementById("agree-submit").addEventListener("click", function(){ closeAll(); Proto.toast("已同意，退货地址已发送买家（原型）"); });
-  document.getElementById("btn-contact").addEventListener("click", function(){ Proto.toast("打开与买家会话（原型）"); });
+  document.querySelectorAll("[data-close]").forEach(function (n) { n.addEventListener("click", closeAll); });
+
+  function esc(s) {
+    return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) {
+      return ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c];
+    });
+  }
+
+  function badgeClass(status) {
+    if (status === "pending_merchant") return "badge-warn";
+    if (status === "returning") return "badge-info";
+    if (status === "rejected") return "badge-danger";
+    if (status === "done") return "badge-success";
+    return "";
+  }
+
+  function render(row) {
+    if (!row) {
+      document.getElementById("as-empty").style.display = "";
+      document.getElementById("as-found").style.display = "none";
+      document.getElementById("btn-contact").style.display = "none";
+      return;
+    }
+    document.getElementById("as-empty").style.display = "none";
+    document.getElementById("as-found").style.display = "";
+
+    var badge = document.getElementById("as-status-badge");
+    badge.className = "badge " + badgeClass(row.status);
+    badge.style.fontSize = "13px";
+    badge.textContent = row.statusLabel || row.status;
+    document.getElementById("as-id").textContent = row.id;
+    document.getElementById("as-type").textContent = row.type || "—";
+    document.getElementById("as-created").textContent = "申请于 " + (row.createdAt || "—");
+
+    document.getElementById("kv-type").textContent = row.type || "—";
+    document.getElementById("kv-amount").textContent = "¥" + Number(row.amount || 0).toFixed(2);
+    document.getElementById("kv-reason").textContent = row.reason || "—";
+    document.getElementById("kv-desc").textContent = row.reason || "—";
+    document.getElementById("kv-created").textContent = row.createdAt || "—";
+    document.getElementById("kv-order").textContent = row.orderId || "—";
+    document.getElementById("kv-product").textContent = row.product || "—";
+    document.getElementById("kv-product-sub").textContent = "退款金额 ¥" + Number(row.amount || 0).toFixed(2);
+    document.getElementById("kv-buyer").innerHTML = esc(row.buyer || "—") + ' <a href="user-detail.html" class="link">查看用户 →</a>';
+    document.getElementById("kv-phone").textContent = row.phone || "—";
+    document.getElementById("agree-amount").value = Number(row.amount || 0).toFixed(2);
+
+    if (row.status === "returning") {
+      document.getElementById("kv-addr").textContent = "默认退货地址（深圳仓）已发送";
+      document.getElementById("as-flow").innerHTML =
+        '<div class="os-step done"><i>1</i>买家申请</div>' +
+        '<div class="os-step done"><i>2</i>商家审核</div>' +
+        '<div class="os-step cur"><i>3</i>买家退货</div>' +
+        '<div class="os-step"><i>4</i>收货退款</div>';
+    } else if (row.status === "rejected" || row.status === "done") {
+      document.getElementById("as-flow").innerHTML =
+        '<div class="os-step done"><i>1</i>买家申请</div>' +
+        '<div class="os-step done"><i>2</i>商家审核</div>' +
+        '<div class="os-step done"><i>3</i>已完结</div>';
+    }
+
+    var logs = row.logs || [];
+    document.getElementById("as-logs").innerHTML = logs.length
+      ? logs.map(function (l) {
+          return "<li><span class=\"log-time\">" + esc(l.at) + "</span>" + esc(l.text) +
+            '<span class="muted"> · ' + esc(l.by || "") + "</span></li>";
+        }).join("")
+      : "<li class=\"muted\">暂无记录</li>";
+
+    var pending = row.status === "pending_merchant";
+    document.getElementById("as-actions").style.display = pending ? "" : "none";
+    if (row.rejectReason) {
+      document.getElementById("kv-note").textContent = "拒绝原因：" + row.rejectReason;
+    }
+  }
+
+  render(row);
+
+  document.getElementById("btn-contact").addEventListener("click", function () {
+    Proto.toast("打开与买家会话（原型）");
+  });
+
+  var btnAgree = document.getElementById("btn-agree");
+  if (btnAgree) {
+    btnAgree.addEventListener("click", function () {
+      if (!row || row.status !== "pending_merchant") return;
+      open(document.getElementById("modal-agree"));
+    });
+  }
+  document.getElementById("agree-submit").addEventListener("click", function () {
+    if (!row) return;
+    row = Biz.resolveAftersale(row, "agree");
+    closeAll();
+    Proto.toast("已同意，退货地址已发送买家");
+    render(row);
+  });
+
+  var btnReject = document.getElementById("btn-reject");
+  if (btnReject) {
+    btnReject.addEventListener("click", function () {
+      if (!row || row.status !== "pending_merchant") return;
+      document.getElementById("reject-reason").value = "";
+      open(document.getElementById("modal-reject"));
+    });
+  }
+  document.getElementById("reject-submit").addEventListener("click", function () {
+    var reason = document.getElementById("reject-reason").value.trim();
+    if (!reason) { Proto.toast("请填写拒绝原因"); return; }
+    if (!row) return;
+    row = Biz.resolveAftersale(row, "reject", reason);
+    closeAll();
+    Proto.toast("已拒绝售后申请");
+    render(row);
+  });
 })();
 </script>
 </body>

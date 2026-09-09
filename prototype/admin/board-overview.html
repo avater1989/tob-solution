@@ -21,6 +21,7 @@
 
   <div class="board-tip">
     <b>增长主漏斗：</b>入池 → 分配 → 加微 → 可归因支付。私域跟进、直播运营和退款为经营专题。
+    <span class="muted" id="scope-help-brief"></span>
   </div>
 
   <div class="board-filter">
@@ -29,6 +30,7 @@
     <button class="btn btn-primary" id="btn-query">查询</button>
     <button class="btn" id="btn-reset">重置</button>
   </div>
+  <div id="active-filters" style="margin:0 0 12px;font-size:12px"></div>
 
   <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
     <h2 style="margin:0;font-size:14px">主漏斗 <span class="board-scope main">口径台阶</span>
@@ -62,7 +64,7 @@
           <div class="n" data-m="pay">128</div>
           <div class="l">可归因支付</div>
           <div class="r" data-m="stepPay">33%</div>
-          <div class="sub"><a data-board-link="board-convert.html" href="board-convert.html">交易分析</a></div>
+          <div class="sub"><a data-board-link="board-convert.html" data-board-section="attributed" href="board-convert.html">交易分析</a></div>
         </div>
       </div>
       <p class="board-attr" data-board-attr></p>
@@ -90,15 +92,15 @@
       <div class="stat-value" data-m="pool">612</div>
       <div class="stat-hint">获客专题</div>
     </a>
-    <a class="stat-card" href="leads.html?focus=unassigned">
+    <a class="stat-card" data-board-link="leads.html" data-board-focus="unassigned" href="leads.html?focus=unassigned">
       <div class="stat-label">待分配积压</div>
       <div class="stat-value" style="color:#ff7d00" data-m="backlog">23</div>
       <div class="stat-hint">超时 <span data-m="backlogLate">8</span></div>
     </a>
-    <a class="stat-card" data-board-link="board-convert.html" href="board-convert.html">
-      <div class="stat-label">总 GMV</div>
-      <div class="stat-value" style="font-size:22px" data-m="gmv">¥96,430</div>
-      <div class="stat-hint">支付订单 <span data-m="orders">428</span></div>
+    <a class="stat-card" id="trade-card" data-board-link="board-convert.html" data-board-section="full" href="board-convert.html">
+      <div class="stat-label" id="trade-gmv-label">全量GMV</div>
+      <div class="stat-value" style="font-size:22px" id="trade-gmv-value">¥96,430</div>
+      <div class="stat-hint" id="trade-hint">全量支付订单 <span id="trade-orders-value">428</span></div>
     </a>
     <a class="stat-card" data-board-link="board-acquire.html" href="board-acquire.html">
       <div class="stat-label">视频号获客首单</div>
@@ -114,18 +116,51 @@
 
 </div>
 <script src="../assets/js/proto.js"></script>
-<script src="../assets/js/board-data.js?v=3"></script>
-<script src="../assets/js/board-metrics.js?v=7"></script>
+<script src="../assets/js/board-data.js?v=5"></script>
+<script src="../assets/js/board-metrics.js?v=9"></script>
 <script src="../assets/js/admin-shell.js?v=13"></script>
 <script>
 (function () {
+  BoardMetrics.ensureCaliberUI();
+  BoardMetrics.setUpdatedNow();
   BoardMetrics.fillAttr();
-  function sync() {
+  var brief = document.getElementById("scope-help-brief");
+  if (brief) brief.textContent = " · " + (BoardMetrics.FILTER_SCOPE_HELP || "").slice(0, 48) + "…";
+
+  function updateTradeCard(d) {
+    var card = document.getElementById("trade-card");
+    var gmvLabel = document.getElementById("trade-gmv-label");
+    var gmvVal = document.getElementById("trade-gmv-value");
+    var hint = document.getElementById("trade-hint");
+    if (!card || !hint) return;
+    if (d.attrScope) {
+      gmvLabel.textContent = "可归因GMV";
+      card.setAttribute("data-board-section", "attributed");
+      if (d.attrTradeEmpty) {
+        gmvVal.textContent = "—";
+        hint.innerHTML = '可归因订单 <span id="trade-orders-value">—</span> · 当前筛选暂无可归因交易金额';
+      } else {
+        gmvVal.textContent = d.attrGmv != null ? BoardMetrics.fmt(d.attrGmv) : "—";
+        hint.innerHTML = '可归因订单 <span id="trade-orders-value">' + BoardMetrics.fmt(d.attrOrders) +
+          "</span> · 可归因支付用户 " + BoardMetrics.fmt(d.attrPayUsers);
+      }
+    } else {
+      gmvLabel.textContent = "全量GMV";
+      card.setAttribute("data-board-section", "full");
+      gmvVal.textContent = d.fullGmvDisplay != null ? BoardMetrics.fmt(d.fullGmvDisplay) : BoardMetrics.money(d.fullGmv);
+      hint.innerHTML = '全量支付订单 <span id="trade-orders-value">' + BoardMetrics.fmt(d.fullOrders) + "</span>";
+    }
+  }
+
+  function sync(k, d) {
+    updateTradeCard(d || BoardMetrics.aggregateLeadMetrics());
+    BoardMetrics.renderActiveFilters();
     BoardMetrics.wireBoardLinks();
   }
+
   BoardMetrics.bindRange("range-seg", sync);
   BoardMetrics.bindFilterBar({ onApply: sync });
-  sync();
+  sync(null, BoardMetrics.aggregateLeadMetrics());
 })();
 </script>
 </body>

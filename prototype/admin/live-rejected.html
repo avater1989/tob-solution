@@ -3,10 +3,10 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>驳回记录 · 商家管理后台</title>
+<title>内部复核记录 · 商家管理后台</title>
 <link rel="stylesheet" href="../assets/css/proto.css?v=9" />
 </head>
-<body class="admin-body" data-module="live" data-nav="live-rejected" data-title="驳回记录" data-crumb="直播 / 直播审核 / 驳回记录">
+<body class="admin-body" data-module="live" data-nav="live-rejected" data-title="内部复核记录" data-crumb="直播 / 内部复核 / 内部复核记录">
 <div id="header-actions">
   <button class="btn" id="btn-refresh">刷新</button>
   <a class="btn btn-primary" href="live-edit.html">+ 新建直播</a>
@@ -16,19 +16,19 @@
   <!-- 顶部 3 个统计卡片 -->
   <div class="stat-cards" style="margin-bottom:8px">
     <div class="stat-card">
-      <div class="stat-label">累计驳回</div>
-      <div class="stat-value" style="color:#f53f3f">28</div>
-      <div class="stat-hint">近 30 天</div>
+      <div class="stat-label">累计内部驳回</div>
+      <div class="stat-value" id="stat-total" style="color:#f53f3f">0</div>
+      <div class="stat-hint">含历史日志</div>
     </div>
     <div class="stat-card">
-      <div class="stat-label">本月驳回</div>
-      <div class="stat-value">8</div>
-      <div class="stat-hint">较上月 <span class="up">-2</span></div>
+      <div class="stat-label">当前驳回中</div>
+      <div class="stat-value" id="stat-current">0</div>
+      <div class="stat-hint">待修改重提</div>
     </div>
     <div class="stat-card">
       <div class="stat-label">驳回后重新提交率</div>
-      <div class="stat-value" style="color:#00b42a">75<span style="font-size:14px;color:#86909c;font-weight:400;margin-left:2px">%</span></div>
-      <div class="stat-hint">21 / 28 已重新提交</div>
+      <div class="stat-value" style="color:#00b42a">—</div>
+      <div class="stat-hint">以 ProtoBiz 日志为准</div>
     </div>
   </div>
 
@@ -56,8 +56,8 @@
       </select>
       <select id="f-status">
         <option value="">处理状态</option>
-        <option>已重新提交</option>
-        <option>未重新提交</option>
+        <option value="current">当前驳回中</option>
+        <option value="history">历史记录</option>
       </select>
       <select id="f-date">
         <option value="">全部时间</option>
@@ -87,98 +87,13 @@
           <th style="width:200px">操作</th>
         </tr>
       </thead>
-      <tbody id="rej-tbody">
-        <!-- 未重新提交 -->
-        <tr data-status="not-resubmit">
-          <td><a href="live-edit.html" class="link-blue">9.9 引流试听课</a></td>
-          <td>9.9 引流课 · 亲子沟通</td>
-          <td>视频直播</td>
-          <td>赵老师</td>
-          <td>2026-03-31 19:30</td>
-          <td>刘管理</td>
-          <td>2026-09-04 16:00</td>
-          <td><span class="audit-tag fail">内容合规 ✕</span></td>
-          <td><span class="audit-badge audit-rejected">未重新提交</span></td>
-          <td class="row-actions">
-            <a href="#" data-row-act="view-reason">查看驳回理由</a>
-            <a href="live-edit.html" data-row-act="edit">去编辑</a>
-          </td>
-        </tr>
-        <!-- 已重新提交（待审核中） -->
-        <tr data-status="resubmit-pending">
-          <td><a href="live-edit.html?status=pending" class="link-blue">春启 03 期家长公开课</a></td>
-          <td>春启 03 期家长必修课</td>
-          <td>视频直播</td>
-          <td>阮荣均</td>
-          <td>2026-03-30 20:00</td>
-          <td>刘管理</td>
-          <td>2026-09-03 17:30</td>
-          <td><span class="audit-tag fail">内容合规 ✕</span></td>
-          <td><span class="audit-badge audit-pending">已重新提交 · 待审核</span></td>
-          <td class="row-actions">
-            <a href="#" data-row-act="view-reason">查看驳回理由</a>
-            <a href="live-audit-detail.html" data-row-act="view-audit">查看审核进度</a>
-          </td>
-        </tr>
-        <!-- 已重新提交（已通过） -->
-        <tr data-status="resubmit-approved">
-          <td>今晚直播 · 公开课</td>
-          <td>今晚直播 · 复盘</td>
-          <td>视频直播</td>
-          <td>阮荣均</td>
-          <td>2026-09-04 20:00</td>
-          <td>李管理</td>
-          <td>2026-09-02 11:00</td>
-          <td><span class="audit-tag fail">直播间设置 ✕</span></td>
-          <td><span class="audit-badge audit-approved">已重新提交 · 已通过</span></td>
-          <td class="row-actions">
-            <a href="#" data-row-act="view-reason">查看驳回理由</a>
-            <a href="live-stats.html" data-row-act="data">查看数据</a>
-          </td>
-        </tr>
-        <!-- 已重新提交（再次驳回） -->
-        <tr data-status="resubmit-rejected">
-          <td>试听公开课·改版</td>
-          <td>9.9 引流课 · 亲子沟通</td>
-          <td>视频直播</td>
-          <td>赵老师</td>
-          <td>2026-04-02 20:00</td>
-          <td>王管理</td>
-          <td>2026-09-04 14:20</td>
-          <td>
-            <span class="audit-tag fail">内容合规 ✕</span>
-            <span class="audit-tag fail">商品合规 ✕</span>
-          </td>
-          <td><span class="audit-badge audit-rejected">已重新提交 · 再次驳回</span></td>
-          <td class="row-actions">
-            <a href="#" data-row-act="view-reason">查看驳回理由</a>
-            <a href="live-edit.html" data-row-act="edit">去编辑</a>
-          </td>
-        </tr>
-        <!-- 未重新提交（早期） -->
-        <tr data-status="not-resubmit">
-          <td>家长答疑会·音频直播 v1</td>
-          <td>家长训练营</td>
-          <td>语音直播</td>
-          <td>王助教</td>
-          <td>2026-03-20 20:00</td>
-          <td>刘管理</td>
-          <td>2026-03-15 10:30</td>
-          <td><span class="audit-tag fail">主讲资质 ✕</span></td>
-          <td><span class="audit-badge audit-rejected">未重新提交</span></td>
-          <td class="row-actions">
-            <a href="#" data-row-act="view-reason">查看驳回理由</a>
-            <a href="live-edit.html" data-row-act="edit">去编辑</a>
-            <a href="#" data-row-act="copy">复制新建</a>
-          </td>
-        </tr>
-      </tbody>
+      <tbody id="rej-tbody"></tbody>
     </table>
   </div></div>
 
   <!-- 分页 -->
   <div class="toolbar" style="margin-top:8px">
-    <span class="muted">共 <b>5</b> 条</span>
+    <span class="muted" id="rej-count">共 <b>0</b> 条</span>
     <div class="spacer"></div>
     <select><option>10条/页</option><option>20条/页</option><option>50条/页</option></select>
     <button class="btn btn-sm" disabled>上一页</button>
@@ -191,7 +106,6 @@
 <!-- ============ 抽屉 ============ -->
 <div class="proto-mask" id="mask"></div>
 
-<!-- 驳回详情抽屉 -->
 <div class="proto-drawer" id="drawer-reject">
   <div class="proto-drawer-hd">
     <h3 id="dr-title">驳回详情</h3>
@@ -265,7 +179,6 @@
 
 .row-actions a { margin-right: 8px; }
 
-/* 历史时间轴（复用审核详情样式） */
 .audit-history { display: flex; flex-direction: column; gap: 12px; }
 .audit-history-item { display: flex; gap: 10px; position: relative; }
 .audit-history-item:not(:last-child)::before {
@@ -291,106 +204,134 @@
 </style>
 
 <script src="../assets/js/proto.js"></script>
+<script src="../assets/js/prototype-business-store.js"></script>
 <script src="../assets/js/admin-shell.js?v=13"></script>
 <script>
 (function () {
-  // ===== Reject detail data per row =====
-  var details = {
-    "9.9 引流试听课": {
-      course: "9.9 引流课 · 亲子沟通",
-      teacher: "赵老师",
-      start: "2026-03-31 19:30",
-      auditor: "刘管理",
-      time: "2026-09-04 16:00",
-      dims: [{ k: "内容合规", fail: true }],
-      reason: "直播封面图包含第三方水印，且直播介绍中出现了未授权的明星形象截图，请重新设计后再提交。",
-      suggest: "1. 重新设计封面图，去掉第三方水印<br>2. 替换直播介绍中的截图，使用自有素材<br>3. 提交后系统会自动重新审核封面与介绍",
-      status: "not-resubmit",
-      history: [
-        { dot: "submit",   title: "提交审核",      meta: "赵老师 · 2026-09-04 14:00" },
-        { dot: "rejected", title: "审核驳回",      meta: "刘管理 · 2026-09-04 16:00",
-          reason: "直播封面图包含第三方水印..." }
-      ],
-      editLink: "live-edit.html"
-    },
-    "春启 03 期家长公开课": {
-      course: "春启 03 期家长必修课",
-      teacher: "阮荣均",
-      start: "2026-03-30 20:00",
-      auditor: "刘管理",
-      time: "2026-09-03 17:30",
-      dims: [{ k: "内容合规", fail: true }],
-      reason: "直播封面图包含第三方水印，请重新设计后再提交。建议尺寸 750*422px，去掉水印 logo。",
-      suggest: "1. 重新设计封面图，去掉水印<br>2. 保持其他信息不变<br>3. 重新提交后预计 30 分钟内审核",
-      status: "resubmit-pending",
-      history: [
-        { dot: "submit",   title: "首次提交",          meta: "阮荣均 · 2026-09-02 10:00" },
-        { dot: "rejected", title: "驳回（首轮）",      meta: "刘管理 · 2026-09-03 17:30",
-          reason: "直播封面图包含第三方水印..." },
-        { dot: "edit",     title: "修改并重新提交",    meta: "阮荣均 · 2026-09-04 14:30" },
-        { dot: "submit",   title: "进入审核队列",      meta: "系统 · 2026-09-04 14:30" }
-      ],
-      editLink: "live-edit.html?status=pending"
-    },
-    "今晚直播 · 公开课": {
-      course: "今晚直播 · 复盘",
-      teacher: "阮荣均",
-      start: "2026-09-04 20:00",
-      auditor: "李管理",
-      time: "2026-09-02 11:00",
-      dims: [{ k: "直播间设置", fail: true }],
-      reason: "开播密码设置不合理（弱密码 123456），建议使用 6 位以上字母数字组合。",
-      suggest: "1. 将密码改为 6 位以上字母数字组合<br>2. 重新提交后即可开播",
-      status: "resubmit-approved",
-      history: [
-        { dot: "submit",   title: "首次提交",          meta: "阮荣均 · 2026-09-01 16:00" },
-        { dot: "rejected", title: "驳回",              meta: "李管理 · 2026-09-02 11:00",
-          reason: "开播密码弱密码..." },
-        { dot: "edit",     title: "修改并重新提交",    meta: "阮荣均 · 2026-09-03 09:30" },
-        { dot: "approved", title: "审核通过",          meta: "李管理 · 2026-09-03 11:30" }
-      ],
-      editLink: "live-stats.html"
-    },
-    "试听公开课·改版": {
-      course: "9.9 引流课 · 亲子沟通",
-      teacher: "赵老师",
-      start: "2026-04-02 20:00",
-      auditor: "王管理",
-      time: "2026-09-04 14:20",
-      dims: [{ k: "内容合规", fail: true }, { k: "商品合规", fail: true }],
-      reason: "1. 直播介绍含绝对化用语「全网最低价」违反广告法；2. 挂载的 9.9 引流课缺少必填的商品资质材料。",
-      suggest: "1. 删除直播介绍中的绝对化用语<br>2. 补充商品资质材料：营业执照 + 课程备案号<br>3. 建议参考商品管理 → 资质上传流程",
-      status: "resubmit-rejected",
-      history: [
-        { dot: "submit",   title: "首次提交",          meta: "赵老师 · 2026-09-01 09:00" },
-        { dot: "rejected", title: "驳回（首轮）",      meta: "刘管理 · 2026-09-02 14:00",
-          reason: "封面图水印..." },
-        { dot: "edit",     title: "修改并重新提交",    meta: "赵老师 · 2026-09-03 10:00" },
-        { dot: "rejected", title: "再次驳回",          meta: "王管理 · 2026-09-04 14:20",
-          reason: "绝对化用语 + 商品资质缺失..." }
-      ],
-      editLink: "live-edit.html"
-    },
-    "家长答疑会·音频直播 v1": {
-      course: "家长训练营",
-      teacher: "王助教",
-      start: "2026-03-20 20:00",
-      auditor: "刘管理",
-      time: "2026-03-15 10:30",
-      dims: [{ k: "主讲资质", fail: true }],
-      reason: "主讲老师未通过平台讲师资质认证，无法主讲付费课程。建议改由已认证老师主讲，或改为免费答疑。",
-      suggest: "1. 联系已认证的阮荣均或赵老师主讲<br>2. 或将本场直播改为免费答疑场<br>3. 重新创建直播并关联正确主讲人",
-      status: "not-resubmit",
-      history: [
-        { dot: "submit",   title: "提交审核",          meta: "王助教 · 2026-03-14 18:00" },
-        { dot: "rejected", title: "审核驳回",          meta: "刘管理 · 2026-03-15 10:30",
-          reason: "主讲老师未通过资质认证..." }
-      ],
-      editLink: "live-edit.html"
-    }
-  };
+  var Biz = window.ProtoBiz;
+  var rowsCache = [];
 
-  // ===== Mask =====
+  function esc(s) {
+    return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) {
+      return ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c];
+    });
+  }
+
+  function buildRows() {
+    var lives = Biz.getLives() || [];
+    var logs = (Biz.getReviewLogs() || []).filter(function (r) {
+      return r.status === "internal_rejected";
+    });
+    var byLive = {};
+    lives.forEach(function (l) { byLive[l.id] = l; });
+
+    var rows = [];
+    var seen = {};
+
+    lives.filter(function (l) { return l.auditStatus === "internal_rejected"; }).forEach(function (l) {
+      rows.push({
+        liveId: l.id,
+        name: l.name,
+        startAt: l.startAt,
+        auditor: "刘管理",
+        time: l.internalApprovedAt || Biz.DEMO_NOW,
+        reason: l.rejectReason || "内部复核驳回",
+        current: true
+      });
+      seen[l.id] = true;
+    });
+
+    logs.slice().reverse().forEach(function (r) {
+      if (seen[r.liveId]) return;
+      var live = byLive[r.liveId];
+      rows.push({
+        liveId: r.liveId,
+        name: live ? live.name : r.liveId,
+        startAt: live ? live.startAt : "—",
+        auditor: r.by || "刘管理",
+        time: r.at || "—",
+        reason: r.reason || "内部复核驳回",
+        current: !!(live && live.auditStatus === "internal_rejected")
+      });
+      seen[r.liveId] = true;
+    });
+
+    return rows;
+  }
+
+  function render() {
+    var kw = (document.getElementById("f-name").value || "").trim();
+    var st = document.getElementById("f-status").value;
+    rowsCache = buildRows().filter(function (r) {
+      if (kw && r.name.indexOf(kw) < 0 && String(r.liveId).indexOf(kw) < 0) return false;
+      if (st === "current" && !r.current) return false;
+      if (st === "history" && r.current) return false;
+      return true;
+    });
+
+    var currentCount = buildRows().filter(function (r) { return r.current; }).length;
+    var totalLogs = (Biz.getReviewLogs() || []).filter(function (r) { return r.status === "internal_rejected"; }).length;
+    document.getElementById("stat-total").textContent = String(Math.max(totalLogs, rowsCache.length));
+    document.getElementById("stat-current").textContent = String(currentCount);
+    document.getElementById("rej-count").innerHTML = "共 <b>" + rowsCache.length + "</b> 条";
+
+    var tbody = document.getElementById("rej-tbody");
+    if (!rowsCache.length) {
+      tbody.innerHTML = '<tr><td colspan="10" class="muted" style="text-align:center;padding:24px">暂无内部复核驳回记录</td></tr>';
+      return;
+    }
+    tbody.innerHTML = rowsCache.map(function (r, idx) {
+      return "<tr data-idx=\"" + idx + "\">" +
+        '<td><a href="live-audit-detail.html?live_id=' + encodeURIComponent(r.liveId) + '" class="link-blue">' + esc(r.name) + "</a>" +
+        '<div class="muted" style="font-size:11px">' + esc(r.liveId) + "</div></td>" +
+        "<td>" + esc(r.name) + "</td><td>视频直播</td><td>阮荣均</td>" +
+        "<td>" + esc(r.startAt || "—") + "</td>" +
+        "<td>" + esc(r.auditor) + "</td><td>" + esc(r.time) + "</td>" +
+        '<td><span class="audit-tag fail">内容合规 ✕</span></td>' +
+        '<td><span class="audit-badge ' + (r.current ? "audit-rejected" : "audit-pending") + '">' +
+        (r.current ? "未重新提交" : "历史驳回") + "</span></td>" +
+        '<td class="row-actions">' +
+          '<a href="#" data-row-act="view-reason">查看驳回理由</a>' +
+          (r.current
+            ? '<a href="live-edit.html?live_id=' + encodeURIComponent(r.liveId) + '">去编辑</a>'
+            : '<a href="live-audit-detail.html?live_id=' + encodeURIComponent(r.liveId) + '">查看进度</a>') +
+        "</td></tr>";
+    }).join("");
+
+    tbody.querySelectorAll("[data-row-act=view-reason]").forEach(function (a) {
+      a.addEventListener("click", function (e) {
+        e.preventDefault();
+        var idx = Number(a.closest("tr").getAttribute("data-idx"));
+        var r = rowsCache[idx];
+        if (!r) return;
+        document.getElementById("dr-title").textContent = "驳回详情 · " + r.name;
+        document.getElementById("dr-name").textContent = r.name;
+        document.getElementById("dr-course").textContent = r.name;
+        document.getElementById("dr-teacher").textContent = "阮荣均";
+        document.getElementById("dr-start").textContent = r.startAt || "—";
+        document.getElementById("dr-auditor").textContent = r.auditor;
+        document.getElementById("dr-time").textContent = r.time;
+        document.getElementById("dr-dims").innerHTML = '<span class="audit-tag fail">内容合规 ✕</span>';
+        document.getElementById("dr-reason").textContent = r.reason;
+        document.getElementById("dr-suggest").textContent = "请按驳回理由修改后重新提交内部复核。";
+        document.getElementById("dr-edit-link").href = "live-edit.html?live_id=" + encodeURIComponent(r.liveId);
+        var histLogs = Biz.getReviewLogs(r.liveId);
+        document.getElementById("dr-history").innerHTML = histLogs.length
+          ? histLogs.slice().reverse().map(function (h) {
+              return '<div class="audit-history-item"><div class="audit-history-dot ' +
+                (h.status.indexOf("reject") >= 0 ? "dot-rejected" : "dot-submit") + '"></div>' +
+                '<div class="audit-history-bd"><div class="audit-history-title">' +
+                esc((Biz.AUDIT_LABEL && Biz.AUDIT_LABEL[h.status]) || h.status) + "</div>" +
+                '<div class="audit-history-meta">' + esc((h.by || "") + " · " + (h.at || "")) + "</div>" +
+                (h.reason ? '<div class="audit-history-reason">' + esc(h.reason) + "</div>" : "") +
+                "</div></div>";
+            }).join("")
+          : '<p class="muted">暂无记录</p>';
+        open(document.getElementById("drawer-reject"));
+      });
+    });
+  }
+
   var mask = document.getElementById("mask");
   function closeAll() {
     mask.classList.remove("open");
@@ -400,66 +341,17 @@
   mask.addEventListener("click", closeAll);
   document.querySelectorAll("[data-close]").forEach(function (n) { n.addEventListener("click", closeAll); });
 
-  function dotClass(action) {
-    if (action === "submit")   return "dot-submit";
-    if (action === "edit")     return "dot-edit";
-    if (action === "approved") return "dot-approved";
-    return "dot-rejected";
-  }
-
-  // ===== Row actions =====
-  document.querySelectorAll("#rej-tbody tr").forEach(function (tr) {
-    tr.querySelectorAll("[data-row-act]").forEach(function (a) {
-      a.addEventListener("click", function (e) {
-        e.preventDefault();
-        var act = a.getAttribute("data-row-act");
-        var name = tr.querySelectorAll("td")[0].textContent.trim();
-        var d = details[name];
-        if (!d) { Proto.toast("暂无详情数据"); return; }
-
-        if (act === "view-reason") {
-          document.getElementById("dr-title").textContent = "驳回详情 · " + name;
-          document.getElementById("dr-name").textContent    = name;
-          document.getElementById("dr-course").textContent  = d.course;
-          document.getElementById("dr-teacher").textContent = d.teacher;
-          document.getElementById("dr-start").textContent   = d.start;
-          document.getElementById("dr-auditor").textContent = d.auditor;
-          document.getElementById("dr-time").textContent    = d.time;
-          document.getElementById("dr-dims").innerHTML = d.dims.map(function (x) {
-            return '<span class="audit-tag ' + (x.fail ? 'fail' : 'pass') + '">' + x.k + ' ' + (x.fail ? '✕' : '✓') + '</span>';
-          }).join("");
-          document.getElementById("dr-reason").textContent  = d.reason;
-          document.getElementById("dr-suggest").innerHTML    = d.suggest;
-          document.getElementById("dr-edit-link").href       = d.editLink;
-          document.getElementById("dr-history").innerHTML = d.history.map(function (h) {
-            var reasonHtml = h.reason ? '<div class="audit-history-reason">' + h.reason + '</div>' : '';
-            return '<div class="audit-history-item">' +
-                   '<div class="audit-history-dot ' + dotClass(h.dot) + '"></div>' +
-                   '<div class="audit-history-bd">' +
-                     '<div class="audit-history-title">' + h.title + '</div>' +
-                     '<div class="audit-history-meta">' + h.meta + '</div>' +
-                     reasonHtml +
-                   '</div></div>';
-          }).join("");
-          open(document.getElementById("drawer-reject"));
-        }
-        else if (act === "edit")   location.href = d.editLink;
-        else if (act === "view-audit") location.href = "live-audit-detail.html";
-        else if (act === "data")   location.href = "live-stats.html";
-        else if (act === "copy")   { Proto.toast("已复制为新草稿（原型）"); }
-      });
-    });
-  });
-
-  // ===== Header buttons =====
   document.getElementById("btn-refresh").addEventListener("click", function () { location.reload(); });
   document.getElementById("btn-export").addEventListener("click", function () { Proto.toast("已导出（原型）"); });
-  document.getElementById("btn-query").addEventListener("click", function () { Proto.toast("已查询（原型）"); });
+  document.getElementById("btn-query").addEventListener("click", render);
   document.getElementById("btn-reset").addEventListener("click", function () {
     document.getElementById("f-name").value = "";
     ["f-course","f-auditor","f-dimension","f-status","f-date"].forEach(function (id) { document.getElementById(id).value = ""; });
+    render();
     Proto.toast("已重置");
   });
+
+  render();
 })();
 </script>
 </body>

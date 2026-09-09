@@ -1,8 +1,24 @@
 /**
- * 直播触达统一数据层（系统提醒 system_reminder + 私域促到 scrm_campaign）
- * 使用 sessionStorage 在页面间共享原型状态。
+ * 直播触达统一数据层（预约提醒 + 直播促到SOP）
+ * 与 ProtoBiz（localStorage）同步；兼容旧 sessionStorage。
  */
 (function (global) {
+  /* ensure ProtoBiz before LiveReach seed */
+  if (!global.ProtoBiz) {
+    try {
+      var cur = document.currentScript;
+      var src = (cur && cur.src)
+        ? cur.src.replace(/live-reach\.js[^/]*$/, "prototype-business-store.js")
+        : "../assets/js/prototype-business-store.js";
+      var xhr = new XMLHttpRequest();
+      xhr.open("GET", src, false);
+      xhr.send(null);
+      if (xhr.status >= 200 && xhr.status < 300 && xhr.responseText) {
+        (0, eval)(xhr.responseText);
+      }
+    } catch (eLoad) {}
+  }
+
   var STORE_KEY = "live_reach_store_v1";
 
   function deepClone(o) {
@@ -342,17 +358,47 @@
   }
 
   function load() {
+    if (global.ProtoBiz) {
+      var biz = global.ProtoBiz.load();
+      var local = null;
+      try {
+        var raw = sessionStorage.getItem(STORE_KEY);
+        if (raw) local = JSON.parse(raw);
+      } catch (e) {}
+      /* merge: ProtoBiz owns lives/sops; keep bookings/reminders from session if present */
+      var data = {
+        lives: biz.lives,
+        sops: biz.sops,
+        bookings: (local && local.bookings && local.bookings.length) ? local.bookings : (biz.bookings || seed().bookings),
+        reminders: (local && local.reminders && local.reminders.length) ? local.reminders : (biz.reminders || seed().reminders),
+        sendRecords: (local && local.sendRecords) || biz.sendRecords || seed().sendRecords,
+        editDraft: (local && local.editDraft) || null
+      };
+      if (!data.bookings.length) data.bookings = seed().bookings;
+      if (!data.reminders.length) data.reminders = seed().reminders;
+      try { sessionStorage.setItem(STORE_KEY, JSON.stringify(data)); } catch (e2) {}
+      return data;
+    }
     try {
-      var raw = sessionStorage.getItem(STORE_KEY);
-      if (raw) return JSON.parse(raw);
-    } catch (e) {}
-    var data = seed();
-    save(data);
-    return data;
+      var raw2 = sessionStorage.getItem(STORE_KEY);
+      if (raw2) return JSON.parse(raw2);
+    } catch (e3) {}
+    var data2 = seed();
+    save(data2);
+    return data2;
   }
 
   function save(data) {
     sessionStorage.setItem(STORE_KEY, JSON.stringify(data));
+    if (global.ProtoBiz) {
+      var biz = global.ProtoBiz.load();
+      biz.lives = data.lives;
+      biz.sops = data.sops;
+      biz.bookings = data.bookings;
+      biz.reminders = data.reminders;
+      biz.sendRecords = data.sendRecords;
+      global.ProtoBiz.save(biz);
+    }
   }
 
   function uid(prefix) {
@@ -394,7 +440,8 @@
     var map = {
       pending: "待执行", paused: "已暂停", running: "执行中",
       completed: "已完成", partial_fail: "部分失败", failed: "已失败",
-      cancelled: "已取消", draft: "草稿", enabled: "已启用"
+      cancelled: "已取消", draft: "草稿", enabled: "已启用",
+      scheduled: "待启动", linked_booking: "关联预约提醒"
     };
     return map[status] || status;
   }
@@ -405,16 +452,30 @@
     statusLabel: statusLabel,
     calcPreTime: calcPreTime,
     reset: function () {
+      if (global.ProtoBiz) global.ProtoBiz.reset();
       var data = seed();
+      if (global.ProtoBiz) {
+        var biz = global.ProtoBiz.load();
+        data.lives = biz.lives;
+        data.sops = biz.sops;
+      }
       save(data);
       return data;
     },
     getStore: function () { return load(); },
-    getLives: function () { return load().lives; },
+    getLives: function () {
+      if (global.ProtoBiz) return global.ProtoBiz.getLives();
+      return load().lives;
+    },
     getLive: function (id) {
+      if (global.ProtoBiz) return global.ProtoBiz.getLive(id);
       return load().lives.find(function (l) { return l.id === id; }) || null;
     },
     saveLive: function (live) {
+      if (global.ProtoBiz) {
+        global.ProtoBiz.saveLive(live);
+        return live;
+      }
       var data = load();
       var i = data.lives.findIndex(function (l) { return l.id === live.id; });
       if (i >= 0) data.lives[i] = live;
@@ -610,12 +671,18 @@
       return live;
     },
     getSops: function (liveId) {
+      if (global.ProtoBiz) return global.ProtoBiz.getSops(liveId);
       return load().sops.filter(function (s) { return !liveId || s.liveId === liveId; });
     },
     getSop: function (id) {
+      if (global.ProtoBiz) return global.ProtoBiz.getSop(id);
       return load().sops.find(function (s) { return s.id === id; }) || null;
     },
     saveSop: function (sop) {
+      if (global.ProtoBiz) {
+        global.ProtoBiz.saveSop(sop);
+        return sop;
+      }
       var data = load();
       var i = data.sops.findIndex(function (s) { return s.id === sop.id; });
       if (i >= 0) data.sops[i] = sop;
@@ -625,10 +692,12 @@
     },
     defaultSopSteps: function () {
       return [
-        { id: uid("ST"), name: "直播预约邀请", timing: "直播前 24 小时", audience: "高意向但未预约线索", channels: ["企微", "短信"], goal: "完成预约", auto: true, status: "draft", target: 0, reached: 0, converted: 0 },
-        { id: uid("ST"), name: "开播前催到", timing: "直播前 1 小时", audience: "已预约用户", channels: ["短信"], goal: "进入直播间", auto: true, status: "draft", target: 0, reached: 0, converted: 0 },
-        { id: uid("ST"), name: "直播中未到场提醒", timing: "开播后 10 分钟", audience: "已预约但未进入直播间", channels: ["企微"], goal: "到课", auto: true, status: "draft", target: 0, reached: 0, converted: 0 },
-        { id: uid("ST"), name: "直播后高意向跟进", timing: "结束后 30 分钟", audience: "观看超 15 分钟未下单", channels: ["助教任务"], goal: "完成购买", auto: false, status: "draft", target: 0, reached: 0, converted: 0 }
+        { id: uid("ST"), name: "直播前邀约", timing: "直播前 24 小时", audience: "高意向但未预约线索", channels: ["企微", "短信"], goal: "完成预约", auto: true, status: "draft", target: 0, reached: 0, converted: 0 },
+        { id: uid("ST"), name: "预约后催到", timing: "预约成功后 2 小时", audience: "新预约用户", channels: ["企微"], goal: "确认到课意向", auto: true, status: "draft", target: 0, reached: 0, converted: 0 },
+        { id: uid("ST"), name: "开播前提醒", timing: "关联预约管理", audience: "已预约用户", channels: ["系统提醒"], goal: "到课", auto: true, status: "linked_booking", target: 0, reached: 0, converted: 0, linkBooking: true },
+        { id: uid("ST"), name: "开播中未到场召回", timing: "开播后 10 分钟", audience: "已预约但未进入直播间", channels: ["企微"], goal: "到课", auto: true, status: "draft", target: 0, reached: 0, converted: 0 },
+        { id: uid("ST"), name: "回放触达", timing: "回放生成后", audience: "未到课用户", channels: ["短信"], goal: "观看回放", auto: true, status: "draft", target: 0, reached: 0, converted: 0 },
+        { id: uid("ST"), name: "会后跟进", timing: "结束后 30 分钟", audience: "观看超 15 分钟未下单", channels: ["助教任务"], goal: "完成购买", auto: false, status: "draft", target: 0, reached: 0, converted: 0 }
       ];
     },
     createSop: function (payload) {
@@ -636,7 +705,8 @@
       var sop = {
         id: uid("SOP"),
         liveId: payload.liveId,
-        name: payload.name || ((live ? live.name : "直播") + " 私域促到 SOP"),
+        name: payload.name || ((live ? live.name : "直播") + "直播促到SOP"),
+        sopName: payload.name || ((live ? live.name : "直播") + "直播促到SOP"),
         category: "scrm_campaign",
         status: "draft",
         period: payload.period || "",
@@ -645,20 +715,32 @@
         filters: payload.filters || {},
         excludes: payload.excludes || ["已购买", "已退订营销", "近期已触达"],
         targetUsers: payload.targetUsers || 0,
-        reachedUsers: 0, newBookings: 0, attendedUsers: 0, orderUsers: 0, gmv: 0, costPerTouch: 0,
+        targetCount: payload.targetUsers || 0,
+        reachedUsers: 0, reachedCount: 0, newBookings: 0, attendedUsers: 0, orderUsers: 0, gmv: 0, costPerTouch: 0,
         createdAt: new Date().toISOString().slice(0, 16).replace("T", " "),
+        updatedAt: new Date().toISOString().slice(0, 16).replace("T", " "),
         startedAt: null,
+        executionLogs: [],
         steps: payload.steps || api.defaultSopSteps()
       };
       return api.saveSop(sop);
     },
     setSopStatus: function (id, status) {
+      if (global.ProtoBiz) {
+        var live = api.getLive((global.ProtoBiz.getSop(id) || {}).liveId);
+        if (status === "running") {
+          if (!live || live.auditStatus !== "approved" || !live.shelf) {
+            return { error: "直播未通过审核并上架，无法启动直播促到SOP" };
+          }
+        }
+        return global.ProtoBiz.setSopStatus(id, status) || { error: "未找到促到SOP" };
+      }
       var sop = api.getSop(id);
       if (!sop) return null;
-      var live = api.getLive(sop.liveId);
+      var live2 = api.getLive(sop.liveId);
       if (status === "running") {
-        if (!live || live.auditStatus !== "approved" || !live.shelf) {
-          return { error: "直播未通过审核并上架，无法启动促到 SOP" };
+        if (!live2 || live2.auditStatus !== "approved" || !live2.shelf) {
+          return { error: "直播未通过审核并上架，无法启动直播促到SOP" };
         }
         sop.startedAt = new Date().toISOString().slice(0, 16).replace("T", " ");
       }

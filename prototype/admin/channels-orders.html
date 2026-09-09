@@ -10,7 +10,7 @@
 <div id="header-actions">
   <button class="btn btn-primary" id="btn-import">导入手机号</button>
   <button class="btn" id="btn-export">导出列表</button>
-  <button class="btn" id="btn-sms">发送领课短信</button>
+  <button class="btn" id="btn-sms">重发领课短信</button>
   <button class="btn" id="btn-touch">加微触达</button>
   <button class="btn" id="btn-decrypt">批量解密</button>
 </div>
@@ -18,11 +18,15 @@
 
   <!-- 顶部统计卡片 -->
   <div class="grid-4" style="margin-bottom:16px">
-    <div class="stat"><div class="label">总订单</div><div class="value">43</div></div>
-    <div class="stat"><div class="label">待处理</div><div class="value">5</div></div>
-    <div class="stat"><div class="label">已支付</div><div class="value">32</div></div>
-    <div class="stat"><div class="label">已退款</div><div class="value">2</div></div>
-    <div class="stat"><div class="label">待发送短信</div><div class="value">8</div></div>
+    <div class="stat"><div class="label">总订单</div><div class="value" id="st-total">0</div></div>
+    <div class="stat"><div class="label">短信失败</div><div class="value" id="st-failed">0</div></div>
+    <div class="stat"><div class="label">发送成功</div><div class="value" id="st-ok">0</div></div>
+    <div class="stat"><div class="label">待发送</div><div class="value" id="st-pending">0</div></div>
+    <div class="stat"><div class="label">已领课</div><div class="value" id="st-claim">0</div></div>
+  </div>
+
+  <div id="sms-filter-chip" style="display:none;margin-bottom:8px">
+    <span class="filter-chip">筛选：短信发送失败 <a href="#" id="chip-clear" style="margin-left:8px">清除</a></span>
   </div>
 
   <!-- 筛选 -->
@@ -46,8 +50,10 @@
       </select>
       <select id="f-sms">
         <option value="">短信发送</option>
-        <option>全部</option><option>待发送</option><option>发送中</option>
-        <option>发送成功</option><option>发送失败</option><option>不发送</option>
+        <option value="all">全部</option>
+        <option value="pending">待发送</option>
+        <option value="success">发送成功</option>
+        <option value="failed">发送失败</option>
       </select>
       <select id="f-has-note">
         <option value="">商家备注</option>
@@ -70,114 +76,27 @@
     <table class="data">
       <thead>
         <tr>
+          <th style="width:36px"><input type="checkbox" id="ck-all" /></th>
           <th style="width:48px">商品图</th>
           <th>商品信息</th>
           <th>客户信息</th>
           <th>价格</th>
           <th>实付金额</th>
           <th>订单来源</th>
-          <th>订单状态</th>
+          <th>短信发送</th>
           <th>来源订单号</th>
-          <th>订单归属人</th>
+          <th>领课状态</th>
           <th>添加时间</th>
           <th>商家备注</th>
           <th style="width:200px">操作</th>
         </tr>
       </thead>
-      <tbody id="co-tbody">
-        <tr>
-          <td><div class="thumb thumb-course"></div></td>
-          <td>春启 03 期家长必修课<br><span class="muted">¥9.9 / ¥99</span></td>
-          <td>李***<br><span class="muted">138****2610</span></td>
-          <td>¥99.00</td>
-          <td><b>¥9.90</b></td>
-          <td><span class="tag tag-blue">视频号</span></td>
-          <td><span class="badge badge-info">已支付</span></td>
-          <td><a href="#" class="link-mono">wx202603291001</a></td>
-          <td>—</td>
-          <td>2026-03-29 09:12</td>
-          <td><a href="#" data-row-act="note">查看备注</a></td>
-          <td class="row-actions">
-            <a href="#" data-row-act="detail">详情</a>
-            <a href="#" data-row-act="refund">退款</a>
-            <a href="#" data-row-act="aftersale">售后</a>
-          </td>
-        </tr>
-        <tr>
-          <td><div class="thumb thumb-course"></div></td>
-          <td>春启 03 期家长必修课<br><span class="muted">¥9.9 / ¥99</span></td>
-          <td>张***<br><span class="muted">159****8832</span></td>
-          <td>¥99.00</td>
-          <td><b>¥9.90</b></td>
-          <td><span class="tag tag-blue">视频号</span></td>
-          <td><span class="badge badge-info">已支付</span></td>
-          <td><a href="#" class="link-mono">wx202603291088</a></td>
-          <td>赵老师</td>
-          <td>2026-03-29 09:40</td>
-          <td><a href="#" data-row-act="note">查看备注</a></td>
-          <td class="row-actions">
-            <a href="#" data-row-act="detail">详情</a>
-            <a href="#" data-row-act="refund">退款</a>
-            <a href="#" data-row-act="aftersale">售后</a>
-          </td>
-        </tr>
-        <tr>
-          <td><div class="thumb thumb-live"></div></td>
-          <td>今晚直播·家长公开课<br><span class="muted">¥0 / 免费</span></td>
-          <td>陈***<br><span class="muted">186****4411</span></td>
-          <td>¥0.00</td>
-          <td><b>¥0.00</b></td>
-          <td><span class="tag tag-blue">视频号</span></td>
-          <td><span class="badge badge-info">已支付</span></td>
-          <td><a href="#" class="link-mono">wx202603281055</a></td>
-          <td>阮荣均</td>
-          <td>2026-03-28 20:18</td>
-          <td>—</td>
-          <td class="row-actions">
-            <a href="#" data-row-act="detail">详情</a>
-            <a href="#" data-row-act="refund">退款</a>
-            <a href="#" data-row-act="aftersale">售后</a>
-          </td>
-        </tr>
-        <tr>
-          <td><div class="thumb thumb-course"></div></td>
-          <td>9.9 引流课·亲子沟通<br><span class="muted">¥9.9 / ¥199</span></td>
-          <td>刘***<br><span class="muted">137****0012</span></td>
-          <td>¥199.00</td>
-          <td><b>¥9.90</b></td>
-          <td><span class="tag tag-blue">视频号</span></td>
-          <td><span class="badge">待付款</span></td>
-          <td><a href="#" class="link-mono">wx202603271002</a></td>
-          <td>—</td>
-          <td>2026-03-27 15:30</td>
-          <td><a href="#" data-row-act="note">查看备注</a></td>
-          <td class="row-actions">
-            <a href="#" data-row-act="detail">详情</a>
-            <a href="#" data-row-act="decrypt">解密</a>
-          </td>
-        </tr>
-        <tr>
-          <td><div class="thumb thumb-course"></div></td>
-          <td>9.9 引流课·亲子沟通<br><span class="muted">¥9.9 / ¥199</span></td>
-          <td>赵***<br><span class="muted">186****2099</span></td>
-          <td>¥199.00</td>
-          <td><b>¥9.90</b></td>
-          <td><span class="tag tag-blue">视频号</span></td>
-          <td><span class="badge badge-danger">已退款</span></td>
-          <td><a href="#" class="link-mono">wx202603250066</a></td>
-          <td>赵老师</td>
-          <td>2026-03-25 14:22</td>
-          <td>—</td>
-          <td class="row-actions">
-            <a href="#" data-row-act="detail">详情</a>
-          </td>
-        </tr>
-      </tbody>
+      <tbody id="co-tbody"></tbody>
     </table>
   </div></div>
   <!-- 分页 -->
   <div class="toolbar" style="margin-top:8px">
-    <span class="muted">共 <b>43</b> 条</span>
+    <span class="muted" id="co-count">共 <b>0</b> 条</span>
     <div class="spacer"></div>
     <select><option>10条/页</option><option>20条/页</option><option>50条/页</option></select>
     <button class="btn btn-sm" disabled>上一页</button>
@@ -228,44 +147,6 @@
   </div>
 </div>
 
-<!-- 退款弹窗 -->
-<div class="proto-modal" id="modal-refund" style="width:520px">
-  <div class="proto-modal-hd">
-    <h3 style="font-size:16px;font-weight:600">发起退款</h3>
-    <button class="btn btn-sm btn-ghost" data-close>×</button>
-  </div>
-  <div class="proto-modal-bd">
-    <div class="form-grid">
-      <div class="field"><label>订单号</label><div id="ref-ord">—</div></div>
-      <div class="field"><label>客户</label><div id="ref-cust">—</div></div>
-      <div class="field"><label>实付金额</label><div id="ref-paid">—</div></div>
-      <div class="field"><label>退款金额 *</label><input id="ref-amount" type="number" value="9.9" /></div>
-      <div class="field" style="grid-column:1/-1"><label>退款原因 *</label>
-        <textarea rows="3" style="width:100%;padding:8px;border:1px solid var(--color-border);border-radius:6px"></textarea>
-      </div>
-    </div>
-  </div>
-  <div class="proto-drawer-ft" style="border-top:1px solid var(--color-border);padding:12px 20px;display:flex;gap:8px;justify-content:flex-end">
-    <button class="btn" data-close>取消</button>
-    <button class="btn btn-primary" id="ref-submit">确认退款</button>
-  </div>
-</div>
-
-<!-- 备注弹窗 -->
-<div class="proto-modal" id="modal-note" style="width:520px">
-  <div class="proto-modal-hd">
-    <h3 style="font-size:16px;font-weight:600">商家备注</h3>
-    <button class="btn btn-sm btn-ghost" data-close>×</button>
-  </div>
-  <div class="proto-modal-bd">
-    <p class="muted" id="note-text">—</p>
-  </div>
-  <div class="proto-drawer-ft" style="border-top:1px solid var(--color-border);padding:12px 20px;display:flex;gap:8px;justify-content:flex-end">
-    <button class="btn" data-close>关闭</button>
-    <button class="btn btn-primary">编辑备注</button>
-  </div>
-</div>
-
 <style>
 .thumb {
   width: 48px; height: 36px; border-radius: 4px;
@@ -282,103 +163,264 @@
 .tag { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 12px; }
 .tag-blue { background: #e8f3ff; color: #165dff; }
 .row-actions a.danger { color: var(--color-danger); }
+.filter-chip {
+  display: inline-flex; align-items: center;
+  padding: 6px 12px; border-radius: 16px;
+  background: #fff7e6; border: 1px solid #ffd591; color: #d48806;
+  font-size: 12px;
+}
+.filter-chip a { color: #165dff; text-decoration: none; }
 </style>
 
 <script src="../assets/js/proto.js"></script>
+<script src="../assets/js/prototype-business-store.js"></script>
 <script src="../assets/js/admin-shell.js?v=13"></script>
 <script>
 (function () {
-  // ===== Mask =====
+  var Biz = window.ProtoBiz;
+  var smsFailedOnly = false;
+  var listCache = [];
+
+  function esc(s) {
+    return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) {
+      return ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c];
+    });
+  }
+
+  function normalizeFocusUrl(enable) {
+    try {
+      var u = new URL(location.href);
+      u.searchParams.delete("sms");
+      if (enable) u.searchParams.set("focus", "sms_failed");
+      else u.searchParams.delete("focus");
+      var next = u.pathname + u.search + u.hash;
+      if (next !== location.pathname + location.search + location.hash) {
+        history.replaceState(null, "", next);
+      }
+    } catch (e) {}
+  }
+
+  function readFocusFromUrl() {
+    try {
+      var q = new URLSearchParams(location.search);
+      if (q.get("focus") === "sms_failed" || q.get("sms") === "failed") {
+        smsFailedOnly = true;
+        normalizeFocusUrl(true);
+        return;
+      }
+    } catch (e) {}
+    smsFailedOnly = false;
+  }
+
+  function smsBadge(o) {
+    if (o.smsStatus === "failed") return '<span class="badge badge-danger">' + esc(o.smsStatusLabel || "发送失败") + "</span>";
+    if (o.smsStatus === "success") return '<span class="badge badge-success">' + esc(o.smsStatusLabel || "发送成功") + "</span>";
+    return '<span class="badge">' + esc(o.smsStatusLabel || "待发送") + "</span>";
+  }
+
+  function setOrderUrl(orderId) {
+    try {
+      var u = new URL(location.href);
+      if (orderId) u.searchParams.set("order_id", orderId);
+      else u.searchParams.delete("order_id");
+      u.searchParams.delete("id");
+      history.replaceState(null, "", u.pathname + u.search + u.hash);
+    } catch (e) {}
+  }
+
+  function setDrawerA11y(open) {
+    var d = document.getElementById("drawer-detail");
+    if (!d) return;
+    if (open) {
+      d.removeAttribute("aria-hidden");
+      d.removeAttribute("inert");
+    } else {
+      d.setAttribute("aria-hidden", "true");
+      d.setAttribute("inert", "");
+    }
+  }
+
+  function fillDetail(o) {
+    if (!o || !o.id) {
+      Proto.toast("未找到对应订单，请返回列表重新选择。");
+      setDrawerA11y(false);
+      setOrderUrl("");
+      return;
+    }
+    document.getElementById("cod-title").textContent = "订单详情 · " + o.title;
+    document.getElementById("cod-public").textContent = o.id;
+    document.getElementById("cod-local").textContent = o.id;
+    document.getElementById("cod-source").textContent = "视频号";
+    document.getElementById("cod-status").textContent = "已支付";
+    document.getElementById("cod-time").textContent = o.paidAt || "—";
+    document.getElementById("cod-owner").textContent = "—";
+    document.getElementById("cod-price").textContent = "¥" + Number(o.amount || 0).toFixed(2);
+    document.getElementById("cod-paid").textContent = "¥" + Number(o.amount || 0).toFixed(2);
+    document.getElementById("cod-decrypt").textContent = "已解密";
+    document.getElementById("cod-sms").textContent = o.smsStatusLabel || o.smsStatus;
+    document.getElementById("cod-product").textContent = o.title;
+    document.getElementById("cod-spec").textContent = "默认";
+    document.getElementById("cod-customer").textContent = o.buyer || "—";
+    document.getElementById("cod-phone").textContent = o.phone || "—";
+    document.getElementById("cod-note").textContent = "无";
+    setOrderUrl(o.id);
+    open(document.getElementById("drawer-detail"));
+    setDrawerA11y(true);
+  }
+
+  function render() {
+    var all = Biz.getChannelOrders() || [];
+    var failed = Biz.getChannelOrders("sms_failed") || [];
+    document.getElementById("st-total").textContent = String(all.length);
+    document.getElementById("st-failed").textContent = String(failed.length);
+    document.getElementById("st-ok").textContent = String(all.filter(function (o) { return o.smsStatus === "success"; }).length);
+    document.getElementById("st-pending").textContent = String(all.filter(function (o) { return o.smsStatus === "pending"; }).length);
+    document.getElementById("st-claim").textContent = String(all.filter(function (o) { return o.claimStatus === "已领课"; }).length);
+
+    document.getElementById("sms-filter-chip").style.display = smsFailedOnly ? "" : "none";
+    if (smsFailedOnly) document.getElementById("f-sms").value = "failed";
+
+    var smsFilter = document.getElementById("f-sms").value;
+    var kw = (document.getElementById("f-product").value || "").trim();
+    var list = smsFailedOnly ? Biz.getChannelOrders("sms_failed") : Biz.getChannelOrders();
+    if (!smsFailedOnly && smsFilter === "failed") list = Biz.getChannelOrders("sms_failed");
+    else if (!smsFailedOnly && smsFilter === "success") list = list.filter(function (o) { return o.smsStatus === "success"; });
+    else if (!smsFailedOnly && smsFilter === "pending") list = list.filter(function (o) { return o.smsStatus === "pending"; });
+    if (kw) list = list.filter(function (o) { return (o.title || "").indexOf(kw) >= 0 || (o.id || "").indexOf(kw) >= 0; });
+
+    listCache = list;
+    document.getElementById("co-count").innerHTML = "共 <b>" + list.length + "</b> 条";
+    var tbody = document.getElementById("co-tbody");
+    if (!list.length) {
+      tbody.innerHTML = '<tr><td colspan="13" class="muted" style="text-align:center;padding:24px">暂无订单</td></tr>';
+      return;
+    }
+    var focusQs = smsFailedOnly ? "focus=sms_failed&" : "";
+    tbody.innerHTML = list.map(function (o) {
+      var detailHref = "channels-orders.html?" + focusQs + "order_id=" + encodeURIComponent(o.id);
+      return '<tr data-id="' + esc(o.id) + '">' +
+        '<td><input type="checkbox" class="row-check" data-id="' + esc(o.id) + '" data-sms="' + esc(o.smsStatus) + '" /></td>' +
+        '<td><div class="thumb thumb-course"></div></td>' +
+        "<td>" + esc(o.title) + '<br><span class="muted">¥' + Number(o.amount || 0).toFixed(2) + "</span></td>" +
+        "<td>" + esc(o.buyer) + '<br><span class="muted">' + esc(o.phone) + "</span></td>" +
+        "<td>¥" + Number(o.amount || 0).toFixed(2) + "</td>" +
+        "<td><b>¥" + Number(o.amount || 0).toFixed(2) + "</b></td>" +
+        '<td><span class="tag tag-blue">视频号</span></td>' +
+        "<td>" + smsBadge(o) + "</td>" +
+        '<td><a href="' + detailHref + '" class="link-mono" data-row-act="detail" data-id="' + esc(o.id) + '">' + esc(o.id) + "</a></td>" +
+        "<td>" + esc(o.claimStatus || "—") + "</td>" +
+        "<td>" + esc(o.paidAt || "—") + "</td>" +
+        "<td>—</td>" +
+        '<td class="row-actions">' +
+          '<a href="' + detailHref + '" data-row-act="detail" data-id="' + esc(o.id) + '">详情</a>' +
+          (o.smsStatus === "failed" ? '<a href="' + detailHref + '&act=resend" data-row-act="resend" data-id="' + esc(o.id) + '">重发短信</a>' : "") +
+        "</td></tr>";
+    }).join("");
+
+    tbody.querySelectorAll("[data-row-act]").forEach(function (a) {
+      a.addEventListener("click", function (e) {
+        e.preventDefault();
+        var id = a.getAttribute("data-id") || (a.closest("tr") && a.closest("tr").getAttribute("data-id"));
+        var o = listCache.find(function (x) { return x.id === id; });
+        if (!o) { Proto.toast("未找到订单 " + (id || "")); return; }
+        var act = a.getAttribute("data-row-act");
+        if (act === "detail") fillDetail(o);
+        else if (act === "resend") {
+          Biz.resendSms([o.id]);
+          Proto.toast("已重发短信：" + o.id);
+          render();
+        }
+      });
+    });
+  }
+
   var mask = document.getElementById("mask");
   function closeAll() {
     mask.classList.remove("open");
     document.querySelectorAll(".proto-modal, .proto-drawer").forEach(function (n) { n.classList.remove("open"); });
+    setDrawerA11y(false);
+    setOrderUrl("");
   }
   function open(node) { mask.classList.add("open"); node.classList.add("open"); }
   mask.addEventListener("click", closeAll);
   document.querySelectorAll("[data-close]").forEach(function (n) { n.addEventListener("click", closeAll); });
 
-  // ===== Row data =====
-  function rowData(tr) {
-    var tds = tr.querySelectorAll("td");
-    return {
-      product: tds[1] ? tds[1].textContent.trim() : "",
-      customer: tds[2] ? tds[2].childNodes[0].textContent.trim() : "",
-      phone: tds[2] && tds[2].querySelector(".muted") ? tds[2].querySelector(".muted").textContent.trim() : "",
-      price: tds[3] ? tds[3].textContent.trim() : "",
-      paid: tds[4] ? tds[4].textContent.trim() : "",
-      source: tds[5] ? tds[5].textContent.trim() : "",
-      status: tds[6] ? tds[6].textContent.trim() : "",
-      publicOrd: tds[7] ? tds[7].textContent.trim() : "",
-      owner: tds[8] ? tds[8].textContent.trim() : "",
-      time: tds[9] ? tds[9].textContent.trim() : "",
-      note: tds[10] ? tds[10].textContent.trim() : "",
-    };
-  }
-
-  // ===== Detail =====
-  function fillDetail(d) {
-    document.getElementById("cod-title").textContent = "订单详情 · " + d.product.split("\n")[0];
-    document.getElementById("cod-public").textContent = d.publicOrd;
-    document.getElementById("cod-local").textContent = "L" + d.publicOrd.replace(/^wx/, "XT");
-    document.getElementById("cod-source").textContent = d.source;
-    document.getElementById("cod-status").textContent = d.status;
-    document.getElementById("cod-time").textContent = d.time;
-    document.getElementById("cod-owner").textContent = d.owner;
-    document.getElementById("cod-price").textContent = d.price;
-    document.getElementById("cod-paid").textContent = d.paid;
-    document.getElementById("cod-decrypt").textContent = d.status === "已支付" ? "已解密" : "未解密";
-    document.getElementById("cod-sms").textContent = "发送成功";
-    document.getElementById("cod-product").textContent = d.product.split("\n")[0];
-    document.getElementById("cod-spec").textContent = "默认";
-    document.getElementById("cod-customer").textContent = d.customer + "*";
-    document.getElementById("cod-phone").textContent = d.phone;
-    document.getElementById("cod-note").textContent = d.note === "—" ? "无" : "客户通过视频号直播下单，留言：希望尽快开通课程。";
-    open(document.getElementById("drawer-detail"));
-  }
-
-  // ===== Row actions =====
-  document.querySelectorAll("#co-tbody tr").forEach(function (tr) {
-    tr.querySelectorAll("[data-row-act]").forEach(function (a) {
-      a.addEventListener("click", function (e) {
-        e.preventDefault();
-        var act = a.getAttribute("data-row-act");
-        var d = rowData(tr);
-        if (act === "detail") fillDetail(d);
-        else if (act === "refund") {
-          document.getElementById("ref-ord").textContent = d.publicOrd;
-          document.getElementById("ref-cust").textContent = d.customer + "*";
-          document.getElementById("ref-paid").textContent = d.paid;
-          open(document.getElementById("modal-refund"));
-        } else if (act === "aftersale") Proto.toast("打开售后（原型）");
-        else if (act === "note") {
-          document.getElementById("note-text").textContent = d.note === "—" ? "无备注" : "客户通过视频号直播下单，留言：希望尽快开通课程。";
-          open(document.getElementById("modal-note"));
-        } else if (act === "decrypt") Proto.toast("已解密手机号（原型）");
-      });
-    });
+  document.getElementById("ck-all").addEventListener("change", function () {
+    var c = this.checked;
+    document.querySelectorAll(".row-check").forEach(function (x) { x.checked = c; });
   });
 
-  document.getElementById("ref-submit").addEventListener("click", function () {
-    var amt = document.getElementById("ref-amount").value.trim();
-    if (!amt) { Proto.toast("请输入退款金额"); return; }
-    closeAll(); Proto.toast("已发起退款（原型）");
+  document.getElementById("btn-sms").addEventListener("click", function () {
+    var ids = Array.from(document.querySelectorAll(".row-check:checked"))
+      .filter(function (c) { return c.getAttribute("data-sms") === "failed"; })
+      .map(function (c) { return c.getAttribute("data-id"); });
+    if (!ids.length) {
+      Proto.toast("请勾选短信发送失败的订单");
+      return;
+    }
+    Biz.resendSms(ids);
+    Proto.toast("已重发 " + ids.length + " 条短信");
+    render();
   });
 
-  // ===== Header buttons =====
+  document.getElementById("chip-clear").addEventListener("click", function (e) {
+    e.preventDefault();
+    smsFailedOnly = false;
+    document.getElementById("f-sms").value = "";
+    normalizeFocusUrl(false);
+    render();
+  });
+
   document.getElementById("btn-import").addEventListener("click", function () { Proto.toast("打开导入手机号（原型）"); });
   document.getElementById("btn-export").addEventListener("click", function () { Proto.toast("已导出（原型）"); });
-  document.getElementById("btn-sms").addEventListener("click", function () { Proto.toast("发送领课短信（原型）"); });
   document.getElementById("btn-touch").addEventListener("click", function () { Proto.toast("加微触达（原型）"); });
   document.getElementById("btn-decrypt").addEventListener("click", function () { Proto.toast("批量解密手机号（原型）"); });
-  document.getElementById("btn-query").addEventListener("click", function () { Proto.toast("已筛选（原型）"); });
+  document.getElementById("btn-query").addEventListener("click", function () {
+    if (document.getElementById("f-sms").value === "failed") {
+      smsFailedOnly = true;
+      normalizeFocusUrl(true);
+    }
+    render();
+  });
   document.getElementById("btn-reset").addEventListener("click", function () {
     ["f-order-public","f-order-local","f-product"].forEach(function (id) { document.getElementById(id).value = ""; });
     ["f-status","f-refund","f-deliver","f-sms","f-has-note","f-decrypt"].forEach(function (id) { document.getElementById(id).value = ""; });
     document.getElementById("f-time1").value = "";
     document.getElementById("f-time2").value = "";
+    smsFailedOnly = false;
+    normalizeFocusUrl(false);
+    render();
     Proto.toast("已重置");
   });
+
+  setDrawerA11y(false);
+  readFocusFromUrl();
+  render();
+  try {
+    var q2 = new URLSearchParams(location.search);
+    var oid = q2.get("order_id");
+    var act = q2.get("act");
+    if (oid) {
+      var hit = (Biz.getChannelOrders() || []).find(function (o) { return o.id === oid; });
+      if (hit) {
+        if (act === "resend" && hit.smsStatus === "failed") {
+          Biz.resendSms([hit.id]);
+          Proto.toast("已重发短信：" + hit.id);
+          try {
+            var u = new URL(location.href);
+            u.searchParams.delete("act");
+            history.replaceState(null, "", u.pathname + u.search + u.hash);
+          } catch (e3) {}
+          render();
+          hit = (Biz.getChannelOrders() || []).find(function (o) { return o.id === oid; }) || hit;
+        }
+        fillDetail(hit);
+      } else {
+        Proto.toast("未找到对应订单，请返回列表重新选择。");
+        setOrderUrl("");
+      }
+    }
+  } catch (e2) {}
 })();
 </script>
 </body>

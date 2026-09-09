@@ -194,15 +194,8 @@
   <div class="proto-modal-bd">
     <div class="field" style="margin-bottom:10px"><label>用户</label><div>学员7576</div></div>
     <div class="field"><label>选择标签（可多选）</label>
-      <div class="tag-pick">
-        <label class="tp-item"><input type="checkbox" checked /> 高意向</label>
-        <label class="tp-item"><input type="checkbox" /> 已购引流课</label>
-        <label class="tp-item"><input type="checkbox" checked /> 训练营学员</label>
-        <label class="tp-item"><input type="checkbox" /> 直播高活跃</label>
-        <label class="tp-item"><input type="checkbox" /> 流失预警</label>
-      </div>
-    </div>
-    <p class="muted" style="margin:8px 0 0;font-size:12px">仅手动标签；自动标签规则 MVP 暂不实现</p>
+      <div class="tag-pick"></div>
+    <p class="muted" style="margin:8px 0 0;font-size:12px">选项来自 <a href="user-tags.html">标签管理</a> 启用中的手动标签</p>
   </div>
   <div class="proto-modal-ft" style="border-top:1px solid var(--color-border);padding:12px 20px;display:flex;gap:8px;justify-content:flex-end">
     <button class="btn" data-close>取消</button>
@@ -291,7 +284,8 @@
 </style>
 
 <script src="../assets/js/proto.js"></script>
-<script src="../assets/js/admin-shell.js?v=13"></script>
+<script src="../assets/js/user-tags.js"></script>
+<script src="../assets/js/admin-shell.js?v=14"></script>
 <script>
 (function () {
   var mask = document.getElementById("mask");
@@ -317,7 +311,10 @@
   });
 
   // 顶部按钮
-  document.getElementById("btn-tag").addEventListener("click", function () { open(document.getElementById("modal-tag")); });
+  document.getElementById("btn-tag").addEventListener("click", function () {
+    if (window.UserTags) UserTags.renderPick(document.getElementById("tag-pick") || document.querySelector("#modal-tag .tag-pick"), ["t_high"]);
+    open(document.getElementById("modal-tag"));
+  });
   document.getElementById("btn-assign").addEventListener("click", function () { Proto.toast("调整归属（原型）"); });
   document.getElementById("btn-touch").addEventListener("click", function () { open(document.getElementById("modal-touch")); });
   document.getElementById("edit-profile").addEventListener("click", function (e) {

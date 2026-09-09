@@ -5,6 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>直播分析 · 商家管理后台</title>
 <link rel="stylesheet" href="../assets/css/proto.css?v=10" />
+<style>
+#active-filters { margin: 0 0 12px; font-size: 12px; }
+</style>
 </head>
 <body class="admin-body" data-module="data" data-nav="board-l" data-title="直播分析" data-crumb="经营分析 / 直播" data-assist="1">
 <div id="header-actions">
@@ -14,10 +17,10 @@
 </div>
 <div id="page-content" style="display:none">
 
-
   <div class="board-tip">
     <b>直播分析：</b>场次是否有效、私域促到是否触达。「到课」服务增长但不进主漏斗。
-    <span class="muted">获客渠道筛选仅影响关联人群指标，不影响直播场次统计。</span>
+    <span class="muted">期次影响场次；获客渠道只影响关联人群指标。</span>
+    <span class="muted" id="scope-help-brief"></span>
   </div>
 
   <div class="board-filter">
@@ -31,26 +34,27 @@
     <select id="f-term"></select>
     <button class="btn btn-primary" id="btn-query">查询</button>
     <button class="btn" id="btn-reset">重置</button>
-    <a class="btn" href="live-invite.html">新建私域触达活动</a>
+    <a class="btn" href="live-invite.html">新建直播促到SOP</a>
   </div>
+  <div id="active-filters"></div>
 
   <div class="stat-cards board-stats" style="grid-template-columns:repeat(4,1fr)">
     <div class="stat-card">
-      <div class="stat-label">直播场次</div>
-      <div class="stat-value" data-m="lives">18</div>
-      <div class="stat-hint"><span class="board-scope aux">场次口径</span> · <span data-range-label>近7日</span></div>
+      <div class="stat-label">全部场次</div>
+      <div class="stat-value" id="stat-sessions" data-m="lives">18</div>
+      <div class="stat-hint">已结束 <span id="stat-ended">0</span> · <span data-range-label>近7日</span></div>
     </div>
     <div class="stat-card">
-      <div class="stat-label">场均到课率</div>
-      <div class="stat-value" data-m="liveAttendAvg">41%</div>
-      <div class="stat-hint">预约→到课 · 场次平均</div>
+      <div class="stat-label">已结束场次平均到课率</div>
+      <div class="stat-value" id="stat-attend-avg" data-m="liveAttendAvg">41%</div>
+      <div class="stat-hint" id="stat-attend-hint">有效到课样本 <span id="stat-attend-sample">0</span></div>
     </div>
     <div class="stat-card">
       <div class="stat-label">促到场次到课差</div>
       <div class="stat-value" style="color:#00b42a" id="invite-lift">+9pt</div>
       <div class="stat-hint" id="invite-lift-hint">有私域促到场次的平均到课率比未促到场次高 9 个百分点（相关，非因果）</div>
     </div>
-    <a class="stat-card" data-board-link="board-convert.html" href="board-convert.html">
+    <a class="stat-card" data-board-link="board-convert.html" data-board-section="attributed" href="board-convert.html">
       <div class="stat-label">加微人群到课</div>
       <div class="stat-value" data-m="attend">186</div>
       <div class="stat-hint"><span class="board-scope main">旁路</span> / 已加微 <span data-m="wecom">392</span></div>
@@ -64,7 +68,7 @@
         <thead>
           <tr>
             <th>直播名称</th><th>开播</th><th>预约人数</th><th>预约提醒</th><th>提醒送达</th>
-            <th>私域促到目标</th><th>私域实际触达</th><th>到课人数</th><th>到课率</th>
+            <th>直播促到SOP目标</th><th>实际触达</th><th>到课人数</th><th>到课率</th>
             <th>直播支付用户</th><th>直播GMV</th><th style="width:200px">操作</th>
           </tr>
         </thead>
@@ -80,9 +84,9 @@
         <div class="board-funnel slope">
           <div class="step" style="--h:100%"><div class="n" data-m="wecom">392</div><div class="l">已加微</div></div>
           <div class="step drop" style="--h:47%"><div class="n" data-m="attend">186</div><div class="l">有到课</div></div>
-          <div class="step" style="--h:33%"><div class="n" data-m="pay">128</div><div class="l">可归因支付（含未到课）</div><div class="sub"><a data-board-link="board-convert.html" href="board-convert.html">交易分析</a></div></div>
+          <div class="step" style="--h:33%"><div class="n" data-m="pay">128</div><div class="l">可归因支付（含未到课）</div><div class="sub"><a data-board-link="board-convert.html" data-board-section="attributed" href="board-convert.html">交易分析</a></div></div>
         </div>
-        <p class="muted" style="margin:8px 0 0">支付人数可大于「到课后支付」：未到课也有成交。</p>
+        <p class="muted" style="margin:8px 0 0">支付人数可大于「到课后支付」：未到课也有成交。获客渠道只影响关联人群指标。</p>
       </div>
     </div>
     <div class="card">
@@ -100,40 +104,79 @@
 
 </div>
 <script src="../assets/js/proto.js"></script>
-<script src="../assets/js/board-data.js?v=3"></script>
-<script src="../assets/js/board-metrics.js?v=7"></script>
+<script src="../assets/js/board-data.js?v=5"></script>
+<script src="../assets/js/board-metrics.js?v=9"></script>
 <script src="../assets/js/admin-shell.js?v=13"></script>
 <script>
 (function () {
+  BoardMetrics.ensureCaliberUI();
+  BoardMetrics.setUpdatedNow();
   BoardMetrics.fillAttr();
+  var brief = document.getElementById("scope-help-brief");
+  if (brief) brief.textContent = " · " + (BoardMetrics.FILTER_SCOPE_HELP || "").slice(0, 40) + "…";
 
   function actionsFor(row) {
+    var lid = row.id || "";
     if (row.status === "upcoming") {
-      return '<a href="live-booking.html">配置预约提醒</a><a href="live-invite.html">新建私域触达活动</a>';
+      return '<a href="live-booking.html?live_id=' + lid + '">配置预约提醒</a>' +
+        '<a href="live-invite.html?live_id=' + lid + '">新建直播促到SOP</a>';
     }
-    return '<a href="live-stats.html">查看数据</a><a href="live-replay.html">查看回放</a><a href="live-invite.html">创建回放触达</a>';
+    return '<a href="live-stats.html?live_id=' + lid + '">查看数据</a>' +
+      '<a href="live-replay.html?live_id=' + lid + '">查看回放</a>' +
+      '<a href="live-invite.html?live_id=' + lid + '">新建直播促到SOP</a>';
   }
 
   function renderDetails(d) {
     var sum = BoardMetrics.getLiveSummary();
+    var sessions = d.liveSessions != null ? d.liveSessions : (sum.sessions || 0);
+    var ended = d.endedSessions != null ? d.endedSessions : (sum.endedSessions || 0);
+    var sample = d.attendSampleSessions != null ? d.attendSampleSessions : (sum.attendSampleSessions || 0);
+    var empty = !sessions;
+
+    document.getElementById("stat-sessions").textContent = empty ? "—" : BoardMetrics.fmt(sessions);
+    document.getElementById("stat-ended").textContent = empty ? "—" : BoardMetrics.fmt(ended);
+
+    var avgEl = document.getElementById("stat-attend-avg");
+    var hintEl = document.getElementById("stat-attend-hint");
+    if (empty || !sample) {
+      avgEl.textContent = "—";
+      if (hintEl) {
+        hintEl.innerHTML = '有效到课样本 <span id="stat-attend-sample">—</span>' +
+          (empty ? " · 当前筛选暂无场次" : "");
+      }
+    } else {
+      avgEl.textContent = d.liveAttendAvg || sum.liveAttendAvg || "—";
+      if (hintEl) {
+        hintEl.textContent = d.liveAttendAvgHint || sum.liveAttendAvgHint ||
+          ("有效到课样本 " + sample);
+      }
+    }
+
     var liftEl = document.getElementById("invite-lift");
-    var hintEl = document.getElementById("invite-lift-hint");
-    if (!sum.sampleOk) {
+    var liftHint = document.getElementById("invite-lift-hint");
+    if (!sum.sampleOk || empty) {
       liftEl.textContent = "—";
       liftEl.style.color = "";
-      if (hintEl) hintEl.textContent = "样本不足，暂无法比较促到场次到课差（相关，非因果）";
+      if (liftHint) liftHint.textContent = "样本不足，暂无法比较促到场次到课差（相关，非因果）";
     } else {
       liftEl.textContent = d.inviteLift || sum.inviteLift || "—";
       liftEl.style.color = "#00b42a";
       var liftNum = String(d.inviteLift || sum.inviteLift || "").replace("+", "").replace("pt", "");
-      if (hintEl) hintEl.textContent = "有私域促到场次的平均到课率比未促到场次高 " + liftNum + " 个百分点（相关，非因果）";
+      if (liftHint) liftHint.textContent = "有私域促到场次的平均到课率比未促到场次高 " + liftNum + " 个百分点（相关，非因果）";
     }
+
     var rows = BoardMetrics.getLiveRows();
     var tbody = document.getElementById("live-tbody");
     if (!rows.length) {
-      BoardMetrics.renderEmpty(tbody, 12);
+      BoardMetrics.renderEmpty(tbody, 12, "当前筛选条件下暂无直播场次");
     } else {
       tbody.innerHTML = rows.map(function (r) {
+        var lid = r.id || "";
+        var viewHref = BoardMetrics.buildDrilldownUrl("live-stats.html", { live_id: lid });
+        var actions = actionsFor(r).replace(
+          'href="live-stats.html?live_id=' + lid + '"',
+          'href="' + viewHref + '"'
+        );
         return "<tr>" +
           "<td>" + r.name + "</td><td>" + r.startAt + "</td>" +
           "<td>" + BoardMetrics.fmt(r.booked) + "</td><td>" + (r.remindStatus || "—") + "</td>" +
@@ -142,24 +185,33 @@
           "<td>" + (r.attend == null ? "—" : BoardMetrics.fmt(r.attend)) + "</td>" +
           "<td>" + (r.attendRate || "—") + "</td>" +
           "<td>" + BoardMetrics.fmt(r.payUsers) + "</td><td>" + BoardMetrics.money(r.gmv) + "</td>" +
-          '<td class="row-actions">' + actionsFor(r) + "</td></tr>";
+          '<td class="row-actions">' + actions + "</td></tr>";
       }).join("");
     }
 
-    var g = d.inviteGroups || BoardMetrics.getLiveSummary();
+    var g = d.inviteGroups || sum;
     var total = (g.sent || 0) + (g.miss || 0) + (g.pending || 0);
-    document.getElementById("invite-groups").innerHTML =
-      "<tr><td>已发送私域促到</td><td>" + (g.sent || 0) + '</td><td style="color:#00b42a">' + (g.sentAvg || "—") + "</td></tr>" +
-      "<tr><td>未发送 / 漏发</td><td>" + (g.miss || 0) + '</td><td style="color:#f53f3f">' + (g.missAvg || "—") + "</td></tr>" +
-      "<tr><td>未开播或数据不足</td><td>" + (g.pending || 0) + "</td><td>—</td></tr>" +
-      "<tr><td>差值</td><td>—</td><td><b>" + (g.sampleOk ? (d.inviteLift || "—") : "—") + "</b></td></tr>";
-    var note = "共解释 " + total + " 场（指标卡场次 " + d.liveSessions + "）。获客渠道不影响场次统计。";
-    if (!g.sampleOk) note += " 样本不足，暂无法比较促到场次到课差。";
-    else {
-      var liftTxt = String(d.inviteLift || g.inviteLift || "").replace("+", "").replace("pt", "");
-      note += " 有私域促到场次的平均到课率比未促到场次高 " + (liftTxt || "—") + " 个百分点，为相关观察而非确定因果。";
+    if (empty) {
+      document.getElementById("invite-groups").innerHTML =
+        "<tr><td>已发送私域促到</td><td>—</td><td>—</td></tr>" +
+        "<tr><td>未发送 / 漏发</td><td>—</td><td>—</td></tr>" +
+        "<tr><td>未开播或数据不足</td><td>—</td><td>—</td></tr>" +
+        "<tr><td>差值</td><td>—</td><td><b>—</b></td></tr>";
+      document.getElementById("invite-note").textContent = "当前筛选（如今日×春启04期）暂无场次，到课率与促到差展示为 —。";
+    } else {
+      document.getElementById("invite-groups").innerHTML =
+        "<tr><td>已发送私域促到</td><td>" + (g.sent || 0) + '</td><td style="color:#00b42a">' + (g.sentAvg || "—") + "</td></tr>" +
+        "<tr><td>未发送 / 漏发</td><td>" + (g.miss || 0) + '</td><td style="color:#f53f3f">' + (g.missAvg || "—") + "</td></tr>" +
+        "<tr><td>未开播或数据不足</td><td>" + (g.pending || 0) + "</td><td>—</td></tr>" +
+        "<tr><td>差值</td><td>—</td><td><b>" + (g.sampleOk ? (d.inviteLift || "—") : "—") + "</b></td></tr>";
+      var note = "共解释 " + total + " 场（全部场次 " + sessions + "，已结束 " + ended + "，有效到课样本 " + sample + "）。期次影响场次；获客渠道不影响场次统计。";
+      if (!g.sampleOk) note += " 样本不足，暂无法比较促到场次到课差。";
+      else {
+        var liftTxt = String(d.inviteLift || g.inviteLift || "").replace("+", "").replace("pt", "");
+        note += " 有私域促到场次的平均到课率比未促到场次高 " + (liftTxt || "—") + " 个百分点，为相关观察而非确定因果。";
+      }
+      document.getElementById("invite-note").textContent = note;
     }
-    document.getElementById("invite-note").textContent = note;
 
     document.querySelectorAll(".board-two .board-funnel.slope .step").forEach(function (el, i) {
       var keys = ["wecom", "attend", "pay"];
@@ -167,6 +219,7 @@
       var pct = Math.max(28, Math.round((d[keys[i]] / base) * 100));
       el.style.setProperty("--h", pct + "%");
     });
+    BoardMetrics.renderActiveFilters();
     BoardMetrics.wireBoardLinks();
   }
 

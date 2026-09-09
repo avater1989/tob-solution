@@ -5,6 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>获客分析 · 商家管理后台</title>
 <link rel="stylesheet" href="../assets/css/proto.css?v=10" />
+<style>
+#active-filters { margin: 0 0 12px; font-size: 12px; }
+</style>
 </head>
 <body class="admin-body" data-module="data" data-nav="board-a" data-title="获客分析" data-crumb="经营分析 / 获客" data-assist="1">
 <div id="header-actions">
@@ -14,8 +17,10 @@
 </div>
 <div id="page-content" style="display:none">
 
-
-  <div class="board-tip"><b>获客专题：</b>人从哪来？只看入池来源。「视频号获客首单」为前端辅指标，不能直接计入入池→支付后链路。</div>
+  <div class="board-tip">
+    <b>获客专题：</b>人从哪来？只看入池来源。「视频号获客首单」为前端辅指标，不能直接计入入池→支付后链路。
+    <span class="muted" id="scope-help-brief"></span>
+  </div>
 
   <div class="board-filter">
     <div class="segmented" id="range-seg">
@@ -29,16 +34,16 @@
     <button class="btn btn-primary" id="btn-query">查询</button>
     <button class="btn" id="btn-reset">重置</button>
   </div>
-  <div id="active-filters" style="margin:0 0 12px;font-size:12px"></div>
+  <div id="active-filters"></div>
 
   <div class="stat-cards board-stats" style="grid-template-columns:repeat(4,1fr)">
-    <a class="stat-card" href="leads.html">
-      <div class="stat-label">入池线索</div>
+    <a class="stat-card" data-board-link="leads.html" href="leads.html">
+      <div class="stat-label" id="lbl-pool">入池线索</div>
       <div class="stat-value" data-m="pool">612</div>
       <div class="stat-hint"><span data-range-label>近7日</span></div>
     </a>
-    <a class="stat-card" href="channels-orders.html">
-      <div class="stat-label">视频号获客首单</div>
+    <a class="stat-card" data-board-link="channels-orders.html" href="channels-orders.html">
+      <div class="stat-label" id="lbl-vx-orders">视频号获客首单</div>
       <div class="stat-value" data-m="vxOrders">286</div>
       <div class="stat-hint">辅口径 · 流入 <span data-m="vxLeads">241</span></div>
     </a>
@@ -69,16 +74,22 @@
           <div class="step" data-m-h="vxLeads" style="--h:84%"><div class="n" data-m="vxLeads">241</div><div class="l">流入线索</div><div class="r" id="r-vxLeads">84%</div></div>
           <div class="step drop" data-m-h="vxClaim" style="--h:69%"><div class="n" data-m="vxClaim">198</div><div class="l">领课成功</div><div class="r" id="r-vxClaim">82%</div></div>
         </div>
-        <div style="margin-top:10px;display:flex;gap:8px">
-          <a class="btn btn-sm" href="channels-orders.html?focus=sms_fail">短信失败 <span data-m="vxSmsFail">18</span></a>
-          <a class="btn btn-sm" href="channels-orders.html">全部订单</a>
+        <div style="margin-top:10px">
+          <p style="font-size:13px;margin:0 0 8px">
+            今日发生发送失败 <b data-m="smsFailureEvents">18</b>
+            · 当前待重发 <b data-m="smsFailedPending">18</b>
+          </p>
+          <div style="display:flex;gap:8px">
+            <a class="btn btn-sm" data-board-link="channels-orders.html" data-board-focus="sms_failed" href="channels-orders.html?focus=sms_failed">短信失败</a>
+            <a class="btn btn-sm" data-board-link="channels-orders.html" href="channels-orders.html">全部订单</a>
+          </div>
         </div>
       </div>
     </div>
   </div>
 
   <div class="card" style="margin-top:16px">
-    <div class="card-hd"><h2>渠道 × 期次</h2><a href="leads.html" style="font-size:13px;color:var(--color-primary);text-decoration:none;font-weight:400">线索池 →</a></div>
+    <div class="card-hd"><h2>渠道 × 期次</h2><a data-board-link="leads.html" href="leads.html" style="font-size:13px;color:var(--color-primary);text-decoration:none;font-weight:400">线索池 →</a></div>
     <div class="card-bd" style="padding:0">
       <table class="data">
         <thead><tr><th>渠道</th><th>期次</th><th>入池</th><th>占比</th><th style="width:140px">操作</th></tr></thead>
@@ -90,15 +101,39 @@
 
 </div>
 <script src="../assets/js/proto.js"></script>
-<script src="../assets/js/board-data.js?v=3"></script>
-<script src="../assets/js/board-metrics.js?v=7"></script>
+<script src="../assets/js/board-data.js?v=5"></script>
+<script src="../assets/js/board-metrics.js?v=9"></script>
 <script src="../assets/js/admin-shell.js?v=13"></script>
 <script>
 (function () {
+  BoardMetrics.ensureCaliberUI();
+  BoardMetrics.setUpdatedNow();
   BoardMetrics.fillAttr();
+  var brief = document.getElementById("scope-help-brief");
+  if (brief) brief.textContent = " · " + (BoardMetrics.FILTER_SCOPE_HELP || "").slice(0, 48) + "…";
+
   var LINK = { video: "channels-orders.html", livecode: "channel-livecode.html", link: "acquire-links.html", redbook: "redbook.html", import: "leads.html" };
 
+  function updateScopeLabels(d, filters) {
+    filters = filters || BoardMetrics.getFilters();
+    var ch = filters.channel;
+    var lblPool = document.getElementById("lbl-pool");
+    var lblVx = document.getElementById("lbl-vx-orders");
+    if (ch) {
+      var opt = (BoardData.channelOptions || []).find(function (o) { return o.value === ch; });
+      var name = opt ? opt.label : ch;
+      if (lblPool) lblPool.textContent = "入池线索（" + name + "）";
+      if (lblVx) lblVx.textContent = ch === "video" ? "视频号获客首单（当前渠道）" : "视频号获客首单（渠道外）";
+    } else {
+      if (lblPool) lblPool.textContent = "入池线索";
+      if (lblVx) lblVx.textContent = "视频号获客首单";
+    }
+  }
+
   function renderDetails(d) {
+    var filters = BoardMetrics.getFilters();
+    updateScopeLabels(d, filters);
+
     var slices = BoardMetrics.getLeadSlices();
     var pool = d.poolLeads || 0;
     var byCh = {};
@@ -125,8 +160,10 @@
     } else {
       tbody.innerHTML = slices.map(function (s) {
         var pct = pool ? Math.round((s.pool / pool) * 100) + "%" : "—";
-        var href = LINK[s.channel] || "leads.html";
-        return "<tr><td>" + s.channelLabel + "</td><td>" + (s.termLabel || "—") + "</td><td>" + BoardMetrics.fmt(s.pool) + "</td><td>" + pct + '</td><td class="row-actions"><a href="' + href + '">查看</a></td></tr>';
+        var path = LINK[s.channel] || "leads.html";
+        var href = BoardMetrics.buildDrilldownUrl(path, { channel: s.channel, term: s.term });
+        return "<tr><td>" + s.channelLabel + "</td><td>" + (s.termLabel || "—") + "</td><td>" + BoardMetrics.fmt(s.pool) + "</td><td>" + pct +
+          '</td><td class="row-actions"><a href="' + href + '">查看</a></td></tr>';
       }).join("");
     }
 
@@ -140,6 +177,7 @@
       var pctH = base ? Math.max(28, Math.round((d[k] / base) * 100)) : 28;
       el.style.setProperty("--h", pctH + "%");
     });
+    BoardMetrics.renderActiveFilters();
     BoardMetrics.wireBoardLinks();
   }
 

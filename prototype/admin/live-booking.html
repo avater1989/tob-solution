@@ -85,7 +85,7 @@
 <body class="admin-body" data-module="live" data-nav="live-booking" data-title="预约管理" data-crumb="直播 / 直播管理 / 预约管理">
 <div id="header-actions">
   <button class="btn" type="button" id="btn-export">导出</button>
-  <a class="btn" id="btn-invite" href="live-invite.html">创建私域促到计划</a>
+  <a class="btn" id="btn-invite" href="live-invite.html">新建直播促到SOP</a>
   <button class="btn btn-primary" type="button" id="btn-new-reminder">+ 新建提醒规则</button>
 </div>
 
@@ -95,7 +95,7 @@
   <div id="view-list" style="display:none">
     <div class="bk-list-tip">
       <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
-      管理各场直播的预约用户与标准系统提醒。系统提醒面向已预约/已订阅用户，私域营销请使用「创建私域促到计划」。当前共 <b id="bk-list-count" style="margin:0 4px">0</b> 场直播
+      管理各场直播的预约用户与标准系统提醒。系统提醒面向已预约/已订阅用户，私域营销请使用「新建直播促到SOP」。当前共 <b id="bk-list-count" style="margin:0 4px">0</b> 场直播
     </div>
 
     <div class="card" style="margin-bottom:12px"><div class="card-bd" style="padding:12px 16px">
@@ -443,7 +443,7 @@
         </select>
       </div>
     </div>
-    <p class="muted" style="font-size:12px;margin:12px 0 0">仅支持标准系统提醒，不提供立即推送或营销人群圈选。私域转化请使用「创建私域促到计划」。</p>
+    <p class="muted" style="font-size:12px;margin:12px 0 0">仅支持标准系统提醒，不提供立即推送或营销人群圈选。私域转化请使用「新建直播促到SOP」。</p>
   </div>
   <div class="proto-modal-ft">
     <button class="btn" type="button" data-close>取消</button>
@@ -753,7 +753,7 @@
         "<td class=\"row-actions\">" +
           "<a class=\"link-blue\" href=\"live-booking.html?live_id=" + esc(l.id) + "&tab=bookings\">进入详情</a>" +
           "<a class=\"link-blue\" href=\"live-booking.html?live_id=" + esc(l.id) + "&tab=reminders\">提醒计划</a>" +
-          "<a class=\"link-blue\" href=\"live-invite.html?live_id=" + esc(l.id) + "\">创建促到</a>" +
+          "<a class=\"link-blue\" href=\"live-invite.html?live_id=" + esc(l.id) + "\">新建促到SOP</a>" +
         "</td></tr>";
     }).join("");
   }
@@ -1228,6 +1228,9 @@
 
   /* ---------- Boot / routing ---------- */
   function showSingle(liveId, tab) {
+    if (window.ProtoBiz && ProtoBiz.resolveLiveId) {
+      liveId = ProtoBiz.resolveLiveId(liveId);
+    }
     var live = LR.getLive(liveId);
     if (!live) {
       Proto.toast("未找到直播 " + liveId);
@@ -1262,8 +1265,16 @@
   }
 
   function boot(keepUrl) {
-    var sp = qs();
-    var liveId = sp.get("live_id") || sp.get("liveId");
+    var Biz = window.ProtoBiz;
+    var liveId = "";
+    if (Biz && typeof Biz.normalizeLiveUrl === "function") {
+      liveId = Biz.normalizeLiveUrl();
+    }
+    if (!liveId) {
+      var sp = qs();
+      var raw = sp.get("live_id") || sp.get("liveId") || sp.get("id") || "";
+      liveId = Biz && Biz.resolveLiveId ? Biz.resolveLiveId(raw) : raw;
+    }
     var tab = getTabFromUrl();
     if (liveId) showSingle(liveId, tab);
     else showList();

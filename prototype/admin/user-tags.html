@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>标签管理 · 商家管理后台</title>
+<link rel="stylesheet" href="../assets/css/proto.css?v=10" />
+</head>
+<body class="admin-body" data-module="user" data-nav="user-tags" data-title="标签管理" data-crumb="用户 / 用户管理 / 标签管理">
+<div id="header-actions">
+  <a class="btn" href="users.html">去用户列表打标</a>
+  <button class="btn btn-primary" id="btn-add">+ 新建标签</button>
+</div>
+<div id="page-content" style="display:none">
+
+  <div class="board-tip" style="margin-bottom:12px">
+    <b>标签管理：</b>维护可用于用户打标的手动标签。用户列表的「批量打标」与用户详情打标均读取本页启用中的标签。
+  </div>
+
+  <div class="stat-cards" style="grid-template-columns:repeat(4,1fr);margin-bottom:16px">
+    <div class="stat-card">
+      <div class="stat-label">标签总数</div>
+      <div class="stat-value" id="st-total">0</div>
+      <div class="stat-hint">含已停用</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">启用中</div>
+      <div class="stat-value" id="st-on" style="color:#00b42a">0</div>
+      <div class="stat-hint">可用于批量打标</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">分组数</div>
+      <div class="stat-value" id="st-groups">0</div>
+      <div class="stat-hint">意向 / 成交 / 行为等</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">累计打标人次</div>
+      <div class="stat-value" id="st-users">0</div>
+      <div class="stat-hint">原型示意人数合计</div>
+    </div>
+  </div>
+
+  <div class="toolbar" style="margin-bottom:12px;gap:8px;flex-wrap:wrap">
+    <input id="f-kw" placeholder="搜索标签名称 / 说明" style="min-width:200px;padding:6px 10px;border:1px solid var(--color-border);border-radius:6px;font:inherit;font-size:13px" />
+    <select id="f-group" style="padding:6px 10px;border:1px solid var(--color-border);border-radius:6px;font:inherit;font-size:13px">
+      <option value="">全部分组</option>
+    </select>
+    <select id="f-status" style="padding:6px 10px;border:1px solid var(--color-border);border-radius:6px;font:inherit;font-size:13px">
+      <option value="">全部状态</option>
+      <option value="on">启用中</option>
+      <option value="off">已停用</option>
+    </select>
+    <button class="btn btn-primary" id="btn-query">查询</button>
+    <button class="btn" id="btn-reset">重置</button>
+    <div class="spacer"></div>
+    <button class="btn" id="btn-batch-users">对筛选用户批量打标</button>
+  </div>
+
+  <div class="card"><div class="card-bd" style="padding:0">
+    <table class="data">
+      <thead>
+        <tr>
+          <th>标签</th>
+          <th>分组</th>
+          <th>类型</th>
+          <th>覆盖用户</th>
+          <th>状态</th>
+          <th>说明</th>
+          <th style="width:220px">操作</th>
+        </tr>
+      </thead>
+      <tbody id="tag-tbody"></tbody>
+    </table>
+  </div></div>
+
+</div>
+
+<div class="proto-mask" id="mask"></div>
+<div class="proto-modal" id="modal-edit" style="width:520px">
+  <div class="proto-modal-hd">
+    <h3 id="edit-title" style="font-size:16px;font-weight:600">新建标签</h3>
+    <button class="btn btn-sm btn-ghost" data-close>×</button>
+  </div>
+  <div class="proto-modal-bd">
+    <input type="hidden" id="e-id" />
+    <div class="form-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+      <div class="field" style="grid-column:1/-1"><label>标签名称 *</label>
+        <input id="e-name" placeholder="例如：高意向" />
+      </div>
+      <div class="field"><label>分组</label>
+        <input id="e-group" list="group-list" placeholder="意向 / 成交 / 行为 / 风险" />
+        <datalist id="group-list"></datalist>
+      </div>
+      <div class="field"><label>颜色</label>
+        <select id="e-color">
+          <option value="blue">蓝</option>
+          <option value="green">绿</option>
+          <option value="orange">橙</option>
+          <option value="red">红</option>
+          <option value="purple">紫</option>
+          <option value="teal">青</option>
+        </select>
+      </div>
+      <div class="field" style="grid-column:1/-1"><label>说明</label>
+        <textarea id="e-desc" rows="2" style="width:100%;padding:8px;border:1px solid var(--color-border);border-radius:6px;font:inherit"></textarea>
+      </div>
+      <div class="field" style="grid-column:1/-1">
+        <label><input type="checkbox" id="e-enabled" checked /> 启用（停用后批量打标不可选）</label>
+      </div>
+    </div>
+  </div>
+  <div class="proto-modal-ft" style="border-top:1px solid var(--color-border);padding:12px 20px;display:flex;gap:8px;justify-content:flex-end">
+    <button class="btn" data-close>取消</button>
+    <button class="btn btn-primary" id="btn-save">保存</button>
+  </div>
+</div>
+
+<style>
+.tag-chip {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 2px 10px; border-radius: 999px; font-size: 12px; font-weight: 500;
+}
+.tag-blue { background: #e8f3ff; color: #165dff; }
+.tag-green { background: #e8ffea; color: #00b42a; }
+.tag-orange { background: #fff7e8; color: #ff7d00; }
+.tag-red { background: #ffece8; color: #f53f3f; }
+.tag-purple { background: #f5e8ff; color: #722ed1; }
+.tag-teal { background: #e8fffb; color: #0fc6c2; }
+</style>
+
+<script src="../assets/js/proto.js"></script>
+<script src="../assets/js/user-tags.js"></script>
+<script src="../assets/js/admin-shell.js?v=14"></script>
+<script>
+(function () {
+  var mask = document.getElementById("mask");
+  var modal = document.getElementById("modal-edit");
+  function closeAll() {
+    mask.classList.remove("open");
+    modal.classList.remove("open");
+  }
+  function openEdit() {
+    mask.classList.add("open");
+    modal.classList.add("open");
+  }
+  mask.addEventListener("click", closeAll);
+  document.querySelectorAll("[data-close]").forEach(function (n) {
+    n.addEventListener("click", closeAll);
+  });
+
+  function fillGroups() {
+    var sel = document.getElementById("f-group");
+    var dl = document.getElementById("group-list");
+    var cur = sel.value;
+    var opts = '<option value="">全部分组</option>';
+    var dlHtml = "";
+    UserTags.groups().forEach(function (g) {
+      opts += '<option value="' + g.name + '">' + g.name + "（" + g.count + "）</option>";
+      dlHtml += '<option value="' + g.name + '">';
+    });
+    sel.innerHTML = opts;
+    sel.value = cur;
+    dl.innerHTML = dlHtml;
+  }
+
+  function filtered() {
+    var kw = (document.getElementById("f-kw").value || "").trim();
+    var g = document.getElementById("f-group").value;
+    var st = document.getElementById("f-status").value;
+    return UserTags.all().filter(function (t) {
+      if (g && (t.group || "") !== g) return false;
+      if (st === "on" && t.enabled === false) return false;
+      if (st === "off" && t.enabled !== false) return false;
+      if (kw) {
+        var blob = (t.name || "") + (t.desc || "") + (t.group || "");
+        if (blob.indexOf(kw) < 0) return false;
+      }
+      return true;
+    });
+  }
+
+  function render() {
+    fillGroups();
+    var all = UserTags.all();
+    var on = all.filter(function (t) { return t.enabled !== false; });
+    document.getElementById("st-total").textContent = String(all.length);
+    document.getElementById("st-on").textContent = String(on.length);
+    document.getElementById("st-groups").textContent = String(UserTags.groups().length);
+    document.getElementById("st-users").textContent = String(all.reduce(function (s, t) { return s + (t.users || 0); }, 0));
+
+    var rows = filtered();
+    var tb = document.getElementById("tag-tbody");
+    if (!rows.length) {
+      tb.innerHTML = '<tr><td colspan="7" class="muted" style="text-align:center;padding:28px">暂无标签，点击右上角新建</td></tr>';
+      return;
+    }
+    tb.innerHTML = rows.map(function (t) {
+      var status = t.enabled !== false
+        ? '<span class="badge badge-success">启用</span>'
+        : '<span class="badge">停用</span>';
+      var toggleLabel = t.enabled !== false ? "停用" : "启用";
+      return "<tr data-id=\"" + t.id + "\">" +
+        '<td><span class="tag-chip ' + UserTags.colorClass(t.color) + '">' + t.name + "</span></td>" +
+        "<td>" + (t.group || "—") + "</td>" +
+        "<td>手动</td>" +
+        "<td>" + (t.users || 0) + "</td>" +
+        "<td>" + status + "</td>" +
+        '<td class="muted" style="max-width:220px">' + (t.desc || "—") + "</td>" +
+        '<td class="row-actions">' +
+        '<a href="#" data-act="edit">编辑</a>' +
+        '<a href="users.html?tag=' + encodeURIComponent(t.id) + '">查看用户</a>' +
+        '<a href="#" data-act="toggle">' + toggleLabel + "</a>" +
+        '<a href="#" data-act="del" style="color:#f53f3f">删除</a>' +
+        "</td></tr>";
+    }).join("");
+  }
+
+  function openForm(tag) {
+    document.getElementById("edit-title").textContent = tag && tag.id ? "编辑标签" : "新建标签";
+    document.getElementById("e-id").value = tag && tag.id ? tag.id : "";
+    document.getElementById("e-name").value = tag ? tag.name || "" : "";
+    document.getElementById("e-group").value = tag ? tag.group || "" : "";
+    document.getElementById("e-color").value = tag && tag.color ? tag.color : "blue";
+    document.getElementById("e-desc").value = tag ? tag.desc || "" : "";
+    document.getElementById("e-enabled").checked = !tag || tag.enabled !== false;
+    openEdit();
+  }
+
+  document.getElementById("btn-add").onclick = function () { openForm(null); };
+  document.getElementById("btn-query").onclick = render;
+  document.getElementById("btn-reset").onclick = function () {
+    document.getElementById("f-kw").value = "";
+    document.getElementById("f-group").value = "";
+    document.getElementById("f-status").value = "";
+    render();
+  };
+  document.getElementById("btn-batch-users").onclick = function () {
+    location.href = "users.html?batchTag=1";
+  };
+  document.getElementById("btn-save").onclick = function () {
+    var name = (document.getElementById("e-name").value || "").trim();
+    if (!name) { Proto.toast("请填写标签名称"); return; }
+    UserTags.upsert({
+      id: document.getElementById("e-id").value || undefined,
+      name: name,
+      group: (document.getElementById("e-group").value || "").trim() || "未分组",
+      color: document.getElementById("e-color").value,
+      desc: (document.getElementById("e-desc").value || "").trim(),
+      enabled: document.getElementById("e-enabled").checked
+    });
+    closeAll();
+    Proto.toast("标签已保存");
+    render();
+  };
+
+  document.getElementById("tag-tbody").addEventListener("click", function (e) {
+    var a = e.target.closest("[data-act]");
+    if (!a) return;
+    e.preventDefault();
+    var tr = a.closest("tr");
+    var id = tr.getAttribute("data-id");
+    var tag = UserTags.byId(id);
+    var act = a.getAttribute("data-act");
+    if (act === "edit") openForm(tag);
+    else if (act === "toggle") {
+      UserTags.setEnabled(id, !(tag && tag.enabled !== false));
+      Proto.toast(tag && tag.enabled !== false ? "已停用" : "已启用");
+      render();
+    } else if (act === "del") {
+      if (!confirm("删除标签「" + (tag && tag.name) + "」？已打标用户上的该标签需另行清理（原型仅删目录）。")) return;
+      UserTags.remove(id);
+      Proto.toast("已删除");
+      render();
+    }
+  });
+
+  render();
+})();
+</script>
+</body>
+</html>

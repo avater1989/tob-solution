@@ -8,6 +8,7 @@
 </head>
 <body class="admin-body" data-module="user" data-nav="users" data-title="用户列表" data-crumb="用户 / 用户管理 / 用户列表">
 <div id="header-actions">
+  <a class="btn" href="user-tags.html">标签管理</a>
   <button class="btn" id="btn-export">选择导出</button>
   <button class="btn btn-primary" id="btn-batch-tag">批量打标</button>
 </div>
@@ -41,6 +42,9 @@
         <div class="ua-field"><label>所属K：</label><input id="f-k" placeholder="所属 K" /></div>
         <div class="ua-field"><label>所属G：</label><input id="f-g" placeholder="所属 G" /></div>
         <div class="ua-field"><label>昵称：</label><input id="f-nick" placeholder="请输入昵称" /></div>
+        <div class="ua-field"><label>用户标签：</label>
+          <select id="f-tag"><option value="">全部标签</option></select>
+        </div>
       </div>
       <div class="ua-search-btns">
         <button class="btn btn-primary" id="btn-query">搜索</button>
@@ -55,7 +59,7 @@
     <button class="btn btn-primary" id="btn-add">+ 新增</button>
     <button class="btn" id="btn-import">手动导入</button>
     <div class="spacer"></div>
-    <span class="muted" style="font-size:12px">全量用户管理（与营销驾驶舱-线索池区分）；支持手动打标、批量打标、批量导出</span>
+    <span class="muted" style="font-size:12px">全量用户管理；标签在 <a href="user-tags.html">标签管理</a> 维护，本页支持手动/批量打标与导出</span>
   </div>
 
   <!-- 表格 -->
@@ -88,6 +92,7 @@
           <td>女</td>
           <td class="row-actions">
             <a href="#" data-row-act="edit">编辑</a>
+            <a href="#" data-row-act="tag">打标</a>
             <a href="user-detail.html">查看详情</a>
             <a href="#" data-row-act="rights">查看权益</a>
             <a href="#" data-row-act="disable">注销账号</a>
@@ -105,6 +110,7 @@
           <td>女</td>
           <td class="row-actions">
             <a href="#" data-row-act="edit">编辑</a>
+            <a href="#" data-row-act="tag">打标</a>
             <a href="user-detail.html">查看详情</a>
             <a href="#" data-row-act="rights">查看权益</a>
             <a href="#" data-row-act="disable">注销账号</a>
@@ -122,6 +128,7 @@
           <td>女</td>
           <td class="row-actions">
             <a href="#" data-row-act="edit">编辑</a>
+            <a href="#" data-row-act="tag">打标</a>
             <a href="user-detail.html">查看详情</a>
             <a href="#" data-row-act="rights">查看权益</a>
             <a href="#" data-row-act="disable">注销账号</a>
@@ -139,6 +146,7 @@
           <td>—</td>
           <td class="row-actions">
             <a href="#" data-row-act="edit">编辑</a>
+            <a href="#" data-row-act="tag">打标</a>
             <a href="user-detail.html">查看详情</a>
             <a href="#" data-row-act="rights">查看权益</a>
             <a href="#" data-row-act="disable">注销账号</a>
@@ -156,6 +164,7 @@
           <td>女</td>
           <td class="row-actions">
             <a href="#" data-row-act="edit">编辑</a>
+            <a href="#" data-row-act="tag">打标</a>
             <a href="user-detail.html">查看详情</a>
             <a href="#" data-row-act="rights">查看权益</a>
             <a href="#" data-row-act="disable">注销账号</a>
@@ -278,15 +287,11 @@
   <div class="proto-modal-bd">
     <div class="field" style="margin-bottom:10px"><label>用户</label><div id="tag-user">—</div></div>
     <div class="field"><label>选择标签（可多选）</label>
-      <div class="tag-pick" id="tag-pick">
-        <label class="tp-item"><input type="checkbox" checked /> 高意向</label>
-        <label class="tp-item"><input type="checkbox" /> 已购引流课</label>
-        <label class="tp-item"><input type="checkbox" /> 训练营学员</label>
-        <label class="tp-item"><input type="checkbox" /> 直播高活跃</label>
-        <label class="tp-item"><input type="checkbox" /> 流失预警</label>
-      </div>
+      <div class="tag-pick" id="tag-pick"></div>
     </div>
-    <p class="muted" style="margin:8px 0 0;font-size:12px">仅支持手动标签；自动标签规则 MVP 暂不实现</p>
+    <p class="muted" style="margin:8px 0 0;font-size:12px">
+      选项来自 <a href="user-tags.html">标签管理</a> 中「启用」的手动标签；停用标签不会出现在此。
+    </p>
   </div>
   <div class="proto-modal-ft" style="border-top:1px solid var(--color-border);padding:12px 20px;display:flex;gap:8px;justify-content:flex-end">
     <button class="btn" data-close>取消</button>
@@ -334,7 +339,8 @@
 </style>
 
 <script src="../assets/js/proto.js"></script>
-<script src="../assets/js/admin-shell.js?v=13"></script>
+<script src="../assets/js/user-tags.js"></script>
+<script src="../assets/js/admin-shell.js?v=14"></script>
 <script>
 (function () {
   var mask = document.getElementById("mask");
@@ -346,7 +352,33 @@
   mask.addEventListener("click", closeAll);
   document.querySelectorAll("[data-close]").forEach(function (n) { n.addEventListener("click", closeAll); });
 
-  // 展开/收起
+  (function fillTagFilter() {
+    var sel = document.getElementById("f-tag");
+    if (!sel || !window.UserTags) return;
+    UserTags.enabled().forEach(function (tg) {
+      var opt = document.createElement("option");
+      opt.value = tg.id;
+      opt.textContent = tg.name + (tg.group ? "（" + tg.group + "）" : "");
+      sel.appendChild(opt);
+    });
+    try {
+      var q = new URLSearchParams(location.search);
+      var tag = q.get("tag");
+      if (tag) {
+        sel.value = tag;
+        document.getElementById("search-more").style.display = "grid";
+        document.getElementById("btn-toggle").textContent = "收起";
+      }
+      if (q.get("batchTag") === "1") Proto.toast("请勾选用户后点击「批量打标」");
+    } catch (e) {}
+  })();
+
+  function openTagModal(label, selected) {
+    document.getElementById("tag-user").textContent = label;
+    UserTags.renderPick(document.getElementById("tag-pick"), selected || []);
+    open(document.getElementById("modal-tag"));
+  }
+
   var more = document.getElementById("search-more");
   var toggle = document.getElementById("btn-toggle");
   toggle.addEventListener("click", function () {
@@ -355,19 +387,21 @@
     toggle.textContent = show ? "收起" : "展开";
   });
 
-  // 搜索/重置
-  document.getElementById("btn-query").addEventListener("click", function () { Proto.toast("已按条件查询（原型）"); });
+  document.getElementById("btn-query").addEventListener("click", function () {
+    var tag = document.getElementById("f-tag").value;
+    Proto.toast(tag ? "已按标签筛选（原型）" : "已按条件查询（原型）");
+  });
   document.getElementById("btn-reset").addEventListener("click", function () {
     ["f-name", "f-phone", "f-s", "f-k", "f-g", "f-nick"].forEach(function (id) {
-      var el = document.getElementById(id);
-      if (el) el.value = "";
+      var el = document.getElementById(id); if (el) el.value = "";
     });
-    ["f-gender", "f-family"].forEach(function (id) { document.getElementById(id).value = ""; });
+    ["f-gender", "f-family", "f-tag"].forEach(function (id) {
+      var el = document.getElementById(id); if (el) el.value = "";
+    });
     more.style.display = "none"; toggle.textContent = "展开";
     Proto.toast("已重置");
   });
 
-  // 全选
   var ckAll = document.getElementById("ck-all");
   ckAll.addEventListener("change", function () {
     document.querySelectorAll(".ck-row").forEach(function (c) { c.checked = ckAll.checked; });
@@ -375,11 +409,9 @@
   });
   document.querySelectorAll(".ck-row").forEach(function (c) { c.addEventListener("change", updateCount); });
   function updateCount() {
-    document.getElementById("ck-count").textContent =
-      document.querySelectorAll(".ck-row:checked").length;
+    document.getElementById("ck-count").textContent = document.querySelectorAll(".ck-row:checked").length;
   }
 
-  // 行操作
   document.querySelectorAll("tbody tr").forEach(function (tr) {
     var name = tr.querySelector("td a b") ? tr.querySelector("td a b").textContent.trim()
               : (tr.querySelector("td b") ? tr.querySelector("td b").textContent.trim() : "—");
@@ -390,51 +422,50 @@
         if (act === "edit") {
           document.getElementById("edit-title").textContent = "编辑用户 · " + name;
           open(document.getElementById("modal-edit"));
+        } else if (act === "tag") {
+          openTagModal(name, ["t_high"]);
         } else if (act === "rights") {
           Proto.toast("「" + name + "」查看权益（原型）");
         } else if (act === "disable") {
-          if (confirm("确定注销「" + name + "」账号？该操作不可恢复。")) {
-            Proto.toast("账号已注销（原型）");
-          }
+          if (confirm("确定注销「" + name + "」账号？该操作不可恢复。")) Proto.toast("账号已注销（原型）");
         }
       });
     });
   });
 
-  // 顶部：新增 / 手动导入 / 批量打标 / 导出
   document.getElementById("btn-add").addEventListener("click", function () {
     document.getElementById("edit-title").textContent = "新增用户";
     open(document.getElementById("modal-edit"));
   });
-  document.getElementById("btn-import").addEventListener("click", function () {
-    open(document.getElementById("modal-import"));
-  });
-  document.getElementById("btn-export").addEventListener("click", function () {
-    open(document.getElementById("modal-export"));
-  });
+  document.getElementById("btn-import").addEventListener("click", function () { open(document.getElementById("modal-import")); });
+  document.getElementById("btn-export").addEventListener("click", function () { open(document.getElementById("modal-export")); });
   document.getElementById("btn-batch-tag").addEventListener("click", function () {
     var n = document.querySelectorAll(".ck-row:checked").length;
     if (!n) { Proto.toast("请先勾选用户"); return; }
-    document.getElementById("tag-user").textContent = "已选 " + n + " 位用户（批量打标）";
-    open(document.getElementById("modal-tag"));
+    openTagModal("已选 " + n + " 位用户（批量打标）", []);
   });
   document.getElementById("tag-save").addEventListener("click", function () {
-    closeAll(); Proto.toast("标签已保存（原型）");
+    var ids = UserTags.selectedFromPick(document.getElementById("tag-pick"));
+    if (!ids.length) { Proto.toast("请至少选择一个标签"); return; }
+    ids.forEach(function (id) {
+      var tg = UserTags.byId(id);
+      if (tg) UserTags.upsert(Object.assign({}, tg, { users: (tg.users || 0) + 1 }));
+    });
+    closeAll();
+    Proto.toast("已为用户打上 " + ids.length + " 个标签");
   });
 
-  // 手动导入：上传交互
   var upload = document.getElementById("upload-area");
   var uploadInput = document.getElementById("upload-input");
-  upload.addEventListener("click", function () { uploadInput.click(); });
-  uploadInput.addEventListener("change", function () {
-    if (uploadInput.files.length) Proto.toast("已选择文件：" + uploadInput.files[0].name);
-  });
-  document.getElementById("download-tpl").addEventListener("click", function (e) {
-    e.preventDefault();
-    Proto.toast("导入模版下载中（原型）");
-  });
+  if (upload && uploadInput) {
+    upload.addEventListener("click", function () { uploadInput.click(); });
+    uploadInput.addEventListener("change", function () {
+      if (uploadInput.files.length) Proto.toast("已选择文件：" + uploadInput.files[0].name);
+    });
+  }
+  var dl = document.getElementById("download-tpl");
+  if (dl) dl.addEventListener("click", function (e) { e.preventDefault(); Proto.toast("导入模版下载中（原型）"); });
 
-  // 分页
   document.querySelectorAll(".ua-page").forEach(function (b) {
     if (b.disabled) return;
     b.addEventListener("click", function () {
@@ -445,5 +476,6 @@
   });
 })();
 </script>
+
 </body>
 </html>

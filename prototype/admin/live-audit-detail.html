@@ -13,12 +13,18 @@
 </div>
 <div id="page-content" style="display:none">
 
+  <div id="audit-empty" style="display:none" class="card"><div class="card-bd" style="padding:48px;text-align:center">
+    <p style="font-size:15px;margin:0 0 16px">未找到对应直播，请返回列表重新选择。</p>
+    <a class="btn btn-primary" href="live-audit.html">返回内部复核工作台</a>
+  </div></div>
+
+  <div id="audit-found" style="display:none">
   <!-- 顶部状态信息条 -->
   <div class="audit-status-bar">
     <div class="audit-status-info">
-      <span class="audit-badge audit-pending">待内部复核</span>
-      <span class="audit-status-title">春启 03 期家长公开课</span>
-      <span class="audit-status-sub">提交人：阮荣均　·　提交时间：2026-09-04 14:30　·　等待 2 小时</span>
+      <span class="audit-badge" id="top-badge">—</span>
+      <span class="audit-status-title" id="top-title">—</span>
+      <span class="audit-status-sub" id="top-sub">—</span>
     </div>
   </div>
 
@@ -29,16 +35,16 @@
       <h2 class="page-section-title">基本信息</h2>
       <div class="card"><div class="card-bd">
         <div class="form-grid readonly" style="grid-template-columns:1fr 1fr">
-          <div class="field"><label>直播名称</label><div>春启 03 期家长公开课</div></div>
+          <div class="field"><label>直播名称</label><div id="f-name">—</div></div>
           <div class="field"><label>直播模式</label><div>视频直播</div></div>
-          <div class="field"><label>关联课程</label><div>春启 03 期家长必修课</div></div>
+          <div class="field"><label>关联课程</label><div id="f-course">—</div></div>
           <div class="field"><label>直播间类型</label><div>传统直播间</div></div>
-          <div class="field"><label>开始时间</label><div>2026-03-30 20:00</div></div>
-          <div class="field"><label>结束时间</label><div>2026-03-30 22:00</div></div>
+          <div class="field"><label>开始时间</label><div id="f-start">—</div></div>
+          <div class="field"><label>结束时间</label><div id="f-end">—</div></div>
           <div class="field"><label>主讲老师</label><div>阮荣均</div></div>
           <div class="field"><label>助教</label><div>王助教、刘助教</div></div>
           <div class="field" style="grid-column:1/-1"><label>直播介绍</label>
-            <div>本期家长公开课聚焦"亲子沟通 3 步法"，结合真实案例拆解如何与孩子建立有效对话。适合 6-12 岁孩子家长，主讲老师阮荣均。</div>
+            <div id="f-intro">—</div>
           </div>
         </div>
       </div></div>
@@ -73,8 +79,7 @@
         <table class="data">
           <thead><tr><th>商品图</th><th>商品名称</th><th>价格</th><th>讲解话术</th></tr></thead>
           <tbody>
-            <tr><td><div class="thumb"></div></td><td>春启 03 期家长必修课</td><td>¥9.9</td><td>限时优惠，名额有限</td></tr>
-            <tr><td><div class="thumb"></div></td><td>今晚直播·家长公开课</td><td>¥0</td><td>公开课免费预约</td></tr>
+            <tr><td><div class="thumb"></div></td><td id="prod-name">—</td><td>¥9.9</td><td>限时优惠，名额有限</td></tr>
           </tbody>
         </table>
       </div></div>
@@ -93,18 +98,16 @@
 
     <!-- 右侧：审核侧栏 -->
     <aside class="audit-side">
-      <!-- 当前状态 -->
       <div class="audit-side-card">
         <h3>复核状态</h3>
         <div class="audit-current">
-          <span class="audit-badge audit-pending">待内部复核</span>
-          <span class="muted">等待 <b>刘管理</b> 处理</span>
+          <span class="audit-badge" id="side-badge">—</span>
+          <span class="muted" id="side-wait">—</span>
         </div>
-        <div class="audit-current-meta">提交时间：2026-09-04 14:30</div>
+        <div class="audit-current-meta" id="side-meta">—</div>
       </div>
 
-      <!-- 复核维度 -->
-      <div class="audit-side-card">
+      <div class="audit-side-card" id="panel-checks">
         <h3>复核维度 <span class="muted" style="font-size:12px;font-weight:400">至少勾选 4 项</span></h3>
         <div class="audit-checks" id="audit-checks">
           <label><input type="checkbox" checked /> <span>内容合规</span><i class="muted">封面、详情、暖场无违规</i></label>
@@ -114,48 +117,19 @@
         </div>
       </div>
 
-      <!-- 复核意见 -->
-      <div class="audit-side-card">
+      <div class="audit-side-card" id="panel-comment">
         <h3>复核意见</h3>
         <textarea id="audit-comment" rows="4" placeholder="驳回时必填，请写明具体原因"></textarea>
       </div>
 
-      <!-- 操作按钮 -->
-      <div class="audit-side-card audit-side-actions">
-        <button class="btn btn-primary" id="btn-approve" style="width:100%;margin-bottom:8px">✓ 内部复核通过</button>
-        <button class="btn btn-danger" id="btn-reject" style="width:100%">✕ 复核驳回</button>
-        <button class="btn" id="btn-cancel-link" style="width:100%;margin-top:8px">取消</button>
-      </div>
+      <div class="audit-side-card audit-side-actions" id="panel-actions"></div>
 
-      <!-- 复核历史 -->
       <div class="audit-side-card">
         <h3>复核历史</h3>
-        <div class="audit-history">
-          <div class="audit-history-item">
-            <div class="audit-history-dot dot-submit"></div>
-            <div class="audit-history-bd">
-              <div class="audit-history-title">提交内部复核</div>
-              <div class="audit-history-meta">阮荣均 · 2026-09-04 14:30</div>
-            </div>
-          </div>
-          <div class="audit-history-item">
-            <div class="audit-history-dot dot-rejected"></div>
-            <div class="audit-history-bd">
-              <div class="audit-history-title">驳回（首轮）</div>
-              <div class="audit-history-meta">刘管理 · 2026-09-03 17:30</div>
-              <div class="audit-history-reason">直播封面图包含第三方水印，请重新设计后再提交。</div>
-            </div>
-          </div>
-          <div class="audit-history-item">
-            <div class="audit-history-dot dot-edit"></div>
-            <div class="audit-history-bd">
-              <div class="audit-history-title">修改并重新提交</div>
-              <div class="audit-history-meta">阮荣均 · 2026-09-04 14:30</div>
-            </div>
-          </div>
-        </div>
+        <div class="audit-history" id="audit-history"></div>
       </div>
     </aside>
+  </div>
   </div>
 
 </div>
@@ -163,7 +137,6 @@
 <!-- ============ 弹窗 ============ -->
 <div class="proto-mask" id="mask"></div>
 
-<!-- 通过确认 -->
 <div class="proto-modal" id="modal-approve">
   <div class="proto-modal-hd">
     <h3>确认内部复核通过</h3>
@@ -171,13 +144,9 @@
   </div>
   <div class="proto-modal-bd">
     <p>内部复核通过后，可提交平台审核；平台通过后才会上架。</p>
-    <ul style="background:#f7f8fa;border-radius:4px;padding:12px 24px;margin:8px 0;color:#4e5969">
-      <li>直播名称：春启 03 期家长公开课</li>
-      <li>创建人：阮荣均</li>
-      <li>开始时间：2026-03-30 20:00</li>
-    </ul>
+    <ul id="approve-summary" style="background:#f7f8fa;border-radius:4px;padding:12px 24px;margin:8px 0;color:#4e5969"></ul>
     <div class="field"><label>复核备注（选填）</label>
-      <textarea rows="2" placeholder="如有补充说明请填写"></textarea>
+      <textarea rows="2" id="approve-note" placeholder="如有补充说明请填写"></textarea>
     </div>
   </div>
   <div class="proto-modal-ft">
@@ -286,10 +255,20 @@
 </style>
 
 <script src="../assets/js/proto.js"></script>
+<script src="../assets/js/prototype-business-store.js"></script>
 <script src="../assets/js/admin-shell.js?v=13"></script>
 <script>
 (function () {
-  // ===== Mask =====
+  var Biz = window.ProtoBiz;
+  var liveId = Biz.normalizeLiveUrl();
+  if (!liveId) {
+    try {
+      var q = new URLSearchParams(location.search);
+      liveId = Biz.resolveLiveId(q.get("live_id") || q.get("liveId") || q.get("id") || "");
+    } catch (e) { liveId = ""; }
+  }
+  var live = liveId ? Biz.getLive(liveId) : null;
+
   var mask = document.getElementById("mask");
   function closeAll() {
     mask.classList.remove("open");
@@ -299,33 +278,165 @@
   mask.addEventListener("click", closeAll);
   document.querySelectorAll("[data-close]").forEach(function (n) { n.addEventListener("click", closeAll); });
 
-  // ===== Approve =====
-  document.getElementById("btn-approve").addEventListener("click", function () {
-    open(document.getElementById("modal-approve"));
-  });
-  document.getElementById("btn-confirm-approve").addEventListener("click", function () {
-    closeAll();
-    Proto.toast("内部复核已通过，可提交平台审核（原型）");
-    setTimeout(function () { location.href = "live-audit.html"; }, 600);
-  });
+  function esc(s) {
+    return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) {
+      return ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c];
+    });
+  }
 
-  // ===== Reject =====
-  document.getElementById("btn-reject").addEventListener("click", function () {
-    var comment = document.getElementById("audit-comment").value.trim();
-    if (!comment) { Proto.toast("请填写驳回理由"); return; }
-    if (confirm("确认驳回该直播？")) {
-      Proto.toast("已驳回（原型）");
-      setTimeout(function () { location.href = "live-audit.html"; }, 600);
+  function badgeClass(status) {
+    if (status === "approved") return "audit-approved";
+    if (status === "internal_rejected" || status === "platform_rejected") return "audit-rejected";
+    if (status === "pending_internal_review" || status === "pending_platform_submit" || status === "pending_platform_review") return "audit-pending";
+    return "audit-draft";
+  }
+
+  function statusLabel(status) {
+    return (Biz.AUDIT_LABEL && Biz.AUDIT_LABEL[status]) || status || "—";
+  }
+
+  if (!live) {
+    document.getElementById("audit-empty").style.display = "";
+    document.getElementById("audit-found").style.display = "none";
+    document.getElementById("btn-preview").style.display = "none";
+    return;
+  }
+
+  document.getElementById("audit-empty").style.display = "none";
+  document.getElementById("audit-found").style.display = "";
+
+  var label = live.auditStatusLabel || statusLabel(live.auditStatus);
+  var waitH = Biz.waitHours(live.submittedInternalAt);
+  var waitText = live.auditStatus === "pending_internal_review"
+    ? ("等待 " + (waitH < 1 ? "不足 1 小时" : waitH + " 小时"))
+    : "";
+
+  document.getElementById("top-badge").className = "audit-badge " + badgeClass(live.auditStatus);
+  document.getElementById("top-badge").textContent = label;
+  document.getElementById("top-title").textContent = live.name;
+  document.getElementById("top-sub").textContent =
+    "直播编号：" + live.id + "　·　提交时间：" + (live.submittedInternalAt || live.createdAt || "—") +
+    (waitText ? ("　·　" + waitText) : "");
+
+  document.getElementById("f-name").textContent = live.name;
+  document.getElementById("f-course").textContent = live.name;
+  document.getElementById("f-start").textContent = live.startAt || "—";
+  document.getElementById("f-end").textContent = live.endAt || "—";
+  document.getElementById("f-intro").textContent = live.name + "，面向家长的直播课程。商户：" + (live.merchantName || "星启家庭教育");
+  document.getElementById("prod-name").textContent = live.name;
+
+  document.getElementById("side-badge").className = "audit-badge " + badgeClass(live.auditStatus);
+  document.getElementById("side-badge").textContent = label;
+  document.getElementById("side-wait").textContent = waitText || ("状态：" + label);
+  document.getElementById("side-meta").textContent = "提交时间：" + (live.submittedInternalAt || live.createdAt || "—");
+
+  var actions = document.getElementById("panel-actions");
+  var status = live.auditStatus;
+  if (status === "pending_internal_review") {
+    actions.innerHTML =
+      '<button class="btn btn-primary" id="btn-approve" style="width:100%;margin-bottom:8px">✓ 内部复核通过</button>' +
+      '<button class="btn btn-danger" id="btn-reject" style="width:100%">✕ 复核驳回</button>' +
+      '<button class="btn" id="btn-cancel-link" style="width:100%;margin-top:8px">取消</button>';
+  } else if (status === "pending_platform_submit") {
+    document.getElementById("panel-checks").style.display = "none";
+    document.getElementById("panel-comment").style.display = "none";
+    actions.innerHTML =
+      '<button class="btn btn-primary" id="btn-submit-platform" style="width:100%;margin-bottom:8px">提交平台审核</button>' +
+      '<a class="btn" href="live-audit.html" style="width:100%;text-align:center;display:inline-block;box-sizing:border-box">返回工作台</a>';
+  } else {
+    document.getElementById("panel-checks").style.display = "none";
+    document.getElementById("panel-comment").querySelector("textarea").disabled = true;
+    document.getElementById("panel-comment").querySelector("textarea").placeholder = "当前状态仅可查看";
+    if (live.rejectReason) {
+      document.getElementById("audit-comment").value = live.rejectReason;
     }
-  });
+    actions.innerHTML =
+      '<p class="muted" style="margin:0 0 8px;font-size:13px">当前为查看模式，不可在商家端执行平台通过。</p>' +
+      '<a class="btn" href="live-audit.html" style="width:100%;text-align:center;display:inline-block;box-sizing:border-box">返回工作台</a>';
+  }
 
-  // ===== Other =====
+  /* history */
+  var logs = Biz.getReviewLogs(live.id).slice().reverse();
+  var hist = [];
+  if (live.submittedInternalAt) {
+    hist.push({
+      dot: "dot-submit",
+      title: "提交内部复核",
+      meta: "赵老师 · " + live.submittedInternalAt
+    });
+  }
+  logs.forEach(function (r) {
+    var title = statusLabel(r.status);
+    var dot = "dot-edit";
+    if (r.status === "pending_platform_submit" || r.status === "approved") dot = "dot-approved";
+    if (r.status === "internal_rejected" || r.status === "platform_rejected") dot = "dot-rejected";
+    if (r.status === "pending_platform_review") dot = "dot-submit";
+    hist.push({
+      dot: dot,
+      title: title,
+      meta: (r.by || "—") + " · " + (r.at || ""),
+      reason: r.reason || ""
+    });
+  });
+  document.getElementById("audit-history").innerHTML = hist.length
+    ? hist.map(function (h) {
+        return '<div class="audit-history-item"><div class="audit-history-dot ' + h.dot + '"></div>' +
+          '<div class="audit-history-bd"><div class="audit-history-title">' + esc(h.title) + "</div>" +
+          '<div class="audit-history-meta">' + esc(h.meta) + "</div>" +
+          (h.reason ? '<div class="audit-history-reason">' + esc(h.reason) + "</div>" : "") +
+          "</div></div>";
+      }).join("")
+    : '<p class="muted" style="margin:0;font-size:12px">暂无历史记录</p>';
+
   document.getElementById("btn-preview").addEventListener("click", function () {
     Proto.toast("打开预览（原型）");
   });
-  document.getElementById("btn-cancel-link").addEventListener("click", function () {
-    if (confirm("放弃本次内部复核？已填写的内容将丢失")) location.href = "live-audit.html";
-  });
+
+  var btnApprove = document.getElementById("btn-approve");
+  if (btnApprove) {
+    btnApprove.addEventListener("click", function () {
+      document.getElementById("approve-summary").innerHTML =
+        "<li>直播名称：" + esc(live.name) + "</li>" +
+        "<li>直播编号：" + esc(live.id) + "</li>" +
+        "<li>开始时间：" + esc(live.startAt || "—") + "</li>";
+      open(document.getElementById("modal-approve"));
+    });
+    document.getElementById("btn-confirm-approve").addEventListener("click", function () {
+      Biz.setAuditStatus(live.id, "pending_platform_submit", { by: "刘管理", side: "merchant" });
+      closeAll();
+      Proto.toast("内部复核已通过，可提交平台审核");
+      setTimeout(function () { location.href = "live-audit-detail.html?live_id=" + encodeURIComponent(live.id); }, 400);
+    });
+  }
+
+  var btnReject = document.getElementById("btn-reject");
+  if (btnReject) {
+    btnReject.addEventListener("click", function () {
+      var comment = document.getElementById("audit-comment").value.trim();
+      if (!comment) { Proto.toast("请填写驳回理由"); return; }
+      if (!confirm("确认驳回该直播？")) return;
+      Biz.setAuditStatus(live.id, "internal_rejected", { reason: comment, by: "刘管理", side: "merchant" });
+      Proto.toast("已驳回");
+      setTimeout(function () { location.href = "live-rejected.html"; }, 400);
+    });
+  }
+
+  var btnCancel = document.getElementById("btn-cancel-link");
+  if (btnCancel) {
+    btnCancel.addEventListener("click", function () {
+      if (confirm("放弃本次内部复核？已填写的内容将丢失")) location.href = "live-audit.html";
+    });
+  }
+
+  var btnSubmit = document.getElementById("btn-submit-platform");
+  if (btnSubmit) {
+    btnSubmit.addEventListener("click", function () {
+      if (!confirm("确认提交平台审核？")) return;
+      Biz.setAuditStatus(live.id, "pending_platform_review", { by: "赵老师", side: "merchant" });
+      Proto.toast("已提交平台审核");
+      setTimeout(function () { location.href = "live-audit-detail.html?live_id=" + encodeURIComponent(live.id); }, 400);
+    });
+  }
 })();
 </script>
 </body>

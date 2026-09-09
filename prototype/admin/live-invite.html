@@ -3,23 +3,23 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>直播促到 · 商家管理后台</title>
+<title>直播促到SOP · 商家管理后台</title>
 <link rel="stylesheet" href="../assets/css/proto.css?v=9" />
 </head>
-<body class="admin-body" data-module="scrm" data-nav="invite" data-title="直播促到" data-crumb="SCRM / 营销管理 / 直播促到">
+<body class="admin-body" data-module="scrm" data-nav="invite" data-title="直播促到SOP" data-crumb="SCRM / 营销管理 / 直播促到SOP">
 <div id="header-actions">
-  <button class="btn btn-primary" id="btn-create">+ 新建促到 SOP</button>
+  <button class="btn btn-primary" id="btn-create">+ 新建直播促到SOP</button>
 </div>
 <div id="page-content" style="display:none">
 
   <div class="alert alert-info" style="margin-bottom:8px;align-items:flex-start">
     <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" style="flex-shrink:0;margin-top:2px"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
     <div>
-      <div style="font-weight:600">直播促到 SOP</div>
-      <div style="margin-top:2px;opacity:.9">面向私域线索的直播邀约、催到和会后跟进</div>
+      <div style="font-weight:600">直播促到SOP</div>
+      <div style="margin-top:2px;opacity:.9">面向私域人群配置直播前邀约、预约后催到、开播中召回、回放触达和会后跟进。</div>
       <div class="muted" style="margin-top:4px;font-size:12px;color:inherit;opacity:.75">
-        标准预约提醒（开播前 / 开播时 / 回放）请到
-        <a class="link-blue" href="live-booking.html" id="tip-booking-link">预约管理</a> 配置，本页不做系统提醒，避免职责重复。
+        标准预约提醒（开播前 / 开播时 / 改期 / 取消）请到
+        <a class="link-blue" href="live-booking.html" id="tip-booking-link">预约管理</a> 配置，本页不做系统预约提醒，避免职责重复。
       </div>
     </div>
   </div>
@@ -86,6 +86,7 @@
         <select id="f-status">
           <option value="">全部状态</option>
           <option value="draft">草稿</option>
+          <option value="scheduled">待启动</option>
           <option value="running">执行中</option>
           <option value="paused">已暂停</option>
           <option value="completed">已完成</option>
@@ -136,17 +137,17 @@
 <!-- 新建 / 编辑 促到 SOP -->
 <div class="proto-modal" id="modal-create" style="width:820px;max-height:90vh">
   <div class="proto-modal-hd">
-    <h3 id="modal-create-title" style="margin:0;font-size:16px;font-weight:600">新建促到 SOP</h3>
+    <h3 id="modal-create-title" style="margin:0;font-size:16px;font-weight:600">新建直播促到SOP</h3>
     <button class="btn btn-sm btn-ghost" data-close>×</button>
   </div>
   <div class="proto-modal-bd" style="max-height:calc(90vh - 120px);overflow:auto">
     <div class="alert alert-info" style="margin-bottom:12px;font-size:12px">
-      本 SOP 面向私域营销触达。标准预约提醒请到
+      本直播促到SOP 面向私域人群触达。标准预约提醒请到
       <a class="link-blue" href="live-booking.html">预约管理</a>，此处不会创建系统提醒，也不提供「立即推送」。
     </div>
     <div class="form-grid" style="grid-template-columns:1fr 1fr;gap:10px 14px">
       <div class="field"><label>计划名称 *</label>
-        <input id="c-name" placeholder="如：春启03 私域预约+催到 SOP" />
+        <input id="c-name" placeholder="如：春启03直播前邀约与催到SOP" />
       </div>
       <div class="field"><label>关联直播 *</label>
         <select id="c-live"></select>
@@ -282,7 +283,7 @@
 <!-- 详情抽屉 -->
 <div class="proto-drawer" id="drawer-detail" style="width:560px">
   <div class="proto-drawer-hd">
-    <h3 id="d-title">促到 SOP 详情</h3>
+    <h3 id="d-title">直播促到SOP详情</h3>
     <button class="btn btn-sm btn-ghost" data-close>×</button>
   </div>
   <div class="proto-drawer-bd">
@@ -356,6 +357,7 @@
 </style>
 
 <script src="../assets/js/proto.js"></script>
+<script src="../assets/js/prototype-business-store.js"></script>
 <script src="../assets/js/live-reach.js"></script>
 <script src="../assets/js/admin-shell.js?v=13"></script>
 <script>
@@ -369,18 +371,56 @@
     try { return new URLSearchParams(location.search); } catch (e) { return new URLSearchParams(); }
   }
   function liveIdFromUrl() {
+    if (window.ProtoBiz) return ProtoBiz.liveIdFromSearch(location.search) || "";
     var p = qs();
     return p.get("live_id") || p.get("liveId") || "";
+  }
+  function sopIdFromUrl() {
+    return qs().get("sop_id") || qs().get("sopId") || "";
+  }
+  function setDrawerA11y(open) {
+    var d = document.getElementById("drawer-detail");
+    if (!d) return;
+    if (open) {
+      d.removeAttribute("aria-hidden");
+      d.removeAttribute("inert");
+    } else {
+      d.setAttribute("aria-hidden", "true");
+      d.setAttribute("inert", "");
+    }
+  }
+  function clearSopFromUrl() {
+    try {
+      var u = new URL(location.href);
+      u.searchParams.delete("sop_id");
+      u.searchParams.delete("sopId");
+      history.replaceState(null, "", u.pathname + u.search + u.hash);
+    } catch (e) {}
+  }
+  function writeSopToUrl(id) {
+    try {
+      var u = new URL(location.href);
+      if (id) u.searchParams.set("sop_id", id);
+      else {
+        u.searchParams.delete("sop_id");
+        u.searchParams.delete("sopId");
+      }
+      history.replaceState(null, "", u.pathname + u.search + u.hash);
+    } catch (e) {}
   }
   function closeAll() {
     mask.classList.remove("open");
     document.querySelectorAll(".proto-modal, .proto-drawer").forEach(function (n) {
       n.classList.remove("open");
     });
+    setDrawerA11y(false);
+    clearSopFromUrl();
+    currentSopId = null;
   }
   function open(node) {
     mask.classList.add("open");
     node.classList.add("open");
+    if (node.id === "drawer-detail") setDrawerA11y(true);
   }
   function openNested(node) {
     node.classList.add("open");
@@ -442,7 +482,7 @@
     else if (preselect) cLive.value = preselect;
 
     var tipLink = document.getElementById("tip-booking-link");
-    if (tipLink && preselect) tipLink.href = "live-booking.html?live_id=" + encodeURIComponent(preselect);
+    if (tipLink && preselect) tipLink.href = "live-booking.html?live_id=" + encodeURIComponent(preselect) + "&tab=reminders";
   }
 
   // ===== List =====
@@ -456,11 +496,13 @@
     var attended = document.getElementById("f-attended").value;
     var ordered = document.getElementById("f-ordered").value;
     var status = document.getElementById("f-status").value;
+    var focus = qs().get("focus") || "";
 
     return LiveReach.getSops(liveId || null).filter(function (s) {
       if (period && s.period !== period) return false;
       if (channel && s.channel !== channel) return false;
       if (status && s.status !== status) return false;
+      if (focus === "pending" && !(s.status === "scheduled" || s.status === "draft")) return false;
       var f = s.filters || {};
       if (stage && f.stage !== stage) return false;
       if (!boolFilter(wecom, f.wecom)) return false;
@@ -479,32 +521,32 @@
     var tb = document.getElementById("sop-tbody");
     document.getElementById("sop-count").textContent = list.length;
     if (!list.length) {
-      tb.innerHTML = '<tr><td colspan="11" class="muted" style="text-align:center;padding:32px">暂无促到 SOP，点击右上角新建</td></tr>';
+      tb.innerHTML = '<tr><td colspan="11" class="muted" style="text-align:center;padding:32px">暂无促到SOP，点击右上角新建</td></tr>';
       return;
     }
     tb.innerHTML = list.map(function (s) {
       var steps = (s.steps && s.steps.length) || 0;
       var acts = [];
-      acts.push('<a href="#" data-act="detail" data-id="' + s.id + '">详情</a>');
-      if (s.status === "draft" || s.status === "paused") {
-        acts.push('<a href="#" data-act="start" data-id="' + s.id + '">启动</a>');
+      acts.push('<a href="live-invite.html?live_id=' + encodeURIComponent(s.liveId) + '&sop_id=' + encodeURIComponent(s.id) + '" data-act="detail" data-id="' + s.id + '">详情</a>');
+      if (s.status === "draft" || s.status === "scheduled" || s.status === "paused") {
+        acts.push('<a href="live-invite.html?live_id=' + encodeURIComponent(s.liveId) + '&sop_id=' + encodeURIComponent(s.id) + '" data-act="start" data-id="' + s.id + '">启动</a>');
       }
       if (s.status === "running") {
-        acts.push('<a href="#" data-act="pause" data-id="' + s.id + '">暂停</a>');
+        acts.push('<a href="live-invite.html?live_id=' + encodeURIComponent(s.liveId) + '&sop_id=' + encodeURIComponent(s.id) + '" data-act="pause" data-id="' + s.id + '">暂停</a>');
       }
       if (s.status !== "cancelled" && s.status !== "completed") {
-        acts.push('<a href="#" data-act="cancel" data-id="' + s.id + '" class="danger">取消</a>');
+        acts.push('<a href="live-invite.html?live_id=' + encodeURIComponent(s.liveId) + '&sop_id=' + encodeURIComponent(s.id) + '" data-act="cancel" data-id="' + s.id + '" class="danger">取消</a>');
       }
-      acts.push('<a href="#" data-act="edit" data-id="' + s.id + '">编辑</a>');
-      return "<tr>" +
-        "<td><b>" + esc(s.name) + "</b></td>" +
-        "<td>" + esc(liveName(s.liveId)) + "</td>" +
+      acts.push('<a href="live-invite.html?live_id=' + encodeURIComponent(s.liveId) + '&sop_id=' + encodeURIComponent(s.id) + '" data-act="edit" data-id="' + s.id + '">编辑</a>');
+      return "<tr" + (s.status === "scheduled" || s.status === "draft" ? ' style="background:#f7f9ff"' : "") + ">" +
+        "<td><b>" + esc(s.name || s.sopName) + "</b><div class=\"muted\" style=\"font-size:11px\">" + esc(s.id) + "</div></td>" +
+        "<td>" + esc(liveName(s.liveId)) + "<div class=\"muted\" style=\"font-size:11px\">" + esc(s.liveId) + "</div></td>" +
         "<td>" + steps + "</td>" +
-        "<td>" + (s.targetUsers || 0) + "</td>" +
-        "<td>" + (s.reachedUsers || 0) + "</td>" +
-        "<td>" + (s.newBookings || 0) + "</td>" +
-        "<td>" + (s.attendedUsers || 0) + "</td>" +
-        "<td>" + (s.orderUsers || 0) + "</td>" +
+        "<td>" + (s.targetUsers || s.targetCount || 0) + "</td>" +
+        "<td>" + (s.reachedUsers || s.reachedCount || 0) + "</td>" +
+        "<td>" + (s.newBookings || s.bookedCount || 0) + "</td>" +
+        "<td>" + (s.attendedUsers || s.attendedCount || 0) + "</td>" +
+        "<td>" + (s.orderUsers || s.orderedCount || 0) + "</td>" +
         "<td>" + fmtMoney(s.gmv) + "</td>" +
         '<td><span class="badge ' + LiveReach.statusBadge(s.status) + '">' + LiveReach.statusLabel(s.status) + "</span></td>" +
         '<td class="row-actions">' + acts.join("") + "</td>" +
@@ -529,7 +571,7 @@
     else if (act === "start") doSetStatus(id, "running");
     else if (act === "pause") doSetStatus(id, "paused");
     else if (act === "cancel") {
-      if (confirm("确认取消该促到 SOP？")) doSetStatus(id, "cancelled");
+      if (confirm("确认取消该促到SOP？")) doSetStatus(id, "cancelled");
     }
   });
 
@@ -550,10 +592,16 @@
   // ===== Detail =====
   function openDetail(id) {
     var sop = LiveReach.getSop(id);
-    if (!sop) { Proto.toast("未找到该 SOP"); return; }
+    if (!sop) {
+      Proto.toast("未找到对应直播促到SOP，请返回列表重新选择。");
+      clearSopFromUrl();
+      setDrawerA11y(false);
+      return;
+    }
     currentSopId = id;
-    document.getElementById("d-title").textContent = "促到 SOP · " + sop.name;
-    document.getElementById("d-name").textContent = sop.name;
+    writeSopToUrl(id);
+    document.getElementById("d-title").textContent = "直播促到SOP详情 · " + (sop.name || sop.sopName);
+    document.getElementById("d-name").textContent = sop.name || sop.sopName;
     document.getElementById("d-live").textContent = liveName(sop.liveId);
     document.getElementById("d-period").textContent = sop.period || "—";
     document.getElementById("d-channel").textContent = sop.channel || "—";
@@ -561,13 +609,13 @@
     document.getElementById("d-status").innerHTML =
       '<span class="badge ' + LiveReach.statusBadge(sop.status) + '">' + LiveReach.statusLabel(sop.status) + "</span>";
     document.getElementById("d-excludes").textContent =
-      (sop.excludes && sop.excludes.length) ? sop.excludes.join("、") : "无";
+      (sop.excludes && sop.excludes.length) ? sop.excludes.join("、") : ((sop.excludeRules || []).join("、") || "无");
 
-    var target = sop.targetUsers || 0;
-    var reached = sop.reachedUsers || 0;
-    var booked = sop.newBookings || 0;
-    var attended = sop.attendedUsers || 0;
-    var ordered = sop.orderUsers || 0;
+    var target = sop.targetUsers || sop.targetCount || 0;
+    var reached = sop.reachedUsers || sop.reachedCount || 0;
+    var booked = sop.newBookings || sop.bookedCount || 0;
+    var attended = sop.attendedUsers || sop.attendedCount || 0;
+    var ordered = sop.orderUsers || sop.orderedCount || 0;
     var funnel = [
       { label: "目标客户", n: target },
       { label: "成功触达", n: reached },
@@ -609,6 +657,9 @@
       return;
     }
     box.innerHTML = steps.map(function (st, i) {
+      var bookingLink = st.linkBooking
+        ? (' · <a class="link-blue" href="live-booking.html?live_id=' + encodeURIComponent(sop.liveId) + '&tab=reminders">配置预约提醒</a>')
+        : "";
       return '<div class="step-card" data-step-i="' + i + '">' +
         '<div class="step-card-hd">' +
           "<b>" + (i + 1) + ". " + esc(st.name) + "</b>" +
@@ -624,6 +675,7 @@
           "　·　目标：" + esc(st.goal || "—") +
           "　·　" + (st.auto ? "自动执行" : "助教任务") +
           (st.target ? ("　·　触达 " + st.reached + "/" + st.target + "，转化 " + (st.converted || 0)) : "") +
+          bookingLink +
         "</div>" +
       "</div>";
     }).join("");
@@ -663,7 +715,7 @@
     if (currentSopId) doSetStatus(currentSopId, "paused");
   });
   document.getElementById("d-cancel").addEventListener("click", function () {
-    if (currentSopId && confirm("确认取消该促到 SOP？")) doSetStatus(currentSopId, "cancelled");
+    if (currentSopId && confirm("确认取消该促到SOP？")) doSetStatus(currentSopId, "cancelled");
   });
 
   // ===== Create / Edit modal =====
@@ -671,7 +723,7 @@
     var title = document.getElementById("modal-create-title");
     var sop = editId ? LiveReach.getSop(editId) : null;
     currentSopId = editId || null;
-    title.textContent = sop ? ("编辑促到 SOP · " + sop.name) : "新建促到 SOP";
+    title.textContent = sop ? ("编辑直播促到SOP · " + (sop.name || sop.sopName)) : "新建直播促到SOP";
 
     document.getElementById("c-name").value = sop ? sop.name : "";
     var prefLive = (sop && sop.liveId) || document.getElementById("f-live").value || liveIdFromUrl();
@@ -784,10 +836,10 @@
       sop.steps = payload.steps;
       if (!sop.targetUsers) sop.targetUsers = payload.targetUsers;
       LiveReach.saveSop(sop);
-      Proto.toast("促到 SOP 已保存");
+      Proto.toast("直播促到SOP已保存");
     } else {
       LiveReach.createSop(payload);
-      Proto.toast("促到 SOP 已创建");
+      Proto.toast("直播促到SOP已创建");
     }
     closeAll();
     renderList();
@@ -876,10 +928,29 @@
   });
 
   // ===== Init =====
-  var initLive = liveIdFromUrl();
+  setDrawerA11y(false);
+  var initLive = "";
+  if (window.ProtoBiz) {
+    initLive = ProtoBiz.normalizeLiveUrl({ focus: qs().get("focus") || undefined }) || "";
+  } else {
+    initLive = liveIdFromUrl();
+  }
+  if (initLive && !LiveReach.getLive(initLive)) {
+    Proto.toast("未找到对应直播，请返回列表重新选择。");
+    initLive = "";
+  }
   fillLiveSelects(initLive);
   if (initLive) document.getElementById("f-live").value = initLive;
   renderList();
+  var initSop = sopIdFromUrl();
+  if (initSop) {
+    var sopOk = LiveReach.getSop(initSop);
+    if (sopOk) openDetail(initSop);
+    else {
+      Proto.toast("未找到对应直播促到SOP，请返回列表重新选择。");
+      clearSopFromUrl();
+    }
+  }
 })();
 </script>
 </body>

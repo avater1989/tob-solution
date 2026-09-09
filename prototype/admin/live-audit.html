@@ -3,10 +3,10 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>直播内部复核工作台 · 商家管理后台</title>
+<title>内部复核工作台 · 商家管理后台</title>
 <link rel="stylesheet" href="../assets/css/proto.css?v=9" />
 </head>
-<body class="admin-body" data-module="live" data-nav="live-audit" data-title="直播内部复核工作台" data-crumb="直播 / 内部复核">
+<body class="admin-body" data-module="live" data-nav="live-audit" data-title="内部复核工作台" data-crumb="直播 / 内部复核工作台">
 <div id="header-actions">
   <button class="btn" id="btn-refresh">刷新</button>
   <button class="btn" id="btn-export">导出</button>
@@ -18,13 +18,13 @@
   <div class="stat-cards" style="margin-bottom:8px">
     <div class="stat-card">
       <div class="stat-label">待我复核</div>
-      <div class="stat-value" style="color:#d48806">12</div>
-      <div class="stat-hint"><span class="up">+3</span> 较昨日</div>
+      <div class="stat-value" id="stat-pending" style="color:#d48806">0</div>
+      <div class="stat-hint">当前队列</div>
     </div>
     <div class="stat-card">
       <div class="stat-label">今日已复核</div>
-      <div class="stat-value">28</div>
-      <div class="stat-hint">通过 24 · 驳回 4</div>
+      <div class="stat-value" id="stat-done">0</div>
+      <div class="stat-hint" id="stat-done-hint">通过 0 · 驳回 0</div>
     </div>
     <div class="stat-card">
       <div class="stat-label">平均复核时长</div>
@@ -33,14 +33,14 @@
     </div>
     <div class="stat-card">
       <div class="stat-label">驳回率</div>
-      <div class="stat-value">14.3<span style="font-size:14px;color:#86909c;font-weight:400;margin-left:2px">%</span></div>
+      <div class="stat-value" id="stat-reject-rate">0<span style="font-size:14px;color:#86909c;font-weight:400;margin-left:2px">%</span></div>
       <div class="stat-hint">本周数据</div>
     </div>
   </div>
 
   <!-- Tabs -->
   <div class="tabs" id="audit-tabs">
-    <a class="active" href="#pending" data-tab="pending">待我复核 <span class="tab-badge">12</span></a>
+    <a class="active" href="#pending" data-tab="pending">待我复核 <span class="tab-badge" id="tab-pending-badge">0</span></a>
     <a href="#audited" data-tab="audited">我已复核</a>
     <a href="#all" data-tab="all">全部</a>
   </div>
@@ -94,96 +94,13 @@
           <th style="width:160px">操作</th>
         </tr>
       </thead>
-      <tbody id="audit-tbody">
-        <tr data-tab="pending">
-          <td><input type="checkbox" class="row-check" /></td>
-          <td><a href="live-audit-detail.html" class="link-blue">春启 03 期家长公开课</a></td>
-          <td>春启 03 期家长必修课</td>
-          <td>视频直播</td>
-          <td>阮荣均</td>
-          <td>2026-03-30 20:00</td>
-          <td>阮荣均</td><td>2026-09-04 14:30</td>
-          <td><span class="wait-badge wait-warn">2 小时</span></td>
-          <td class="row-actions">
-            <a href="live-audit-detail.html" data-row-act="audit">内部复核</a>
-            <a href="#" data-row-act="preview">预览</a>
-          </td>
-        </tr>
-        <tr data-tab="pending">
-          <td><input type="checkbox" class="row-check" /></td>
-          <td><a href="live-audit-detail.html" class="link-blue">明日直播·春启04 招生</a></td>
-          <td>春启 04 期</td>
-          <td>视频直播</td>
-          <td>赵老师</td>
-          <td>2026-09-05 19:00</td>
-          <td>赵老师</td><td>2026-09-04 10:00</td>
-          <td><span class="wait-badge wait-warn">6 小时</span></td>
-          <td class="row-actions">
-            <a href="live-audit-detail.html" data-row-act="audit">内部复核</a>
-            <a href="#" data-row-act="preview">预览</a>
-          </td>
-        </tr>
-        <tr data-tab="pending">
-          <td><input type="checkbox" class="row-check" /></td>
-          <td><a href="live-audit-detail.html" class="link-blue">家长答疑会·音频直播</a></td>
-          <td>家长训练营</td>
-          <td>语音直播</td>
-          <td>王助教</td>
-          <td>2026-04-01 20:00</td>
-          <td>王助教</td><td>2026-09-03 18:20</td>
-          <td><span class="wait-badge wait-overdue">22 小时</span></td>
-          <td class="row-actions">
-            <a href="live-audit-detail.html" data-row-act="audit">内部复核</a>
-            <a href="#" data-row-act="preview">预览</a>
-          </td>
-        </tr>
-        <tr data-tab="pending">
-          <td><input type="checkbox" class="row-check" /></td>
-          <td><a href="live-audit-detail.html" class="link-blue">9.9 引流试听课·改版</a></td>
-          <td>9.9 引流课 · 亲子沟通</td>
-          <td>视频直播</td>
-          <td>赵老师</td>
-          <td>2026-09-06 19:30</td>
-          <td>赵老师</td><td>2026-09-04 16:45</td>
-          <td><span class="wait-badge wait-fresh">30 分钟</span></td>
-          <td class="row-actions">
-            <a href="live-audit-detail.html" data-row-act="audit">内部复核</a>
-            <a href="#" data-row-act="preview">预览</a>
-          </td>
-        </tr>
-        <tr data-tab="audited">
-          <td><input type="checkbox" class="row-check" disabled /></td>
-          <td>今晚直播 · 公开课</td>
-          <td>今晚直播 · 复盘</td>
-          <td>视频直播</td>
-          <td>阮荣均</td>
-          <td>2026-09-04 20:00</td>
-          <td>阮荣均</td><td>2026-09-03 11:30</td>
-          <td><span class="audit-badge audit-approved">已通过</span></td>
-          <td class="row-actions">
-            <a href="live-audit-detail.html">查看</a>
-          </td>
-        </tr>
-        <tr data-tab="audited">
-          <td><input type="checkbox" class="row-check" disabled /></td>
-          <td>9.9 引流试听课</td>
-          <td>9.9 引流课 · 亲子沟通</td>
-          <td>视频直播</td>
-          <td>赵老师</td>
-          <td>2026-03-31 19:30</td>
-          <td>赵老师</td><td>2026-09-03 16:00</td>
-          <td><span class="audit-badge audit-rejected">已驳回</span></td>
-          <td class="row-actions">
-            <a href="live-audit-detail.html">查看</a>
-          </td>
-        </tr>
-      </tbody>
+      <tbody id="audit-tbody"></tbody>
     </table>
   </div></div>
 
   <!-- 分页 -->
   <div class="toolbar" style="margin-top:8px">
-    <span class="muted">共 <b>4</b> 条待复核 · 共 <b>2</b> 条已复核</span>
+    <span class="muted" id="audit-pager-hint">共 <b>0</b> 条待复核 · 共 <b>0</b> 条已复核</span>
     <div class="spacer"></div>
     <select><option>10条/页</option><option>20条/页</option><option>50条/页</option></select>
     <button class="btn btn-sm" disabled>上一页</button>
@@ -260,23 +177,108 @@
 </style>
 
 <script src="../assets/js/proto.js"></script>
+<script src="../assets/js/prototype-business-store.js"></script>
 <script src="../assets/js/admin-shell.js?v=13"></script>
 <script>
 (function () {
-  // ===== Tabs =====
+  var Biz = window.ProtoBiz;
+  var currentTab = "pending";
+  var batchIds = [];
+
+  function esc(s) {
+    return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) {
+      return ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c];
+    });
+  }
+
+  function tabOf(live) {
+    return live.auditStatus === "pending_internal_review" ? "pending" : "audited";
+  }
+
+  function waitHtml(live) {
+    if (live.auditStatus !== "pending_internal_review") {
+      var cls = "audit-approved";
+      var label = live.auditStatusLabel || (Biz.AUDIT_LABEL[live.auditStatus] || live.auditStatus);
+      if (live.auditStatus === "internal_rejected" || live.auditStatus === "platform_rejected") {
+        cls = "audit-rejected";
+      } else if (live.auditStatus === "pending_platform_submit" || live.auditStatus === "pending_platform_review") {
+        cls = "audit-pending";
+      }
+      return '<span class="audit-badge ' + cls + '">' + esc(label) + "</span>";
+    }
+    var h = Biz.waitHours(live.submittedInternalAt);
+    var wcls = h >= 12 ? "wait-overdue" : h >= 2 ? "wait-warn" : "wait-fresh";
+    var text = h < 1 ? "不足 1 小时" : (h + " 小时");
+    return '<span class="wait-badge ' + wcls + '">' + text + "</span>";
+  }
+
+  function rowHtml(live) {
+    var tab = tabOf(live);
+    var href = "live-audit-detail.html?live_id=" + encodeURIComponent(live.id);
+    var pending = live.auditStatus === "pending_internal_review";
+    var actions = pending
+      ? '<a href="' + href + '" data-row-act="audit">内部复核</a><a href="#" data-row-act="preview">预览</a>'
+      : '<a href="' + href + '">查看</a>';
+    return '<tr data-tab="' + tab + '" data-id="' + esc(live.id) + '" data-name="' + esc(live.name) + '">' +
+      '<td><input type="checkbox" class="row-check" ' + (pending ? "" : "disabled") + ' data-id="' + esc(live.id) + '" /></td>' +
+      '<td><a href="' + href + '" class="link-blue">' + esc(live.name) + '</a><div class="muted" style="font-size:11px">' + esc(live.id) + "</div></td>" +
+      "<td>" + esc(live.name) + "</td>" +
+      "<td>视频直播</td>" +
+      "<td>阮荣均</td>" +
+      "<td>" + esc(live.startAt || "—") + "</td>" +
+      "<td>赵老师</td>" +
+      "<td>" + esc(live.submittedInternalAt || live.createdAt || "—") + "</td>" +
+      "<td>" + waitHtml(live) + "</td>" +
+      '<td class="row-actions">' + actions + "</td></tr>";
+  }
+
+  function render() {
+    var lives = Biz.getLives() || [];
+    var kw = (document.getElementById("f-name").value || "").trim();
+    if (kw) {
+      lives = lives.filter(function (l) {
+        return (l.name || "").indexOf(kw) >= 0 || (l.id || "").indexOf(kw) >= 0;
+      });
+    }
+    var pending = lives.filter(function (l) { return l.auditStatus === "pending_internal_review"; });
+    var audited = lives.filter(function (l) { return l.auditStatus !== "pending_internal_review"; });
+    var logs = Biz.getReviewLogs();
+    var passed = logs.filter(function (r) { return r.status === "pending_platform_submit"; }).length;
+    var rejected = logs.filter(function (r) { return r.status === "internal_rejected"; }).length;
+
+    document.getElementById("stat-pending").textContent = String(pending.length);
+    document.getElementById("tab-pending-badge").textContent = String(pending.length);
+    document.getElementById("stat-done").textContent = String(passed + rejected || audited.length);
+    document.getElementById("stat-done-hint").textContent = "通过 " + passed + " · 驳回 " + rejected;
+    var rateEl = document.getElementById("stat-reject-rate");
+    var totalDone = passed + rejected;
+    rateEl.innerHTML = (totalDone ? Math.round(rejected * 1000 / totalDone) / 10 : 0) +
+      '<span style="font-size:14px;color:#86909c;font-weight:400;margin-left:2px">%</span>';
+    document.getElementById("audit-pager-hint").innerHTML =
+      "共 <b>" + pending.length + "</b> 条待复核 · 共 <b>" + audited.length + "</b> 条已复核";
+
+    var show = currentTab === "pending" ? pending : currentTab === "audited" ? audited : lives;
+    var tbody = document.getElementById("audit-tbody");
+    tbody.innerHTML = show.length ? show.map(rowHtml).join("") : '<tr><td colspan="10" class="muted" style="text-align:center;padding:24px">暂无数据</td></tr>';
+
+    tbody.querySelectorAll("[data-row-act=preview]").forEach(function (a) {
+      a.addEventListener("click", function (e) {
+        e.preventDefault();
+        Proto.toast("打开预览（原型）");
+      });
+    });
+  }
+
   document.querySelectorAll("#audit-tabs a[data-tab]").forEach(function (a) {
     a.addEventListener("click", function (e) {
       e.preventDefault();
       document.querySelectorAll("#audit-tabs a").forEach(function (x) { x.classList.remove("active"); });
       a.classList.add("active");
-      var tab = a.getAttribute("data-tab");
-      document.querySelectorAll("#audit-tbody tr").forEach(function (tr) {
-        tr.style.display = (tab === "all" || tr.dataset.tab === tab) ? "" : "none";
-      });
+      currentTab = a.getAttribute("data-tab");
+      render();
     });
   });
 
-  // ===== Mask =====
   var mask = document.getElementById("mask");
   function closeAll() {
     mask.classList.remove("open");
@@ -286,7 +288,6 @@
   mask.addEventListener("click", closeAll);
   document.querySelectorAll("[data-close]").forEach(function (n) { n.addEventListener("click", closeAll); });
 
-  // ===== Batch =====
   document.getElementById("check-all").addEventListener("change", function () {
     var c = this;
     document.querySelectorAll(".row-check").forEach(function (x) {
@@ -294,42 +295,46 @@
     });
   });
 
-  // ===== Row preview =====
-  document.querySelectorAll("[data-row-act=preview]").forEach(function (a) {
-    a.addEventListener("click", function (e) {
-      e.preventDefault();
-      Proto.toast("打开预览（原型）");
-    });
-  });
-
-  // ===== Batch approve =====
   document.getElementById("btn-batch-approve").addEventListener("click", function () {
-    var rows = Array.from(document.querySelectorAll(".row-check:checked")).map(function (c) { return c.closest("tr"); });
-    if (!rows.length) { Proto.toast("请先选择要通过的直播"); return; }
-    document.getElementById("batch-count").textContent = rows.length;
-    var list = document.getElementById("batch-list");
-    list.innerHTML = rows.map(function (r) {
-      var name = r.querySelectorAll("td")[1].textContent.trim();
-      return "<li>" + name + "</li>";
+    var checks = Array.from(document.querySelectorAll(".row-check:checked"));
+    if (!checks.length) { Proto.toast("请先选择要通过的直播"); return; }
+    batchIds = checks.map(function (c) { return c.getAttribute("data-id"); });
+    document.getElementById("batch-count").textContent = batchIds.length;
+    document.getElementById("batch-list").innerHTML = checks.map(function (c) {
+      var tr = c.closest("tr");
+      return "<li>" + esc(tr.getAttribute("data-name") || c.getAttribute("data-id")) + "</li>";
     }).join("");
     open(document.getElementById("modal-batch-approve"));
   });
+
   document.getElementById("btn-confirm-batch").addEventListener("click", function () {
+    batchIds.forEach(function (id) {
+      Biz.setAuditStatus(id, "pending_platform_submit", { by: "刘管理", side: "merchant" });
+    });
     closeAll();
-    Proto.toast("已批量通过（原型）");
-    setTimeout(function () { location.reload(); }, 600);
+    Proto.toast("已批量内部复核通过");
+    render();
   });
 
-  // ===== Header buttons =====
   document.getElementById("btn-refresh").addEventListener("click", function () { location.reload(); });
   document.getElementById("btn-export").addEventListener("click", function () { Proto.toast("已导出（原型）"); });
-  document.getElementById("btn-query").addEventListener("click", function () { Proto.toast("已查询（原型）"); });
+  document.getElementById("btn-query").addEventListener("click", render);
   document.getElementById("btn-reset").addEventListener("click", function () {
     document.getElementById("f-name").value = "";
     ["f-course","f-mode","f-creator","f-date"].forEach(function (id) { document.getElementById(id).value = ""; });
     document.getElementById("f-range").value = "";
+    render();
     Proto.toast("已重置");
   });
+
+  try {
+    var q = new URLSearchParams(location.search);
+    if (q.get("status") === "pending") currentTab = "pending";
+  } catch (e) {}
+  document.querySelectorAll("#audit-tabs a").forEach(function (a) {
+    a.classList.toggle("active", a.getAttribute("data-tab") === currentTab);
+  });
+  render();
 })();
 </script>
 </body>

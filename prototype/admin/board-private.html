@@ -25,10 +25,10 @@
 </div>
 <div id="page-content" style="display:none">
 
-
   <div class="board-tip">
     <b>私域转化：</b>承接效率看「是否接住」，跟进质量看「是否运营起来」。
     二者共享筛选，但不是所有用户必经的线性主链台阶。
+    <span class="muted" id="scope-help-brief"></span>
   </div>
 
   <div class="board-filter">
@@ -52,7 +52,7 @@
 
   <div class="tab-pane active" id="pane-handoff">
     <div class="stat-cards board-stats" style="grid-template-columns:repeat(4,1fr)">
-      <a class="stat-card" href="leads.html?focus=unassigned">
+      <a class="stat-card" data-board-link="leads.html" data-board-focus="unassigned" href="leads.html?focus=unassigned">
         <div class="stat-label">待分配积压</div>
         <div class="stat-value" style="color:#ff7d00" data-m="backlog">23</div>
         <div class="stat-hint">超时 <span data-m="backlogLate">8</span></div>
@@ -62,15 +62,15 @@
         <div class="stat-value" id="timely-rate">86%</div>
         <div class="stat-hint">= 时效桶 &lt;1h + 1–4h</div>
       </div>
-      <a class="stat-card" href="leads.html">
+      <a class="stat-card" data-board-link="leads.html" href="leads.html">
         <div class="stat-label">加微率（相对入池）</div>
         <div class="stat-value" id="wecom-pool">64%</div>
         <div class="stat-hint"><span data-m="wecom">392</span> / <span data-m="pool">612</span></div>
       </a>
-      <a class="stat-card" href="channels-orders.html?focus=sms_fail">
+      <a class="stat-card" data-board-link="channels-orders.html" data-board-focus="sms_failed" href="channels-orders.html?focus=sms_failed">
         <div class="stat-label">领课率</div>
         <div class="stat-value" id="claim-rate">82%</div>
-        <div class="stat-hint"><span class="board-scope aux">视频号辅</span> 失败 <span data-m="vxSmsFail">18</span></div>
+        <div class="stat-hint"><span class="board-scope aux">视频号辅</span> 失败事件 <span data-m="smsFailureEvents">18</span></div>
       </a>
     </div>
 
@@ -97,10 +97,14 @@
         </div>
       </div>
       <div class="card">
-        <div class="card-hd"><h2>视频号领课</h2><span class="board-scope aux">辅</span></div>
+        <div class="card-hd"><h2>视频号领课 / 短信</h2><span class="board-scope aux">辅</span></div>
         <div class="card-bd">
-          <p style="font-size:13px;margin:0 0 8px">流入 <b data-m="vxLeads">241</b> → 领课 <b data-m="vxClaim">198</b> → 短信失败 <b data-m="vxSmsFail">18</b></p>
-          <a class="btn btn-sm" href="channels-orders.html?focus=sms_fail">处理失败短信</a>
+          <p style="font-size:13px;margin:0 0 8px">流入 <b data-m="vxLeads">241</b> → 领课 <b data-m="vxClaim">198</b></p>
+          <p style="font-size:13px;margin:0 0 12px">
+            今日发生发送失败 <b id="sms-failure-events" data-m="smsFailureEvents">18</b>
+            · 当前待重发 <b id="sms-failed-pending" data-m="smsFailedPending">18</b>
+          </p>
+          <a class="btn btn-sm" id="sms-failed-link" data-board-link="channels-orders.html" data-board-focus="sms_failed" href="channels-orders.html?focus=sms_failed">处理失败短信</a>
         </div>
       </div>
     </div>
@@ -131,7 +135,7 @@
         <div class="stat-value" data-m="wecom">392</div>
         <div class="stat-hint">本专题分析底数</div>
       </div>
-      <a class="stat-card" href="follow-ups.html?focus=no_follow">
+      <a class="stat-card" data-board-link="follow-ups.html" data-board-focus="no_follow" href="follow-ups.html?focus=no_follow">
         <div class="stat-label">无跟进（风险）</div>
         <div class="stat-value" style="color:#ff7d00" data-m="noFollow">86</div>
         <div class="stat-hint">与下表明细合计一致</div>
@@ -163,22 +167,16 @@
         <div class="card-hd"><h2>阶段分布</h2><span class="muted" style="font-size:12px;font-weight:400">分母：当前筛选范围内已加微用户</span></div>
         <div class="card-bd" style="padding:0">
           <table class="data">
-            <thead><tr><th>阶段</th><th>占比</th></tr></thead>
-            <tbody>
-              <tr><td>新加微 / 待首跟</td><td>12%</td></tr>
-              <tr><td>跟进中</td><td>43%</td></tr>
-              <tr><td>高意向</td><td>24%</td></tr>
-              <tr><td>已转化</td><td>13%</td></tr>
-              <tr><td>无效 / 战败</td><td>8%</td></tr>
-            </tbody>
+            <thead><tr><th>阶段</th><th>人数</th><th>占比</th></tr></thead>
+            <tbody id="stage-tbody"></tbody>
           </table>
-          <p class="muted" style="padding:8px 16px;font-size:12px;margin:0">五阶段合计 100%。</p>
+          <p class="muted" style="padding:8px 16px;font-size:12px;margin:0" id="stage-note">五阶段合计 100%。</p>
         </div>
       </div>
       <div class="card">
         <div class="card-hd"><h2>下钻</h2></div>
         <div class="card-bd" style="display:flex;gap:8px;flex-wrap:wrap">
-          <a class="btn" href="follow-ups.html?focus=no_follow">跟进管理</a>
+          <a class="btn" data-board-link="follow-ups.html" data-board-focus="no_follow" href="follow-ups.html?focus=no_follow">跟进管理</a>
           <a class="btn" href="todo-calendar.html">待办日历</a>
           <a class="btn" href="wecom-churn.html">流失提醒</a>
         </div>
@@ -188,12 +186,22 @@
 
 </div>
 <script src="../assets/js/proto.js"></script>
-<script src="../assets/js/board-data.js?v=3"></script>
-<script src="../assets/js/board-metrics.js?v=7"></script>
+<script src="../assets/js/board-data.js?v=5"></script>
+<script src="../assets/js/board-metrics.js?v=9"></script>
 <script src="../assets/js/admin-shell.js?v=13"></script>
 <script>
 (function () {
+  BoardMetrics.ensureCaliberUI();
+  BoardMetrics.setUpdatedNow();
   BoardMetrics.fillAttr();
+  var brief = document.getElementById("scope-help-brief");
+  if (brief) brief.textContent = " · " + (BoardMetrics.FILTER_SCOPE_HELP || "").slice(0, 48) + "…";
+
+  function slugify(name) {
+    if (!name) return "other";
+    if (name === "其他人员") return "other";
+    return String(name).replace(/\s+/g, "").replace(/[^\w\u4e00-\u9fff_-]/g, "") || "other";
+  }
 
   function setTab(tab) {
     tab = tab === "follow" ? "follow" : "handoff";
@@ -215,11 +223,38 @@
       return;
     }
     hs.innerHTML = staff.map(function (s) {
-      return "<tr><td>" + s.name + "</td><td>" + BoardMetrics.fmt(s.assigned) + "</td><td>" + BoardMetrics.fmt(s.wecom) + "</td><td>" + BoardMetrics.pct(s.wecom, s.assigned) + '</td><td class="row-actions"><a href="leads.html">线索</a></td></tr>';
+      var oid = slugify(s.name);
+      var leadsHref = BoardMetrics.buildDrilldownUrl("leads.html", { owner: oid });
+      return "<tr><td>" + s.name + "</td><td>" + BoardMetrics.fmt(s.assigned) + "</td><td>" + BoardMetrics.fmt(s.wecom) + "</td><td>" +
+        BoardMetrics.pct(s.wecom, s.assigned) + '</td><td class="row-actions"><a href="' + leadsHref + '">线索</a></td></tr>';
     }).join("");
     fs.innerHTML = staff.map(function (s) {
-      return "<tr><td>" + s.name + "</td><td>" + BoardMetrics.fmt(s.wecom) + "</td><td>" + BoardMetrics.fmt(s.followed) + "</td><td>" + (s.cover || "—") + "</td><td>" + BoardMetrics.fmt(s.noFollow) + "</td><td>" + BoardMetrics.fmt(s.churn) + '</td><td class="row-actions"><a href="follow-ups.html">跟进</a><a href="todo-calendar.html">待办</a></td></tr>';
+      var oid = slugify(s.name);
+      var followHref = BoardMetrics.buildDrilldownUrl("follow-ups.html", { owner: oid });
+      var todoHref = BoardMetrics.buildDrilldownUrl("todo-calendar.html", { owner: oid });
+      return "<tr><td>" + s.name + "</td><td>" + BoardMetrics.fmt(s.wecom) + "</td><td>" + BoardMetrics.fmt(s.followed) + "</td><td>" +
+        (s.cover || "—") + "</td><td>" + BoardMetrics.fmt(s.noFollow) + "</td><td>" + BoardMetrics.fmt(s.churn) +
+        '</td><td class="row-actions"><a href="' + followHref + '">跟进</a><a href="' + todoHref + '">待办</a></td></tr>';
     }).join("");
+  }
+
+  function renderStages() {
+    var stages = BoardMetrics.getStageDistribution();
+    var tbody = document.getElementById("stage-tbody");
+    var note = document.getElementById("stage-note");
+    if (!stages.length) {
+      BoardMetrics.renderEmpty(tbody, 3, "当前筛选条件下暂无阶段分布");
+      if (note) note.textContent = "暂无已加微用户。";
+      return;
+    }
+    tbody.innerHTML = stages.map(function (s) {
+      var href = BoardMetrics.buildDrilldownUrl("follow-ups.html", {
+        follow_stage: s.stage || s.label
+      });
+      return '<tr><td><a href="' + href + '">' + (s.stage || s.label) + "</a></td><td>" +
+        BoardMetrics.fmt(s.count) + "</td><td>" + (s.pct || "—") + "</td></tr>";
+    }).join("");
+    if (note) note.textContent = "五阶段合计 100%。点击阶段可下钻跟进列表。";
   }
 
   function renderDetails(d) {
@@ -228,13 +263,23 @@
     document.getElementById("timing-tbody").innerHTML = buckets.map(function (b, i) {
       if (i < 2) timely += b.pct;
       var color = b.tone === "ok" ? "color:#00b42a" : b.tone === "warn" ? "color:#ff7d00" : b.tone === "danger" ? "color:#f53f3f" : "";
-      var note = b.tone === "danger" ? '<a href="leads.html?focus=unassigned">' + b.note + "</a>" : b.note;
+      var note = b.tone === "danger"
+        ? '<a data-board-link="leads.html" data-board-focus="unassigned" href="leads.html?focus=unassigned">' + b.note + "</a>"
+        : b.note;
       return "<tr><td>" + b.label + "</td><td>" + b.pct + '%</td><td style="' + color + '">' + note + "</td></tr>";
     }).join("");
     document.getElementById("timely-rate").textContent = timely + "%";
     document.getElementById("wecom-pool").textContent = BoardMetrics.pct(d.wecomLeads, d.poolLeads);
     document.getElementById("claim-rate").textContent = BoardMetrics.pct(d.vxClaim, d.vxLeads);
+
+    var failEl = document.getElementById("sms-failure-events");
+    var pendEl = document.getElementById("sms-failed-pending");
+    if (failEl) failEl.textContent = BoardMetrics.fmt(d.smsFailureEvents);
+    if (pendEl) pendEl.textContent = BoardMetrics.fmt(d.smsFailedPending);
+
     renderStaff();
+    renderStages();
+    BoardMetrics.renderActiveFilters();
     BoardMetrics.wireBoardLinks();
   }
 
@@ -245,6 +290,7 @@
     var b = e.target.closest("button[data-tab]");
     if (!b) return;
     setTab(b.getAttribute("data-tab"));
+    BoardMetrics.wireBoardLinks();
   });
 
   BoardMetrics.bindRange("range-seg", function (k, d) { renderDetails(d); });

@@ -1,7 +1,23 @@
 ﻿/* Mix shell per docs/DESIGN.md: Top modules + Side + Main + Assist */
 /* v4 (2026-09-04): 精简侧栏，移除公客池/工单中心/系统管理/加群/组织角色权限；提升"主播促到"为顶级模块 */
 /* v5 (2026-09-05): 增强容错 - 缺失 page-content 时显示重试提示而非静默失败 */
+/* v6: 接入 ProtoBiz；内部复核 / 直播促到SOP 命名统一 */
 (function () {
+  if (!window.ProtoBiz) {
+    try {
+      var cur = document.currentScript;
+      var src = (cur && cur.src)
+        ? cur.src.replace(/admin-shell\.js[^/]*$/, "prototype-business-store.js")
+        : "../assets/js/prototype-business-store.js";
+      var xhr = new XMLHttpRequest();
+      xhr.open("GET", src, false);
+      xhr.send(null);
+      if (xhr.status >= 200 && xhr.status < 300 && xhr.responseText) {
+        (0, eval)(xhr.responseText);
+      }
+    } catch (eLoad) {}
+  }
+
   // 全局错误捕获 - 避免脚本异常导致页面全裸
   window.addEventListener("error", function (e) {
     if (document.body && !document.querySelector(".admin-app")) {
@@ -66,7 +82,7 @@
           { id: "mass-customer", href: "mass-customer.html", label: "客户群发" },
           { id: "mass-group", href: "mass-group.html", label: "客户群群发" },
           { id: "mass-moment", href: "mass-moment.html", label: "群发朋友圈" },
-          { id: "invite", href: "live-invite.html", label: "直播促到" },
+          { id: "invite", href: "live-invite.html", label: "直播促到SOP" },
           { id: "quick-task", href: "quick-tasks.html", label: "快捷任务" },
           { id: "sop-personal", href: "sop-personal.html", label: "个人SOP" },
           { id: "sop-group", href: "sop-group.html", label: "群SOP" },
@@ -105,11 +121,11 @@
         ],
       },
       {
-        group: "直播审核",
+        group: "内部复核",
         links: [
-          { id: "live-audit", href: "live-audit.html", label: "审核工作台", badge: 12 },
-          { id: "live-rejected", href: "live-rejected.html", label: "驳回记录" },
-          { id: "live-audit-detail", href: "live-audit-detail.html", label: "审核详情" },
+          { id: "live-audit", href: "live-audit.html", label: "内部复核工作台", badge: 0 },
+          { id: "live-rejected", href: "live-rejected.html", label: "内部复核记录" },
+          { id: "live-audit-detail", href: "live-audit.html", label: "复核详情" },
         ],
       },
     ],
@@ -178,6 +194,7 @@
         group: "用户管理",
         links: [
           { id: "users", href: "users.html", label: "用户列表" },
+          { id: "user-tags", href: "user-tags.html", label: "标签管理" },
         ],
       },
     ],
@@ -217,8 +234,8 @@
       "<li><a href='channels-orders.html'>③ 视频号承接</a></li>" +
       "<li><a href='leads.html'>④ 私域运营</a></li></ul></div>",
     "live-invite":
-      "<div class='assist-block'><h3>直播促到</h3><ul>" +
-      "<li>面向私域线索的预约邀约、催到与会后跟进</li>" +
+      "<div class='assist-block'><h3>直播促到SOP</h3><ul>" +
+      "<li>面向私域人群配置直播前邀约、预约后催到、开播中召回、回放触达和会后跟进</li>" +
       "<li>支持按标签 / 期次 / 阶段筛选并排除已购等</li>" +
       "<li>与预约管理中的系统提醒职责分离</li></ul></div>",
     scrm:
@@ -253,13 +270,14 @@
       "<li><a href='trade-settings.html'>⑤ 交易设置</a></li></ul></div>",
     user:
       "<div class='assist-block'><h3>用户提示</h3><ul>" +
-      "<li>MVP 支持手动打标</li>" +
-      "<li>公域订单用户进入同一视图</li>" +
-      "<li>角色与权限：内置 5 角色 + 自定义</li></ul></div>" +
+      "<li>MVP 支持手动打标与标签管理</li>" +
+      "<li>批量打标读取「标签管理」中启用的标签</li>" +
+      "<li>公域订单用户进入同一视图</li></ul></div>" +
       "<div class='assist-block'><h3>用户路径</h3><ul>" +
       "<li><a href='users.html'>① 用户列表</a></li>" +
-      "<li><a href='user-roles.html'>② 用户角色</a></li>" +
-      "<li><a href='permissions.html'>③ 权限配置</a></li></ul></div>",
+      "<li><a href='user-tags.html'>② 标签管理</a></li>" +
+      "<li><a href='user-roles.html'>③ 用户角色</a></li>" +
+      "<li><a href='permissions.html'>④ 权限配置</a></li></ul></div>",
     data:
       "<div class='assist-block'><h3>链路看板</h3><ul>" +
       "<li>业务主链：获客→承接→跟进→直播→转化</li>" +
@@ -277,12 +295,27 @@
 
   function sideHtml() {
     var groups = sidebars[moduleId] || [];
+    var pendingAudit = 0;
+    var pendingAs = 0;
+    try {
+      if (window.ProtoBiz) {
+        pendingAudit = ProtoBiz.getLives().filter(function (l) {
+          return l.auditStatus === "pending_internal_review";
+        }).length;
+        pendingAs = ProtoBiz.load().aftersales.filter(function (a) {
+          return a.status === "pending_merchant";
+        }).length;
+      }
+    } catch (e) {}
     var html = '<div class="sidebar-module-label">当前模块</div>';
     groups.forEach(function (g) {
       html += '<div class="nav-group"><div class="nav-label">' + g.group + "</div>";
       g.links.forEach(function (l) {
         var cls = "nav-item" + (l.id === active ? " active" : "");
-        var badge = l.badge ? '<span class="nav-badge">' + l.badge + "</span>" : "";
+        var badgeVal = l.badge;
+        if (l.id === "live-audit") badgeVal = pendingAudit || 0;
+        if (l.id === "aftersales" && window.ProtoBiz) badgeVal = pendingAs || 0;
+        var badge = badgeVal ? '<span class="nav-badge">' + badgeVal + "</span>" : "";
         var href = l.href;
         if (window.BoardMetrics && /^board-/.test(href)) {
           href = BoardMetrics.buildDrilldownUrl(href);
