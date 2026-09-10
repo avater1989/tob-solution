@@ -3,170 +3,97 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>直播数据 · 商家管理后台</title>
+<title>场次数据 · 商家管理后台</title>
 <link rel="stylesheet" href="../assets/css/proto.css?v=9" />
 </head>
-<body class="admin-body" data-module="live" data-nav="live-stats" data-title="直播数据" data-crumb="直播 / 直播管理 / 直播数据">
-<div id="header-actions">
-  <button class="btn" id="btn-export">导出</button>
-  <button class="btn" id="btn-refresh">↻</button>
-</div>
+<body class="admin-body" data-module="live" data-nav="lives" data-title="场次数据" data-crumb="直播 / 直播列表 / 场次数据">
+<div id="header-actions"></div>
 <div id="page-content" style="display:none">
 
-  <div id="post-live-actions" class="card" style="display:none;margin-bottom:12px">
-    <div class="card-hd"><h2>直播后操作</h2></div>
-    <div class="card-bd" style="display:flex;flex-wrap:wrap;gap:8px">
-      <a class="btn" id="pla-replay" href="#">查看回放</a>
-      <a class="btn" id="pla-noshow" href="#">跟进已预约未到场</a>
-      <a class="btn" id="pla-notorder" href="#">跟进已到场未下单</a>
-      <a class="btn" id="pla-copy" href="#">复制本场直播</a>
-      <a class="btn" id="pla-back" href="#">返回直播详情</a>
-    </div>
-  </div>
-
-  <!-- 顶部 5 大核心数据 -->
-  <div class="grid-4" style="margin-bottom:16px">
-    <div class="stat"><div class="label">累计观看人次</div><div class="value">8,642</div></div>
-    <div class="stat"><div class="label">累计观看人数</div><div class="value">4,128</div></div>
-    <div class="stat"><div class="label">最高在线</div><div class="value">386</div></div>
-    <div class="stat"><div class="label">平均观看时长</div><div class="value">14:32</div></div>
-    <div class="stat"><div class="label">新增客户数</div><div class="value">186</div></div>
-  </div>
-
-  <!-- 筛选 -->
-  <div class="card" style="margin-bottom:8px"><div class="card-bd">
-    <div class="form-grid" style="grid-template-columns:repeat(5,minmax(0,1fr));gap:8px 12px">
-      <select id="f-live">
-        <option value="">选择直播</option>
-        <option>春启 03 期家长公开课</option>
-        <option>9.9 引流课·试听课</option>
-        <option>家长答疑会·音频直播</option>
-      </select>
-      <select id="f-time">
-        <option value="">时间维度</option>
-        <option>今日</option>
-        <option>近 7 天</option>
-        <option>近 30 天</option>
-        <option>自定义</option>
-      </select>
-      <input id="f-time1" type="datetime-local" />
-      <input id="f-time2" type="datetime-local" />
-      <button class="btn btn-primary" id="btn-query">查询</button>
-    </div>
-  </div></div>
-
-  <!-- 4 个数据卡片：核心指标 -->
-  <div class="grid-4" style="margin-bottom:16px">
-    <div class="card"><div class="card-hd"><h2>实时数据</h2></div><div class="card-bd">
-      <div class="data-row"><span class="muted">实时在线</span><b>68</b></div>
-      <div class="data-row"><span class="muted">累计观看</span><b>1,248</b></div>
-      <div class="data-row"><span class="muted">评论数</span><b>86</b></div>
-      <div class="data-row"><span class="muted">分享次数</span><b>34</b></div>
-    </div></div>
-    <div class="card"><div class="card-hd"><h2>转化数据</h2></div><div class="card-bd">
-      <div class="data-row"><span class="muted">商品点击</span><b>326</b></div>
-      <div class="data-row"><span class="muted">下单数</span><b>62</b></div>
-      <div class="data-row"><span class="muted">GMV</span><b>¥3,180</b></div>
-      <div class="data-row"><span class="muted">转化率</span><b>19.0%</b></div>
-    </div></div>
-    <div class="card"><div class="card-hd"><h2>用户行为</h2></div><div class="card-bd">
-      <div class="data-row"><span class="muted">新增加微</span><b>92</b></div>
-      <div class="data-row"><span class="muted">关注主播</span><b>48</b></div>
-      <div class="data-row"><span class="muted">礼物收入</span><b>¥0</b></div>
-      <div class="data-row"><span class="muted">回看次数</span><b>248</b></div>
-    </div></div>
-    <div class="card"><div class="card-hd"><h2>直播表现</h2></div><div class="card-bd">
-      <div class="data-row"><span class="muted">平均在线</span><b>186</b></div>
-      <div class="data-row"><span class="muted">峰值在线</span><b>386</b></div>
-      <div class="data-row"><span class="muted">完播率</span><b>68%</b></div>
-      <div class="data-row"><span class="muted">互动率</span><b>42%</b></div>
-    </div></div>
-  </div>
-
-  <!-- 趋势图（占位） -->
-  <div class="card" style="margin-bottom:16px">
-    <div class="card-hd"><h2>在线人数趋势</h2><select style="margin-left:auto"><option>实时</option><option>分时</option><option>日</option></select></div>
-    <div class="card-bd">
-      <div class="trend-chart">
-        <div class="trend-bar" style="height:30%"></div>
-        <div class="trend-bar" style="height:45%"></div>
-        <div class="trend-bar" style="height:60%"></div>
-        <div class="trend-bar" style="height:75%"></div>
-        <div class="trend-bar" style="height:90%"></div>
-        <div class="trend-bar" style="height:100%"></div>
-        <div class="trend-bar" style="height:85%"></div>
-        <div class="trend-bar" style="height:70%"></div>
-        <div class="trend-bar" style="height:60%"></div>
-        <div class="trend-bar" style="height:50%"></div>
-        <div class="trend-bar" style="height:40%"></div>
-        <div class="trend-bar" style="height:30%"></div>
+  <div id="stats-empty" class="card" style="display:none">
+    <div class="card-bd" style="padding:48px 24px;text-align:center">
+      <h2 style="margin:0 0 8px;font-size:18px">请先选择一场直播查看场次数据</h2>
+      <p class="muted" style="margin:0 0 20px;font-size:13px">场次数据只分析单场直播，须携带 live_id。多场比较请前往经营分析 · 直播分析。</p>
+      <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-bottom:20px">
+        <a class="btn btn-primary" href="lives.html">返回直播列表</a>
       </div>
-      <div class="trend-labels">
-        <span>20:00</span><span>20:30</span><span>21:00</span><span>21:30</span>
-        <span>22:00</span><span>22:30</span><span>23:00</span><span>23:30</span>
-        <span>00:00</span><span>00:30</span><span>01:00</span><span>01:30</span>
+      <div style="max-width:420px;margin:0 auto;text-align:left">
+        <label class="muted" style="font-size:12px;display:block;margin-bottom:6px">选择直播</label>
+        <select id="pick-live" style="width:100%">
+          <option value="">请选择一场直播</option>
+        </select>
       </div>
     </div>
   </div>
 
-  <!-- 直播列表 + 数据 -->
-  <div class="card">
-    <div class="card-hd"><h2>直播数据明细</h2></div>
-    <div class="card-bd" style="padding:0">
-      <table class="data">
-        <thead>
-          <tr>
-            <th>直播名称</th>
-            <th>开始时间</th>
-            <th>时长</th>
-            <th>观看人数</th>
-            <th>最高在线</th>
-            <th>新增加微</th>
-            <th>订单数</th>
-            <th>GMV</th>
-            <th>完播率</th>
-            <th>操作</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>春启 03 期家长公开课</td>
-            <td>2026-03-29 20:00</td>
-            <td>2 小时</td>
-            <td>386</td>
-            <td>386</td>
-            <td>186</td>
-            <td>62</td>
-            <td>¥3,180</td>
-            <td>68%</td>
-            <td><a href="#" data-row-act="detail">详情</a></td>
-          </tr>
-          <tr>
-            <td>9.9 引流课·试听课</td>
-            <td>2026-03-22 19:30</td>
-            <td>1.5 小时</td>
-            <td>248</td>
-            <td>186</td>
-            <td>96</td>
-            <td>38</td>
-            <td>¥1,140</td>
-            <td>72%</td>
-            <td><a href="#" data-row-act="detail">详情</a></td>
-          </tr>
-          <tr>
-            <td>家长答疑会·音频直播</td>
-            <td>2026-03-20 20:00</td>
-            <td>1.5 小时</td>
-            <td>186</td>
-            <td>120</td>
-            <td>62</td>
-            <td>18</td>
-            <td>¥540</td>
-            <td>85%</td>
-            <td><a href="#" data-row-act="detail">详情</a></td>
-          </tr>
-        </tbody>
-      </table>
+  <div id="stats-gate" class="card" style="display:none">
+    <div class="card-bd" style="padding:40px 24px;text-align:center">
+      <h2 id="gate-title" style="margin:0 0 8px;font-size:18px">—</h2>
+      <p id="gate-desc" class="muted" style="margin:0 0 20px;font-size:13px;line-height:1.6"></p>
+      <div id="gate-actions" style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap"></div>
+    </div>
+  </div>
+
+  <div id="stats-body" style="display:none">
+    <div class="card" style="margin-bottom:12px">
+      <div class="card-bd" style="display:flex;flex-wrap:wrap;gap:12px 24px;align-items:flex-start;justify-content:space-between">
+        <div>
+          <div style="font-size:18px;font-weight:600;margin-bottom:6px" id="sess-name">—</div>
+          <div class="muted" style="font-size:12px;margin-bottom:8px">
+            直播 ID <b id="sess-id">—</b>
+            · 主讲人 <span id="sess-teacher">—</span>
+            · 开始 <span id="sess-start">—</span>
+            · 时长 <span id="sess-duration">—</span>
+          </div>
+          <div id="sess-chips" style="display:flex;gap:6px;flex-wrap:wrap"></div>
+        </div>
+        <div id="sess-ops" style="display:flex;gap:8px;flex-wrap:wrap"></div>
+      </div>
+    </div>
+
+    <div class="grid-4" style="margin-bottom:16px" id="watch-stats">
+      <div class="stat"><div class="label">本场累计观看人数</div><div class="value" id="m-uv">—</div></div>
+      <div class="stat"><div class="label">本场累计观看人次</div><div class="value" id="m-pv">—</div></div>
+      <div class="stat"><div class="label">本场峰值在线</div><div class="value" id="m-peak">—</div></div>
+      <div class="stat"><div class="label">本场平均观看时长</div><div class="value" id="m-avg-watch">—</div></div>
+    </div>
+
+    <div class="grid-4" style="margin-bottom:16px">
+      <div class="card"><div class="card-hd"><h2 id="rt-title">实时 / 互动</h2></div><div class="card-bd">
+        <div class="data-row"><span class="muted" id="rt-online-label">当前在线</span><b id="m-online">—</b></div>
+        <div class="data-row"><span class="muted">本场评论数</span><b id="m-comments">—</b></div>
+        <div class="data-row"><span class="muted">本场分享次数</span><b id="m-shares">—</b></div>
+        <div class="data-row"><span class="muted">本场互动率</span><b id="m-interact">—</b></div>
+      </div></div>
+      <div class="card"><div class="card-hd"><h2>转化数据</h2></div><div class="card-bd">
+        <div class="data-row"><span class="muted">本场商品点击</span><b id="m-clicks">—</b></div>
+        <div class="data-row"><span class="muted">本场下单数</span><b id="m-orders">—</b></div>
+        <div class="data-row"><span class="muted">本场 GMV</span><b id="m-gmv">—</b></div>
+        <div class="data-row"><span class="muted">本场转化率</span><b id="m-convert">—</b></div>
+      </div></div>
+      <div class="card"><div class="card-hd"><h2>用户行为</h2></div><div class="card-bd">
+        <div class="data-row"><span class="muted">本场新增加微</span><b id="m-wecom">—</b></div>
+        <div class="data-row"><span class="muted">本场关注主播</span><b id="m-follow">—</b></div>
+        <div class="data-row"><span class="muted">本场回看次数</span><b id="m-replay">—</b></div>
+        <div class="data-row"><span class="muted">—</span><b style="visibility:hidden">0</b></div>
+      </div></div>
+      <div class="card"><div class="card-hd"><h2>直播表现</h2></div><div class="card-bd">
+        <div class="data-row"><span class="muted">本场平均在线</span><b id="m-avg-online">—</b></div>
+        <div class="data-row"><span class="muted">本场峰值在线</span><b id="m-peak2">—</b></div>
+        <div class="data-row"><span class="muted">本场完播率</span><b id="m-finish">—</b></div>
+        <div class="data-row"><span class="muted">本场互动率</span><b id="m-interact2">—</b></div>
+      </div></div>
+    </div>
+
+    <div class="card" style="margin-bottom:16px">
+      <div class="card-hd"><h2 id="trend-title">本场趋势</h2></div>
+      <div class="card-bd">
+        <div class="trend-chart" id="trend-chart"></div>
+        <div class="trend-labels muted" style="font-size:11px;display:flex;justify-content:space-between;margin-top:4px">
+          <span>开播</span><span>中段</span><span>后段</span><span>收尾</span>
+        </div>
+        <p class="muted" style="font-size:12px;margin:10px 0 0">本场在线人数变化（示意）。进入 / 退出 / 评论波动随本场数据联动，不含其他场次。</p>
+      </div>
     </div>
   </div>
 </div>
@@ -185,71 +112,282 @@
 .trend-bar {
   flex: 1; background: linear-gradient(180deg, #4080ff, #165dff);
   border-radius: 4px 4px 0 0; min-height: 8px;
-  position: relative;
-  transition: all .2s;
 }
-.trend-bar:hover { opacity: 0.8; transform: translateY(-2px); }
-.trend-labels {
-  display: flex; justify-content: space-between;
-  font-size: 11px; color: var(--color-text-muted);
-  margin-top: 4px;
+.sess-chip {
+  display: inline-flex; align-items: center; padding: 2px 8px;
+  border-radius: 4px; font-size: 12px; background: #f2f3f5; color: #4e5969;
 }
+.sess-chip.ok { background: #e8ffea; color: #00b42a; }
+.sess-chip.warn { background: #fff7e8; color: #ff7d00; }
+.sess-chip.danger { background: #ffece8; color: #f53f3f; }
+.sess-chip.live { background: #ffece8; color: #f53f3f; }
 </style>
 
 <script src="../assets/js/proto.js"></script>
 <script src="../assets/js/prototype-business-store.js"></script>
-<script src="../assets/js/live-ops.js?v=7"></script>
-<script src="../assets/js/admin-shell.js?v=18"></script>
+<script src="../assets/js/live-ops.js?v=9"></script>
+<script src="../assets/js/admin-shell.js?v=19"></script>
 <script>
 (function () {
   function on(el, ev, fn) { if (el) el.addEventListener(ev, fn); }
-  var liveId = LiveOps.idFromSearch();
-  var live = liveId ? LiveOps.getLive(liveId) : null;
-  if (liveId && !live) {
-    LiveOps.renderEmptyLive(document.getElementById("page-content"), "未找到直播 " + liveId);
+  function $(id) { return document.getElementById(id); }
+  function fmt(n) {
+    if (n == null || n === "") return "—";
+    if (typeof n === "number") return n.toLocaleString("zh-CN");
+    return String(n);
+  }
+  function money(n) {
+    if (n == null) return "—";
+    return "¥" + Number(n).toLocaleString("zh-CN");
+  }
+  function qparam(k) {
+    try { return new URLSearchParams(location.search).get(k) || ""; } catch (e) { return ""; }
+  }
+  function chip(label, kind) {
+    return '<span class="sess-chip' + (kind ? " " + kind : "") + '">' + label + "</span>";
+  }
+  function btn(label, href, primary) {
+    return '<a class="btn' + (primary ? " btn-primary" : "") + '" href="' + href + '">' + label + "</a>";
+  }
+
+  var rawLiveId = "";
+  try {
+    var qs = new URLSearchParams(location.search);
+    rawLiveId = qs.get("live_id") || qs.get("liveId") || qs.get("id") || "";
+  } catch (e) {}
+  var from = qparam("from");
+  var returnUrl = qparam("return_url");
+  var fromBoard = from === "board-live";
+  var liveId = fromBoard ? rawLiveId : (LiveOps.idFromSearch() || rawLiveId);
+  var root = $("page-content");
+
+  function setHeader(html) {
+    var ha = $("page-header-actions") || $("header-actions");
+    if (ha) ha.innerHTML = html || "";
+  }
+
+  function showEmpty() {
+    $("stats-empty").style.display = "block";
+    $("stats-gate").style.display = "none";
+    $("stats-body").style.display = "none";
+    setHeader(btn("返回直播列表", "lives.html", true));
+    var sel = $("pick-live");
+    var lives = LiveOps.getLives() || [];
+    sel.innerHTML = '<option value="">请选择一场直播</option>' + lives.map(function (l) {
+      return '<option value="' + l.liveId + '">' + (l.liveName || l.name) + "（" + l.liveId + " · " + (l.runtimeStatusLabel || "") + "）</option>";
+    }).join("");
+    on(sel, "change", function () {
+      if (!sel.value) return;
+      location.href = LiveOps.buildUrl("live-stats.html", { live_id: sel.value, from: from || "picker" });
+    });
+  }
+
+  function showGate(title, desc, actions) {
+    $("stats-empty").style.display = "none";
+    $("stats-gate").style.display = "block";
+    $("stats-body").style.display = "none";
+    $("gate-title").textContent = title;
+    $("gate-desc").textContent = desc;
+    $("gate-actions").innerHTML = (actions || []).map(function (a) {
+      return btn(a.label, a.href, a.primary);
+    }).join("");
+  }
+
+  function backLinks(live) {
+    var items = [];
+    if (returnUrl) {
+      items.push({ label: "返回经营分析", href: returnUrl, primary: true });
+    }
+    items.push({ label: "返回直播详情", href: LiveOps.viewLiveUrl(live.liveId) });
+    items.push({ label: "返回直播列表", href: "lives.html" });
+    return items;
+  }
+
+  function gateForLive(live) {
+    var key = LiveOps.scenarioKey(live);
+    var detail = LiveOps.viewLiveUrl(live.liveId);
+    var list = "lives.html";
+    var control = LiveOps.buildUrl("live-control.html", { live_id: live.liveId, from: "stats" });
+    var baseActs = backLinks(live);
+
+    if (key === "cancelled" || live.runtimeStatus === "cancelled") {
+      return {
+        title: "当前直播已取消，没有可查看的场次数据。",
+        desc: "平台：" + live.platformReviewStatusLabel + " · 上架：" + live.shelfStatusLabel + " · 运行：" + live.runtimeStatusLabel,
+        actions: baseActs
+      };
+    }
+    if (key === "draft") {
+      return {
+        title: "当前直播尚未提交平台审核，暂无场次数据。",
+        desc: "草稿或未提交场次不会产生观看与转化数据。请完善配置并提交平台审核。",
+        actions: [
+          { label: "继续编辑", href: LiveOps.editLiveUrl(live.liveId), primary: true },
+          { label: "返回直播详情", href: detail },
+          { label: "返回直播列表", href: list }
+        ]
+      };
+    }
+    if (key === "platform_pending") {
+      return {
+        title: "当前直播正在平台审核中，暂无场次数据。",
+        desc: "审核通过并上架开播后，才会产生本场实时与结果数据。",
+        actions: [
+          { label: "查看审核状态", href: LiveOps.buildUrl("live-edit.html", { live_id: live.liveId, mode: "view", focus: "platform" }), primary: true },
+          { label: "返回直播详情", href: detail },
+          { label: "返回直播列表", href: list }
+        ]
+      };
+    }
+    if (key === "platform_rejected") {
+      return {
+        title: "当前直播审核驳回，暂无场次数据。",
+        desc: "请按驳回意见修改后重新提交；驳回场次不会产生虚假实时指标。",
+        actions: [
+          { label: "修改并重新提交", href: LiveOps.editLiveUrl(live.liveId), primary: true },
+          { label: "返回直播详情", href: detail },
+          { label: "返回直播列表", href: list }
+        ]
+      };
+    }
+    if (key === "ready_shelf") {
+      return {
+        title: "当前直播尚未上架，暂无场次数据。",
+        desc: "审核已通过，但未上架。上架并开播后才会产生场次数据。",
+        actions: [
+          { label: "返回直播详情", href: detail, primary: true },
+          { label: "返回直播列表", href: list }
+        ]
+      };
+    }
+    if (key === "upcoming" || live.runtimeStatus === "not_started") {
+      var acts = [
+        { label: "返回直播详情", href: detail, primary: true },
+        { label: "返回直播列表", href: list }
+      ];
+      if (live.platformReviewStatus === "passed" && live.shelfStatus === "published") {
+        acts.splice(1, 0, { label: "进入中控台", href: control });
+      }
+      return {
+        title: "直播尚未开始，暂无场次数据。",
+        desc: "开播后可在本页查看实时观看、互动与转化；结束后查看完整本场结果。",
+        actions: acts
+      };
+    }
+    return null;
+  }
+
+  function renderMetrics(pack) {
+    var live = pack.live;
+    var living = pack.living;
+    $("sess-name").textContent = live.liveName || live.name || "—";
+    $("sess-id").textContent = live.liveId;
+    $("sess-teacher").textContent = pack.overview.teacher;
+    $("sess-start").textContent = pack.overview.startAt;
+    $("sess-duration").textContent = pack.overview.durationLabel;
+    $("sess-chips").innerHTML =
+      chip("平台 " + live.platformReviewStatusLabel, live.platformReviewStatus === "passed" ? "ok" : "warn") +
+      chip("上架 " + live.shelfStatusLabel, live.shelfStatus === "published" ? "ok" : "warn") +
+      chip("运行 " + live.runtimeStatusLabel, living ? "live" : (pack.ended ? "ok" : ""));
+
+    $("m-uv").textContent = fmt(pack.watch.uv);
+    $("m-pv").textContent = fmt(pack.watch.pv);
+    $("m-peak").textContent = fmt(pack.watch.peak);
+    $("m-avg-watch").textContent = pack.watch.avgWatch;
+
+    $("rt-title").textContent = living ? "实时互动" : "互动数据";
+    $("rt-online-label").textContent = living ? "当前在线" : "本场峰值在线（互动）";
+    $("m-online").textContent = living ? fmt(pack.realtime.online) : fmt(pack.watch.peak);
+    $("m-comments").textContent = fmt(pack.realtime.comments);
+    $("m-shares").textContent = fmt(pack.realtime.shares);
+    $("m-interact").textContent = pack.realtime.interactRate + "%";
+
+    $("m-clicks").textContent = fmt(pack.convert.clicks);
+    $("m-orders").textContent = fmt(pack.convert.orders);
+    $("m-gmv").textContent = money(pack.convert.gmv);
+    $("m-convert").textContent = pack.convert.rate + "%";
+
+    $("m-wecom").textContent = fmt(pack.behavior.wecom);
+    $("m-follow").textContent = fmt(pack.behavior.follow);
+    $("m-replay").textContent = pack.ended ? fmt(pack.behavior.replay) : (living ? "—" : "0");
+
+    $("m-avg-online").textContent = fmt(pack.performance.avgOnline);
+    $("m-peak2").textContent = fmt(pack.performance.peak);
+    $("m-finish").textContent = pack.performance.finishRate == null ? (living ? "直播中" : "—") : (pack.performance.finishRate + "%");
+    $("m-interact2").textContent = pack.performance.interactRate + "%";
+
+    $("trend-title").textContent = living ? "本场实时趋势" : "本场全场趋势";
+    var max = Math.max.apply(null, pack.trend.concat([1]));
+    $("trend-chart").innerHTML = pack.trend.map(function (v) {
+      var h = Math.round((v / max) * 100);
+      return '<div class="trend-bar" style="height:' + h + '%" title="' + v + '"></div>';
+    }).join("");
+
+    var ops = [];
+    var id = live.liveId;
+    if (returnUrl) ops.push(btn("返回经营分析", returnUrl, true));
+    if (living) {
+      ops.push(btn("返回中控台", LiveOps.buildUrl("live-control.html", { live_id: id, from: "stats" }), !returnUrl));
+      ops.push(btn("打开直播大屏", LiveOps.buildUrl("live-screen.html", { live_id: id, from: "stats" })));
+      ops.push(btn("返回直播详情", LiveOps.viewLiveUrl(id)));
+    } else if (pack.ended) {
+      ops.push(btn("查看回放", LiveOps.buildUrl("live-replay.html", { live_id: id })));
+      ops.push(btn("复制本场直播", LiveOps.buildUrl("live-edit.html", { copy_from: id })));
+      ops.push(btn("返回直播详情", LiveOps.viewLiveUrl(id), !returnUrl));
+    } else {
+      ops.push(btn("返回直播详情", LiveOps.viewLiveUrl(id), true));
+    }
+    $("sess-ops").innerHTML = ops.join("");
+
+    setHeader(
+      (returnUrl ? btn("返回经营分析", returnUrl) : "") +
+      btn("返回直播详情", LiveOps.viewLiveUrl(id)) +
+      btn("返回直播列表", "lives.html")
+    );
+  }
+
+  if (!liveId) {
+    showEmpty();
     return;
   }
-  if (live) {
-    LiveOps.renderContextBanner({ live: live });
-    var ha = document.getElementById("page-header-actions") || document.getElementById("header-actions");
-    if (ha) {
-      ha.innerHTML =
-        '<a class="btn" href="' + LiveOps.viewLiveUrl(live.liveId) + '">返回直播详情</a>' +
-        '<button type="button" class="btn" id="btn-export">导出</button>' +
-        '<button type="button" class="btn" id="btn-refresh">↻</button>';
-    }
-    var sel = document.getElementById("f-live");
-    if (sel) {
-      var opt = document.createElement("option");
-      opt.value = live.liveId;
-      opt.textContent = live.liveName + "（" + live.liveId + "）";
-      opt.selected = true;
-      sel.insertBefore(opt, sel.firstChild.nextSibling);
-    }
-    if (live.runtimeStatus === "ended") {
-      var box = document.getElementById("post-live-actions");
-      if (box) {
-        box.style.display = "block";
-        var id = live.liveId;
-        document.getElementById("pla-replay").href = LiveOps.buildUrl("live-replay.html", { live_id: id });
-        document.getElementById("pla-noshow").href = LiveOps.buildUrl("leads.html", { scene: "post_live", segment: "no_show", live_id: id });
-        document.getElementById("pla-notorder").href = LiveOps.buildUrl("leads.html", { scene: "post_live", segment: "attended_not_ordered", live_id: id });
-        document.getElementById("pla-copy").href = LiveOps.buildUrl("live-edit.html", { copy_from: id });
-        document.getElementById("pla-back").href = LiveOps.viewLiveUrl(id);
-      }
-    }
-  } else {
-    LiveOps.renderContextBanner({ showEmpty: true });
-  }
-  on(document.getElementById("btn-export"), "click", function () { Proto.toast("已导出（原型）"); });
-  on(document.getElementById("btn-refresh"), "click", function () { Proto.toast("已刷新（原型）"); });
-  on(document.getElementById("btn-query"), "click", function () { Proto.toast("已查询（原型）"); });
-  document.querySelectorAll('[data-row-act="detail"]').forEach(function (a) {
-    on(a, "click", function (e) {
-      e.preventDefault();
-      Proto.toast("打开直播详细数据（原型）");
-    });
+
+  var live = (!fromBoard && liveId) ? LiveOps.getLive(liveId) : null;
+  var pack = LiveOps.getSessionStatsData(liveId || rawLiveId, {
+    liveName: qparam("live_name"),
+    forceStub: fromBoard
   });
+  if (!live && pack && pack.live) live = pack.live;
+  if (!live) {
+    LiveOps.renderEmptyLive(root, "未找到直播 " + (liveId || rawLiveId || ""));
+    setHeader(btn("返回直播列表", "lives.html", true));
+    return;
+  }
+
+  if (!live._analyticsStub) LiveOps.renderContextBanner({ live: live });
+  document.title = "场次数据 · " + (live.liveName || live.name) + " · 商家管理后台";
+  document.body.setAttribute("data-crumb", "直播 / " + (live.liveName || live.name) + " / 场次数据");
+  document.body.setAttribute("data-title", "场次数据");
+
+  var blocked = live._analyticsStub ? null : gateForLive(live);
+  if (blocked) {
+    showGate(blocked.title, blocked.desc, blocked.actions);
+    setHeader(
+      (returnUrl ? btn("返回经营分析", returnUrl) : "") +
+      btn("返回直播详情", LiveOps.viewLiveUrl(live.liveId)) +
+      btn("返回直播列表", "lives.html")
+    );
+    return;
+  }
+
+  if (!pack || !pack.started) {
+    showGate("直播尚未开始，暂无场次数据。", "开播后可查看本场实时与结果数据。", backLinks(live));
+    return;
+  }
+
+  $("stats-empty").style.display = "none";
+  $("stats-gate").style.display = "none";
+  $("stats-body").style.display = "block";
+  renderMetrics(pack);
 })();
 </script>
 </body>

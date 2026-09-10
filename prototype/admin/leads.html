@@ -14,20 +14,7 @@
 </div>
 <div id="page-content" style="display:none">
 
-  <div id="post-live-banner" class="board-tip" style="display:none;margin-bottom:12px;background:#f0f5ff;border-color:#adc6ff">
-    <div>
-      <b id="plb-source">来源直播：—</b>
-      <span class="muted" id="plb-segment" style="margin-left:8px">当前人群：—</span>
-    </div>
-    <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:8px">
-      <button type="button" class="btn btn-sm" data-pl-act="follow">创建跟进任务</button>
-      <button type="button" class="btn btn-sm" data-pl-act="assign">批量分配负责人</button>
-      <button type="button" class="btn btn-sm" data-pl-act="tag">添加客户标签</button>
-      <a class="btn btn-sm" id="plb-sop" href="live-invite.html">加入直播促到SOP会后跟进</a>
-      <a class="btn btn-sm" id="plb-back" href="lives.html">返回直播详情</a>
-    </div>
-  </div>
-
+  <!-- 筛选 -->
   <div class="tabs" id="lead-tabs">
     <a class="active" href="#pool" data-tab="pool">待分配线索</a>
     <a href="#rule" data-tab="rule">分配规则</a>
@@ -734,35 +721,6 @@
       cols: { owner: 8, stage: 5 }
     });
   }
-
-  /* post_live scene from live module */
-  try {
-    var qp = new URLSearchParams(location.search);
-    if (qp.get("scene") === "post_live") {
-      var lid = qp.get("live_id") || "";
-      var seg = qp.get("segment") || "";
-      var liveName = lid;
-      if (window.ProtoBiz && ProtoBiz.getLive) {
-        var lv = ProtoBiz.getLive(lid);
-        if (lv) liveName = lv.name + "（" + lid + "）";
-      }
-      var segLabel = seg === "no_show" ? "已预约未到场"
-        : (seg === "attended_not_ordered" ? "已到场未下单" : "直播后跟进人群");
-      var ban = document.getElementById("post-live-banner");
-      if (ban) {
-        ban.style.display = "block";
-        document.getElementById("plb-source").textContent = "来源直播：" + liveName;
-        document.getElementById("plb-segment").textContent = "当前人群：" + segLabel;
-        document.getElementById("plb-sop").href = "live-invite.html?live_id=" + encodeURIComponent(lid) + "&scene=post_live";
-        document.getElementById("plb-back").href = "live-edit.html?live_id=" + encodeURIComponent(lid) + "&mode=view";
-      }
-      document.querySelectorAll("[data-pl-act]").forEach(function (btn) {
-        btn.addEventListener("click", function () {
-          Proto.toast(btn.getAttribute("data-pl-act") + "（原型 · " + segLabel + "）");
-        });
-      });
-    }
-  } catch (e) {}
 })();
 </script>
 </body>

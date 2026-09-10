@@ -1301,18 +1301,11 @@
         action: { type: "open_live", id: low.id, label: "查看" + low.id + "场次" }
       });
     }
-    var up = rows.filter(function (r) { return r.upcoming; })[0];
-    if (up) {
-      lines.push({
-        text: "待开播「" + up.name + "」" + (up.sopMissing.length ? ("待处理：" + up.sopMissing.join("、")) : "准备就绪。"),
-        action: { type: "open_live", id: up.id, tab: "upcoming", label: "查看准备情况" }
-      });
-    }
     var sopOn = rows.filter(function (r) { return r.sopDone && !r.upcoming; }).length;
     var sopOff = rows.filter(function (r) { return !r.sopDone && !r.upcoming; }).length;
     if (sopOn || sopOff) {
       lines.push({
-        text: "已结束场次中 " + sopOn + " 场执行了直播促到SOP，" + sopOff + " 场未执行（相关表现，非因果结论）。"
+        text: "已结束场次中 " + sopOn + " 场执行了直播促到SOP，" + sopOff + " 场未执行（执行组与未执行组相关表现，非因果结论）。"
       });
     }
     return lines.slice(0, 3);

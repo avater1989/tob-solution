@@ -111,7 +111,6 @@
           { id: "lives", href: "lives.html", label: "直播列表" },
           { id: "live-booking", href: "live-booking.html", label: "预约管理" },
           { id: "live-replay", href: "live-replay.html", label: "直播回放" },
-          { id: "live-stats", href: "live-stats.html", label: "直播数据" },
         ],
       },
     ],
@@ -215,7 +214,7 @@
       "<li><a href='leads.html'>④ 私域运营</a></li></ul></div>",
     "live-invite":
       "<div class='assist-block'><h3>直播促到SOP</h3><ul>" +
-      "<li>面向私域人群配置直播前邀约、预约后催到、开播中召回、回放触达和会后跟进</li>" +
+      "<li>面向私域人群配置直播前邀约、预约后催到、开播提醒和直播中召回</li>" +
       "<li>支持按标签 / 期次 / 阶段筛选并排除已购等</li>" +
       "<li>与预约管理中的系统提醒职责分离</li></ul></div>",
     scrm:

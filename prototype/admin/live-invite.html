@@ -16,12 +16,15 @@
     <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" style="flex-shrink:0;margin-top:2px"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
     <div>
       <div style="font-weight:600">直播促到SOP</div>
-      <div style="margin-top:2px;opacity:.9">面向私域人群配置直播前邀约、预约后催到、开播中召回、回放触达和会后跟进。</div>
+      <div style="margin-top:2px;opacity:.9">面向私域人群配置直播前邀约、预约后催到、开播提醒和直播中召回。标准预约提醒由预约管理负责。</div>
       <div class="muted" style="margin-top:4px;font-size:12px;color:inherit;opacity:.75">
         标准预约提醒（开播前 / 开播时 / 改期 / 取消）请到
         <a class="link-blue" href="live-booking.html" id="tip-booking-link">预约管理</a> 配置，本页不做系统预约提醒，避免职责重复。
       </div>
     </div>
+  </div>
+  <div class="board-tip" id="invite-global-tip" style="margin-bottom:12px;background:#f0f5ff;border-color:#adc6ff;display:none">
+    当前查看全部直播，可按关联直播、期次、渠道和状态筛选。
   </div>
 
   <!-- 筛选 -->
@@ -358,7 +361,7 @@
 
 <script src="../assets/js/proto.js"></script>
 <script src="../assets/js/prototype-business-store.js"></script>
-<script src="../assets/js/live-ops.js?v=7"></script>
+<script src="../assets/js/live-ops.js?v=9"></script>
 <script src="../assets/js/live-reach.js"></script>
 <script src="../assets/js/admin-shell.js?v=16"></script>
 <script>
@@ -381,8 +384,17 @@
   setTimeout(function () {
     if (!window.LiveOps) return;
     var lid = liveIdFromUrl();
-    if (lid) LiveOps.renderContextBanner({ liveId: lid });
-    else LiveOps.renderContextBanner({ showEmpty: true });
+    var tip = document.getElementById("invite-global-tip");
+    if (lid) {
+      if (tip) tip.style.display = "none";
+      LiveOps.renderContextBanner({
+        liveId: lid,
+        allHref: "live-invite.html",
+        allLabel: "查看全部SOP"
+      });
+    } else {
+      if (tip) tip.style.display = "";
+    }
   }, 0);
   function sopIdFromUrl() {
     return qs().get("sop_id") || qs().get("sopId") || "";
@@ -472,26 +484,77 @@
   }
 
   // ===== Live selects =====
+  function liveRuntimeKey(live) {
+    if (!live) return "";
+    if (window.LiveOps && LiveOps.scenarioKey) {
+      try { return LiveOps.scenarioKey(LiveOps.getLive(live.id || live.liveId) || live); } catch (e) {}
+    }
+    return live.runtimeStatus || live.liveStatus || live.execStatus || "";
+  }
+  function canCreateSopForLive(live) {
+    if (!live) return true;
+    var k = liveRuntimeKey(live);
+    return !(k === "ended" || live.liveStatus === "ended" || live.execStatus === "ended");
+  }
+  function canStartSopForLive(live) {
+    if (!live) return true;
+    var k = liveRuntimeKey(live);
+    if (k === "ended" || live.liveStatus === "ended") return false;
+    if (k === "draft" || k === "platform_rejected" || k === "platform_pending") return false;
+    var audit = live.auditStatus || "";
+    var plat = live.platformReviewStatus || "";
+    if (audit === "draft" || audit === "rejected" || audit === "pending") return false;
+    if (plat === "not_submitted" || plat === "rejected" || plat === "pending") return false;
+    return true;
+  }
+  function isLivingLive(live) {
+    var k = liveRuntimeKey(live);
+    return k === "living" || live.liveStatus === "living" || live.execStatus === "living";
+  }
+  function isRecallStep(st) {
+    var n = (st && st.name) || "";
+    return n.indexOf("召回") >= 0 || n.indexOf("开播中") >= 0;
+  }
+  function syncCreateButton(liveId) {
+    var btn = document.getElementById("btn-create");
+    if (!btn) return;
+    var live = liveId ? LiveReach.getLive(liveId) : null;
+    if (live && !canCreateSopForLive(live)) {
+      btn.disabled = true;
+      btn.setAttribute("title", "已结束场次仅可查看，不可新建或启动SOP");
+    } else {
+      btn.disabled = false;
+      btn.removeAttribute("title");
+    }
+  }
   function fillLiveSelects(preselect) {
     var lives = LiveReach.getLives();
     var fLive = document.getElementById("f-live");
     var cLive = document.getElementById("c-live");
     var fVal = fLive.value;
     var cVal = cLive.value;
-    fLive.innerHTML = '<option value="">全部直播</option>';
+    var lock = !!preselect;
+    fLive.innerHTML = lock ? "" : '<option value="">全部直播</option>';
     cLive.innerHTML = '<option value="">请选择直播</option>';
     lives.forEach(function (l) {
+      if (lock && l.id !== preselect) return;
       var label = l.name + "（" + (l.liveStatusLabel || "") + "）";
       fLive.appendChild(new Option(label, l.id));
       cLive.appendChild(new Option(label, l.id));
     });
-    if (preselect) fLive.value = preselect;
-    else if (fVal) fLive.value = fVal;
+    if (preselect) {
+      fLive.value = preselect;
+      fLive.disabled = true;
+    } else {
+      fLive.disabled = false;
+      if (fVal) fLive.value = fVal;
+    }
     if (cVal) cLive.value = cVal;
     else if (preselect) cLive.value = preselect;
 
     var tipLink = document.getElementById("tip-booking-link");
     if (tipLink && preselect) tipLink.href = "live-booking.html?live_id=" + encodeURIComponent(preselect) + "&tab=reminders";
+    syncCreateButton(preselect || "");
   }
 
   // ===== List =====
@@ -537,7 +600,8 @@
       var steps = (s.steps && s.steps.length) || 0;
       var acts = [];
       acts.push('<a href="live-invite.html?live_id=' + encodeURIComponent(s.liveId) + '&sop_id=' + encodeURIComponent(s.id) + '" data-act="detail" data-id="' + s.id + '">详情</a>');
-      if (s.status === "draft" || s.status === "scheduled" || s.status === "paused") {
+      var liveForSop = LiveReach.getLive(s.liveId);
+      if ((s.status === "draft" || s.status === "scheduled" || s.status === "paused") && canStartSopForLive(liveForSop)) {
         acts.push('<a href="live-invite.html?live_id=' + encodeURIComponent(s.liveId) + '&sop_id=' + encodeURIComponent(s.id) + '" data-act="start" data-id="' + s.id + '">启动</a>');
       }
       if (s.status === "running") {
@@ -577,7 +641,21 @@
     var act = a.getAttribute("data-act");
     if (act === "detail") openDetail(id);
     else if (act === "edit") openCreate(id);
-    else if (act === "start") doSetStatus(id, "running");
+    else if (act === "start") {
+      var sop0 = LiveReach.getSop(id);
+      var live0 = sop0 ? LiveReach.getLive(sop0.liveId) : null;
+      if (!canStartSopForLive(live0)) {
+        Proto.toast(live0 && (live0.liveStatus === "ended" || liveRuntimeKey(live0) === "ended")
+          ? "已结束场次仅可查看，不可启动SOP"
+          : "当前直播状态下不可启动SOP（草稿/驳回/审核中仅可编辑）");
+        return;
+      }
+      if (isLivingLive(live0) && sop0 && sop0.steps && !sop0.steps.some(isRecallStep)) {
+        Proto.toast("直播中仅可启动召回类步骤");
+        return;
+      }
+      doSetStatus(id, "running");
+    }
     else if (act === "pause") doSetStatus(id, "paused");
     else if (act === "cancel") {
       if (confirm("确认取消该促到SOP？")) doSetStatus(id, "cancelled");
@@ -718,7 +796,18 @@
     openCreate(currentSopId);
   });
   document.getElementById("d-start").addEventListener("click", function () {
-    if (currentSopId) doSetStatus(currentSopId, "running");
+    if (!currentSopId) return;
+    var sop0 = LiveReach.getSop(currentSopId);
+    var live0 = sop0 ? LiveReach.getLive(sop0.liveId) : null;
+    if (!canStartSopForLive(live0)) {
+      Proto.toast("当前直播状态下不可启动SOP");
+      return;
+    }
+    if (isLivingLive(live0) && sop0 && sop0.steps && !sop0.steps.some(isRecallStep)) {
+      Proto.toast("直播中仅可启动召回类步骤");
+      return;
+    }
+    doSetStatus(currentSopId, "running");
   });
   document.getElementById("d-pause").addEventListener("click", function () {
     if (currentSopId) doSetStatus(currentSopId, "paused");
@@ -798,6 +887,12 @@
   });
 
   document.getElementById("btn-create").addEventListener("click", function () {
+    var lid = liveIdFromUrl() || document.getElementById("f-live").value;
+    var live = lid ? LiveReach.getLive(lid) : null;
+    if (live && !canCreateSopForLive(live)) {
+      Proto.toast("已结束场次仅可查看，不可新建SOP");
+      return;
+    }
     openCreate(null);
   });
 

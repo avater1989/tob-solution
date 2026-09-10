@@ -351,7 +351,6 @@
     var screen = buildUrl("live-screen.html", { live_id: id });
     var stats = buildUrl("live-stats.html", { live_id: id });
     var replay = buildUrl("live-replay.html", { live_id: id });
-    var postLive = buildUrl("leads.html", { scene: "post_live", live_id: id });
 
     var map = {
       draft: {
@@ -392,10 +391,12 @@
       upcoming: {
         primary: { label: "查看详情", href: detail },
         secondary: [
+          { label: "场次数据", href: stats },
           { label: "预约管理", href: booking },
           { label: "直播促到SOP", href: sop },
           { label: "分享", action: "share" },
           { label: "进入中控台", href: control },
+          { label: "直播大屏", href: screen },
           { label: "编辑", href: edit },
           { label: "取消上架", action: "unpublish" }
         ]
@@ -411,10 +412,9 @@
         ]
       },
       ended: {
-        primary: { label: "查看直播数据", href: stats },
+        primary: { label: "查看场次数据", href: stats },
         secondary: [
           { label: "查看回放", href: replay },
-          { label: "后续转化", href: postLive },
           { label: "查看详情", href: detail },
           { label: "复制直播", action: "copy" }
         ]
@@ -422,6 +422,7 @@
       cancelled: {
         primary: { label: "查看详情", href: detail },
         secondary: [
+          { label: "场次数据", href: stats },
           { label: "复制直播", action: "copy" },
           { label: "删除", action: "delete" }
         ]
@@ -467,7 +468,7 @@
       ready_shelf: "上架后可进行开播准备",
       upcoming: "完成预约提醒与直播促到SOP",
       living: "进入中控台管理直播",
-      ended: "查看数据与回放",
+      ended: "查看场次数据与回放",
       cancelled: "可复制后重新创建"
     };
     return lines[a.scenario] || a.nextLabel;
@@ -823,38 +824,54 @@
     });
   }
 
-  function copyLive(liveId) {
+  function buildCopyPrefill(liveId) {
     var src = getLive(liveId);
-    if (!src || !PB()) return null;
-    var data = PB().load();
-    var nid = "L" + String(100 + data.lives.length + 1).padStart(3, "0");
-    var copy = Object.assign({}, src, {
-      id: nid,
-      name: (src.name || "") + "（副本）",
-      auditStatus: "draft",
-      auditStatusLabel: "草稿",
+    if (!src) return null;
+    return {
+      copyFromId: src.liveId,
+      name: (src.liveName || src.name || "直播") + "（副本）",
+      liveMode: src.liveMode || "视频直播",
+      courseName: src.courseName || "",
+      roomType: src.roomType || "传统直播间",
+      teacher: src.teacher || "阮荣均",
+      assistants: (src.assistants || []).slice(),
+      description: src.description || "",
+      content: src.content || "",
+      coverConfigured: !!src.coverConfigured,
+      coverUrl: src.coverUrl || "",
+      warmupType: src.warmupType || "image",
+      products: (src.products || []).map(function (p) {
+        return Object.assign({}, p);
+      }),
+      saleMode: src.saleMode || "免费",
+      reminderEnabled: src.reminderEnabled !== false,
+      preRemindOffset: src.preRemindOffset || "1h",
+      remindOnStart: src.remindOnStart !== false,
+      remindReplay: src.remindReplay !== false,
+      agreedOpsRules: !!src.agreedOpsRules,
+      /* resets — never carry over */
+      startAt: "",
+      endAt: "",
       platformReviewStatus: "not_submitted",
       shelfStatus: "unpublished",
       runtimeStatus: "not_started",
-      shelf: false,
-      execStatus: "preparing",
-      execStatusLabel: "准备中",
-      createdAt: PB().DEMO_NOW,
-      submittedInternalAt: null,
-      internalApprovedAt: null,
-      submittedPlatformAt: null,
-      platformApprovedAt: null,
-      shelvedAt: null,
+      bookedUsers: 0,
+      subscribedUsers: 0,
+      attendedUsers: 0,
+      payUsers: 0,
+      gmv: 0,
+      remindStatus: "none",
       rejectReason: "",
       rejectItems: [],
-      currentVersion: 1,
-      liveStatus: "draft",
-      liveStatusLabel: "草稿"
-    });
-    delete copy.liveId;
-    data.lives.push(copy);
-    PB().save(data);
-    return getLive(nid);
+      currentVersion: 1
+    };
+  }
+
+  function copyLive(liveId) {
+    /* Persist a copy immediately — prefer buildCopyPrefill + createLive on save for UI copy flow. */
+    var prefill = buildCopyPrefill(liveId);
+    if (!prefill) return null;
+    return createLive(prefill);
   }
 
   function deleteLive(liveId) {
@@ -927,13 +944,23 @@
     var existing = document.getElementById("live-ops-banner");
     if (!live) {
       if (existing) existing.remove();
+      if (opts.globalTip) {
+        var tip = document.createElement("div");
+        tip.id = "live-ops-banner";
+        tip.className = "board-tip";
+        tip.style.cssText = "margin-bottom:12px;background:#f0f5ff;border-color:#adc6ff";
+        tip.innerHTML = opts.globalTip;
+        host.insertBefore(tip, host.firstChild);
+        return tip;
+      }
       if (opts.showEmpty) {
         var empty = document.createElement("div");
         empty.id = "live-ops-banner";
         empty.className = "board-tip";
         empty.style.cssText = "margin-bottom:12px;background:#fff7e8;border-color:#ffcf8b";
-        empty.innerHTML = "<b>未选择直播</b> · 请从直播列表或直播详情进入，避免无上下文操作。" +
-          ' <a href="lives.html">返回直播列表</a>';
+        empty.innerHTML = opts.emptyHtml ||
+          ("<b>未选择直播</b> · 请从直播列表或直播详情进入，避免无上下文操作。" +
+            ' <a href="lives.html">返回直播列表</a>');
         host.insertBefore(empty, host.firstChild);
       }
       return null;
@@ -946,11 +973,17 @@
       host.insertBefore(existing, host.firstChild);
     }
     var back = opts.backHref || buildUrl("live-edit.html", { live_id: live.liveId, mode: "view" });
+    var backLabel = opts.backLabel || "返回直播详情";
+    var allHref = opts.allHref || "lives.html";
+    var allLabel = opts.allLabel || "直播列表";
+    var extra = opts.extraHtml || "";
     existing.innerHTML = "<b>当前直播：</b>" + live.liveName + "（" + live.liveId + "） · " +
       live.platformReviewStatusLabel + " / " +
       live.shelfStatusLabel + " / " + live.runtimeStatusLabel +
-      ' · <a href="' + back + '">返回直播详情</a>' +
-      ' · <a href="lives.html">直播列表</a>';
+      (live.startAt ? (" · 开播 " + live.startAt) : "") +
+      ' · <a href="' + back + '">' + backLabel + "</a>" +
+      ' · <a href="' + allHref + '">' + allLabel + "</a>" +
+      extra;
     return existing;
   }
 
@@ -1179,6 +1212,546 @@
       '<span class="muted">上架：' + v.shelfStatusLabel + " · 直播：" + v.runtimeStatusLabel + "</span>";
   }
 
+  function getLiveById(id) { return getLive(id); }
+
+  function updateLiveState(liveId, patch) { return patchLive(liveId, patch); }
+
+  function getLiveRuntimeState(liveId) {
+    var v = getLive(liveId);
+    if (!v) return null;
+    return {
+      liveId: v.liveId,
+      liveName: v.liveName || v.name,
+      teacher: v.teacher || "",
+      platformReviewStatus: v.platformReviewStatus,
+      shelfStatus: v.shelfStatus,
+      runtimeStatus: v.runtimeStatus,
+      platformReviewStatusLabel: v.platformReviewStatusLabel,
+      shelfStatusLabel: v.shelfStatusLabel,
+      runtimeStatusLabel: v.runtimeStatusLabel,
+      scenario: scenarioKey(v),
+      startAt: v.startAt,
+      attendedUsers: v.attendedUsers || 0,
+      payUsers: v.payUsers || 0,
+      gmv: v.gmv || 0
+    };
+  }
+
+  function blockReason(live, action) {
+    if (!live) return "未找到对应直播。";
+    var p = live.platformReviewStatus;
+    var s = live.shelfStatus;
+    var r = live.runtimeStatus;
+    if (r === "cancelled") return "本场直播已取消。";
+    if (r === "ended") return "本场直播已结束。";
+    if (action === "start" || action === "control" || action === "screen") {
+      if (p === "not_submitted" || p === "withdrawn") {
+        return "当前直播尚未提交平台审核，暂不可进入中控台。";
+      }
+      if (p === "pending") {
+        return "平台审核中，审核通过并上架后才能进入开播准备。";
+      }
+      if (p === "rejected") {
+        return "当前直播审核未通过，请修改并重新提交。";
+      }
+      if (s !== "published") {
+        return "当前直播尚未上架，审核通过并上架后才能进入开播准备。";
+      }
+    }
+    return "当前状态不支持该操作。";
+  }
+
+  function gateActionsFor(live, mode) {
+    var actions = [];
+    if (!live) {
+      actions.push({ label: "返回直播列表", href: "lives.html", primary: true });
+      return actions;
+    }
+    var detail = viewLiveUrl(live.liveId);
+    var edit = editLiveUrl(live.liveId);
+    var editRejected = editLiveUrl(live.liveId, { from: "platform_rejected", focus: "cover" });
+    var stats = buildUrl("live-stats.html", { live_id: live.liveId });
+    var replay = buildUrl("live-replay.html", { live_id: live.liveId });
+    if (mode === "draft") {
+      actions.push({ label: "继续编辑", href: edit, primary: true });
+      actions.push({ label: "返回直播详情", href: detail });
+    } else if (mode === "rejected") {
+      actions.push({ label: "修改并重新提交", href: editRejected, primary: true });
+      actions.push({ label: "返回直播详情", href: detail });
+    } else if (mode === "pending") {
+      actions.push({ label: "返回直播详情", href: detail, primary: true });
+    } else if (mode === "ended") {
+      actions.push({ label: "查看场次数据", href: stats, primary: true });
+      actions.push({ label: "查看回放", href: replay });
+      actions.push({ label: "返回直播详情", href: detail });
+    } else if (mode === "cancelled" || mode === "blocked" || mode === "missing") {
+      actions.push({ label: "返回直播详情", href: detail, primary: true });
+      actions.push({ label: "返回直播列表", href: "lives.html" });
+    } else if (mode === "standby") {
+      actions.push({ label: "返回中控台", href: buildUrl("live-control.html", { live_id: live.liveId }) });
+      actions.push({ label: "返回直播详情", href: detail });
+    }
+    return actions;
+  }
+
+  function canEnterControl(live) {
+    if (!live) {
+      return { ok: false, mode: "missing", reason: "未找到对应直播。", actions: gateActionsFor(null, "missing") };
+    }
+    if (live.runtimeStatus === "cancelled") {
+      return {
+        ok: false,
+        mode: "cancelled",
+        reason: "本场直播已取消。",
+        actions: gateActionsFor(live, "cancelled")
+      };
+    }
+    if (live.runtimeStatus === "ended") {
+      return {
+        ok: false,
+        mode: "ended",
+        readonly: true,
+        reason: "本场直播已结束。",
+        actions: gateActionsFor(live, "ended")
+      };
+    }
+    if (live.runtimeStatus === "living") {
+      return { ok: true, mode: "living" };
+    }
+    if (live.platformReviewStatus === "pending") {
+      return {
+        ok: false,
+        mode: "pending",
+        reason: "平台审核中，审核通过并上架后才能进入开播准备。",
+        actions: gateActionsFor(live, "pending")
+      };
+    }
+    if (live.platformReviewStatus === "rejected") {
+      return {
+        ok: false,
+        mode: "rejected",
+        reason: "当前直播审核未通过，请修改并重新提交。",
+        actions: gateActionsFor(live, "rejected")
+      };
+    }
+    if (live.platformReviewStatus === "not_submitted" || live.platformReviewStatus === "withdrawn") {
+      return {
+        ok: false,
+        mode: "draft",
+        reason: "当前直播尚未提交平台审核，暂不可进入中控台。",
+        actions: gateActionsFor(live, "draft")
+      };
+    }
+    if (
+      live.platformReviewStatus === "passed" &&
+      live.shelfStatus === "published" &&
+      live.runtimeStatus === "not_started"
+    ) {
+      return { ok: true, mode: "ready" };
+    }
+    return {
+      ok: false,
+      mode: "blocked",
+      reason: blockReason(live, "control"),
+      actions: gateActionsFor(live, "blocked")
+    };
+  }
+
+  function canEnterScreen(live) {
+    if (!live) {
+      return { ok: false, mode: "missing", reason: "未找到对应直播。", actions: gateActionsFor(null, "missing") };
+    }
+    if (live.runtimeStatus === "cancelled") {
+      return {
+        ok: false,
+        mode: "cancelled",
+        reason: "本场直播已取消。",
+        actions: gateActionsFor(live, "cancelled")
+      };
+    }
+    if (live.runtimeStatus === "ended") {
+      return {
+        ok: false,
+        mode: "ended",
+        reason: "本场直播已结束。",
+        actions: gateActionsFor(live, "ended")
+      };
+    }
+    if (live.runtimeStatus === "living") {
+      return { ok: true, mode: "living" };
+    }
+    if (live.platformReviewStatus === "pending") {
+      return {
+        ok: false,
+        mode: "pending",
+        reason: "平台审核中，审核通过并上架后才能进入开播准备。",
+        actions: gateActionsFor(live, "pending")
+      };
+    }
+    if (live.platformReviewStatus === "rejected") {
+      return {
+        ok: false,
+        mode: "rejected",
+        reason: "当前直播审核未通过，请修改并重新提交。",
+        actions: gateActionsFor(live, "rejected")
+      };
+    }
+    if (live.platformReviewStatus === "not_submitted" || live.platformReviewStatus === "withdrawn") {
+      return {
+        ok: false,
+        mode: "draft",
+        reason: "当前直播尚未提交平台审核，暂不可进入直播大屏。",
+        actions: gateActionsFor(live, "draft")
+      };
+    }
+    if (
+      live.platformReviewStatus === "passed" &&
+      live.shelfStatus === "published" &&
+      live.runtimeStatus === "not_started"
+    ) {
+      return {
+        ok: true,
+        mode: "standby",
+        reason: "预览模式 · 直播尚未开始",
+        actions: gateActionsFor(live, "standby")
+      };
+    }
+    return {
+      ok: false,
+      mode: "blocked",
+      reason: blockReason(live, "screen"),
+      actions: gateActionsFor(live, "blocked")
+    };
+  }
+
+  function renderStateGate(host, opts) {
+    opts = opts || {};
+    if (!host) return null;
+    var title = opts.title || "无法进入";
+    var reason = opts.reason || "当前状态不支持该操作。";
+    var actions = opts.actions || [];
+    var live = opts.live;
+    var html =
+      '<div class="card" id="live-state-gate" style="margin:24px auto;max-width:560px">' +
+      '<div class="card-bd" style="padding:40px 28px;text-align:center">' +
+      '<h2 style="margin:0 0 8px;font-size:18px">' + escHtml(title) + "</h2>";
+    if (live) {
+      html +=
+        '<p class="muted" style="margin:0 0 8px;font-size:13px">' +
+        escHtml(live.liveName || live.name || "") +
+        "（" +
+        escHtml(live.liveId) +
+        "） · " +
+        escHtml(live.platformReviewStatusLabel || "") +
+        " / " +
+        escHtml(live.shelfStatusLabel || "") +
+        " / " +
+        escHtml(live.runtimeStatusLabel || "") +
+        "</p>";
+    }
+    html +=
+      '<p class="muted" style="margin:0 0 20px;font-size:13px;line-height:1.6">' +
+      escHtml(reason) +
+      "</p>" +
+      '<div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">';
+    actions.forEach(function (a) {
+      var cls = a.primary ? "btn btn-primary" : "btn";
+      html += '<a class="' + cls + '" href="' + escHtml(a.href || "#") + '">' + escHtml(a.label) + "</a>";
+    });
+    html += "</div></div></div>";
+    host.innerHTML = html;
+    return host.querySelector("#live-state-gate");
+  }
+
+  function canStartLive(live) {
+    if (!live) return { ok: false, reason: "未找到对应直播。" };
+    if (
+      live.platformReviewStatus === "passed" &&
+      live.shelfStatus === "published" &&
+      live.runtimeStatus === "not_started"
+    ) {
+      return { ok: true };
+    }
+    if (live.runtimeStatus === "living") return { ok: false, reason: "当前已在直播中。" };
+    if (live.runtimeStatus === "ended") return { ok: false, reason: "本场直播已经结束，不能重新开始原直播。" };
+    return { ok: false, reason: blockReason(live, "start") };
+  }
+
+  function canEndLive(live) {
+    if (!live) return { ok: false, reason: "未找到对应直播。" };
+    if (live.runtimeStatus === "living") return { ok: true };
+    return { ok: false, reason: "当前不在直播中，无法结束直播。" };
+  }
+
+  function startLive(liveId) {
+    var live = getLive(liveId);
+    var gate = canStartLive(live);
+    if (!gate.ok) return { ok: false, reason: gate.reason, live: live };
+    var now = (PB() && PB().DEMO_NOW) || new Date().toISOString().slice(0, 19).replace("T", " ");
+    var updated = patchLive(live.liveId, {
+      runtimeStatus: "living",
+      liveStatus: "live",
+      liveStatusLabel: "直播中",
+      execStatus: "live",
+      execStatusLabel: "直播中",
+      startedAt: now
+    });
+    return { ok: true, live: updated };
+  }
+
+  function endLive(liveId) {
+    var live = getLive(liveId);
+    var gate = canEndLive(live);
+    if (!gate.ok) return { ok: false, reason: gate.reason, live: live };
+    var now = (PB() && PB().DEMO_NOW) || new Date().toISOString().slice(0, 19).replace("T", " ");
+    var updated = patchLive(live.liveId, {
+      runtimeStatus: "ended",
+      liveStatus: "ended",
+      liveStatusLabel: "已结束",
+      execStatus: "ended",
+      execStatusLabel: "已结束",
+      endedAt: now
+    });
+    return { ok: true, live: updated };
+  }
+
+  function getLivingLives() {
+    return getLives().filter(function (l) { return l.runtimeStatus === "living"; });
+  }
+
+  function getMonitorableLives() {
+    return getLives().filter(function (l) {
+      if (l.runtimeStatus === "living") return true;
+      return (
+        l.platformReviewStatus === "passed" &&
+        l.shelfStatus === "published" &&
+        l.runtimeStatus === "not_started"
+      );
+    });
+  }
+
+  function hashSeed(id) {
+    var s = String(id || "");
+    var n = 0;
+    for (var i = 0; i < s.length; i++) n = (n * 31 + s.charCodeAt(i)) >>> 0;
+    return n;
+  }
+
+  function getScreenSimData(liveId) {
+    var live = getLive(liveId);
+    if (!live) return null;
+    var id = live.liveId;
+    var seed = hashSeed(id);
+    var living = live.runtimeStatus === "living";
+    var ended = live.runtimeStatus === "ended";
+    var packs = {
+      L001: {
+        messages: [
+          { name: "预约用户A", color: "#165dff", text: "今晚 20:00 见！" },
+          { name: "李妈妈", color: "#00b42a", text: "已预约，提醒收到了吗？" }
+        ],
+        products: [{ name: "春启 03 期正式课", price: 1999, sold: 0 }],
+        viewers: 8,
+        gmv: 0,
+        orders: 0,
+        buyers: 0,
+        stream: "ready",
+        net: "good",
+        alerts: []
+      },
+      L002: {
+        messages: [],
+        products: [{ name: "早间家长课回放包", price: 99, sold: 6 }],
+        viewers: 0,
+        gmv: 2100,
+        orders: 6,
+        buyers: 6,
+        stream: "ended",
+        net: "idle",
+        alerts: []
+      },
+      L003: {
+        messages: [],
+        products: [],
+        viewers: 0,
+        gmv: 0,
+        orders: 0,
+        buyers: 0,
+        stream: "none",
+        net: "idle",
+        alerts: []
+      },
+      L005: {
+        messages: [
+          { name: "张妈妈", color: "#165dff", text: "老师今天讲什么？" },
+          { name: "李爸爸", color: "#00b42a", text: "终于开播了！" },
+          { name: "王同学妈", color: "#722ed1", text: "课程怎么报名？" },
+          { name: "陈妈妈", color: "#fa8c16", text: "孩子 8 岁，能听懂吗？" },
+          { name: "刘爸爸", color: "#f53f3f", text: "支持回放吗？" },
+          { name: "周妈妈", color: "#165dff", text: "已下单！期待开课" }
+        ],
+        products: [
+          { name: "正式课", price: 1999, sold: 8 },
+          { name: "答疑加餐包", price: 99, sold: 12 }
+        ],
+        viewers: 96,
+        gmv: 3200,
+        orders: 8,
+        buyers: 8,
+        stream: "ok",
+        net: "good",
+        alerts: [
+          {
+            type: "network",
+            status: "网络质量波动",
+            tip: "建议检查上行带宽，必要时切换备用线路。",
+            severity: "warn"
+          }
+        ],
+        elapsedSec: 54 * 60 + 22
+      }
+    };
+    var base = packs[id] || {
+      messages: living
+        ? [{ name: "系统", color: "#165dff", text: "欢迎进入 " + (live.liveName || live.name) }]
+        : [],
+      products: (live.products || []).map(function (p, i) {
+        return { name: p.name || ("商品" + (i + 1)), price: p.price || 0, sold: living ? (seed % 5) : 0 };
+      }),
+      viewers: living ? (20 + (seed % 40)) : 0,
+      gmv: living ? (live.gmv || (seed % 9) * 100) : (ended ? (live.gmv || 0) : 0),
+      orders: living ? (live.payUsers || seed % 6) : (ended ? (live.payUsers || 0) : 0),
+      buyers: living ? (live.payUsers || seed % 6) : (ended ? (live.payUsers || 0) : 0),
+      stream: living ? "ok" : (ended ? "ended" : "ready"),
+      net: living ? "good" : "idle",
+      alerts: [],
+      elapsedSec: living ? (10 * 60 + (seed % 50)) : 0
+    };
+    if (!living && !ended) {
+      base.messages = base.messages.slice(0, 0);
+      base.viewers = 0;
+      base.gmv = 0;
+      base.orders = 0;
+      base.buyers = 0;
+    }
+    if (ended) {
+      base.messages = [];
+      base.viewers = 0;
+      base.stream = "ended";
+    }
+    return Object.assign({
+      liveId: id,
+      liveName: live.liveName || live.name,
+      teacher: live.teacher || "—",
+      platformReviewStatus: live.platformReviewStatus,
+      shelfStatus: live.shelfStatus,
+      runtimeStatus: live.runtimeStatus,
+      platformReviewStatusLabel: live.platformReviewStatusLabel,
+      shelfStatusLabel: live.shelfStatusLabel,
+      runtimeStatusLabel: live.runtimeStatusLabel,
+      startAt: live.startAt,
+      connected: true,
+      lastUpdatedAt: Date.now(),
+      mini: living
+        ? { enter: 12 + (seed % 8), gmv: 80 + (seed % 40), leave: 3 + (seed % 4), peak: base.viewers + 4 }
+        : { enter: 0, gmv: 0, leave: 0, peak: 0 },
+      avgWatch: living ? "00:10:59" : (ended ? "00:28:40" : "—"),
+      convertRate: base.viewers ? Math.round((base.buyers / Math.max(base.viewers, 1)) * 1000) / 10 + "%" : "0%"
+    }, base);
+  }
+
+  function getSessionStatsData(liveId, opts) {
+    opts = opts || {};
+    var live = opts.forceStub ? null : getLive(liveId);
+    if (!live && liveId) {
+      var seed0 = hashSeed(liveId);
+      live = {
+        liveId: String(liveId),
+        liveName: opts.liveName || ("场次 " + liveId),
+        teacher: opts.teacher || "主讲老师",
+        platformReviewStatus: "passed",
+        platformReviewStatusLabel: "审核通过",
+        shelfStatus: "published",
+        shelfStatusLabel: "已上架",
+        runtimeStatus: "ended",
+        runtimeStatusLabel: "已结束",
+        startAt: opts.startAt || "—",
+        attendedUsers: opts.attend || (80 + seed0 % 300),
+        payUsers: opts.payUsers || (8 + seed0 % 40),
+        gmv: opts.gmv || ((8 + seed0 % 40) * 280),
+        _analyticsStub: true
+      };
+    }
+    if (!live) return null;
+    var sim = getScreenSimData(live.liveId) || {};
+    if (live._analyticsStub) {
+      sim = {
+        viewers: live.attendedUsers,
+        messages: [{}, {}, {}, {}],
+        orders: live.payUsers,
+        gmv: live.gmv,
+        elapsedSec: 90 * 60
+      };
+    }
+    var seed = hashSeed(live.liveId);
+    var living = live.runtimeStatus === "living";
+    var ended = live.runtimeStatus === "ended";
+    var started = living || ended;
+    var uv = started ? (live.attendedUsers || sim.viewers || (40 + seed % 80)) : 0;
+    if (ended && live._analyticsStub) uv = live.attendedUsers;
+    if (ended && !uv && sim.viewers === 0) uv = 40 + seed % 80;
+    var pv = started ? Math.round(uv * (1.8 + (seed % 5) / 10)) : 0;
+    var peak = started ? (living && sim.viewers ? sim.viewers + 20 : (uv + 30 + seed % 40)) : 0;
+    var avgOnline = started ? Math.round(peak * 0.55) : 0;
+    var comments = started ? (sim.messages ? sim.messages.length * 14 + seed % 20 : 40 + seed % 50) : 0;
+    var shares = started ? (10 + seed % 30) : 0;
+    var clicks = started ? ((sim.orders || live.payUsers || 1) * 40 + 80 + seed % 50) : 0;
+    var orders = started ? (live.payUsers || sim.orders || seed % 12) : 0;
+    var gmv = started ? (live.gmv || sim.gmv || orders * 199) : 0;
+    var convert = uv ? Math.round((orders / uv) * 1000) / 10 : 0;
+    var interact = uv ? Math.round((comments / Math.max(uv, 1)) * 1000) / 10 : 0;
+    var finish = ended ? (55 + seed % 30) : (living ? null : 0);
+    var wecom = started ? (20 + seed % 40) : 0;
+    var follow = started ? (10 + seed % 25) : 0;
+    var replay = ended ? (80 + seed % 120) : 0;
+    var durationMin = living
+      ? Math.max(1, Math.round((sim.elapsedSec || 600) / 60))
+      : (ended ? 90 + (seed % 40) : 0);
+    var avgWatch = started ? (living ? "00:10:59" : "00:" + (12 + seed % 20) + ":" + (10 + seed % 40)) : "—";
+    var trend = started
+      ? [28, 42, 55, 68, 82, 95, 88, 74, 61, 48, 36, 30].map(function (h, i) {
+          return Math.max(8, Math.round(h * (living ? 0.7 : 1) * (0.85 + ((seed + i) % 20) / 100)));
+        })
+      : [];
+    return {
+      live: live,
+      started: started,
+      living: living,
+      ended: ended,
+      overview: {
+        teacher: live.teacher || "—",
+        startAt: live.startAt || "—",
+        durationLabel: durationMin ? (durationMin + " 分钟") : "—"
+      },
+      watch: { uv: uv, pv: pv, peak: peak, avgWatch: avgWatch },
+      realtime: {
+        online: living ? (sim.viewers || uv) : 0,
+        comments: comments,
+        shares: shares,
+        interactRate: interact
+      },
+      convert: { clicks: clicks, orders: orders, gmv: gmv, rate: convert },
+      behavior: { wecom: wecom, follow: follow, replay: replay },
+      performance: {
+        avgOnline: avgOnline,
+        peak: peak,
+        finishRate: finish,
+        interactRate: interact
+      },
+      trend: trend
+    };
+  }
+
   /* init once */
   try { ensureDemoLives(); } catch (e) {}
 
@@ -1189,8 +1762,24 @@
     resolveId: resolveId,
     idFromSearch: idFromSearch,
     getLive: getLive,
+    getLiveById: getLiveById,
     getLives: getLives,
     patchLive: patchLive,
+    updateLiveState: updateLiveState,
+    getLiveRuntimeState: getLiveRuntimeState,
+    canEnterControl: canEnterControl,
+    canEnterScreen: canEnterScreen,
+    canStartLive: canStartLive,
+    canEndLive: canEndLive,
+    startLive: startLive,
+    endLive: endLive,
+    getLivingLives: getLivingLives,
+    getMonitorableLives: getMonitorableLives,
+    getScreenSimData: getScreenSimData,
+    getSessionStatsData: getSessionStatsData,
+    renderStateGate: renderStateGate,
+    buildCopyPrefill: buildCopyPrefill,
+    gateActionsFor: gateActionsFor,
     scenarioKey: scenarioKey,
     buildActions: buildActions,
     buildUrl: buildUrl,

@@ -695,9 +695,7 @@
         { id: uid("ST"), name: "直播前邀约", timing: "直播前 24 小时", audience: "高意向但未预约线索", channels: ["企微", "短信"], goal: "完成预约", auto: true, status: "draft", target: 0, reached: 0, converted: 0 },
         { id: uid("ST"), name: "预约后催到", timing: "预约成功后 2 小时", audience: "新预约用户", channels: ["企微"], goal: "确认到课意向", auto: true, status: "draft", target: 0, reached: 0, converted: 0 },
         { id: uid("ST"), name: "开播前提醒", timing: "关联预约管理", audience: "已预约用户", channels: ["系统提醒"], goal: "到课", auto: true, status: "linked_booking", target: 0, reached: 0, converted: 0, linkBooking: true },
-        { id: uid("ST"), name: "开播中未到场召回", timing: "开播后 10 分钟", audience: "已预约但未进入直播间", channels: ["企微"], goal: "到课", auto: true, status: "draft", target: 0, reached: 0, converted: 0 },
-        { id: uid("ST"), name: "回放触达", timing: "回放生成后", audience: "未到课用户", channels: ["短信"], goal: "观看回放", auto: true, status: "draft", target: 0, reached: 0, converted: 0 },
-        { id: uid("ST"), name: "会后跟进", timing: "结束后 30 分钟", audience: "观看超 15 分钟未下单", channels: ["助教任务"], goal: "完成购买", auto: false, status: "draft", target: 0, reached: 0, converted: 0 }
+        { id: uid("ST"), name: "开播中未到场召回", timing: "开播后 10 分钟", audience: "已预约但未进入直播间", channels: ["企微"], goal: "到课", auto: true, status: "draft", target: 0, reached: 0, converted: 0 }
       ];
     },
     createSop: function (payload) {

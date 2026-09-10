@@ -179,8 +179,8 @@ tr.live-highlight { background: #f0f5ff; }
 
 <script src="../assets/js/proto.js"></script>
 <script src="../assets/js/prototype-business-store.js"></script>
-<script src="../assets/js/live-ops.js?v=7"></script>
-<script src="../assets/js/admin-shell.js?v=18"></script>
+<script src="../assets/js/live-ops.js?v=9"></script>
+<script src="../assets/js/admin-shell.js?v=19"></script>
 <script>
 (function () {
   var LO = window.LiveOps;
@@ -323,13 +323,8 @@ tr.live-highlight { background: #f0f5ff; }
         toast("已强制下架");
       },
       copy: function (id) {
-        var copy = LO.copyLive(id);
-        toast(copy ? ("已复制为 " + copy.liveId) : "复制失败");
-        if (copy) {
-          saveCtx({ highlightId: copy.liveId });
-          location.href = LO.editLiveUrl(copy.liveId);
-          return false;
-        }
+        location.href = LO.buildUrl("live-edit.html", { copy_from: id });
+        return false;
       },
       share: function (id) {
         LO.openShareModal(id);

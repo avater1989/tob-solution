@@ -53,11 +53,12 @@
       </div>
       <div class="field" style="margin:0">
         <label>关联直播</label>
-        <select>
+        <select id="f-live">
           <option value="">全部</option>
-          <option>春启 03 期家长公开课</option>
-          <option>9.9 引流试听课</option>
-          <option>明日直播·春启04</option>
+          <option value="L001">春启 03 期家长公开课</option>
+          <option value="L002">早间家长课 · 复盘</option>
+          <option value="L004">9.9 引流试听课</option>
+          <option value="L003">明日直播·春启04</option>
         </select>
       </div>
     </div>
@@ -93,8 +94,28 @@
         </tr>
       </thead>
       <tbody id="rp-tbody">
+        <!-- L002 早间家长课回放 -->
+        <tr data-shelf="on" data-live-id="L002">
+          <td><input type="checkbox" class="row-check" /></td>
+          <td><div class="rp-thumb" style="background:linear-gradient(135deg,#0ea5e9,#6366f1)"></div></td>
+          <td><a href="#" class="link-blue" data-row-act="detail">早间家长课 · 复盘（回放）</a></td>
+          <td><span class="rp-room">L002<br/>早间家长课</span></td>
+          <td>赵老师</td>
+          <td><span class="rp-time">2026-09-09 08:00:00<br/>至 09:12:00</span></td>
+          <td>72分钟</td>
+          <td>428.50MB</td>
+          <td><span class="rp-badge rp-on">已上架</span></td>
+          <td><span class="rp-price">¥0</span></td>
+          <td>186</td>
+          <td>42%</td>
+          <td class="row-actions">
+            <a href="#" data-row-act="play">预览</a>
+            <a href="#" data-row-act="weight">权重</a>
+            <a href="#" data-row-act="off">下架</a>
+          </td>
+        </tr>
         <!-- 已上架 -->
-        <tr data-shelf="on">
+        <tr data-shelf="on" data-live-id="L004">
           <td><input type="checkbox" class="row-check" /></td>
           <td><div class="rp-thumb" style="background:linear-gradient(135deg,#ff7a45,#ffbb96)"></div></td>
           <td><a href="#" class="link-blue" data-row-act="detail">测试2</a></td>
@@ -113,7 +134,26 @@
             <a href="#" data-row-act="off">下架</a>
           </td>
         </tr>
-        <tr data-shelf="off">
+        <tr data-shelf="off" data-live-id="L001">
+          <td><input type="checkbox" class="row-check" /></td>
+          <td><div class="rp-thumb" style="background:linear-gradient(135deg,#165dff,#4080ff)"></div></td>
+          <td><a href="#" class="link-blue" data-row-act="detail">春启 03 期家长公开课（预生成）</a></td>
+          <td><span class="rp-room">L001<br/>春启03</span></td>
+          <td>阮荣均</td>
+          <td><span class="rp-time">待开播后生成</span></td>
+          <td>—</td>
+          <td>—</td>
+          <td><span class="rp-badge rp-off">未上架</span></td>
+          <td><span class="rp-price">¥0</span></td>
+          <td>0</td>
+          <td>0%</td>
+          <td class="row-actions">
+            <a href="#" data-row-act="play">预览</a>
+            <a href="#" data-row-act="weight">权重</a>
+            <a href="#" data-row-act="on">上架</a>
+          </td>
+        </tr>
+        <tr data-shelf="off" data-live-id="L004">
           <td><input type="checkbox" class="row-check" /></td>
           <td><div class="rp-thumb" style="background:linear-gradient(135deg,#165dff,#4080ff)"></div></td>
           <td><a href="#" class="link-blue" data-row-act="detail">测试0820001</a></td>
@@ -132,7 +172,7 @@
             <a href="#" data-row-act="on">上架</a>
           </td>
         </tr>
-        <tr data-shelf="off">
+        <tr data-shelf="off" data-live-id="L003">
           <td><input type="checkbox" class="row-check" /></td>
           <td><div class="rp-thumb" style="background:linear-gradient(135deg,#165dff,#4080ff)"></div></td>
           <td><a href="#" class="link-blue" data-row-act="detail">测试0820002</a></td>
@@ -429,8 +469,8 @@
 
 <script src="../assets/js/proto.js"></script>
 <script src="../assets/js/prototype-business-store.js"></script>
-<script src="../assets/js/live-ops.js?v=7"></script>
-<script src="../assets/js/admin-shell.js?v=18"></script>
+<script src="../assets/js/live-ops.js?v=9"></script>
+<script src="../assets/js/admin-shell.js?v=19"></script>
 <script>
 (function () {
   var liveId = window.LiveOps ? LiveOps.idFromSearch() : "";
@@ -440,22 +480,49 @@
     return;
   }
   if (live) {
-    LiveOps.renderContextBanner({ live: live });
+    LiveOps.renderContextBanner({
+      live: live,
+      allHref: "live-replay.html",
+      allLabel: "查看全部回放"
+    });
     var ha = document.getElementById("page-header-actions") || document.getElementById("header-actions");
     if (ha) {
       ha.innerHTML =
         '<a class="btn" href="' + LiveOps.viewLiveUrl(live.liveId) + '">返回直播详情</a>' +
+        '<a class="btn" href="live-replay.html">查看全部回放</a>' +
         '<button type="button" class="btn" id="btn-tutorial">使用教程</button>' +
         '<button type="button" class="btn" id="btn-import">导入外部回放</button>';
     }
     document.body.setAttribute("data-crumb", "直播 / 直播管理 / 直播回放 / " + live.liveName);
     document.title = "直播回放 · " + live.liveName + " · 商家管理后台";
-    /* highlight matching row if present */
-    document.querySelectorAll("#rp-tbody tr, tbody tr").forEach(function (tr) {
-      if (tr.textContent && tr.textContent.indexOf(live.liveName.slice(0, 4)) >= 0) {
+    var fLive = document.getElementById("f-live");
+    if (fLive) {
+      fLive.value = live.liveId;
+      fLive.disabled = true;
+    }
+    var name = live.liveName || live.name || "";
+    var matched = 0;
+    document.querySelectorAll("#rp-tbody tr").forEach(function (tr) {
+      var txt = tr.textContent || "";
+      var hit =
+        (live.liveId && txt.indexOf(live.liveId) >= 0) ||
+        (name && txt.indexOf(name) >= 0) ||
+        (name && name.length >= 4 && txt.indexOf(name.slice(0, 4)) >= 0) ||
+        (tr.getAttribute("data-live-id") === live.liveId);
+      if (hit) {
+        matched++;
+        tr.style.display = "";
         tr.style.background = "#f0f5ff";
+      } else {
+        tr.style.display = "none";
       }
     });
+    if (!matched) {
+      var tb = document.getElementById("rp-tbody");
+      if (tb) {
+        tb.innerHTML = '<tr id="rp-empty-row"><td colspan="13" class="muted" style="text-align:center;padding:36px">本场暂无回放</td></tr>';
+      }
+    }
   }
 
   // ===== Mask =====

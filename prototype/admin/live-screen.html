@@ -30,21 +30,27 @@
         <span class="net-label">网络良好</span>
       </span>
       <span class="ctrl-pill ctrl-pill-live">
-        <span class="live-dot"></span>
-        <span class="net-label">直播中</span>
+          <span class="live-dot"></span>
+        <span class="net-label" id="screen-status-label">直播中</span>
       </span>
+      <a id="screen-stats-link" href="live-stats.html" class="ctrl-pill ctrl-pill-blue" style="text-decoration:none">查看实时数据</a>
     </div>
   </div>
 
-  <!-- 当前直播列表条 -->
-  <div class="screen-live-bar">
+  <!-- 当前直播上下文（不可切换场次） -->
+  <div class="screen-live-bar" id="screen-live-bar">
     <div class="screen-live-bar-label">
       <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
       当前直播
     </div>
     <div class="screen-live-bar-list" id="live-bar-list">
-      <!-- 由 JS 渲染 -->
+      <span class="screen-live-pill active" id="screen-current-pill">
+        <span class="pill-dot"></span>
+        <span id="screen-bar-name">—</span>
+        <span class="pill-id" id="screen-bar-id">—</span>
+      </span>
     </div>
+    <a href="lives.html" class="screen-selector-back" id="screen-to-list" style="margin-left:auto;font-size:12px;color:#93c5fd;text-decoration:none">查看其他直播请返回列表</a>
   </div>
 
   <!-- 主体 3 栏布局 -->
@@ -645,116 +651,183 @@ body.ctrl-mode { background: #0a0f1c; color: #e8eaed; }
 
 <script src="../assets/js/proto.js"></script>
 <script src="../assets/js/prototype-business-store.js"></script>
-<script src="../assets/js/live-ops.js?v=1"></script>
-<script src="../assets/js/admin-shell.js?v=16"></script>
+<script src="../assets/js/live-ops.js?v=9"></script>
+<script src="../assets/js/admin-shell.js?v=19"></script>
 <script>
 (function () {
-  // ===== Trend tabs =====
+  var page = document.getElementById("page-content");
+  var currentLiveId = LiveOps.idFromSearch();
+  var live = currentLiveId ? LiveOps.getLive(currentLiveId) : null;
+
+  if (!currentLiveId) {
+    LiveOps.renderStateGate(page, {
+      title: "请先选择一场直播",
+      reason: "直播大屏必须携带 live_id。请从直播列表、中控台或直播详情进入。",
+      actions: [{ label: "返回直播列表", href: "lives.html", primary: true }]
+    });
+    return;
+  }
+  if (!live) {
+    LiveOps.renderEmptyLive(page, "未找到直播 " + currentLiveId);
+    return;
+  }
+
+  currentLiveId = live.liveId;
+  var gate = LiveOps.canEnterScreen(live);
+  if (!gate.ok) {
+    var titles = {
+      draft: "暂不可进入直播大屏",
+      rejected: "暂不可进入直播大屏",
+      pending: "暂不可进入直播大屏",
+      ended: "本场直播已结束",
+      cancelled: "本场直播已取消",
+      blocked: "暂不可进入直播大屏",
+      missing: "未找到直播"
+    };
+    LiveOps.renderStateGate(page, {
+      title: titles[gate.mode] || "暂不可进入直播大屏",
+      reason: gate.reason,
+      live: live,
+      actions: gate.actions || LiveOps.gateActionsFor(live, gate.mode)
+    });
+    return;
+  }
+
+  var screenMode = gate.mode;
+  var sim = LiveOps.getScreenSimData(live.liveId) || {};
+  var isLiving = screenMode === "living";
+  var isPreview = screenMode === "standby";
+
+  LiveOps.renderContextBanner({ live: live });
+
+  document.querySelector(".screen-live-name").textContent = live.liveName || live.name;
+  document.getElementById("screen-live-id").textContent = live.liveId;
+  var barName = document.getElementById("screen-bar-name");
+  var barId = document.getElementById("screen-bar-id");
+  if (barName) barName.textContent = live.liveName || live.name;
+  if (barId) barId.textContent = live.liveId;
+
+  var statusLabel = document.getElementById("screen-status-label");
+  var statusPill = statusLabel && statusLabel.closest(".ctrl-pill");
+  if (statusLabel) {
+    if (isLiving) {
+      statusLabel.textContent = "直播中";
+    } else {
+      statusLabel.textContent = "预览模式";
+      if (statusPill) {
+        statusPill.classList.remove("ctrl-pill-live");
+        statusPill.classList.add("ctrl-pill-blue");
+      }
+    }
+  }
+
+  var statsA = document.getElementById("screen-stats-link");
+  if (statsA) {
+    statsA.href = LiveOps.buildUrl("live-stats.html", { live_id: live.liveId, from: "screen" });
+    statsA.textContent = isLiving ? "查看实时数据" : "查看场次数据";
+  }
+
+  var backBtn = document.getElementById("btn-back-control");
+  if (backBtn) {
+    backBtn.addEventListener("click", function () {
+      location.href = LiveOps.buildUrl("live-control.html", { live_id: live.liveId, from: "screen" });
+    });
+  }
+
+  var elapsed = isLiving ? (sim.elapsedSec || 0) : 0;
+  function pad(n) { return n < 10 ? "0" + n : "" + n; }
+  function renderTime() {
+    var el = document.getElementById("screen-time");
+    if (!el) return;
+    if (isPreview) {
+      el.textContent = "预览模式 · 未开播";
+      return;
+    }
+    var h = Math.floor(elapsed / 3600);
+    var m = Math.floor((elapsed % 3600) / 60);
+    var s = elapsed % 60;
+    el.textContent = "直播间 " + pad(h) + ":" + pad(m) + ":" + pad(s);
+  }
+  renderTime();
+  if (isLiving) {
+    setInterval(function () { elapsed++; renderTime(); }, 1000);
+  }
+
+  var messages = isLiving ? (sim.messages || []) : [];
+  var list = document.getElementById("msg-list");
+  var count = document.getElementById("msg-count");
+  if (list) {
+    if (!messages.length) {
+      list.innerHTML = '<div class="screen-msg" style="opacity:.7;justify-content:center;padding:24px">' +
+        (isPreview ? "预览模式：直播尚未开始，暂无实时消息" : "暂无消息") + "</div>";
+    } else {
+      list.innerHTML = messages.map(function (m) {
+        return '<div class="screen-msg">' +
+          '<div class="screen-msg-avatar" style="background:' + (m.color || "#165dff") + '">' + m.name.charAt(0) + '</div>' +
+          '<div class="screen-msg-body">' +
+            '<div class="screen-msg-name">' + m.name + '</div>' +
+            '<div class="screen-msg-text">' + m.text + '</div>' +
+          '</div></div>';
+      }).join("");
+    }
+  }
+  if (count) count.textContent = messages.length + " 条";
+
+  var previewText = document.querySelector(".screen-preview-text");
+  var previewSub = document.querySelector(".screen-preview-sub");
+  if (isPreview) {
+    if (previewText) previewText.textContent = "预览模式 · 未开播";
+    if (previewSub) previewSub.textContent = "开播时间 " + (live.startAt || "—");
+  } else if (isLiving) {
+    if (previewText) previewText.textContent = "直播进行中";
+    if (previewSub) previewSub.textContent = (live.teacher || "") + " · " + live.liveId;
+  }
+
+  var gmv = isLiving ? (sim.gmv || 0) : 0;
+  var buyers = isLiving ? (sim.buyers || 0) : 0;
+  var orders = isLiving ? (sim.orders || 0) : 0;
+  var viewers = isLiving ? (sim.viewers || 0) : 0;
+  var revValue = document.querySelector(".screen-revenue-value");
+  if (revValue) revValue.textContent = String(gmv);
+  var revNums = document.querySelectorAll(".screen-rev-num");
+  if (revNums.length >= 6) {
+    revNums[0].textContent = String(buyers);
+    revNums[1].textContent = String(orders);
+    revNums[2].textContent = sim.convertRate || "0%";
+    revNums[3].textContent = String(viewers);
+    revNums[4].textContent = String(messages.length);
+    revNums[5].textContent = String((sim.products || []).length);
+  }
+  var avgEl = document.querySelector(".screen-avg-value");
+  if (avgEl) avgEl.textContent = isLiving ? (sim.avgWatch || "—") : "—";
+
+  var miniVals = document.querySelectorAll(".screen-mini-stat-value");
+  if (miniVals.length >= 4 && sim.mini) {
+    miniVals[0].textContent = String(isLiving ? (sim.mini.enter || 0) : 0);
+    miniVals[1].textContent = "¥" + (isLiving ? (sim.mini.gmv || 0) : 0);
+    miniVals[2].textContent = String(isLiving ? (sim.mini.leave || 0) : 0);
+    miniVals[3].textContent = isLiving ? String(sim.mini.peak || "—") : "—";
+  }
+
+  var prodMeta = document.querySelector(".screen-card-flex .screen-card-meta");
+  var prodTbody = document.querySelector(".screen-product-table tbody");
+  if (sim.products && sim.products.length) {
+    if (prodMeta) prodMeta.textContent = sim.products.length + " 件";
+    if (prodTbody) {
+      prodTbody.innerHTML = sim.products.map(function (p) {
+        return "<tr><td>" + (p.name || "商品") + "</td><td>¥" + (p.price || 0) + "</td><td>" +
+          (isLiving ? (p.sold || 0) : 0) + "</td></tr>";
+      }).join("");
+    }
+  } else if (prodMeta) {
+    prodMeta.textContent = "暂无带货商品";
+  }
+
   document.querySelectorAll(".screen-trend-tab").forEach(function (t) {
     t.addEventListener("click", function () {
       document.querySelectorAll(".screen-trend-tab").forEach(function (x) { x.classList.remove("active"); });
       t.classList.add("active");
     });
-  });
-
-  // ===== Static messages =====
-  var staticMessages = [
-    { name: "张妈妈",   color: "#165dff", text: "老师今天讲什么？" },
-    { name: "李爸爸",   color: "#00b42a", text: "终于开播了！" },
-    { name: "王同学妈", color: "#722ed1", text: "课程怎么报名？" },
-    { name: "陈妈妈",   color: "#fa8c16", text: "孩子 8 岁，能听懂吗？" },
-    { name: "刘爸爸",   color: "#f53f3f", text: "支持回放吗？" },
-    { name: "周妈妈",   color: "#165dff", text: "已下单！期待开课" },
-    { name: "吴爸爸",   color: "#00b42a", text: "价格很实惠" },
-    { name: "郑妈妈",   color: "#722ed1", text: "有没有试听课？" }
-  ];
-  var list = document.getElementById("msg-list");
-  var count = document.getElementById("msg-count");
-  list.innerHTML = staticMessages.map(function (m) {
-    return '<div class="screen-msg">' +
-           '<div class="screen-msg-avatar" style="background:' + m.color + '">' + m.name.charAt(0) + '</div>' +
-           '<div class="screen-msg-body">' +
-             '<div class="screen-msg-name">' + m.name + '</div>' +
-             '<div class="screen-msg-text">' + m.text + '</div>' +
-           '</div>' +
-           '</div>';
-  }).join("");
-  count.textContent = staticMessages.length + " 条";
-
-  // ===== Update top time =====
-  var elapsed = 54 * 3600 + 22 * 60 + 56;
-  setInterval(function () {
-    elapsed++;
-    var h = Math.floor(elapsed / 3600);
-    var m = Math.floor((elapsed % 3600) / 60);
-    var s = elapsed % 60;
-    var pad = function (n) { return n < 10 ? "0" + n : "" + n; };
-    document.getElementById("screen-time").textContent =
-      "直播间 " + pad(h) + ":" + pad(m) + ":" + pad(s);
-  }, 1000);
-
-  // ===== 当前直播列表（多场直播切换） =====
-  var streamingLives = [
-    { id: "L005", name: "午间答疑 · 直播中", teacher: "赵老师", duration: "54:22", viewers: 96 },
-    { id: "L001", name: "春启 03 期家长公开课", teacher: "阮荣均", duration: "23:08", viewers: 8 },
-    { id: "L003", name: "明日直播 · 春启04招生", teacher: "阮荣均", duration: "12:45", viewers: 5 }
-  ];
-  if (window.LiveOps) {
-    LiveOps.getLives().filter(function (l) { return l.runtimeStatus === "living"; }).forEach(function (l) {
-      if (!streamingLives.some(function (x) { return x.id === l.liveId; })) {
-        streamingLives.unshift({ id: l.liveId, name: l.liveName, teacher: l.teacher || "—", duration: "00:00", viewers: l.attendedUsers || 0 });
-      }
-    });
-  }
-  var currentLiveId = (window.LiveOps && LiveOps.idFromSearch()) || (new URLSearchParams(location.search)).get("live_id") || streamingLives[0].id;
-  if (window.LiveOps) {
-    var resolved = LiveOps.resolveId(currentLiveId);
-    if (resolved) currentLiveId = resolved;
-    var opsLive = LiveOps.getLive(currentLiveId);
-    if (opsLive) {
-      LiveOps.renderContextBanner({ live: opsLive });
-      streamingLives = streamingLives.map(function (l) {
-        if (l.id === opsLive.liveId) return { id: opsLive.liveId, name: opsLive.liveName, teacher: opsLive.teacher || "—", duration: l.duration, viewers: opsLive.attendedUsers || l.viewers };
-        return l;
-      });
-    } else if (currentLiveId) {
-      LiveOps.renderEmptyLive(document.getElementById("page-content"), "未找到直播 " + currentLiveId);
-      return;
-    } else {
-      LiveOps.renderContextBanner({ showEmpty: true });
-    }
-  }
-
-  // 同步显示
-  var current = streamingLives.filter(function (l) { return l.id === currentLiveId; })[0] || streamingLives[0];
-  document.getElementById("screen-live-id").textContent = current.id;
-  document.querySelector(".screen-live-name").textContent = current.name;
-  document.getElementById("screen-time").textContent = "直播间 " + current.duration + ":" + String(Math.floor(Math.random() * 59)).padStart(2, "0");
-
-  // 渲染直播列表
-  var liveBarList = document.getElementById("live-bar-list");
-  liveBarList.innerHTML = streamingLives.map(function (l) {
-    var active = l.id === currentLiveId ? " active" : "";
-    return '<button class="screen-live-pill' + active + '" data-live-id="' + l.id + '">' +
-           '<span class="pill-dot"></span>' +
-           '<span>' + l.name + '</span>' +
-           '<span class="pill-id">' + l.id + '</span>' +
-           '<span class="pill-arrow">▾</span>' +
-           '</button>';
-  }).join("");
-
-  // 点击切换直播
-  liveBarList.querySelectorAll(".screen-live-pill").forEach(function (p) {
-    p.addEventListener("click", function () {
-      var id = p.getAttribute("data-live-id");
-      // 切换到对应直播
-      location.search = "?live_id=" + id;
-    });
-  });
-
-  // ===== 返回中控台 =====
-  document.getElementById("btn-back-control").addEventListener("click", function () {
-    location.href = "live-control.html?live_id=" + currentLiveId;
   });
 })();
 </script>

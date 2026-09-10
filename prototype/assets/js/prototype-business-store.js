@@ -166,15 +166,13 @@
             { id: "ST1", name: "直播前邀约", timing: "直播前 24 小时", audience: "高意向未预约", channels: ["企微", "短信"], goal: "完成预约", auto: true, status: "pending", target: 800, reached: 0, converted: 0 },
             { id: "ST2", name: "预约后催到", timing: "预约成功后 2 小时", audience: "新预约用户", channels: ["企微"], goal: "确认到课意向", auto: true, status: "pending", target: 400, reached: 0, converted: 0 },
             { id: "ST3", name: "开播前提醒", timing: "关联预约管理", audience: "已预约用户", channels: ["系统提醒"], goal: "到课", auto: true, status: "linked_booking", target: 486, reached: 0, converted: 0, linkBooking: true },
-            { id: "ST4", name: "开播中未到场召回", timing: "开播后 10 分钟", audience: "已预约未进入", channels: ["企微"], goal: "到课", auto: true, status: "pending", target: 200, reached: 0, converted: 0 },
-            { id: "ST5", name: "回放触达", timing: "回放生成后", audience: "未到课用户", channels: ["短信"], goal: "观看回放", auto: true, status: "pending", target: 300, reached: 0, converted: 0 },
-            { id: "ST6", name: "会后跟进", timing: "结束后 30 分钟", audience: "高意向未下单", channels: ["助教任务"], goal: "成交", auto: false, status: "pending", target: 80, reached: 0, converted: 0 }
+            { id: "ST4", name: "开播中未到场召回", timing: "开播后 10 分钟", audience: "已预约未进入", channels: ["企微"], goal: "到课", auto: true, status: "pending", target: 200, reached: 0, converted: 0 }
           ]
         },
         {
           id: "SOP002",
-          sopName: "早间家长课回放触达SOP",
-          name: "早间家长课回放触达SOP",
+          sopName: "早间家长课催到召回SOP",
+          name: "早间家长课催到召回SOP",
           liveId: "L002",
           owner: "赵老师",
           status: "completed",
@@ -199,10 +197,9 @@
           startedAt: "2026-09-09 08:00",
           executionLogs: [{ at: "2026-09-09 08:00", action: "启动", by: "赵老师" }, { at: "2026-09-09 11:30", action: "完成", by: "系统" }],
           steps: [
-            { id: "ST1", name: "开播前提醒", timing: "关联预约管理", audience: "已预约", channels: ["系统提醒"], goal: "到课", auto: true, status: "completed", target: 152, reached: 140, converted: 68, linkBooking: true },
-            { id: "ST2", name: "开播中未到场召回", timing: "开播后 10 分钟", audience: "未进入", channels: ["企微"], goal: "到课", auto: true, status: "completed", target: 80, reached: 72, converted: 18 },
-            { id: "ST3", name: "回放触达", timing: "回放生成后", audience: "未到课", channels: ["短信"], goal: "观看", auto: true, status: "completed", target: 84, reached: 76, converted: 21 },
-            { id: "ST4", name: "会后跟进", timing: "结束后", audience: "高意向", channels: ["助教任务"], goal: "成交", auto: false, status: "completed", target: 30, reached: 28, converted: 6 }
+            { id: "ST1", name: "预约后催到", timing: "预约成功后 2 小时", audience: "新预约用户", channels: ["企微"], goal: "确认到课意向", auto: true, status: "completed", target: 152, reached: 148, converted: 120 },
+            { id: "ST2", name: "开播前提醒", timing: "关联预约管理", audience: "已预约", channels: ["系统提醒"], goal: "到课", auto: true, status: "completed", target: 152, reached: 140, converted: 68, linkBooking: true },
+            { id: "ST3", name: "开播中未到场召回", timing: "开播后 10 分钟", audience: "未进入", channels: ["企微"], goal: "到课", auto: true, status: "completed", target: 80, reached: 72, converted: 18 }
           ]
         },
         {
@@ -236,7 +233,7 @@
             { id: "ST1", name: "直播前邀约", timing: "直播前 24 小时", audience: "高意向未预约", channels: ["短信"], goal: "预约", auto: true, status: "draft", target: 260, reached: 0, converted: 0 },
             { id: "ST2", name: "预约后催到", timing: "预约后", audience: "新预约", channels: ["企微"], goal: "确认", auto: true, status: "draft", target: 0, reached: 0, converted: 0 },
             { id: "ST3", name: "开播前提醒", timing: "关联预约管理", audience: "已预约", channels: ["系统提醒"], goal: "到课", auto: true, status: "linked_booking", target: 0, reached: 0, converted: 0, linkBooking: true },
-            { id: "ST4", name: "回放触达", timing: "回放后", audience: "未到课", channels: ["短信"], goal: "观看", auto: true, status: "draft", target: 0, reached: 0, converted: 0 }
+            { id: "ST4", name: "开播中未到场召回", timing: "开播后 10 分钟", audience: "已预约未进入", channels: ["企微"], goal: "到课", auto: true, status: "draft", target: 0, reached: 0, converted: 0 }
           ]
         }
       ],
@@ -598,6 +595,9 @@
       var needsFix = l.auditStatus === "platform_rejected" || l.auditStatus === "internal_rejected";
       if (!needsPlatform && !needsFix) return;
       if (l.execStatus === "ended" || l.liveStatus === "ended" || l.execStatus === "cancelled") return;
+      var platformHref = needsFix
+        ? ("live-edit.html?live_id=" + l.id + "&from=platform_rejected&focus=cover&todo_id=TODO_PLATFORM_" + l.id)
+        : ("live-edit.html?live_id=" + l.id + "&from=dashboard&todo_id=TODO_PLATFORM_" + l.id);
       todos.push({
         id: "TODO_PLATFORM_" + l.id,
         type: "audit",
@@ -610,12 +610,38 @@
         mine: true,
         dueLabel: l.startAt,
         dueSort: 1,
+        urgency: "near_start",
         sla: "near",
         slaLabel: "临近开播",
         status: "pending",
         statusLabel: "待处理",
-        href: "lives.html",
-        roles: ["admin", "auditor", "content"],
+        href: platformHref,
+        roles: ["admin", "content"],
+        liveId: l.id
+      });
+    });
+
+    data.lives.forEach(function (l) {
+      var living = l.execStatus === "live" || l.liveStatus === "live" || l.runtimeStatus === "living";
+      if (!living) return;
+      todos.push({
+        id: "TODO_LIVING_" + l.id,
+        type: "live",
+        typeLabel: "直播中",
+        completeMode: "manual",
+        kind: "ops",
+        title: l.name + " · 正在直播，进入中控台",
+        owner: l.owner || l.teacher || "赵老师",
+        mine: true,
+        dueLabel: "进行中",
+        dueSort: 0,
+        urgency: "living",
+        sla: "over",
+        slaLabel: "直播中",
+        status: "processing",
+        statusLabel: "进行中",
+        href: "live-control.html?live_id=" + l.id + "&from=dashboard&todo_id=TODO_LIVING_" + l.id,
+        roles: ["admin", "content", "sales"],
         liveId: l.id
       });
     });
@@ -641,10 +667,11 @@
         slaLabel: "临近开播",
         status: "pending",
         statusLabel: "待处理",
-        href: "live-invite.html?live_id=" + s.liveId,
+        href: "live-invite.html?live_id=" + s.liveId + "&focus=pending&from=dashboard&todo_id=TODO_SOP_CFG_" + s.id,
         roles: ["admin", "sales"],
         liveId: s.liveId,
-        sopId: s.id
+        sopId: s.id,
+        urgency: "near_start"
       });
     });
 
@@ -662,11 +689,12 @@
         mine: true,
         dueLabel: l.startAt || "待定",
         dueSort: 2,
+        urgency: "near_start",
         sla: "near",
         slaLabel: "临近开播",
         status: "pending",
         statusLabel: "待处理",
-        href: "live-booking.html?live_id=" + l.id + "&tab=reminders",
+        href: "live-booking.html?live_id=" + l.id + "&tab=reminders&from=dashboard&todo_id=TODO_REMIND_CFG_" + l.id,
         roles: ["admin", "sales"],
         liveId: l.id
       });
@@ -684,11 +712,12 @@
         mine: true,
         dueLabel: "今天 19:00",
         dueSort: 3,
+        urgency: "near_timeout",
         sla: "near",
         slaLabel: "临近超时",
         status: "pending",
         statusLabel: "待处理",
-        href: "orders.html?focus=sms_failed",
+        href: "orders.html?focus=sms_failed&from=dashboard&todo_id=TODO_SMS_001",
         roles: ["admin", "sales"]
       });
     }
@@ -705,11 +734,12 @@
           mine: false,
           dueLabel: "昨天 15:00",
           dueSort: 0,
+          urgency: "overdue",
           sla: "over",
           slaLabel: "已超时",
           status: "pending",
           statusLabel: "待处理",
-          href: "aftersale-detail.html?id=" + a.id + "&todo_id=TODO_REFUND_" + a.id,
+          href: "aftersale-detail.html?id=" + a.id + "&todo_id=TODO_REFUND_" + a.id + "&from=dashboard",
           roles: ["admin"]
         });
       }

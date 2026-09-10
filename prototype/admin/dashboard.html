@@ -279,9 +279,11 @@
 
 </div>
 <script src="../assets/js/proto.js"></script>
+<script src="../assets/js/prototype-business-store.js"></script>
+<script src="../assets/js/live-ops.js?v=9"></script>
 <script src="../assets/js/board-data.js?v=5"></script>
 <script src="../assets/js/board-metrics.js?v=10"></script>
-<script src="../assets/js/admin-shell.js?v=18"></script>
+<script src="../assets/js/admin-shell.js?v=19"></script>
 <script>
 (function () {
   /* ========== 原型配置 ========== */
@@ -353,7 +355,7 @@
   var CREATE_ITEMS = {
     series: { tag: "创建", title: "新建系列课", desc: "创建线上系列课并进入上架流程", href: "content-series-edit.html" },
     live: { tag: "创建", title: "新建直播", desc: "创建场次并保存草稿，列表提交平台审核", href: "live-edit.html" },
-    urge: { tag: "创建", title: "新建直播促到SOP", desc: "面向私域人群配置直播前邀约、开播催到或回放触达", href: "live-invite.html" },
+    urge: { tag: "创建", title: "新建直播促到SOP", desc: "面向私域人群配置直播前邀约、预约后催到或开播中召回", href: "live-invite.html" },
     lead: { tag: "创建", title: "新建线索", desc: "手工录入或导入线索", href: "leads.html?action=create" }
   };
 
@@ -544,51 +546,74 @@
   }
 
   function todayLiveSchedule() {
-    if (window.ProtoBiz && typeof ProtoBiz.getLives === "function") {
+    if (window.LiveOps) {
       var today = demoTodayPrefix();
-      var lives = ProtoBiz.getLives().filter(function (l) {
+      var lives = LiveOps.getLives().filter(function (l) {
         var day = String(l.startAt || "").slice(0, 10);
-        var needsSubmit =
-          l.auditStatus === "draft" ||
-          l.auditStatus === "platform_rejected" ||
-          l.auditStatus === "pending_platform_submit" ||
-          l.auditStatus === "pending_internal_review" ||
-          l.auditStatus === "internal_rejected";
-        return day === today || needsSubmit;
+        var key = LiveOps.scenarioKey(l);
+        return day === today || key === "draft" || key === "platform_rejected" || key === "platform_pending" || key === "living";
+      });
+      var rank = { living: 0, upcoming: 1, draft: 2, platform_rejected: 2, platform_pending: 2, ready_shelf: 2, ended: 3, cancelled: 4 };
+      lives.sort(function (a, b) {
+        var ka = LiveOps.scenarioKey(a);
+        var kb = LiveOps.scenarioKey(b);
+        var ra = rank[ka] != null ? rank[ka] : 9;
+        var rb = rank[kb] != null ? rank[kb] : 9;
+        if (ra !== rb) return ra - rb;
+        return String(a.startAt || "").localeCompare(String(b.startAt || ""));
       });
       return lives.map(function (l) {
-        var needsSubmit =
-          l.auditStatus === "draft" ||
-          l.auditStatus === "platform_rejected" ||
-          l.auditStatus === "pending_platform_submit" ||
-          l.auditStatus === "pending_internal_review" ||
-          l.auditStatus === "internal_rejected";
-        var state = l.execStatus === "ended" || l.liveStatus === "ended"
-          ? "ended"
-          : (needsSubmit ? "pending_audit" : (l.liveStatus === "live" || l.execStatus === "live" ? "live" : "upcoming"));
-        var invite = sopInviteForLive(l.id);
+        var key = LiveOps.scenarioKey(l);
+        var id = l.liveId;
         var actions = [];
-        if (state === "pending_audit") {
-          actions.push({ label: "去直播列表提交", href: "lives.html" });
-        } else if (state === "live") {
-          actions.push({ label: "进入中控台", href: "live-control.html?live_id=" + l.id });
-          actions.push({ label: "查看大屏", href: "live-screen.html?live_id=" + l.id });
-        } else if (state === "ended") {
-          actions.push({ label: "查看数据", href: "live-stats.html?live_id=" + l.id });
-          actions.push({ label: "查看回放", href: "live-replay.html?live_id=" + l.id });
-          actions.push({ label: "创建回放触达", href: "live-invite.html?live_id=" + l.id });
+        if (key === "living") {
+          actions = [
+            { label: "进入中控台", href: "live-control.html?live_id=" + id + "&from=dashboard" },
+            { label: "打开直播大屏", href: "live-screen.html?live_id=" + id + "&from=dashboard" },
+            { label: "实时数据", href: "live-stats.html?live_id=" + id + "&from=dashboard" }
+          ];
+        } else if (key === "upcoming") {
+          actions = [
+            { label: "查看直播", href: LiveOps.viewLiveUrl(id) },
+            { label: "配置预约提醒", href: "live-booking.html?live_id=" + id + "&tab=reminders&from=dashboard" },
+            { label: "配置直播促到SOP", href: "live-invite.html?live_id=" + id + "&from=dashboard" },
+            { label: "进入开播准备", href: "live-control.html?live_id=" + id + "&from=dashboard" }
+          ];
+        } else if (key === "draft" || key === "platform_pending") {
+          actions = [
+            { label: "继续编辑", href: "live-edit.html?live_id=" + id + "&from=dashboard" },
+            { label: "提交平台审核", href: "live-edit.html?live_id=" + id + "&from=dashboard" }
+          ];
+        } else if (key === "platform_rejected") {
+          actions = [
+            { label: "修改并重新提交", href: "live-edit.html?live_id=" + id + "&from=platform_rejected&focus=cover" },
+            { label: "查看驳回原因", href: LiveOps.viewLiveUrl(id, { focus: "platform" }) }
+          ];
+        } else if (key === "ended") {
+          actions = [
+            { label: "查看场次数据", href: "live-stats.html?live_id=" + id + "&from=dashboard" },
+            { label: "查看回放", href: "live-replay.html?live_id=" + id + "&from=dashboard" },
+            { label: "复制直播", href: "live-edit.html?copy_from=" + id }
+          ];
+        } else if (key === "cancelled") {
+          actions = [{ label: "查看详情", href: LiveOps.viewLiveUrl(id) }];
         } else {
-          actions.push({ label: "配置预约提醒", href: "live-booking.html?live_id=" + l.id + "&tab=reminders" });
-          actions.push({ label: "新建直播促到SOP", href: "live-invite.html?live_id=" + l.id });
+          actions = [{ label: "查看详情", href: LiveOps.viewLiveUrl(id) }];
         }
+        var invite = sopInviteForLive(id);
         var time = String(l.startAt || "");
         var timeShort = time.indexOf(" ") >= 0 ? time.split(" ")[1].slice(0, 5) : time;
+        var state =
+          key === "living" ? "live" :
+          key === "ended" ? "ended" :
+          (key === "draft" || key === "platform_rejected" || key === "platform_pending") ? "pending_audit" :
+          key === "cancelled" ? "cancelled" : "upcoming";
         return {
-          id: l.id,
-          name: l.name,
+          id: id,
+          name: l.liveName || l.name,
           time: timeShort,
-          audit: needsSubmit ? "pending" : (l.auditStatus === "approved" ? "passed" : ""),
-          auditLabel: l.auditStatusLabel || (needsSubmit ? "待提交平台" : (state === "ended" ? "已结束" : "待开播")),
+          audit: state === "pending_audit" ? "pending" : "",
+          auditLabel: l.runtimeStatusLabel || l.platformReviewStatusLabel,
           booked: l.bookedUsers || 0,
           remindStatus: l.remindStatusLabel || "—",
           remindReached: l.remindReached || 0,
@@ -596,7 +621,7 @@
           inviteReached: invite.reached,
           state: state,
           actions: actions,
-          roles: ["admin", "auditor", "content", "sales"]
+          roles: ["admin", "content", "sales"]
         };
       });
     }
@@ -607,15 +632,16 @@
       if (state === "pending_audit") {
         actions.push({ label: "去直播列表提交", href: "lives.html" });
       } else if (state === "live") {
-        actions.push({ label: "进入中控台", href: "live-control.html?live_id=" + r.id });
-        actions.push({ label: "查看大屏", href: "live-screen.html?live_id=" + r.id });
+        actions.push({ label: "进入中控台", href: "live-control.html?live_id=" + r.id + "&from=dashboard" });
+        actions.push({ label: "打开直播大屏", href: "live-screen.html?live_id=" + r.id + "&from=dashboard" });
+        actions.push({ label: "实时数据", href: "live-stats.html?live_id=" + r.id + "&from=dashboard" });
       } else if (state === "ended") {
-        actions.push({ label: "查看数据", href: "live-stats.html?live_id=" + r.id });
-        actions.push({ label: "查看回放", href: "live-replay.html?live_id=" + r.id });
-        actions.push({ label: "创建回放触达", href: "live-invite.html?live_id=" + r.id });
+        actions.push({ label: "查看场次数据", href: "live-stats.html?live_id=" + r.id + "&from=dashboard" });
+        actions.push({ label: "查看回放", href: "live-replay.html?live_id=" + r.id + "&from=dashboard" });
+        actions.push({ label: "复制直播", href: "live-edit.html?copy_from=" + r.id });
       } else {
-        actions.push({ label: "配置预约提醒", href: "live-booking.html?live_id=" + r.id + "&tab=reminders" });
-        actions.push({ label: "新建直播促到SOP", href: "live-invite.html?live_id=" + r.id });
+        actions.push({ label: "配置预约提醒", href: "live-booking.html?live_id=" + r.id + "&tab=reminders&from=dashboard" });
+        actions.push({ label: "新建直播促到SOP", href: "live-invite.html?live_id=" + r.id + "&from=dashboard" });
       }
       return {
         id: r.id,
@@ -630,7 +656,7 @@
         inviteReached: r.inviteReached || 0,
         state: state,
         actions: actions,
-        roles: ["admin", "auditor", "content", "sales"]
+        roles: ["admin", "content", "sales"]
       };
     });
   }

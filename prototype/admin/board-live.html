@@ -16,7 +16,7 @@
 <div id="page-content" style="display:none">
 
   <div class="board-tip">
-    <b>直播分析：</b>已结束场次做效果复盘；未来场次看准备状态与直播促到SOP进度。获客渠道不影响场次库存。
+    <b>直播分析：</b>多场直播比较、期次表现、异常发现与经营判断。单场观看/互动/商品趋势请下钻「场次数据」。待开播准备请到工作台或直播列表。
     <span class="muted" id="scope-help-brief"></span>
   </div>
 
@@ -31,7 +31,6 @@
     <select id="f-term" title="影响场次明细"></select>
     <button class="btn" id="btn-reset">重置筛选</button>
     <span class="muted" style="font-size:12px;margin-left:8px">筛选变更后立即生效</span>
-    <a class="btn" href="live-invite.html">新建直播促到SOP</a>
   </div>
   <div id="active-filters"></div>
   <div class="board-conclusion" id="live-conclusion"></div>
@@ -61,13 +60,9 @@
 
   <div class="card" style="margin-bottom:16px">
     <div class="card-hd" style="flex-wrap:wrap;gap:8px">
-      <h2 style="margin:0">直播场次</h2>
-      <div class="segmented" id="live-tab-seg">
-        <button type="button" class="active" data-live-tab="ended">已结束场次</button>
-        <button type="button" data-live-tab="upcoming">待开播场次</button>
-      </div>
+      <h2 style="margin:0">已结束场次</h2>
       <select id="live-sort" class="board-inline-select" title="排序">
-        <option value="recent">最近结束 / 最近开播</option>
+        <option value="recent">最近结束</option>
         <option value="attend_asc">到场率最低</option>
         <option value="pay_asc">支付率最低</option>
         <option value="gap">与平均差距最大</option>
@@ -112,11 +107,11 @@
 <script src="../assets/js/proto.js"></script>
 <script src="../assets/js/board-data.js?v=10"></script>
 <script src="../assets/js/board-metrics.js?v=15"></script>
-<script src="../assets/js/board-insights.js?v=9"></script>
+<script src="../assets/js/board-insights.js?v=10"></script>
 <script src="../assets/js/board-term.js?v=1"></script>
 <script src="../assets/js/board-dictionary.js?v=4"></script>
 <script src="../assets/js/board-tools.js?v=5"></script>
-<script src="../assets/js/admin-shell.js?v=16"></script>
+<script src="../assets/js/admin-shell.js?v=19"></script>
 <script>
 (function () {
   BoardMetrics.ensureCaliberUI();
@@ -137,13 +132,21 @@
     liveState.selected = "";
   }
 
+  function buildStatsUrl(liveId, liveName) {
+    var returnUrl = location.pathname.split("/").pop() + location.search;
+    var q = "live-stats.html?live_id=" + encodeURIComponent(liveId) +
+      "&from=board-live&return_url=" + encodeURIComponent(returnUrl);
+    if (liveName) q += "&live_name=" + encodeURIComponent(liveName);
+    return q;
+  }
+
   function openPanel(liveId) {
     var detail = BoardInsights.getLiveSessionDetail(liveId);
     if (!detail) return;
     var r = detail.row;
+    if (r.upcoming) return;
     var existing = document.getElementById("live-drawer");
     if (existing && liveState.selected === r.id && existing.querySelector("#live-panel-title")) {
-      /* already open for same session */
       return;
     }
     liveState.scrollY = window.scrollY || 0;
@@ -151,7 +154,7 @@
     BoardInsights.setAnalyticsState({
       selectedLive: r.id,
       liveId: r.id,
-      liveTab: liveState.tab,
+      liveTab: "ended",
       liveSort: liveState.sort
     }, { syncUrl: true, push: true });
 
@@ -160,25 +163,25 @@
     drawer.id = "live-drawer";
     drawer.className = "board-drawer-overlay";
     drawer.innerHTML =
-      '<div class="board-drawer live-recap-drawer" role="dialog" aria-modal="true" aria-label="场次详情">' +
+      '<div class="board-drawer live-recap-drawer" role="dialog" aria-modal="true" aria-label="场次复盘">' +
       '<div class="board-drawer-hd"><h3 id="live-panel-title"></h3><button type="button" class="btn btn-sm" data-close>关闭</button></div>' +
       '<div class="board-drawer-bd">' +
       '<p class="muted" style="font-size:12px;margin:0 0 8px" id="live-panel-sub"></p>' +
       '<div class="board-mini-funnel" id="live-funnel"></div>' +
       '<div class="board-two" style="margin-top:12px">' +
-      '<div><h4 style="margin:0 0 8px;font-size:13px">渠道 / 期次表现</h4>' +
+      '<div><h4 style="margin:0 0 8px;font-size:13px">期次 / 渠道表现</h4>' +
       '<table class="data"><thead><tr><th>维度</th><th>到场</th><th>支付</th><th>支付率</th></tr></thead><tbody id="live-dim-tbody"></tbody></table></div>' +
-      '<div><h4 style="margin:0 0 8px;font-size:13px">风险与操作</h4>' +
+      '<div><h4 style="margin:0 0 8px;font-size:13px">经营差异与结论</h4>' +
       '<p style="font-size:13px;margin:0 0 10px" id="live-risks"></p>' +
       '<div style="display:flex;gap:8px;flex-wrap:wrap" id="live-actions"></div></div></div></div></div>';
     document.body.appendChild(drawer);
 
-    document.getElementById("live-panel-title").textContent =
-      (r.upcoming ? "准备情况 · " : "场次复盘 · ") + r.id + " " + r.name;
+    document.getElementById("live-panel-title").textContent = "场次复盘 · " + r.id + " " + r.name;
+    var vsAvg = r.attendDiff == null ? "—" : ((r.attendDiff > 0 ? "+" : "") + r.attendDiff + "pp vs 整体平均到场率");
     document.getElementById("live-panel-sub").textContent =
-      (r.upcoming ? "待开播 · 准备状态" : "已结束 · 效果复盘") +
+      "已结束 · 经营判断" +
       " · 直播促到SOP：" + (r.sopDone ? "已执行" : "未执行") +
-      (r.sopMissing.length ? " · " + r.sopMissing.join("、") : "");
+      " · " + vsAvg;
 
     document.getElementById("live-funnel").innerHTML = [
       ["目标", r.target], ["邀约", r.invite], ["推送成功", r.pushOk],
@@ -203,27 +206,20 @@
     }));
     document.getElementById("live-dim-tbody").innerHTML = dims.join("") || "<tr><td colspan='4' class='muted'>暂无维度数据</td></tr>";
 
-    if (r.upcoming) {
-      document.getElementById("live-risks").textContent =
-        (r.sopMissing.length ? "当前风险：" + r.sopMissing.join("；") : "准备就绪，可继续跟进触达。");
-      document.getElementById("live-actions").innerHTML =
-        '<a class="btn btn-sm btn-primary" href="live-booking.html?live_id=' + r.id + '">去配置</a>' +
-        '<a class="btn btn-sm" href="live-invite.html?live_id=' + r.id + '">去发送</a>' +
-        '<a class="btn btn-sm" href="live-invite.html?live_id=' + r.id + '">查看直播促到SOP</a>';
-    } else {
-      document.getElementById("live-risks").textContent =
-        "未到场 " + detail.noShow + " · 到场未支付 " + detail.attendNoPay +
-        " · 推送缺口 " + detail.pushFail + " · 待跟进约 " + detail.followPending +
-        (r.sopDone ? "" : " · 未执行直播促到SOP，建议检查邀约执行");
-      var noShow = BoardMetrics.buildDrilldownUrl("follow-ups.html", { live_id: r.id, focus: "no_show", from_board: "live" });
-      var noPay = BoardMetrics.buildDrilldownUrl("follow-ups.html", { live_id: r.id, focus: "attend_no_pay", from_board: "live" });
-      var fail = BoardMetrics.buildDrilldownUrl("orders.html", { live_id: r.id, focus: "sms_failed", from_board: "live" });
-      document.getElementById("live-actions").innerHTML =
-        '<a class="btn btn-sm btn-primary" href="live-invite.html?live_id=' + r.id + '">查看直播促到SOP</a>' +
-        '<a class="btn btn-sm" href="' + noShow + '" data-drill-save="1">查看未到场用户</a>' +
-        '<a class="btn btn-sm" href="' + noPay + '" data-drill-save="1">查看到场未支付用户</a>' +
-        '<a class="btn btn-sm" href="' + fail + '" data-drill-save="1">查看推送失败</a>';
+    var conclusions = [];
+    if (r.attendDiff != null && r.attendDiff < 0) {
+      conclusions.push("到场率低于整体平均 " + Math.abs(r.attendDiff) + " 个百分点");
     }
+    if (!r.sopDone) conclusions.push("未执行直播促到SOP");
+    if (detail.pushFail) conclusions.push("推送缺口 " + detail.pushFail);
+    if (r.payRateNum != null && r.payRateNum < 10) conclusions.push("支付率偏低（" + r.payRateNum + "%）");
+    document.getElementById("live-risks").textContent =
+      conclusions.length ? ("主要异常：" + conclusions.join("；")) : "本场与整体平均值差异不大，可结合完整场次数据复盘互动与商品。";
+
+    document.getElementById("live-actions").innerHTML =
+      '<a class="btn btn-sm btn-primary" href="' + buildStatsUrl(r.id, r.name) + '">查看完整场次数据</a>' +
+      '<a class="btn btn-sm" href="live-edit.html?live_id=' + encodeURIComponent(r.id) + '&mode=view">返回直播详情</a>';
+
     drawer.querySelectorAll("[data-drill-save]").forEach(function (a) {
       a.addEventListener("click", function () { BoardInsights.saveReturnState(); });
     });
@@ -242,35 +238,22 @@
   function renderLiveTable(filters) {
     var thead = document.getElementById("live-thead");
     var tbody = document.getElementById("live-tbody");
-    var rows = BoardInsights.getLiveRecapRows(filters, { tab: liveState.tab, sort: liveState.sort });
-    if (liveState.tab === "upcoming") {
-      thead.innerHTML = "<tr><th>场次ID</th><th>主题</th><th>开播时间</th><th>目标人群</th><th>直播促到SOP</th><th>推送</th><th>当前风险</th><th>操作</th></tr>";
-      if (!rows.length) { BoardMetrics.renderEmpty(tbody, 8, "暂无待开播场次"); return; }
-      tbody.innerHTML = rows.map(function (r) {
-        var sel = liveState.selected === r.id ? " is-selected" : "";
-        var risk = r.sopMissing.length ? r.sopMissing.join("；") : "—";
-        return '<tr class="' + sel + '" id="live-row-' + r.id + '"><td>' + r.id + "</td><td>" + r.name + "</td><td>" +
-          (r.startAt || "—") + "</td><td>" + BoardMetrics.fmt(r.target) + "</td><td>" +
-          (r.sopDone ? "已创建" : "未创建") + "</td><td>" + (r.remindStatus || "—") + "</td><td>" + risk +
-          '</td><td class="row-actions"><a href="#" data-open-live="' + r.id + '">准备情况</a></td></tr>';
-      }).join("");
-    } else {
-      thead.innerHTML = "<tr><th>场次ID</th><th>主题</th><th>目标</th><th>邀约</th><th>推送成功</th><th>到场 / 率</th><th>有效观看</th><th>支付 / 率</th><th>直播促到SOP</th><th>vs 平均</th><th>操作</th></tr>";
-      if (!rows.length) { BoardMetrics.renderEmpty(tbody, 11, "暂无已结束场次"); return; }
-      tbody.innerHTML = rows.map(function (r) {
-        var sel = liveState.selected === r.id ? " is-selected" : "";
-        var vs = r.attendDiff == null ? "—" : ((r.attendDiff > 0 ? "+" : "") + r.attendDiff + "pp");
-        var note = r.dataInsufficient ? " <span class='muted'>数据不足</span>" : "";
-        return '<tr class="' + sel + '" id="live-row-' + r.id + '"><td>' + r.id + note + "</td><td>" + r.name + "</td><td>" +
-          BoardMetrics.fmt(r.target) + "</td><td>" + BoardMetrics.fmt(r.invite) + "</td><td>" +
-          BoardMetrics.fmt(r.pushOk) + "</td><td>" +
-          (r.attend == null ? "—" : BoardMetrics.fmt(r.attend)) + " / " + (r.attendRate || "—") + "</td><td>" +
-          (r.watch == null ? "—" : BoardMetrics.fmt(r.watch)) + "</td><td>" +
-          BoardMetrics.fmt(r.payUsers) + " / " + (r.payRateNum != null ? r.payRateNum + "%" : "—") +
-          "</td><td>" + (r.sopDone ? "已执行" : "未执行") + "</td><td>" + vs +
-          '</td><td class="row-actions"><a href="#" data-open-live="' + r.id + '">场次复盘</a></td></tr>';
-      }).join("");
-    }
+    var rows = BoardInsights.getLiveRecapRows(filters, { tab: "ended", sort: liveState.sort });
+    thead.innerHTML = "<tr><th>场次ID</th><th>主题</th><th>目标</th><th>邀约</th><th>推送成功</th><th>到场 / 率</th><th>有效观看</th><th>支付 / 率</th><th>直播促到SOP</th><th>vs 平均</th><th>操作</th></tr>";
+    if (!rows.length) { BoardMetrics.renderEmpty(tbody, 11, "暂无已结束场次"); return; }
+    tbody.innerHTML = rows.map(function (r) {
+      var sel = liveState.selected === r.id ? " is-selected" : "";
+      var vs = r.attendDiff == null ? "—" : ((r.attendDiff > 0 ? "+" : "") + r.attendDiff + "pp");
+      var note = r.dataInsufficient ? " <span class='muted'>数据不足</span>" : "";
+      return '<tr class="' + sel + '" id="live-row-' + r.id + '"><td>' + r.id + note + "</td><td>" + r.name + "</td><td>" +
+        BoardMetrics.fmt(r.target) + "</td><td>" + BoardMetrics.fmt(r.invite) + "</td><td>" +
+        BoardMetrics.fmt(r.pushOk) + "</td><td>" +
+        (r.attend == null ? "—" : BoardMetrics.fmt(r.attend)) + " / " + (r.attendRate || "—") + "</td><td>" +
+        (r.watch == null ? "—" : BoardMetrics.fmt(r.watch)) + "</td><td>" +
+        BoardMetrics.fmt(r.payUsers) + " / " + (r.payRateNum != null ? r.payRateNum + "%" : "—") +
+        "</td><td>" + (r.sopDone ? "已执行" : "未执行") + "</td><td>" + vs +
+        '</td><td class="row-actions"><a href="#" data-open-live="' + r.id + '">场次复盘</a></td></tr>';
+    }).join("");
     tbody.querySelectorAll("[data-open-live]").forEach(function (a) {
       a.onclick = function (e) {
         e.preventDefault();
@@ -282,13 +265,10 @@
   function renderDetails(d) {
     var filters = BoardMetrics.getFilters();
     var q = new URLSearchParams(location.search);
-    liveState.tab = q.get("live_tab") || BoardInsights.getAnalyticsState().liveTab || liveState.tab || "ended";
-    liveState.sort = q.get("live_sort") || BoardInsights.getAnalyticsState().liveSort || liveState.sort || "recent";
+    liveState.tab = "ended";
+    liveState.sort = q.get("live_sort") || q.get("sort") || BoardInsights.getAnalyticsState().liveSort || liveState.sort || "recent";
     liveState.selected = q.get("selected_live") || q.get("live_id") || BoardInsights.getAnalyticsState().selectedLive || "";
 
-    document.querySelectorAll("#live-tab-seg [data-live-tab]").forEach(function (b) {
-      b.classList.toggle("active", b.getAttribute("data-live-tab") === liveState.tab);
-    });
     var sortEl = document.getElementById("live-sort");
     if (sortEl) sortEl.value = liveState.sort;
 
@@ -310,11 +290,6 @@
       btn.onclick = function () {
         var item = lines[Number(btn.getAttribute("data-conclusion-idx"))];
         if (!item || !item.action || item.action.type !== "open_live") return;
-        if (item.action.tab) {
-          liveState.tab = item.action.tab;
-          BoardInsights.setAnalyticsState({ liveTab: liveState.tab }, { syncUrl: true, push: true });
-          renderLiveTable(filters);
-        }
         openPanel(item.action.id);
       };
     });
@@ -323,26 +298,19 @@
 
     var g = d.inviteGroups || sum;
     document.getElementById("invite-groups").innerHTML =
-      "<tr><td>已发送直播促到SOP</td><td>" + (g.sent || 0) + "</td><td>" + (g.sentAvg || "—") + "</td></tr>" +
-      "<tr><td>未发送 / 漏发</td><td>" + (g.miss || 0) + "</td><td>" + (g.missAvg || "—") + "</td></tr>" +
-      "<tr><td>未开播或数据不足</td><td>" + (g.pending || 0) + "</td><td>—</td></tr>";
-    document.getElementById("invite-note").textContent = "期次影响场次；获客渠道不影响场次库存。直播促到SOP与到场率为相关表现。";
+      "<tr><td>已执行直播促到SOP</td><td>" + (g.sent || 0) + "</td><td>" + (g.sentAvg || "—") + "</td></tr>" +
+      "<tr><td>未执行直播促到SOP</td><td>" + (g.miss || 0) + "</td><td>" + (g.missAvg || "—") + "</td></tr>" +
+      "<tr><td>数据不足场次</td><td>" + (g.pending || 0) + "</td><td>—</td></tr>";
+    document.getElementById("invite-note").textContent = "全部场次比较：期次影响场次库存；获客渠道不影响场次。直播促到SOP执行组与未执行组到场率为相关表现。";
 
     if (liveState.selected) openPanel(liveState.selected);
     BoardMetrics.renderActiveFilters();
     BoardMetrics.wireBoardLinks();
   }
 
-  document.querySelectorAll("#live-tab-seg [data-live-tab]").forEach(function (btn) {
-    btn.onclick = function () {
-      liveState.tab = btn.getAttribute("data-live-tab");
-      BoardInsights.setAnalyticsState({ liveTab: liveState.tab, liveSort: liveState.sort }, { syncUrl: true, push: true });
-      renderDetails(BoardMetrics.aggregateLeadMetrics());
-    };
-  });
   document.getElementById("live-sort").onchange = function () {
     liveState.sort = document.getElementById("live-sort").value;
-    BoardInsights.setAnalyticsState({ liveSort: liveState.sort }, { syncUrl: true, push: true });
+    BoardInsights.setAnalyticsState({ liveTab: "ended", liveSort: liveState.sort }, { syncUrl: true, push: true });
     renderLiveTable(BoardMetrics.getFilters());
   };
 
@@ -359,7 +327,7 @@
       var st = BoardInsights.getAnalyticsState();
       return {
         selected_live: st.selectedLive || st.liveId || new URLSearchParams(location.search).get("selected_live") || "",
-        live_tab: st.liveTab || liveState.tab || "ended",
+        live_tab: "ended",
         live_sort: st.liveSort || liveState.sort || "recent"
       };
     },

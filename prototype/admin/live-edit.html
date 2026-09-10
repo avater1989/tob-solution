@@ -89,7 +89,13 @@
       </div>
       <div class="cover-side">
         <a href="#" data-act="design" class="link-blue" id="btn-cover-design">在线设计 ⓘ</a>
-        <button type="button" class="btn btn-sm" id="btn-cover-ok" style="margin-left:8px">标记封面已配置</button>
+        <input type="file" id="le-cover-file" accept="image/*" style="display:none" />
+        <div class="cover-actions" style="display:inline-flex;flex-wrap:wrap;gap:8px;margin-left:8px;vertical-align:middle">
+          <button type="button" class="btn btn-sm" id="btn-cover-upload">上传封面</button>
+          <button type="button" class="btn btn-sm" id="btn-cover-pick" style="display:none">选择封面</button>
+          <button type="button" class="btn btn-sm" id="btn-cover-reupload" style="display:none">重新上传</button>
+          <button type="button" class="btn btn-sm" id="btn-cover-delete" style="display:none">删除封面</button>
+        </div>
         <p class="muted cover-tip" id="cover-fix-hint">建议尺寸 750*422px 或 16:9，小于 5M 的 JPG、PNG 格式图片 <a href="#" class="link-blue">尺寸变更说明</a></p>
       </div>
     </div>
@@ -341,9 +347,10 @@
       </div>
     </div>
     <div class="toolbar" style="margin-top:12px;border:none;padding:0;background:transparent">
-      <button type="button" class="btn" id="btn-view-booking" disabled title="保存直播后可进入预约管理">查看预约与提醒</button>
-      <span class="muted" id="le-booking-hint" style="font-size:12px;margin-left:8px">保存直播后可进入预约管理。</span>
-      <a class="btn" id="btn-advanced-remind" href="live-booking.html" style="margin-left:auto">查看高级配置</a>
+      <button type="button" class="btn" id="btn-view-booking" disabled title="请先保存直播，再配置本场预约提醒或直播促到SOP。">查看预约与提醒</button>
+      <button type="button" class="btn" id="btn-view-sop" disabled title="请先保存直播，再配置本场预约提醒或直播促到SOP。" style="margin-left:8px">配置直播促到SOP</button>
+      <span class="muted" id="le-booking-hint" style="font-size:12px;margin-left:8px">请先保存直播，再配置本场预约提醒或直播促到SOP。</span>
+      <a class="btn" id="btn-advanced-remind" href="#" style="margin-left:auto;pointer-events:none;opacity:.55" title="请先保存直播，再配置本场预约提醒或直播促到SOP。" aria-disabled="true">查看高级配置</a>
     </div>
   </div></div>
 
@@ -664,7 +671,10 @@
 }
 .is-readonly .rich-toolbar,
 .is-readonly [data-act="design"],
-.is-readonly #btn-cover-ok,
+.is-readonly #btn-cover-upload,
+.is-readonly #btn-cover-pick,
+.is-readonly #btn-cover-reupload,
+.is-readonly #btn-cover-delete,
 .is-readonly #btn-add-goods,
 .is-readonly #btn-import-crm,
 .is-readonly #btn-add-role,
@@ -683,9 +693,9 @@
 
 <script src="../assets/js/proto.js"></script>
 <script src="../assets/js/prototype-business-store.js"></script>
-<script src="../assets/js/live-ops.js?v=7"></script>
+<script src="../assets/js/live-ops.js?v=9"></script>
 <script src="../assets/js/live-reach.js"></script>
-<script src="../assets/js/admin-shell.js?v=18"></script>
+<script src="../assets/js/admin-shell.js?v=19"></script>
 <script>
 (function () {
   function toast(msg) { if (window.Proto && Proto.toast) Proto.toast(msg); }
@@ -712,12 +722,19 @@
   var warnOnSave = false;
   var isRejectedFlow = false;
 
+  var copyPrefill = null;
+  var coverConfigured = true;
+  var PLACEHOLDER_COVER = "../assets/img/covers/live.jpg";
+
   if (copyFrom && !liveId) {
-    var copied = LiveOps.copyLive(copyFrom);
-    if (copied) {
-      location.replace(LiveOps.editLiveUrl(copied.liveId));
+    copyPrefill = LiveOps.buildCopyPrefill(copyFrom);
+    if (!copyPrefill) {
+      LiveOps.renderEmptyLive($("page-content"), "未找到可复制的直播 " + copyFrom + "。");
+      var haCopy = headerSlot();
+      if (haCopy) haCopy.innerHTML = '<a class="btn" type="button" href="' + (LiveOps.listReturnUrl ? LiveOps.listReturnUrl() : "lives.html") + '">返回直播列表</a>';
       return;
     }
+    coverConfigured = !!copyPrefill.coverConfigured;
   }
 
   if (liveId && !live) {
@@ -761,6 +778,7 @@
   }
 
   function titleText() {
+    if (copyFrom && !liveId) return "复制直播";
     if (isCreate) return "创建直播";
     if (isView) return "查看直播";
     if (isRejectedFlow) return "修改并重新提交";
@@ -805,8 +823,14 @@
       }
     }
     if ($("le-style")) $("le-style").value = v.roomType || "传统直播间";
-    if ($("le-start")) $("le-start").value = toLocal(v.startAt) || "2026-09-12T20:00";
-    if ($("le-end")) $("le-end").value = toLocal(v.endAt) || "2026-09-12T22:00";
+    if ($("le-start")) {
+      if (v.startAt === "" || v.startAt === null) $("le-start").value = "";
+      else $("le-start").value = toLocal(v.startAt) || "2026-09-12T20:00";
+    }
+    if ($("le-end")) {
+      if (v.endAt === "" || v.endAt === null) $("le-end").value = "";
+      else $("le-end").value = toLocal(v.endAt) || "2026-09-12T22:00";
+    }
     if ($("le-teacher")) $("le-teacher").value = v.teacher || "阮荣均";
     if ($("le-intro")) $("le-intro").value = v.description || "";
     if ($("le-content") && v.content) $("le-content").value = v.content;
@@ -843,7 +867,7 @@
       content: ($("le-content") && $("le-content").value) || "",
       saleMode: saleMode,
       products: products,
-      coverConfigured: live ? live.coverConfigured !== false : true,
+      coverConfigured: coverConfigured,
       agreedOpsRules: $("le-agree") ? $("le-agree").checked : false,
       reminderEnabled: $("le-remind-enable") ? $("le-remind-enable").value === "1" : true,
       preRemindOffset: $("le-remind-pre") ? $("le-remind-pre").value : "1h",
@@ -856,17 +880,73 @@
     try { return JSON.stringify(collect()); } catch (e) { return ""; }
   }
 
-  function enableBookingLink(id) {
+  var SAVE_GATE_TIP = "请先保存直播，再配置本场预约提醒或直播促到SOP。";
+
+  function setCoverUi() {
+    var has = !!coverConfigured;
+    var up = $("btn-cover-upload");
+    var pick = $("btn-cover-pick");
+    var re = $("btn-cover-reupload");
+    var del = $("btn-cover-delete");
+    if (up) up.style.display = has ? "none" : "";
+    if (pick) pick.style.display = has ? "none" : "";
+    if (re) re.style.display = has ? "" : "none";
+    if (del) del.style.display = has ? "" : "none";
+  }
+
+  function disableBookingLinks() {
+    var tip = SAVE_GATE_TIP;
     var btn = $("btn-view-booking");
+    var sop = $("btn-view-sop");
     var hint = $("le-booking-hint");
     var adv = $("btn-advanced-remind");
-    if (!btn) return;
-    btn.disabled = false;
-    btn.removeAttribute("title");
-    if (hint) hint.textContent = "已关联直播 " + id;
+    if (btn) {
+      btn.disabled = true;
+      btn.setAttribute("title", tip);
+      btn.onclick = function () { toast(tip); };
+    }
+    if (sop) {
+      sop.disabled = true;
+      sop.setAttribute("title", tip);
+      sop.onclick = function () { toast(tip); };
+    }
+    if (hint) hint.textContent = tip;
+    if (adv) {
+      adv.href = "#";
+      adv.setAttribute("aria-disabled", "true");
+      adv.setAttribute("title", tip);
+      adv.style.pointerEvents = "none";
+      adv.style.opacity = ".55";
+      adv.onclick = function (e) { e.preventDefault(); toast(tip); };
+    }
+  }
+
+  function enableBookingLink(id) {
+    var btn = $("btn-view-booking");
+    var sop = $("btn-view-sop");
+    var hint = $("le-booking-hint");
+    var adv = $("btn-advanced-remind");
     var href = LiveOps.buildUrl("live-booking.html", { live_id: id, tab: "reminders", from: "detail" });
-    btn.onclick = function () { location.href = href; };
-    if (adv) adv.href = href;
+    var sopHref = LiveOps.buildUrl("live-invite.html", { live_id: id });
+    if (btn) {
+      btn.disabled = false;
+      btn.removeAttribute("title");
+      btn.onclick = function () { location.href = href; };
+    }
+    if (sop) {
+      sop.disabled = false;
+      sop.removeAttribute("title");
+      sop.onclick = function () { location.href = sopHref; };
+    }
+    if (hint) hint.textContent = "已关联直播 " + id;
+    if (adv) {
+      adv.href = href;
+      adv.removeAttribute("aria-disabled");
+      adv.removeAttribute("title");
+      adv.style.pointerEvents = "";
+      adv.style.opacity = "";
+      adv.onclick = null;
+    }
   }
 
   function canGoEdit(v) {
@@ -974,8 +1054,7 @@
           LiveOps.forceOffline(v.liveId); toast("已强制下架"); location.reload(); return;
         }
         if (act === "copy") {
-          var c = LiveOps.copyLive(v.liveId);
-          if (c) location.href = editHref(c.liveId);
+          location.href = LiveOps.buildUrl("live-edit.html", { copy_from: v.liveId });
           return;
         }
         toast("操作：" + act);
@@ -1031,7 +1110,10 @@
 
   if (isView) {
     applyReadonly();
+    coverConfigured = live.coverConfigured !== false;
     fillForm(live);
+    if (live.coverUrl && $("le-cover-img")) $("le-cover-img").src = live.coverUrl;
+    setCoverUi();
     enableBookingLink(live.liveId);
     insertStatusBar(live, "查看直播");
     renderViewHeader(live);
@@ -1054,7 +1136,9 @@
   /* create / edit */
   renderEditHeader();
   if (live) {
+    coverConfigured = live.coverConfigured !== false;
     fillForm(live);
+    if (live.coverUrl && $("le-cover-img")) $("le-cover-img").src = live.coverUrl;
     enableBookingLink(live.liveId);
     insertStatusBar(live, isRejectedFlow ? "修改并重新提交" : "编辑直播");
     if (isRejectedFlow || live.platformReviewStatus === "rejected") {
@@ -1062,7 +1146,18 @@
       isRejectedFlow = true;
       renderEditHeader();
     }
+  } else if (copyPrefill) {
+    fillForm(copyPrefill);
+    if ($("le-start")) $("le-start").value = "";
+    if ($("le-end")) $("le-end").value = "";
+    if (copyPrefill.coverUrl && $("le-cover-img")) $("le-cover-img").src = copyPrefill.coverUrl;
+    else if ($("le-cover-img") && !coverConfigured) $("le-cover-img").src = PLACEHOLDER_COVER;
+    disableBookingLinks();
+  } else {
+    coverConfigured = true;
+    disableBookingLinks();
   }
+  setCoverUi();
   baseline = snapshotForm();
 
   document.querySelectorAll("#page-content input, #page-content select, #page-content textarea").forEach(function (el) {
@@ -1075,15 +1170,46 @@
     e.returnValue = "";
   });
 
-  on($("btn-cover-ok"), "click", function () {
-    if (liveId) LiveOps.patchLive(liveId, { coverConfigured: true });
-    if (live) live.coverConfigured = true;
-    dirty = true;
+  function openCoverPicker() {
+    var f = $("le-cover-file");
+    if (f) f.click();
+  }
+  function clearCoverRejectTip() {
     var tip = $("cover-fix-tip");
     if (tip) tip.remove();
     var card = $("cover-card");
     if (card) card.classList.remove("field-warn");
-    toast("已标记封面配置完成");
+  }
+  on($("btn-cover-upload"), "click", openCoverPicker);
+  on($("btn-cover-pick"), "click", openCoverPicker);
+  on($("btn-cover-reupload"), "click", openCoverPicker);
+  on($("btn-cover-delete"), "click", function () {
+    coverConfigured = false;
+    if ($("le-cover-img")) $("le-cover-img").src = PLACEHOLDER_COVER;
+    if (live) live.coverConfigured = false;
+    dirty = true;
+    setCoverUi();
+    toast("已删除封面");
+  });
+  on($("le-cover-file"), "change", function () {
+    var file = this.files && this.files[0];
+    if (!file) return;
+    if (!/^image\//.test(file.type || "")) {
+      toast("请选择图片文件");
+      this.value = "";
+      return;
+    }
+    var reader = new FileReader();
+    reader.onload = function (ev) {
+      if ($("le-cover-img")) $("le-cover-img").src = ev.target.result;
+      coverConfigured = true;
+      if (live) live.coverConfigured = true;
+      dirty = true;
+      clearCoverRejectTip();
+      setCoverUi();
+      toast("封面已上传");
+    };
+    reader.readAsDataURL(file);
   });
 
   function persistDraft(extra) {
@@ -1109,6 +1235,10 @@
       try { LiveReach.createDefaultReminders(saved, true); } catch (e) {}
     }
     live = saved;
+    liveId = saved.liveId;
+    coverConfigured = saved.coverConfigured !== false;
+    enableBookingLink(liveId);
+    setCoverUi();
     baseline = snapshotForm();
     dirty = false;
     return saved;
@@ -1184,7 +1314,16 @@
   });
 
   on($("btn-view-booking"), "click", function () {
-    if (this.disabled) toast("保存直播后可进入预约管理");
+    if (this.disabled) toast(SAVE_GATE_TIP);
+  });
+  on($("btn-view-sop"), "click", function () {
+    if (this.disabled) toast(SAVE_GATE_TIP);
+  });
+  on($("btn-advanced-remind"), "click", function (e) {
+    if (!liveId) {
+      e.preventDefault();
+      toast(SAVE_GATE_TIP);
+    }
   });
   ["btn-add-role", "btn-pick-owner", "btn-pick-course", "btn-add-goods", "btn-import-crm", "btn-more-config"].forEach(function (id) {
     on($(id), "click", function () { toast("原型操作"); dirty = true; });
