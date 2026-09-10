@@ -11,6 +11,8 @@
 | 原型导航入口 | https://avater1989.github.io/tob-solution/prototype/index.html |
 | 商家工作台 | https://avater1989.github.io/tob-solution/prototype/admin/dashboard.html |
 | 直播列表 | https://avater1989.github.io/tob-solution/prototype/admin/lives.html |
+| 直播中控台（L005 直播中） | https://avater1989.github.io/tob-solution/prototype/admin/live-control.html?live_id=L005 |
+| 直播中控台演示工具 | https://avater1989.github.io/tob-solution/prototype/admin/live-control.html?live_id=L005&demo=1 |
 
 ## 怎么打开
 

@@ -1,1617 +1,897 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
+<html lang="zh-CN"><head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>直播中控台 · 商家管理后台</title>
-<link rel="stylesheet" href="../assets/css/proto.css?v=9" />
-</head>
-<body class="admin-body ctrl-mode" data-module="live" data-nav="live-control" data-title="直播中控台" data-crumb="直播 / 直播管理 / 中控台" data-assist="0">
-<div id="header-actions" style="display:none"></div>
-<div id="page-content" style="display:none">
+<link rel="stylesheet" href="../assets/css/proto.css?v=9">
+<style>
+html, body.ctrl-mode { height:100%; overflow:hidden; }
+body.ctrl-mode { background:#0a0f1c; color:#e8eaed; margin:0; }
+.ctrl-mode .admin-body { padding:0; height:100%; overflow:hidden; }
+.ctrl-mode .sidebar, .ctrl-mode .admin-topbar, .ctrl-mode .review-bar,
+.ctrl-mode .notice-bar, .ctrl-mode .assist, .ctrl-mode .page-header,
+.ctrl-mode .breadcrumb, .ctrl-mode #live-ops-banner { display:none !important; }
+.ctrl-mode .admin-app, .ctrl-mode .admin-body-row { display:block; height:100%; overflow:hidden; }
+.ctrl-mode .main { background:#0a0f1c; height:100%; overflow:hidden; }
+.ctrl-mode .content { padding:0; height:100%; overflow:hidden; display:flex; flex-direction:column; }
+#page-content {
+  padding:0 !important; flex:1; min-height:0; height:100%; max-height:100vh;
+  display:flex !important; flex-direction:column !important; overflow:hidden !important;
+}
 
-  <!-- 顶部信息条 -->
-  <div class="ctrl-top">
+.ctrl-top {
+  display:flex; align-items:center; justify-content:space-between;
+  padding:10px 16px; height:56px; flex-shrink:0; position:relative; z-index:100;
+  background:linear-gradient(180deg,#131b30 0%,#0f172a 100%);
+  border-bottom:1px solid #1f2940;
+}
+.ctrl-top-left { display:flex; align-items:center; gap:12px; min-width:0; }
+.ctrl-icon-btn {
+  width:32px; height:32px; border-radius:8px; background:#1f2940; border:none;
+  color:#b8c2dd; cursor:pointer; display:inline-flex; align-items:center; justify-content:center;
+  text-decoration:none;
+}
+.ctrl-brand { display:flex; align-items:center; gap:8px; }
+.ctrl-brand-mark {
+  width:28px; height:28px; border-radius:7px;
+  background:linear-gradient(135deg,#165dff,#722ed1);
+  color:#fff; font-weight:600; font-size:13px;
+  display:flex; align-items:center; justify-content:center;
+}
+.ctrl-brand-name { font-size:13px; font-weight:600; color:#fff; }
+.ctrl-brand-sub { font-size:11px; color:#8b95ad; display:flex; align-items:center; gap:5px; }
+.ctrl-status-dot { width:6px; height:6px; border-radius:50%; background:#00b42a; display:inline-block; }
+.ctrl-divider { width:1px; height:24px; background:#1f2940; }
+.ctrl-live-card { display:flex; flex-direction:column; gap:1px; min-width:0; }
+.ctrl-live-tag { font-size:10px; color:#86909c; }
+.ctrl-live-name { font-size:13px; font-weight:600; color:#fff; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:220px; }
+.ctrl-live-meta, .ctrl-live-id { font-size:11px; color:#8b95ad; }
+.ctrl-top-right { display:flex; align-items:center; gap:8px; flex-shrink:0; }
+.ctrl-pill {
+  display:inline-flex; align-items:center; gap:5px; height:28px; padding:0 10px;
+  border-radius:14px; border:1px solid #2d3a55; background:#121a2b;
+  font-size:12px; color:#c9d1d9; cursor:pointer; text-decoration:none; white-space:nowrap;
+}
+.ctrl-pill-ok { border-color:#00b42a; color:#00b42a; }
+.ctrl-pill-warn { border-color:#ff7d00; color:#ff7d00; }
+.ctrl-pill-err { border-color:#f53f3f; color:#f53f3f; }
+.ctrl-pill-blue { border-color:#165dff; color:#93c5fd; }
+.ctrl-pill-gray { color:#86909c; }
+.net-dot { width:6px; height:6px; border-radius:50%; background:#00b42a; display:inline-block; }
+.ctrl-btn-start {
+  height:32px; padding:0 14px; border:none; border-radius:8px;
+  background:#165dff; color:#fff; font-size:13px; font-weight:600; cursor:pointer;
+  display:inline-flex; align-items:center;
+}
+.ctrl-btn-start:disabled { opacity:.45; cursor:not-allowed; }
+.ctrl-start-wrap { display:flex; flex-direction:column; align-items:flex-end; gap:2px; }
+.ctrl-start-hint {
+  font-size:11px; color:#ff7d00; cursor:pointer; text-decoration:underline; text-underline-offset:2px;
+}
+.ctrl-avatar { font-size:12px; color:#c9d1d9; padding:0 4px; }
+
+.ctrl-crit {
+  display:none; flex-shrink:0; padding:8px 16px; background:#2a1212; border-bottom:1px solid #5a1d1d;
+  color:#ffb4b4; font-size:12px;
+}
+.ctrl-crit.open { display:block; }
+
+.ctrl-main {
+  flex:1; min-height:0; max-height:100%; display:grid;
+  grid-template-columns:200px minmax(0,1fr) 380px;
+  overflow:hidden;
+}
+
+/* left */
+.ctrl-left {
+  border-right:1px solid #1f2940; background:#0d1424;
+  display:flex; flex-direction:column; min-height:0; overflow:auto; padding:12px;
+}
+.ctrl-left-title { font-size:13px; font-weight:600; color:#fff; }
+.ctrl-left-tip { font-size:11px; color:#6b758c; margin:2px 0 8px; }
+.ctrl-source-list { display:flex; flex-direction:column; gap:6px; }
+.ctrl-source-btn {
+  display:flex; align-items:center; gap:8px; width:100%;
+  padding:8px 10px; border-radius:8px; border:1px solid #1f2940;
+  background:#121a2b; color:#c9d1d9; cursor:pointer; font-size:12px; text-align:left;
+}
+.ctrl-source-btn:hover { border-color:#165dff; color:#fff; }
+.ctrl-left-divider { height:1px; background:#1f2940; margin:12px 0; }
+.ctrl-slot-list { display:flex; flex-direction:column; gap:6px; margin-bottom:4px; }
+.ctrl-slot-row {
+  display:flex; align-items:center; justify-content:space-between; gap:6px;
+  padding:6px 8px; border-radius:6px; background:#121a2b; border:1px solid #1f2940; font-size:12px;
+}
+.ctrl-slot-row button {
+  border:none; background:#1f2940; color:#c9d1d9; border-radius:4px;
+  font-size:11px; padding:2px 6px; cursor:pointer;
+}
+.ctrl-layout-list { display:flex; flex-direction:column; gap:6px; }
+.ctrl-layout-btn {
+  display:flex; align-items:center; gap:8px; width:100%;
+  padding:8px 10px; border-radius:8px; border:1px solid #1f2940;
+  background:#121a2b; color:#c9d1d9; cursor:pointer; font-size:12px;
+}
+.ctrl-layout-btn.active { border-color:#165dff; color:#93c5fd; background:#152238; }
+.ctrl-layout-btn svg { width:36px; height:20px; flex-shrink:0; color:currentColor; }
+
+/* center */
+.ctrl-center {
+  min-width:0; min-height:0; display:flex; flex-direction:column; padding:10px 14px; overflow:hidden;
+}
+.ctrl-canvas-meta {
+  display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin-bottom:8px; flex-shrink:0;
+}
+.ctrl-canvas-mode { font-size:13px; font-weight:600; color:#93c5fd; }
+.ctrl-canvas-chip {
+  font-size:11px; padding:2px 8px; border-radius:4px;
+  background:#152238; border:1px solid #1f2940; color:#c9d1d9;
+}
+.ctrl-canvas-chip.is-warn { color:#ff7d00; border-color:#5a3a14; background:#2a1d0c; }
+.ctrl-frame-wrap {
+  flex:1; min-height:0; position:relative;
+  display:flex; align-items:center; justify-content:center;
+  background:#070b14; border:1px solid #1f2940; border-radius:12px; overflow:hidden;
+}
+.ctrl-live-frame {
+  position:relative;
+  aspect-ratio:9/16;
+  height:100%;
+  width:auto;
+  max-height:100%;
+  max-width:100%;
+  background:#0a1020; border-radius:8px; overflow:hidden;
+  box-shadow:0 0 0 1px #1f2940;
+}
+.ctrl-frame-label {
+  position:absolute; top:8px; left:8px; z-index:6;
+  font-size:11px; padding:2px 8px; border-radius:4px;
+  background:rgba(0,0,0,.55); color:#fff;
+}
+.lf-empty, .lf-pane {
+  position:absolute; inset:0; display:flex; flex-direction:column;
+  align-items:center; justify-content:center; color:#6b758c; font-size:13px; text-align:center; padding:16px;
+}
+.lf-main { position:absolute; inset:0; }
+.lf-pane { background:linear-gradient(160deg,#152238,#0d1424); color:#c9d1d9; }
+.lf-pane b { font-size:15px; color:#fff; display:block; margin-bottom:4px; }
+.lf-pane .sub { font-size:11px; color:#86909c; }
+.lf-layout-single .lf-main { inset:0; }
+.lf-layout-pip .lf-main { inset:0; }
+.lf-layout-pip .lf-pip {
+  position:absolute; right:10px; bottom:10px; width:32%; aspect-ratio:9/16;
+  border:2px solid #93c5fd; border-radius:6px; overflow:hidden; z-index:2;
+  box-shadow:0 4px 16px rgba(0,0,0,.4);
+}
+.lf-layout-dual .lf-left { position:absolute; left:0; top:0; bottom:0; width:50%; border-right:1px solid #1f2940; }
+.lf-layout-dual .lf-right { position:absolute; right:0; top:0; bottom:0; width:50%; }
+.lf-placeholder {
+  position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
+  color:#5a6478; font-size:12px; border:1px dashed #2d3a55; margin:8px; border-radius:6px;
+}
+.lf-text-overlay {
+  position:absolute; left:12px; right:12px; bottom:88px; z-index:4;
+  background:rgba(0,0,0,.55); color:#fff; padding:8px 10px; border-radius:6px;
+  font-size:13px; line-height:1.4;
+}
+#ctrl-live-overlays { position:absolute; inset:0; pointer-events:none; z-index:5; }
+.lf-announce {
+  position:absolute; top:32px; left:8px; right:8px;
+  background:rgba(22,93,255,.88); color:#fff; font-size:11px; line-height:1.35;
+  padding:6px 8px; border-radius:6px; text-align:center;
+}
+.lf-coupon {
+  position:absolute; top:72px; right:8px; max-width:46%;
+  background:linear-gradient(135deg,#ff7d00,#f53f3f); color:#fff;
+  font-size:11px; padding:8px 10px; border-radius:8px; box-shadow:0 4px 12px rgba(0,0,0,.35);
+}
+.lf-coupon b { display:block; font-size:12px; margin-bottom:2px; }
+.lf-product {
+  position:absolute; left:8px; right:8px; bottom:28px;
+  background:rgba(15,23,42,.92); border:1px solid #165dff; color:#e8eaed;
+  font-size:12px; padding:8px 10px; border-radius:8px;
+}
+.lf-product .tag { color:#93c5fd; font-size:10px; margin-right:6px; }
+.lf-marquee {
+  position:absolute; left:0; right:0; bottom:0;
+  background:rgba(0,0,0,.72); color:#ffc857; font-size:11px;
+  padding:4px 8px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+}
+.lf-marquee.is-paused { opacity:.55; color:#c9d1d9; }
+.ctrl-stage-foot {
+  display:flex; align-items:center; justify-content:space-between; gap:10px;
+  margin-top:8px; flex-shrink:0;
+}
+.ctrl-foot-info { font-size:12px; color:#86909c; display:flex; align-items:center; gap:6px; min-width:0; }
+.ctrl-foot-actions { display:flex; gap:8px; flex-shrink:0; flex-wrap:wrap; justify-content:flex-end; }
+.ctrl-btn-line {
+  display:inline-flex; align-items:center; gap:6px; height:32px; padding:0 12px;
+  border-radius:8px; border:1px solid #2d3a55; background:#121a2b; color:#c9d1d9;
+  font-size:12px; cursor:pointer;
+}
+.ctrl-btn-line:disabled { opacity:.45; cursor:not-allowed; }
+.ctrl-btn-danger { border-color:#5a1d1d; color:#ffb4b4; }
+
+/* right ops */
+.ctrl-right {
+  border-left:1px solid #1f2940; background:#0d1424;
+  display:flex; flex-direction:column; min-height:0; overflow:hidden;
+}
+.ctrl-metrics {
+  display:grid; grid-template-columns:1fr 1fr; gap:6px;
+  padding:10px 12px; border-bottom:1px solid #1f2940; flex-shrink:0;
+}
+.ctrl-metric {
+  background:#121a2b; border:1px solid #1f2940; border-radius:8px; padding:8px 10px;
+}
+.ctrl-metric span { display:block; font-size:11px; color:#86909c; }
+.ctrl-metric b { font-size:15px; color:#fff; font-family:ui-monospace,monospace; }
+.ctrl-rtabs {
+  display:flex; gap:0; border-bottom:1px solid #1f2940; flex-shrink:0;
+}
+.ctrl-rtab {
+  flex:1; height:40px; border:none; background:transparent; color:#86909c;
+  font-size:13px; cursor:pointer; border-bottom:2px solid transparent;
+}
+.ctrl-rtab.active { color:#93c5fd; border-bottom-color:#165dff; }
+.ctrl-tab-badge {
+  display:inline-block; min-width:16px; padding:0 5px; margin-left:2px;
+  border-radius:8px; background:#165dff; color:#fff; font-size:11px; line-height:16px;
+}
+.ctrl-rpane { display:none; flex:1; min-height:0; flex-direction:column; overflow:hidden; }
+.ctrl-rpane.active { display:flex; }
+
+.ctrl-comment-bar { padding:8px 12px; border-bottom:1px solid #1f2940; flex-shrink:0; }
+.ctrl-interact-toolbar { display:flex; align-items:flex-start; justify-content:space-between; gap:8px; margin-bottom:8px; }
+.ctrl-audit-switch { display:flex; align-items:flex-start; gap:8px; font-size:12px; color:#c9d1d9; flex:1; }
+.ctrl-switch-tip { display:block; color:#86909c; font-size:11px; margin-top:2px; }
+.ctrl-audit-actions { display:flex; align-items:center; gap:8px; margin-bottom:8px; flex-wrap:wrap; }
+.ctrl-audit-count { font-size:12px; color:#ff7d00; }
+.ctrl-comment-filters { display:flex; gap:6px; flex-wrap:wrap; }
+.ctrl-qa-subfilters {
+  display:none; gap:6px; flex-wrap:wrap; margin-top:6px;
+}
+.ctrl-qa-subfilters.open { display:flex; }
+.ctrl-comment-filter {
+  border:1px solid #2d3a55; background:#121a2b; color:#c9d1d9;
+  border-radius:14px; padding:3px 10px; font-size:12px; cursor:pointer;
+}
+.ctrl-comment-filter.active { border-color:#165dff; color:#93c5fd; }
+.ctrl-comment-filter b { font-weight:600; margin-left:2px; }
+.ctrl-pin-bar {
+  flex-shrink:0; margin:0 12px; padding:8px 10px; border-radius:8px;
+  background:#152238; border:1px solid #165dff; font-size:12px; color:#c9d1d9;
+  display:flex; gap:8px; align-items:flex-start;
+}
+.ctrl-pin-bar .pin-label { color:#93c5fd; font-weight:600; flex-shrink:0; }
+.ctrl-pin-bar .pin-text { flex:1; line-height:1.4; }
+.ctrl-comment-list-wrap {
+  flex:1; min-height:0; display:flex; flex-direction:column; position:relative;
+}
+.ctrl-comment-list { flex:1; min-height:0; overflow:auto; padding:8px 12px; }
+.ctrl-new-msg-bar {
+  display:none; position:absolute; left:50%; bottom:8px; transform:translateX(-50%);
+  z-index:3; border:none; border-radius:14px; padding:4px 12px;
+  background:#165dff; color:#fff; font-size:12px; cursor:pointer; white-space:nowrap;
+}
+.ctrl-new-msg-bar.show { display:inline-flex; }
+.ctrl-interact-empty { color:#6b758c; font-size:12px; text-align:center; padding:24px 8px; }
+.ctrl-comment {
+  display:flex; gap:8px; padding:10px 0; border-bottom:1px solid #1a2336;
+}
+.ctrl-comment.is-pinned { border-left:2px solid #165dff; padding-left:6px; background:rgba(22,93,255,.06); }
+.ctrl-comment.is-hidden { opacity:.55; }
+.ctrl-comment.is-system {
+  display:block; padding:6px 10px; margin:6px 0; border:none; border-radius:6px;
+  background:#121a2b; color:#86909c; font-size:11px; text-align:center;
+}
+.ctrl-comment.is-order {
+  background:rgba(250,140,22,.08); border:1px solid rgba(250,140,22,.25);
+  border-radius:8px; padding:8px 10px; margin:6px 0; color:#ffc857; font-size:12px;
+}
+.ctrl-comment-avatar {
+  width:28px; height:28px; border-radius:50%; color:#fff; font-size:12px;
+  display:flex; align-items:center; justify-content:center; flex-shrink:0;
+}
+.ctrl-comment-name { font-size:12px; font-weight:600; color:#e8eaed; margin-right:6px; }
+.ctrl-comment-time { font-size:11px; color:#6b758c; margin-left:auto; }
+.ctrl-comment-meta { display:flex; align-items:center; flex-wrap:wrap; gap:4px; margin-bottom:4px; }
+.ctrl-comment-text { font-size:12px; color:#c9d1d9; line-height:1.45; }
+.ctrl-comment-quote {
+  margin:0 0 6px; padding:6px 8px; border-left:2px solid #2d3a55;
+  background:#0d1424; border-radius:0 6px 6px 0; font-size:11px; color:#86909c;
+}
+.ctrl-comment-tag {
+  font-size:10px; padding:1px 5px; border-radius:3px; background:#1f2940; color:#86909c;
+}
+.ctrl-comment-tag.role-teacher { background:rgba(22,93,255,.2); color:#93c5fd; }
+.ctrl-comment-tag.role-pupil { background:rgba(0,180,42,.15); color:#00b42a; }
+.ctrl-comment-tag.tag-qa { background:rgba(255,125,0,.15); color:#ff7d00; }
+.ctrl-comment-tag.tag-pinned { background:rgba(22,93,255,.15); color:#165dff; }
+.ctrl-comment-tag.tag-hidden { background:rgba(134,144,156,.2); color:#86909c; }
+.ctrl-comment-tag.tag-muted { background:rgba(245,63,63,.15); color:#f98981; }
+.ctrl-comment-tag.tag-new { background:rgba(0,180,42,.2); color:#00b42a; }
+.ctrl-comment-tag.tag-answered { background:rgba(0,180,42,.15); color:#00b42a; }
+.ctrl-comment-tag.tag-unanswered { background:rgba(255,125,0,.12); color:#ff7d00; }
+.ctrl-comment-actions { display:flex; gap:6px; flex-wrap:wrap; margin-top:6px; }
+.ctrl-comment-act {
+  border:none; background:transparent; color:#86909c; font-size:11px; cursor:pointer; padding:0;
+}
+.ctrl-comment-act:hover { color:#93c5fd; }
+.ctrl-reply-banner {
+  flex-shrink:0; display:flex; align-items:center; justify-content:space-between;
+  padding:6px 12px; background:#152238; border-top:1px solid #1f2940;
+  font-size:12px; color:#93c5fd;
+}
+.ctrl-comment.flash-in { animation: commentIn .35s ease; }
+@keyframes commentIn {
+  from { opacity:0; transform:translateY(-6px); }
+  to { opacity:1; transform:none; }
+}
+.ctrl-more-wrap { position:relative; display:inline-block; }
+.ctrl-more-menu {
+  position:absolute; right:0; bottom:22px; z-index:5; min-width:84px;
+  background:#1a2336; border:1px solid #2d3a55; border-radius:8px; padding:4px;
+}
+.ctrl-more-menu button {
+  display:block; width:100%; text-align:left; border:none; background:none;
+  color:#e8eaed; font-size:12px; padding:6px 8px; cursor:pointer; border-radius:4px;
+}
+.ctrl-quick-replies { display:flex; gap:6px; flex-wrap:wrap; padding:8px 12px 0; flex-shrink:0; }
+.ctrl-chip {
+  border:1px solid #2d3a55; background:#121a2b; color:#c9d1d9;
+  border-radius:14px; padding:3px 8px; font-size:11px; cursor:pointer;
+}
+.ctrl-quick-msg {
+  display:flex; gap:8px; padding:8px 12px 12px; border-top:1px solid #1f2940; flex-shrink:0;
+}
+.ctrl-quick-input {
+  flex:1; height:34px; border-radius:8px; border:1px solid #2d3a55;
+  background:#121a2b; color:#fff; padding:0 10px; font-size:12px;
+}
+.ctrl-btn-pri {
+  height:34px; padding:0 12px; border:none; border-radius:8px;
+  background:#165dff; color:#fff; font-size:12px; cursor:pointer; white-space:nowrap;
+}
+.ctrl-btn-pri:disabled, .ctrl-quick-input:disabled { opacity:.5; cursor:not-allowed; }
+
+.ctrl-prod-pane, .ctrl-mk-pane { flex:1; min-height:0; overflow:auto; padding:12px; }
+.ctrl-prod-sec { margin-bottom:14px; }
+.ctrl-prod-sec-hd { font-size:12px; color:#86909c; margin-bottom:6px; font-weight:500; }
+.ctrl-prod-row {
+  display:flex; align-items:flex-start; gap:8px; padding:10px;
+  background:#121a2b; border:1px solid #1f2940; border-radius:8px; margin-bottom:8px;
+}
+.ctrl-prod-row.is-explaining { border-color:#165dff; background:#152238; }
+.ctrl-prod-name { font-size:13px; color:#e8eaed; font-weight:500; }
+.ctrl-prod-meta { font-size:11px; color:#86909c; margin-top:2px; }
+.ctrl-prod-actions { margin-left:auto; display:flex; flex-direction:column; gap:4px; }
+.ctrl-prod-actions .btn, .mk-tool-acts .btn { font-size:11px; padding:2px 8px; height:26px; }
+.ctrl-prod-badge {
+  font-size:11px; color:#165dff; background:rgba(22,93,255,.15);
+  padding:1px 6px; border-radius:3px; margin-left:4px;
+}
+.ctrl-mk-card {
+  background:#121a2b; border:1px solid #1f2940; border-radius:10px;
+  padding:12px; margin-bottom:10px;
+}
+.ctrl-mk-card-name { font-size:14px; font-weight:600; color:#fff; }
+.ctrl-mk-card-desc { font-size:12px; color:#86909c; margin:4px 0 8px; }
+.mk-status {
+  display:inline-block; font-size:11px; padding:1px 6px; border-radius:3px;
+  background:#1f2940; color:#86909c;
+}
+.mk-status.is-active { background:rgba(0,180,42,.15); color:#00b42a; }
+.mk-status.is-ended { color:#86909c; }
+.mk-status.is-paused { background:rgba(255,125,0,.15); color:#ff7d00; }
+.mk-tool-acts { display:flex; gap:6px; flex-wrap:wrap; margin-top:8px; }
+.mk-announce-current { margin-top:6px; font-size:12px; color:#93c5fd; }
+.ctrl-mk-tip { font-size:12px; color:#86909c; margin-bottom:10px; }
+
+/* device drawer — below top bar, right edge, internal scroll */
+.ctrl-drawer-mask {
+  display:none; position:fixed; left:0; right:0; bottom:0; top:56px;
+  background:rgba(0,0,0,.45); z-index:80;
+}
+.ctrl-drawer-mask.open { display:block; }
+.ctrl-drawer {
+  position:fixed; top:56px; right:0; bottom:0;
+  width:min(400px, 100vw); max-width:100vw; z-index:85;
+  background:#0f172a; border-left:1px solid #1f2940;
+  transform:translateX(100%); transition:transform .2s ease;
+  display:flex; flex-direction:column; overflow:hidden;
+}
+.ctrl-drawer.open { transform:translateX(0); }
+.ctrl-drawer-hd {
+  display:flex; align-items:center; justify-content:space-between;
+  padding:14px 16px; border-bottom:1px solid #1f2940; flex-shrink:0;
+}
+.ctrl-drawer-hd h3 { margin:0; font-size:15px; color:#fff; }
+.ctrl-drawer-bd { flex:1; min-height:0; overflow:auto; padding:12px 16px; }
+.ctrl-dev-select {
+  width:100%; height:32px; margin-top:6px; border-radius:6px;
+  border:1px solid #2d3a55; background:#121a2b; color:#e8eaed; font-size:12px; padding:0 8px;
+}
+.demo-only { display:none !important; }
+body.demo-on .demo-only { display:flex !important; }
+body.demo-on .demo-only.demo-block { display:block !important; }
+body.demo-on button.demo-only, body.demo-on .ctrl-chip.demo-only { display:inline-flex !important; }
+.ctrl-demo-panel {
+  margin-top:14px; padding-top:12px; border-top:1px dashed #2d3a55;
+}
+.ctrl-demo-panel-title { font-size:12px; color:#ff7d00; margin-bottom:8px; font-weight:600; }
+.ctrl-demo-panel .btn { margin:0 6px 6px 0; }
+.ctrl-alert-card {
+  padding:10px 12px; border-radius:8px; margin-bottom:8px;
+  border:1px solid #1f2940; background:#152238; font-size:12px;
+}
+.ctrl-alert-card.is-warn { border-color:#5a3a14; background:#2a1d0c; }
+.ctrl-alert-card.is-error { border-color:#5a1d1d; background:#2a1212; }
+.ctrl-alert-title { font-weight:600; color:#e8eaed; margin-bottom:4px; }
+.ctrl-alert-meta, .ctrl-alert-tip { color:#86909c; margin-bottom:2px; }
+.ctrl-dev-row {
+  display:flex; justify-content:space-between; align-items:center;
+  padding:10px 0; border-bottom:1px solid #1f2940; font-size:13px;
+}
+.ctrl-dev-row span { color:#86909c; }
+.ctrl-dev-row b { color:#e8eaed; font-weight:500; }
+.ctrl-vol-track { height:4px; border-radius:2px; background:#1f2940; overflow:hidden; margin-top:6px; }
+.ctrl-vol-fill { height:100%; background:#165dff; }
+.ctrl-tag-ok, .ctrl-tag-warn {
+  font-size:11px; padding:1px 6px; border-radius:3px;
+}
+.ctrl-tag-ok { background:rgba(0,180,42,.15); color:#00b42a; }
+.ctrl-tag-warn { background:rgba(255,125,0,.15); color:#ff7d00; }
+
+.health-row { display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid #e5e6eb; font-size:13px; }
+.health-sep { margin-top:12px; font-weight:600; font-size:13px; }
+.health-issue { margin-top:8px; font-size:13px; padding:8px; background:#f7f8fa; border-radius:6px; }
+
+.ctrl-pre-check { display:flex; flex-direction:column; gap:8px; margin-top:12px; }
+.ctrl-check-item { display:flex; align-items:center; gap:8px; cursor:pointer; font-size:13px; }
+.ctrl-modal-tip {
+  display:flex; align-items:center; gap:6px; margin-top:12px; padding:8px 12px;
+  background:#e6f0ff; border-radius:4px; color:#165dff; font-size:13px;
+}
+.muted { color:#86909c; }
+.btn { cursor:pointer; }
+</style>
+</head>
+<body class="admin-body ctrl-mode" data-module="live" data-nav="live-control" data-title="直播中控台" data-crumb="直播 / 直播管理 / 中控台" data-assist="0"><div class="review-bar"><strong>评审路径</strong><a href="content-series.html">①内容售卖</a><span class="sep">·</span><a href="lives.html">②直播转化</a><span class="sep">·</span><a href="orders.html">③订单管理</a><span class="sep">·</span><a href="leads.html">④私域运营</a><span class="sep">|</span><a href="../ops/dashboard.html">切运营后台</a><span class="sep">·</span><a href="../miniprogram/home.html">切 C 端</a><span class="sep">·</span><a href="../index.html">导航</a></div>
+
+
+
+<script src="../assets/js/proto.js"></script>
+<script src="../assets/js/prototype-business-store.js"></script>
+<script src="../assets/js/live-ops.js?v=10"></script>
+<script src="../assets/js/admin-shell.js?v=19"></script><div class="admin-app"><header class="admin-topbar"><a class="admin-brand" href="dashboard.html"><div class="logo">艺</div>商家管理后台</a><div class="admin-tenant">商户 <b>星启家庭教育</b></div><nav class="admin-modules"><a class="" href="dashboard.html">工作台</a><a class="" href="leads.html">SCRM</a><a class="active" href="lives.html">直播</a><a class="" href="content-series.html">内容</a><a class="" href="orders.html">交易</a><a class="" href="users.html">用户</a><a class="" href="board-overview.html">经营分析</a><a class="" href="sys-users.html">系统管理</a></nav><div class="admin-top-actions"><button type="button" class="icon-btn" data-toast="全局搜索（后续）" title="搜索">⌕</button><button type="button" class="icon-btn" data-toast="通知中心（示意）" title="通知">◉</button><div class="admin-user-wrap" id="admin-user-wrap"><button type="button" class="admin-user" id="admin-user-btn">赵老师 <i class="caret">▾</i></button><div class="user-dropdown" id="user-dropdown"><div class="udd-hd"><b>赵老师</b><br><span>商户管理员 · 星启家庭教育</span></div><button type="button" class="udd-item" id="udd-profile">个人信息</button><button type="button" class="udd-item" id="udd-password">修改密码</button><div class="udd-sep"></div><button type="button" class="udd-item udd-logout" id="udd-logout">退出登录</button></div></div></div></header><div class="notice-bar" id="notice-bar"><span>公告：MVP 原型 · 侧栏已精简（v4 2026-09-04）· 工作台只在顶部</span><button type="button" class="close-notice" id="close-notice" aria-label="关闭">×</button></div><div class="admin-body-row"><aside class="sidebar"><div class="sidebar-module-label">当前模块</div><div class="nav-group"><div class="nav-label">直播</div><a class="nav-item" href="lives.html"><span class="nav-text">直播列表</span></a><a class="nav-item" href="live-booking.html"><span class="nav-text">预约管理</span></a><a class="nav-item" href="live-replay.html"><span class="nav-text">直播回放</span></a></div></aside><div class="main"><div class="page-header"><div class="breadcrumb">直播 / 直播管理 / 中控台</div><div class="page-header-row"><h1 id="page-title" data-cursor-ref="e73">直播中控台</h1><div id="page-header-actions"></div></div></div><div class="content" id="admin-content-slot"><div id="page-content" style="display:none"><div class="ctrl-top">
     <div class="ctrl-top-left">
-      <a class="ctrl-icon-btn" aria-label="返回" id="ctrl-back-btn" href="lives.html" style="text-decoration:none;display:inline-flex;align-items:center;justify-content:center;">
-        <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
+      <a class="ctrl-icon-btn" aria-label="返回" id="ctrl-back-btn" href="live-edit.html?live_id=L005&amp;mode=view" data-cursor-ref="e0">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"></path></svg>
       </a>
       <div class="ctrl-brand">
         <div class="ctrl-brand-mark">艺</div>
-        <div class="ctrl-brand-info">
+        <div>
           <div class="ctrl-brand-name">艺博教育科技有限公司</div>
-          <div class="ctrl-brand-sub">
-            <span class="ctrl-status-dot"></span>已就绪 · 等待开始直播
-          </div>
+          <div class="ctrl-brand-sub"><span class="ctrl-status-dot" style="background:#f53f3f"></span>直播中</div>
         </div>
       </div>
       <div class="ctrl-divider"></div>
       <div class="ctrl-live-card">
         <div class="ctrl-live-tag">视频直播</div>
-        <div class="ctrl-live-name">测试直播123</div>
-        <div class="ctrl-live-meta">传统直播间 · 已通过审核</div>
+        <div class="ctrl-live-name">午间答疑 · 直播中</div>
+        <div class="ctrl-live-meta" id="ctrl-live-meta">传统直播间 · 平台审核通过 · 已上架 · 直播中</div>
+        <div class="ctrl-live-id" id="ctrl-live-id">ID L005</div>
       </div>
     </div>
     <div class="ctrl-top-right">
-      <span class="ctrl-pill ctrl-pill-gray">
-        <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 9h12v2H6V9zm8 5H6v-2h8v2zm4-6H6V6h12v2z"/></svg>
-        未开通
-      </span>
-      <span class="ctrl-pill ctrl-pill-ok" id="ctrl-net-pill">
-        <span class="net-dot"></span>
-        <span class="net-label">网络良好</span>
-      </span>
-      <button class="ctrl-pill ctrl-pill-blue">
-        <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M16 1H8C6.34 1 5 2.34 5 4v16c4 0 4 0 4 0s0 0 4 0h4c1.66 0 3-1.34 3-3V4c0-1.66-1.34-3-3-3zm-2 20H8v-2h6v2zm4-4H6V4h12v13z"/></svg>
-        已导入 IM
-      </button>
-      <a class="ctrl-pill ctrl-pill-blue" id="ctrl-stats-link" href="live-stats.html" style="text-decoration:none;display:none">查看实时数据</a>
-      <button class="ctrl-btn-start" id="btn-start-live">
-        <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor" style="margin-right:6px"><path d="M8 5v14l11-7z"/></svg>
-        开始直播
-      </button>
-      <div class="ctrl-avatar">阮</div>
+      <span class="ctrl-pill ctrl-pill-ok" id="ctrl-net-pill" title="点击查看推流健康"><span class="net-dot"></span><span class="net-label">网络良好</span></span>
+      <span class="ctrl-pill ctrl-pill-blue" id="ctrl-im-pill">互动服务正常</span>
+      <button type="button" class="ctrl-pill" id="btn-open-device" data-cursor-ref="e1">设备与推流</button>
+      <span class="ctrl-pill ctrl-pill-gray" id="ctrl-duration-pill" style="display: inline-flex;">时长 <b id="ctrl-duration">01:04:03</b></span>
+      <a class="ctrl-pill ctrl-pill-blue" id="ctrl-stats-link" href="live-stats.html?live_id=L005&amp;from=control" style="display: inline-flex;" data-cursor-ref="e2">查看实时数据</a>
+      <div class="ctrl-start-wrap">
+        <button class="ctrl-btn-start" id="btn-end-live" data-cursor-ref="e3" style="background: rgb(245, 63, 63);">结束直播</button>
+        <span class="ctrl-start-hint" id="ctrl-start-hint" style="display:none"></span>
+      </div>
+      <div class="ctrl-avatar" id="ctrl-host-label">当前主播：赵老师</div>
     </div>
   </div>
 
-  <!-- 主区域：左侧媒体源 + 中央 3 宫格 + 右侧设置 -->
-  <div class="ctrl-main">
+  <div class="ctrl-crit" id="ctrl-crit-banner"></div>
 
-    <!-- 左侧：媒体源 -->
-    <div class="ctrl-left">
-      <div class="ctrl-left-header">
-        <div class="ctrl-left-title">媒体源</div>
-        <div class="ctrl-left-tip">支持添加丰富的媒体素材</div>
-      </div>
+  <div class="ctrl-main">
+    <aside class="ctrl-left">
+      <div class="ctrl-left-title">媒体源</div>
+      <div class="ctrl-left-tip">添加到中间的直播画面</div>
       <div class="ctrl-source-list">
-        <button class="ctrl-source-btn" id="btn-add-camera">
-          <svg class="ctrl-source-icon" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17 10.5V7c0-.55-.45-1-2-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h11c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z"/></svg>
-          <span class="ctrl-source-label">摄像头</span>
-        </button>
-        <button class="ctrl-source-btn" id="btn-add-screen">
-          <svg class="ctrl-source-icon" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M21 3H3c-1.1 0-2 .9-2 2v11c0 1.1.9 2 2 2h6v2H8v2h8v-2h-2v-2h6c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 13H3V5h18v11z"/></svg>
-          <span class="ctrl-source-label">屏幕共享</span>
-        </button>
-        <button class="ctrl-source-btn" id="btn-add-image">
-          <svg class="ctrl-source-icon" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg>
-          <span class="ctrl-source-label">图片</span>
-        </button>
-        <button class="ctrl-source-btn" id="btn-add-class">
-          <svg class="ctrl-source-icon" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M4 6h16v12H4z" opacity=".3"/><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 14H4V6h16v12zM10 8.5v7l6-3.5z"/></svg>
-          <span class="ctrl-source-label">本地视频</span>
-        </button>
-        <button class="ctrl-source-btn" id="btn-add-text">
-          <svg class="ctrl-source-icon" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M5 4v3h5.5v12h3V7H19V4z"/></svg>
-          <span class="ctrl-source-label">文字</span>
-        </button>
+        <button type="button" class="ctrl-source-btn" data-source="摄像头" data-cursor-ref="e4">摄像头</button>
+        <button type="button" class="ctrl-source-btn" data-source="屏幕共享" data-cursor-ref="e5">屏幕共享</button>
+        <button type="button" class="ctrl-source-btn" data-source="图片" data-cursor-ref="e6">图片</button>
+        <button type="button" class="ctrl-source-btn" data-source="本地视频" data-cursor-ref="e7">本地视频</button>
+        <button type="button" class="ctrl-source-btn" data-source="文字" data-cursor-ref="e8">文字</button>
       </div>
 
       <div class="ctrl-left-divider"></div>
+      <div class="ctrl-left-title">当前媒体源</div>
+      <div class="ctrl-left-tip">本画面已添加的内容</div>
+      <div class="ctrl-slot-list" id="ctrl-slot-list"><div class="ctrl-slot-row"><span>主内容 · 摄像头</span><button type="button" data-rm="a" data-cursor-ref="e9">移除</button></div></div>
 
-      <div class="ctrl-left-header" style="margin-bottom:8px">
-        <div class="ctrl-left-title">推荐布局</div>
-        <div class="ctrl-left-tip">选择画面组合方式</div>
-      </div>
+      <div class="ctrl-left-divider"></div>
+      <div class="ctrl-left-title">推荐布局</div>
+      <div class="ctrl-left-tip">在同一直播画面中预览</div>
       <div class="ctrl-layout-list">
-        <button class="ctrl-layout-btn active" data-layout="3-2-1">
-          <svg viewBox="0 0 40 24"><rect x="0" y="0" width="22" height="24" rx="2" fill="currentColor"/><rect x="24" y="0" width="14" height="11" rx="1" fill="currentColor" opacity=".5"/><rect x="24" y="13" width="14" height="11" rx="1" fill="currentColor" opacity=".5"/></svg>
+        <button type="button" class="ctrl-layout-btn active" data-layout="single" data-cursor-ref="e10">
+          <svg viewBox="0 0 40 24"><rect x="8" y="0" width="24" height="24" rx="2" fill="currentColor"></rect></svg>
+          单画面
         </button>
-        <button class="ctrl-layout-btn" data-layout="2-2-1">
-          <svg viewBox="0 0 40 24"><rect x="0" y="0" width="20" height="11" rx="1" fill="currentColor" opacity=".5"/><rect x="22" y="0" width="18" height="11" rx="1" fill="currentColor" opacity=".5"/><rect x="0" y="13" width="40" height="11" rx="1" fill="currentColor"/></svg>
+        <button type="button" class="ctrl-layout-btn" data-layout="pip" data-cursor-ref="e11">
+          <svg viewBox="0 0 40 24"><rect x="4" y="0" width="32" height="24" rx="2" fill="currentColor" opacity=".45"></rect><rect x="22" y="12" width="12" height="10" rx="1" fill="currentColor"></rect></svg>
+          画中画
         </button>
-        <button class="ctrl-layout-btn" data-layout="full">
-          <svg viewBox="0 0 40 24"><rect x="0" y="0" width="40" height="24" rx="2" fill="currentColor"/></svg>
+        <button type="button" class="ctrl-layout-btn" data-layout="dual" data-cursor-ref="e12">
+          <svg viewBox="0 0 40 24"><rect x="0" y="0" width="18" height="24" rx="2" fill="currentColor"></rect><rect x="22" y="0" width="18" height="24" rx="2" fill="currentColor" opacity=".55"></rect></svg>
+          双画面
         </button>
       </div>
-    </div>
+    </aside>
 
-    <!-- 中央：3 宫格预览 -->
-    <div class="ctrl-center">
-      <div class="ctrl-stage">
-        <div class="ctrl-stage-cell ctrl-stage-main">
-          <div class="ctrl-stage-empty">
-            <svg class="ctrl-empty-icon" viewBox="0 0 64 64" fill="none">
-              <rect x="8" y="14" width="48" height="36" rx="3" stroke="currentColor" stroke-width="2" stroke-dasharray="4 3"/>
-              <path d="M26 24L40 38M40 24L26 38" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-            </svg>
-            <div class="ctrl-empty-title">主屏画面</div>
-            <div class="ctrl-empty-sub">请从左侧添加媒体源</div>
-          </div>
-          <div class="ctrl-stage-label">
-            <span class="ctrl-stage-badge">主屏</span>
-          </div>
-        </div>
-        <div class="ctrl-stage-cell ctrl-stage-sub">
-          <div class="ctrl-stage-empty">
-            <svg class="ctrl-empty-icon" viewBox="0 0 64 64" fill="none">
-              <rect x="8" y="14" width="48" height="36" rx="3" stroke="currentColor" stroke-width="2" stroke-dasharray="4 3"/>
-            </svg>
-            <div class="ctrl-empty-title">副屏</div>
-            <div class="ctrl-empty-sub">画中画</div>
-          </div>
-          <div class="ctrl-stage-label">
-            <span class="ctrl-stage-badge">副屏</span>
-          </div>
-        </div>
-        <div class="ctrl-stage-cell ctrl-stage-pip">
-          <div class="ctrl-stage-empty">
-            <svg class="ctrl-empty-icon" viewBox="0 0 64 64" fill="none">
-              <circle cx="32" cy="32" r="20" stroke="currentColor" stroke-width="2" stroke-dasharray="3 3"/>
-            </svg>
-            <div class="ctrl-empty-title">灵动岛</div>
-            <div class="ctrl-empty-sub">悬浮</div>
-          </div>
-          <div class="ctrl-stage-label">
-            <span class="ctrl-stage-badge">灵动岛</span>
+    <section class="ctrl-center">
+      <div class="ctrl-canvas-meta">
+        <span class="ctrl-canvas-mode" id="ctrl-canvas-mode">直播中</span>
+        <span class="ctrl-canvas-chip" id="ctrl-canvas-sub">画面已同步</span>
+        <span class="ctrl-canvas-chip" id="ctrl-layout-chip">布局：单画面</span>
+      </div>
+      <div class="ctrl-frame-wrap">
+        <div class="ctrl-live-frame lf-layout-single" id="ctrl-live-frame">
+          <span class="ctrl-frame-label">直播画面</span>
+          <div id="ctrl-frame-body"><div class="lf-main"><div class="lf-pane"><b>摄像头</b><div class="sub">主内容</div></div></div></div>
+          <div id="ctrl-live-overlays">
+            <div class="lf-announce" id="lf-announce" style="display:none"></div>
+            <div class="lf-coupon" id="lf-coupon" style="display:none"></div>
+            <div class="lf-product" id="lf-product" style="display: block;"><span class="tag">讲解中</span>正在讲解：正式课　¥1999</div>
+            <div class="lf-marquee" id="lf-marquee" style="display:none"></div>
           </div>
         </div>
       </div>
       <div class="ctrl-stage-foot">
-        <span class="ctrl-foot-info">
-          <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
-          未添加媒体源
-        </span>
+        <span class="ctrl-foot-info" id="ctrl-foot-info">当前：摄像头</span>
         <div class="ctrl-foot-actions">
-          <button class="ctrl-btn-line" id="btn-update">
-            <svg viewBox="0 0 24 24" width="13" height="13" fill="currentColor"><path d="M17.65 6.35A7.958 7.958 0 0012 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08A5.99 5.99 0 0112 18c-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg>
-            发布更新
+          <button type="button" class="ctrl-btn-line" id="btn-swap-slots" style="display:none">交换画面</button>
+          <button type="button" class="ctrl-btn-line" id="btn-abandon" style="display:none">放弃修改</button>
+          <button type="button" class="ctrl-btn-line" id="btn-update" disabled="" data-cursor-ref="e13">
+            <span id="btn-update-label">更新直播画面</span>
           </button>
-          <button class="ctrl-btn-line ctrl-btn-danger">
-            <svg viewBox="0 0 24 24" width="13" height="13" fill="currentColor"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
-            清空中控台
-          </button>
+          <button type="button" class="ctrl-btn-line ctrl-btn-danger" id="btn-clear-canvas" data-cursor-ref="e14">清空画布</button>
         </div>
       </div>
-    </div>
+    </section>
 
-    <!-- 右侧：设置面板 -->
-    <div class="ctrl-right">
-      <div class="ctrl-right-hd">
-        <span class="ctrl-right-title">当前直播设置</span>
-        <span class="ctrl-right-tag">实时编辑</span>
+    <aside class="ctrl-right" id="ctrl-right-ops">
+      <div class="ctrl-metrics" id="ctrl-live-metrics">
+        <div class="ctrl-metric"><span>当前在线</span><b id="m-online">96</b></div>
+        <div class="ctrl-metric"><span>累计进入</span><b id="m-enter">138</b></div>
+        <div class="ctrl-metric"><span>下单人数</span><b id="m-buyers">8</b></div>
+        <div class="ctrl-metric"><span>成交金额</span><b id="m-gmv">¥3200</b></div>
+      </div>
+      <div class="ctrl-rtabs">
+        <button type="button" class="ctrl-rtab active" data-rtab="interact" data-cursor-ref="e15">互动 <span class="ctrl-tab-badge" id="tab-interact-badge" style="display:none">0</span></button>
+        <button type="button" class="ctrl-rtab" data-rtab="product" data-cursor-ref="e16">商品 <span class="ctrl-tab-badge" id="tab-product-count">2</span></button>
+        <button type="button" class="ctrl-rtab" data-rtab="tools" data-cursor-ref="e17">营销工具</button>
       </div>
 
-      <div class="ctrl-stats-grid">
-        <div class="ctrl-stat-card">
-          <div class="ctrl-stat-label">分辨率</div>
-          <div class="ctrl-stat-value">720 × 1280</div>
-          <div class="ctrl-stat-sub">720P · 竖屏</div>
+      <div class="ctrl-rpane active" id="rpane-interact">
+        <div class="ctrl-comment-bar">
+          <div class="ctrl-interact-toolbar">
+            <label class="ctrl-audit-switch" data-cursor-ref="e74">
+              <input type="checkbox" id="ctrl-audit-toggle" data-cursor-ref="e18">
+              <span>
+                <span>先审后发</span>
+                <span class="ctrl-switch-tip" id="ctrl-audit-tip">开启后，新评论需审核通过才会在直播间展示。</span>
+              </span>
+            </label>
+            <button type="button" class="ctrl-chip demo-only" id="btn-sim-incoming" title="演示新消息流入">模拟新消息</button>
+          </div>
+          <div class="ctrl-audit-actions" id="ctrl-audit-actions" style="display:none">
+            <span class="ctrl-audit-count">待审核 <b id="ctrl-audit-count">2</b></span>
+            <button type="button" class="btn btn-sm btn-primary" id="btn-audit-approve-all">全部通过</button>
+            <button type="button" class="btn btn-sm" id="btn-audit-reject-all">全部隐藏</button>
+          </div>
+          <div class="ctrl-comment-filters">
+            <button type="button" class="ctrl-comment-filter active" data-filter="all" data-cursor-ref="e19">全部 <b id="cnt-all">12</b></button>
+            <button type="button" class="ctrl-comment-filter" data-filter="qa" data-cursor-ref="e20">问答 <b id="cnt-qa">4</b></button>
+            <button type="button" class="ctrl-comment-filter" data-filter="teacher" data-cursor-ref="e21">讲师 <b id="cnt-teacher">4</b></button>
+            <button type="button" class="ctrl-comment-filter" data-filter="hidden" data-cursor-ref="e22">已隐藏 <b id="cnt-hidden">1</b></button>
+          </div>
+          <div class="ctrl-qa-subfilters" id="ctrl-qa-subfilters">
+            <button type="button" class="ctrl-comment-filter" data-qa-sub="all">全部问题</button>
+            <button type="button" class="ctrl-comment-filter active" data-qa-sub="unanswered">未回答</button>
+            <button type="button" class="ctrl-comment-filter" data-qa-sub="answered">已回答</button>
+          </div>
         </div>
-        <div class="ctrl-stat-card">
-          <div class="ctrl-stat-label">帧率</div>
-          <div class="ctrl-stat-value">15 <span class="ctrl-stat-unit">fps</span></div>
-          <div class="ctrl-stat-sub">流畅度良好</div>
+        <div class="ctrl-pin-bar" id="ctrl-pin-bar" style="display: flex;"><span class="pin-label">置顶</span><span class="pin-text"><b>赵老师：</b>家长们好，今天重点解答入学准备和选课问题，有疑问可以直接发问答。</span><button type="button" class="ctrl-comment-act" data-act="pin" data-id="1002" data-cursor-ref="e23">取消</button></div>
+        <div class="ctrl-comment-list-wrap">
+          <div class="ctrl-comment-list" id="ctrl-comment-list"><div class="ctrl-comment is-self is-pinned"><div class="ctrl-comment-avatar" style="background:#165dff">赵</div><div class="ctrl-comment-body"><div class="ctrl-comment-meta"><span class="ctrl-comment-name">赵老师</span><span class="ctrl-comment-tag role-teacher">讲师</span><span class="ctrl-comment-tag tag-pinned">已置顶</span><span class="ctrl-comment-time">6 分钟前</span></div><div class="ctrl-comment-text">家长们好，今天重点解答入学准备和选课问题，有疑问可以直接发问答。</div><div class="ctrl-comment-actions"><button type="button" class="ctrl-comment-act" data-act="reply" data-id="1002" data-cursor-ref="e24">回复</button><button type="button" class="ctrl-comment-act" data-act="pin" data-id="1002" data-cursor-ref="e25">取消置顶</button><button type="button" class="ctrl-comment-act" data-act="recall" data-id="1002" data-cursor-ref="e26">撤回</button></div></div></div><div class="ctrl-comment is-system">钱爸爸等2人进入直播间</div><div class="ctrl-comment is-self"><div class="ctrl-comment-avatar" style="background:#722ed1">赵</div><div class="ctrl-comment-body"><div class="ctrl-comment-meta"><span class="ctrl-comment-name">赵助教</span><span class="ctrl-comment-tag role-teacher">讲师</span><span class="ctrl-comment-time">1 分钟前</span></div><div class="ctrl-comment-quote">回复 @陈妈妈：孩子 8 岁，能听懂吗？</div><div class="ctrl-comment-text">8 岁可以听懂。正式课会按年龄分班，试听课也能先体验。</div><div class="ctrl-comment-actions"><button type="button" class="ctrl-comment-act" data-act="reply" data-id="1006" data-cursor-ref="e27">回复</button><button type="button" class="ctrl-comment-act" data-act="pin" data-id="1006" data-cursor-ref="e28">置顶</button><button type="button" class="ctrl-comment-act" data-act="recall" data-id="1006" data-cursor-ref="e29">撤回</button></div></div></div><div class="ctrl-comment is-self"><div class="ctrl-comment-avatar" style="background:#165dff">赵</div><div class="ctrl-comment-body"><div class="ctrl-comment-meta"><span class="ctrl-comment-name">赵老师</span><span class="ctrl-comment-tag role-teacher">讲师</span><span class="ctrl-comment-time">2 分钟前</span></div><div class="ctrl-comment-quote">回复 @刘爸爸：支持回放吗？</div><div class="ctrl-comment-text">支持回放。直播结束后可在「直播回放」查看完整内容。</div><div class="ctrl-comment-actions"><button type="button" class="ctrl-comment-act" data-act="reply" data-id="1005" data-cursor-ref="e30">回复</button><button type="button" class="ctrl-comment-act" data-act="pin" data-id="1005" data-cursor-ref="e31">置顶</button><button type="button" class="ctrl-comment-act" data-act="recall" data-id="1005" data-cursor-ref="e32">撤回</button></div></div></div><div class="ctrl-comment is-order">🛒 周妈妈 下单了「正式课」· ¥1999</div><div class="ctrl-comment is-self"><div class="ctrl-comment-avatar" style="background:#165dff">赵</div><div class="ctrl-comment-body"><div class="ctrl-comment-meta"><span class="ctrl-comment-name">赵老师</span><span class="ctrl-comment-tag role-teacher">讲师</span><span class="ctrl-comment-time">4 分钟前</span></div><div class="ctrl-comment-quote">回复 @张妈妈：老师今天讲什么？</div><div class="ctrl-comment-text">@张妈妈 今天主要讲春启课程安排和报名方式，稍后购物车会挂正式课。</div><div class="ctrl-comment-actions"><button type="button" class="ctrl-comment-act" data-act="reply" data-id="1003" data-cursor-ref="e33">回复</button><button type="button" class="ctrl-comment-act" data-act="pin" data-id="1003" data-cursor-ref="e34">置顶</button><button type="button" class="ctrl-comment-act" data-act="recall" data-id="1003" data-cursor-ref="e35">撤回</button></div></div></div><div class="ctrl-comment is-system">李爸爸 进入了直播间</div><div class="ctrl-comment"><div class="ctrl-comment-avatar" style="background:#165dff">周</div><div class="ctrl-comment-body"><div class="ctrl-comment-meta"><span class="ctrl-comment-name">周妈妈</span><span class="ctrl-comment-time">5 分钟前</span></div><div class="ctrl-comment-text">已下单！期待开课</div><div class="ctrl-comment-actions"><button type="button" class="ctrl-comment-act" data-act="reply" data-id="6" data-cursor-ref="e36">回复</button><button type="button" class="ctrl-comment-act" data-act="pin" data-id="6" data-cursor-ref="e37">置顶</button><button type="button" class="ctrl-comment-act" data-act="hide" data-id="6" data-cursor-ref="e38">隐藏</button><span class="ctrl-more-wrap"><button type="button" class="ctrl-comment-act" data-act="more" data-id="6" data-cursor-ref="e39">更多</button><span class="ctrl-more-menu" id="more-6" style="display:none"><button type="button" data-act="mute" data-id="6">禁言</button><button type="button" data-act="block" data-id="6">拉黑</button></span></span></div></div></div><div class="ctrl-comment"><div class="ctrl-comment-avatar" style="background:#f53f3f">刘</div><div class="ctrl-comment-body"><div class="ctrl-comment-meta"><span class="ctrl-comment-name">刘爸爸</span><span class="ctrl-comment-tag role-pupil">已购学员</span><span class="ctrl-comment-tag tag-qa">问答</span><span class="ctrl-comment-tag tag-answered">已回答</span><span class="ctrl-comment-time">4 分钟前</span></div><div class="ctrl-comment-text">支持回放吗？</div><div class="ctrl-comment-actions"><button type="button" class="ctrl-comment-act" data-act="reply" data-id="5" data-cursor-ref="e40">回复</button><button type="button" class="ctrl-comment-act" data-act="pin" data-id="5" data-cursor-ref="e41">置顶</button><button type="button" class="ctrl-comment-act" data-act="hide" data-id="5" data-cursor-ref="e42">隐藏</button><button type="button" class="ctrl-comment-act" data-act="unanswer" data-id="5" data-cursor-ref="e43">取消已回答</button><span class="ctrl-more-wrap"><button type="button" class="ctrl-comment-act" data-act="more" data-id="5" data-cursor-ref="e44">更多</button><span class="ctrl-more-menu" id="more-5" style="display:none"><button type="button" data-act="mute" data-id="5">禁言</button><button type="button" data-act="block" data-id="5">拉黑</button></span></span></div></div></div><div class="ctrl-comment"><div class="ctrl-comment-avatar" style="background:#fa8c16">陈</div><div class="ctrl-comment-body"><div class="ctrl-comment-meta"><span class="ctrl-comment-name">陈妈妈</span><span class="ctrl-comment-tag tag-qa">问答</span><span class="ctrl-comment-tag tag-answered">已回答</span><span class="ctrl-comment-time">3 分钟前</span></div><div class="ctrl-comment-text">孩子 8 岁，能听懂吗？</div><div class="ctrl-comment-actions"><button type="button" class="ctrl-comment-act" data-act="reply" data-id="4" data-cursor-ref="e45">回复</button><button type="button" class="ctrl-comment-act" data-act="pin" data-id="4" data-cursor-ref="e46">置顶</button><button type="button" class="ctrl-comment-act" data-act="hide" data-id="4" data-cursor-ref="e47">隐藏</button><button type="button" class="ctrl-comment-act" data-act="unanswer" data-id="4" data-cursor-ref="e48">取消已回答</button><span class="ctrl-more-wrap"><button type="button" class="ctrl-comment-act" data-act="more" data-id="4" data-cursor-ref="e49">更多</button><span class="ctrl-more-menu" id="more-4" style="display:none"><button type="button" data-act="mute" data-id="4">禁言</button><button type="button" data-act="block" data-id="4">拉黑</button></span></span></div></div></div><div class="ctrl-comment"><div class="ctrl-comment-avatar" style="background:#722ed1">王</div><div class="ctrl-comment-body"><div class="ctrl-comment-meta"><span class="ctrl-comment-name">王同学妈</span><span class="ctrl-comment-tag tag-qa">问答</span><span class="ctrl-comment-tag tag-unanswered">未回答</span><span class="ctrl-comment-time">2 分钟前</span></div><div class="ctrl-comment-text">课程怎么报名？</div><div class="ctrl-comment-actions"><button type="button" class="ctrl-comment-act" data-act="reply" data-id="3" data-cursor-ref="e50">回复</button><button type="button" class="ctrl-comment-act" data-act="pin" data-id="3" data-cursor-ref="e51">置顶</button><button type="button" class="ctrl-comment-act" data-act="hide" data-id="3" data-cursor-ref="e52">隐藏</button><button type="button" class="ctrl-comment-act" data-act="answer" data-id="3" data-cursor-ref="e53">标记已回答</button><span class="ctrl-more-wrap"><button type="button" class="ctrl-comment-act" data-act="more" data-id="3" data-cursor-ref="e54">更多</button><span class="ctrl-more-menu" id="more-3" style="display:none"><button type="button" data-act="mute" data-id="3">禁言</button><button type="button" data-act="block" data-id="3">拉黑</button></span></span></div></div></div><div class="ctrl-comment"><div class="ctrl-comment-avatar" style="background:#00b42a">李</div><div class="ctrl-comment-body"><div class="ctrl-comment-meta"><span class="ctrl-comment-name">李爸爸</span><span class="ctrl-comment-time">1 分钟前</span></div><div class="ctrl-comment-text">终于开播了！</div><div class="ctrl-comment-actions"><button type="button" class="ctrl-comment-act" data-act="reply" data-id="2" data-cursor-ref="e55">回复</button><button type="button" class="ctrl-comment-act" data-act="pin" data-id="2" data-cursor-ref="e56">置顶</button><button type="button" class="ctrl-comment-act" data-act="hide" data-id="2" data-cursor-ref="e57">隐藏</button><span class="ctrl-more-wrap"><button type="button" class="ctrl-comment-act" data-act="more" data-id="2" data-cursor-ref="e58">更多</button><span class="ctrl-more-menu" id="more-2" style="display:none"><button type="button" data-act="mute" data-id="2">禁言</button><button type="button" data-act="block" data-id="2">拉黑</button></span></span></div></div></div><div class="ctrl-comment"><div class="ctrl-comment-avatar" style="background:#165dff">张</div><div class="ctrl-comment-body"><div class="ctrl-comment-meta"><span class="ctrl-comment-name">张妈妈</span><span class="ctrl-comment-tag role-pupil">已购学员</span><span class="ctrl-comment-tag tag-qa">问答</span><span class="ctrl-comment-tag tag-answered">已回答</span><span class="ctrl-comment-time">刚刚</span></div><div class="ctrl-comment-text">老师今天讲什么？</div><div class="ctrl-comment-actions"><button type="button" class="ctrl-comment-act" data-act="reply" data-id="1" data-cursor-ref="e59">回复</button><button type="button" class="ctrl-comment-act" data-act="pin" data-id="1" data-cursor-ref="e60">置顶</button><button type="button" class="ctrl-comment-act" data-act="hide" data-id="1" data-cursor-ref="e61">隐藏</button><button type="button" class="ctrl-comment-act" data-act="unanswer" data-id="1" data-cursor-ref="e62">取消已回答</button><span class="ctrl-more-wrap"><button type="button" class="ctrl-comment-act" data-act="more" data-id="1" data-cursor-ref="e63">更多</button><span class="ctrl-more-menu" id="more-1" style="display:none"><button type="button" data-act="mute" data-id="1">禁言</button><button type="button" data-act="block" data-id="1">拉黑</button></span></span></div></div></div></div>
+          <button type="button" class="ctrl-new-msg-bar" id="ctrl-new-msg-bar">0条新消息</button>
         </div>
-        <div class="ctrl-stat-card">
-          <div class="ctrl-stat-label">码率</div>
-          <div class="ctrl-stat-value">1500 <span class="ctrl-stat-unit">kbps</span></div>
-          <div class="ctrl-stat-sub">高清画质</div>
+        <div class="ctrl-reply-banner" id="ctrl-reply-banner" style="display:none">
+          <span id="ctrl-reply-banner-text">回复</span>
+          <button type="button" class="ctrl-comment-act" id="btn-cancel-reply">取消</button>
         </div>
-      </div>
-
-      <div class="ctrl-right-list">
-        <div class="ctrl-right-item">
-          <div class="ctrl-right-icon">
-            <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M17 10.5V7c0-.55-.45-1-2-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h11c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z"/></svg>
-          </div>
-          <div class="ctrl-right-info">
-            <div class="ctrl-right-row1">
-              <span class="ctrl-right-name">摄像头</span>
-              <span class="ctrl-tag-warn">未启用</span>
-            </div>
-            <div class="ctrl-right-row2">未检测到摄像头</div>
-          </div>
-          <span class="ctrl-right-arrow">⌄</span>
-        </div>
-        <div class="ctrl-right-item">
-          <div class="ctrl-right-icon">
-            <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M12 14c1.66 0 2.99-1.34 2.99-3L15 5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5.3-3c0 3-2.54 5.1-5.3 5.1S6.7 14 6.7 11H5c0 3.41 2.72 6.23 6 6.72V21h2v-3.28c3.28-.48 6-3.3 6-6.72h-1.7z"/></svg>
-          </div>
-          <div class="ctrl-right-info">
-            <div class="ctrl-right-row1">
-              <span class="ctrl-right-name">麦克风</span>
-              <span class="ctrl-tag-warn">未启用</span>
-            </div>
-            <div class="ctrl-right-row2">麦克风1</div>
-          </div>
-          <span class="ctrl-right-arrow">⌄</span>
-        </div>
-        <div class="ctrl-right-item">
-          <div class="ctrl-right-icon">
-            <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3A4.5 4.5 0 0014 7.97v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
-          </div>
-          <div class="ctrl-right-info">
-            <div class="ctrl-right-row1">
-              <span class="ctrl-right-name">扬声器</span>
-              <span class="ctrl-tag-ok">启用</span>
-            </div>
-            <div class="ctrl-right-row2">扬声器1</div>
-            <div class="ctrl-right-row3">主播语音播报和连麦声音</div>
-          </div>
-          <span class="ctrl-right-arrow">⌄</span>
-        </div>
-        <div class="ctrl-right-item">
-          <div class="ctrl-right-icon">
-            <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 16.8l-6.2 4.5 2.4-7.4L2 9.4h7.6z"/></svg>
-          </div>
-          <div class="ctrl-right-info">
-            <div class="ctrl-right-row1">
-              <span class="ctrl-right-name">美声</span>
-              <span class="ctrl-tag-ok">已激活</span>
-            </div>
-            <div class="ctrl-right-row2">美声</div>
-            <div class="ctrl-right-row3">主播美声调节</div>
-          </div>
-          <span class="ctrl-right-arrow">⌄</span>
-        </div>
-        <div class="ctrl-right-item">
-          <div class="ctrl-right-icon">
-            <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M22.7 19l-9.1-9.1c.9-2.3.4-5-1.5-6.9-2-2-5-2.4-7.4-1.3L9 6 6 9 1.6 4.7C.4 7.1.9 10.1 2.9 12.1c1.9 1.9 4.6 2.4 6.9 1.5l9.1 9.1c.4.4 1 .4 1.4 0l2.3-2.3c.5-.4.5-1.1.1-1.4z"/></svg>
-          </div>
-          <div class="ctrl-right-info">
-            <div class="ctrl-right-row1">
-              <span class="ctrl-right-name">工具</span>
-              <span class="ctrl-tag-ok">就绪</span>
-            </div>
-            <div class="ctrl-right-row2">工具已就绪</div>
-          </div>
-          <span class="ctrl-right-arrow">⌄</span>
+        <div class="ctrl-quick-replies" id="ctrl-quick-replies"><button type="button" class="ctrl-chip" data-qr="0" data-cursor-ref="e64">欢迎进入直播间</button><button type="button" class="ctrl-chip" data-qr="1" data-cursor-ref="e65">课程链接已放在购物车</button><button type="button" class="ctrl-chip" data-qr="2" data-cursor-ref="e66">支持直播结束后观看回放</button><button type="button" class="ctrl-chip" data-qr="3" data-cursor-ref="e67">具体问题稍后统一解答</button></div>
+        <div class="ctrl-quick-msg">
+          <input type="text" class="ctrl-quick-input" id="ctrl-quick-input" placeholder="输入消息或选择快捷回复..." data-cursor-ref="e68">
+          <button type="button" class="ctrl-btn-pri" id="btn-send-msg" data-cursor-ref="e69">发送</button>
         </div>
       </div>
 
-      <div class="ctrl-right-tabs">
-        <button class="ctrl-right-tab active" data-tab="voice">
-          <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M12 14c1.66 0 2.99-1.34 2.99-3L15 5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5.3-3c0 3-2.54 5.1-5.3 5.1S6.7 14 6.7 11H5c0 3.41 2.72 6.23 6 6.72V21h2v-3.28c3.28-.48 6-3.3 6-6.72h-1.7z"/></svg>
-          麦克风
-        </button>
-        <button class="ctrl-right-tab" data-tab="dance">
-          <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M14 9.5h2V8H14v1.5zm-4 0h2V8h-2v1.5zm-4 0h2V8H6v1.5zM12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/></svg>
-          舞蹈
-        </button>
+      <div class="ctrl-rpane" id="rpane-product">
+        <div class="ctrl-prod-pane">
+          <div id="ctrl-product-list"><div class="ctrl-prod-sec"><div class="ctrl-prod-sec-hd">当前讲解</div><div class="ctrl-prod-row is-explaining"><div><div class="ctrl-prod-name">正式课 <span class="ctrl-prod-badge">讲解中</span></div><div class="ctrl-prod-meta">¥1999 · 库存充足 · 讲解中</div></div><div class="ctrl-prod-actions"><button type="button" class="btn btn-sm" data-pact="end" data-id="M1">结束讲解</button><button type="button" class="btn btn-sm" data-pact="remove" data-id="M1">移除</button></div></div></div><div class="ctrl-prod-sec"><div class="ctrl-prod-sec-hd">已挂载</div><div class="ctrl-prod-row"><div><div class="ctrl-prod-name">答疑加餐包 </div><div class="ctrl-prod-meta">¥99 · 库存 86 · 已挂载</div></div><div class="ctrl-prod-actions"><button type="button" class="btn btn-sm btn-primary" data-pact="explain" data-id="M2">设为讲解中</button><button type="button" class="btn btn-sm" data-pact="up" data-id="M2">上移</button><button type="button" class="btn btn-sm" data-pact="down" data-id="M2">下移</button><button type="button" class="btn btn-sm" data-pact="remove" data-id="M2">移除</button></div></div></div><div class="ctrl-prod-sec"><div class="ctrl-prod-sec-hd">未挂载</div><div class="ctrl-prod-row"><div><div class="ctrl-prod-name">试听课券 </div><div class="ctrl-prod-meta">¥9.9 · 库存充足 · 未挂载</div></div><div class="ctrl-prod-actions"><button type="button" class="btn btn-sm btn-primary" data-pact="mount" data-id="UP3">添加到直播间</button></div></div><div class="ctrl-prod-row"><div><div class="ctrl-prod-name">亲子沟通精讲 </div><div class="ctrl-prod-meta">¥199 · 库存 12 · 未挂载</div></div><div class="ctrl-prod-actions"><button type="button" class="btn btn-sm btn-primary" data-pact="mount" data-id="UP4">添加到直播间</button></div></div></div></div>
+        </div>
       </div>
-    </div>
+
+      <div class="ctrl-rpane" id="rpane-tools">
+        <div class="ctrl-mk-pane">
+          <div class="ctrl-mk-tip">营销工具仅作用于当前直播间。状态：未投放 / 投放中 / 已结束。</div>
+          <div class="ctrl-mk-card">
+            <div class="ctrl-mk-card-name">优惠券</div>
+            <div class="ctrl-mk-card-desc">投放到直播间浮窗</div>
+            <div id="mk-coupon-status"><span class="mk-status is-idle">未投放</span></div>
+            <div class="mk-tool-acts" id="mk-coupon-acts"><button type="button" class="btn btn-sm btn-primary" id="btn-open-coupon">投放到直播间</button></div>
+          </div>
+          <div class="ctrl-mk-card">
+            <div class="ctrl-mk-card-name">直播公告</div>
+            <div class="ctrl-mk-card-desc">发布、更新或撤下</div>
+            <div id="mk-announce-status"><span class="mk-status is-idle">未投放</span></div>
+            <div class="mk-announce-current" id="mk-announce-current" style="display:none">当前展示：</div>
+            <div class="mk-tool-acts" id="mk-announce-acts"><button type="button" class="btn btn-sm btn-primary" id="btn-open-announce">发布公告</button></div>
+          </div>
+          <div class="ctrl-mk-card">
+            <div class="ctrl-mk-card-name">跑马灯</div>
+            <div class="ctrl-mk-card-desc">开始 / 暂停 / 结束</div>
+            <div id="mk-marquee-status"><span class="mk-status is-idle">未投放</span></div>
+            <div class="mk-tool-acts" id="mk-marquee-acts"><button type="button" class="btn btn-sm btn-primary" id="btn-open-marquee">开始展示</button></div>
+          </div>
+        </div>
+      </div>
+    </aside>
   </div>
 
-  <!-- 底部互动面板 -->
-  <div class="ctrl-bottom" id="ctrl-bottom">
-    <!-- 底部 tab 切换 -->
-    <div class="ctrl-bottom-tabs">
-      <button class="ctrl-bottom-tab active" data-btab="interact">
-        <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 12H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z"/></svg>
-        互动 <span class="ctrl-tab-badge">0</span>
-      </button>
-      <button class="ctrl-bottom-tab" data-btab="fans">
-        <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
-        风学院 <span class="ctrl-tab-badge">0</span>
-      </button>
-      <button class="ctrl-bottom-tab" data-btab="mic">
-        <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M20 15.5c-1.25 0-2.45-.2-3.57-.57a1.02 1.02 0 00-1.02.24l-2.2 2.2a15.045 15.045 0 01-6.59-6.58l2.2-2.21a.96.96 0 00.25-1A11.36 11.36 0 018.5 4c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1 0 9.39 7.61 17 17 17 .55 0 1-.45 1-1v-3.5c0-.55-.45-1-1-1z"/></svg>
-        连麦 <span class="ctrl-tab-badge">0</span>
-      </button>
-      <button class="ctrl-bottom-tab" data-btab="data">
-        <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 4h14v-2H7v2zm0 4h14v-2H7v2zM7 7v2h14V7H7z"/></svg>
-        数据
-      </button>
-      <button class="ctrl-bottom-tab" data-btab="product">
-        <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03L20.88 5H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z"/></svg>
-        挂商品
-      </button>
-      <button class="ctrl-bottom-tab" data-btab="coupon">
-        <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M21.41 11.58l-9-9C12.05 2.22 11.55 2 11 2H4c-1.1 0-2 .9-2 2v7c0 .55.22 1.05.59 1.42l9 9c.36.36.86.58 1.41.58.55 0 1.05-.22 1.41-.59l7-7c.37-.36.59-.86.59-1.41 0-.55-.23-1.06-.59-1.42zM5.5 7C4.67 7 4 6.33 4 5.5S4.67 4 5.5 4 7 4.67 7 5.5 6.33 7 5.5 7z"/></svg>
-        优惠券
-      </button>
-      <button class="ctrl-bottom-tab" data-btab="marquee">
-        <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M2 8h20v8H2z" opacity=".3"/><path d="M22 6H2v12h20V6zm-2 10H4V8h16v8z"/></svg>
-        跑马灯
-      </button>
-      <div class="spacer"></div>
-      <button class="ctrl-bottom-close" id="btn-close-bottom" aria-label="关闭">×</button>
+<div class="ctrl-drawer-mask" id="device-mask"></div>
+<aside class="ctrl-drawer" id="device-drawer">
+  <div class="ctrl-drawer-hd">
+    <h3 data-cursor-ref="e75">设备与推流</h3>
+    <button type="button" class="btn btn-sm btn-ghost" id="btn-close-device" data-cursor-ref="e70">×</button>
+  </div>
+  <div class="ctrl-drawer-bd">
+    <div class="ctrl-left-title" style="margin-bottom:8px">当前异常</div>
+    <div id="drawer-alerts"><div class="muted" style="font-size:12px">暂无异常</div></div>
+    <div class="ctrl-left-divider"></div>
+    <div class="ctrl-dev-row"><span>麦克风</span><b id="d-mic-status">已连接 · 开启</b></div>
+    <div class="ctrl-dev-row"><span>静音</span><b id="d-mic-mute">否</b></div>
+    <div style="margin:4px 0 10px">
+      <div class="muted" style="font-size:11px;margin-bottom:4px">音量</div>
+      <div class="ctrl-vol-track"><div class="ctrl-vol-fill" id="d-mic-vol" style="width: 62%;"></div></div>
     </div>
-
-    <!-- 互动面板 -->
-    <div class="ctrl-bottom-pane active" id="pane-interact">
-      <div class="ctrl-stats-row">
-        <div class="ctrl-mini-stat"><span class="dot dot-blue"></span>在线 <b>0</b></div>
-        <div class="ctrl-mini-stat"><span class="dot dot-gray"></span>累计 <b>30</b></div>
-        <div class="ctrl-mini-stat"><span class="dot dot-green"></span>新增 <b>0</b></div>
-        <div class="ctrl-mini-stat"><span class="dot dot-purple"></span>退场 <b>0</b></div>
-        <div class="ctrl-mini-stat"><span class="dot dot-red"></span>点赞 <b>30</b></div>
-        <div class="ctrl-mini-stat"><span class="dot dot-orange"></span>分享 <b>2</b></div>
-        <div class="ctrl-mini-stat"><span class="dot dot-yellow"></span>下单 <b>0</b></div>
-        <div class="ctrl-mini-stat"><span class="dot dot-pink"></span>现金 <b>7</b></div>
-        <div class="ctrl-mini-stat"><span class="dot dot-cyan"></span>礼物 <b>0</b></div>
-      </div>
-
-      <!-- 评论审核开关 + 筛选 -->
-      <div class="ctrl-comment-bar">
-        <label class="ctrl-audit-switch">
-          <input type="checkbox" id="ctrl-audit-toggle" />
-          <span class="ctrl-switch-track">
-            <span class="ctrl-switch-thumb"></span>
-          </span>
-          <span class="ctrl-switch-label">评论审核</span>
-          <span class="ctrl-switch-tip">开启后用户评论默认隐藏</span>
-        </label>
-        <div class="ctrl-comment-filters">
-          <button class="ctrl-comment-filter active" data-filter="all">全部</button>
-          <button class="ctrl-comment-filter" data-filter="qa">问答</button>
-          <button class="ctrl-comment-filter" data-filter="mine">我的学员</button>
-          <button class="ctrl-comment-filter" data-filter="teacher">讲师消息</button>
-        </div>
-      </div>
-
-      <!-- 评论列表 -->
-      <div class="ctrl-comment-list" id="ctrl-comment-list">
-        <!-- 由 JS 渲染 -->
-      </div>
-
-      <div class="ctrl-quick-msg">
-        <input type="text" placeholder="输入快捷回复（按 Enter 发送）..." class="ctrl-quick-input" />
-        <button class="ctrl-btn-pri">发送</button>
-      </div>
+    <div class="field" style="margin-bottom:10px">
+      <label class="muted" style="font-size:11px" data-cursor-ref="e76">选择麦克风</label>
+      <select class="ctrl-dev-select" id="d-mic-select" data-cursor-ref="e71">
+        <option>默认麦克风</option>
+        <option>外置麦克风</option>
+      </select>
     </div>
-
-    <!-- 风学院 -->
-    <div class="ctrl-bottom-pane" id="pane-fans">
-      <div class="ctrl-pane-tabs">
-        <a class="active" href="#all-fans">全部</a>
-        <a href="#fans-manager">老师</a>
-        <a href="#fans-student">学员</a>
-      </div>
-      <div class="ctrl-interact-body">
-        <div class="ctrl-interact-empty">👥 暂无风学院用户</div>
-      </div>
+    <div class="ctrl-dev-row"><span>摄像头</span><b id="d-cam-status">已连接 · 开启</b></div>
+    <div class="field" style="margin:4px 0 10px">
+      <label class="muted" style="font-size:11px" data-cursor-ref="e77">选择摄像头</label>
+      <select class="ctrl-dev-select" id="d-cam-select" data-cursor-ref="e72">
+        <option>默认摄像头</option>
+        <option>外接摄像头</option>
+      </select>
     </div>
-
-    <!-- 连麦 -->
-    <div class="ctrl-bottom-pane" id="pane-mic">
-      <div class="ctrl-mic-empty">
-        <svg viewBox="0 0 64 64" fill="none" width="56" height="56">
-          <circle cx="32" cy="32" r="28" stroke="currentColor" stroke-width="2" opacity=".3"/>
-          <path d="M32 18a6 6 0 00-6 6v8a6 6 0 0012 0v-8a6 6 0 00-6-6z" stroke="currentColor" stroke-width="2" opacity=".5"/>
-          <path d="M40 32a8 8 0 01-16 0M24 44h16" stroke="currentColor" stroke-width="2" stroke-linecap="round" opacity=".5"/>
-        </svg>
-        <div class="ctrl-mic-tip">暂无连麦申请</div>
-        <button class="ctrl-btn-pri" disabled>+ 邀请连麦</button>
-      </div>
-    </div>
-
-    <!-- 营销（已弃用）
-    <div class="ctrl-bottom-pane" id="pane-marketing"> ... </div>
--->
-    <!-- 挂商品 -->
-    <div class="ctrl-bottom-pane" id="pane-product">
-      <div class="ctrl-mk-pane">
-        <div class="ctrl-mk-pane-tip">
-          <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
-          点击下方按钮可即时配置并推送到直播间，营销效果将自动统计到「数据」面板
-        </div>
-        <div class="ctrl-mk-pane-grid">
-          <button class="ctrl-mk-card" id="btn-mk-product">
-            <div class="ctrl-mk-card-icon" style="background:linear-gradient(135deg,#165dff,#4080ff)">
-              <svg viewBox="0 0 24 24" width="22" height="22" fill="#fff"><path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03L20.88 5H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z"/></svg>
-            </div>
-            <div class="ctrl-mk-card-body">
-              <div class="ctrl-mk-card-name">挂商品</div>
-              <div class="ctrl-mk-card-desc">选择已上架商品加入直播讲解</div>
-              <div class="ctrl-mk-card-stat">已挂载 <b id="mk-pane-product-stat">2</b> 个</div>
-            </div>
-          </button>
-        </div>
-      </div>
-    </div>
-
-    <!-- 优惠券 -->
-    <div class="ctrl-bottom-pane" id="pane-coupon">
-      <div class="ctrl-mk-pane">
-        <div class="ctrl-mk-pane-tip">
-          <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
-          直播间发放限时优惠券刺激下单，发放数将自动统计到「数据」面板
-        </div>
-        <div class="ctrl-mk-pane-grid">
-          <button class="ctrl-mk-card" id="btn-mk-coupon">
-            <div class="ctrl-mk-card-icon" style="background:linear-gradient(135deg,#ff7a45,#ff4d4f)">
-              <svg viewBox="0 0 24 24" width="22" height="22" fill="#fff"><path d="M21.41 11.58l-9-9C12.05 2.22 11.55 2 11 2H4c-1.1 0-2 .9-2 2v7c0 .55.22 1.05.59 1.42l9 9c.36.36.86.58 1.41.58.55 0 1.05-.22 1.41-.59l7-7c.37-.36.59-.86.59-1.41 0-.55-.23-1.06-.59-1.42zM5.5 7C4.67 7 4 6.33 4 5.5S4.67 4 5.5 4 7 4.67 7 5.5 6.33 7 5.5 7z"/></svg>
-            </div>
-            <div class="ctrl-mk-card-body">
-              <div class="ctrl-mk-card-name">优惠券</div>
-              <div class="ctrl-mk-card-desc">直播间发放限时优惠券刺激下单</div>
-              <div class="ctrl-mk-card-stat">已发放 <b id="mk-pane-coupon-stat">12</b> 张</div>
-            </div>
-          </button>
-        </div>
-      </div>
-    </div>
-
-    <!-- 跑马灯 -->
-    <div class="ctrl-bottom-pane" id="pane-marquee">
-      <div class="ctrl-mk-pane">
-        <div class="ctrl-mk-pane-tip">
-          <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
-          直播间顶部滚动显示公告/优惠，曝光数将自动统计到「数据」面板
-        </div>
-        <div class="ctrl-mk-pane-grid">
-          <button class="ctrl-mk-card" id="btn-mk-marquee">
-            <div class="ctrl-mk-card-icon" style="background:linear-gradient(135deg,#722ed1,#b577ff)">
-              <svg viewBox="0 0 24 24" width="22" height="22" fill="#fff"><path d="M2 8h20v8H2z" opacity=".3"/><path d="M22 6H2v12h20V6zm-2 10H4V8h16v8z"/></svg>
-            </div>
-            <div class="ctrl-mk-card-body">
-              <div class="ctrl-mk-card-name">跑马灯</div>
-              <div class="ctrl-mk-card-desc">直播间顶部滚动显示公告/优惠</div>
-              <div class="ctrl-mk-card-stat">曝光 <b id="mk-pane-marquee-stat">86</b> 人</div>
-            </div>
-          </button>
-        </div>
-      </div>
-    </div>
-
-    <!-- 数据 -->
-    <div class="ctrl-bottom-pane" id="pane-data">
-      <div class="ctrl-data-mini">
-        <div class="ctrl-data-mini-stat"><span class="dot dot-blue"></span>在线 <b id="d-online">0</b></div>
-        <div class="ctrl-data-mini-stat"><span class="dot dot-gray"></span>累计 <b id="d-total">30</b></div>
-        <div class="ctrl-data-mini-stat"><span class="dot dot-green"></span>新增 <b id="d-new">0</b></div>
-        <div class="ctrl-data-mini-stat"><span class="dot dot-purple"></span>退场 <b id="d-leave">0</b></div>
-        <div class="ctrl-data-mini-stat"><span class="dot dot-red"></span>点赞 <b id="d-like">30</b></div>
-        <div class="ctrl-data-mini-stat"><span class="dot dot-orange"></span>分享 <b id="d-share">2</b></div>
-        <div class="ctrl-data-mini-stat"><span class="dot dot-yellow"></span>下单 <b id="d-order">0</b></div>
-        <div class="ctrl-data-mini-stat"><span class="dot dot-pink"></span>现金 <b id="d-cash">¥7</b></div>
-      </div>
-
-      <!-- 营销效果 -->
-      <div class="ctrl-mark-effect">
-        <div class="ctrl-mark-effect-title">📊 营销效果</div>
-        <div class="ctrl-mark-grid">
-          <div class="ctrl-mark-card">
-            <div class="ctrl-mark-card-label">挂商品</div>
-            <div class="ctrl-mark-card-value" id="mk-stat-product">2</div>
-            <div class="ctrl-mark-card-sub">已讲解 3 次</div>
-          </div>
-          <div class="ctrl-mark-card">
-            <div class="ctrl-mark-card-label">优惠券</div>
-            <div class="ctrl-mark-card-value" style="color:#fa8c16" id="mk-stat-coupon">12</div>
-            <div class="ctrl-mark-card-sub">已领取 / 共 100 张</div>
-          </div>
-          <div class="ctrl-mark-card">
-            <div class="ctrl-mark-card-label">跑马灯</div>
-            <div class="ctrl-mark-card-value" style="color:#165dff" id="mk-stat-marquee">86</div>
-            <div class="ctrl-mark-card-sub">曝光人数</div>
-          </div>
-          <div class="ctrl-mark-card">
-            <div class="ctrl-mark-card-label">累计现金</div>
-            <div class="ctrl-mark-card-value" style="color:#00b42a">¥2,400</div>
-            <div class="ctrl-mark-card-sub">较开播 +¥2,393</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- 转化漏斗 -->
-      <div class="ctrl-funnel">
-        <div class="ctrl-mark-effect-title">🔻 互动转化漏斗</div>
-        <div class="ctrl-funnel-row"><div class="ctrl-funnel-bar" style="width:100%"><span>进入</span><b>100</b></div></div>
-        <div class="ctrl-funnel-row"><div class="ctrl-funnel-bar ctrl-funnel-bar-2" style="width:60%"><span>互动</span><b>60</b></div></div>
-        <div class="ctrl-funnel-row"><div class="ctrl-funnel-bar ctrl-funnel-bar-3" style="width:30%"><span>领券</span><b>12</b></div></div>
-        <div class="ctrl-funnel-row"><div class="ctrl-funnel-bar ctrl-funnel-bar-4" style="width:15%"><span>下单</span><b>8</b></div></div>
-        <div class="ctrl-funnel-row"><div class="ctrl-funnel-bar ctrl-funnel-bar-5" style="width:8%"><span>现金</span><b>¥2,400</b></div></div>
-      </div>
+    <div class="ctrl-dev-row"><span>扬声器</span><b>启用 · 主播语音和直播声音</b></div>
+    <div class="ctrl-dev-row"><span>网络</span><b id="d-net-status">正常</b></div>
+    <div class="ctrl-dev-row"><span>推流</span><b id="d-stream-status">正常</b></div>
+    <div class="ctrl-left-divider"></div>
+    <div class="ctrl-dev-row"><span>分辨率</span><b>720 × 1280</b></div>
+    <div class="ctrl-dev-row"><span>帧率</span><b>15 fps</b></div>
+    <div class="ctrl-dev-row"><span>码率</span><b>1500 kbps</b></div>
+    <div class="ctrl-demo-panel demo-only demo-block" id="ctrl-demo-panel">
+      <div class="ctrl-demo-panel-title">演示控制（仅 demo=1）</div>
+      <button type="button" class="btn btn-sm demo-only" id="btn-sim-health-ok">恢复正常</button>
+      <button type="button" class="btn btn-sm demo-only" id="btn-sim-health-warn">模拟警告</button>
+      <button type="button" class="btn btn-sm demo-only" id="btn-sim-health-err">模拟异常</button>
+      <button type="button" class="btn btn-sm demo-only" id="btn-toggle-mic">切换麦克风</button>
+      <button type="button" class="btn btn-sm demo-only" id="btn-toggle-cam">切换摄像头</button>
     </div>
   </div>
+</aside>
 
-  </div>
-
-<!-- 直播间内营销动画容器（点击后立即浮现） -->
-<div class="ctrl-stage-effects" id="ctrl-stage-effects"></div>
-
-<!-- 弹窗 -->
 <div class="proto-mask" id="mask"></div>
 
-<!-- 挂商品抽屉 -->
-<div class="proto-drawer" id="drawer-product">
-  <div class="proto-drawer-hd">
-    <h3>📦 挂载商品到直播间</h3>
-    <button class="btn btn-sm btn-ghost" data-close>×</button>
-  </div>
-  <div class="proto-drawer-bd">
-    <input type="text" placeholder="搜索商品名称" style="width:100%;padding:8px 12px;border-radius:6px;margin-bottom:12px;border:1px solid #e5e6eb" />
-    <div style="font-size:12px;color:#86909c;margin-bottom:10px">已上架商品 · 共 12 个 · 切换开关可加入/移出讲解列表</div>
-    <div id="product-list">
-      <div class="prod-row" data-pid="P001">
-        <div class="prod-cover" style="background:linear-gradient(135deg,#ff7a45,#ffbb96)"></div>
-        <div class="prod-info"><div class="prod-name">春启 03 期家长必修课</div><div class="prod-meta">¥298 · 库存 999 · 已售 1,288</div></div>
-        <label class="prod-toggle"><input type="checkbox" /><span class="prod-track"><span class="prod-thumb"></span></span></label>
-      </div>
-      <div class="prod-row" data-pid="P002">
-        <div class="prod-cover" style="background:linear-gradient(135deg,#165dff,#4080ff)"></div>
-        <div class="prod-info"><div class="prod-name">9.9 引流试听课</div><div class="prod-meta">¥9.9 · 库存 9,999 · 已售 3,260</div></div>
-        <label class="prod-toggle"><input type="checkbox" checked /><span class="prod-track"><span class="prod-thumb"></span></span></label>
-      </div>
-      <div class="prod-row" data-pid="P003">
-        <div class="prod-cover" style="background:linear-gradient(135deg,#00b42a,#5fd068)"></div>
-        <div class="prod-info"><div class="prod-name">亲子沟通训练营</div><div class="prod-meta">¥698 · 库存 200 · 已售 86</div></div>
-        <label class="prod-toggle"><input type="checkbox" /><span class="prod-track"><span class="prod-thumb"></span></span></label>
-      </div>
-      <div class="prod-row" data-pid="P004">
-        <div class="prod-cover" style="background:linear-gradient(135deg,#722ed1,#b577ff)"></div>
-        <div class="prod-info"><div class="prod-name">家长答疑·音频年卡</div><div class="prod-meta">¥199 · 库存 888 · 已售 425</div></div>
-        <label class="prod-toggle"><input type="checkbox" checked /><span class="prod-track"><span class="prod-thumb"></span></span></label>
-      </div>
-      <div class="prod-row" data-pid="P005">
-        <div class="prod-cover" style="background:linear-gradient(135deg,#fa8c16,#ffc857)"></div>
-        <div class="prod-info"><div class="prod-name">学习方法·12 节精讲</div><div class="prod-meta">¥128 · 库存 666 · 已售 1,024</div></div>
-        <label class="prod-toggle"><input type="checkbox" /><span class="prod-track"><span class="prod-thumb"></span></span></label>
-      </div>
-    </div>
-  </div>
-  <div class="proto-drawer-ft">
-    <span style="font-size:12px;color:#86909c;margin-right:auto" id="prod-summary">已挂载 2 / 共 5</span>
-    <button class="btn" data-close>关闭</button>
-  </div>
-</div>
-
-<!-- 优惠券发放弹窗 -->
 <div class="proto-modal" id="modal-coupon">
-  <div class="proto-modal-hd">
-    <h3>🎁 发放优惠券</h3>
-    <button class="btn btn-sm btn-ghost" data-close>×</button>
-  </div>
+  <div class="proto-modal-hd"><h3 data-cursor-ref="e78">投放优惠券</h3><button class="btn btn-sm btn-ghost" data-close="">×</button></div>
   <div class="proto-modal-bd">
-    <div class="form-grid" style="grid-template-columns:1fr 1fr;gap:12px">
-      <div class="field" style="grid-column:1/-1">
-        <label>选择优惠券</label>
-        <select id="coupon-tpl">
-          <option value="t1">9.9 引流课·满 9.9 减 5 元</option>
-          <option value="t2">关注主播·减 10 元</option>
-          <option value="t3">春启课程·减 50 元</option>
-          <option value="t4">新人专享·减 20 元</option>
-        </select>
-      </div>
-      <div class="field">
-        <label>发放数量</label>
-        <input type="number" id="coupon-qty" value="100" min="1" max="9999" />
-      </div>
-      <div class="field">
-        <label>每人限领</label>
-        <select id="coupon-limit">
-          <option>1 张</option><option>2 张</option><option>3 张</option>
-        </select>
-      </div>
-      <div class="field">
-        <label>有效期</label>
-        <select id="coupon-duration">
-          <option>30 分钟</option><option selected>1 小时</option><option>24 小时</option><option>3 天</option>
-        </select>
-      </div>
-      <div class="field">
-        <label>推送渠道</label>
-        <div style="display:flex;gap:16px;padding:6px 0">
-          <label style="display:flex;align-items:center;gap:4px;font-size:13px"><input type="checkbox" checked /> 直播间浮窗</label>
-          <label style="display:flex;align-items:center;gap:4px;font-size:13px"><input type="checkbox" checked /> 企微</label>
-          <label style="display:flex;align-items:center;gap:4px;font-size:13px"><input type="checkbox" /> 短信</label>
-        </div>
-      </div>
-      <div class="field" style="grid-column:1/-1">
-        <label>文案预览</label>
-        <div id="coupon-preview" style="background:#f7f8fa;border:1px solid #e5e6eb;border-radius:6px;padding:10px 12px;font-size:13px;color:#4e5969;line-height:1.6">
-          🎁 主播发券啦！9.9 引流课·满 9.9 减 5 元，限量 100 张，先到先得！有效期 1 小时。
-        </div>
-      </div>
+    <div class="field"><label data-cursor-ref="e79">选择优惠券</label>
+      <select id="coupon-tpl">
+        <option value="t1">9.9 引流课 · 减 5 元</option>
+        <option value="t2">关注主播 · 减 10 元</option>
+        <option value="t3">春启课程 · 减 50 元</option>
+      </select>
     </div>
+    <div class="field" style="margin-top:10px"><label data-cursor-ref="e80">有效期</label>
+      <select id="coupon-duration"><option>30 分钟</option><option selected="">1 小时</option><option>24 小时</option></select>
+    </div>
+    <div class="field" style="margin-top:10px"><label data-cursor-ref="e81">投放渠道</label>
+      <div style="font-size:13px;padding:6px 0">直播间浮窗</div>
+    </div>
+    <div id="coupon-preview" style="margin-top:10px;padding:10px;background:#f7f8fa;border-radius:6px;font-size:13px;color:#4e5969">优惠券：<b>9.9 引流课 · 减 5 元</b><br>优惠说明见券名 · 有效期 <b>1 小时</b><br>渠道：直播间浮窗</div>
   </div>
   <div class="proto-modal-ft">
-    <button class="btn" data-close>取消</button>
-    <button class="btn" id="btn-coupon-draft">保存草稿</button>
-    <button class="btn btn-primary" id="btn-coupon-confirm">✓ 立即发放</button>
+    <button class="btn" data-close="">取消</button>
+    <button class="btn btn-primary" id="btn-coupon-confirm">投放到直播间</button>
   </div>
 </div>
 
-<!-- 跑马灯弹窗 -->
+<div class="proto-modal" id="modal-announce">
+  <div class="proto-modal-hd"><h3 data-cursor-ref="e82">直播公告</h3><button class="btn btn-sm btn-ghost" data-close="">×</button></div>
+  <div class="proto-modal-bd">
+    <div class="field"><label data-cursor-ref="e83">公告内容</label>
+      <textarea id="announce-text" rows="3" maxlength="120" style="width:100%;padding:8px;border:1px solid #e5e6eb;border-radius:6px">欢迎家长进入直播间，课程优惠今晚有效。</textarea>
+    </div>
+  </div>
+  <div class="proto-modal-ft">
+    <button class="btn" data-close="">取消</button>
+    <button class="btn btn-primary" id="btn-announce-confirm">发布公告</button>
+  </div>
+</div>
+
 <div class="proto-modal" id="modal-marquee">
-  <div class="proto-modal-hd">
-    <h3>📢 发送跑马灯</h3>
-    <button class="btn btn-sm btn-ghost" data-close>×</button>
-  </div>
+  <div class="proto-modal-hd"><h3 data-cursor-ref="e84">跑马灯</h3><button class="btn btn-sm btn-ghost" data-close="">×</button></div>
   <div class="proto-modal-bd">
-    <div class="form-grid" style="grid-template-columns:1fr 1fr;gap:12px">
-      <div class="field" style="grid-column:1/-1">
-        <label>快速模板</label>
-        <div style="display:flex;gap:6px;flex-wrap:wrap;padding:4px 0">
-          <button class="mqr-tpl" data-text="🎉 现在下单立享 9 折优惠">优惠</button>
-          <button class="mqr-tpl" data-text="📚 春启课程·今晚 8 点开课">课程</button>
-          <button class="mqr-tpl" data-text="🔔 已预约用户记得进来哦">提醒</button>
-          <button class="mqr-tpl" data-text="⚡ 限时 30 分钟·错过等明年">紧迫</button>
-        </div>
-      </div>
-      <div class="field" style="grid-column:1/-1">
-        <label>滚动内容（80 字以内）</label>
-        <textarea id="mqr-text" rows="2" maxlength="80">🎉 现在下单立享 9 折优惠，错过等明年</textarea>
-      </div>
-      <div class="field">
-        <label>滚动速度</label>
-        <select id="mqr-speed">
-          <option value="slow">慢（10s）</option><option value="normal" selected>中（6s）</option><option value="fast">快（3s）</option>
-        </select>
-      </div>
-      <div class="field">
-        <label>字号</label>
-        <select id="mqr-size">
-          <option value="sm">小</option><option value="md" selected>标准</option><option value="lg">大</option>
-        </select>
-      </div>
-      <div class="field">
-        <label>文字颜色</label>
-        <div class="mqr-colors">
-          <label class="mqr-color" style="background:#fff" data-color="#fff"><input type="radio" name="mqr-color" /></label>
-          <label class="mqr-color" style="background:#ff4d4f;border:2px solid #ff4d4f" data-color="#ff4d4f"><input type="radio" name="mqr-color" /></label>
-          <label class="mqr-color" style="background:#ffc107" data-color="#ffc107"><input type="radio" name="mqr-color" /></label>
-          <label class="mqr-color" style="background:#165dff" data-color="#165dff"><input type="radio" name="mqr-color" checked /></label>
-          <label class="mqr-color" style="background:#00b42a" data-color="#00b42a"><input type="radio" name="mqr-color" /></label>
-        </div>
-      </div>
-      <div class="field">
-        <label>持续时间</label>
-        <select id="mqr-duration">
-          <option>30 秒</option><option selected>1 分钟</option><option>5 分钟</option><option>持续</option>
-        </select>
-      </div>
-      <div class="field" style="grid-column:1/-1">
-        <label>预览效果</label>
-        <div class="mqr-preview" id="mqr-preview">
-          <div class="mqr-marquee-track" id="mqr-track">
-            <span class="mqr-marquee-text">🎉 现在下单立享 9 折优惠，错过等明年</span>
-          </div>
-        </div>
-      </div>
+    <div class="field"><label data-cursor-ref="e85">滚动文案</label>
+      <textarea id="mqr-text" rows="2" maxlength="80" style="width:100%;padding:8px;border:1px solid #e5e6eb;border-radius:6px">现在下单立享优惠，课程链接已放在购物车</textarea>
     </div>
   </div>
   <div class="proto-modal-ft">
-    <button class="btn" data-close>取消</button>
-    <button class="btn btn-primary" id="btn-mqr-confirm">✓ 立即发送</button>
+    <button class="btn" data-close="">取消</button>
+    <button class="btn btn-primary" id="btn-mqr-confirm">开始展示</button>
   </div>
 </div>
 
-<!-- 开始直播确认 -->
 <div class="proto-modal" id="modal-start">
-  <div class="proto-modal-hd">
-    <h3>开始直播</h3>
-    <button class="btn btn-sm btn-ghost" data-close>×</button>
-  </div>
+  <div class="proto-modal-hd"><h3 data-cursor-ref="e86">开始直播</h3><button class="btn btn-sm btn-ghost" data-close="">×</button></div>
   <div class="proto-modal-bd">
-    <p>即将开启直播 <b id="modal-start-live-name">本场直播</b>，开播后将自动推送预告提醒给已预约用户。</p>
+    <p data-cursor-ref="e87">即将开启直播 <b id="modal-start-live-name">午间答疑 · 直播中</b>。</p>
     <div class="ctrl-pre-check">
-      <label class="ctrl-check-item"><input type="checkbox" checked /> <span>已检查画面背景</span></label>
-      <label class="ctrl-check-item"><input type="checkbox" checked /> <span>已检查麦克风音量</span></label>
-      <label class="ctrl-check-item"><input type="checkbox" /> <span>已挂载商品并配置讲解话术</span></label>
-      <label class="ctrl-check-item"><input type="checkbox" /> <span>已准备暖场话术</span></label>
+      <label class="ctrl-check-item" data-cursor-ref="e88"><input type="checkbox" checked=""> <span>已检查画面</span></label>
+      <label class="ctrl-check-item" data-cursor-ref="e89"><input type="checkbox" checked=""> <span>已检查麦克风</span></label>
     </div>
-    <div class="ctrl-modal-tip">
-      <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M21 3H3c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H3V5h18v14zM5 15h14v3H5z"/></svg>
-      开播成功后，<b>将自动跳转至直播大屏</b>查看实时数据
-    </div>
+    <div class="ctrl-modal-tip">开播成功后将跳转直播大屏</div>
   </div>
   <div class="proto-modal-ft">
-    <button class="btn" data-close>取消</button>
-    <button class="btn btn-primary" id="btn-confirm-start">✓ 确认开始</button>
+    <button class="btn" data-close="">取消</button>
+    <button class="btn btn-primary" id="btn-confirm-start">确认开始</button>
   </div>
 </div>
 
-<!-- 结束直播确认 -->
 <div class="proto-modal" id="modal-end">
-  <div class="proto-modal-hd">
-    <h3>结束直播</h3>
-    <button class="btn btn-sm btn-ghost" data-close>×</button>
-  </div>
+  <div class="proto-modal-hd"><h3 data-cursor-ref="e90">确认结束直播？</h3><button class="btn btn-sm btn-ghost" data-close="">×</button></div>
   <div class="proto-modal-bd">
-    <p>确认结束 <b id="modal-end-live-name">本场直播</b>？结束后不可再次进入实时中控，可查看场次数据与回放。</p>
+    <p data-cursor-ref="e91">结束后本场直播将进入已结束状态，无法重新恢复直播。你仍可查看场次数据和直播回放。</p>
+    <p class="muted" style="margin-top:8px;font-size:13px" data-cursor-ref="e92">当前场次：<b id="modal-end-live-name">午间答疑 · 直播中</b></p>
   </div>
   <div class="proto-modal-ft">
-    <button class="btn" data-close>取消</button>
-    <button class="btn btn-primary" id="btn-confirm-end" style="background:#f53f3f;border-color:#f53f3f">确认结束</button>
+    <button class="btn" data-close="">取消</button>
+    <button class="btn btn-primary" id="btn-confirm-end" style="background:#f53f3f;border-color:#f53f3f">确认结束直播</button>
   </div>
 </div>
 
-<style>
-/* ====== 深色主题 ====== */
-body.ctrl-mode { background: #0a0f1c; color: #e8eaed; }
-.ctrl-mode .admin-body { padding: 0; }
-.ctrl-mode .sidebar,
-.ctrl-mode .admin-topbar,
-.ctrl-mode .review-bar,
-.ctrl-mode .notice-bar,
-.ctrl-mode .assist,
-.ctrl-mode .page-header,
-.ctrl-mode .breadcrumb { display: none !important; }
-.ctrl-mode .admin-app { display: block; }
-.ctrl-mode .admin-body-row { display: block; }
-.ctrl-mode .main { background: #0a0f1c; }
-.ctrl-mode .content { padding: 0; }
-#page-content { padding: 0; }
+<div class="proto-modal" id="modal-clear-canvas">
+  <div class="proto-modal-hd"><h3 data-cursor-ref="e93">清空画布</h3><button class="btn btn-sm btn-ghost" data-close="">×</button></div>
+  <div class="proto-modal-bd">
+    <p data-cursor-ref="e94">确定清空当前画布中的媒体源吗？该操作不会结束直播，也不会删除评论、商品或直播数据。</p>
+  </div>
+  <div class="proto-modal-ft">
+    <button class="btn" data-close="">取消</button>
+    <button class="btn btn-primary" id="btn-confirm-clear-canvas" style="background:#f53f3f;border-color:#f53f3f">确认清空</button>
+  </div>
+</div>
 
-/* ====== 顶部 ====== */
-.ctrl-top {
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 12px 20px;
-  background: linear-gradient(180deg,#131b30 0%,#0f172a 100%);
-  border-bottom: 1px solid #1f2940;
-  height: 64px;
-}
-.ctrl-top-left { display: flex; align-items: center; gap: 16px; }
-.ctrl-icon-btn {
-  width: 32px; height: 32px; border-radius: 8px;
-  background: #1f2940; border: none; color: #b8c2dd;
-  cursor: pointer; display: flex; align-items: center; justify-content: center;
-}
-.ctrl-icon-btn:hover { background: #2d3a55; color: #fff; }
+<div class="proto-modal" id="modal-replace-source">
+  <div class="proto-modal-hd"><h3 data-cursor-ref="e95">替换当前画面？</h3><button class="btn btn-sm btn-ghost" data-close="">×</button></div>
+  <div class="proto-modal-bd">
+    <p id="replace-source-text" data-cursor-ref="e96">单画面布局下已有媒体源。是否用「<b id="replace-source-name">新媒体源</b>」替换当前画面？</p>
+  </div>
+  <div class="proto-modal-ft">
+    <button class="btn" data-close="">取消</button>
+    <button class="btn btn-primary" id="btn-confirm-replace">确认替换</button>
+  </div>
+</div>
 
-.ctrl-brand { display: flex; align-items: center; gap: 10px; }
-.ctrl-brand-mark {
-  width: 32px; height: 32px; border-radius: 8px;
-  background: linear-gradient(135deg,#165dff,#722ed1);
-  color: #fff; font-weight: 600; font-size: 14px;
-  display: flex; align-items: center; justify-content: center;
-  flex-shrink: 0;
-}
-.ctrl-brand-info { display: flex; flex-direction: column; line-height: 1.3; }
-.ctrl-brand-name { font-size: 14px; font-weight: 600; color: #fff; }
-.ctrl-brand-sub  {
-  font-size: 11px; color: #8b95ad;
-  display: flex; align-items: center; gap: 5px;
-}
-.ctrl-status-dot {
-  display: inline-block; width: 6px; height: 6px; border-radius: 50%;
-  background: #00b42a; box-shadow: 0 0 0 2px rgba(0,180,42,.2);
-}
+<div class="proto-modal" id="modal-mark-answered">
+  <div class="proto-modal-hd"><h3 data-cursor-ref="e97">标记已回答</h3><button class="btn btn-sm btn-ghost" data-close="">×</button></div>
+  <div class="proto-modal-bd">
+    <p data-cursor-ref="e98">回复已发送，是否将该问题标记为已回答？</p>
+    <p class="muted" style="margin-top:8px;font-size:13px" id="mark-answered-preview"></p>
+  </div>
+  <div class="proto-modal-ft">
+    <button class="btn" data-close="" id="btn-skip-mark-answered">暂不标记</button>
+    <button class="btn btn-primary" id="btn-confirm-mark-answered">标记已回答</button>
+  </div>
+</div>
 
-.ctrl-divider { width: 1px; height: 28px; background: #1f2940; }
+<div class="proto-modal" id="modal-mute">
+  <div class="proto-modal-hd"><h3 data-cursor-ref="e99">禁言用户</h3><button class="btn btn-sm btn-ghost" data-close="">×</button></div>
+  <div class="proto-modal-bd">
+    <p data-cursor-ref="e100">对用户 <b id="mute-user-name">用户</b> 设置禁言。</p>
+    <div class="field" style="margin-top:12px"><label data-cursor-ref="e101">禁言时长</label>
+      <select id="mute-duration"><option>10 分钟</option><option selected="">30 分钟</option><option>本场直播</option></select>
+    </div>
+  </div>
+  <div class="proto-modal-ft">
+    <button class="btn" data-close="">取消</button>
+    <button class="btn btn-primary" id="btn-confirm-mute">确认禁言</button>
+  </div>
+</div>
 
-.ctrl-live-card {
-  display: flex; flex-direction: column; gap: 2px;
-  padding-left: 4px;
-}
-.ctrl-live-tag {
-  display: inline-block;
-  padding: 2px 8px; border-radius: 3px;
-  background: rgba(22,93,255,.15); color: #4d8aff;
-  font-size: 11px; font-weight: 500;
-  width: fit-content;
-}
-.ctrl-live-name { font-size: 14px; font-weight: 600; color: #fff; }
-.ctrl-live-meta { font-size: 11px; color: #8b95ad; }
+<div class="proto-modal" id="modal-block">
+  <div class="proto-modal-hd"><h3 data-cursor-ref="e102">确认拉黑用户？</h3><button class="btn btn-sm btn-ghost" data-close="">×</button></div>
+  <div class="proto-modal-bd">
+    <p data-cursor-ref="e103">拉黑后，用户 <b id="block-user-name">用户</b> 将无法继续进入本场直播互动，其历史消息不再展示。该操作不影响直播推流与商品数据。</p>
+  </div>
+  <div class="proto-modal-ft">
+    <button class="btn" data-close="">取消</button>
+    <button class="btn btn-primary" id="btn-confirm-block" style="background:#f53f3f;border-color:#f53f3f">确认拉黑</button>
+  </div>
+</div>
 
-.ctrl-top-right { display: flex; align-items: center; gap: 10px; }
+<div class="proto-modal" id="modal-remove-product">
+  <div class="proto-modal-hd"><h3 data-cursor-ref="e104">移除当前讲解商品？</h3><button class="btn btn-sm btn-ghost" data-close="">×</button></div>
+  <div class="proto-modal-bd">
+    <p data-cursor-ref="e105">将移除讲解中的商品「<b id="remove-prod-name">商品</b>」。评论、优惠券和其他已挂载商品不受影响。</p>
+  </div>
+  <div class="proto-modal-ft">
+    <button class="btn" data-close="">取消</button>
+    <button class="btn btn-primary" id="btn-confirm-remove-prod" style="background:#f53f3f;border-color:#f53f3f">确认移除</button>
+  </div>
+</div>
 
-.ctrl-pill {
-  display: inline-flex; align-items: center; gap: 6px;
-  padding: 6px 12px; border-radius: 18px;
-  font-size: 12px; line-height: 1;
-  border: 1px solid #1f2940;
-  background: #131b30; color: #b8c2dd;
-}
-.ctrl-pill-gray { background: #1f2940; color: #8b95ad; }
-.ctrl-pill-ok {
-  background: rgba(0,180,42,.12); color: #5fd068;
-  border-color: rgba(0,180,42,.3);
-}
-.ctrl-pill-blue {
-  background: rgba(22,93,255,.12); color: #4d8aff;
-  border-color: rgba(22,93,255,.3);
-  cursor: pointer;
-}
-.net-dot {
-  display: inline-block; width: 6px; height: 6px; border-radius: 50%;
-  background: #00b42a;
-  animation: pulse-net 2s infinite;
-}
-@keyframes pulse-net {
-  0%,100% { opacity: 1; }
-  50% { opacity: .5; }
-}
+<div class="proto-modal" id="modal-end-coupon">
+  <div class="proto-modal-hd"><h3 data-cursor-ref="e106">结束优惠券投放？</h3><button class="btn btn-sm btn-ghost" data-close="">×</button></div>
+  <div class="proto-modal-bd"><p data-cursor-ref="e107">结束后直播间将不再展示该优惠券领取入口。已领取的券不受影响。</p></div>
+  <div class="proto-modal-ft">
+    <button class="btn" data-close="">取消</button>
+    <button class="btn btn-primary" id="btn-confirm-end-coupon" style="background:#f53f3f;border-color:#f53f3f">确认结束投放</button>
+  </div>
+</div>
 
-.ctrl-btn-start {
-  display: inline-flex; align-items: center;
-  padding: 9px 20px; border-radius: 18px;
-  background: linear-gradient(135deg,#ff7a45,#ff4d4f);
-  color: #fff; border: none;
-  font-size: 13px; font-weight: 600;
-  cursor: pointer;
-  box-shadow: 0 2px 8px rgba(255,122,69,.3);
-  transition: all .2s;
-}
-.ctrl-btn-start:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(255,122,69,.4); }
+<div class="proto-modal" id="modal-withdraw-announce">
+  <div class="proto-modal-hd"><h3 data-cursor-ref="e108">撤下正在展示的公告？</h3><button class="btn btn-sm btn-ghost" data-close="">×</button></div>
+  <div class="proto-modal-bd"><p data-cursor-ref="e109">撤下后观众端将不再看到该公告。评论、商品和优惠券投放不受影响。</p></div>
+  <div class="proto-modal-ft">
+    <button class="btn" data-close="">取消</button>
+    <button class="btn btn-primary" id="btn-confirm-withdraw-announce" style="background:#f53f3f;border-color:#f53f3f">确认撤下</button>
+  </div>
+</div>
 
-.ctrl-avatar {
-  width: 32px; height: 32px; border-radius: 50%;
-  background: linear-gradient(135deg,#165dff,#722ed1);
-  color: #fff; font-size: 13px; font-weight: 600;
-  display: flex; align-items: center; justify-content: center;
-}
+<div class="proto-modal" id="modal-health">
+  <div class="proto-modal-hd"><h3 data-cursor-ref="e110">推流健康状态</h3><button class="btn btn-sm btn-ghost" data-close="">×</button></div>
+  <div class="proto-modal-bd"><div id="health-detail-body"><div class="health-row"><span>网络</span><b>正常</b></div><div class="health-row"><span>视频</span><b>正常</b></div><div class="health-row"><span>音频</span><b>正常</b></div><div class="health-row"><span>互动服务</span><b>正常</b></div><div class="health-sep">一切正常</div><div class="muted" style="margin-top:10px">直播中出现异常时不会自动结束直播。</div></div></div>
+  <div class="proto-modal-ft"><button class="btn btn-primary" data-close="">知道了</button></div>
+</div>
 
-/* ====== 主区域 ====== */
-.ctrl-main {
-  display: grid;
-  grid-template-columns: 220px 1fr 300px;
-  gap: 1px; background: #1f2940;
-  height: calc(100vh - 64px - 60px - 60px - 260px);
-  min-height: 380px;
-}
 
-/* 左侧 */
-.ctrl-left {
-  background: #0f172a; padding: 16px 12px;
-  display: flex; flex-direction: column;
-}
-.ctrl-left-header {
-  padding: 0 4px 10px;
-  border-bottom: 1px solid #1f2940;
-  margin-bottom: 10px;
-}
-.ctrl-left-title {
-  font-size: 13px; font-weight: 600; color: #fff;
-  margin-bottom: 2px;
-  display: flex; align-items: center; gap: 6px;
-}
-.ctrl-left-title::before {
-  content: ""; width: 3px; height: 12px;
-  background: #165dff; border-radius: 2px;
-}
-.ctrl-left-tip {
-  font-size: 11px; color: #6b758c;
-  line-height: 1.5;
-}
-.ctrl-source-list { display: flex; flex-direction: column; gap: 4px; }
-
-.ctrl-source-btn {
-  display: flex; align-items: center; gap: 8px;
-  padding: 7px 10px; border-radius: 6px;
-  background: transparent; color: #b8c2dd;
-  border: 1px solid transparent;
-  cursor: pointer; font-size: 13px;
-  transition: all .15s;
-}
-.ctrl-source-btn:hover {
-  background: #131b30; border-color: #1f2940; color: #fff;
-}
-.ctrl-source-icon {
-  flex-shrink: 0; color: #4d8aff;
-  width: 16px; height: 16px;
-  display: flex; align-items: center; justify-content: center;
-}
-.ctrl-source-btn:hover .ctrl-source-icon { color: #fff; }
-.ctrl-source-label { flex: 1; text-align: left; }
-
-.ctrl-left-divider {
-  height: 1px; background: #1f2940;
-  margin: 14px 0;
-}
-.ctrl-layout-list {
-  display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px;
-}
-.ctrl-layout-btn {
-  padding: 6px;
-  background: transparent; border: 1px solid #1f2940;
-  border-radius: 6px; cursor: pointer;
-  color: #6b758c;
-}
-.ctrl-layout-btn:hover { border-color: #2d3a55; color: #b8c2dd; }
-.ctrl-layout-btn.active { border-color: #165dff; color: #165dff; background: rgba(22,93,255,.08); }
-.ctrl-layout-btn svg { display: block; width: 100%; height: 18px; }
-
-/* 中央 */
-.ctrl-center {
-  background: #0a0f1c;
-  display: flex; flex-direction: column;
-}
-.ctrl-stage {
-  flex: 1;
-  display: grid;
-  grid-template-columns: 1fr 1fr 0.55fr;
-  gap: 1px;
-  background: #1f2940;
-  padding: 16px;
-}
-.ctrl-stage-cell {
-  background: #0f172a;
-  border-radius: 8px;
-  display: flex; align-items: center; justify-content: center;
-  position: relative; color: #4a5677;
-  border: 1px dashed #1f2940;
-  overflow: hidden;
-}
-.ctrl-stage-empty {
-  display: flex; flex-direction: column;
-  align-items: center; gap: 8px;
-  color: #4a5677;
-}
-.ctrl-empty-icon { color: #2d3a55; }
-.ctrl-empty-title { font-size: 14px; color: #6b758c; font-weight: 500; }
-.ctrl-empty-sub   { font-size: 11px; color: #4a5677; }
-
-.ctrl-stage-label {
-  position: absolute; bottom: 12px; left: 12px;
-  display: flex; align-items: center; gap: 4px;
-}
-.ctrl-stage-badge {
-  display: inline-flex; align-items: center;
-  padding: 3px 8px; border-radius: 4px;
-  background: rgba(0,0,0,.5); backdrop-filter: blur(8px);
-  color: #b8c2dd; font-size: 11px; font-weight: 500;
-}
-
-.ctrl-stage-foot {
-  display: flex; align-items: center; gap: 8px;
-  padding: 12px 16px;
-  background: #0f172a; border-top: 1px solid #1f2940;
-}
-.ctrl-foot-info {
-  display: inline-flex; align-items: center; gap: 6px;
-  font-size: 12px; color: #6b758c;
-}
-.ctrl-foot-actions {
-  margin-left: auto;
-  display: flex; gap: 8px;
-}
-.ctrl-btn-line {
-  display: inline-flex; align-items: center; gap: 4px;
-  padding: 6px 12px; border-radius: 6px;
-  background: #131b30; color: #b8c2dd;
-  border: 1px solid #1f2940;
-  font-size: 12px; cursor: pointer;
-}
-.ctrl-btn-line:hover { background: #1d2742; color: #fff; }
-.ctrl-btn-danger { color: #ff7875; border-color: rgba(255,122,69,.3); }
-.ctrl-btn-danger:hover { background: rgba(255,77,79,.1); }
-
-/* 右侧 */
-.ctrl-right {
-  background: #0f172a;
-  overflow-y: auto;
-  display: flex; flex-direction: column;
-}
-.ctrl-right-hd {
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 16px 18px 12px;
-  border-bottom: 1px solid #1f2940;
-}
-.ctrl-right-title {
-  font-size: 14px; font-weight: 600; color: #fff;
-}
-.ctrl-right-tag {
-  font-size: 11px; padding: 2px 8px; border-radius: 10px;
-  background: rgba(22,93,255,.12); color: #4d8aff;
-}
-
-.ctrl-stats-grid {
-  display: grid; grid-template-columns: repeat(3, 1fr);
-  gap: 1px; background: #1f2940;
-  border-bottom: 1px solid #1f2940;
-}
-.ctrl-stat-card {
-  background: #0f172a; padding: 14px 12px;
-  border-right: 1px solid #1f2940;
-}
-.ctrl-stat-card:last-child { border-right: none; }
-.ctrl-stat-label { font-size: 11px; color: #6b758c; margin-bottom: 4px; }
-.ctrl-stat-value { font-size: 16px; font-weight: 600; color: #fff; line-height: 1.2; }
-.ctrl-stat-unit  { font-size: 11px; color: #6b758c; font-weight: 400; }
-.ctrl-stat-sub   { font-size: 10px; color: #6b758c; margin-top: 4px; }
-
-.ctrl-right-list {
-  padding: 12px 14px; display: flex; flex-direction: column; gap: 6px;
-  flex: 1;
-}
-.ctrl-right-item {
-  display: flex; align-items: center; gap: 10px;
-  padding: 10px 12px; border-radius: 8px;
-  background: #131b30; cursor: pointer;
-  transition: all .15s;
-}
-.ctrl-right-item:hover { background: #1d2742; }
-.ctrl-right-icon {
-  width: 28px; height: 28px; border-radius: 6px;
-  background: #1f2940;
-  display: flex; align-items: center; justify-content: center;
-  color: #4d8aff; flex-shrink: 0;
-}
-.ctrl-right-info { flex: 1; min-width: 0; }
-.ctrl-right-row1 {
-  display: flex; align-items: center; gap: 6px;
-  font-size: 12px; font-weight: 500; color: #fff;
-}
-.ctrl-right-row2 { font-size: 11px; color: #8b95ad; margin-top: 2px; }
-.ctrl-right-row3 { font-size: 10px; color: #6b758c; margin-top: 1px; }
-.ctrl-right-arrow { color: #6b758c; font-size: 14px; }
-.ctrl-tag-warn { color: #faad14; font-size: 10px; }
-.ctrl-tag-ok   { color: #5fd068; font-size: 10px; }
-
-.ctrl-right-tabs {
-  display: flex; gap: 8px;
-  padding: 12px 14px;
-  border-top: 1px solid #1f2940;
-}
-.ctrl-right-tab {
-  flex: 1;
-  display: inline-flex; align-items: center; justify-content: center; gap: 4px;
-  padding: 8px; border-radius: 6px;
-  background: #131b30; color: #b8c2dd;
-  border: 1px solid #1f2940;
-  cursor: pointer; font-size: 12px;
-}
-.ctrl-right-tab.active { background: #165dff; color: #fff; border-color: #165dff; }
-
-/* ====== 底部互动 ====== */
-.ctrl-bottom {
-  background: #0f172a;
-  border-top: 1px solid #1f2940;
-  height: 260px;
-  display: flex; flex-direction: column;
-  overflow: hidden;
-  flex-shrink: 0;
-  position: fixed; left: 0; right: 0; bottom: 0;
-  z-index: 100;
-  box-shadow: 0 -4px 12px rgba(0,0,0,.3);
-}
-.ctrl-bottom-tabs {
-  display: flex; align-items: center;
-  padding: 8px 16px; border-bottom: 1px solid #1f2940;
-  gap: 4px;
-}
-.ctrl-bottom-tab {
-  display: inline-flex; align-items: center; gap: 5px;
-  padding: 7px 14px; border-radius: 6px;
-  background: transparent; color: #8b95ad;
-  border: none; cursor: pointer;
-  font-size: 13px; font-weight: 500;
-  transition: all .15s;
-}
-.ctrl-bottom-tab:hover { background: rgba(255,255,255,.04); color: #fff; }
-.ctrl-bottom-tab.active { background: #165dff; color: #fff; }
-.ctrl-tab-badge {
-  display: inline-flex; align-items: center; justify-content: center;
-  min-width: 18px; height: 16px; padding: 0 5px;
-  border-radius: 8px;
-  background: rgba(255,255,255,.15);
-  font-size: 10px; font-weight: 600;
-}
-.ctrl-bottom-tab.active .ctrl-tab-badge { background: rgba(255,255,255,.25); }
-
-.ctrl-bottom-tab-divider {
-  width: 1px; height: 18px;
-  background: #1f2940;
-  margin: 0 4px;
-}
-.ctrl-bottom-tab-mk { display: none; } /* 已弃用 */
-
-.ctrl-bottom-close {
-  margin-left: auto;
-  width: 24px; height: 24px;
-  background: transparent; color: #6b758c;
-  border: none; cursor: pointer;
-  font-size: 18px; line-height: 1;
-  border-radius: 4px;
-}
-.ctrl-bottom-close:hover { background: rgba(255,255,255,.06); color: #fff; }
-
-.ctrl-bottom-pane { display: none; flex: 1; min-height: 0; overflow-y: auto; overflow-x: hidden; }
-.ctrl-bottom-pane.active { display: flex; flex-direction: column; }
-
-.ctrl-stats-row {
-  display: flex; gap: 18px; padding: 10px 16px;
-  border-bottom: 1px solid #1f2940; flex-wrap: wrap;
-}
-.ctrl-mini-stat {
-  display: inline-flex; align-items: center; gap: 4px;
-  font-size: 12px; color: #8b95ad;
-}
-.ctrl-mini-stat b { color: #fff; font-weight: 600; margin-left: 2px; }
-
-.dot { display: inline-block; width: 8px; height: 8px; border-radius: 2px; }
-.dot-blue   { background: #165dff; }
-.dot-gray   { background: #8b95ad; }
-.dot-green  { background: #00b42a; }
-.dot-purple { background: #722ed1; }
-.dot-red    { background: #f53f3f; }
-.dot-orange { background: #fa8c16; }
-.dot-yellow { background: #fadb14; }
-.dot-pink   { background: #eb2f96; }
-.dot-cyan   { background: #13c2c2; }
-
-.ctrl-interact-body {
-  flex: 1; padding: 16px;
-  display: flex; align-items: center; justify-content: center;
-}
-.ctrl-interact-empty {
-  display: flex; flex-direction: column;
-  align-items: center; gap: 10px;
-  color: #4a5677; font-size: 13px;
-}
-/* ====== 营销三 tab pane（挂商品/优惠券/跑马灯） ====== */
-
-/* ====== 营销 Tab pane ====== */
-.ctrl-mk-pane {
-  flex: 1; padding: 16px; overflow-y: auto;
-  background: #0f172a;
-}
-.ctrl-mk-pane-tip {
-  display: flex; align-items: center; gap: 6px;
-  padding: 10px 14px; margin-bottom: 14px;
-  background: rgba(22,93,255,.1); border-radius: 6px;
-  color: #4d8aff; font-size: 12px;
-}
-.ctrl-mk-pane-grid {
-  display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;
-  margin-bottom: 20px;
-}
-.ctrl-mk-card {
-  display: flex; align-items: center; gap: 14px;
-  padding: 16px; border-radius: 10px;
-  background: #131b30; border: 1px solid #1f2940;
-  cursor: pointer; text-align: left;
-  transition: all .2s;
-}
-.ctrl-mk-card:hover {
-  border-color: #165dff;
-  background: #1d2742;
-  transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(22,93,255,.2);
-}
-.ctrl-mk-card-icon {
-  width: 48px; height: 48px; border-radius: 10px;
-  display: flex; align-items: center; justify-content: center;
-  flex-shrink: 0;
-}
-.ctrl-mk-card-body { flex: 1; }
-.ctrl-mk-card-name {
-  font-size: 14px; font-weight: 600; color: #fff;
-  margin-bottom: 4px;
-}
-.ctrl-mk-card-desc {
-  font-size: 11px; color: #8b95ad; line-height: 1.5;
-  margin-bottom: 6px;
-}
-.ctrl-mk-card-stat {
-  font-size: 11px; color: #6b758c;
-}
-.ctrl-mk-card-stat b {
-  color: #4d8aff; font-weight: 700; font-size: 13px;
-  font-family: monospace;
-}
-
-.ctrl-mk-pane-history {
-  background: #131b30; border-radius: 8px;
-  padding: 12px 16px;
-}
-.ctrl-mk-pane-history-title {
-  font-size: 12px; color: #8b95ad; margin-bottom: 10px; font-weight: 500;
-}
-.ctrl-mk-pane-history-list {
-  display: flex; flex-direction: column; gap: 8px;
-}
-.ctrl-mk-history-item {
-  display: flex; align-items: center; gap: 12px;
-  padding: 8px 10px; border-radius: 4px;
-  background: #0f172a;
-  font-size: 12px;
-}
-.mk-h-time { color: #6b758c; font-family: monospace; min-width: 50px; }
-.mk-h-tag {
-  padding: 2px 8px; border-radius: 3px; font-size: 11px; font-weight: 500;
-  min-width: 50px; text-align: center;
-}
-.mk-h-tag-coupon { background: rgba(255,77,79,.15); color: #ff7875; }
-.mk-h-tag-marquee { background: rgba(114,46,209,.15); color: #b577ff; }
-.mk-h-tag-product { background: rgba(22,93,255,.15); color: #4d8aff; }
-.mk-h-text { flex: 1; color: #b8c2dd; }
-.mk-h-stat { color: #6b758c; font-family: monospace; }
-/* .ctrl-mk-divider 已废弃：营销现在是 tab 形式 */
-.ctrl-mk-hint {
-  font-size: 11px; color: #6b758c;
-  margin-left: auto;
-}
-
-/* ====== 评论审核 + 列表 ====== */
-.ctrl-comment-bar {
-  display: flex; align-items: center; gap: 16px;
-  padding: 8px 16px;
-  background: #0f172a; border-bottom: 1px solid #1f2940;
-}
-.ctrl-audit-switch {
-  display: inline-flex; align-items: center; gap: 8px;
-  cursor: pointer; user-select: none;
-}
-.ctrl-audit-switch input { display: none; }
-.ctrl-switch-track {
-  position: relative;
-  width: 32px; height: 18px;
-  background: #2d3a55; border-radius: 9px;
-  transition: background .2s;
-}
-.ctrl-audit-switch input:checked + .ctrl-switch-track {
-  background: #165dff;
-}
-.ctrl-switch-thumb {
-  position: absolute; top: 2px; left: 2px;
-  width: 14px; height: 14px;
-  background: #fff; border-radius: 50%;
-  transition: transform .2s;
-}
-.ctrl-audit-switch input:checked + .ctrl-switch-track .ctrl-switch-thumb {
-  transform: translateX(14px);
-}
-.ctrl-switch-label {
-  font-size: 12px; color: #fff; font-weight: 500;
-}
-.ctrl-switch-tip {
-  font-size: 11px; color: #6b758c;
-}
-.ctrl-comment-filters {
-  display: flex; gap: 4px;
-  margin-left: auto;
-}
-.ctrl-comment-filter {
-  padding: 4px 12px; border-radius: 4px;
-  background: transparent; color: #8b95ad;
-  border: 1px solid transparent; cursor: pointer;
-  font-size: 12px;
-}
-.ctrl-comment-filter:hover { background: rgba(255,255,255,.04); color: #fff; }
-.ctrl-comment-filter.active {
-  background: rgba(22,93,255,.15);
-  color: #4d8aff;
-  border-color: rgba(22,93,255,.3);
-}
-
-.ctrl-comment-list {
-  flex: 1; overflow-y: auto;
-  padding: 12px 16px;
-  display: flex; flex-direction: column; gap: 8px;
-}
-.ctrl-comment {
-  display: flex; gap: 10px;
-  padding: 8px 10px; border-radius: 6px;
-  background: #131b30;
-  transition: background .15s;
-}
-.ctrl-comment:hover { background: #1d2742; }
-.ctrl-comment.is-self { background: rgba(22,93,255,.08); border: 1px solid rgba(22,93,255,.2); }
-.ctrl-comment.is-pinned { border-left: 3px solid #faad14; }
-.ctrl-comment.is-hidden { opacity: .4; }
-.ctrl-comment-avatar {
-  width: 28px; height: 28px; border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
-  color: #fff; font-size: 11px; font-weight: 600;
-  flex-shrink: 0;
-}
-.ctrl-comment-body { flex: 1; min-width: 0; }
-.ctrl-comment-meta {
-  display: flex; align-items: center; gap: 8px;
-  font-size: 11px; color: #8b95ad; margin-bottom: 4px;
-}
-.ctrl-comment-name { font-weight: 500; color: #b8c2dd; }
-.ctrl-comment-tag {
-  display: inline-block; padding: 1px 6px; border-radius: 3px;
-  font-size: 10px; font-weight: 500;
-}
-.ctrl-comment-tag.role-teacher { background: rgba(114,46,209,.2); color: #b577ff; }
-.ctrl-comment-tag.role-mine { background: rgba(0,180,42,.2); color: #5fd068; }
-.ctrl-comment-tag.tag-qa { background: rgba(250,173,20,.2); color: #ffc857; }
-.ctrl-comment-tag.tag-pinned { background: rgba(250,173,20,.2); color: #ffc857; }
-.ctrl-comment-tag.tag-hidden { background: rgba(107,117,140,.2); color: #8b95ad; }
-.ctrl-comment-time { color: #6b758c; }
-.ctrl-comment-text {
-  font-size: 13px; color: #e8eaed;
-  word-break: break-word; line-height: 1.5;
-}
-.ctrl-comment-actions {
-  display: flex; gap: 4px;
-  margin-top: 4px;
-}
-.ctrl-comment-act {
-  padding: 2px 8px; border-radius: 3px;
-  background: transparent; color: #8b95ad;
-  border: 1px solid #1f2940;
-  cursor: pointer; font-size: 11px;
-  transition: all .15s;
-}
-.ctrl-comment-act:hover {
-  background: rgba(255,255,255,.06); color: #fff;
-}
-.ctrl-comment-act.danger:hover {
-  background: rgba(245,63,63,.15); color: #ff7875;
-  border-color: rgba(245,63,63,.3);
-}
-
-.ctrl-quick-msg {
-  display: flex; gap: 8px;
-  padding: 10px 16px; border-top: 1px solid #1f2940;
-}
-.ctrl-quick-input {
-  flex: 1; padding: 8px 12px; border-radius: 6px;
-  background: #131b30; color: #e8eaed;
-  border: 1px solid #1f2940;
-  font-size: 13px;
-}
-.ctrl-quick-input:focus { outline: none; border-color: #165dff; }
-
-/* ====== 商品挂载抽屉 ====== */
-.prod-row {
-  display: flex; align-items: center; gap: 12px;
-  padding: 10px 12px; margin-bottom: 8px;
-  background: #fff; border: 1px solid #e5e6eb;
-  border-radius: 8px;
-  transition: all .15s;
-}
-.prod-row:hover { border-color: #165dff; box-shadow: 0 2px 8px rgba(22,93,255,.08); }
-.prod-cover {
-  width: 48px; height: 48px; border-radius: 6px;
-  flex-shrink: 0;
-}
-.prod-info { flex: 1; min-width: 0; }
-.prod-name { font-size: 13px; font-weight: 500; color: #1d2129; margin-bottom: 4px; }
-.prod-meta { font-size: 12px; color: #fa8c16; }
-.prod-meta::before { content: "¥"; font-size: 11px; margin-right: 1px; }
-.prod-toggle { position: relative; cursor: pointer; }
-.prod-toggle input { display: none; }
-.prod-track {
-  display: block; width: 36px; height: 20px;
-  background: #c9cdd4; border-radius: 10px;
-  transition: background .2s;
-  position: relative;
-}
-.prod-thumb {
-  position: absolute; top: 2px; left: 2px;
-  width: 16px; height: 16px;
-  background: #fff; border-radius: 50%;
-  transition: transform .2s;
-  box-shadow: 0 1px 3px rgba(0,0,0,.15);
-}
-.prod-toggle input:checked + .prod-track { background: #165dff; }
-.prod-toggle input:checked + .prod-track .prod-thumb { transform: translateX(16px); }
-
-/* ====== 跑马灯弹窗 ====== */
-.mqr-tpl {
-  padding: 4px 12px; border-radius: 16px;
-  background: #f0f2f5; color: #4e5969;
-  border: 1px solid transparent;
-  font-size: 12px; cursor: pointer;
-}
-.mqr-tpl:hover { background: #e6f0ff; color: #165dff; border-color: #adc8ff; }
-
-.mqr-colors { display: flex; gap: 8px; padding: 4px 0; }
-.mqr-color {
-  width: 24px; height: 24px; border-radius: 50%;
-  cursor: pointer; position: relative;
-  border: 2px solid transparent;
-}
-.mqr-color input { display: none; }
-.mqr-color:has(input:checked) {
-  box-shadow: 0 0 0 2px #fff, 0 0 0 4px #165dff;
-}
-
-.mqr-preview {
-  height: 60px; border-radius: 6px;
-  background: #0f172a;
-  overflow: hidden; position: relative;
-}
-.mqr-marquee-track {
-  position: absolute; top: 50%; transform: translateY(-50%);
-  white-space: nowrap;
-  animation: mqr-scroll 6s linear infinite;
-  padding-left: 100%;
-}
-.mqr-marquee-text {
-  display: inline-block; padding: 6px 24px;
-  font-size: 18px; font-weight: 600;
-  color: #fff;
-  background: linear-gradient(90deg, transparent, rgba(22,93,255,.15) 20%, rgba(22,93,255,.15) 80%, transparent);
-}
-@keyframes mqr-scroll {
-  from { transform: translate(0, -50%); }
-  to { transform: translate(-100%, -50%); }
-}
-.mqr-preview.speed-slow .mqr-marquee-track { animation-duration: 10s; }
-.mqr-preview.speed-fast .mqr-marquee-track { animation-duration: 3s; }
-.mqr-preview.size-sm .mqr-marquee-text { font-size: 14px; }
-.mqr-preview.size-lg .mqr-marquee-text { font-size: 24px; }
-
-/* ====== 直播间舞台动画 ====== */
-.ctrl-stage-effects {
-  position: absolute; top: 0; left: 0; right: 0; bottom: 0;
-  pointer-events: none; z-index: 50;
-}
-.ctrl-effect-coupon {
-  position: absolute; right: 16px; top: 50%;
-  transform: translateY(-50%);
-  background: linear-gradient(135deg, #ff7a45, #ff4d4f);
-  color: #fff;
-  padding: 10px 16px; border-radius: 8px;
-  box-shadow: 0 8px 24px rgba(255,77,79,.4);
-  font-size: 13px; font-weight: 500;
-  display: flex; align-items: center; gap: 8px;
-  pointer-events: auto;
-  animation: effect-pop 4s ease forwards;
-}
-.ctrl-effect-coupon .effect-ico {
-  width: 28px; height: 28px; border-radius: 50%;
-  background: rgba(255,255,255,.2);
-  display: flex; align-items: center; justify-content: center;
-  font-size: 16px;
-}
-.ctrl-effect-coupon .effect-btn {
-  padding: 3px 12px; border-radius: 16px;
-  background: #fff; color: #ff4d4f;
-  font-size: 12px; font-weight: 600;
-  cursor: pointer;
-  border: none;
-}
-.ctrl-effect-marquee {
-  position: absolute; top: 16px; left: 0; right: 0;
-  background: linear-gradient(90deg, #165dff, #722ed1);
-  color: #fff;
-  padding: 8px 0;
-  font-size: 14px; font-weight: 500;
-  overflow: hidden;
-  white-space: nowrap;
-  pointer-events: none;
-  animation: effect-marquee-slide 8s linear forwards;
-  box-shadow: 0 4px 12px rgba(22,93,255,.3);
-}
-.ctrl-effect-marquee span {
-  display: inline-block; padding-left: 100%;
-  animation: effect-marquee-roll 6s linear infinite;
-}
-@keyframes effect-pop {
-  0% { opacity: 0; transform: translate(20px, -50%); }
-  10% { opacity: 1; transform: translate(0, -50%); }
-  85% { opacity: 1; transform: translate(0, -50%); }
-  100% { opacity: 0; transform: translate(20px, -50%); }
-}
-@keyframes effect-marquee-slide {
-  0% { transform: translateY(-50px); }
-  10% { transform: translateY(0); }
-  90% { transform: translateY(0); }
-  100% { transform: translateY(-50px); }
-}
-@keyframes effect-marquee-roll {
-  from { transform: translate(0); }
-  to { transform: translate(-100%); }
-}
-
-.ctrl-btn-pri {
-  padding: 8px 20px; border-radius: 6px;
-  background: #165dff; color: #fff;
-  border: none; font-size: 13px; cursor: pointer;
-}
-.ctrl-btn-pri:hover { background: #4080ff; }
-.ctrl-btn-pri:disabled { background: #1f2940; color: #4a5677; cursor: not-allowed; }
-
-.ctrl-pane-tabs {
-  display: flex; gap: 16px;
-  padding: 10px 16px; border-bottom: 1px solid #1f2940;
-}
-.ctrl-pane-tabs a {
-  padding: 6px 0; color: #8b95ad; font-size: 13px;
-  text-decoration: none;
-  border-bottom: 2px solid transparent;
-}
-.ctrl-pane-tabs a.active { color: #fff; border-bottom-color: #165dff; }
-
-.ctrl-mic-empty {
-  flex: 1; display: flex; flex-direction: column;
-  align-items: center; justify-content: center;
-  gap: 14px; color: #4a5677;
-}
-.ctrl-mic-tip { font-size: 13px; }
-
-.ctrl-data-empty {
-  flex: 1; padding: 20px;
-  display: flex; flex-direction: column;
-  gap: 16px;
-}
-.ctrl-data-mini {
-  display: flex; gap: 24px;
-  padding-bottom: 12px; border-bottom: 1px solid #1f2940;
-}
-.ctrl-data-mini-stat {
-  display: inline-flex; align-items: center; gap: 4px;
-  font-size: 13px; color: #8b95ad;
-}
-.ctrl-data-mini-stat b { color: #fff; font-weight: 600; margin-left: 2px; }
-
-/* 营销效果区 */
-.ctrl-mark-effect {
-  padding: 14px 16px;
-  background: #131b30;
-  border-bottom: 1px solid #1f2940;
-}
-.ctrl-mark-effect-title {
-  font-size: 12px; color: #8b95ad;
-  margin-bottom: 10px;
-  font-weight: 500;
-}
-.ctrl-mark-grid {
-  display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px;
-}
-.ctrl-mark-card {
-  background: #0f172a;
-  border: 1px solid #1f2940;
-  border-radius: 6px;
-  padding: 10px 12px;
-}
-.ctrl-mark-card-label {
-  font-size: 11px; color: #6b758c; margin-bottom: 4px;
-}
-.ctrl-mark-card-value {
-  font-size: 18px; font-weight: 700; color: #fff;
-  line-height: 1.1; font-family: monospace;
-}
-.ctrl-mark-card-sub {
-  font-size: 10px; color: #6b758c; margin-top: 4px;
-}
-
-/* 转化漏斗 */
-.ctrl-funnel {
-  padding: 12px 16px;
-  background: #0f172a;
-  flex: 1; overflow-y: auto;
-}
-.ctrl-funnel-row {
-  display: flex; justify-content: center;
-  margin-bottom: 4px;
-}
-.ctrl-funnel-bar {
-  background: rgba(22,93,255,.3);
-  color: #fff;
-  padding: 6px 14px;
-  border-radius: 4px;
-  font-size: 12px;
-  display: flex; align-items: center; justify-content: space-between;
-  gap: 16px;
-  min-width: 200px;
-  position: relative;
-}
-.ctrl-funnel-bar span { font-size: 12px; }
-.ctrl-funnel-bar b { font-weight: 700; font-family: monospace; }
-.ctrl-funnel-bar-2 { background: rgba(22,93,255,.45); }
-.ctrl-funnel-bar-3 { background: linear-gradient(90deg, #fa8c16, #ffc857); }
-.ctrl-funnel-bar-4 { background: linear-gradient(90deg, #00b42a, #5fd068); }
-.ctrl-funnel-bar-5 { background: linear-gradient(90deg, #f53f3f, #ff7a45); }
-.ctrl-data-chart {
-  flex: 1; min-height: 0;
-  background: #131b30; border-radius: 8px;
-  padding: 16px; overflow: hidden;
-}
-.ctrl-data-chart svg { width: 100%; height: 100%; }
-.ctrl-data-tip {
-  text-align: center;
-  color: #4a5677; font-size: 12px;
-}
-
-/* ====== 开始直播预检 ====== */
-.ctrl-pre-check { display: flex; flex-direction: column; gap: 8px; margin-top: 12px; }
-.ctrl-check-item { display: flex; align-items: center; gap: 8px; cursor: pointer; }
-.ctrl-check-item input[type=checkbox] { width: 16px; height: 16px; }
-.ctrl-modal-tip {
-  display: flex; align-items: center; gap: 6px;
-  margin-top: 12px; padding: 8px 12px;
-  background: #e6f0ff; border-radius: 4px;
-  color: #165dff; font-size: 13px;
-}
-
-/* ====== 滚动条 ====== */
-.ctrl-right::-webkit-scrollbar { width: 6px; }
-.ctrl-right::-webkit-scrollbar-thumb { background: #1f2940; border-radius: 3px; }
-.ctrl-right::-webkit-scrollbar-thumb:hover { background: #2d3a55; }
-</style>
-
-<script src="../assets/js/proto.js"></script>
-<script src="../assets/js/prototype-business-store.js"></script>
-<script src="../assets/js/live-ops.js?v=9"></script>
-<script src="../assets/js/admin-shell.js?v=19"></script>
+</div></div></div></div></div><div class="proto-mask" id="pwd-mask"><div class="proto-modal" id="pwd-modal" style="width:440px"><div class="proto-modal-hd"><h3 style="font-size:16px;font-weight:600" data-cursor-ref="e111">修改密码</h3><button type="button" class="btn btn-sm btn-ghost" id="pwd-close">×</button></div><div class="proto-modal-bd"><div class="field" style="margin-bottom:10px"><label data-cursor-ref="e112">原密码 *</label><input type="password" id="pwd-old" placeholder="请输入原密码" style="width:100%"></div><div class="field" style="margin-bottom:10px"><label data-cursor-ref="e113">新密码 *</label><input type="password" id="pwd-new" placeholder="8-20 位，含字母与数字" style="width:100%"></div><div class="field" style="margin-bottom:4px"><label data-cursor-ref="e114">确认新密码 *</label><input type="password" id="pwd-new2" placeholder="再次输入新密码" style="width:100%"></div><p class="muted" style="font-size:12px" data-cursor-ref="e115">修改成功后将自动退出登录，需使用新密码重新登录。</p></div><div class="proto-modal-ft" style="padding:12px 20px;display:flex;gap:8px;justify-content:flex-end;border-top:1px solid var(--color-border)"><button type="button" class="btn" id="pwd-cancel">取消</button><button type="button" class="btn btn-primary" id="pwd-submit">确认修改</button></div></div></div>
+<script src="../assets/js/live-control-core.js?v=6"></script>
 <script>
 (function () {
-  function on(el, ev, fn) { if (el) el.addEventListener(ev, fn); }
   var page = document.getElementById("page-content");
   var currentLiveId = LiveOps.idFromSearch();
   var live = currentLiveId ? LiveOps.getLive(currentLiveId) : null;
+  var demoMode = false;
+  try { demoMode = new URLSearchParams(location.search).get("demo") === "1"; } catch (e) {}
+  if (demoMode) document.body.classList.add("demo-on");
 
   if (!currentLiveId) {
     LiveOps.renderStateGate(page, {
@@ -1647,7 +927,7 @@ body.ctrl-mode { background: #0a0f1c; color: #e8eaed; }
     return;
   }
 
-  var controlMode = gate.mode; /* ready | living */
+  var controlMode = gate.mode;
   var sim = LiveOps.getScreenSimData(live.liveId) || {};
 
   LiveOps.renderContextBanner({ live: live });
@@ -1672,400 +952,32 @@ body.ctrl-mode { background: #0a0f1c; color: #e8eaed; }
 
   var statsLink = document.getElementById("ctrl-stats-link");
   if (statsLink) {
-    statsLink.href = LiveOps.buildUrl("live-stats.html", { live_id: live.liveId, from: "control" });
-    statsLink.style.display = "inline-flex";
-    statsLink.textContent = controlMode === "living" ? "查看实时数据" : "查看场次数据";
+    if (controlMode === "living") {
+      statsLink.href = LiveOps.buildUrl("live-stats.html", { live_id: live.liveId, from: "control" });
+      statsLink.style.display = "inline-flex";
+      statsLink.textContent = "查看实时数据";
+    } else {
+      statsLink.style.display = "none";
+    }
   }
   var back = document.getElementById("ctrl-back-btn");
   if (back) back.href = LiveOps.viewLiveUrl(live.liveId);
 
+  var host = document.getElementById("ctrl-host-label");
+  if (host) host.textContent = "当前主播：" + (live.teacher || "阮荣均");
+
   var btnPrimary = document.getElementById("btn-start-live");
   if (btnPrimary) {
     if (controlMode === "living") {
-      btnPrimary.innerHTML =
-        '<svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor" style="margin-right:6px"><path d="M6 6h12v12H6z"/></svg>结束直播';
+      btnPrimary.innerHTML = "结束直播";
       btnPrimary.style.background = "#f53f3f";
       btnPrimary.id = "btn-end-live";
-    } else {
-      btnPrimary.innerHTML =
-        '<svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor" style="margin-right:6px"><path d="M8 5v14l11-7z"/></svg>开始直播';
     }
   }
 
-  /* Bind products from sim when available */
-  if (sim.products && sim.products.length) {
-    var prodList = document.getElementById("product-list");
-    if (prodList) {
-      prodList.innerHTML = sim.products.map(function (p, i) {
-        return '<label class="prod-row"><span class="prod-toggle"><input type="checkbox" ' + (controlMode === "living" || i === 0 ? "checked" : "") + " /></span>" +
-          "<span>" + (p.name || "商品") + " · ¥" + (p.price || 0) + (p.sold ? " · 已售 " + p.sold : "") + "</span></label>";
-      }).join("");
-    }
-  }
-
-  var mask = document.getElementById("mask");
-  function closeAll() {
-    if (mask) mask.classList.remove("open");
-    document.querySelectorAll(".proto-modal").forEach(function (n) { n.classList.remove("open"); });
-  }
-  function open(node) { if (mask) mask.classList.add("open"); if (node) node.classList.add("open"); }
-  on(mask, "click", closeAll);
-  document.querySelectorAll("[data-close]").forEach(function (n) { on(n, "click", closeAll); });
-
-  // ===== Source buttons =====
-  on(document.getElementById("btn-add-camera"), "click", function () { Proto.toast("打开摄像头（原型）"); });
-  on(document.getElementById("btn-add-screen"), "click", function () { Proto.toast("打开屏幕共享（原型）"); });
-  on(document.getElementById("btn-add-image"), "click", function () { Proto.toast("打开图片选择（原型）"); });
-  on(document.getElementById("btn-add-class"), "click", function () { Proto.toast("打开本地视频（原型）"); });
-  on(document.getElementById("btn-add-text"), "click", function () { Proto.toast("打开文字编辑（原型）"); });
-
-  // ===== Layout buttons =====
-  document.querySelectorAll(".ctrl-layout-btn").forEach(function (b) {
-    b.addEventListener("click", function () {
-      document.querySelectorAll(".ctrl-layout-btn").forEach(function (x) { x.classList.remove("active"); });
-      b.classList.add("active");
-    });
-  });
-
-  // ===== Right tabs =====
-  document.querySelectorAll(".ctrl-right-tab").forEach(function (t) {
-    t.addEventListener("click", function () {
-      document.querySelectorAll(".ctrl-right-tab").forEach(function (x) { x.classList.remove("active"); });
-      t.classList.add("active");
-    });
-  });
-
-  // ===== Bottom tabs =====
-  document.querySelectorAll(".ctrl-bottom-tab").forEach(function (t) {
-    t.addEventListener("click", function () {
-      document.querySelectorAll(".ctrl-bottom-tab").forEach(function (x) { x.classList.remove("active"); });
-      t.classList.add("active");
-      var tab = t.getAttribute("data-btab");
-      document.querySelectorAll(".ctrl-bottom-pane").forEach(function (p) { p.classList.remove("active"); });
-      var node = document.getElementById("pane-" + tab);
-      if (node) node.classList.add("active");
-    });
-  });
-
-  // ===== Comment audit + list (per-live) =====
-  var auditMode = false;
-  var currentFilter = "all";
-  var comments = [];
-  if (controlMode === "living" && sim.messages && sim.messages.length) {
-    comments = sim.messages.map(function (m, i) {
-      return {
-        id: i + 1,
-        name: m.name,
-        role: "user",
-        color: m.color || "#165dff",
-        time: i === 0 ? "刚刚" : (i + " 分钟前"),
-        text: m.text,
-        self: false
-      };
-    });
-  }
-
-  function renderComments() {
-    var list = document.getElementById("ctrl-comment-list");
-    if (!list) return;
-    if (controlMode !== "living") {
-      list.innerHTML = '<div class="ctrl-interact-empty">直播尚未开始，暂无实时消息</div>';
-      return;
-    }
-    var filtered = comments.filter(function (c) {
-      if (currentFilter === "qa")      return c.isQA;
-      if (currentFilter === "mine")    return c.role === "mine";
-      if (currentFilter === "teacher") return c.role === "teacher";
-      return true;
-    });
-    if (auditMode) {
-      filtered = filtered.filter(function (c) { return c.hidden; });
-    } else {
-      filtered = filtered.filter(function (c) { return !c.hidden; });
-    }
-    if (!filtered.length) {
-      list.innerHTML = '<div class="ctrl-interact-empty">💬 暂无消息</div>';
-      return;
-    }
-    list.innerHTML = filtered.map(function (c) {
-      var classes = ["ctrl-comment"];
-      if (c.self) classes.push("is-self");
-      if (c.pinned) classes.push("is-pinned");
-      if (c.hidden) classes.push("is-hidden");
-      var tags = "";
-      if (c.role === "teacher") tags += '<span class="ctrl-comment-tag role-teacher">讲师</span>';
-      if (c.role === "mine")    tags += '<span class="ctrl-comment-tag role-mine">我的</span>';
-      if (c.isQA)               tags += '<span class="ctrl-comment-tag tag-qa">问答</span>';
-      if (c.pinned)             tags += '<span class="ctrl-comment-tag tag-pinned">置顶</span>';
-      if (c.hidden)             tags += '<span class="ctrl-comment-tag tag-hidden">已隐藏</span>';
-      var actions = "";
-      if (c.self) {
-        actions = '<div class="ctrl-comment-actions">' +
-                  '<button class="ctrl-comment-act" data-act="reply" data-id="' + c.id + '">回复</button>' +
-                  '<button class="ctrl-comment-act danger" data-act="recall" data-id="' + c.id + '">撤回</button>' +
-                  '</div>';
-      } else {
-        actions = '<div class="ctrl-comment-actions">' +
-                  '<button class="ctrl-comment-act" data-act="reply" data-id="' + c.id + '">回复</button>' +
-                  (c.hidden
-                    ? '<button class="ctrl-comment-act" data-act="show" data-id="' + c.id + '">显示</button>'
-                    : '<button class="ctrl-comment-act" data-act="hide" data-id="' + c.id + '">隐藏</button>') +
-                  '<button class="ctrl-comment-act" data-act="mute" data-id="' + c.id + '">禁言</button>' +
-                  '<button class="ctrl-comment-act danger" data-act="block" data-id="' + c.id + '">拉黑</button>' +
-                  '</div>';
-      }
-      return '<div class="' + classes.join(" ") + '" data-id="' + c.id + '">' +
-             '<div class="ctrl-comment-avatar" style="background:' + c.color + '">' + c.name.charAt(0) + '</div>' +
-             '<div class="ctrl-comment-body">' +
-               '<div class="ctrl-comment-meta">' +
-                 '<span class="ctrl-comment-name">' + c.name + '</span>' +
-                 tags +
-                 '<span class="ctrl-comment-time">' + c.time + '</span>' +
-               '</div>' +
-               '<div class="ctrl-comment-text">' + c.text + '</div>' +
-               actions +
-             '</div>' +
-             '</div>';
-    }).join("");
-    bindCommentActions();
-  }
-
-  function bindCommentActions() {
-    document.querySelectorAll(".ctrl-comment-act").forEach(function (btn) {
-      btn.addEventListener("click", function (e) {
-        e.preventDefault();
-        e.stopPropagation();
-        var act = btn.getAttribute("data-act");
-        var id  = parseInt(btn.getAttribute("data-id"));
-        var c   = comments.find(function (x) { return x.id === id; });
-        if (!c) return;
-        var labels = {
-          reply:  "回复",
-          recall: "撤回",
-          show:   "已显示",
-          hide:   "已隐藏",
-          mute:   "已禁言 " + c.name,
-          block:  "已拉黑 " + c.name
-        };
-        if (act === "show")   c.hidden = false;
-        if (act === "hide")   c.hidden = true;
-        if (act === "mute")   c.muted = true;
-        if (act === "block")  c.blocked = true;
-        if (act === "recall") c.recalled = true;
-        if (act === "reply") {
-          var input = document.querySelector(".ctrl-quick-input");
-          if (input) { input.value = "@" + c.name + " "; input.focus(); }
-          return;
-        }
-        if (act === "hide" || act === "show") {
-          renderComments();
-        }
-        Proto.toast(labels[act] + "（原型）");
-      });
-    });
-  }
-
-  var auditToggle = document.getElementById("ctrl-audit-toggle");
-  if (auditToggle) auditToggle.addEventListener("change", function () {
-    auditMode = this.checked;
-    renderComments();
-  });
-
-  document.querySelectorAll(".ctrl-comment-filter").forEach(function (b) {
-    b.addEventListener("click", function () {
-      document.querySelectorAll(".ctrl-comment-filter").forEach(function (x) { x.classList.remove("active"); });
-      b.classList.add("active");
-      currentFilter = b.getAttribute("data-filter");
-      renderComments();
-    });
-  });
-
-  renderComments();
-
-  // ===== Marketing: Product drawer =====
-  on(document.getElementById("btn-mk-product"), "click", function () {
-    open(document.getElementById("drawer-product"));
-    updateProductSummary();
-  });
-  function updateProductSummary() {
-    var checked = document.querySelectorAll('#product-list .prod-toggle input:checked').length;
-    var total = document.querySelectorAll('#product-list .prod-row').length;
-    var sum = document.getElementById("prod-summary");
-    if (sum) sum.textContent = "已挂载 " + checked + " / 共 " + total;
-    var paneStat = document.getElementById("mk-pane-product-stat");
-    if (paneStat) paneStat.textContent = checked;
-    var stat = document.getElementById("mk-stat-product");
-    if (stat) stat.textContent = checked;
-  }
-  document.querySelectorAll('#product-list .prod-toggle input').forEach(function (cb) {
-    cb.addEventListener("change", updateProductSummary);
-  });
-  updateProductSummary();
-
-  // ===== Marketing: Coupon modal =====
-  on(document.getElementById("btn-mk-coupon"), "click", function () {
-    open(document.getElementById("modal-coupon"));
-    updateCouponPreview();
-  });
-  function updateCouponPreview() {
-    var sel = document.getElementById("coupon-tpl");
-    if (!sel) return;
-    var name = sel.options[sel.selectedIndex].text;
-    var qty = document.getElementById("coupon-qty").value || 0;
-    var dur = document.getElementById("coupon-duration").selectedOptions[0].text;
-    document.getElementById("coupon-preview").innerHTML =
-      "🎁 主播发券啦！<b>" + name + "</b>，限量 <b>" + qty + "</b> 张，先到先得！有效期 <b>" + dur + "</b>。";
-  }
-  ["coupon-tpl","coupon-qty","coupon-duration"].forEach(function (id) {
-    var el = document.getElementById(id);
-    if (el) {
-      el.addEventListener("change", updateCouponPreview);
-      el.addEventListener("input", updateCouponPreview);
-    }
-  });
-  on(document.getElementById("btn-coupon-confirm"), "click", function () {
-    var name = document.getElementById("coupon-tpl").selectedOptions[0].text;
-    closeAll();
-    showStageEffect("coupon", "已发放优惠券：" + name);
-    var el = document.getElementById("mk-stat-coupon");
-    if (el) el.textContent = parseInt(el.textContent || 0) + 12;
-    var pEl = document.getElementById("mk-pane-coupon-stat");
-    if (pEl) pEl.textContent = parseInt(pEl.textContent || 0) + 100;
-    Proto.toast("优惠券已推送到直播间 ✓");
-  });
-  on(document.getElementById("btn-coupon-draft"), "click", function () {
-    closeAll();
-    Proto.toast("已保存为草稿（原型）");
-  });
-
-  // ===== Marketing: Marquee modal =====
-  on(document.getElementById("btn-mk-marquee"), "click", function () {
-    open(document.getElementById("modal-marquee"));
-    updateMarqueePreview();
-  });
-  function updateMarqueePreview() {
-    var txt = document.getElementById("mqr-text").value;
-    var speed = document.getElementById("mqr-speed").value;
-    var size = document.getElementById("mqr-size").value;
-    var colorEl = document.querySelector(".mqr-color:has(input:checked)");
-    var color = colorEl ? colorEl.getAttribute("data-color") : "#fff";
-    var preview = document.getElementById("mqr-preview");
-    var track = document.getElementById("mqr-track");
-    var text = track.querySelector(".mqr-marquee-text");
-    preview.className = "mqr-preview speed-" + speed + " size-" + size;
-    text.textContent = txt;
-    text.style.color = color;
-  }
-  ["mqr-text","mqr-speed","mqr-size"].forEach(function (id) {
-    var el = document.getElementById(id);
-    if (el) {
-      el.addEventListener("change", updateMarqueePreview);
-      el.addEventListener("input", updateMarqueePreview);
-    }
-  });
-  document.querySelectorAll(".mqr-color").forEach(function (c) {
-    c.addEventListener("click", function () {
-      setTimeout(updateMarqueePreview, 0);
-    });
-  });
-  document.querySelectorAll(".mqr-tpl").forEach(function (b) {
-    b.addEventListener("click", function () {
-      document.getElementById("mqr-text").value = b.getAttribute("data-text");
-      updateMarqueePreview();
-    });
-  });
-  on(document.getElementById("btn-mqr-confirm"), "click", function () {
-    var txt = document.getElementById("mqr-text").value || "主播提醒";
-    closeAll();
-    showStageEffect("marquee", txt);
-    var el = document.getElementById("mk-stat-marquee");
-    if (el) el.textContent = parseInt(el.textContent || 0) + 86;
-    var pEl = document.getElementById("mk-pane-marquee-stat");
-    if (pEl) pEl.textContent = parseInt(pEl.textContent || 0) + 30;
-    Proto.toast("跑马灯已推送 ✓");
-  });
-
-  function showStageEffect(type, content) {
-    var layer = document.getElementById("ctrl-stage-effects");
-    if (!layer) return;
-    var div = document.createElement("div");
-    if (type === "coupon") {
-      div.className = "ctrl-effect-coupon";
-      div.innerHTML = '<span class="effect-ico">🎁</span><span>' + content + '</span><button class="effect-btn">立即领取</button>';
-    } else if (type === "marquee") {
-      div.className = "ctrl-effect-marquee";
-      div.innerHTML = "<span>" + content + "</span>";
-    }
-    layer.appendChild(div);
-    setTimeout(function () { div.remove(); }, 8500);
-  }
-
-  // ===== Start / End live =====
-  var btnGoLive = document.getElementById("btn-start-live") || document.getElementById("btn-end-live");
-  if (controlMode === "ready" && btnGoLive) {
-    on(btnGoLive, "click", function () {
-      var g = LiveOps.canStartLive(LiveOps.getLive(currentLiveId));
-      if (!g.ok) { Proto.toast(g.reason); return; }
-      open(document.getElementById("modal-start"));
-    });
-  } else if (controlMode === "living" && btnGoLive) {
-    on(btnGoLive, "click", function () {
-      var g = LiveOps.canEndLive(LiveOps.getLive(currentLiveId));
-      if (!g.ok) { Proto.toast(g.reason); return; }
-      open(document.getElementById("modal-end"));
-    });
-  }
-  on(document.getElementById("btn-confirm-start"), "click", function () {
-    var res = LiveOps.startLive(currentLiveId);
-    if (!res.ok) { Proto.toast(res.reason || "无法开始直播"); return; }
-    Proto.toast("直播已开始，即将跳转大屏...");
-    closeAll();
-    setTimeout(function () {
-      location.href = LiveOps.buildUrl("live-screen.html", { live_id: currentLiveId, from: "control" });
-    }, 800);
-  });
-  on(document.getElementById("btn-confirm-end"), "click", function () {
-    var res = LiveOps.endLive(currentLiveId);
-    if (!res.ok) { Proto.toast(res.reason || "无法结束直播"); return; }
-    closeAll();
-    Proto.toast("直播已结束");
-    setTimeout(function () {
-      LiveOps.renderStateGate(page, {
-        title: "本场直播已结束",
-        reason: "状态已同步。可查看场次数据或回放。",
-        live: res.live,
-        actions: LiveOps.gateActionsFor(res.live, "ended")
-      });
-    }, 300);
-  });
-
-  on(document.getElementById("btn-close-bottom"), "click", function () {
-    document.getElementById("ctrl-bottom").style.display = "none";
-    document.querySelector(".ctrl-main").style.height = "calc(100vh - 64px - 60px - 60px)";
-  });
-
-  on(document.getElementById("ctrl-net-pill"), "click", function () {
-    var p = this;
-    var good = p.classList.contains("ctrl-pill-ok");
-    if (good) {
-      p.classList.remove("ctrl-pill-ok");
-      p.innerHTML = "<span class='net-dot' style='background:#f53f3f'></span><span class='net-label'>网络一般</span>";
-    } else {
-      p.classList.add("ctrl-pill-ok");
-      p.innerHTML = "<span class='net-dot'></span><span class='net-label'>网络良好</span>";
-    }
-  });
-
-  document.querySelectorAll(".ctrl-stage-cell").forEach(function (c) {
-    c.addEventListener("click", function () { Proto.toast("点击添加媒体源（原型）"); });
-  });
-
-  /* Open screen shortcut for living */
-  if (controlMode === "living") {
-    var ha = document.getElementById("page-header-actions") || document.getElementById("header-actions");
-    /* keep inline top bar actions */
-  }
+  LiveControlCore.boot({ live: live, mode: controlMode, sim: sim, page: page, demo: demoMode });
 })();
 </script>
-</body>
-</html>
+
+
+</body></html>

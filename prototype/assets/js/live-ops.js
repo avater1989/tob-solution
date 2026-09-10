@@ -94,6 +94,50 @@
     };
   }
 
+  /** 每页加载一次：把 L005 拉回「直播中」，避免本机结束直播后 demo 长期卡在已结束 */
+  var demoLivingSynced = false;
+
+  function forceDemoLivingL005(data) {
+    var l005 = null;
+    for (var i = 0; i < data.lives.length; i++) {
+      if (data.lives[i].id === "L005") { l005 = data.lives[i]; break; }
+    }
+    if (!l005) return false;
+    var changed = false;
+    if (
+      l005.execStatus !== "live" ||
+      l005.liveStatus !== "live" ||
+      l005.runtimeStatus === "ended" ||
+      l005.runtimeStatus === "cancelled"
+    ) {
+      l005.name = "午间答疑 · 直播中";
+      l005.description = "正在直播的答疑场。";
+      l005.execStatus = "live";
+      l005.execStatusLabel = "直播中";
+      l005.liveStatus = "live";
+      l005.liveStatusLabel = "直播中";
+      l005.runtimeStatus = "living";
+      l005.auditStatus = "approved";
+      l005.auditStatusLabel = "审核通过";
+      l005.shelf = true;
+      l005.shelfStatus = "published";
+      l005.platformReviewStatus = "passed";
+      delete l005.endedAt;
+      changed = true;
+    }
+    var ov = loadOverlay();
+    var cur = ov.byId.L005 || {};
+    if (cur.runtimeStatus !== "living") {
+      ov.byId.L005 = Object.assign({}, cur, {
+        runtimeStatus: "living",
+        shelfStatus: "published",
+        platformReviewStatus: "passed"
+      });
+      saveOverlay(ov);
+    }
+    return changed;
+  }
+
   function ensureDemoLives() {
     if (!PB()) return;
     var data = PB().load();
@@ -257,6 +301,10 @@
         changed = true;
       }
     });
+    if (!demoLivingSynced) {
+      demoLivingSynced = true;
+      if (forceDemoLivingL005(data)) changed = true;
+    }
     if (changed) PB().save(data);
   }
 
