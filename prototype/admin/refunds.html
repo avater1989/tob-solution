@@ -232,6 +232,9 @@
 </style>
 
 <script src="../assets/js/proto.js"></script>
+<script src="../assets/js/board-data.js?v=6"></script>
+<script src="../assets/js/board-metrics.js?v=11"></script>
+<script src="../assets/js/board-insights.js?v=4"></script>
 <script src="../assets/js/admin-shell.js?v=13"></script>
 <script>
 (function () {
@@ -315,6 +318,13 @@
     document.getElementById("f-time2").value = "";
     Proto.toast("已重置");
   });
+
+  if (window.BoardMetrics && BoardMetrics.applyDrilldownToList) {
+    BoardMetrics.applyDrilldownToList({
+      tbody: "rf-tbody",
+      cols: { payStatus: 7, refundStatus: 7 }
+    });
+  }
 })();
 </script>
 </body>

@@ -1,10 +1,10 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>私域转化分析 · 商家管理后台</title>
-<link rel="stylesheet" href="../assets/css/proto.css?v=10" />
+<link rel="stylesheet" href="../assets/css/proto.css?v=14" />
 <style>
 .board-tabs { display:flex; gap:0; border-bottom:1px solid var(--color-border); margin-bottom:16px; }
 .board-tabs button {
@@ -26,8 +26,7 @@
 <div id="page-content" style="display:none">
 
   <div class="board-tip">
-    <b>私域转化：</b>承接效率看「是否接住」，跟进质量看「是否运营起来」。
-    二者共享筛选，但不是所有用户必经的线性主链台阶。
+    <b>私域转化：</b>团队执行看「谁接得住」，用户运营看「卡在哪」。实际处理跳转线索/跟进页，本页只做比较与定位。
     <span class="muted" id="scope-help-brief"></span>
   </div>
 
@@ -40,14 +39,16 @@
     </div>
     <select id="f-channel"></select>
     <select id="f-term"></select>
-    <button class="btn btn-primary" id="btn-query">查询</button>
-    <button class="btn" id="btn-reset">重置</button>
+    <select id="f-owner"><option value="">全部负责人</option></select>
+    <button class="btn" id="btn-reset">重置筛选</button>
+    <span class="muted" style="font-size:12px;margin-left:8px">筛选变更后立即生效</span>
   </div>
   <div id="active-filters"></div>
+  <div class="board-conclusion" id="private-conclusion"></div>
 
   <div class="board-tabs" id="private-tabs">
-    <button type="button" class="active" data-tab="handoff">承接效率</button>
-    <button type="button" data-tab="follow">跟进质量</button>
+    <button type="button" class="active" data-tab="handoff">团队执行</button>
+    <button type="button" data-tab="follow">用户运营</button>
   </div>
 
   <div class="tab-pane active" id="pane-handoff">
@@ -58,24 +59,53 @@
         <div class="stat-hint">超时 <span data-m="backlogLate">8</span></div>
       </a>
       <div class="stat-card">
-        <div class="stat-label">4h 内及时率</div>
+        <div class="stat-label">团队 4h 及时率</div>
         <div class="stat-value" id="timely-rate">86%</div>
-        <div class="stat-hint">= 时效桶 &lt;1h + 1–4h</div>
+        <div class="stat-hint">团队平均线</div>
       </div>
       <a class="stat-card" data-board-link="leads.html" href="leads.html">
         <div class="stat-label">加微率（相对入池）</div>
         <div class="stat-value" id="wecom-pool">64%</div>
         <div class="stat-hint"><span data-m="wecom">392</span> / <span data-m="pool">612</span></div>
       </a>
-      <a class="stat-card" data-board-link="orders.html" data-board-focus="sms_failed" href="orders.html">
-        <div class="stat-label">领课率</div>
-        <div class="stat-value" id="claim-rate">82%</div>
-        <div class="stat-hint"><span class="board-scope aux">视频号辅</span> 失败事件 <span data-m="smsFailureEvents">18</span></div>
+      <a class="stat-card" data-board-link="follow-ups.html" data-board-focus="no_follow" href="follow-ups.html?focus=no_follow">
+        <div class="stat-label">无跟进风险</div>
+        <div class="stat-value" style="color:#ff7d00" data-m="noFollow">86</div>
+        <div class="stat-hint">去跟进</div>
       </a>
     </div>
 
     <div class="card" style="margin-bottom:16px">
-      <div class="card-hd"><h2>承接段漏斗</h2><span class="muted" style="font-size:12px;font-weight:400"><span data-range-label>近7日</span></span></div>
+      <div class="card-hd">
+        <h2>员工执行分析</h2>
+        <span class="muted" style="font-size:12px;font-weight:400" id="team-avg-note">团队平均线</span>
+      </div>
+      <div class="card-bd">
+        <div class="board-sort-bar">
+          <span class="muted">排序：</span>
+          <button type="button" class="btn btn-sm" data-st-sort="assigned">承接量</button>
+          <button type="button" class="btn btn-sm active" data-st-sort="noFollow">未跟进</button>
+          <button type="button" class="btn btn-sm" data-st-sort="late">超时</button>
+          <button type="button" class="btn btn-sm" data-st-sort="wecomRate">加微率</button>
+          <button type="button" class="btn btn-sm" data-st-sort="pay">支付结果</button>
+        </div>
+        <div style="overflow-x:auto">
+          <table class="data" style="min-width:980px">
+            <thead>
+              <tr>
+                <th>员工</th><th>分配</th><th>及时率</th><th>加微 / 率</th><th>覆盖率</th>
+                <th>超时</th><th>未跟进</th><th>支付</th><th>vs 团队</th><th>操作</th>
+              </tr>
+            </thead>
+            <tbody id="staff-exec-tbody"></tbody>
+          </table>
+        </div>
+        <p class="muted" style="font-size:12px;margin:8px 0 0">标签「量大」≠表现差；「需关注」表示效率指标低于合理阈值。点击数字进入对应名单。</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-hd"><h2>承接段漏斗</h2></div>
       <div class="card-bd">
         <div class="board-funnel slope lg">
           <div class="step" data-m-h="pool" style="--h:100%"><div class="n" data-m="pool">612</div><div class="l">入池</div><div class="r">100%</div></div>
@@ -85,42 +115,6 @@
         <p class="board-attr" data-board-attr></p>
       </div>
     </div>
-
-    <div class="board-two">
-      <div class="card">
-        <div class="card-hd"><h2>分配时效</h2></div>
-        <div class="card-bd" style="padding:0">
-          <table class="data">
-            <thead><tr><th>时效桶</th><th>占比</th><th>说明</th></tr></thead>
-            <tbody id="timing-tbody"></tbody>
-          </table>
-        </div>
-      </div>
-      <div class="card">
-        <div class="card-hd"><h2>视频号领课 / 短信</h2><span class="board-scope aux">辅</span></div>
-        <div class="card-bd">
-          <p style="font-size:13px;margin:0 0 8px">流入 <b data-m="vxLeads">241</b> → 领课 <b data-m="vxClaim">198</b></p>
-          <p style="font-size:13px;margin:0 0 12px">
-            今日发生发送失败 <b id="sms-failure-events" data-m="smsFailureEvents">18</b>
-            · 当前待重发 <b id="sms-failed-pending" data-m="smsFailedPending">18</b>
-          </p>
-          <a class="btn btn-sm" id="sms-failed-link" data-board-link="orders.html" data-board-focus="sms_failed" href="orders.html">处理失败短信</a>
-        </div>
-      </div>
-    </div>
-
-    <div class="card" style="margin-top:16px">
-      <div class="card-hd">
-        <h2>跟进人 · 承接结果</h2>
-        <span class="muted" style="font-size:12px;font-weight:400">合计须与顶部已分配 / 已加微一致</span>
-      </div>
-      <div class="card-bd" style="padding:0">
-        <table class="data">
-          <thead><tr><th>跟进人</th><th>分配数</th><th>已加微</th><th>加微率</th><th style="width:100px">操作</th></tr></thead>
-          <tbody id="handoff-staff"></tbody>
-        </table>
-      </div>
-    </div>
   </div>
 
   <div class="tab-pane" id="pane-follow">
@@ -128,17 +122,17 @@
       <div class="stat-card">
         <div class="stat-label">跟进覆盖率</div>
         <div class="stat-value" data-m="coverRate">78%</div>
-        <div class="stat-hint">有跟进人数 / 在跟人数</div>
+        <div class="stat-hint">有跟进 / 已加微</div>
       </div>
       <div class="stat-card">
-        <div class="stat-label">已加微（承接交出）</div>
+        <div class="stat-label">已加微底数</div>
         <div class="stat-value" data-m="wecom">392</div>
-        <div class="stat-hint">本专题分析底数</div>
+        <div class="stat-hint">阶段分布分母</div>
       </div>
       <a class="stat-card" data-board-link="follow-ups.html" data-board-focus="no_follow" href="follow-ups.html?focus=no_follow">
-        <div class="stat-label">无跟进（风险）</div>
+        <div class="stat-label">未跟进用户</div>
         <div class="stat-value" style="color:#ff7d00" data-m="noFollow">86</div>
-        <div class="stat-hint">与下表明细合计一致</div>
+        <div class="stat-hint">可再次触达</div>
       </a>
       <a class="stat-card" href="wecom-churn.html">
         <div class="stat-label">企微流失</div>
@@ -147,38 +141,32 @@
       </a>
     </div>
 
-    <div class="card" style="margin-bottom:16px">
-      <div class="card-hd">
-        <h2>人效明细</h2>
-        <span class="muted" style="font-size:12px;font-weight:400">跟进次数 · <span data-range-label>近7日</span></span>
-      </div>
-      <div class="card-bd" style="padding:0">
-        <table class="data">
-          <thead>
-            <tr><th>跟进人</th><th>在跟（已加微）</th><th>跟进次数</th><th>覆盖率</th><th>无跟进</th><th>流失</th><th style="width:160px">操作</th></tr>
-          </thead>
-          <tbody id="follow-staff"></tbody>
-        </table>
-      </div>
-    </div>
-
     <div class="board-two">
       <div class="card">
-        <div class="card-hd"><h2>阶段分布</h2><span class="muted" style="font-size:12px;font-weight:400">分母：当前筛选范围内已加微用户</span></div>
+        <div class="card-hd"><h2>用户阶段运营</h2><span class="muted" style="font-size:12px;font-weight:400">点击阶段联动员工/渠道</span></div>
         <div class="card-bd" style="padding:0">
           <table class="data">
-            <thead><tr><th>阶段</th><th>人数</th><th>占比</th></tr></thead>
-            <tbody id="stage-tbody"></tbody>
+            <thead>
+              <tr><th>阶段</th><th>人数</th><th>占比</th><th>平均停留</th><th>超时未流转</th><th>可再触达</th></tr>
+            </thead>
+            <tbody id="stage-ops-tbody"></tbody>
           </table>
-          <p class="muted" style="padding:8px 16px;font-size:12px;margin:0" id="stage-note">五阶段合计 100%。</p>
+        </div>
+        <div class="board-detail-panel" id="stage-detail" hidden style="margin:12px">
+          <h3 id="stage-detail-title">阶段联动</h3>
+          <p class="muted" style="font-size:12px" id="stage-detail-meta"></p>
+          <div style="display:flex;gap:8px;flex-wrap:wrap" id="stage-detail-actions"></div>
         </div>
       </div>
       <div class="card">
-        <div class="card-hd"><h2>下钻</h2></div>
-        <div class="card-bd" style="display:flex;gap:8px;flex-wrap:wrap">
-          <a class="btn" data-board-link="follow-ups.html" data-board-focus="no_follow" href="follow-ups.html?focus=no_follow">跟进管理</a>
-          <a class="btn" href="todo-calendar.html">待办日历</a>
-          <a class="btn" href="wecom-churn.html">流失提醒</a>
+        <div class="card-hd"><h2>高意向未支付 / 可触达</h2></div>
+        <div class="card-bd">
+          <p style="font-size:13px;margin:0 0 10px">高意向阶段超时 <b id="hi-timeout">—</b> 人 · 建议再触达 <b id="hi-retrigger">—</b> 人</p>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <a class="btn btn-sm" id="link-high-intent" href="follow-ups.html">高意向名单</a>
+            <a class="btn btn-sm" data-board-link="follow-ups.html" data-board-focus="attend_no_pay" href="follow-ups.html?focus=attend_no_pay">到场未支付</a>
+            <a class="btn btn-sm" href="todo-calendar.html">待办日历</a>
+          </div>
         </div>
       </div>
     </div>
@@ -186,8 +174,11 @@
 
 </div>
 <script src="../assets/js/proto.js"></script>
-<script src="../assets/js/board-data.js?v=5"></script>
-<script src="../assets/js/board-metrics.js?v=9"></script>
+<script src="../assets/js/board-data.js?v=8"></script>
+<script src="../assets/js/board-metrics.js?v=14"></script>
+<script src="../assets/js/board-insights.js?v=8"></script>
+<script src="../assets/js/board-dictionary.js?v=3"></script>
+<script src="../assets/js/board-tools.js?v=4"></script>
 <script src="../assets/js/admin-shell.js?v=13"></script>
 <script>
 (function () {
@@ -197,10 +188,16 @@
   var brief = document.getElementById("scope-help-brief");
   if (brief) brief.textContent = " · " + (BoardMetrics.FILTER_SCOPE_HELP || "").slice(0, 48) + "…";
 
-  function slugify(name) {
-    if (!name) return "other";
-    if (name === "其他人员") return "other";
-    return String(name).replace(/\s+/g, "").replace(/[^\w\u4e00-\u9fff_-]/g, "") || "other";
+  var state = { sort: "noFollow", owner: "", stage: "" };
+
+  function fillOwnerOptions() {
+    var sel = document.getElementById("f-owner");
+    var staff = BoardMetrics.getStaffRows().filter(function (s) { return !s.isOther; });
+    var cur = sel.value || state.owner || "";
+    sel.innerHTML = '<option value="">全部负责人</option>' + staff.map(function (s) {
+      return '<option value="' + s.name + '">' + s.name + "</option>";
+    }).join("");
+    sel.value = cur;
   }
 
   function setTab(tab) {
@@ -213,96 +210,179 @@
     document.getElementById("pane-follow").classList.toggle("active", tab === "follow");
   }
 
-  function renderStaff() {
-    var staff = BoardMetrics.getStaffRows();
-    var hs = document.getElementById("handoff-staff");
-    var fs = document.getElementById("follow-staff");
-    if (!staff.length) {
-      BoardMetrics.renderEmpty(hs, 5);
-      BoardMetrics.renderEmpty(fs, 7);
-      return;
-    }
-    hs.innerHTML = staff.map(function (s) {
-      var oid = slugify(s.name);
-      var leadsHref = BoardMetrics.buildDrilldownUrl("leads.html", { owner: oid });
-      return "<tr><td>" + s.name + "</td><td>" + BoardMetrics.fmt(s.assigned) + "</td><td>" + BoardMetrics.fmt(s.wecom) + "</td><td>" +
-        BoardMetrics.pct(s.wecom, s.assigned) + '</td><td class="row-actions"><a href="' + leadsHref + '">线索</a></td></tr>';
+  function renderStaffExec(filters) {
+    var se = BoardInsights.getStaffExecution(filters);
+    var rows = BoardInsights.sortBy(se.rows, state.sort, "desc");
+    if (state.owner) rows = rows.filter(function (r) { return r.id === state.owner; });
+    rows = rows.filter(function (r) { return !r.isOther; }).concat(rows.filter(function (r) { return r.isOther; }));
+    document.getElementById("team-avg-note").textContent =
+      "团队平均：及时率 " + se.team.timely + "% · 人均分配 " + se.team.assignedAvg +
+      " · 加微率 " + (se.team.wecomRateAvg != null ? se.team.wecomRateAvg + "%" : "—");
+    var tbody = document.getElementById("staff-exec-tbody");
+    if (!rows.length) { BoardMetrics.renderEmpty(tbody, 10); return; }
+    tbody.innerHTML = rows.map(function (r) {
+      var tags = "";
+      if (r.volumeHigh) tags += '<span class="eff-tag vol">量大</span>';
+      if (r.efficiencyLow) tags += '<span class="eff-tag risk">需关注</span>';
+      var vs = [];
+      if (r.wecomRate != null && se.team.wecomRateAvg != null) {
+        var d = Math.round((r.wecomRate - se.team.wecomRateAvg) * 10) / 10;
+        vs.push("加微" + (d >= 0 ? "+" : "") + d + "pp");
+      }
+      vs.push("及时" + (r.timelyRate - se.team.timely >= 0 ? "+" : "") + (r.timelyRate - se.team.timely) + "pp");
+      var leads = BoardMetrics.buildDrilldownUrl("leads.html", { owner: r.id, from_board: "private" });
+      var late = BoardMetrics.buildDrilldownUrl("leads.html", { owner: r.id, focus: "unassigned", from_board: "private" });
+      var noFollow = BoardMetrics.buildDrilldownUrl("follow-ups.html", { owner: r.id, focus: "no_follow", from_board: "private" });
+      return '<tr data-owner="' + r.id + '"><td><b>' + r.label + "</b>" + tags + "</td><td>" + BoardMetrics.fmt(r.assigned) +
+        "</td><td>" + r.timelyRate + "%</td><td>" + BoardMetrics.fmt(r.wecom) + " / " +
+        (r.wecomRate != null ? r.wecomRate + "%" : "—") + "</td><td>" +
+        (r.cover != null ? r.cover + "%" : "—") + '</td><td><a href="' + late + '" data-drill-save="1">' +
+        BoardMetrics.fmt(r.late) + '</a></td><td><a href="' + noFollow + '" data-drill-save="1">' +
+        BoardMetrics.fmt(r.noFollow) + "</a></td><td>" + BoardMetrics.fmt(r.pay) + "</td><td>" +
+        vs.join(" · ") + '</td><td class="row-actions"><a href="' + leads + '" data-drill-save="1">查看用户</a></td></tr>';
     }).join("");
-    fs.innerHTML = staff.map(function (s) {
-      var oid = slugify(s.name);
-      var followHref = BoardMetrics.buildDrilldownUrl("follow-ups.html", { owner: oid });
-      var todoHref = BoardMetrics.buildDrilldownUrl("todo-calendar.html", { owner: oid });
-      return "<tr><td>" + s.name + "</td><td>" + BoardMetrics.fmt(s.wecom) + "</td><td>" + BoardMetrics.fmt(s.followed) + "</td><td>" +
-        (s.cover || "—") + "</td><td>" + BoardMetrics.fmt(s.noFollow) + "</td><td>" + BoardMetrics.fmt(s.churn) +
-        '</td><td class="row-actions"><a href="' + followHref + '">跟进</a><a href="' + todoHref + '">待办</a></td></tr>';
-    }).join("");
+    tbody.querySelectorAll("[data-drill-save]").forEach(function (a) {
+      a.addEventListener("click", function () {
+        BoardInsights.saveReturnState();
+        BoardInsights.setAnalyticsState({ staffSort: state.sort, scrollAnchor: "staff-exec-tbody" });
+      });
+    });
   }
 
-  function renderStages() {
-    var stages = BoardMetrics.getStageDistribution();
-    var tbody = document.getElementById("stage-tbody");
-    var note = document.getElementById("stage-note");
-    if (!stages.length) {
-      BoardMetrics.renderEmpty(tbody, 3, "当前筛选条件下暂无阶段分布");
-      if (note) note.textContent = "暂无已加微用户。";
-      return;
-    }
+  function renderStageOps(filters) {
+    var stages = BoardInsights.getStageOps(filters);
+    var tbody = document.getElementById("stage-ops-tbody");
+    if (!stages.length) { BoardMetrics.renderEmpty(tbody, 6); return; }
     tbody.innerHTML = stages.map(function (s) {
-      var href = BoardMetrics.buildDrilldownUrl("follow-ups.html", {
-        follow_stage: s.stage || s.label
-      });
-      return '<tr><td><a href="' + href + '">' + (s.stage || s.label) + "</a></td><td>" +
-        BoardMetrics.fmt(s.count) + "</td><td>" + (s.pct || "—") + "</td></tr>";
+      return '<tr data-stage="' + s.stage + '"><td><a href="#" data-pick-stage="' + s.stage + '">' + s.stage +
+        "</a></td><td>" + BoardMetrics.fmt(s.count) + "</td><td>" + (s.pct || "—") + "</td><td>" +
+        (s.dwellHours ? s.dwellHours + "h" : "—") + "</td><td>" + BoardMetrics.fmt(s.timeout) +
+        "</td><td>" + BoardMetrics.fmt(s.retrigger) + "</td></tr>";
     }).join("");
-    if (note) note.textContent = "五阶段合计 100%。点击阶段可下钻跟进列表。";
+    var hi = stages.find(function (s) { return s.highIntent; });
+    document.getElementById("hi-timeout").textContent = hi ? hi.timeout : "—";
+    document.getElementById("hi-retrigger").textContent = hi ? hi.retrigger : "—";
+    var hiHref = BoardMetrics.buildDrilldownUrl("follow-ups.html", { follow_stage: "高意向", from_board: "private" });
+    document.getElementById("link-high-intent").href = hiHref;
+
+    tbody.querySelectorAll("[data-pick-stage]").forEach(function (a) {
+      a.onclick = function (e) {
+        e.preventDefault();
+        state.stage = a.getAttribute("data-pick-stage");
+        var panel = document.getElementById("stage-detail");
+        panel.hidden = false;
+        document.getElementById("stage-detail-title").textContent = "阶段：「" + state.stage + "」";
+        var staff = BoardInsights.getStaffExecution(filters).rows.filter(function (r) { return !r.isOther; }).slice(0, 3);
+        var ch = BoardInsights.getChannelQuality(filters).rows.slice(0, 2);
+        document.getElementById("stage-detail-meta").textContent =
+          "主要员工：" + staff.map(function (s) { return s.label; }).join("、") +
+          " · 主要渠道：" + ch.map(function (c) { return c.label; }).join("、") +
+          " · 期次：" + (filters.term || "全部期次");
+        var listHref = BoardMetrics.buildDrilldownUrl("follow-ups.html", {
+          follow_stage: state.stage, from_board: "private"
+        });
+        document.getElementById("stage-detail-actions").innerHTML =
+          '<a class="btn btn-sm btn-primary" href="' + listHref + '" data-drill-save="1">查看该阶段用户</a>' +
+          '<a class="btn btn-sm" href="todo-calendar.html">安排触达</a>';
+        panel.querySelectorAll("[data-drill-save]").forEach(function (x) {
+          x.addEventListener("click", function () { BoardInsights.saveReturnState(); });
+        });
+      };
+    });
   }
 
   function renderDetails(d) {
-    var buckets = BoardMetrics.getTimingBuckets();
-    var timely = 0;
-    document.getElementById("timing-tbody").innerHTML = buckets.map(function (b, i) {
-      if (i < 2) timely += b.pct;
-      var color = b.tone === "ok" ? "color:#00b42a" : b.tone === "warn" ? "color:#ff7d00" : b.tone === "danger" ? "color:#f53f3f" : "";
-      var note = b.tone === "danger"
-        ? '<a data-board-link="leads.html" data-board-focus="unassigned" href="leads.html?focus=unassigned">' + b.note + "</a>"
-        : b.note;
-      return "<tr><td>" + b.label + "</td><td>" + b.pct + '%</td><td style="' + color + '">' + note + "</td></tr>";
-    }).join("");
-    document.getElementById("timely-rate").textContent = timely + "%";
+    var filters = BoardMetrics.getFilters();
+    fillOwnerOptions();
+    document.getElementById("timely-rate").textContent = (function () {
+      var t = 0;
+      (BoardMetrics.getTimingBuckets(filters.range) || []).forEach(function (b, i) { if (i < 2) t += b.pct; });
+      return t + "%";
+    })();
     document.getElementById("wecom-pool").textContent = BoardMetrics.pct(d.wecomLeads, d.poolLeads);
-    document.getElementById("claim-rate").textContent = BoardMetrics.pct(d.vxClaim, d.vxLeads);
-
-    var failEl = document.getElementById("sms-failure-events");
-    var pendEl = document.getElementById("sms-failed-pending");
-    if (failEl) failEl.textContent = BoardMetrics.fmt(d.smsFailureEvents);
-    if (pendEl) pendEl.textContent = BoardMetrics.fmt(d.smsFailedPending);
-
-    renderStaff();
-    renderStages();
+    var pConcl = BoardInsights.getPrivateConclusions(filters);
+    document.getElementById("private-conclusion").innerHTML = BoardInsights.renderConclusionHtml(pConcl);
+    document.querySelectorAll("#private-conclusion [data-conclusion-idx]").forEach(function (btn) {
+      btn.onclick = function () {
+        var item = pConcl[Number(btn.getAttribute("data-conclusion-idx"))];
+        if (!item || !item.action) return;
+        if (item.action.type === "select_owner") {
+          BoardInsights.setAnalyticsState({ selectedOwner: item.action.id }, { syncUrl: true, push: true });
+          var owner = document.getElementById("f-owner");
+          /* 局部高亮员工行，不改全局负责人筛选 */
+          document.querySelectorAll("#staff-exec-tbody tr").forEach(function (tr) {
+            tr.classList.toggle("is-selected", (tr.getAttribute("data-owner") || "") === item.action.id);
+          });
+          var sec = document.getElementById("staff-exec-tbody");
+          if (sec) sec.scrollIntoView({ behavior: "smooth", block: "center" });
+          Proto.toast("已定位员工：" + item.action.id);
+        }
+      };
+    });
+    renderStaffExec(filters);
+    renderStageOps(filters);
     BoardMetrics.renderActiveFilters();
     BoardMetrics.wireBoardLinks();
   }
 
+  document.querySelectorAll("[data-st-sort]").forEach(function (btn) {
+    btn.onclick = function () {
+      state.sort = btn.getAttribute("data-st-sort");
+      document.querySelectorAll("[data-st-sort]").forEach(function (b) { b.classList.toggle("active", b === btn); });
+      BoardInsights.setAnalyticsState({ staffSort: state.sort });
+      renderStaffExec(BoardMetrics.getFilters());
+    };
+  });
+
+  document.getElementById("f-owner").addEventListener("change", function () {
+    state.owner = this.value;
+    renderStaffExec(BoardMetrics.getFilters());
+  });
+
   var bootTab = BoardMetrics.getFilters().tab || new URLSearchParams(location.search).get("tab") || "handoff";
   setTab(bootTab);
-
   document.getElementById("private-tabs").addEventListener("click", function (e) {
     var b = e.target.closest("button[data-tab]");
     if (!b) return;
     setTab(b.getAttribute("data-tab"));
-    BoardMetrics.wireBoardLinks();
   });
 
   BoardMetrics.bindRange("range-seg", function (k, d) { renderDetails(d); });
-  BoardMetrics.bindFilterBar({ onApply: function (k, d) { renderDetails(d); } });
-
-  document.getElementById("btn-export").onclick = function () {
-    var rows = BoardMetrics.getStaffRows().map(function (s) {
-      return [s.name, s.assigned, s.wecom, s.followed, s.cover, s.noFollow, s.churn];
-    });
-    if (!rows.length) { Proto.toast("暂无导出数据"); return; }
-    BoardMetrics.exportCsv(BoardMetrics.exportFileName("private"), ["跟进人", "分配", "已加微", "跟进次数", "覆盖率", "无跟进", "流失"], rows);
-  };
+  BoardMetrics.bindFilterBar({ onApply: function (k, d) { renderDetails(d); }, autoApply: true });
+  document.getElementById("btn-export").style.display = "none";
+  BoardTools.init({
+    onApply: function (k, d) { renderDetails(d); },
+    collectExtra: function () {
+      return { tab: BoardMetrics.getFilters().tab || "handoff", sort: state.sort || "", owner: state.owner || "", dimension: state.stage || "" };
+    },
+    getExportTable: function () {
+      var tab = BoardMetrics.getFilters().tab || "handoff";
+      if (tab === "follow") {
+        var stages = BoardInsights.getStageOps(BoardMetrics.getFilters());
+        if (!stages.length) return { reason: "暂无阶段数据", rows: [] };
+        return {
+          name: "用户阶段运营",
+          filename: BoardMetrics.exportFileName("用户阶段运营"),
+          headers: ["阶段", "人数", "占比", "平均停留小时", "超时未流转", "可再触达"],
+          rows: stages.map(function (s) {
+            return [s.stage, s.count, s.pct || "—", s.dwellHours != null ? s.dwellHours : "—", s.timeout, s.retrigger];
+          })
+        };
+      }
+      var se = BoardInsights.getStaffExecution(BoardMetrics.getFilters());
+      var rows = BoardInsights.sortBy(se.rows.filter(function (r) { return !r.isOther; }), state.sort || "noFollow", "desc");
+      if (state.owner) rows = rows.filter(function (r) { return r.id === state.owner; });
+      if (!rows.length) return { reason: "暂无员工执行数据", rows: [] };
+      return {
+        name: "员工执行分析",
+        filename: BoardMetrics.exportFileName("员工执行分析"),
+        headers: ["员工", "分配", "及时率", "加微", "加微率", "覆盖率", "超时", "未跟进", "支付"],
+        rows: rows.map(function (r) {
+          return [r.label, r.assigned, r.timelyRate, r.wecom, r.wecomRate != null ? r.wecomRate : "—", r.cover != null ? r.cover : "—", r.late, r.noFollow, r.pay];
+        })
+      };
+    }
+  });
 })();
 </script>
 </body>

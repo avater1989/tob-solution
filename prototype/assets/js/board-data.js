@@ -381,9 +381,81 @@
     ]
   };
 
+  /* 上一周期对照：today→yesterday；yesterday→prev_day；7d→prev_7d；30d→prev_30d */
+  var rangesPriorRaw = {
+    prev_day: {
+      label: "前日",
+      poolLeads: 68, assignedLeads: 62, wecomLeads: 36, attributedPayUsers: 7,
+      totalPayUsers: 14, totalPaidOrders: 35, totalGmv: 15800,
+      refundUsers: 1, refundAmount: 410, refundRate: "2.6%",
+      attendUsers: 12, payWithAttend: 4, noFollow: 9, backlogLate: 4,
+      liveAttendAvg: "43%", videoSmsFailed: 2
+    },
+    prev_7d: {
+      label: "前7日",
+      poolLeads: 518, assignedLeads: 498, wecomLeads: 328, attributedPayUsers: 108,
+      totalPayUsers: 248, totalPaidOrders: 382, totalGmv: 86200,
+      refundUsers: 11, refundAmount: 2680, refundRate: "3.1%",
+      attendUsers: 158, payWithAttend: 72, noFollow: 72, backlogLate: 18,
+      liveAttendAvg: "39%", videoSmsFailed: 14
+    },
+    prev_30d: {
+      label: "前30日",
+      poolLeads: 1900, assignedLeads: 1820, wecomLeads: 1180, attributedPayUsers: 368,
+      totalPayUsers: 820, totalPaidOrders: 1240, totalGmv: 278000,
+      refundUsers: 42, refundAmount: 9720, refundRate: "3.5%",
+      attendUsers: 548, payWithAttend: 238, noFollow: 268, backlogLate: 62,
+      liveAttendAvg: "38%", videoSmsFailed: 44
+    }
+  };
+  var rangesPrior = {};
+  Object.keys(rangesPriorRaw).forEach(function (k) {
+    rangesPrior[k] = withDerived(rangesPriorRaw[k]);
+  });
+
+  var priorRangeMap = {
+    today: "yesterday",
+    yesterday: "prev_day",
+    "7d": "prev_7d",
+    "30d": "prev_30d"
+  };
+
+  /* KPI 目标（按 range；rate 为百分比数值；gmv/payUsers 为绝对目标） */
+  var kpiTargets = {
+    today: {
+      poolLeads: 95, wecomRate: 70, attendRate: 48, payUsers: 12, payRate: 28,
+      fullGmv: 20000, refundRateMax: 2.5
+    },
+    yesterday: {
+      poolLeads: 80, wecomRate: 68, attendRate: 46, payUsers: 10, payRate: 26,
+      fullGmv: 18000, refundRateMax: 2.8
+    },
+    "7d": {
+      poolLeads: 650, wecomRate: 68, attendRate: 52, payUsers: 140, payRate: 32,
+      fullGmv: 105000, refundRateMax: 3.0
+    },
+    "30d": {
+      poolLeads: 2300, wecomRate: 66, attendRate: 42, payUsers: 450, payRate: 30,
+      fullGmv: 330000, refundRateMax: 3.2
+    }
+  };
+
+  /* 阶段运营：平均停留、超时未流转、可再触达（演示配置） */
+  var stageOps = {
+    "新加微/待首跟": { dwellHours: 18, timeout: 22, retrigger: 12, highIntent: false },
+    "跟进中": { dwellHours: 72, timeout: 36, retrigger: 20, highIntent: false },
+    "高意向": { dwellHours: 36, timeout: 18, retrigger: 24, highIntent: true },
+    "已转化": { dwellHours: 0, timeout: 0, retrigger: 4, highIntent: false },
+    "无效/战败": { dwellHours: 120, timeout: 8, retrigger: 6, highIntent: false }
+  };
+
   global.BoardData = {
     money: money,
     ranges: ranges,
+    rangesPrior: rangesPrior,
+    priorRangeMap: priorRangeMap,
+    kpiTargets: kpiTargets,
+    stageOps: stageOps,
     leadSlices: leadSlices,
     productRows: productRows,
     liveRows: liveRows,

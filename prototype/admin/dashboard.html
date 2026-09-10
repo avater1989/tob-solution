@@ -279,8 +279,8 @@
 
 </div>
 <script src="../assets/js/proto.js"></script>
-<script src="../assets/js/board-data.js?v=4"></script>
-<script src="../assets/js/board-metrics.js?v=7"></script>
+<script src="../assets/js/board-data.js?v=5"></script>
+<script src="../assets/js/board-metrics.js?v=10"></script>
 <script src="../assets/js/admin-shell.js?v=14"></script>
 <script>
 (function () {
@@ -391,66 +391,101 @@
     return (sops[0] && sops[0].liveId) || "L001";
   }
 
-  /* ========== 经营结果 + 漏斗：按时间范围结构化 ========== */
-  var RANGE_DATA = {
-    today: {
-      key: "today",
-      label: "今日",
-      titleSuffix: "· 今日",
-      compareLabel: "较昨日",
-      rangeParam: "today",
-      results: {
-        leads: { value: "86", delta: "+12%", deltaDir: "up", extra: "" },
-        orders: { value: "42", delta: "+8%", deltaDir: "up", extra: "实收 ¥18,620" },
-        gmv: { value: "¥18,620", delta: "+15%", deltaDir: "up", extra: "42 笔" },
-        refund: { value: "2.1%", delta: "-0.3pp", deltaDir: "down", extra: "退款 1 笔", refundCount: 1 }
-      },
-      funnel: [
-        { id: "pool", name: "入池线索", count: 86, href: "leads.html" },
-        { id: "assigned", name: "已分配", count: 72, href: "leads.html?status=assigned" },
-        { id: "wecom", name: "已加微", count: 41, href: "leads.html?status=wecom" },
-        { id: "paid", name: "可归因支付", count: 9, href: "board-convert.html" }
-      ]
-    },
-    yesterday: {
-      key: "yesterday",
-      label: "昨日",
-      titleSuffix: "· 昨日",
-      compareLabel: "较前日",
-      rangeParam: "yesterday",
-      results: {
-        leads: { value: "74", delta: "+5%", deltaDir: "up", extra: "" },
-        orders: { value: "38", delta: "-3%", deltaDir: "down", extra: "实收 ¥17,240" },
-        gmv: { value: "¥17,240", delta: "-2%", deltaDir: "down", extra: "38 笔" },
-        refund: { value: "2.6%", delta: "+0.2pp", deltaDir: "up", extra: "退款 1 笔", refundCount: 1 }
-      },
-      funnel: [
-        { id: "pool", name: "入池线索", count: 74, href: "leads.html" },
-        { id: "assigned", name: "已分配", count: 64, href: "leads.html?status=assigned" },
-        { id: "wecom", name: "已加微", count: 39, href: "leads.html?status=wecom" },
-        { id: "paid", name: "可归因支付", count: 11, href: "board-convert.html" }
-      ]
-    },
-    "7d": {
-      key: "7d",
-      label: "近7日",
-      titleSuffix: "· 近7日",
-      compareLabel: "较上周期",
-      rangeParam: "7d",
-      results: {
-        leads: { value: "612", delta: "+18%", deltaDir: "up", extra: "" },
-        orders: { value: "428", delta: "+11%", deltaDir: "up", extra: "实收 ¥96,430" },
-        gmv: { value: "¥96,430", delta: "+12%", deltaDir: "up", extra: "428 笔" },
-        refund: { value: "3.2%", delta: "+0.4pp", deltaDir: "up", extra: "退款 9 笔", refundCount: 9 }
-      },
-      funnel: [
-        { id: "pool", name: "入池线索", count: 612, href: "leads.html" },
-        { id: "assigned", name: "已分配", count: 589, href: "leads.html?status=assigned" },
-        { id: "wecom", name: "已加微", count: 392, href: "leads.html?status=wecom" },
-        { id: "paid", name: "可归因支付", count: 128, href: "board-convert.html" }
-      ]
-    }
+  /* ========== 经营结果 + 漏斗：与 BoardMetrics / BoardData 同源 ========== */
+  var RANGE_META = {
+    today: { key: "today", label: "今日", titleSuffix: "· 今日", compareLabel: "较昨日", rangeParam: "today" },
+    yesterday: { key: "yesterday", label: "昨日", titleSuffix: "· 昨日", compareLabel: "较前日", rangeParam: "yesterday" },
+    "7d": { key: "7d", label: "近7日", titleSuffix: "· 近7日", compareLabel: "较上周期", rangeParam: "7d" }
   };
+
+  function getRangeBundle(rangeKey) {
+    var meta = RANGE_META[rangeKey] || RANGE_META.today;
+    var base = (window.BoardData && BoardData.ranges && BoardData.ranges[rangeKey]) || {};
+    var m = (window.BoardMetrics && typeof BoardMetrics.aggregateLeadMetrics === "function")
+      ? BoardMetrics.aggregateLeadMetrics({ range: meta.rangeParam, channel: "", term: "", src: "" })
+      : null;
+    var deltas = base.deltas || {};
+    var compareLabel = base.compareLabel || meta.compareLabel;
+    var moneyFn = (window.BoardMetrics && BoardMetrics.money) ? BoardMetrics.money : function (n) {
+      return "¥" + Number(n || 0).toLocaleString("zh-CN");
+    };
+
+    if (!m) {
+      return {
+        key: meta.key,
+        label: meta.label,
+        titleSuffix: meta.titleSuffix,
+        compareLabel: compareLabel,
+        rangeParam: meta.rangeParam,
+        results: {
+          leads: { value: String(base.poolLeads || 0), delta: deltas.leads || "—", deltaDir: "up", extra: "" },
+          orders: { value: String(base.totalPaidOrders || 0), delta: deltas.orders || "—", deltaDir: "up", extra: "" },
+          gmv: { value: moneyFn(base.totalGmv || 0), delta: deltas.gmv || "—", deltaDir: "up", extra: "" },
+          refund: { value: base.refundRate || "—", delta: deltas.refund || "—", deltaDir: "up", extra: "", refundCount: base.refundUsers || 0 }
+        },
+        funnel: [
+          { id: "pool", name: "入池线索", count: base.poolLeads || 0, href: "leads.html" },
+          { id: "assigned", name: "已分配", count: base.assignedLeads || 0, href: "leads.html?status=assigned" },
+          { id: "wecom", name: "已加微", count: base.wecomLeads || 0, href: "leads.html?status=wecom" },
+          { id: "paid", name: "可归因支付", count: base.attributedPayUsers || 0, href: "board-convert.html?section=attributed" }
+        ]
+      };
+    }
+
+    var fullOrders = m.fullOrders;
+    var fullGmv = m.fullGmv;
+    var refundUsers = m.fullRefundUsers;
+    var refundRate = m.fullRefundRate;
+    var dirOf = function (d) {
+      if (!d || d === "—") return "up";
+      return String(d).charAt(0) === "-" ? "down" : "up";
+    };
+
+    return {
+      key: meta.key,
+      label: meta.label,
+      titleSuffix: meta.titleSuffix,
+      compareLabel: compareLabel,
+      rangeParam: meta.rangeParam,
+      results: {
+        leads: {
+          value: String(m.poolLeads),
+          delta: deltas.leads || "—",
+          deltaDir: dirOf(deltas.leads),
+          extra: ""
+        },
+        orders: {
+          value: String(fullOrders),
+          delta: deltas.orders || "—",
+          deltaDir: dirOf(deltas.orders),
+          extra: "实收 " + moneyFn(fullGmv)
+        },
+        gmv: {
+          value: moneyFn(fullGmv),
+          delta: deltas.gmv || "—",
+          deltaDir: dirOf(deltas.gmv),
+          extra: fullOrders + " 笔"
+        },
+        refund: {
+          value: refundRate == null ? "—" : String(refundRate),
+          delta: deltas.refund || "—",
+          deltaDir: dirOf(deltas.refund),
+          extra: "退款 " + (refundUsers == null ? "—" : refundUsers) + " 人",
+          refundCount: refundUsers || 0
+        }
+      },
+      funnel: [
+        { id: "pool", name: "入池线索", count: m.poolLeads, href: "leads.html" },
+        { id: "assigned", name: "已分配", count: m.assignedLeads, href: "leads.html?status=assigned" },
+        { id: "wecom", name: "已加微", count: m.wecomLeads, href: "leads.html?status=wecom" },
+        { id: "paid", name: "可归因支付", count: m.attributedPayUsers, href: "board-convert.html?section=attributed" }
+      ]
+    };
+  }
+
+  function rangeSupported(r) {
+    return !!RANGE_META[r];
+  }
 
   /* 可选静态补充：线索/内容（audit/urge/sms/aftersale/remind 一律走 ProtoBiz） */
   var STATIC_EXTRA_TODOS = [
@@ -636,7 +671,7 @@
 
   function loadRange() {
     var r = sessionStorage.getItem(WB_CONFIG.storageRange);
-    if (r && RANGE_DATA[r]) state.range = r;
+    if (r && rangeSupported(r)) state.range = r;
   }
 
   function saveRange() {
@@ -644,7 +679,7 @@
   }
 
   function withRange(href, rangeKey) {
-    var data = RANGE_DATA[rangeKey] || RANGE_DATA.today;
+    var data = getRangeBundle(rangeKey || state.range);
     var rp = data && data.rangeParam;
     if (!rp || rp === "undefined") return href;
     try {
@@ -721,7 +756,7 @@
   }
 
   function renderResults() {
-    var data = RANGE_DATA[state.range];
+    var data = getRangeBundle(state.range);
     var r = data.results;
     document.getElementById("range-label").textContent = data.titleSuffix;
     document.getElementById("funnel-range-label").textContent = data.titleSuffix;
@@ -739,13 +774,13 @@
     document.getElementById("metric-leads").href = "leads.html?range=" + rp;
     document.getElementById("metric-orders").href = "orders.html?range=" + rp + "&status=paid";
     document.getElementById("metric-gmv").href = "orders.html?range=" + rp + "&status=paid";
-    document.getElementById("metric-refund").href = "aftersales.html?range=" + rp + "&status=refund";
+    document.getElementById("metric-refund").href = "refunds.html?range=" + rp + "&status=refund";
     var ov = document.getElementById("link-board-overview");
     var cv = document.getElementById("link-board-convert");
     var lv = document.getElementById("link-board-live");
     if (ov) ov.href = withRange("board-overview.html", state.range);
     if (cv) cv.href = withRange("board-convert.html", state.range);
-    if (lv) lv.href = withRange("board-live.html", "today");
+    if (lv) lv.href = withRange("board-live.html", state.range);
 
 
     var box = document.getElementById("result-stats");
@@ -869,7 +904,7 @@
     }
     block.classList.remove("wb-hidden");
 
-    var data = RANGE_DATA[state.range];
+    var data = getRangeBundle(state.range);
     var steps = data.funnel;
     var rates = [];
     var worstIdx = -1;
@@ -1099,7 +1134,7 @@
     try {
       var q = new URLSearchParams(location.search);
       var r = q.get("range");
-      if (r && RANGE_DATA[r]) {
+      if (r && rangeSupported(r)) {
         state.range = r;
         saveRange();
       }

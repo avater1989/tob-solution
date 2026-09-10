@@ -497,6 +497,9 @@
 </style>
 
 <script src="../assets/js/proto.js"></script>
+<script src="../assets/js/board-data.js?v=6"></script>
+<script src="../assets/js/board-metrics.js?v=11"></script>
+<script src="../assets/js/board-insights.js?v=4"></script>
 <script src="../assets/js/admin-shell.js?v=13"></script>
 <script>
 (function () {
@@ -710,6 +713,13 @@
     inp.value = parseInt(inp.value || 1) + 1;
     Proto.toast("已跳转第 " + inp.value + " 页（原型）");
   });
+
+  if (window.BoardMetrics && BoardMetrics.applyDrilldownToList) {
+    BoardMetrics.applyDrilldownToList({
+      tbody: "lead-tbody",
+      cols: { owner: 8, stage: 5 }
+    });
+  }
 })();
 </script>
 </body>

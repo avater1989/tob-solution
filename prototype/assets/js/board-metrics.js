@@ -19,11 +19,91 @@
 
   var DRILL_EXTRA_KEYS = [
     "lead_status", "owner", "stage", "follow_stage", "focus",
-    "live_id", "attribution", "product_id", "section", "transaction_type", "tab", "order_id"
+    "live_id", "selected_live", "selected_channel", "selected_term", "selected_owner", "selected_product",
+    "bottleneck_id", "live_tab", "live_sort",
+    "attribution", "product_id", "section", "transaction_type", "tab", "order_id",
+    "funnel_step", "funnel_dim", "from_board", "from", "metric", "anchor",
+    "start_date", "end_date", "dimension", "sort", "cross_filter", "view_id"
   ];
+
+  var BUSINESS_TODAY = "2026-09-10";
+  var _urlWriteMode = "replace"; /* replace | push */
+  var _popstateBound = false;
+  var _filterChangeHandlers = [];
 
   function BD() {
     return global.BoardData;
+  }
+
+  function pad2(n) { return n < 10 ? "0" + n : "" + n; }
+
+  function parseYmd(s) {
+    if (!s || !/^\d{4}-\d{2}-\d{2}$/.test(s)) return null;
+    var p = s.split("-").map(Number);
+    var d = new Date(p[0], p[1] - 1, p[2]);
+    if (d.getFullYear() !== p[0] || d.getMonth() !== p[1] - 1 || d.getDate() !== p[2]) return null;
+    return d;
+  }
+
+  function formatYmd(d) {
+    return d.getFullYear() + "-" + pad2(d.getMonth() + 1) + "-" + pad2(d.getDate());
+  }
+
+  function businessToday() {
+    return parseYmd(BUSINESS_TODAY) || new Date();
+  }
+
+  function daySpanInclusive(start, end) {
+    var a = parseYmd(start);
+    var b = parseYmd(end);
+    if (!a || !b) return null;
+    return Math.round((b - a) / 86400000) + 1;
+  }
+
+  function formatDateRangeFriendly(start, end) {
+    var a = parseYmd(start);
+    var b = parseYmd(end);
+    if (!a || !b) return "自定义日期";
+    var sameYear = a.getFullYear() === b.getFullYear();
+    var sameMonth = sameYear && a.getMonth() === b.getMonth();
+    var left = a.getFullYear() + "年" + (a.getMonth() + 1) + "月" + a.getDate() + "日";
+    var right = sameMonth
+      ? (b.getDate() + "日")
+      : (sameYear
+        ? ((b.getMonth() + 1) + "月" + b.getDate() + "日")
+        : (b.getFullYear() + "年" + (b.getMonth() + 1) + "月" + b.getDate() + "日"));
+    return left + "—" + right;
+  }
+
+  function resolveCustomProxy(start, end) {
+    var days = daySpanInclusive(start, end);
+    if (days == null) return "7d";
+    if (days <= 1) return "today";
+    if (days <= 2) return "yesterday";
+    if (days <= 10) return "7d";
+    return "30d";
+  }
+
+  function isValidCustomRange(start, end) {
+    var a = parseYmd(start);
+    var b = parseYmd(end);
+    if (!a || !b) return { ok: false, error: "请填写有效的开始与结束日期" };
+    if (a > b) return { ok: false, error: "开始日期不能晚于结束日期" };
+    var max = businessToday();
+    if (b > max) return { ok: false, error: "结束日期不能晚于当前业务日期（" + formatYmd(max) + "）" };
+    if (daySpanInclusive(start, end) > 366) return { ok: false, error: "日期范围过长，请选择一年以内" };
+    return { ok: true, error: "" };
+  }
+
+  function getDataFilters(filters) {
+    var f = Object.assign({}, filters || getFilters());
+    if (f.range === "custom") {
+      var check = isValidCustomRange(f.start_date, f.end_date);
+      f.range = check.ok ? resolveCustomProxy(f.start_date, f.end_date) : "7d";
+    } else if (!BD().ranges[f.range]) {
+      f.range = "7d";
+    }
+    return f;
   }
 
   function fmt(n) {
@@ -47,9 +127,28 @@
     return (Math.round((a / b) * 1000) / 10) + "%";
   }
 
-  function rangeLabel(range) {
+  function rangeLabel(rangeOrFilters) {
+    var f = null;
+    var range = rangeOrFilters;
+    if (rangeOrFilters && typeof rangeOrFilters === "object") {
+      f = rangeOrFilters;
+      range = f.range;
+    }
+    if (range === "custom") {
+      var start = (f && f.start_date) || (getFilters().start_date);
+      var end = (f && f.end_date) || (getFilters().end_date);
+      if (start && end) return formatDateRangeFriendly(start, end);
+      return "自定义日期";
+    }
     var map = { today: "今日", yesterday: "昨日", "7d": "近7日", "30d": "近30日" };
     return map[range] || range || "—";
+  }
+
+  function comparePeriodHint(filters) {
+    filters = filters || getFilters();
+    if (filters.range === "custom") return "与上一等长周期比较";
+    var m = { today: "较昨日", yesterday: "较前日", "7d": "较上一周期", "30d": "较上一周期" };
+    return m[filters.range] || "较上一周期";
   }
 
   function normalizeFocus(v) {
@@ -77,17 +176,32 @@
       f.src = q.get("transactionType");
     }
     if (q.get("tab") != null && q.has("tab")) f.tab = q.get("tab");
+    if (q.get("start_date")) f.start_date = q.get("start_date");
+    if (q.get("end_date")) f.end_date = q.get("end_date");
+    if (f.range === "custom") {
+      var chk = isValidCustomRange(f.start_date, f.end_date);
+      if (!chk.ok) {
+        f.range = "7d";
+        delete f.start_date;
+        delete f.end_date;
+      }
+    }
     return f;
   }
 
-  function writeUrlFilters(f) {
+  function writeUrlFilters(f, mode) {
     try {
       var q = new URLSearchParams(location.search);
       var onPrivate = /board-private\.html/.test(location.pathname || "");
-      ["range", "channel", "term", "src", "tab"].forEach(function (k) {
+      ["range", "channel", "term", "src", "tab", "start_date", "end_date"].forEach(function (k) {
         if (k === "tab") {
           if (onPrivate && f.tab) q.set("tab", f.tab);
           else q.delete("tab");
+          return;
+        }
+        if (k === "start_date" || k === "end_date") {
+          if (f.range === "custom" && f[k]) q.set(k, f[k]);
+          else q.delete(k);
           return;
         }
         if (k === "src" && !/board-convert\.html/.test(location.pathname || "")) {
@@ -103,14 +217,16 @@
       }
       var qs = q.toString();
       var next = location.pathname + (qs ? "?" + qs : "") + location.hash;
-      if (next !== location.pathname + location.search + location.hash) {
-        history.replaceState(null, "", next);
-      }
+      var cur = location.pathname + location.search + location.hash;
+      if (next === cur) return;
+      var writeMode = mode || _urlWriteMode || "replace";
+      if (writeMode === "push") history.pushState({ boardFilters: true }, "", next);
+      else history.replaceState({ boardFilters: true }, "", next);
     } catch (e) {}
   }
 
   function getFilters() {
-    var base = { range: "7d", channel: "", term: "", src: "", tab: "" };
+    var base = { range: "7d", channel: "", term: "", src: "", tab: "", start_date: "", end_date: "" };
     try {
       var raw = sessionStorage.getItem(FILTER_KEY);
       if (raw) Object.assign(base, JSON.parse(raw));
@@ -118,55 +234,128 @@
     if (!getFilters._booted) {
       var q = new URLSearchParams(location.search);
       var urlF = readUrlFilters();
-      /* URL 携带任一筛选参数时，以 URL 为准（缺失的 channel/term 视为清空，避免串页残留） */
       if (q.has("range") || q.has("channel") || q.has("term") || q.has("src") || q.has("tab") ||
-          q.has("transaction_type") || q.has("transactionType")) {
-        base = { range: "7d", channel: "", term: "", src: "", tab: "" };
-        if (!urlF.range && q.has("range") === false) {
-          /* keep default range if only other params */
-        }
+          q.has("transaction_type") || q.has("transactionType") ||
+          q.has("start_date") || q.has("end_date")) {
+        base = { range: "7d", channel: "", term: "", src: "", tab: "", start_date: "", end_date: "" };
         Object.assign(base, urlF);
         if (!base.range) base.range = "7d";
       } else {
         Object.assign(base, urlF);
       }
       getFilters._booted = true;
-      sessionStorage.setItem(FILTER_KEY, JSON.stringify({
-        range: base.range,
-        channel: base.channel || "",
-        term: base.term || "",
-        src: base.src || "",
-        tab: base.tab || ""
-      }));
-      writeUrlFilters(base);
+      persistFilters(base, "replace");
+      ensurePopstate();
     }
-    if (!BD().ranges[base.range]) base.range = "7d";
+    if (base.range === "custom") {
+      var chk = isValidCustomRange(base.start_date, base.end_date);
+      if (!chk.ok) {
+        base.range = "7d";
+        base.start_date = "";
+        base.end_date = "";
+      }
+    } else if (!BD().ranges[base.range]) {
+      base.range = "7d";
+    }
     return base;
   }
 
-  function setFilters(partial) {
+  function persistFilters(saved, mode) {
+    sessionStorage.setItem(FILTER_KEY, JSON.stringify(saved));
+    writeUrlFilters(saved, mode);
+  }
+
+  function setFilters(partial, opts) {
+    opts = opts || {};
     var cur = getFilters();
     Object.assign(cur, partial || {});
     if (partial && partial.transactionType != null && partial.src == null) {
       cur.src = partial.transactionType;
     }
-    if (!BD().ranges[cur.range]) cur.range = "7d";
+    if (cur.range === "custom") {
+      var chk = isValidCustomRange(cur.start_date, cur.end_date);
+      if (!chk.ok) {
+        cur.range = "7d";
+        cur.start_date = "";
+        cur.end_date = "";
+      }
+    } else {
+      if (!BD().ranges[cur.range]) cur.range = "7d";
+      cur.start_date = "";
+      cur.end_date = "";
+    }
     var saved = {
       range: cur.range,
       channel: cur.channel || "",
       term: cur.term || "",
       src: cur.src || "",
-      tab: cur.tab || ""
+      tab: cur.tab || "",
+      start_date: cur.start_date || "",
+      end_date: cur.end_date || ""
     };
-    sessionStorage.setItem(FILTER_KEY, JSON.stringify(saved));
-    writeUrlFilters(saved);
+    var mode = opts.urlMode || _urlWriteMode || "replace";
+    if (opts.push) mode = "push";
+    persistFilters(saved, mode);
+    _filterChangeHandlers.forEach(function (fn) {
+      try { fn(Object.assign({}, saved)); } catch (e) {}
+    });
     return Object.assign({}, saved);
   }
 
   function resetFilters(keepRange) {
     var range = keepRange ? getFilters().range : "7d";
     var tab = getFilters().tab || "";
-    return setFilters({ range: range, channel: "", term: "", src: "", tab: tab });
+    var start = keepRange && range === "custom" ? getFilters().start_date : "";
+    var end = keepRange && range === "custom" ? getFilters().end_date : "";
+    if (!keepRange) range = "7d";
+    return setFilters({
+      range: range, channel: "", term: "", src: "", tab: tab,
+      start_date: start, end_date: end
+    }, { push: true });
+  }
+
+  function onFilterChange(fn) {
+    if (typeof fn === "function") _filterChangeHandlers.push(fn);
+  }
+
+  function setUrlWriteMode(mode) {
+    _urlWriteMode = mode === "push" ? "push" : "replace";
+  }
+
+  function ensurePopstate() {
+    if (_popstateBound) return;
+    _popstateBound = true;
+    window.addEventListener("popstate", function () {
+      getFilters._booted = false;
+      var f = getFilters();
+      syncRangeUI();
+      fillFilterOptions({});
+      try {
+        var q = new URLSearchParams(location.search);
+        if (global.BoardInsights && BoardInsights.setAnalyticsState) {
+          var patch = {
+            funnelStep: q.get("funnel_step") || "pool_wecom",
+            funnelDim: q.get("funnel_dim") || "channel"
+          };
+          if (q.get("live_id")) patch.liveId = q.get("live_id");
+          if (q.get("sort")) {
+            patch.channelSort = q.get("sort");
+            patch.staffSort = q.get("sort");
+          }
+          if (q.get("dimension")) patch.dimension = q.get("dimension");
+          if (q.get("cross_filter")) {
+            try { patch.crossFilter = JSON.parse(q.get("cross_filter")); } catch (e) { patch.crossFilter = null; }
+          } else {
+            patch.crossFilter = null;
+          }
+          BoardInsights.setAnalyticsState(patch, { syncUrl: false });
+        }
+      } catch (e) {}
+      var d = applyRange(f.range, document, { skipSet: true });
+      _filterChangeHandlers.forEach(function (fn) {
+        try { fn(f, d, { fromPopstate: true }); } catch (e) {}
+      });
+    });
   }
 
   /* ---------- snapshot ---------- */
@@ -202,6 +391,7 @@
   }
 
   function sumSlices(filters) {
+    filters = getDataFilters(filters);
     var list = BD().leadSlices.filter(function (s) {
       if (s.range !== filters.range) return false;
       if (filters.channel && s.channel !== filters.channel) return false;
@@ -248,7 +438,7 @@
 
   /** 全量商品：仅 range + src/transactionType，忽略 channel/term */
   function getFullProductRows(filters) {
-    filters = filters || getFilters();
+    filters = getDataFilters(filters || getFilters());
     var src = resolveSrc(filters);
     return BD().productRows.filter(function (r) {
       if (r.range !== filters.range) return false;
@@ -263,7 +453,7 @@
   }
 
   function getLiveRows(filters) {
-    filters = filters || getFilters();
+    filters = getDataFilters(filters || getFilters());
     /* 场次只受日期、期次影响，不受获客渠道影响 */
     return BD().liveRows.filter(function (r) {
       if (r.range !== filters.range) return false;
@@ -350,7 +540,7 @@
   }
 
   function getLiveSummary(filters) {
-    filters = filters || getFilters();
+    filters = getDataFilters(filters || getFilters());
     var rows = getLiveRows(filters);
     if (rows.length) return summarizeLiveRows(rows);
     var map = BD().liveSummaries || {};
@@ -374,7 +564,7 @@
   }
 
   function getStaffRows(filters) {
-    filters = filters || getFilters();
+    filters = getDataFilters(filters || getFilters());
     var raw = BD().staffRows.filter(function (r) {
       if (r.range !== filters.range) return false;
       if (filters.channel && r.channel !== filters.channel) return false;
@@ -480,12 +670,13 @@
   }
 
   function aggregateLeadMetrics(filters) {
-    filters = filters || getFilters();
+    var display = filters || getFilters();
+    filters = getDataFilters(display);
     var base = BD().ranges[filters.range] || BD().ranges["7d"];
     var sliced = sumSlices(filters);
-    var attrScope = !!(filters.channel || filters.term);
-    var src = resolveSrc(filters);
-    var applySrc = !!(filters.applySrc || src);
+    var attrScope = !!(display.channel || display.term);
+    var src = resolveSrc(display);
+    var applySrc = !!(display.applySrc || src);
 
     var fullProducts = getFullProductRows(Object.assign({}, filters, { src: applySrc ? src : "" }));
     var liveSum = getLiveSummary(filters);
@@ -528,8 +719,12 @@
       fullRefundUsers = fp.refundUsers;
       fullRefundRate = fullGmv ? pct1(fullRefundAmount, fullGmv) : "—";
       if (applySrc && src) {
-        /* 有成交类型筛选时，支付用户无独立切片，沿用金额侧订单口径提示用 attributed 不覆盖 */
-        fullPayUsers = base.totalPayUsers;
+        /* 成交类型筛选时：支付人数按订单占比同切，避免人货比失真 */
+        var baseOrders = base.totalPaidOrders || 0;
+        var baseUsers = base.totalPayUsers || 0;
+        fullPayUsers = baseOrders
+          ? Math.max(0, Math.round(baseUsers * (fullOrders / baseOrders)))
+          : 0;
       }
     } else if (applySrc && src) {
       fullOrders = 0;
@@ -569,11 +764,11 @@
         attrRefundAmount = sliced.sum.attributedRefundAmount;
       }
     } else {
-      /* 无渠道/期次时：可归因支付用户仍来自漏斗；订单/GMV 不把全量冒充可归因金额 */
+      /* 无渠道/期次时：可归因支付用户仍来自漏斗；订单/GMV/退款均不把全量冒充可归因 */
       attrOrders = null;
       attrGmv = null;
-      attrRefundUsers = d.refundUsers;
-      attrRefundAmount = d.refundAmount;
+      attrRefundUsers = null;
+      attrRefundAmount = null;
     }
 
     d.attrTradeEmpty = !!attrTradeEmpty;
@@ -668,13 +863,21 @@
     d.stepWecom = pct(d.wecomLeads, d.assignedLeads);
     d.stepPay = pct(d.attributedPayUsers, d.wecomLeads);
     d.endRate = pct(d.attributedPayUsers, d.poolLeads);
-    d.label = base.label;
+    d.label = rangeLabel(display);
+    d.compareHint = comparePeriodHint(display);
+    d.isCustomRange = display.range === "custom";
+    d.dataRange = filters.range;
+    d.start_date = display.start_date || "";
+    d.end_date = display.end_date || "";
     d.compareLabel = base.compareLabel;
     d.deltas = base.deltas;
     d.empty = d.poolLeads === 0 && (attrScope ? attrTradeEmpty : fullOrders === 0);
     d.caliberNote = attrScope
       ? "当前交易区：可归因交易（渠道/期次筛选生效）"
       : "当前交易区：全量交易（支付事件口径）";
+    if (display.range === "custom") {
+      d.caliberNote += "；自定义日期数字为演示映射（按跨度映射至" + rangeLabel(filters.range) + "样本）";
+    }
     d.filterScopeHelp = FILTER_SCOPE_HELP;
 
     validateConsistency(d, filters);
@@ -682,7 +885,10 @@
   }
 
   function getTimingBuckets(range) {
-    var r = range || getFilters().range;
+    var r = range;
+    if (r && typeof r === "object") r = getDataFilters(r).range;
+    else if (!r) r = getDataFilters().range;
+    else if (r === "custom") r = getDataFilters().range;
     return (BD().timingBuckets[r] || BD().timingBuckets["7d"]).slice();
   }
 
@@ -821,14 +1027,25 @@
 
   function getStageDistribution(filters) {
     filters = filters || getFilters();
-    var base = BD().ranges[filters.range] || BD().ranges["7d"];
-    var sliced = sumSlices(filters);
+    var dataF = getDataFilters(filters);
+    var base = BD().ranges[dataF.range] || BD().ranges["7d"];
+    var sliced = sumSlices(Object.assign({}, dataF, { channel: filters.channel, term: filters.term }));
     var wecom = sliced.filtered ? sliced.sum.wecomLeads : base.wecomLeads;
-    return buildStageRows(wecom || 0, stageSeedKey(filters));
+    return buildStageRows(wecom || 0, stageSeedKey(dataF));
   }
 
-  function applyRange(key, root) {
-    var f = setFilters({ range: key || getFilters().range });
+  function applyRange(key, root, opts) {
+    opts = opts || {};
+    var f;
+    if (opts.skipSet) {
+      f = getFilters();
+    } else if (key === "custom") {
+      f = getFilters();
+    } else if (key) {
+      f = setFilters({ range: key, start_date: "", end_date: "" }, { push: !!opts.push });
+    } else {
+      f = getFilters();
+    }
     var d = aggregateLeadMetrics(f);
     root = root || document;
     root.querySelectorAll("[data-m]").forEach(function (el) {
@@ -868,22 +1085,72 @@
     seg.querySelectorAll("button[data-range]").forEach(function (b) {
       b.classList.toggle("active", b.getAttribute("data-range") === f.range);
     });
+    var customBtn = seg.querySelector("[data-range='custom']");
+    if (customBtn && f.range === "custom") {
+      customBtn.classList.add("active");
+      customBtn.textContent = "自定义";
+    } else if (customBtn) {
+      customBtn.textContent = "自定义";
+    }
+    var label = document.getElementById("custom-range-label");
+    if (label) {
+      if (f.range === "custom" && f.start_date && f.end_date) {
+        label.hidden = false;
+        label.textContent = rangeLabel(f);
+      } else {
+        label.hidden = true;
+        label.textContent = "";
+      }
+    }
   }
 
   function bindRange(segId, onChange) {
     var seg = document.getElementById(segId || "range-seg");
     if (!seg) return;
+    if (!seg.querySelector("[data-range='custom']")) {
+      var btn = document.createElement("button");
+      btn.type = "button";
+      btn.setAttribute("data-range", "custom");
+      btn.textContent = "自定义";
+      seg.appendChild(btn);
+    }
+    if (!document.getElementById("custom-range-label")) {
+      var span = document.createElement("span");
+      span.id = "custom-range-label";
+      span.className = "board-custom-range-label muted";
+      span.hidden = true;
+      span.style.cssText = "font-size:12px;margin-left:6px";
+      if (seg.parentNode) seg.parentNode.insertBefore(span, seg.nextSibling);
+    }
     syncRangeUI(segId);
+    ensurePopstate();
+    onFilterChange(function (payload, dMaybe, meta) {
+      if (!(meta && meta.fromPopstate)) return;
+      var f = (payload && payload.range != null) ? payload : getFilters();
+      syncRangeUI(segId);
+      var d = dMaybe || applyRange(f.range, document, { skipSet: true });
+      if (typeof onChange === "function") onChange(f.range, d, f);
+    });
     seg.addEventListener("click", function (e) {
       var b = e.target.closest("button[data-range]");
       if (!b) return;
       var key = b.getAttribute("data-range");
-      setFilters({ range: key });
+      if (key === "custom") {
+        if (global.BoardTools && BoardTools.openCustomDate) {
+          BoardTools.openCustomDate(function () {
+            syncRangeUI(segId);
+            var d = applyRange("custom", document, { skipSet: true });
+            if (typeof onChange === "function") onChange("custom", d, getFilters());
+          });
+        }
+        return;
+      }
+      setFilters({ range: key, start_date: "", end_date: "" }, { push: true });
       syncRangeUI(segId);
-      var d = applyRange(key);
+      var d = applyRange(key, document, { skipSet: true });
       if (typeof onChange === "function") onChange(key, d, getFilters());
     });
-    var d = applyRange(getFilters().range);
+    var d = applyRange(getFilters().range, document, { skipSet: true });
     if (typeof onChange === "function") onChange(getFilters().range, d, getFilters());
   }
 
@@ -954,7 +1221,10 @@
     if (!el) return;
     var f = getFilters();
     var chips = [];
-    chips.push({ key: "range", label: rangeLabel(f.range), clearable: false });
+    chips.push({ key: "range", label: rangeLabel(f), clearable: false });
+    if (f.range === "custom" && f.compareHint !== false) {
+      chips.push({ key: "mom", label: "与上一等长周期比较", clearable: false });
+    }
     if (f.channel) chips.push({ key: "channel", label: channelLabel(f.channel), clearable: true });
     else chips.push({ key: "channel", label: "全部渠道", clearable: false });
     if (f.term) chips.push({ key: "term", label: termLabel(f.term), clearable: true });
@@ -1013,6 +1283,10 @@
     var f = getFilters();
     if (f.range) params.set("range", f.range);
     else params.delete("range");
+    if (f.range === "custom" && f.start_date) params.set("start_date", f.start_date);
+    else params.delete("start_date");
+    if (f.range === "custom" && f.end_date) params.set("end_date", f.end_date);
+    else params.delete("end_date");
     if (f.channel) params.set("channel", f.channel);
     else params.delete("channel");
     if (f.term) params.set("term", f.term);
@@ -1031,11 +1305,20 @@
       else params.set(k, String(v));
     });
 
+    if (global.BoardInsights && typeof BoardInsights.getAnalyticsState === "function") {
+      var onOverview = /board-overview\.html/.test(location.pathname || "");
+      if (onOverview || extra.from_board === "overview") {
+        var st = BoardInsights.getAnalyticsState();
+        if (st.funnelStep && !params.has("funnel_step")) params.set("funnel_step", st.funnelStep);
+        if (st.funnelDim && !params.has("funnel_dim")) params.set("funnel_dim", st.funnelDim);
+      }
+    }
+
     if (params.has("focus")) {
       params.set("focus", normalizeFocus(params.get("focus")));
     }
 
-    ["range", "channel", "term", "src", "tab", "transaction_type", "transactionType"]
+    ["range", "channel", "term", "src", "tab", "transaction_type", "transactionType", "start_date", "end_date"]
       .concat(DRILL_EXTRA_KEYS)
       .forEach(function (k) {
         if (params.get(k) === "undefined" || params.get(k) === "null") params.delete(k);
@@ -1076,6 +1359,12 @@
       var tx = a.getAttribute("data-board-transaction-type");
       if (tx) extra.transaction_type = tx;
       a.setAttribute("href", buildDrilldownUrl(path, extra));
+      if (global.BoardInsights && /board-overview\.html/.test(location.pathname || "")) {
+        a.addEventListener("click", function () {
+          BoardInsights.saveReturnState();
+          BoardInsights.setAnalyticsState({ scrollAnchor: "funnel-section" });
+        });
+      }
     });
   }
 
@@ -1161,14 +1450,14 @@
     var resetBtn = document.getElementById(opts.resetId || "btn-reset");
     var refreshBtn = document.getElementById(opts.refreshId || "btn-refresh");
 
-    function run(msg) {
+    function run(msg, push) {
       var next = {
         channel: ch ? ch.value : getFilters().channel,
         term: term ? term.value : getFilters().term,
         src: src ? src.value : getFilters().src
       };
-      setFilters(next);
-      var d = applyRange(getFilters().range);
+      setFilters(next, { push: push !== false });
+      var d = applyRange(getFilters().range, document, { skipSet: true });
       wireBoardLinks();
       renderActiveFilters(opts);
       setUpdatedNow();
@@ -1180,12 +1469,21 @@
     renderActiveFilters(opts);
 
     if (queryBtn) queryBtn.onclick = function () { run("已按筛选条件更新整页"); };
+    if (opts.autoApply !== false) {
+      if (ch) ch.addEventListener("change", function () { run(); });
+      if (term) term.addEventListener("change", function () { run(); });
+      if (src) src.addEventListener("change", function () { run(); });
+      if (queryBtn) queryBtn.style.display = "none";
+    }
     if (resetBtn) {
       resetBtn.onclick = function () {
         if (ch) ch.value = "";
         if (term) term.value = "";
         if (src) src.value = "";
         resetFilters(true);
+        if (global.BoardInsights && BoardInsights.setAnalyticsState) {
+          BoardInsights.setAnalyticsState({ crossFilter: null });
+        }
         run("已重置筛选条件");
       };
     }
@@ -1207,6 +1505,17 @@
         }, 650);
       };
     }
+
+    onFilterChange(function (payload, dMaybe, meta) {
+      if (!(meta && meta.fromPopstate)) return;
+      var f = (payload && payload.range != null) ? payload : getFilters();
+      if (ch) ch.value = f.channel || "";
+      if (term) term.value = f.term || "";
+      if (src) src.value = f.src || "";
+      renderActiveFilters(opts);
+      var d = dMaybe || applyRange(f.range, document, { skipSet: true });
+      if (typeof opts.onApply === "function") opts.onApply(f.range, d, f);
+    });
   }
 
   function exportCsv(filename, headers, rows) {
@@ -1216,6 +1525,9 @@
     var meta = [
       ["# snapshotAt", snap.snapshotAt || ""],
       ["# range", f.range || ""],
+      ["# start_date", f.start_date || ""],
+      ["# end_date", f.end_date || ""],
+      ["# rangeLabel", rangeLabel(f)],
       ["# channel", f.channel || ""],
       ["# term", f.term || ""],
       ["# src", f.src || ""],
@@ -1248,17 +1560,207 @@
     var f = getFilters();
     var d = new Date();
     function p(n) { return n < 10 ? "0" + n : "" + n; }
-    var day = d.getFullYear() + p(d.getMonth() + 1) + p(d.getDate());
-    var parts = [page, f.range || "7d"];
-    if (f.term) parts.push(f.term);
-    if (f.channel) parts.push(f.channel);
+    var day = d.getFullYear() + "-" + p(d.getMonth() + 1) + "-" + p(d.getDate());
+    var rangePart = f.range === "custom" && f.start_date && f.end_date
+      ? (f.start_date + "_" + f.end_date)
+      : (rangeLabel(f).replace(/[\\/:*?"<>|]/g, "") || f.range || "7d");
+    var parts = [page, rangePart];
+    if (f.term) parts.push(termLabel(f.term) || f.term);
+    if (f.channel) parts.push(channelLabel(f.channel) || f.channel);
     parts.push(day);
-    return parts.join("-") + ".csv";
+    return parts.join("_") + ".csv";
   }
 
   function renderEmpty(tbody, cols, text) {
     if (!tbody) return;
     tbody.innerHTML = '<tr><td colspan="' + cols + '" class="muted" style="text-align:center;padding:28px">' + (text || "当前筛选条件下暂无数据") + "</td></tr>";
+  }
+
+  function slugifyOwner(name) {
+    if (!name) return "";
+    var s = String(name).replace(/\s+/g, "").trim();
+    if (!s || s === "—" || s === "-" || s === "无") return "";
+    if (s === "其他人员") return "other";
+    return s.replace(/[^\w\u4e00-\u9fff_-]/g, "") || "other";
+  }
+
+  function ensureDrillBanner(host, text, visible, total) {
+    var id = "board-drill-banner";
+    var el = document.getElementById(id);
+    if (!text) {
+      if (el) el.remove();
+      return;
+    }
+    if (!el) {
+      el = document.createElement("div");
+      el.id = id;
+      el.className = "board-tip";
+      el.style.cssText = "margin-bottom:12px;background:#f0f5ff;border-color:#adc6ff";
+      host = host || document.getElementById("page-content");
+      if (host) host.insertBefore(el, host.firstChild);
+      else return;
+    }
+    var ctx = (global.BoardInsights && BoardInsights.describeAnalyticsContext)
+      ? BoardInsights.describeAnalyticsContext()
+      : "";
+    var backHref = (global.BoardInsights && BoardInsights.buildReturnBoardUrl)
+      ? BoardInsights.buildReturnBoardUrl()
+      : ((global.BoardInsights && BoardInsights.buildReturnOverviewUrl)
+        ? BoardInsights.buildReturnOverviewUrl()
+        : "board-overview.html");
+    el.innerHTML = "<b>来自经营分析</b> · " + (ctx || text) +
+      (visible >= 0 ? " · 匹配 <b>" + visible + "</b> / " + total + " 行（演示样本）" : "") +
+      ' · <a href="' + backHref + '" style="color:var(--color-primary);margin-right:8px">返回经营分析</a>' +
+      '<a href="' + location.pathname.split("/").pop() + '" style="color:var(--color-primary)">清除筛选</a>';
+  }
+
+  /**
+   * 消费看板下钻 URL：按 owner/focus/status/stage/attribution/product_id 等过滤表格行并高亮。
+   * options.cols: { owner, stage, product, channel, payStatus, refundStatus, lastFu, promoter }
+   */
+  function applyDrilldownToList(options) {
+    options = options || {};
+    var tbody = typeof options.tbody === "string"
+      ? document.getElementById(options.tbody)
+      : options.tbody;
+    if (!tbody) return null;
+    var q;
+    try { q = new URLSearchParams(location.search); } catch (e) { return null; }
+
+    var owner = q.get("owner") || "";
+    var focus = normalizeFocus(q.get("focus") || "");
+    var status = q.get("status") || q.get("lead_status") || "";
+    var stage = q.get("stage") || q.get("follow_stage") || "";
+    var attribution = q.get("attribution") || "";
+    var productId = q.get("product_id") || "";
+    var tx = q.get("transaction_type") || q.get("src") || "";
+    var channel = q.get("channel") || "";
+    var cols = options.cols || {};
+    var labels = [];
+
+    function cell(tds, idx) {
+      if (idx == null || !tds[idx]) return "";
+      return String(tds[idx].textContent || "").replace(/\s+/g, " ").trim();
+    }
+    function ownerMatch(text, want) {
+      var a = slugifyOwner(text);
+      var b = slugifyOwner(want);
+      if (!b) return true;
+      if (b === "other") return !a;
+      return a === b || text === want;
+    }
+    function productMatch(text, pid) {
+      if (!pid) return true;
+      var head = String(text || "").split(/[\n·]/)[0].trim();
+      var slug = head.replace(/\s+/g, "_").slice(0, 40);
+      var soft = decodeURIComponent(pid).replace(/_/g, " ");
+      return slug === pid || head.indexOf(soft) >= 0 || text.indexOf(soft) >= 0 ||
+        head.replace(/\s+/g, "_").indexOf(pid) >= 0;
+    }
+
+    var channelMap = { video: "视频号", xhs: "小红书", link: "获客链接", code: "活码", manual: "手动", content: "内容", live: "直播" };
+    var stageHints = {
+      new: "新", following: "跟进", follow: "跟进", converted: "转化", invalid: "无效",
+      high: "高意向", "新加微": "新", "待首跟": "新", "跟进中": "跟进", "高意向": "高意向",
+      "已转化": "转化", "无效": "无效", "战败": "战败"
+    };
+
+    if (owner) labels.push("归属人=" + owner);
+    if (focus === "unassigned") labels.push("未分配");
+    if (focus === "no_follow") labels.push("无跟进");
+    if (focus === "attend_no_pay") labels.push("到场未支付");
+    if (focus === "sms_failed") labels.push("短信失败");
+    if (status) labels.push("状态=" + status);
+    if (stage) labels.push("阶段=" + stage);
+    if (attribution) labels.push("归因=" + (attribution === "attributed" ? "可归因" : attribution === "full" ? "全量" : attribution));
+    if (productId) labels.push("商品=" + productId);
+    if (tx) labels.push("成交类型=" + tx);
+    if (channel) labels.push("渠道=" + (channelMap[channel] || channel));
+
+    if (!labels.length) {
+      ensureDrillBanner(options.bannerHost, "", 0, 0);
+      return { visible: -1, filters: [] };
+    }
+
+    var rows = Array.prototype.slice.call(tbody.querySelectorAll("tr"));
+    var total = rows.length;
+    var visible = 0;
+    rows.forEach(function (tr) {
+      if (tr.getAttribute("data-drill-empty")) {
+        tr.remove();
+        return;
+      }
+      var tds = tr.querySelectorAll("td");
+      var ok = true;
+      if (owner && cols.owner != null && !ownerMatch(cell(tds, cols.owner), owner)) ok = false;
+      if (focus === "unassigned" && cols.owner != null) {
+        if (slugifyOwner(cell(tds, cols.owner))) ok = false;
+      }
+      if (focus === "no_follow") {
+        if (cols.lastFu != null) {
+          var lf = cell(tds, cols.lastFu);
+          if (lf && lf !== "—" && lf !== "-") ok = false;
+        } else if (cols.stage != null) {
+          var st0 = cell(tds, cols.stage);
+          if (st0.indexOf("新") < 0 && st0.indexOf("无跟进") < 0) ok = false;
+        }
+      }
+      if (focus === "attend_no_pay") {
+        if (cols.stage != null) {
+          var st1 = cell(tds, cols.stage);
+          if (st1.indexOf("跟进") < 0 && st1.indexOf("高意向") < 0) ok = false;
+        }
+        if (cols.lastFu != null && cell(tds, cols.lastFu) === "—") ok = false;
+      }
+      if (status === "assigned" && cols.owner != null && !slugifyOwner(cell(tds, cols.owner))) ok = false;
+      if (status === "wecom" && cols.owner != null && !slugifyOwner(cell(tds, cols.owner))) ok = false;
+      if ((status === "paid" || status === "done") && cols.payStatus != null) {
+        var ps = cell(tds, cols.payStatus);
+        if (ps.indexOf("已支付") < 0 && ps.indexOf("已完成") < 0) ok = false;
+      }
+      if (status === "refund") {
+        var rf = cell(tds, cols.payStatus) + " " + cell(tds, cols.refundStatus);
+        if (rf.replace(/\s+/g, "") && rf.indexOf("退") < 0 && rf.indexOf("审核") < 0 && rf.indexOf("驳回") < 0) ok = false;
+      }
+      if (stage && cols.stage != null) {
+        var st = cell(tds, cols.stage);
+        var hint = stageHints[stage] || stage;
+        if (st.indexOf(hint) < 0 && st.indexOf(stage) < 0) ok = false;
+      }
+      if (productId && cols.product != null && !productMatch(cell(tds, cols.product), productId)) ok = false;
+      if (attribution === "attributed" && cols.channel != null) {
+        var ch = cell(tds, cols.channel);
+        if (ch.indexOf("视频号") < 0 && ch.indexOf("直播") < 0) ok = false;
+      }
+      if (tx && (cols.product != null || cols.channel != null)) {
+        var blob = cell(tds, cols.product) + " " + cell(tds, cols.channel);
+        var txOk = true;
+        if (tx === "内容课" || tx === "content") txOk = /课|训练营|精讲/.test(blob) && blob.indexOf("视频号") < 0 && blob.indexOf("直播") < 0;
+        else if (tx === "直播带货" || tx === "live") txOk = blob.indexOf("直播") >= 0;
+        else if (tx === "视频号" || tx === "video") txOk = blob.indexOf("视频号") >= 0;
+        else if (tx === "其他" || tx === "other") txOk = blob.indexOf("其他") >= 0;
+        if (!txOk) ok = false;
+      }
+      if (channel && cols.channel != null) {
+        var wantCh = channelMap[channel] || channel;
+        if (cell(tds, cols.channel).indexOf(wantCh) < 0) ok = false;
+      }
+
+      tr.style.display = ok ? "" : "none";
+      tr.style.background = ok ? "rgba(22,93,255,0.06)" : "";
+      if (ok) visible += 1;
+    });
+
+    if (visible === 0 && rows.length) {
+      var empty = document.createElement("tr");
+      empty.setAttribute("data-drill-empty", "1");
+      var colCount = (rows[0] && rows[0].children.length) || 8;
+      empty.innerHTML = '<td colspan="' + colCount + '" class="muted" style="text-align:center;padding:28px">当前下钻条件下暂无匹配行（原型示意）</td>';
+      tbody.appendChild(empty);
+    }
+
+    ensureDrillBanner(options.bannerHost, labels.join(" · "), visible, total);
+    return { visible: visible, filters: labels, total: total };
   }
 
   var RANGES = BD() ? BD().ranges : {};
@@ -1274,9 +1776,22 @@
     pct: pct,
     pct1: pct1,
     rangeLabel: rangeLabel,
+    comparePeriodHint: comparePeriodHint,
     getFilters: getFilters,
     setFilters: setFilters,
     resetFilters: resetFilters,
+    getDataFilters: getDataFilters,
+    onFilterChange: onFilterChange,
+    setUrlWriteMode: setUrlWriteMode,
+    isValidCustomRange: isValidCustomRange,
+    formatDateRangeFriendly: formatDateRangeFriendly,
+    businessToday: businessToday,
+    BUSINESS_TODAY: BUSINESS_TODAY,
+    formatYmd: formatYmd,
+    parseYmd: parseYmd,
+    channelLabel: channelLabel,
+    termLabel: termLabel,
+    srcLabel: srcLabel,
     getRangeData: getRangeData,
     aggregateLeadMetrics: aggregateLeadMetrics,
     getProductRows: getProductRows,
@@ -1304,6 +1819,8 @@
     exportCsv: exportCsv,
     exportFileName: exportFileName,
     renderEmpty: renderEmpty,
+    applyDrilldownToList: applyDrilldownToList,
+    slugifyOwner: slugifyOwner,
     syncRangeUI: syncRangeUI,
     getTimingBuckets: getTimingBuckets,
     getLeadSlices: function (filters) {
