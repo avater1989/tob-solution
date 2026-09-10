@@ -147,7 +147,7 @@
   </div>
 
   <div class="wb-tip" id="wb-tip">
-    <p id="wb-tip-text"><b>星启家庭教育</b> · 建议优先处理未分配线索与 L003 待内部复核，并推进今晚公开课预约提醒与直播促到SOP。</p>
+    <p id="wb-tip-text"><b>星启家庭教育</b> · 建议优先处理未分配线索与 L003 待内部复核；今晚公开课的预约提醒与直播促到SOP已排期，由系统执行，关注失败重试即可。</p>
     <a class="btn btn-sm" id="wb-tip-cta" href="live-audit.html?status=pending">去内部复核工作台</a>
   </div>
 
@@ -281,7 +281,7 @@
 <script src="../assets/js/proto.js"></script>
 <script src="../assets/js/board-data.js?v=5"></script>
 <script src="../assets/js/board-metrics.js?v=10"></script>
-<script src="../assets/js/admin-shell.js?v=14"></script>
+<script src="../assets/js/admin-shell.js?v=15"></script>
 <script>
 (function () {
   /* ========== 原型配置 ========== */
@@ -299,7 +299,7 @@
     admin: {
       id: "admin",
       label: "商户管理员",
-      tip: "<b>星启家庭教育</b> · 建议优先处理未分配线索与 L003 待内部复核，并推进今晚公开课预约提醒与直播促到SOP。",
+      tip: "<b>星启家庭教育</b> · 建议优先处理未分配线索与 L003 待内部复核；今晚公开课的预约提醒与直播促到SOP已排期，由系统执行，关注失败重试即可。",
       tipCta: { href: "live-audit.html?status=pending", text: "去内部复核工作台" },
       create: ["series", "live", "urge", "lead"],
       entry: ["content", "lives", "channels", "leads"],
@@ -312,7 +312,7 @@
     sales: {
       id: "sales",
       label: "助教/销售",
-      tip: "<b>助教视角</b> · 先消化未分配线索与直播促到SOP任务，跟进加微后再推进成交；今晚公开课预约提醒待执行。",
+      tip: "<b>助教视角</b> · 先消化未分配线索与短信失败重试，跟进加微后再推进成交；已排期的预约提醒与直播促到SOP由系统执行。",
       tipCta: { href: "leads.html?focus=unassigned", text: "去线索池" },
       create: ["urge", "lead"],
       entry: ["leads", "lives", "channels"],
@@ -511,6 +511,7 @@
     if (t.badge) return t.badge;
     if (t.type === "aftersale") return "badge-danger";
     if (t.type === "audit" || t.type === "sms") return "badge-warn";
+    if (t.type === "follow" || t.kind === "suggestion") return "badge-info";
     if (t.type === "urge" || t.type === "lead" || t.type === "content" || t.type === "remind") return "badge-info";
     return "";
   }
@@ -879,7 +880,8 @@
       var mode = t.completeMode || "business";
       var st = state.doneIds[t.id] ? "done" : (state.bizIds[t.id] || t.status);
       var statusLabel = st === "done" ? "已完成" : (st === "processing" ? "处理中" : t.statusLabel);
-      var actions = '<a href="' + t.href + '" data-biz="' + t.id + '">去处理</a>';
+      var actions = '<a href="' + t.href + '" data-biz="' + t.id + '">' +
+        ((t.kind === "suggestion" || mode === "manual") ? "去查看" : "去处理") + "</a>";
       if (mode === "manual" && st !== "done") {
         actions += ' <button type="button" class="btn btn-sm btn-ghost" data-done="' + t.id + '">完成</button>';
       }

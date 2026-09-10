@@ -5,8 +5,8 @@
  * - 兼容旧参数：liveId / spring03 / live-spring-03 等
  */
 (function (global) {
-  var STORE_KEY = "proto_biz_store_v4";
-  var VERSION = 4;
+  var STORE_KEY = "proto_biz_store_v5";
+  var VERSION = 5;
   var DEMO_NOW = "2026-09-09 16:00:00";
 
   var LIVE_ALIASES = {
@@ -284,8 +284,9 @@
         {
           id: "TODO_FOLLOW_001",
           type: "follow",
-          typeLabel: "跟进",
+          typeLabel: "建议",
           completeMode: "manual",
+          kind: "suggestion",
           title: "企微流失提醒 6 人 · 建议挽回",
           owner: "赵老师",
           mine: true,
@@ -294,7 +295,7 @@
           sla: "ok",
           slaLabel: "正常",
           status: "pending",
-          statusLabel: "待处理",
+          statusLabel: "建议",
           href: "wecom-churn.html?focus=today",
           roles: ["admin", "sales"]
         }
@@ -593,58 +594,57 @@
       }
     });
 
+    /* 已排期的直播促到SOP / 预约提醒：由系统调度执行，不进入待办中心。
+       仅在「未配置」时生成人工待办（草稿 SOP、未配置提醒）。 */
     data.sops.forEach(function (s) {
-      if (s.status === "scheduled" || s.status === "draft") {
-        var live = getLive(s.liveId);
-        if (live && live.auditStatus === "approved" && (s.status === "scheduled" || (s.status === "draft" && s.liveId === "L001"))) {
-          /* L001 scheduled SOP is the main pending urge; draft SOP003 waits until live approved */
-        }
-        if (s.status === "scheduled") {
-          todos.push({
-            id: "TODO_SOP_" + s.id,
-            type: "urge",
-            typeLabel: "直播促到SOP",
-            completeMode: "business",
-            title: (live ? live.name : s.liveId) + " · 直播促到SOP待启动 · 目标 " + (s.targetCount || s.targetUsers || 0) + " 人",
-            owner: s.owner || "赵老师",
-            mine: true,
-            dueLabel: "今天 17:30",
-            dueSort: 2,
-            sla: "near",
-            slaLabel: "临近超时",
-            status: "pending",
-            statusLabel: "待处理",
-            href: "live-invite.html?live_id=" + s.liveId + "&focus=pending",
-            roles: ["admin", "sales"],
-            liveId: s.liveId,
-            sopId: s.id
-          });
-        }
-      }
+      if (s.status !== "draft") return;
+      var live = getLive(s.liveId);
+      if (!live || live.auditStatus !== "approved") return;
+      if (live.execStatus === "ended" || live.liveStatus === "ended") return;
+      todos.push({
+        id: "TODO_SOP_CFG_" + s.id,
+        type: "urge",
+        typeLabel: "直播促到SOP",
+        completeMode: "business",
+        title: (live.name || s.liveId) + " · 直播促到SOP未配置完成",
+        owner: s.owner || "赵老师",
+        mine: true,
+        dueLabel: live.startAt || "待定",
+        dueSort: 2,
+        sla: "near",
+        slaLabel: "临近开播",
+        status: "pending",
+        statusLabel: "待处理",
+        href: "live-invite.html?live_id=" + s.liveId,
+        roles: ["admin", "sales"],
+        liveId: s.liveId,
+        sopId: s.id
+      });
     });
 
-    /* also remind pending for L001 */
-    var l1 = getLive("L001");
-    if (l1 && l1.remindStatus === "pending") {
+    data.lives.forEach(function (l) {
+      if (l.remindStatus !== "none") return;
+      if (l.auditStatus !== "approved") return;
+      if (l.execStatus === "ended" || l.liveStatus === "ended") return;
       todos.push({
-        id: "TODO_REMIND_L001",
+        id: "TODO_REMIND_CFG_" + l.id,
         type: "remind",
         typeLabel: "预约提醒",
         completeMode: "business",
-        title: "今晚直播预约提醒待执行 · 已预约 " + l1.bookedUsers + " 人",
+        title: l.name + " · 预约提醒未配置",
         owner: "赵老师",
         mine: true,
-        dueLabel: "今天 19:00",
+        dueLabel: l.startAt || "待定",
         dueSort: 2,
         sla: "near",
-        slaLabel: "临近超时",
+        slaLabel: "临近开播",
         status: "pending",
         statusLabel: "待处理",
-        href: "live-booking.html?live_id=L001&tab=reminders",
+        href: "live-booking.html?live_id=" + l.id + "&tab=reminders",
         roles: ["admin", "sales"],
-        liveId: "L001"
+        liveId: l.id
       });
-    }
+    });
 
     var failed = getChannelOrders("failed");
     if (failed.length) {
