@@ -13,18 +13,17 @@
 </div>
 <div id="page-content" style="display:none">
 
-  <!-- 购物车设置 -->
-  <div class="card" style="margin-bottom:12px"><div class="card-hd"><h2>购物车设置</h2><span class="muted" style="font-size:12px">合并下单、提升客单价</span></div>
+  <!-- 下单设置 -->
+  <div class="card" style="margin-bottom:12px"><div class="card-hd"><h2>下单设置</h2><span class="muted" style="font-size:12px">合并下单、提升客单价</span></div>
     <div class="card-bd">
       <div class="setting-row">
-        <div><b>开启购物车</b><p class="muted" style="font-size:12px;margin-top:2px">开启后 C 端详情页展示「加入购物车」，支持多商品合单支付与组合运费</p></div>
+        <div><b>开启合并下单</b><p class="muted" style="font-size:12px;margin-top:2px">开启后 C 端支持多门课程 / 服务一次性下单支付（虚拟商品无运费与物流环节）</p></div>
         <span class="switch on" id="sw-cart"></span>
       </div>
-      <div class="field" style="margin-top:14px"><label>支持加入购物车的商品类型</label>
+      <div class="field" style="margin-top:14px"><label>支持合并下单的商品类型</label>
         <div class="checks">
-          <label><input type="checkbox" checked /> 实物商品</label>
           <label><input type="checkbox" checked /> 知识商品</label>
-          <label><input type="checkbox" /> 服务商品</label>
+          <label><input type="checkbox" checked /> 服务商品</label>
           <label><input type="checkbox" /> 组合商品</label>
         </div>
       </div>
@@ -38,40 +37,40 @@
         <div class="field"><label>待付款订单关闭时间</label>
           <select style="width:100%;padding:7px 8px;border:1px solid var(--color-border);border-radius:6px"><option>30 分钟</option><option selected>2 小时</option><option>24 小时</option></select>
         </div>
-        <div class="field"><label>取消后商品库存释放</label>
-          <select style="width:100%;padding:7px 8px;border:1px solid var(--color-border);border-radius:6px"><option>关闭订单后立即释放</option><option>订单关闭 24h 后释放</option></select>
+        <div class="field"><label>支付成功开通权益</label>
+          <select style="width:100%;padding:7px 8px;border:1px solid var(--color-border);border-radius:6px"><option selected>立即自动开通</option><option>支付后 5 分钟开通</option></select>
         </div>
-        <div class="field"><label>收货确认方式</label>
-          <select style="width:100%;padding:7px 8px;border:1px solid var(--color-border);border-radius:6px"><option>买家确认收货</option><option selected>自动确认收货（发货后 15 天）</option></select>
+        <div class="field"><label>课程权益有效期</label>
+          <select style="width:100%;padding:7px 8px;border:1px solid var(--color-border);border-radius:6px"><option selected>永久有效</option><option>按课程周期（系列课 / 计划）</option><option>自定义天数</option></select>
         </div>
         <div class="field"><label>可退款订单时长</label>
-          <select style="width:100%;padding:7px 8px;border:1px solid var(--color-border);border-radius:6px"><option>1 年内订单可发起</option><option>不限制</option></select>
+          <select style="width:100%;padding:7px 8px;border:1px solid var(--color-border);border-radius:6px"><option selected>1 年内订单可发起</option><option>不限制</option></select>
         </div>
       </div>
-      <p class="muted" style="font-size:12px;margin-top:6px">付款成功提醒已开启（设置-消息推送）。服务商模式账户余额不足时无法退款。</p>
+      <p class="muted" style="font-size:12px;margin-top:6px">付款成功提醒已开启（系统管理-消息推送）。通联支付账户可退余额不足时无法退款。</p>
     </div>
   </div>
 
-  <!-- 售后设置 -->
-  <div class="card" style="margin-bottom:12px"><div class="card-hd"><h2>售后设置</h2></div>
+  <!-- 退款设置 -->
+  <div class="card" style="margin-bottom:12px"><div class="card-hd"><h2>退款设置</h2><span class="muted" style="font-size:12px">虚拟商品不适用 7 天无理由退货</span></div>
     <div class="card-bd">
       <div class="setting-row">
-        <div><b>7 天无理由退货（实物商品）</b><p class="muted" style="font-size:12px;margin-top:2px">符合规则的商品在 C 端展示服务标识，签收后 168 小时内可申请</p></div>
+        <div><b>未使用可退款</b><p class="muted" style="font-size:12px;margin-top:2px">购买后未开始学习 / 服务未核销的订单，可在 7 天内申请退款</p></div>
         <span class="switch on"></span>
       </div>
       <div class="setting-row" style="margin-top:12px">
-        <div><b>支持上门取件退货</b><p class="muted" style="font-size:12px;margin-top:2px">需接入快递上门取件服务/运费险</p></div>
+        <div><b>已学习部分按比例退款</b><p class="muted" style="font-size:12px;margin-top:2px">按已学课节占比扣除后退款，需商家人工审核确认</p></div>
         <span class="switch"></span>
       </div>
       <div class="form-grid" style="grid-template-columns:1fr 1fr 1fr;gap:12px 16px;margin-top:14px">
         <div class="field"><label>商家处理超时</label>
           <select style="width:100%;padding:7px 8px;border:1px solid var(--color-border);border-radius:6px"><option selected>7 天自动同意</option><option>3 天自动同意</option><option>不自动同意</option></select>
         </div>
-        <div class="field"><label>买家退货超时</label>
-          <select style="width:100%;padding:7px 8px;border:1px solid var(--color-border);border-radius:6px"><option selected>7 天自动关闭</option><option>15 天自动关闭</option></select>
+        <div class="field"><label>退款后权益处理</label>
+          <select style="width:100%;padding:7px 8px;border:1px solid var(--color-border);border-radius:6px"><option selected>自动回收课程权益</option><option>保留权益（需人工选择）</option></select>
         </div>
-        <div class="field"><label>售后申请时限</label>
-          <select style="width:100%;padding:7px 8px;border:1px solid var(--color-border);border-radius:6px"><option>确认收货后 7 天</option><option selected>确认收货后 14 天</option></select>
+        <div class="field"><label>退款申请时限</label>
+          <select style="width:100%;padding:7px 8px;border:1px solid var(--color-border);border-radius:6px"><option selected>支付后 7 天内</option><option>支付后 14 天内</option></select>
         </div>
       </div>
     </div>
@@ -81,7 +80,7 @@
   <div class="card"><div class="card-hd"><h2>评价与其他</h2></div>
     <div class="card-bd">
       <div class="setting-row">
-        <div><b>实物商品收货后评价</b><p class="muted" style="font-size:12px;margin-top:2px">收货后 30 天内可评价，支持图文与评分；商家可回复一次</p></div>
+        <div><b>课程学完后评价</b><p class="muted" style="font-size:12px;margin-top:2px">课程完课后可评价，支持图文与评分；商家可回复一次</p></div>
         <span class="switch on"></span>
       </div>
       <div class="setting-row" style="margin-top:12px">

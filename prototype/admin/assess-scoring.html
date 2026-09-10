@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>评分规则配置 · 商家管理后台</title>
+<link rel="stylesheet" href="../assets/css/proto.css?v=9" />
+<link rel="stylesheet" href="../assets/css/assess.css?v=3" />
+</head>
+<body class="admin-body" data-module="content" data-nav="assess-projects" data-title="评分规则配置" data-crumb="商家管理后台 / 内容 / 测评管理 / 评分规则">
+
+<div id="header-actions">
+  <a class="btn" href="assess-projects.html">返回项目列表</a>
+  <button class="btn btn-primary" id="btn-save">保存配置</button>
+</div>
+
+<div id="page-content" style="display:none">
+  <a href="assess-projects.html" style="display:inline-flex;color:#165dff;font-size:13px;margin-bottom:12px;text-decoration:none">← 返回项目列表</a>
+
+  <div id="sync-banner" style="display:none"></div>
+
+  <div class="cm-page-hd" style="margin-bottom:14px">
+    <h1 style="margin:0 0 4px;font-size:22px">评分规则配置</h1>
+    <p class="muted" style="margin:0;font-size:13px">为 <b id="p-name">亲子沟通能力测评</b> 配置评分规则和结果判定</p>
+  </div>
+
+  <div style="display:flex;gap:16px;align-items:center;background:#fff;border:1px solid #e8e8e8;border-radius:10px;padding:14px 16px;margin-bottom:14px">
+    <div>
+      <div style="font-weight:600" id="p-name2">亲子沟通能力测评</div>
+      <div class="muted" style="font-size:12px;margin-top:2px"><span id="p-desc">评估家长与孩子的沟通模式与冲突处理</span> · <span id="p-q">2</span> 道题目</div>
+    </div>
+    <div style="margin-left:auto;text-align:right">
+      <div class="muted" style="font-size:11px">理论最高分</div>
+      <div style="font-size:22px;font-weight:700;color:#165dff" id="p-max">6.0</div>
+    </div>
+  </div>
+
+  <div class="as-tabs" id="mode-tabs">
+    <a href="#" class="active" data-mode="seg">整体分值分段</a>
+    <a href="#" data-mode="combo">题目组合评分</a>
+    <a href="#" data-mode="script">自定义脚本</a>
+  </div>
+
+  <div id="panel-seg">
+    <div class="card" style="margin-bottom:12px"><div class="card-bd">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+        <div>
+          <div style="font-weight:600">整体测评累计分值分段结果</div>
+          <div class="muted" style="font-size:12px">根据测评总分设置不同分数段的评估结果</div>
+        </div>
+        <button class="btn" id="btn-add-seg">+ 添加分段</button>
+      </div>
+      <div id="seg-list"></div>
+      <div class="as-banner" style="margin-top:12px;margin-bottom:0">
+        配置提示：分段范围应覆盖所有可能分数且互不重叠；理论最高分为 <b id="tip-max">6.0</b> 分。
+      </div>
+    </div></div>
+  </div>
+
+  <div id="panel-combo" style="display:none">
+    <div class="card"><div class="card-bd">
+      <p class="muted">按题目组合加权计分（原型演示）。例如：倾听表达维度题目权重 ×2，规则边界维度 ×1。</p>
+      <div class="as-seg">倾听表达维度 · 权重 2.0 · 含 2 题</div>
+      <div class="as-seg">规则边界维度 · 权重 1.0 · 含 0 题</div>
+    </div></div>
+  </div>
+
+  <div id="panel-script" style="display:none">
+    <div class="card"><div class="card-bd">
+      <label style="font-size:13px;font-weight:500">自定义脚本（只读演示）</label>
+      <textarea class="input" rows="8" style="font-family:ui-monospace,monospace;font-size:12px;margin-top:8px" readonly>function score(answers) {
+  var total = answers.reduce((s,a) => s + a.value, 0);
+  if (total <= 30) return { level: "低风险", tip: "继续保持" };
+  if (total <= 60) return { level: "中等风险", tip: "建议调节" };
+  return { level: "高风险", tip: "寻求专业支持" };
+}</textarea>
+    </div></div>
+  </div>
+</div>
+
+<script src="../assets/js/proto.js"></script>
+<script src="../assets/js/admin-shell.js?v=13"></script>
+<script>
+var META = {
+  MP01:{ name:"亲子沟通能力测评", desc:"评估家长与孩子的沟通模式与冲突处理", q:2, max:"6.0", source:"self" },
+  MP02:{ name:"家庭教育风格测评", desc:"识别家庭教养风格与边界设定倾向", q:1, max:"2.0", source:"self" },
+  MP03:{ name:"青春期沟通测评", desc:"面向青春期家庭的沟通评估", q:5, max:"15.0", source:"self" },
+  PP01:{ name:"心理健康测评", desc:"综合心理健康评估", q:1, max:"3.0", source:"platform" },
+  PP02:{ name:"学习能力诊断", desc:"评估学习风格与能力结构", q:12, max:"36.0", source:"platform" },
+  PP03:{ name:"情绪调节问卷", desc:"评估情绪调节能力与压力应对", q:5, max:"15.0", source:"platform" }
+};
+var qs = new URLSearchParams(location.search);
+var id = qs.get("id") || "MP01";
+var meta = META[id] || META.MP01;
+var SYNC = meta.source === "platform" || qs.get("sync") === "1";
+["p-name","p-name2"].forEach(function(k){ document.getElementById(k).textContent = meta.name; });
+document.getElementById("p-desc").textContent = meta.desc;
+document.getElementById("p-q").textContent = meta.q;
+document.getElementById("p-max").textContent = meta.max;
+document.getElementById("tip-max").textContent = meta.max;
+if (SYNC) {
+  document.getElementById("sync-banner").style.display = "";
+  document.getElementById("sync-banner").innerHTML =
+    '<div class="as-banner" style="background:#f9f0ff;border-color:#d3adf7;color:#531dab">「'+meta.name+'」由运营后台同步下发，评分规则只读，仅可查看。</div>';
+  var sb = document.getElementById("btn-save"); sb.disabled = true; sb.style.opacity = ".5";
+  var ab = document.getElementById("btn-add-seg"); ab.disabled = true; ab.style.opacity = ".5";
+}
+
+var SEGS = [
+  { min:0, max:30, title:"沟通良好", desc:"亲子沟通模式健康，继续保持" },
+  { min:31, max:60, title:"有待改善", desc:"沟通以单向输出为主，建议学习倾听技巧" },
+  { min:61, max:100, title:"需要重视", desc:"冲突频发，建议系统学习并寻求专业指导" }
+];
+
+function renderSegs(){
+  document.getElementById("seg-list").innerHTML = SEGS.map(function(s,i){
+    var delBtn = SYNC
+      ? '<span class="as-tag gray">平台同步 · 只读</span>'
+      : '<button class="btn" data-del-seg="'+i+'" style="color:#f53f3f;border-color:#ffa39e">删除分段</button>';
+    var ro = SYNC ? " disabled" : "";
+    return '<div class="as-seg" data-i="'+i+'">' +
+      '<div class="as-seg-hd"><div><span class="as-seg-num">'+(i+1)+'</span><span style="font-size:12px;color:#8c8c8c">分数范围: '+s.min+' - '+s.max+'</span></div>' +
+      delBtn+'</div>' +
+      '<div class="form-grid" style="grid-template-columns:1fr 1fr 1fr 1.4fr">' +
+        '<div class="field"><label>最小分值</label><input class="input" type="number" data-f="min" data-i="'+i+'" value="'+s.min+'"'+ro+' /></div>' +
+        '<div class="field"><label>最大分值</label><input class="input" type="number" data-f="max" data-i="'+i+'" value="'+s.max+'"'+ro+' /></div>' +
+        '<div class="field"><label>结果标题</label><input class="input" data-f="title" data-i="'+i+'" value="'+s.title+'"'+ro+' /></div>' +
+        '<div class="field"><label>结果描述</label><input class="input" data-f="desc" data-i="'+i+'" value="'+s.desc+'"'+ro+' /></div>' +
+      '</div></div>';
+  }).join("");
+}
+
+document.getElementById("mode-tabs").addEventListener("click", function(e){
+  var a = e.target.closest("[data-mode]"); if (!a) return; e.preventDefault();
+  document.querySelectorAll("#mode-tabs a").forEach(function(x){x.classList.remove("active");});
+  a.classList.add("active");
+  var m = a.getAttribute("data-mode");
+  document.getElementById("panel-seg").style.display = m==="seg"?"":"none";
+  document.getElementById("panel-combo").style.display = m==="combo"?"":"none";
+  document.getElementById("panel-script").style.display = m==="script"?"":"none";
+});
+
+document.getElementById("btn-add-seg").onclick = function(){
+  if (SYNC) { Proto.toast("平台同步测评的评分规则由平台维护"); return; }
+  var last = SEGS[SEGS.length-1];
+  SEGS.push({ min:(last?last.max+1:0), max:(last?last.max+20:20), title:"新分段", desc:"" });
+  renderSegs();
+};
+
+document.addEventListener("click", function(e){
+  var d = e.target.closest("[data-del-seg]");
+  if (d) {
+    if (SYNC) { Proto.toast("平台同步测评的评分规则由平台维护"); return; }
+    SEGS.splice(+d.getAttribute("data-del-seg"),1); renderSegs();
+  }
+});
+document.addEventListener("change", function(e){
+  var inp = e.target.closest("[data-f]");
+  if (!inp) return;
+  var i = +inp.getAttribute("data-i"), f = inp.getAttribute("data-f");
+  SEGS[i][f] = f==="min"||f==="max" ? +inp.value : inp.value;
+});
+
+document.getElementById("btn-save").onclick = function(){
+  if (SYNC) { Proto.toast("平台同步测评的评分规则由平台维护"); return; }
+  Proto.toast("评分规则已保存");
+};
+renderSegs();
+</script>
+</body>
+</html>

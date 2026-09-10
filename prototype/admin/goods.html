@@ -16,8 +16,8 @@
 
   <!-- 顶部统计 -->
   <div class="grid-4" style="margin-bottom:16px">
-    <div class="stat"><div class="label">在售商品</div><div class="value">36</div><div class="hint">实物 12 · 知识 18 · 服务 6</div></div>
-    <div class="stat"><div class="label">库存预警</div><div class="value">3</div><div class="hint">库存 ≤ 10 件</div></div>
+    <div class="stat"><div class="label">在售商品</div><div class="value">36</div><div class="hint">知识 24 · 服务 12</div></div>
+    <div class="stat"><div class="label">待上架</div><div class="value">3</div><div class="hint">草稿 2 · 定时上架 1</div></div>
     <div class="stat"><div class="label">本月上新</div><div class="value">7</div><div class="hint">上架中 5 · 草稿 2</div></div>
     <div class="stat"><div class="label">商品总销量</div><div class="value">1,284</div><div class="hint">近 30 天 +126</div></div>
   </div>
@@ -25,7 +25,6 @@
   <!-- 类型/状态 Tab -->
   <div class="tabs" id="gd-tabs">
     <a class="active" href="#" data-tab="all">全部</a>
-    <a href="#" data-tab="physical">实物商品</a>
     <a href="#" data-tab="knowledge">知识商品</a>
     <a href="#" data-tab="service">服务商品</a>
     <a href="#" data-tab="combo">组合商品</a>
@@ -41,7 +40,7 @@
       <input id="f-name" placeholder="商品名称 / ID" />
       <select id="f-type">
         <option value="">商品类型</option>
-        <option>实物商品</option><option>知识商品</option><option>服务商品</option><option>组合商品</option>
+        <option>知识商品</option><option>服务商品</option><option>组合商品</option>
       </select>
       <select id="f-cat">
         <option value="">商品分组</option>
@@ -68,7 +67,6 @@
           <th>类型</th>
           <th>分组</th>
           <th>价格</th>
-          <th>库存</th>
           <th>总销量</th>
           <th>访问数据</th>
           <th>状态</th>
@@ -83,7 +81,6 @@
           <td><span class="tag tag-blue">知识商品</span></td>
           <td>家长课堂</td>
           <td><b>¥9.90</b></td>
-          <td>—</td>
           <td>1,020</td>
           <td>UV 8,431<br><span class="muted">PV 12,866</span></td>
           <td><span class="badge badge-success">上架中</span></td>
@@ -96,11 +93,10 @@
         </tr>
         <tr>
           <td><input type="checkbox" /></td>
-          <td><div class="gd-cell"><span class="thumb t-green">书</span><div><b>青春期沟通家长手册（纸书）</b><br><span class="muted" style="font-size:12px">ID P2026090102</span></div></div></td>
-          <td><span class="tag tag-green">实物商品</span></td>
-          <td>教辅周边</td>
+          <td><div class="gd-cell"><span class="thumb t-green">册</span><div><b>家庭教育指导手册（电子版）</b><br><span class="muted" style="font-size:12px">ID P2026090102 · 图文</span></div></div></td>
+          <td><span class="tag tag-blue">知识商品</span></td>
+          <td>家长课堂</td>
           <td><b>¥39.00</b></td>
-          <td><span style="color:#f53f3f">8</span></td>
           <td>126</td>
           <td>UV 1,203<br><span class="muted">PV 1,986</span></td>
           <td><span class="badge badge-success">上架中</span></td>
@@ -117,7 +113,6 @@
           <td><span class="tag tag-orange">服务商品</span></td>
           <td>家长课堂</td>
           <td><b>¥199.00</b></td>
-          <td>—</td>
           <td>58</td>
           <td>UV 342<br><span class="muted">PV 501</span></td>
           <td><span class="badge badge-success">上架中</span></td>
@@ -130,11 +125,10 @@
         </tr>
         <tr>
           <td><input type="checkbox" /></td>
-          <td><div class="gd-cell"><span class="thumb t-purple">组</span><div><b>亲子沟通全套课 + 手册</b><br><span class="muted" style="font-size:12px">ID P2026070120 · 组合价</span></div></div></td>
+          <td><div class="gd-cell"><span class="thumb t-purple">组</span><div><b>亲子沟通全套课 + 1v1 咨询</b><br><span class="muted" style="font-size:12px">ID P2026070120 · 组合价</span></div></div></td>
           <td><span class="tag tag-purple">组合商品</span></td>
-          <td>学科提分</td>
+          <td>家长课堂</td>
           <td><b>¥199.00</b><br><span class="muted" style="font-size:12px">合 ¥249.00</span></td>
-          <td>—</td>
           <td>32</td>
           <td>UV 208<br><span class="muted">PV 299</span></td>
           <td><span class="badge badge-warn">已下架</span></td>
@@ -147,11 +141,10 @@
         </tr>
         <tr>
           <td><input type="checkbox" /></td>
-          <td><div class="gd-cell"><span class="thumb t-gray">草</span><div><b>幼小衔接学习礼盒（草稿）</b><br><span class="muted" style="font-size:12px">ID P2026090105</span></div></div></td>
-          <td><span class="tag">实物商品</span></td>
+          <td><div class="gd-cell"><span class="thumb t-gray">草</span><div><b>青春期沟通专题课（草稿）</b><br><span class="muted" style="font-size:12px">ID P2026090105</span></div></div></td>
+          <td><span class="tag">知识商品</span></td>
           <td>未分组</td>
           <td><b>¥129.00</b></td>
-          <td>0</td>
           <td>—</td>
           <td>—</td>
           <td><span class="badge">草稿</span></td>
@@ -163,11 +156,10 @@
         </tr>
         <tr>
           <td><input type="checkbox" /></td>
-          <td><div class="gd-cell"><span class="thumb t-cyan">书</span><div><b>9.9 引流课·亲子沟通（教辅附赠）</b><br><span class="muted" style="font-size:12px">ID P2026040220 · 赠品关联</span></div></div></td>
-          <td><span class="tag tag-green">实物商品</span></td>
-          <td>教辅周边</td>
+          <td><div class="gd-cell"><span class="thumb t-cyan">引</span><div><b>9.9 引流课·亲子沟通</b><br><span class="muted" style="font-size:12px">ID P2026040220 · 引流品</span></div></div></td>
+          <td><span class="tag tag-blue">知识商品</span></td>
+          <td>学科提分</td>
           <td><b>¥9.90</b></td>
-          <td>214</td>
           <td>486</td>
           <td>UV 5,120<br><span class="muted">PV 7,030</span></td>
           <td><span class="badge badge-success">上架中</span></td>
@@ -193,8 +185,8 @@
 
   <div class="card" style="margin-top:16px"><div class="card-bd">
     <p class="muted" style="font-size:12px;line-height:1.8">
-      <b>说明：</b>知识商品在「内容」模块创建后自动进入商品池，可在本页统一管理上架/分组；实物商品支持规格、库存、物流、售后与开票；
-      组合商品由 2 个及以上在售商品组成，组合价不高于各商品单价之和。实物售卖需在「设置-资质信息」完成类目资质报备。
+      <b>说明：</b>知识商品在「内容」模块创建后自动进入商品池，可在本页统一管理上架/分组；服务商品（咨询、1v1 辅导等）支付后开通服务额度，由学员在 C 端预约使用；
+      组合商品由 2 个及以上在售商品组成，组合价不高于各商品单价之和。<b>本平台不售卖实物商品，无库存与物流环节。</b>
     </p>
   </div></div>
 </div>
@@ -216,7 +208,7 @@
     </div>
     <div class="field"><label>目标分组（加入分组时）</label>
       <select style="width:100%;padding:7px 8px;border:1px solid var(--color-border);border-radius:6px">
-        <option>请选择分组</option><option>学科提分</option><option>家长课堂</option><option>教辅周边</option>
+        <option>请选择分组</option><option>学科提分</option><option>家长课堂</option><option>亲子沟通</option>
       </select>
     </div>
     <p class="muted" style="margin-top:8px">已选 <b id="batch-n">0</b> 个商品</p>

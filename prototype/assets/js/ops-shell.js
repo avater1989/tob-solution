@@ -35,10 +35,11 @@
 
   // 兼容旧页 data-module="audit" → 归入「内容」
   if (moduleId === "audit") moduleId = "content";
+  // 「租户管理」板块已并入「系统管理」（页面未改动，此处做归属映射）
+  if (moduleId === "tenant") moduleId = "sys";
 
   var modules = [
     { id: "workbench", label: "工作台", href: "dashboard.html" },
-    { id: "tenant", label: "租户管理", href: "tenants.html" },
     { id: "content", label: "内容", href: "content-series.html" },
     { id: "sys", label: "系统管理", href: "sys-users.html" },
     { id: "data", label: "全局数据", href: "data.html" },
@@ -47,36 +48,6 @@
   var sidebars = {
     workbench: [
       { group: "概览", links: [{ id: "dashboard", href: "dashboard.html", label: "运营工作台" }] },
-    ],
-    tenant: [
-      {
-        group: "租户管理",
-        links: [
-          { id: "tenants", href: "tenants.html", label: "租户列表" },
-          { id: "users", href: "users.html", label: "租户用户" },
-          { id: "tenant-depts", href: "tenant-depts.html", label: "租户部门" },
-          { id: "tenant-roles", href: "tenant-roles.html", label: "租户角色" },
-        ],
-      },
-      {
-        group: "角色与权限",
-        links: [
-          { id: "template-roles", href: "template-roles.html", label: "模板角色" },
-        ],
-      },
-      {
-        group: "应用与资源",
-        links: [
-          { id: "apps", href: "apps.html", label: "应用管理" },
-          { id: "resources", href: "resources.html", label: "功能资源配置" },
-        ],
-      },
-      {
-        group: "套餐管理",
-        links: [
-          { id: "plans", href: "plans.html", label: "套餐管理" },
-        ],
-      },
     ],
     content: [
       {
@@ -134,6 +105,34 @@
         links: [
           { id: "sys-resources", href: "sys-resources.html", label: "资源管理" },
           { id: "sys-dict", href: "sys-dict.html", label: "数据字典" },
+        ],
+      },
+      {
+        group: "租户管理",
+        links: [
+          { id: "tenants", href: "tenants.html", label: "租户列表" },
+          { id: "users", href: "users.html", label: "租户用户" },
+          { id: "tenant-depts", href: "tenant-depts.html", label: "租户部门" },
+          { id: "tenant-roles", href: "tenant-roles.html", label: "租户角色" },
+        ],
+      },
+      {
+        group: "角色与权限",
+        links: [
+          { id: "template-roles", href: "template-roles.html", label: "模板角色" },
+        ],
+      },
+      {
+        group: "应用与资源",
+        links: [
+          { id: "apps", href: "apps.html", label: "应用管理" },
+          { id: "resources", href: "resources.html", label: "功能资源配置" },
+        ],
+      },
+      {
+        group: "套餐管理",
+        links: [
+          { id: "plans", href: "plans.html", label: "套餐管理" },
         ],
       },
     ],

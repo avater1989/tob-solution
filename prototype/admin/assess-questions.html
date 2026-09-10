@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>配置题目 · 商家管理后台</title>
+<link rel="stylesheet" href="../assets/css/proto.css?v=9" />
+<link rel="stylesheet" href="../assets/css/assess.css?v=3" />
+</head>
+<body class="admin-body" data-module="content" data-nav="assess-projects" data-title="配置题目" data-crumb="商家管理后台 / 内容 / 测评管理 / 配置题目">
+
+<div id="header-actions">
+  <a class="btn" href="assess-projects.html">返回项目列表</a>
+  <button class="btn" id="btn-jump">整体跳转规则配置</button>
+  <button class="btn btn-primary" id="btn-new-q">+ 新建题目</button>
+</div>
+
+<div id="page-content" style="display:none">
+  <a class="cm-back" href="assess-projects.html" style="display:inline-flex;color:#165dff;font-size:13px;margin-bottom:12px;text-decoration:none">← 返回项目列表</a>
+
+  <div id="sync-banner" style="display:none"></div>
+
+  <div class="cm-hero" style="display:flex;gap:16px;align-items:center;background:#fff;border:1px solid #e8e8e8;border-radius:10px;padding:16px 18px;margin-bottom:14px">
+    <div style="width:56px;height:56px;border-radius:12px;background:linear-gradient(135deg,#165dff,#4080ff);color:#fff;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:700" id="av">亲</div>
+    <div style="flex:1">
+      <div style="font-size:16px;font-weight:600" id="p-name">亲子沟通能力测评</div>
+      <div style="font-size:13px;color:#8c8c8c;margin-top:4px"><span id="p-desc">评估家长与孩子的沟通模式与冲突处理</span> · <b id="p-cnt" style="color:#165dff">1</b> 道题目</div>
+    </div>
+    <span class="as-tag gray" id="p-status">草稿</span>
+  </div>
+
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+    <h2 style="margin:0;font-size:15px">题目列表</h2>
+  </div>
+  <div id="q-list"></div>
+</div>
+
+<div class="proto-modal" id="modal-q">
+  <div style="background:#fff;border-radius:10px;width:560px;max-width:94vw;max-height:88vh;overflow:auto">
+    <div class="proto-modal-hd"><h3 style="margin:0;font-size:16px" id="q-modal-title">新建题目</h3><button class="ctrl-icon-btn" data-close>×</button></div>
+    <div class="proto-modal-bd">
+      <p class="muted" style="margin:0 0 12px;font-size:12px">配置题目内容、权重和评分方式</p>
+      <div class="field"><label>题目内容 *</label><input class="input" id="q-text" placeholder="请输入题目内容" /></div>
+      <div class="form-grid" style="grid-template-columns:1fr 1fr">
+        <div class="field"><label>题目类型 *</label>
+          <select class="input" id="q-type"><option>单选题</option><option>多选题</option><option>量表题</option><option>文本题</option></select>
+        </div>
+        <div class="field"><label>题目分类</label><input class="input" id="q-dim" placeholder="如：倾听表达" /></div>
+      </div>
+      <div class="form-grid" style="grid-template-columns:1fr 1fr">
+        <div class="field"><label>题目权重 *</label><input class="input" id="q-weight" type="number" value="1" /></div>
+        <div class="field" style="padding-top:28px">
+          <label style="display:flex;align-items:center;gap:8px;font-weight:400"><input type="checkbox" id="q-req" checked> 此题为必答题</label>
+        </div>
+      </div>
+      <div class="field" id="opts-field">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+          <label style="margin:0">选项与分值</label>
+          <button type="button" class="btn" id="btn-add-opt">+ 添加选项</button>
+        </div>
+        <div id="opt-rows"></div>
+      </div>
+    </div>
+    <div class="proto-modal-ft" style="justify-content:flex-end;gap:8px">
+      <button class="btn" data-close>取消</button>
+      <button class="btn btn-primary" id="btn-save-q">保存</button>
+    </div>
+  </div>
+</div>
+
+<div class="proto-modal" id="modal-jump">
+  <div style="background:#fff;border-radius:10px;width:520px;max-width:94vw;overflow:hidden">
+    <div class="proto-modal-hd"><h3 style="margin:0;font-size:16px">整体跳转规则</h3><button class="ctrl-icon-btn" data-close>×</button></div>
+    <div class="proto-modal-bd">
+      <p class="muted" style="font-size:12px;margin:0 0 12px">按选项结果跳转到指定题目，未命中则顺序作答。</p>
+      <div id="jump-global-list"></div>
+      <button class="btn" id="btn-add-gjump">+ 添加规则</button>
+    </div>
+    <div class="proto-modal-ft" style="justify-content:flex-end;gap:8px">
+      <button class="btn" data-close>关闭</button>
+      <button class="btn btn-primary" id="btn-save-jump" data-close data-toast="跳转规则已保存">保存</button>
+    </div>
+  </div>
+</div>
+
+<div class="proto-modal" id="modal-qjump">
+  <div style="background:#fff;border-radius:10px;width:520px;max-width:94vw;overflow:hidden">
+    <div class="proto-modal-hd"><h3 style="margin:0;font-size:16px">配置题目跳转</h3><button class="ctrl-icon-btn" data-close>×</button></div>
+    <div class="proto-modal-bd">
+      <p class="muted" style="margin:0 0 12px;font-size:12px" id="qjump-sub">—</p>
+      <div id="qjump-list"></div>
+      <button class="btn" id="btn-add-qjump">+ 添加跳转</button>
+    </div>
+    <div class="proto-modal-ft" style="justify-content:flex-end;gap:8px">
+      <button class="btn" data-close>取消</button>
+      <button class="btn btn-primary" id="btn-save-qjump">保存跳转</button>
+    </div>
+  </div>
+</div>
+
+<div class="proto-mask" id="mask"></div>
+
+<script src="../assets/js/proto.js"></script>
+<script src="../assets/js/admin-shell.js?v=13"></script>
+<script>
+var META = {
+  MP01:{ name:"亲子沟通能力测评", desc:"评估家长与孩子的沟通模式与冲突处理", status:"已发布", source:"self" },
+  MP02:{ name:"家庭教育风格测评", desc:"识别家庭教养风格与边界设定倾向", status:"草稿", source:"self" },
+  MP03:{ name:"青春期沟通测评", desc:"面向青春期家庭的沟通评估", status:"草稿", source:"self" },
+  PP01:{ name:"心理健康测评", desc:"综合心理健康评估", status:"已发布", source:"platform" },
+  PP02:{ name:"学习能力诊断", desc:"评估学习风格与能力结构", status:"已发布", source:"platform" },
+  PP03:{ name:"情绪调节问卷", desc:"评估情绪调节能力与压力应对", status:"草稿", source:"platform" }
+};
+var qs = new URLSearchParams(location.search);
+var id = qs.get("id") || "MP01";
+var meta = META[id] || { name:"未命名项目", desc:"新建项目", status:"草稿", source:"self" };
+var SYNC = meta.source === "platform" || qs.get("sync") === "1";
+var QUESTIONS = {
+  MP01:[
+    { text:"与孩子发生分歧时，你更常先讲道理还是先听感受？", type:"单选题", req:true, dim:"倾听表达", weight:1, opts:[{t:"先讲道理",s:0},{t:"先听感受",s:2},{t:"看情况",s:1}], jumps:[] },
+    { text:"孩子向你倾诉时，你通常会？", type:"单选题", req:true, dim:"倾听表达", weight:1, opts:[{t:"边听边给建议",s:1},{t:"专注听完再回应",s:2},{t:"忙时让他晚点说",s:0}], jumps:[] }
+  ],
+  MP02:[{ text:"家庭规则通常由谁决定？", type:"单选题", req:true, dim:"规则边界", weight:1, opts:[{t:"家长说了算",s:0},{t:"共同商量",s:2},{t:"孩子自己定",s:1}], jumps:[] }],
+  PP01:[{ text:"你最近是否感到情绪低落？", type:"单选题", req:true, dim:"情绪状态", weight:1, opts:[{t:"从不",s:0},{t:"偶尔",s:1},{t:"经常",s:2},{t:"总是",s:3}], jumps:[{when:"总是",to:"结束并标记高风险"}] }],
+  PP02:[
+    { text:"更偏好哪种学习方式？", type:"单选题", req:true, dim:"学习风格", weight:1, opts:[{t:"视觉",s:1},{t:"听觉",s:1},{t:"动手",s:1}], jumps:[] },
+    { text:"一次专注学习通常可持续多久？", type:"单选题", req:true, dim:"注意力", weight:1, opts:[{t:"<15分钟",s:0},{t:"15-30分钟",s:1},{t:"30-60分钟",s:2},{t:">60分钟",s:3}], jumps:[] }
+  ],
+  PP03:[{ text:"冲突后你通常多久能平静下来？", type:"单选题", req:true, dim:"情绪调节", weight:1, opts:[{t:"立刻",s:0},{t:"几小时",s:1},{t:"一天以上",s:2}], jumps:[] }]
+};
+if (!QUESTIONS[id]) QUESTIONS[id] = [];
+var list = QUESTIONS[id];
+var editIdx = -1;
+var jumpIdx = -1;
+var globalJumps = [
+  { when:"Q1 选「总是」", to:"结束并标记高风险" },
+  { when:"Q1 选「从不」", to:"继续下一题" }
+];
+
+document.getElementById("p-name").textContent = meta.name;
+document.getElementById("p-desc").textContent = meta.desc;
+document.getElementById("p-status").textContent = meta.status;
+document.getElementById("av").textContent = meta.name.charAt(0);
+if (SYNC) {
+  document.getElementById("sync-banner").style.display = "";
+  document.getElementById("sync-banner").innerHTML =
+    '<div class="as-banner" style="background:#f9f0ff;border-color:#d3adf7;color:#531dab">「'+meta.name+'」由运营后台同步下发，题目配置只读，仅可查看。</div>';
+  var nb = document.getElementById("btn-new-q"); nb.disabled = true; nb.style.opacity = ".5";
+  var jb = document.getElementById("btn-jump"); jb.disabled = true; jb.style.opacity = ".5";
+}
+
+function esc(s){ return String(s).replace(/[&<>"']/g,function(c){return({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"})[c];}); }
+function normOpts(q){
+  if (!q.opts) return [];
+  return q.opts.map(function(o){
+    if (typeof o === "string") {
+      var m = o.match(/^(.*)\((\d+)分\)$/);
+      return m ? {t:m[1],s:+m[2]} : {t:o,s:0};
+    }
+    return o;
+  });
+}
+
+function renderOptRows(opts){
+  opts = opts && opts.length ? opts : [{t:"选项1",s:0},{t:"选项2",s:1}];
+  document.getElementById("opt-rows").innerHTML = opts.map(function(o,i){
+    return '<div class="as-opt-row">' +
+      '<input class="input" data-ot="'+i+'" value="'+esc(o.t)+'" placeholder="选项内容" />' +
+      '<input class="input score" data-os="'+i+'" type="number" value="'+o.s+'" placeholder="分数" />' +
+      '<button type="button" class="btn" data-rm-opt="'+i+'" style="color:#f53f3f">删</button>' +
+    '</div>';
+  }).join("");
+}
+
+function readOptRows(){
+  var texts = document.querySelectorAll("[data-ot]");
+  var scores = document.querySelectorAll("[data-os]");
+  var out = [];
+  texts.forEach(function(inp,i){
+    var t = inp.value.trim(); if (!t) return;
+    out.push({ t:t, s:+(scores[i]&&scores[i].value)||0 });
+  });
+  return out.length ? out : [{t:"选项A",s:0},{t:"选项B",s:1}];
+}
+
+function render(){
+  document.getElementById("p-cnt").textContent = list.length;
+  document.getElementById("q-list").innerHTML = list.map(function(q,i){
+    var opts = normOpts(q);
+    var jumpN = (q.jumps||[]).length;
+    var acts = "";
+    if (SYNC) {
+      acts = '<span class="as-tag gray" style="align-self:flex-start">平台同步 · 只读</span>';
+    } else {
+      acts = '<button class="btn" data-move="'+i+'" data-dir="-1"'+(i===0?' disabled':'')+'>上移</button>' +
+        '<button class="btn" data-move="'+i+'" data-dir="1"'+(i===list.length-1?' disabled':'')+'>下移</button>' +
+        '<button class="btn" data-qjump="'+i+'">配置题目跳转</button>' +
+        '<button class="btn" data-edit="'+i+'">编辑题目</button>' +
+        '<button class="btn" style="color:#f53f3f;border-color:#ffa39e" data-del="'+i+'">删除</button>';
+    }
+    return '<div class="as-q-card">' +
+      '<div class="as-q-ord"><div class="as-q-num">'+(i+1)+'</div></div>' +
+      '<div class="as-q-bd">' +
+        '<div class="as-q-title">'+esc(q.text)+'</div>' +
+        '<div>' +
+          '<span class="as-tag blue">'+esc(q.type)+'</span>' +
+          (q.req?'<span class="as-tag red">必答</span>':'') +
+          '<span class="as-tag gray">'+esc(q.dim||"未分类")+'</span>' +
+          '<span class="as-tag blue">权重: '+q.weight+'</span>' +
+          (jumpN?'<span class="as-tag purple">跳转 '+jumpN+'</span>':'') +
+        '</div>' +
+        '<div class="as-q-opts">选项：'+esc(opts.map(function(o){return o.t+"("+o.s+"分)";}).join(" / "))+'</div>' +
+      '</div>' +
+      '<div class="as-acts">' + acts + '</div></div>';
+  }).join("") || '<div class="card"><div class="card-bd" style="text-align:center;color:#bfbfbf;padding:32px">暂无题目，点击「新建题目」开始配置</div></div>';
+}
+
+var mask = document.getElementById("mask");
+function closeAll(){ mask.classList.remove("open"); document.querySelectorAll(".proto-modal").forEach(function(n){n.classList.remove("open");}); }
+function openM(el){ mask.classList.add("open"); el.classList.add("open"); }
+
+function openEditor(idx){
+  if (SYNC) { Proto.toast("平台同步测评的题目只读"); return; }
+  editIdx = idx;
+  document.getElementById("q-modal-title").textContent = idx<0?"新建题目":"编辑题目";
+  if (idx<0) {
+    document.getElementById("q-text").value="";
+    document.getElementById("q-type").value="单选题";
+    document.getElementById("q-dim").value="";
+    document.getElementById("q-weight").value="1";
+    document.getElementById("q-req").checked=true;
+    renderOptRows([{t:"选项1",s:0},{t:"选项2",s:1}]);
+  } else {
+    var q = list[idx];
+    document.getElementById("q-text").value=q.text;
+    document.getElementById("q-type").value=q.type.indexOf("选")>=0||q.type.indexOf("量表")>=0||q.type.indexOf("文本")>=0 ? q.type : (q.type==="单选"?"单选题":q.type);
+    document.getElementById("q-dim").value=q.dim||"";
+    document.getElementById("q-weight").value=q.weight;
+    document.getElementById("q-req").checked=!!q.req;
+    renderOptRows(normOpts(q));
+  }
+  toggleOptsByType();
+  openM(document.getElementById("modal-q"));
+}
+
+function toggleOptsByType(){
+  document.getElementById("opts-field").style.display = document.getElementById("q-type").value==="文本题" ? "none" : "";
+}
+
+function renderQJumps(){
+  var q = list[jumpIdx]; if (!q) return;
+  var jumps = q.jumps || [];
+  var opts = normOpts(q);
+  var targets = list.map(function(_,i){return "第 "+(i+1)+" 题";}).concat(["结束问卷","结束并标记高风险"]);
+  document.getElementById("qjump-list").innerHTML = jumps.map(function(j,i){
+    return '<div class="as-seg" style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">' +
+      '<span style="font-size:12px">若选</span>' +
+      '<select class="input" style="width:120px" data-jw="'+i+'">'+opts.map(function(o){return '<option'+(o.t===j.when?' selected':'')+'>'+esc(o.t)+'</option>';}).join("")+'</select>' +
+      '<span style="font-size:12px">则跳至</span>' +
+      '<select class="input" style="width:160px" data-jt="'+i+'">'+targets.map(function(t){return '<option'+(t===j.to?' selected':'')+'>'+esc(t)+'</option>';}).join("")+'</select>' +
+      '<button class="btn" data-rj="'+i+'" style="color:#f53f3f">删除</button></div>';
+  }).join("") || '<div class="muted" style="padding:8px 0">暂无题目级跳转，默认顺序作答</div>';
+}
+
+document.getElementById("q-type").onchange = toggleOptsByType;
+document.getElementById("btn-add-opt").onclick = function(){
+  var cur = readOptRows();
+  cur.push({t:"选项"+(cur.length+1), s:cur.length});
+  renderOptRows(cur);
+};
+document.getElementById("opt-rows").addEventListener("click", function(e){
+  var rm = e.target.closest("[data-rm-opt]"); if (!rm) return;
+  var cur = readOptRows();
+  cur.splice(+rm.getAttribute("data-rm-opt"),1);
+  renderOptRows(cur);
+});
+
+document.getElementById("btn-new-q").onclick = function(){ if (SYNC) { Proto.toast("平台同步测评的题目只读"); return; } openEditor(-1); };
+document.getElementById("btn-jump").onclick = function(){
+  if (SYNC) { Proto.toast("平台同步测评的跳转规则由平台维护"); return; }
+  document.getElementById("jump-global-list").innerHTML = globalJumps.map(function(j){
+    return '<div class="as-seg">若 '+esc(j.when)+' → '+esc(j.to)+'</div>';
+  }).join("");
+  openM(document.getElementById("modal-jump"));
+};
+document.getElementById("btn-add-gjump").onclick = function(){
+  globalJumps.push({ when:"新条件", to:"继续下一题" });
+  document.getElementById("jump-global-list").innerHTML = globalJumps.map(function(j){
+    return '<div class="as-seg">若 '+esc(j.when)+' → '+esc(j.to)+'</div>';
+  }).join("");
+  Proto.toast("已添加跳转规则（演示）");
+};
+
+document.getElementById("btn-save-q").onclick = function(){
+  var text = document.getElementById("q-text").value.trim();
+  if (!text) { Proto.toast("请填写题目内容"); return; }
+  var type = document.getElementById("q-type").value;
+  var opts = type==="文本题" ? [] : readOptRows();
+  var item = {
+    text:text, type:type,
+    dim:document.getElementById("q-dim").value.trim()||"未分类",
+    weight:+document.getElementById("q-weight").value||1,
+    req:document.getElementById("q-req").checked,
+    opts:opts,
+    jumps: editIdx>=0 ? (list[editIdx].jumps||[]) : []
+  };
+  if (editIdx<0) list.push(item); else list[editIdx]=item;
+  closeAll(); render(); Proto.toast("题目已保存");
+};
+
+document.getElementById("btn-add-qjump").onclick = function(){
+  var q = list[jumpIdx]; if (!q) return;
+  var opts = normOpts(q);
+  q.jumps = q.jumps || [];
+  q.jumps.push({ when: opts[0]?opts[0].t:"选项1", to:"结束问卷" });
+  renderQJumps();
+};
+document.getElementById("btn-save-qjump").onclick = function(){
+  var q = list[jumpIdx]; if (!q) return;
+  var whens = document.querySelectorAll("[data-jw]");
+  var tos = document.querySelectorAll("[data-jt]");
+  q.jumps = Array.from(whens).map(function(el,i){ return { when:el.value, to:tos[i].value }; });
+  closeAll(); render(); Proto.toast("题目跳转已保存");
+};
+
+document.addEventListener("click", function(e){
+  var ed = e.target.closest("[data-edit]"); if (ed) { openEditor(+ed.getAttribute("data-edit")); return; }
+  var del = e.target.closest("[data-del]"); if (del) { if (SYNC) { Proto.toast("平台同步测评的题目只读"); return; } list.splice(+del.getAttribute("data-del"),1); render(); Proto.toast("已删除"); return; }
+  var qj = e.target.closest("[data-qjump]");
+  if (qj) {
+    if (SYNC) { Proto.toast("平台同步测评的题目只读"); return; }
+    jumpIdx = +qj.getAttribute("data-qjump");
+    document.getElementById("qjump-sub").textContent = "题目 "+(jumpIdx+1)+"："+list[jumpIdx].text;
+    renderQJumps();
+    openM(document.getElementById("modal-qjump")); return;
+  }
+  var rj = e.target.closest("[data-rj]");
+  if (rj) {
+    list[jumpIdx].jumps.splice(+rj.getAttribute("data-rj"),1);
+    renderQJumps(); return;
+  }
+  var mv = e.target.closest("[data-move]");
+  if (mv) {
+    var i=+mv.getAttribute("data-move"), j=i+(+mv.getAttribute("data-dir"));
+    if (j<0||j>=list.length) return;
+    var t=list[i]; list[i]=list[j]; list[j]=t; render();
+  }
+});
+mask.addEventListener("click", closeAll);
+document.querySelectorAll("[data-close]").forEach(function(b){ b.addEventListener("click", closeAll); });
+render();
+</script>
+</body>
+</html>

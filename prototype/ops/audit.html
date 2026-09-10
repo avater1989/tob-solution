@@ -15,7 +15,7 @@
 
   <!-- 统计卡 -->
   <div class="grid-4" style="margin-bottom:16px">
-    <div class="stat"><div class="label">待平台审核</div><div class="value" id="st-pending">0</div><div class="hint">直播待审</div></div>
+    <div class="stat"><div class="label">待平台审核</div><div class="value" id="st-pending">0</div><div class="hint">直播 / 系列课 / 图文 / 商品</div></div>
     <div class="stat"><div class="label">今日已审核</div><div class="value" id="st-done">0</div><div class="hint" id="st-done-hint">通过 0 · 驳回 0</div></div>
     <div class="stat"><div class="label">平均审核时长</div><div class="value">3.2 小时</div><div class="hint">SLA 目标 4 小时</div></div>
     <div class="stat"><div class="label">本周驳回率</div><div class="value" id="st-rate">—</div><div class="hint">平台审核</div></div>
@@ -39,7 +39,7 @@
       </select>
       <select id="f-type">
         <option value="">内容类型</option>
-        <option>线上课</option><option selected>直播</option><option>商品</option>
+        <option>直播</option><option>系列课</option><option>视频</option><option>图文</option><option>商品</option>
       </select>
       <select id="f-urgent">
         <option value="">紧急程度</option>
@@ -89,19 +89,16 @@
   <div class="proto-modal-bd">
     <div style="margin-bottom:12px">
       <h4 style="margin:0 0 6px;font-size:15px"><span id="dt-title">—</span></h4>
-      <p class="muted" style="margin:0;font-size:12px">来源租户：<span id="dt-tenant">—</span> · 提交时间：<span id="dt-time">—</span> · 类型：直播 · 编号：<span id="dt-id">—</span></p>
+      <p class="muted" style="margin:0;font-size:12px">来源租户：<span id="dt-tenant">—</span> · 提交时间：<span id="dt-time">—</span> · 类型：<span id="dt-type">—</span> · 编号：<span id="dt-id">—</span></p>
     </div>
     <table class="data">
       <thead><tr><th>审核项</th><th>商家提交内容</th><th>初审建议</th></tr></thead>
-      <tbody>
-        <tr><td>直播名称</td><td id="dt-name-cell">—</td><td><span class="badge badge-success">合规</span></td></tr>
-        <tr><td>开播时间</td><td id="dt-start-cell">—</td><td><span class="badge badge-success">合规</span></td></tr>
-        <tr><td>封面图</td><td>live-cover.jpg（已预览）</td><td><span class="badge badge-success">合规</span></td></tr>
-        <tr><td>挂载商品</td><td>关联课程商品</td><td><span class="badge badge-success">合规</span></td></tr>
-        <tr><td>宣传话术</td><td>公开课招生话术</td><td><span class="badge badge-success">合规</span></td></tr>
-      </tbody>
+      <tbody id="dt-rows"></tbody>
     </table>
-    <p class="muted" style="margin:10px 0 0;font-size:12px">平台审核通过后直播可上架；驳回需填写原因并通知商家。</p>
+    <div style="margin-top:10px;padding:8px 12px;border-radius:6px;background:#e8f3ff;border:1px solid #a0cfff;color:#165dff;font-size:12px">
+      审核范围：<b>直播（必审）</b>、<b>系列课 / 视频 / 图文（上架前审核）</b>、<b>商品（服务类抽审）</b>。审核通过后内容发布到 C 端小程序。
+    </div>
+    <p class="muted" style="margin:10px 0 0;font-size:12px">平台审核通过后可上架；驳回需填写原因并通知商家。</p>
   </div>
   <div class="proto-modal-ft" style="border-top:1px solid var(--color-border);padding:12px 20px;display:flex;gap:8px;justify-content:flex-end">
     <button class="btn" data-close>关闭</button>
@@ -173,7 +170,41 @@
 (function () {
   var Biz = window.ProtoBiz;
   var currentId = null;
+  var currentIsLive = false;
   var listCache = [];
+
+  // 课程 / 视频 / 图文 / 商品 的待审示例（直播待审数据来自 ProtoBiz）
+  var LOCAL_ITEMS = [
+    { id: "CO2026090701", typeLabel: "系列课", name: "亲子沟通 21 天训练营", merchantName: "星启家庭教育", submittedAt: "2026-09-07 09:20",
+      rows: [["课程标题","亲子沟通 21 天训练营"],["课程封面","series-cover.jpg（已预览）"],["课程目录","21 节 · 含试看 2 节"],["售卖价格","¥299.00"],["课程简介","面向家长的系统化亲子沟通训练营"]] },
+    { id: "VI2026090503", typeLabel: "视频", name: "写作业不吼不叫 · 方法拆解", merchantName: "晨光少儿成长", submittedAt: "2026-09-05 11:32",
+      rows: [["视频标题","写作业不吼不叫 · 方法拆解"],["视频封面","video-cover.jpg（已预览）"],["视频时长","42 分 18 秒"],["售卖价格","¥69.00"],["试看设置","每节前 3 分钟"]] },
+    { id: "AR2026090602", typeLabel: "图文", name: "青春期沟通家长手册（电子版）", merchantName: "星启家庭教育", submittedAt: "2026-09-06 15:04",
+      rows: [["图文标题","青春期沟通家长手册（电子版）"],["封面图","article-cover.jpg（已预览）"],["正文字数","约 8,600 字"],["售卖价格","¥39.00"],["内容摘要","青春期常见沟通场景与应对话术"]] },
+    { id: "GO2026090404", typeLabel: "商品", name: "家庭咨询 60 分钟服务卡", merchantName: "慧心教育", submittedAt: "2026-09-04 17:45",
+      rows: [["商品名称","家庭咨询 60 分钟服务卡"],["商品类型","服务商品"],["售卖价格","¥199.00"],["服务说明","1v1 线上咨询 60 分钟"],["交付方式","支付后开通服务额度"]] }
+  ];
+  var localDone = {};
+
+  function typeTag(t) {
+    var cls = t === "直播" ? "tag-purple" : (t === "系列课" || t === "视频" ? "tag-blue" : "tag-orange");
+    return '<span class="tag ' + cls + '">' + esc(t) + "</span>";
+  }
+  function allItems() {
+    var lives = pendingLives().map(function (l) {
+      return {
+        id: l.id, typeLabel: "直播", name: l.name,
+        merchantName: l.merchantName || "星启家庭教育",
+        submittedAt: l.submittedPlatformAt || l.submittedInternalAt || "—",
+        isLive: true,
+        rows: [["直播名称", l.name], ["开播时间", l.startAt || "—"], ["封面图", "live-cover.jpg（已预览）"], ["挂载商品", "关联课程商品"], ["宣传话术", "公开课招生话术"]]
+      };
+    });
+    var locals = LOCAL_ITEMS.filter(function (x) { return !localDone[x.id]; }).map(function (x) {
+      return { id: x.id, typeLabel: x.typeLabel, name: x.name, merchantName: x.merchantName, submittedAt: x.submittedAt, isLive: false, rows: x.rows };
+    });
+    return lives.concat(locals);
+  }
 
   function esc(s) {
     return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) {
@@ -190,9 +221,12 @@
   function render() {
     var kw = (document.getElementById("f-title").value || "").trim();
     var tenant = document.getElementById("f-tenant").value;
-    var list = pendingLives().filter(function (l) {
-      if (kw && (l.name || "").indexOf(kw) < 0 && (l.id || "").indexOf(kw) < 0) return false;
-      if (tenant && (l.merchantName || "") !== tenant) return false;
+    var type = document.getElementById("f-type").value;
+    var all = allItems();
+    var list = all.filter(function (x) {
+      if (type && x.typeLabel !== type) return false;
+      if (tenant && x.merchantName !== tenant) return false;
+      if (kw && (x.name || "").indexOf(kw) < 0 && (x.id || "").indexOf(kw) < 0) return false;
       return true;
     });
     listCache = list;
@@ -201,8 +235,8 @@
     var passed = logs.filter(function (r) { return r.status === "approved" && r.side === "platform"; }).length;
     var rejected = logs.filter(function (r) { return r.status === "platform_rejected"; }).length;
 
-    document.getElementById("st-pending").textContent = String(pendingLives().length);
-    document.getElementById("tab-pending-n").textContent = String(pendingLives().length);
+    document.getElementById("st-pending").textContent = String(all.length);
+    document.getElementById("tab-pending-n").textContent = String(all.length);
     document.getElementById("st-done").textContent = String(passed + rejected);
     document.getElementById("st-done-hint").textContent = "通过 " + passed + " · 驳回 " + rejected;
     document.getElementById("st-rate").textContent = (passed + rejected)
@@ -212,17 +246,17 @@
 
     var tbody = document.getElementById("audit-tbody");
     if (!list.length) {
-      tbody.innerHTML = '<tr><td colspan="8" class="muted" style="text-align:center;padding:24px">暂无待平台审核直播（商家在直播列表提交后会出现在此）</td></tr>';
+      tbody.innerHTML = '<tr><td colspan="8" class="muted" style="text-align:center;padding:24px">暂无待平台审核内容</td></tr>';
       return;
     }
-    tbody.innerHTML = list.map(function (l) {
-      return '<tr data-id="' + esc(l.id) + '">' +
-        '<td><input type="checkbox" class="row-check" data-id="' + esc(l.id) + '" /></td>' +
-        "<td><b>" + esc(l.name) + "</b><br><span class=\"muted\">直播 · " + esc(l.startAt || "") +
-        " · " + esc(l.id) + "</span></td>" +
-        '<td><span class="tag tag-purple">直播</span></td>' +
-        "<td>" + esc(l.merchantName || "星启家庭教育") + "</td>" +
-        "<td>" + esc(l.submittedPlatformAt || l.submittedInternalAt || "—") + "</td>" +
+    tbody.innerHTML = list.map(function (x) {
+      return '<tr data-id="' + esc(x.id) + '">' +
+        '<td><input type="checkbox" class="row-check" data-id="' + esc(x.id) + '" /></td>' +
+        "<td><b>" + esc(x.name) + "</b><br><span class=\"muted\">" + esc(x.typeLabel) +
+        " · " + esc(x.submittedAt) + " · " + esc(x.id) + "</span></td>" +
+        "<td>" + typeTag(x.typeLabel) + "</td>" +
+        "<td>" + esc(x.merchantName) + "</td>" +
+        "<td>" + esc(x.submittedAt) + "</td>" +
         '<td><span class="badge">普通</span></td>' +
         '<td><span class="badge badge-warn">待平台审核</span></td>' +
         '<td class="row-actions">' +
@@ -236,13 +270,14 @@
       a.addEventListener("click", function (e) {
         e.preventDefault();
         var id = a.closest("tr").getAttribute("data-id");
-        var live = listCache.find(function (x) { return x.id === id; });
-        if (!live) return;
+        var item = listCache.find(function (x) { return x.id === id; });
+        if (!item) return;
         currentId = id;
+        currentIsLive = !!item.isLive;
         var act = a.getAttribute("data-row-act");
-        if (act === "detail") openDetail(live);
-        else if (act === "pass") openPass(live);
-        else if (act === "reject") openReject(live);
+        if (act === "detail") openDetail(item);
+        else if (act === "pass") openPass(item);
+        else if (act === "reject") openReject(item);
       });
     });
   }
@@ -256,23 +291,27 @@
   mask.addEventListener("click", closeAll);
   document.querySelectorAll("[data-close]").forEach(function (n) { n.addEventListener("click", closeAll); });
 
-  function openDetail(live) {
-    document.getElementById("dt-title").textContent = live.name;
-    document.getElementById("dt-tenant").textContent = live.merchantName || "星启家庭教育";
-    document.getElementById("dt-time").textContent = live.submittedPlatformAt || "—";
-    document.getElementById("dt-id").textContent = live.id;
-    document.getElementById("dt-name-cell").textContent = live.name;
-    document.getElementById("dt-start-cell").textContent = live.startAt || "—";
+  function openDetail(item) {
+    document.getElementById("dt-title").textContent = item.name;
+    document.getElementById("dt-tenant").textContent = item.merchantName;
+    document.getElementById("dt-time").textContent = item.submittedAt;
+    document.getElementById("dt-type").textContent = item.typeLabel;
+    document.getElementById("dt-id").textContent = item.id;
+    document.getElementById("dt-rows").innerHTML = item.rows.map(function (r) {
+      return "<tr><td>" + esc(r[0]) + "</td><td>" + esc(r[1]) + '</td><td><span class="badge badge-success">合规</span></td></tr>';
+    }).join("");
     open(document.getElementById("modal-detail"));
   }
-  function openPass(live) {
-    currentId = live.id;
-    document.getElementById("ps-name").textContent = live.name;
+  function openPass(item) {
+    currentId = item.id;
+    currentIsLive = !!item.isLive;
+    document.getElementById("ps-name").textContent = item.name;
     open(document.getElementById("modal-pass"));
   }
-  function openReject(live) {
-    currentId = live.id;
-    document.getElementById("rj-name").textContent = live.name;
+  function openReject(item) {
+    currentId = item.id;
+    currentIsLive = !!item.isLive;
+    document.getElementById("rj-name").textContent = item.name;
     document.getElementById("rj-note").value = "";
     open(document.getElementById("modal-reject"));
   }
@@ -292,21 +331,36 @@
   });
 
   document.getElementById("dt-pass").addEventListener("click", function () {
-    var live = Biz.getLive(currentId);
+    var item = listCache.find(function (x) { return x.id === currentId; });
     closeAll();
-    if (live) openPass(live);
+    if (item) openPass(item);
   });
   document.getElementById("dt-reject").addEventListener("click", function () {
-    var live = Biz.getLive(currentId);
+    var item = listCache.find(function (x) { return x.id === currentId; });
     closeAll();
-    if (live) openReject(live);
+    if (item) openReject(item);
   });
+
+  function approve(id, isLive) {
+    if (isLive && Biz.getLive(id)) {
+      Biz.setAuditStatus(id, "approved", { by: "平台审核员", side: "platform" });
+    } else {
+      localDone[id] = true;
+    }
+  }
+  function reject(id, reason, isLive) {
+    if (isLive && Biz.getLive(id)) {
+      Biz.setAuditStatus(id, "platform_rejected", { reason: reason, by: "平台审核员", side: "platform" });
+    } else {
+      localDone[id] = true;
+    }
+  }
 
   document.getElementById("ps-submit").addEventListener("click", function () {
     if (!currentId) return;
-    Biz.setAuditStatus(currentId, "approved", { by: "平台审核员", side: "platform" });
+    approve(currentId, currentIsLive);
     closeAll();
-    Proto.toast("平台已通过，直播可上架");
+    Proto.toast("平台已通过，内容可上架");
     render();
   });
   document.getElementById("rj-submit").addEventListener("click", function () {
@@ -314,11 +368,7 @@
     if (!note) { Proto.toast("请填写驳回说明"); return; }
     if (!currentId) return;
     var rule = document.getElementById("rj-reason").value;
-    Biz.setAuditStatus(currentId, "platform_rejected", {
-      reason: rule + "：" + note,
-      by: "平台审核员",
-      side: "platform"
-    });
+    reject(currentId, rule + "：" + note, currentIsLive);
     closeAll();
     Proto.toast("已平台驳回并通知商家");
     render();
@@ -330,7 +380,8 @@
     });
     if (!ids.length) { Proto.toast("请先勾选待通过内容"); return; }
     ids.forEach(function (id) {
-      Biz.setAuditStatus(id, "approved", { by: "平台审核员", side: "platform" });
+      var item = listCache.find(function (x) { return x.id === id; });
+      approve(id, item && item.isLive);
     });
     Proto.toast("已批量平台通过 " + ids.length + " 条");
     render();
@@ -339,7 +390,6 @@
   document.getElementById("btn-reset").addEventListener("click", function () {
     document.getElementById("f-title").value = "";
     ["f-tenant", "f-type", "f-urgent"].forEach(function (id) { document.getElementById(id).value = ""; });
-    document.getElementById("f-type").value = "直播";
     render();
     Proto.toast("已重置");
   });

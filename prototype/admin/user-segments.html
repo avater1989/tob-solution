@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>用户分群 · 商家管理后台</title>
+<link rel="stylesheet" href="../assets/css/proto.css?v=9" />
+</head>
+<body class="admin-body" data-module="user" data-nav="user-segments" data-title="用户分群" data-crumb="用户 / 用户运营 / 用户分群">
+<div id="header-actions">
+  <button class="btn" id="btn-export">导出人群</button>
+  <button class="btn btn-primary" id="btn-new">新建人群</button>
+</div>
+<div id="page-content" style="display:none">
+
+  <div class="alert alert-info" style="margin-bottom:12px;padding:10px 12px;border-radius:8px;background:#e8f3ff;border:1px solid #a0cfff;color:#165dff;font-size:13px">
+    用户分群是按条件圈选出的用户集合，是<b>定向运营</b>的前提。可复用手动 / 自动标签、消费、加微、领课、直播行为等条件组合圈人，并对人群直接发起定向运营计划。
+  </div>
+
+  <!-- 顶部统计 -->
+  <div class="grid-4" style="margin-bottom:16px">
+    <div class="stat"><div class="label">人群总数</div><div class="value" id="st-total">0</div><div class="hint">含系统推荐人群</div></div>
+    <div class="stat"><div class="label">覆盖用户</div><div class="value">3,482</div><div class="hint">去重后人数</div></div>
+    <div class="stat"><div class="label">例行更新人群</div><div class="value" id="st-auto">0</div><div class="hint">每日自动刷新</div></div>
+    <div class="stat"><div class="label">今日触发运营</div><div class="value">2</div><div class="hint"><a href="ops-plans.html" style="color:inherit">查看计划 →</a></div></div>
+  </div>
+
+  <!-- 系统人群 -->
+  <div class="card" style="margin-bottom:12px"><div class="card-hd"><h2>系统推荐人群</h2><span class="muted" style="font-size:12px">首次使用需激活</span></div>
+    <div class="card-bd" style="padding:0">
+      <table class="data">
+        <thead><tr><th>人群名称</th><th>圈选条件</th><th>人数</th><th>更新方式</th><th>状态</th><th style="width:190px">操作</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><b>新客</b><br><span class="muted" style="font-size:12px">首次触达待转化</span></td>
+            <td>注册 7 天内且未产生支付</td>
+            <td><b>286</b></td>
+            <td>例行更新（每日）</td>
+            <td><span class="badge badge-success">已激活</span></td>
+            <td class="row-actions"><a href="#" data-row-act="view">查看用户</a><a href="ops-plans.html">发起运营</a></td>
+          </tr>
+          <tr>
+            <td><b>高价值用户</b><br><span class="muted" style="font-size:12px">复购潜力</span></td>
+            <td>累计消费 &gt; ¥500 或购买 ≥ 3 次</td>
+            <td><b>142</b></td>
+            <td>例行更新（每日）</td>
+            <td><span class="badge badge-success">已激活</span></td>
+            <td class="row-actions"><a href="#" data-row-act="view">查看用户</a><a href="ops-plans.html">发起运营</a></td>
+          </tr>
+          <tr>
+            <td><b>沉默用户</b><br><span class="muted" style="font-size:12px">待唤醒</span></td>
+            <td>30 天内无学习 / 无互动记录</td>
+            <td><b>618</b></td>
+            <td>例行更新（每日）</td>
+            <td><span class="badge badge-warn">未激活</span></td>
+            <td class="row-actions"><a href="#" data-row-act="activate">激活</a></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- 自定义人群 -->
+  <div class="card" style="margin-bottom:12px"><div class="card-hd"><h2>自定义人群</h2></div>
+    <div class="card-bd" style="padding:0">
+      <table class="data">
+        <thead><tr><th>人群名称</th><th>圈选条件</th><th>人数</th><th>更新方式</th><th>最近更新</th><th style="width:200px">操作</th></tr></thead>
+        <tbody id="seg-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- 新建人群弹窗 -->
+<div class="proto-mask" id="mask"></div>
+<div class="proto-modal" id="modal-new" style="width:640px">
+  <div class="proto-modal-hd"><h3 id="sg-title" style="font-size:16px;font-weight:600">新建人群</h3><button class="btn btn-sm btn-ghost" data-close>×</button></div>
+  <div class="proto-modal-bd">
+    <div class="form-grid" style="grid-template-columns:1fr 1fr;gap:10px 16px">
+      <div class="field"><label>人群名称 *</label><input id="sg-name" placeholder="如：领课未加微用户" /></div>
+      <div class="field"><label>更新方式 *</label>
+        <select id="sg-update" style="width:100%;padding:7px 8px;border:1px solid var(--color-border);border-radius:6px">
+          <option>手动更新（保存时计算一次）</option>
+          <option>例行更新（每日自动刷新）</option>
+        </select>
+      </div>
+    </div>
+
+    <h4 style="margin:14px 0 8px;font-size:14px">圈选条件</h4>
+    <table class="data">
+      <thead><tr><th style="width:170px">条件类型</th><th>取值</th><th style="width:60px"></th></tr></thead>
+      <tbody id="cond-rows">
+        <tr>
+          <td>
+            <select style="width:100%;padding:6px 8px;border:1px solid var(--color-border);border-radius:6px">
+              <option>领课状态</option><option>加微状态</option><option>消费金额</option><option>购买次数</option>
+              <option>用户标签</option><option>直播行为</option><option>学习进度</option><option>注册时间</option>
+            </select>
+          </td>
+          <td>
+            <select style="width:100%;padding:6px 8px;border:1px solid var(--color-border);border-radius:6px">
+              <option>已领课</option><option>未领课</option>
+            </select>
+          </td>
+          <td><a href="#" data-row-act="del" style="color:#f53f3f">删除</a></td>
+        </tr>
+        <tr>
+          <td>
+            <select style="width:100%;padding:6px 8px;border:1px solid var(--color-border);border-radius:6px">
+              <option>加微状态</option><option>领课状态</option><option>消费金额</option><option>购买次数</option>
+              <option>用户标签</option><option>直播行为</option><option>学习进度</option><option>注册时间</option>
+            </select>
+          </td>
+          <td>
+            <select style="width:100%;padding:6px 8px;border:1px solid var(--color-border);border-radius:6px">
+              <option>未添加企微</option><option>已添加企微</option>
+            </select>
+          </td>
+          <td><a href="#" data-row-act="del" style="color:#f53f3f">删除</a></td>
+        </tr>
+      </tbody>
+    </table>
+    <button class="btn btn-sm" id="cond-add" style="margin-top:8px">＋ 添加条件</button>
+    <p class="muted" style="margin-top:10px">多条件为「且」关系；保存后系统按条件计算人数，可在列表中预估人数。</p>
+  </div>
+  <div class="proto-drawer-ft" style="border-top:1px solid var(--color-border);padding:12px 20px;display:flex;gap:8px;justify-content:flex-end">
+    <button class="btn" data-close>取消</button>
+    <button class="btn" id="sg-preview">预估人数</button>
+    <button class="btn btn-primary" id="sg-save">保存人群</button>
+  </div>
+</div>
+
+<style>
+.tag { display:inline-block; padding:2px 8px; border-radius:4px; font-size:12px; background:#f2f3f5; color:#4e5969; }
+</style>
+
+<script src="../assets/js/proto.js"></script>
+<script src="../assets/js/admin-shell.js?v=13"></script>
+<script>
+(function () {
+  var SEGS = [
+    { id:"S1", name:"家长必修课未购买者", cond:"已浏览家长必修课 且 未购买", count:324, update:"例行更新（每日）", at:"2026-09-07 08:00" },
+    { id:"S2", name:"领课未加微用户",     cond:"已领课 且 未添加企微",        count:168, update:"例行更新（每日）", at:"2026-09-07 08:00" },
+    { id:"S3", name:"直播预约未到课",     cond:"已预约直播 且 未观看",        count:96,  update:"手动更新",         at:"2026-09-05 16:20" },
+    { id:"S4", name:"训练营老学员",       cond:"购买次数 ≥ 1 且 标签含「训练营」", count:57, update:"手动更新",      at:"2026-09-03 11:05" }
+  ];
+
+  var mask = document.getElementById("mask");
+  function closeAll(){ mask.classList.remove("open"); document.querySelectorAll(".proto-modal").forEach(function(n){n.classList.remove("open");}); }
+  function open(n){ mask.classList.add("open"); n.classList.add("open"); }
+  mask.addEventListener("click", closeAll);
+  document.querySelectorAll("[data-close]").forEach(function(n){ n.addEventListener("click", closeAll); });
+
+  function esc(s){ return String(s==null?"":s).replace(/[&<>"']/g,function(c){return({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"})[c];}); }
+
+  function render(){
+    document.getElementById("seg-tbody").innerHTML = SEGS.map(function(s){
+      return '<tr data-id="'+s.id+'">' +
+        "<td><b>"+esc(s.name)+"</b></td>" +
+        "<td>"+esc(s.cond)+"</td>" +
+        "<td><b>"+s.count+"</b></td>" +
+        "<td>"+esc(s.update)+"</td>" +
+        "<td>"+esc(s.at)+"</td>" +
+        '<td class="row-actions"><a href="#" data-row-act="view">查看用户</a><a href="ops-plans.html">发起运营</a><a href="#" data-row-act="edit">编辑</a><a href="#" data-row-act="del-seg" class="row-more">删除</a></td>' +
+        "</tr>";
+    }).join("");
+    document.getElementById("st-total").textContent = String(SEGS.length + 3);
+    document.getElementById("st-auto").textContent = String(SEGS.filter(function(s){ return s.update.indexOf("例行")>=0; }).length + 2);
+  }
+
+  document.addEventListener("click", function(e){
+    var el = e.target.closest("[data-row-act]");
+    if (!el) return;
+    var act = el.getAttribute("data-row-act");
+    if (act === "del") { e.preventDefault(); el.closest("tr").remove(); return; }
+    e.preventDefault();
+    if (act === "view") { Proto.toast("打开人群用户列表（原型）"); return; }
+    if (act === "activate") { Proto.toast("人群已激活，开始计算人数（原型）"); return; }
+    if (act === "edit") { openNew("编辑人群"); return; }
+    if (act === "del-seg") {
+      var tr = el.closest("tr");
+      if (confirm("确认删除该人群？已发起的运营计划不受影响。")) {
+        SEGS = SEGS.filter(function(x){ return x.id !== tr.getAttribute("data-id"); });
+        render(); Proto.toast("人群已删除");
+      }
+    }
+  });
+
+  function openNew(title){
+    document.getElementById("sg-title").textContent = title || "新建人群";
+    document.getElementById("sg-name").value = "";
+    open(document.getElementById("modal-new"));
+  }
+  document.getElementById("btn-new").addEventListener("click", function(){ openNew("新建人群"); });
+  document.getElementById("cond-add").addEventListener("click", function(){
+    var tr = document.createElement("tr");
+    tr.innerHTML = '<td><select style="width:100%;padding:6px 8px;border:1px solid var(--color-border);border-radius:6px">' +
+      '<option>消费金额</option><option>购买次数</option><option>用户标签</option><option>直播行为</option><option>学习进度</option><option>注册时间</option>' +
+      '</select></td>' +
+      '<td><input placeholder="填写条件取值" style="width:100%;padding:6px 8px;border:1px solid var(--color-border);border-radius:6px" /></td>' +
+      '<td><a href="#" data-row-act="del" style="color:#f53f3f">删除</a></td>';
+    document.getElementById("cond-rows").appendChild(tr);
+  });
+  document.getElementById("sg-preview").addEventListener("click", function(){ Proto.toast("预估人数：184 人（原型）"); });
+  document.getElementById("sg-save").addEventListener("click", function(){
+    if (!document.getElementById("sg-name").value.trim()) { Proto.toast("请填写人群名称"); return; }
+    closeAll();
+    Proto.toast("人群已保存，正在计算人数（原型）");
+  });
+  document.getElementById("btn-export").addEventListener("click", function(){ Proto.toast("人群用户清单导出任务已创建（原型）"); });
+
+  render();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>测评项目管理 · 商家管理后台</title>
+<link rel="stylesheet" href="../assets/css/proto.css?v=9" />
+<link rel="stylesheet" href="../assets/css/assess.css?v=3" />
+</head>
+<body class="admin-body" data-module="content" data-nav="assess-projects" data-title="测评项目管理" data-crumb="商家管理后台 / 内容 / 测评管理 / 测评项目">
+
+<div id="header-actions">
+  <button class="btn btn-primary" id="btn-new">+ 新建项目</button>
+</div>
+
+<div id="page-content" style="display:none">
+  <div class="as-banner">管理本店铺的测评项目。其中「平台同步」的测评由运营后台下发，仅可查看与使用，不可编辑、上下架或删除。</div>
+
+  <div class="card" style="margin-bottom:14px"><div class="card-bd" style="padding:12px 16px">
+    <div class="toolbar" style="border:none;padding:0;background:transparent">
+      <input class="input" id="f-q" placeholder="搜索项目名称、描述..." style="width:240px" />
+      <select class="input" id="f-shelf" style="width:130px">
+        <option value="">全部上下架</option><option>已上架</option><option>已下架</option>
+      </select>
+      <select class="input" id="f-src" style="width:130px">
+        <option value="">全部来源</option><option value="self">商家自建</option><option value="platform">平台同步</option>
+      </select>
+      <button class="btn btn-primary" id="btn-query">查询</button>
+      <button class="btn" id="btn-reset">重置</button>
+    </div>
+  </div></div>
+
+  <table class="as-table">
+    <thead>
+      <tr>
+        <th style="width:56px">序号</th>
+        <th>项目名称</th>
+        <th style="width:100px">来源</th>
+        <th style="width:70px">题目数</th>
+        <th style="width:80px">状态</th>
+        <th style="width:80px">上下架</th>
+        <th style="width:140px">项目级报告</th>
+        <th style="width:110px">创建时间</th>
+        <th style="width:340px">操作</th>
+      </tr>
+    </thead>
+    <tbody id="tbody"></tbody>
+  </table>
+  <div style="display:flex;align-items:center;gap:8px;margin-top:14px">
+    <span style="color:#8c8c8c;font-size:12px">共 <b id="cnt">0</b> 条</span>
+  </div>
+</div>
+
+<div class="proto-modal" id="modal-new">
+  <div style="background:#fff;border-radius:10px;width:480px;max-width:94vw;overflow:hidden">
+    <div class="proto-modal-hd"><h3 style="margin:0;font-size:16px">新建测评项目</h3><button class="ctrl-icon-btn" data-close>×</button></div>
+    <div class="proto-modal-bd">
+      <div class="field"><label>项目名称 *</label><input class="input" id="np-name" placeholder="如：亲子沟通能力测评" /></div>
+      <div class="field"><label>项目描述</label><textarea class="input" id="np-desc" rows="2" placeholder="简要说明测评目的"></textarea></div>
+    </div>
+    <div class="proto-modal-ft" style="justify-content:flex-end;gap:8px">
+      <button class="btn" data-close>取消</button>
+      <button class="btn btn-primary" id="btn-save-new">创建并配置题目</button>
+    </div>
+  </div>
+</div>
+
+<!-- 平台同步测评：只读详情 -->
+<div class="proto-modal" id="modal-view">
+  <div style="background:#fff;border-radius:10px;width:520px;max-width:94vw;max-height:88vh;overflow:hidden;display:flex;flex-direction:column">
+    <div class="proto-modal-hd"><h3 style="margin:0;font-size:16px">测评项目详情</h3><button class="ctrl-icon-btn" data-close>×</button></div>
+    <div class="proto-modal-bd" id="view-bd" style="overflow:auto"></div>
+    <div class="proto-modal-ft" style="justify-content:flex-end;gap:8px">
+      <button class="btn" data-close>关闭</button>
+    </div>
+  </div>
+</div>
+
+<!-- 项目级报告配置（商家自建项目） -->
+<div class="proto-modal as-wide-modal" id="modal-report">
+  <div style="background:#fff;border-radius:10px;width:min(860px,94vw);max-height:90vh;overflow:hidden;display:flex;flex-direction:column">
+    <div class="proto-modal-hd"><h3 style="margin:0;font-size:16px">项目级报告配置</h3><button class="ctrl-icon-btn" data-close>×</button></div>
+    <div class="proto-modal-bd" style="overflow:auto">
+      <div class="muted" style="margin:0 0 12px;font-size:13px" id="rp-sub">—</div>
+      <div class="as-report-layout">
+        <div>
+          <div class="field"><label>前端报告组件 *</label>
+            <select class="input" id="rp-tpl">
+              <option value="generic-v1" data-label="通用测评报告 · v1 · 通用" data-desc="通用结构，适合多数测评">通用测评报告 · v1 · 通用</option>
+              <option value="mental-health-v1" data-label="心理健康报告 · v1 · 心理健康" data-desc="基础心理报告模板">心理健康报告 · v1 · 心理健康</option>
+              <option value="mental-health-v2" data-label="心理健康报告 · v2 · 心理健康" data-desc="新版干预型心理报告，增加趋势说明和后续行动建议" selected>心理健康报告 · v2 · 心理健康</option>
+              <option value="career-profile-v1" data-label="职业画像报告 · v1 · 职业发展" data-desc="职业兴趣与能力画像">职业画像报告 · v1 · 职业发展</option>
+              <option value="ability-radar-v1" data-label="能力雷达报告 · v1 · 能力测评" data-desc="多维能力雷达图">能力雷达报告 · v1 · 能力测评</option>
+            </select>
+          </div>
+          <p class="muted" style="font-size:12px;margin:-4px 0 12px" id="rp-desc">新版干预型心理报告，增加趋势说明和后续行动建议</p>
+          <label style="display:flex;align-items:center;gap:8px;font-size:13px;margin-bottom:12px">
+            <input type="checkbox" id="rp-on" checked> 启用该测评项目的专属报告
+          </label>
+        </div>
+        <div class="as-report-preview" id="rp-preview">
+          <div class="muted" style="font-size:11px;margin-bottom:4px">实时预览 <span id="rp-preview-title">心理健康报告 v2</span> · 陈同学</div>
+          <div class="as-report-level" id="rp-level">中等风险</div>
+          <div class="muted" style="font-size:12px;margin-bottom:14px">陈同学 · 平台同步样本</div>
+          <h4 style="margin:0 0 8px;font-size:14px">核心状态画像</h4>
+          <div class="as-seg" style="margin-bottom:12px;font-size:12px;line-height:1.6;color:#595959">情绪波动适中，压力感知偏高；社交适应尚可，建议关注睡眠与情绪记录。</div>
+          <h4 style="margin:0 0 8px;font-size:14px">下一步行动</h4>
+          <div class="as-preview-item">保持规律作息，并记录一周内的情绪变化。</div>
+          <div class="as-preview-item">完成情绪调节训练后再次评估。</div>
+        </div>
+      </div>
+    </div>
+    <div class="proto-modal-ft" style="justify-content:flex-end;gap:8px">
+      <button class="btn" data-close>取消</button>
+      <button class="btn" id="btn-preview-mock">模拟预览</button>
+      <button class="btn btn-primary" id="btn-save-report">保存项目报告</button>
+    </div>
+  </div>
+</div>
+
+<div class="proto-mask" id="mask"></div>
+
+<script src="../assets/js/proto.js"></script>
+<script src="../assets/js/admin-shell.js?v=13"></script>
+<script>
+var PROJECTS = [
+  { id:"MP01", name:"亲子沟通能力测评", desc:"评估家长与孩子的沟通模式与冲突处理", source:"self", questions:12, status:"已发布", shelf:"已上架", report:"通用测评报告 · v1", reportKey:"generic-v1", created:"2026-08-12", rules:2 },
+  { id:"MP02", name:"家庭教育风格测评", desc:"识别家庭教养风格与边界设定倾向", source:"self", questions:8, status:"草稿", shelf:"已下架", report:"能力雷达报告 · v1", reportKey:"ability-radar-v1", created:"2026-09-02", rules:0 },
+  { id:"PP01", name:"心理健康测评", desc:"综合心理健康评估（运营后台下发）", source:"platform", questions:1, status:"已发布", shelf:"已上架", report:"心理健康报告 · v2", reportKey:"mental-health-v2", created:"2024-11-15", rules:3 },
+  { id:"PP02", name:"学习能力诊断", desc:"评估学习风格与能力结构（运营后台下发）", source:"platform", questions:12, status:"已发布", shelf:"已上架", report:"能力雷达报告 · v1", reportKey:"ability-radar-v1", created:"2026-08-20", rules:2 },
+  { id:"PP03", name:"情绪调节问卷", desc:"评估情绪调节能力与压力应对（运营后台下发）", source:"platform", questions:5, status:"草稿", shelf:"已下架", report:"通用测评报告 · v1", reportKey:"generic-v1", created:"2026-09-01", rules:0 }
+];
+var reportTarget = null;
+
+function esc(s){ return String(s).replace(/[&<>"']/g,function(c){return({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"})[c];}); }
+function srcTag(src){
+  return src === "platform"
+    ? '<span class="as-tag purple">平台同步</span>'
+    : '<span class="as-tag green">商家自建</span>';
+}
+function isPlatform(p){ return p.source === "platform"; }
+
+function filtered() {
+  var q = (document.getElementById("f-q").value||"").trim();
+  var shelf = document.getElementById("f-shelf").value;
+  var src = document.getElementById("f-src").value;
+  return PROJECTS.filter(function(p){
+    if (shelf && p.shelf !== shelf) return false;
+    if (src === "self" && isPlatform(p)) return false;
+    if (src === "platform" && !isPlatform(p)) return false;
+    if (q && (p.name+p.desc).indexOf(q) < 0) return false;
+    return true;
+  });
+}
+
+function render() {
+  var list = filtered();
+  document.getElementById("cnt").textContent = list.length;
+  document.getElementById("tbody").innerHTML = list.map(function(p,i){
+    var acts = "";
+    if (isPlatform(p)) {
+      acts = '<button class="btn" data-view="'+p.id+'">查看详情</button>' +
+        '<span class="as-tag gray" style="align-self:center">平台同步 · 只读</span>';
+    } else {
+      acts = '<button class="btn" data-move="'+p.id+'" data-dir="-1"'+(i===0?' disabled':'')+'>上移</button>' +
+        '<button class="btn" data-move="'+p.id+'" data-dir="1"'+(i===list.length-1?' disabled':'')+'>下移</button>' +
+        '<a class="btn" href="assess-questions.html?id='+p.id+'">配置题目</a>' +
+        '<a class="btn" href="assess-scoring.html?id='+p.id+'">评分规则</a>' +
+        '<a class="btn" href="assess-relations.html?from=project&id='+p.id+'">关联规则'+(p.rules?' ('+p.rules+')':'')+'</a>' +
+        '<button class="btn" data-report="'+p.id+'">报告配置</button>' +
+        (p.shelf==='已上架'
+          ? '<button class="btn" data-shelf="'+p.id+'">下架</button>'
+          : '<button class="btn btn-primary" data-shelf="'+p.id+'">上架</button>') +
+        '<button class="btn" style="color:#f53f3f;border-color:#ffa39e" data-del="'+p.id+'">删除</button>';
+    }
+    return '<tr>' +
+      '<td style="color:#8c8c8c">'+(i+1)+'</td>' +
+      '<td><div class="as-name">'+esc(p.name)+'</div><div class="as-desc">'+esc(p.desc)+'</div></td>' +
+      '<td>'+srcTag(p.source)+'</td>' +
+      '<td>'+p.questions+'</td>' +
+      '<td><span class="as-tag '+(p.status==='已发布'?'green':'gray')+'">'+esc(p.status)+'</span></td>' +
+      '<td><span class="as-tag '+(p.shelf==='已上架'?'green':'orange')+'">'+esc(p.shelf)+'</span></td>' +
+      '<td style="font-size:12px">'+esc(p.report)+'</td>' +
+      '<td style="font-size:12px;color:#8c8c8c">'+esc(p.created)+'</td>' +
+      '<td><div class="as-acts">' + acts + '</div></td></tr>';
+  }).join("") || '<tr><td colspan="9" style="text-align:center;color:#bfbfbf;padding:28px">暂无项目</td></tr>';
+}
+
+var mask = document.getElementById("mask");
+function closeAll(){ mask.classList.remove("open"); document.querySelectorAll(".proto-modal").forEach(function(n){n.classList.remove("open");}); }
+function openM(id){ mask.classList.add("open"); document.getElementById(id).classList.add("open"); }
+
+function syncReportDesc(){
+  var opt = document.getElementById("rp-tpl").selectedOptions[0];
+  document.getElementById("rp-desc").textContent = opt.getAttribute("data-desc") || "";
+  document.getElementById("rp-preview-title").textContent = (opt.getAttribute("data-label")||"").split(" · ")[0] + " " + (opt.getAttribute("data-label")||"").split(" · ")[1];
+}
+
+document.getElementById("btn-query").onclick = render;
+document.getElementById("btn-reset").onclick = function(){ document.getElementById("f-q").value=""; document.getElementById("f-shelf").value=""; document.getElementById("f-src").value=""; render(); };
+document.getElementById("btn-new").onclick = function(){ openM("modal-new"); };
+document.getElementById("rp-tpl").onchange = syncReportDesc;
+
+document.getElementById("btn-save-new").onclick = function(){
+  var name = document.getElementById("np-name").value.trim();
+  if (!name) { Proto.toast("请填写项目名称"); return; }
+  var nid = "MP" + Date.now().toString().slice(-4);
+  PROJECTS.unshift({
+    id:nid, name:name, desc:document.getElementById("np-desc").value.trim()||"暂无项目描述",
+    source:"self", questions:0, status:"草稿", shelf:"已下架", report:"通用测评报告 · v1", reportKey:"generic-v1",
+    created:new Date().toISOString().slice(0,10), rules:0
+  });
+  closeAll();
+  location.href = "assess-questions.html?id=" + nid;
+};
+
+document.getElementById("btn-preview-mock").onclick = function(){
+  document.getElementById("rp-level").textContent = "中等风险";
+  document.getElementById("rp-level").className = "as-report-level";
+  Proto.toast("已切换为模拟预览");
+};
+document.getElementById("btn-save-report").onclick = function(){
+  if (!reportTarget) return;
+  var opt = document.getElementById("rp-tpl").selectedOptions[0];
+  reportTarget.reportKey = opt.value;
+  reportTarget.report = opt.getAttribute("data-label").replace(/ · /g, " · ").split(" · ").slice(0,2).join(" · ");
+  closeAll(); render(); Proto.toast("项目报告已保存");
+};
+
+document.addEventListener("click", function(e){
+  var view = e.target.closest("[data-view]");
+  if (view) {
+    var p0 = PROJECTS.find(function(x){return x.id===view.getAttribute("data-view");});
+    document.getElementById("view-bd").innerHTML =
+      '<div class="as-banner" style="background:#f9f0ff;border-color:#d3adf7;color:#531dab">该测评由运营后台同步下发，仅可查看，不可编辑、上下架或删除。</div>' +
+      '<div class="as-name" style="font-size:16px;margin-bottom:10px">'+esc(p0.name)+'</div>' +
+      '<div style="font-size:13px;line-height:2">' +
+        '<div>来源：'+srcTag(p0.source)+' <span class="muted" style="font-size:12px">同步时间 2026-09-05 10:00</span></div>' +
+        '<div>描述：'+esc(p0.desc)+'</div>' +
+        '<div>题目数：'+p0.questions+' · 状态：'+esc(p0.status)+' · '+esc(p0.shelf)+'</div>' +
+        '<div>项目级报告：'+esc(p0.report)+'</div>' +
+        '<div>关联规则：'+p0.rules+' 条（由平台维护）</div>' +
+      '</div>' +
+      '<div class="muted" style="font-size:12px;margin-top:12px">该测评可直接被「定制化计划」引用，分配给店铺学员作答。</div>';
+    openM("modal-view"); return;
+  }
+  var report = e.target.closest("[data-report]");
+  if (report) {
+    reportTarget = PROJECTS.find(function(x){return x.id===report.getAttribute("data-report");});
+    if (isPlatform(reportTarget)) { Proto.toast("平台同步测评不可修改报告配置"); return; }
+    document.getElementById("rp-sub").textContent = reportTarget.name;
+    document.getElementById("rp-tpl").value = reportTarget.reportKey || "mental-health-v2";
+    document.getElementById("rp-on").checked = true;
+    syncReportDesc();
+    openM("modal-report"); return;
+  }
+  var shelf = e.target.closest("[data-shelf]");
+  if (shelf) {
+    var p3 = PROJECTS.find(function(x){return x.id===shelf.getAttribute("data-shelf");});
+    if (p3.shelf==="已上架") { p3.shelf="已下架"; Proto.toast("已下架"); }
+    else { p3.shelf="已上架"; p3.status="已发布"; Proto.toast("已上架"); }
+    render(); return;
+  }
+  var del = e.target.closest("[data-del]");
+  if (del) {
+    var pd = PROJECTS.find(function(x){return x.id===del.getAttribute("data-del");});
+    if (isPlatform(pd)) { Proto.toast("平台同步测评不可删除"); return; }
+    PROJECTS = PROJECTS.filter(function(x){return x.id!==pd.id;}); render(); Proto.toast("已删除"); return;
+  }
+  var mv = e.target.closest("[data-move]");
+  if (mv) {
+    var mid = mv.getAttribute("data-move"), dir = +mv.getAttribute("data-dir");
+    var i = PROJECTS.findIndex(function(x){return x.id===mid;}), j = i+dir;
+    if (j<0||j>=PROJECTS.length) return;
+    var t = PROJECTS[i]; PROJECTS[i]=PROJECTS[j]; PROJECTS[j]=t; render();
+  }
+});
+
+mask.addEventListener("click", closeAll);
+document.querySelectorAll("[data-close]").forEach(function(b){ b.addEventListener("click", closeAll); });
+render();
+</script>
+</body>
+</html>

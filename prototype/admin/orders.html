@@ -10,7 +10,7 @@
 <div id="header-actions">
   <button class="btn" id="btn-export">导出订单</button>
   <button class="btn" id="btn-sync">同步公域订单</button>
-  <button class="btn" onclick="location.href='ship.html'">发货管理</button>
+  <button class="btn" onclick="location.href='entitlement.html'">权益开通记录</button>
   <button class="btn btn-primary" id="btn-create">手工补单</button>
 </div>
 <div id="page-content" style="display:none">
@@ -19,7 +19,7 @@
   <div class="grid-4" style="margin-bottom:16px">
     <div class="stat"><div class="label">近 30 天交易额</div><div class="value">¥12,648.50</div><div class="hint">128 笔已支付</div></div>
     <div class="stat"><div class="label">待付款</div><div class="value">9</div><div class="hint">超 30 分钟自动关闭</div></div>
-    <div class="stat"><div class="label">待发货（实物）</div><div class="value">3</div><div class="hint"><a href="ship.html" style="color:inherit">去发货 →</a></div></div>
+    <div class="stat"><div class="label">待开通权益</div><div class="value">2</div><div class="hint"><a href="entitlement.html" style="color:inherit">去处理 →</a></div></div>
     <div class="stat"><div class="label">退款中</div><div class="value">3</div><div class="hint">含待审核 1 笔</div></div>
     <div class="stat"><div class="label">已完成</div><div class="value">116</div><div class="hint">权益已开通</div></div>
   </div>
@@ -30,7 +30,7 @@
     <a href="#" data-tab="unpaid">待付款</a>
     <a href="#" data-tab="paid">已支付</a>
     <a href="#" data-tab="done">已完成</a>
-    <a href="#" data-tab="refund">退款/售后</a>
+    <a href="#" data-tab="refund">退款</a>
     <a href="#" data-tab="closed">已关闭</a>
   </div>
 
@@ -88,19 +88,19 @@
       <tbody id="ord-tbody">
         <tr>
           <td><a href="order-detail.html" class="link-mono">YB20260907000331</a></td>
-          <td>春启 03 期家长必修课 + 家长手册<br><span class="muted">线上课 + 实物 · 合单</span></td>
+          <td>春启 03 期家长必修课<br><span class="muted">线上课 · 12 节 · 知识商品</span></td>
           <td>李***<br><span class="muted">138****2610</span></td>
-          <td><b>¥87.90</b></td>
+          <td><b>¥9.90</b></td>
           <td><span class="tag tag-green">视频号</span></td>
           <td>—</td>
           <td><span class="badge badge-info">已支付</span></td>
-          <td><span class="badge badge-info">已开通</span><br><span class="badge badge-warn">待发货</span></td>
+          <td><span class="badge badge-info">已开通</span></td>
           <td><span class="muted">—</span></td>
           <td>2026-09-07 14:22</td>
           <td class="row-actions">
             <a href="order-detail.html">详情</a>
-            <a href="ship.html">去发货</a>
-            <a href="aftersales.html">售后</a>
+            <a href="entitlement.html">权益记录</a>
+            <a href="aftersales.html">退款</a>
           </td>
         </tr>
         <tr>
@@ -214,8 +214,8 @@
       <div class="field"><label>退款金额 *</label><input id="ref-amount" type="number" value="9.9" /></div>
       <div class="field"><label>退款类型 *</label>
         <select style="width:100%;padding:6px 8px;border:1px solid var(--color-border);border-radius:6px">
-          <option>仅退款（回收权益）</option>
-          <option>退款不回收权益</option>
+          <option>退款并回收权益</option>
+          <option>退款并保留权益</option>
         </select>
       </div>
       <div class="field"><label>退款原因 *</label>
@@ -227,7 +227,7 @@
         <textarea rows="3" style="width:100%;padding:8px;border:1px solid var(--color-border);border-radius:6px" placeholder="填写退款说明，将同步至退款单"></textarea>
       </div>
     </div>
-    <p class="muted" style="margin-top:8px">提示：退款成功后将自动回收课程权益，原路退回买家支付账户。</p>
+    <p class="muted" style="margin-top:8px">提示：退款成功后将自动回收课程权益，通过通联支付原路退回买家支付账户；已分账订单同步回退分账资金。</p>
   </div>
   <div class="proto-drawer-ft" style="border-top:1px solid var(--color-border);padding:12px 20px;display:flex;gap:8px;justify-content:flex-end">
     <button class="btn" data-close>取消</button>

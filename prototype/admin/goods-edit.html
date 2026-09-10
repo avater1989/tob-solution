@@ -17,10 +17,9 @@
 
   <!-- 商品类型 -->
   <div class="cm-section">
-    <div class="cm-section-hd"><h3>商品类型</h3><span class="muted">知识商品在「内容」模块创建；此处创建实物 / 服务 / 组合商品</span></div>
+    <div class="cm-section-hd"><h3>商品类型</h3><span class="muted">知识商品在「内容」模块创建；此处创建服务 / 组合商品</span></div>
     <div class="cm-choice" id="gd-type">
-      <label class="cm-choice-item active"><input type="radio" name="gtype" value="physical" checked /><b>实物商品</b><span>教辅周边、礼品实物，支持库存/物流/售后</span></label>
-      <label class="cm-choice-item"><input type="radio" name="gtype" value="service" /><b>服务商品</b><span>到店服务、咨询服务等线下履约</span></label>
+      <label class="cm-choice-item active"><input type="radio" name="gtype" value="service" checked /><b>服务商品</b><span>1v1 咨询、线上辅导等，支付后开通服务额度</span></label>
       <label class="cm-choice-item"><input type="radio" name="gtype" value="combo" /><b>组合商品</b><span>将多个在售商品打包售卖</span></label>
     </div>
   </div>
@@ -29,53 +28,45 @@
   <div class="cm-section">
     <div class="cm-section-hd"><h3>基本信息</h3></div>
     <div class="form-grid" style="grid-template-columns:1fr 1fr;gap:12px 16px">
-      <div class="field" style="grid-column:1/-1"><label>商品名称 *</label><input placeholder="请输入商品名称，建议不超过 40 字" value="青春期沟通家长手册（纸书）" /></div>
+      <div class="field" style="grid-column:1/-1"><label>商品名称 *</label><input placeholder="请输入商品名称，建议不超过 40 字" value="家庭咨询 60 分钟服务卡" /></div>
       <div class="field"><label>商品类目 *</label>
         <select style="width:100%;padding:7px 8px;border:1px solid var(--color-border);border-radius:6px">
-          <option>图书 / 教辅周边</option><option>文具 / 文创</option><option>日用百货</option><option>食品（需资质）</option>
+          <option>教育服务 / 线上咨询</option><option>教育服务 / 1v1 辅导</option><option>教育服务 / 直播互动</option><option>教育服务 / 学习陪伴</option>
         </select>
       </div>
       <div class="field"><label>所属分组</label>
         <select style="width:100%;padding:7px 8px;border:1px solid var(--color-border);border-radius:6px">
-          <option>教辅周边</option><option>学科提分</option><option>家长课堂</option><option>未分组</option>
+          <option>家长课堂</option><option>学科提分</option><option>亲子沟通</option><option>未分组</option>
         </select>
       </div>
       <div class="field" style="grid-column:1/-1"><label>商品标签</label><input placeholder="多个标签用「,」分隔，例如：热卖, 新课, 限量" value="热卖, 新课" /></div>
-      <div class="field" style="grid-column:1/-1"><label>商品卖点</label><textarea rows="2" style="width:100%;padding:8px;border:1px solid var(--color-border);border-radius:6px">樊登式家长共读手册 · 配套 9.9 引流课使用，随书附赠配套练习页。</textarea></div>
+      <div class="field" style="grid-column:1/-1"><label>商品卖点</label><textarea rows="2" style="width:100%;padding:8px;border:1px solid var(--color-border);border-radius:6px">资深家庭教育指导师 1v1 在线咨询，针对亲子沟通、青春期叛逆等场景给出可落地建议，含咨询后 7 天跟进。</textarea></div>
     </div>
     <div class="field" style="margin-top:12px"><label>商品主图（封面图）*</label>
       <div class="gd-uploader"><span class="gd-upload-add">＋<br><em>上传图片</em></span><span class="muted" style="font-size:12px">建议 1:1，≤ 5MB，支持 JPG/PNG/WebP</span></div>
     </div>
-    <div class="field" style="margin-top:12px"><label>商品详情</label><textarea rows="4" style="width:100%;padding:8px;border:1px solid var(--color-border);border-radius:6px">此处为富文本详情编辑区（原型示意）：可插入图文、规格表、发货说明等。</textarea></div>
+    <div class="field" style="margin-top:12px"><label>商品详情</label><textarea rows="4" style="width:100%;padding:8px;border:1px solid var(--color-border);border-radius:6px">此处为富文本详情编辑区（原型示意）：可插入图文、服务说明、预约流程等。</textarea></div>
   </div>
 
-  <!-- 规格与库存 -->
+  <!-- 规格与价格 -->
   <div class="cm-section">
-    <div class="cm-section-hd"><h3>规格与库存</h3><span class="muted">不设置规格即为单规格默认 SKU</span></div>
+    <div class="cm-section-hd"><h3>规格与价格</h3><span class="muted">不设置规格即为单规格默认 SKU</span></div>
     <table class="data" style="margin-bottom:10px">
-      <thead><tr><th>规格项</th><th>SKU</th><th>价格</th><th>划线价</th><th>库存</th><th style="width:60px"></th></tr></thead>
+      <thead><tr><th>规格项</th><th>SKU</th><th>价格</th><th>划线价</th><th>服务时长 / 次数</th><th style="width:60px"></th></tr></thead>
       <tbody>
         <tr>
           <td>默认规格（单规格）</td>
           <td><span class="mono">SKU-001</span></td>
-          <td><input type="number" value="39.00" style="width:110px;padding:5px 8px;border:1px solid var(--color-border);border-radius:6px" /> 元</td>
-          <td><input type="number" value="49.00" style="width:110px;padding:5px 8px;border:1px solid var(--color-border);border-radius:6px" /> 元</td>
-          <td><input type="number" value="120" style="width:90px;padding:5px 8px;border:1px solid var(--color-border);border-radius:6px" /> 件</td>
-          <td><a href="#" data-toast="删除规格（原型）" style="color:#f53f3f">删除</a></td>
-        </tr>
-        <tr>
-          <td>默认规格（单规格）</td>
-          <td><span class="mono">SKU-002</span></td>
-          <td><input type="number" value="39.00" style="width:110px;padding:5px 8px;border:1px solid var(--color-border);border-radius:6px" /> 元</td>
-          <td><input type="number" value="49.00" style="width:110px;padding:5px 8px;border:1px solid var(--color-border);border-radius:6px" /> 元</td>
-          <td><input type="number" value="94" style="width:90px;padding:5px 8px;border:1px solid var(--color-border);border-radius:6px" /> 件</td>
+          <td><input type="number" value="199.00" style="width:110px;padding:5px 8px;border:1px solid var(--color-border);border-radius:6px" /> 元</td>
+          <td><input type="number" value="299.00" style="width:110px;padding:5px 8px;border:1px solid var(--color-border);border-radius:6px" /> 元</td>
+          <td><input type="number" value="60" style="width:90px;padding:5px 8px;border:1px solid var(--color-border);border-radius:6px" /> 分钟</td>
           <td><a href="#" data-toast="删除规格（原型）" style="color:#f53f3f">删除</a></td>
         </tr>
       </tbody>
     </table>
     <button class="btn btn-sm" id="btn-add-sku">＋ 添加规格</button>
     <div class="cm-check" style="margin-top:10px">
-      <label><input type="checkbox" /> 商品详情页不展示剩余件数</label>
+      <label><input type="checkbox" /> 商品详情页不展示剩余服务额度</label>
       <label><input type="checkbox" /> 销量仅在店铺配置开启后展示（设置-功能配置）</label>
     </div>
   </div>
@@ -94,29 +85,29 @@
     </div>
   </div>
 
-  <!-- 物流与售后 -->
+  <!-- 交付与售后 -->
   <div class="cm-section">
-    <div class="cm-section-hd"><h3>物流与售后服务</h3></div>
+    <div class="cm-section-hd"><h3>交付与售后</h3><span class="muted">虚拟商品无物流，支付成功后自动开通</span></div>
     <div class="form-grid" style="grid-template-columns:1fr 1fr;gap:12px 16px">
-      <div class="field"><label>运费设置</label>
+      <div class="field"><label>交付方式</label>
         <select style="width:100%;padding:7px 8px;border:1px solid var(--color-border);border-radius:6px">
-          <option>全国包邮（偏远除外）</option><option>统一运费 ¥6</option><option>使用运费模板</option>
+          <option>支付后自动开通（线上内容）</option>
+          <option>支付后开通服务额度（学员预约）</option>
+          <option>人工开通（对公转账场景）</option>
         </select>
-        <a href="freight.html" class="link" style="font-size:12px">管理运费模板 →</a>
       </div>
-      <div class="field"><label>发货方式</label>
+      <div class="field"><label>退款规则</label>
         <select style="width:100%;padding:7px 8px;border:1px solid var(--color-border);border-radius:6px">
-          <option>快递发货</option><option>到店自提</option><option>快递 + 自提</option>
+          <option>未使用可退（服务未核销）</option>
+          <option>按已使用比例退款</option>
+          <option>不支持退款</option>
         </select>
       </div>
     </div>
     <div class="cm-check" style="margin-top:12px">
-      <label><input type="checkbox" checked /> 支持 7 天无理由退货（图书类目默认支持，规则见售后设置）</label>
-      <label><input type="checkbox" checked /> 买家可申请换货</label>
-      <label><input type="checkbox" /> 支持上门取件退货（需开通运费险/上门取件服务）</label>
-    </div>
-    <div class="field" style="margin-top:12px"><label>退货收货地址</label>
-      <textarea rows="2" style="width:100%;padding:8px;border:1px solid var(--color-border);border-radius:6px">广东省深圳市南山区 ×××大厦 8 楼 收件人：艺博教务 138****0000</textarea>
+      <label><input type="checkbox" checked /> 支持 7 天内未使用申请退款（虚拟商品不适用无理由退货）</label>
+      <label><input type="checkbox" /> 退款后可选择保留权益（客诉安抚场景）</label>
+      <label><input type="checkbox" checked /> 退款成功后自动回收课程权益 / 服务额度</label>
     </div>
   </div>
 

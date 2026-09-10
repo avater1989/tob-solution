@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>店铺设置 · 商家管理后台</title>
+<link rel="stylesheet" href="../assets/css/proto.css?v=9" />
+<link rel="stylesheet" href="../assets/css/assess.css?v=3" />
+</head>
+<body class="admin-body" data-module="mp" data-nav="mp-settings" data-title="店铺设置" data-crumb="商家管理后台 / 小程序 / 店铺装修 / 店铺设置">
+
+<div id="header-actions">
+  <button class="btn btn-primary" id="btn-save">保存设置</button>
+</div>
+
+<div id="page-content" style="display:none">
+  <div class="as-banner">配置您小程序店铺的基础信息与 C 端通用体验项：店铺信息、搜索热词、课程试看策略、支付成功页文案。</div>
+
+  <!-- 店铺信息 -->
+  <div class="card" style="margin-bottom:14px">
+    <div class="card-hd"><h2>店铺信息</h2><span class="muted" style="margin-left:10px">展示在 C 端小程序「我的」页面与店铺首页顶部</span></div>
+    <div class="card-bd">
+      <div class="form-grid">
+        <div class="field"><label>店铺名称 *</label><input class="input" id="s-name" value="星启家庭教育" maxlength="12" /><div class="muted">2-12 个字符</div></div>
+        <div class="field"><label>客服企微</label><input class="input" id="s-kf" value="星启小助手（qixiao-01）" /><div class="muted">展示在 C 端「联系客服」入口</div></div>
+        <div class="field"><label>店铺 Logo</label>
+          <div style="display:flex;align-items:center;gap:10px">
+            <div style="width:48px;height:48px;border-radius:10px;background:linear-gradient(135deg,#4d7cfe,#7db3ff);color:#fff;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:600">星</div>
+            <input type="file" accept="image/*" />
+          </div>
+          <div class="muted">建议 200×200px，JPG/PNG，≤200KB</div>
+        </div>
+        <div class="field"><label>店铺简介</label><textarea class="input" id="s-intro" rows="3" maxlength="60" placeholder="展示在店铺首页顶部">专注 6-15 岁家庭教育，让沟通更有温度。</textarea><div class="muted"><span id="intro-cnt">21</span>/60</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 搜索热词 -->
+  <div class="card" style="margin-bottom:14px">
+    <div class="card-hd"><h2>搜索热词</h2><span class="muted" style="margin-left:10px">展示在 C 端首页搜索框下的热门标签，最多 6 个，点击即发起搜索</span></div>
+    <div class="card-bd">
+      <div id="hot-words" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px"></div>
+      <div style="display:flex;gap:8px">
+        <input class="input" id="hw-input" placeholder="输入热词后回车或点击添加" style="width:280px" maxlength="8" />
+        <button class="btn" id="hw-add">添加</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 课程试看策略 -->
+  <div class="card" style="margin-bottom:14px">
+    <div class="card-hd"><h2>课程试看策略</h2><span class="muted" style="margin-left:10px">C 端课程详情页的试看体验，按课程类型分别配置</span></div>
+    <div class="card-bd">
+      <table class="as-table">
+        <thead>
+          <tr><th>课程类型</th><th style="width:200px">试看策略</th><th style="width:160px">试看内容</th><th style="width:110px">购买引导</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><b>视频课</b><div class="as-desc">含训练营、体系课</div></td>
+            <td><select class="input"><option>前 N 节免费试看</option><option selected>每节前 3 分钟试看</option><option>不提供试看</option></select></td>
+            <td style="font-size:12px">视频节内试看片段</td>
+            <td><span class="as-tag green">已开启</span></td>
+          </tr>
+          <tr>
+            <td><b>音频课</b><div class="as-desc">亲子情绪管理音频课等</div></td>
+            <td><select class="input"><option selected>前 1 条音频免费试听</option><option>每条前 60 秒试听</option><option>不提供试听</option></select></td>
+            <td style="font-size:12px">完整音频内容</td>
+            <td><span class="as-tag green">已开启</span></td>
+          </tr>
+          <tr>
+            <td><b>直播</b><div class="as-desc">直播场次与回放</div></td>
+            <td><select class="input"><option selected>预告页公开可见</option><option>仅预约用户可见</option></select></td>
+            <td style="font-size:12px">直播预告信息</td>
+            <td><span class="as-tag blue">预约引导</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- 支付成功页 -->
+  <div class="card" style="margin-bottom:14px">
+    <div class="card-hd"><h2>支付成功页文案</h2><span class="muted" style="margin-left:10px">C 端支付成功页的引导文案与按钮</span></div>
+    <div class="card-bd">
+      <div class="form-grid">
+        <div class="field"><label>主文案 *</label><input class="input" id="pay-title" value="支付成功！课程已加入你的学习清单" maxlength="20" /></div>
+        <div class="field"><label>副文案</label><input class="input" id="pay-sub" value="添加企微老师，不错过每节课的开课提醒" maxlength="30" /></div>
+        <div class="field"><label>主按钮文案</label>
+          <select class="input" id="pay-btn1">
+            <option selected>立即学习</option>
+            <option>查看课程</option>
+            <option>去直播间</option>
+          </select>
+        </div>
+        <div class="field"><label>次按钮文案</label>
+          <select class="input" id="pay-btn2">
+            <option selected>添加企微老师</option>
+            <option>返回首页</option>
+            <option>浏览更多课程</option>
+          </select>
+        </div>
+      </div>
+      <div style="margin-top:14px;padding:14px;border:1px solid var(--color-border);border-radius:8px;background:#fafbfc;max-width:420px">
+        <div class="muted" style="margin-bottom:8px">C 端效果预览</div>
+        <div style="text-align:center;padding:16px 8px">
+          <div style="width:44px;height:44px;margin:0 auto 10px;border-radius:50%;background:#e8ffea;color:#009a29;display:flex;align-items:center;justify-content:center;font-size:22px">✓</div>
+          <div style="font-size:15px;font-weight:600" id="pv-title">支付成功！课程已加入你的学习清单</div>
+          <div class="muted" style="margin-top:4px" id="pv-sub">添加企微老师，不错过每节课的开课提醒</div>
+          <div style="margin-top:14px;display:flex;gap:8px;justify-content:center">
+            <button class="btn btn-primary" id="pv-b1" style="pointer-events:none">立即学习</button>
+            <button class="btn" id="pv-b2" style="pointer-events:none">添加企微老师</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="../assets/js/proto.js"></script>
+<script src="../assets/js/admin-shell.js?v=13"></script>
+<script>
+var HOT_WORDS = ["亲子沟通", "写作业", "青春期", "情绪管理", "家庭会议"];
+
+function renderWords(){
+  document.getElementById("hot-words").innerHTML = HOT_WORDS.map(function(w,i){
+    return '<span class="as-tag blue" style="cursor:default">' + esc2(w) +
+      ' <a href="javascript:;" data-hw-del="'+i+'" style="color:#0e42d2;margin-left:4px">×</a></span>';
+  }).join("");
+}
+function esc2(s){ return String(s).replace(/[&<>"']/g,function(c){return({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"})[c];}); }
+
+function addWord(){
+  var inp = document.getElementById("hw-input");
+  var w = inp.value.trim();
+  if (!w) { Proto.toast("请输入热词"); return; }
+  if (HOT_WORDS.indexOf(w)>=0) { Proto.toast("热词已存在"); return; }
+  if (HOT_WORDS.length>=6) { Proto.toast("最多 6 个热词"); return; }
+  HOT_WORDS.push(w); inp.value=""; renderWords(); Proto.toast("热词已添加");
+}
+document.getElementById("hw-add").onclick = addWord;
+document.getElementById("hw-input").addEventListener("keydown", function(e){ if (e.key==="Enter") addWord(); });
+document.addEventListener("click", function(e){
+  var el = e.target.closest("[data-hw-del]");
+  if (!el) return;
+  HOT_WORDS.splice(parseInt(el.getAttribute("data-hw-del"),10),1);
+  renderWords(); Proto.toast("热词已删除");
+});
+
+// 简介 & 支付文案实时预览
+var intro = document.getElementById("s-intro");
+function syncIntro(){ document.getElementById("intro-cnt").textContent = intro.value.length; }
+intro.addEventListener("input", syncIntro); syncIntro();
+document.getElementById("pay-title").addEventListener("input", function(){ document.getElementById("pv-title").textContent = this.value || "（主文案）"; });
+document.getElementById("pay-sub").addEventListener("input", function(){ document.getElementById("pv-sub").textContent = this.value || "（副文案）"; });
+document.getElementById("pay-btn1").addEventListener("change", function(){ document.getElementById("pv-b1").textContent = this.value; });
+document.getElementById("pay-btn2").addEventListener("change", function(){ document.getElementById("pv-b2").textContent = this.value; });
+
+document.getElementById("btn-save").onclick = function(){
+  if (!document.getElementById("s-name").value.trim()) { Proto.toast("请填写店铺名称"); return; }
+  Proto.toast("店铺设置已保存，C 端即时生效（演示）");
+};
+renderWords();
+</script>
+</body>
+</html>

@@ -40,6 +40,7 @@
     { id: "scrm", label: "SCRM", href: "leads.html" },
     { id: "live", label: "直播", href: "lives.html" },
     { id: "content", label: "内容", href: "content-series.html" },
+    { id: "mp", label: "小程序", href: "mp-home.html" },
     { id: "trade", label: "交易", href: "orders.html" },
     { id: "user", label: "用户", href: "users.html" },
     { id: "data", label: "经营分析", href: "board-overview.html" },
@@ -124,13 +125,49 @@
           { id: "content-category", href: "content-category.html", label: "商品分组" },
         ],
       },
+      {
+        group: "测评管理",
+        links: [
+          { id: "assess-projects", href: "assess-projects.html", label: "测评项目" },
+          { id: "assess-series",   href: "assess-series.html",   label: "系列测评" },
+          { id: "assess-results",  href: "assess-results.html",  label: "测评结果" },
+        ],
+      },
+      {
+        group: "计划管理",
+        links: [
+          { id: "assess-plans", href: "assess-plans.html", label: "定制化计划" },
+        ],
+      },
+    ],
+    mp: [
+      {
+        group: "店铺装修",
+        links: [
+          { id: "mp-home",     href: "mp-home.html",     label: "店铺首页" },
+          { id: "mp-settings", href: "mp-settings.html", label: "店铺设置" },
+        ],
+      },
+      {
+        group: "功能配置",
+        links: [
+          { id: "mp-claim", href: "mp-claim.html", label: "领课兑换" },
+          { id: "mp-live",  href: "mp-live.html",  label: "直播展示" },
+        ],
+      },
+      {
+        group: "数据",
+        links: [
+          { id: "mp-data", href: "mp-data.html", label: "小程序数据" },
+        ],
+      },
     ],
     trade: [
       {
         group: "订单管理",
         links: [
           { id: "orders", href: "orders.html", label: "订单列表" },
-          { id: "ship", href: "ship.html", label: "发货管理", badge: 3 },
+          { id: "entitlement", href: "entitlement.html", label: "权益开通记录", badge: 2 },
           { id: "refunds", href: "refunds.html", label: "订单退款" },
         ],
       },
@@ -144,7 +181,7 @@
       {
         group: "售后管理",
         links: [
-          { id: "aftersales", href: "aftersales.html", label: "售后维权", badge: 4 },
+          { id: "aftersales", href: "aftersales.html", label: "退款与权益回收", badge: 4 },
         ],
       },
       {
@@ -160,8 +197,8 @@
       {
         group: "交易设置",
         links: [
-          { id: "freight", href: "freight.html", label: "运费模板" },
-          { id: "payment", href: "payment.html", label: "收款账户" },
+          { id: "payment", href: "payment.html", label: "收款与清分" },
+          { id: "split-rules", href: "split-rules.html", label: "分账规则配置" },
           { id: "invoice", href: "invoice.html", label: "开票设置" },
           { id: "trade-opts", href: "trade-settings.html", label: "交易选项" },
         ],
@@ -175,6 +212,13 @@
           { id: "user-tags", href: "user-tags.html", label: "标签管理" },
         ],
       },
+      {
+        group: "用户运营",
+        links: [
+          { id: "user-segments", href: "user-segments.html", label: "用户分群" },
+          { id: "ops-plans", href: "ops-plans.html", label: "定向运营计划" },
+        ],
+      },
     ],
     sys: [
       {
@@ -184,6 +228,12 @@
           { id: "depts", href: "depts.html", label: "部门管理" },
           { id: "user-roles", href: "user-roles.html", label: "用户角色" },
           { id: "permissions", href: "permissions.html", label: "权限配置" },
+        ],
+      },
+      {
+        group: "消息与通知",
+        links: [
+          { id: "message-push", href: "message-push.html", label: "消息推送" },
         ],
       },
     ],

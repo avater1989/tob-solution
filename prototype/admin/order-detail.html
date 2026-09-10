@@ -18,36 +18,38 @@
   <div class="card" style="margin-bottom:8px"><div class="card-bd">
     <div class="order-status-bar">
       <div class="os-main">
-        <span class="badge badge-info" style="font-size:13px">已支付 · 履约中</span>
+        <span class="badge badge-info" style="font-size:13px">已支付 · 权益已开通</span>
         <b>YB20260907000331</b>
         <span class="tag tag-green">视频号</span>
-        <span class="tag tag-orange">合单（知识 + 实物）</span>
+        <span class="tag tag-blue">知识商品</span>
       </div>
       <div class="os-flow">
         <div class="os-step done"><i>1</i>确认订单</div>
         <div class="os-step done"><i>2</i>支付成功</div>
-        <div class="os-step cur"><i>3</i>履约中</div>
+        <div class="os-step cur"><i>3</i>权益已开通</div>
         <div class="os-step"><i>4</i>订单完成</div>
       </div>
     </div>
     <div class="alert alert-info" style="margin-top:10px;font-size:13px">
-      本单同时含<b>知识商品</b>（权益已开通）与<b>实物商品</b>（待发货）。实物商品在「交易-订单管理-发货管理」中发货，知识部分直接开通权益。
+      本单为<b>知识商品订单</b>，支付成功后已<b>自动开通课程权益</b>，无物流发货环节；权益开通与回收记录可在「交易-订单管理-权益开通记录」查看。
     </div>
   </div></div>
 
-  <!-- 履约拆分 -->
+  <!-- 商品与权益 -->
   <div class="detail-cols">
-    <div class="card"><div class="card-hd"><h2>履约① · 知识商品（权益已开通）</h2></div>
+    <div class="card"><div class="card-hd"><h2>商品明细</h2></div>
       <div class="card-bd">
         <div class="prod-line">
           <div class="thumb thumb-course"><img src="../assets/img/covers/comm.jpg" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:inherit;display:block" /></div>
           <div>
             <b>春启 03 期家长必修课</b>
-            <div class="muted" style="font-size:12px;margin-top:2px">线上课 · 12 节 · 规格：默认</div>
+            <div class="muted" style="font-size:12px;margin-top:2px">线上课 · 12 节 · 知识商品</div>
           </div>
           <div class="prod-price"><b>¥9.90</b></div>
         </div>
         <div class="kv" style="margin-top:12px">
+          <div class="kv-row"><span>商品类型</span><b>知识商品（虚拟）</b></div>
+          <div class="kv-row"><span>交付方式</span><b>支付后自动开通</b></div>
           <div class="kv-row"><span>权益状态</span><b><span class="badge badge-info">已开通</span></b></div>
           <div class="kv-row"><span>开通时间</span><b>2026-09-07 14:23:01</b></div>
           <div class="kv-row"><span>有效期</span><b>永久有效</b></div>
@@ -55,22 +57,14 @@
       </div>
     </div>
 
-    <div class="card"><div class="card-hd"><h2>履约② · 实物商品（待发货）</h2><a href="ship.html" class="link" style="font-size:12px">去发货 →</a></div>
+    <div class="card"><div class="card-hd"><h2>权益与售后</h2></div>
       <div class="card-bd">
-        <div class="prod-line">
-          <div class="thumb thumb-book"></div>
-          <div>
-            <b>青春期沟通家长手册（纸书）</b>
-            <div class="muted" style="font-size:12px;margin-top:2px">实物 · SKU-001 · 数量 2</div>
-          </div>
-          <div class="prod-price"><b>¥78.00</b></div>
-        </div>
-        <div class="kv" style="margin-top:12px">
-          <div class="kv-row"><span>发货状态</span><b><span class="badge badge-warn">待发货</span></b></div>
-          <div class="kv-row"><span>收货人</span><b>李女士 138****2610</b></div>
-          <div class="kv-row"><span>收货地址</span><b>广东省深圳市南山区 ×× 路 8 号</b></div>
-          <div class="kv-row"><span>物流信息</span><b class="muted">未发货</b></div>
-          <div class="kv-row"><span>售后状态</span><b><a href="aftersales.html" class="link">查看售后单 →</a></b></div>
+        <div class="kv">
+          <div class="kv-row"><span>学习进度</span><b>已学 1 / 12 节</b></div>
+          <div class="kv-row"><span>权益回收状态</span><b class="muted">未回收（订单正常）</b></div>
+          <div class="kv-row"><span>退款状态</span><b>无退款</b></div>
+          <div class="kv-row"><span>退款与权益回收</span><b><a href="aftersales.html" class="link">查看 →</a></b></div>
+          <div class="kv-row"><span>权益开通记录</span><b><a href="entitlement.html" class="link">查看记录 →</a></b></div>
         </div>
       </div>
     </div>
@@ -81,13 +75,13 @@
     <div class="card-bd">
       <div class="kv-grid">
         <div class="kv-row"><span>订单号</span><b class="mono">YB20260907000331</b></div>
-        <div class="kv-row"><span>微信支付交易单号</span><b class="mono">4200002388202609070XX</b></div>
-        <div class="kv-row"><span>订单类型</span><b>合单支付（拆单：知识 1 + 实物 1）</b></div>
+        <div class="kv-row"><span>通联支付交易单号</span><b class="mono">TL2026090714225800XX</b></div>
+        <div class="kv-row"><span>订单类型</span><b>普通订单（知识商品 1 件）</b></div>
         <div class="kv-row"><span>渠道来源</span><b>视频号直播间带货</b></div>
         <div class="kv-row"><span>推广人</span><b>—</b></div>
         <div class="kv-row"><span>下单时间</span><b>2026-09-07 14:22:10</b></div>
         <div class="kv-row"><span>支付时间</span><b>2026-09-07 14:22:58</b></div>
-        <div class="kv-row"><span>支付方式</span><b>微信小程序支付</b></div>
+        <div class="kv-row"><span>支付方式</span><b>通联支付（微信小程序内）</b></div>
       </div>
     </div>
   </div>
@@ -108,10 +102,9 @@
     <div class="card"><div class="card-hd"><h2>金额明细</h2></div>
       <div class="card-bd">
         <div class="kv">
-          <div class="kv-row"><span>商品总额</span><b>¥87.90</b></div>
-          <div class="kv-row"><span>运费</span><b>¥0.00（满 99 包邮优惠已免）</b></div>
+          <div class="kv-row"><span>商品总额</span><b>¥9.90</b></div>
           <div class="kv-row"><span>优惠券</span><b>-¥0.00</b></div>
-          <div class="kv-row"><span>实付金额</span><b class="price">¥87.90</b></div>
+          <div class="kv-row"><span>实付金额</span><b class="price">¥9.90</b></div>
         </div>
       </div>
     </div>
@@ -133,13 +126,14 @@
       </div>
     </div>
 
-    <div class="card"><div class="card-hd"><h2>分账信息</h2><span class="muted" style="font-size:12px">示意：备付金分账</span></div>
+    <div class="card"><div class="card-hd"><h2>分账信息</h2><span class="muted" style="font-size:12px">通联支付清分</span></div>
       <div class="card-bd">
         <div class="kv">
-          <div class="kv-row"><span>备付金账户</span><b>艺博平台备付金账户</b></div>
-          <div class="kv-row"><span>分账状态</span><b><span class="badge badge-warn">待分账</span> 随账期 T+1 结算</b></div>
-          <div class="kv-row"><span>平台服务费（1%）</span><b>¥0.88</b></div>
-          <div class="kv-row"><span>商户分账（99%）</span><b>¥87.02</b></div>
+          <div class="kv-row"><span>收单主体</span><b>艺博平台商户（通联支付）</b></div>
+          <div class="kv-row"><span>分账状态</span><b><span class="badge badge-warn">待分账</span> 支付成功后 T+1 自动分账</b></div>
+          <div class="kv-row"><span>平台抽佣（10%）</span><b>¥0.99</b></div>
+          <div class="kv-row"><span>商户分账（90%）</span><b>¥8.91</b></div>
+          <div class="kv-row"><span>分账规则</span><b><a href="split-rules.html" class="link">家长课堂类目分账规则 →</a></b></div>
           <div class="kv-row"><span>所属结算单</span><b><a href="settlement.html" class="link">ST20260908001（待确认）</a></b></div>
         </div>
       </div>
@@ -151,9 +145,9 @@
     <div class="card-bd">
       <ul class="log-list">
         <li><span class="log-time">2026-09-07 14:23:01</span>系统自动开通课程权益（线上课 · 全部 12 节）<span class="muted">· 系统</span></li>
-        <li><span class="log-time">2026-09-07 14:22:58</span>微信支付回调成功，实付 ¥87.90<span class="muted">· 支付系统</span></li>
-        <li><span class="log-time">2026-09-07 14:22:30</span>系统按商品类型拆单：知识订单 + 实物订单<span class="muted">· 系统</span></li>
-        <li><span class="log-time">2026-09-07 14:22:10</span>买家通过直播间购物车合并下单<span class="muted">· 视频号直播间</span></li>
+        <li><span class="log-time">2026-09-07 14:22:58</span>通联支付回调成功，实付 ¥9.90<span class="muted">· 支付系统</span></li>
+        <li><span class="log-time">2026-09-07 14:22:30</span>系统生成分账明细，待 T+1 执行分账<span class="muted">· 系统</span></li>
+        <li><span class="log-time">2026-09-07 14:22:10</span>买家通过视频号直播间下单<span class="muted">· 视频号直播间</span></li>
       </ul>
     </div>
   </div>

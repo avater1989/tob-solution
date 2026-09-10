@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>店铺首页 · 商家管理后台</title>
+<link rel="stylesheet" href="../assets/css/proto.css?v=9" />
+<link rel="stylesheet" href="../assets/css/assess.css?v=3" />
+<style>
+  .deco-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+  .deco-item { border: 1px solid var(--color-border); border-radius: 8px; padding: 10px; display: flex; flex-direction: column; gap: 6px; background: #fff; }
+  .deco-cover { height: 64px; border-radius: 6px; background: linear-gradient(135deg, #4d7cfe, #7db3ff); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 12px; text-align: center; padding: 0 8px; }
+  .deco-cover.c2 { background: linear-gradient(135deg, #ff8a3d, #ffb37a); }
+  .deco-cover.c3 { background: linear-gradient(135deg, #2fbf71, #6fdcad); }
+  .king-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+  .king-item { border: 1px dashed var(--color-border); border-radius: 8px; padding: 12px 10px; text-align: center; background: #fafbfc; }
+  .king-item .ki-ico { width: 36px; height: 36px; margin: 0 auto 6px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px; color: #fff; }
+</style>
+</head>
+<body class="admin-body" data-module="mp" data-nav="mp-home" data-title="店铺首页" data-crumb="商家管理后台 / 小程序 / 店铺装修 / 店铺首页">
+
+<div id="header-actions">
+  <button class="btn" id="btn-preview" onclick="window.open('../miniprogram/home.html','_blank')">预览 C 端首页</button>
+  <button class="btn btn-primary" id="btn-save">保存装修</button>
+</div>
+
+<div id="page-content" style="display:none">
+  <div class="as-banner">装修您的小程序店铺首页。C 端首页结构为固定模板：主推 Banner → 金刚位（领课 / 直播 / 课程 / 我的）→ 分类标签 → 本周必看 → 精选课程，商家可在此配置各楼层内容。</div>
+
+  <!-- 主推 Banner -->
+  <div class="card" style="margin-bottom:14px">
+    <div class="card-hd"><h2>主推 Banner</h2><span class="muted" style="margin-left:10px">最多 3 条，C 端自动轮播，第一条为默认主推</span></div>
+    <div class="card-bd">
+      <table class="as-table">
+        <thead>
+          <tr>
+            <th>预览</th>
+            <th>标题 / 副标题</th>
+            <th style="width:150px">跳转链接</th>
+            <th style="width:90px">状态</th>
+            <th style="width:170px">操作</th>
+          </tr>
+        </thead>
+        <tbody id="banner-tbody"></tbody>
+      </table>
+      <div style="margin-top:10px"><button class="btn btn-sm" id="btn-banner-add">+ 新增 Banner</button></div>
+    </div>
+  </div>
+
+  <!-- 金刚位 -->
+  <div class="card" style="margin-bottom:14px">
+    <div class="card-hd"><h2>金刚位（固定）</h2></div>
+    <div class="card-bd">
+      <div class="king-grid">
+        <div class="king-item"><div class="ki-ico" style="background:#4d7cfe">🎁</div><b>领课</b><div class="muted">跳转领课兑换页</div><span class="as-tag gray">固定</span></div>
+        <div class="king-item"><div class="ki-ico" style="background:#f5222d">📺</div><b>直播</b><div class="muted">跳转直播 tab</div><span class="as-tag gray">固定</span></div>
+        <div class="king-item"><div class="ki-ico" style="background:#2fbf71">📚</div><b>课程</b><div class="muted">跳转课程列表</div><span class="as-tag gray">固定</span></div>
+        <div class="king-item"><div class="ki-ico" style="background:#fa8c16">👤</div><b>我的</b><div class="muted">跳转我的页面</div><span class="as-tag gray">固定</span></div>
+      </div>
+      <div class="muted" style="margin-top:10px">金刚位为平台固定模板，暂不支持自定义；「领课」入口是否展示由 <a href="mp-claim.html">领课兑换</a> 功能开关控制。</div>
+    </div>
+  </div>
+
+  <!-- 分类标签 -->
+  <div class="card" style="margin-bottom:14px">
+    <div class="card-hd"><h2>分类标签</h2><span class="muted" style="margin-left:10px">展示在 C 端首页课程列表上方，最多 6 个</span></div>
+    <div class="card-bd">
+      <table class="as-table">
+        <thead>
+          <tr><th style="width:60px">排序</th><th>标签名称</th><th style="width:200px">筛选内容</th><th style="width:90px">状态</th><th style="width:140px">操作</th></tr>
+        </thead>
+        <tbody id="cat-tbody"></tbody>
+      </table>
+      <div style="margin-top:10px"><button class="btn btn-sm" id="btn-cat-add">+ 新增标签</button></div>
+    </div>
+  </div>
+
+  <!-- 楼层管理 -->
+  <div class="card" style="margin-bottom:14px">
+    <div class="card-hd"><h2>楼层管理</h2><span class="muted" style="margin-left:10px">拖拽或用按钮调整楼层顺序与内容</span></div>
+    <div class="card-bd">
+      <table class="as-table">
+        <thead>
+          <tr><th>楼层</th><th>标题（C 端展示）</th><th style="width:220px">内容</th><th style="width:90px">状态</th><th style="width:170px">操作</th></tr>
+        </thead>
+        <tbody id="floor-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- Banner 编辑弹窗 -->
+<div class="proto-modal" id="modal-banner" style="width:520px">
+  <div class="proto-modal-hd"><h3 id="banner-modal-title" style="margin:0;font-size:16px">新增 Banner</h3><button class="ctrl-icon-btn" data-close>×</button></div>
+  <div class="proto-modal-bd">
+    <div class="form-grid">
+      <div class="field"><label>标题 *</label><input class="input" id="b-title" placeholder="如：开学季亲子沟通特训营" /></div>
+      <div class="field"><label>副标题</label><input class="input" id="b-sub" placeholder="如：限时 5 折，扫码领课" /></div>
+      <div class="field"><label>跳转链接 *</label>
+        <select class="input" id="b-link">
+          <option>课程详情 · 亲子沟通基础课</option>
+          <option>课程详情 · 家庭教育风格训练营</option>
+          <option>直播预告 · 开学第一课家长专场</option>
+          <option>领课兑换页</option>
+          <option>课程列表页</option>
+        </select>
+      </div>
+      <div class="field"><label>主图</label><input type="file" accept="image/*" /><div class="muted">建议 750×300px，JPG/PNG，≤500KB</div></div>
+    </div>
+  </div>
+  <div class="proto-modal-ft" style="justify-content:flex-end;gap:8px">
+    <button class="btn" data-close>取消</button>
+    <button class="btn btn-primary" id="banner-ok">确定</button>
+  </div>
+</div>
+
+<!-- 分类标签编辑弹窗 -->
+<div class="proto-modal" id="modal-cat" style="width:480px">
+  <div class="proto-modal-hd"><h3 id="cat-modal-title" style="margin:0;font-size:16px">新增分类标签</h3><button class="ctrl-icon-btn" data-close>×</button></div>
+  <div class="proto-modal-bd">
+    <div class="form-grid">
+      <div class="field"><label>标签名称 *</label><input class="input" id="c-name" placeholder="如：家长必修" maxlength="6" /></div>
+      <div class="field"><label>筛选内容 *</label>
+        <select class="input" id="c-scope">
+          <option>全部在售课程</option>
+          <option>商品分组 · 家长必修</option>
+          <option>商品分组 · 亲子训练营</option>
+          <option>商品分组 · 音频课</option>
+          <option>仅直播回放课程</option>
+        </select>
+      </div>
+    </div>
+  </div>
+  <div class="proto-modal-ft" style="justify-content:flex-end;gap:8px">
+    <button class="btn" data-close>取消</button>
+    <button class="btn btn-primary" id="cat-ok">确定</button>
+  </div>
+</div>
+
+<!-- 楼层选课弹窗 -->
+<div class="proto-modal" id="modal-floor" style="width:560px">
+  <div class="proto-modal-hd"><h3 id="floor-modal-title" style="margin:0;font-size:16px">配置楼层内容</h3><button class="ctrl-icon-btn" data-close>×</button></div>
+  <div class="proto-modal-bd">
+    <div class="muted" style="margin-bottom:10px">勾选要在该楼层展示的课程，最多 6 个；保存后按勾选顺序在 C 端横滑展示。</div>
+    <div id="floor-course-list"></div>
+  </div>
+  <div class="proto-modal-ft" style="justify-content:flex-end;gap:8px">
+    <button class="btn" data-close>取消</button>
+    <button class="btn btn-primary" id="floor-ok">确定</button>
+  </div>
+</div>
+
+<div class="proto-mask" id="mask"></div>
+
+<script src="../assets/js/proto.js"></script>
+<script src="../assets/js/admin-shell.js?v=13"></script>
+<script>
+function esc(s){ return String(s).replace(/[&<>"']/g,function(c){return({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"})[c];}); }
+function stTag(on){ return on ? '<span class="as-tag green">展示中</span>' : '<span class="as-tag gray">已隐藏</span>'; }
+
+var BANNERS = [
+  { id:"B1", title:"开学季亲子沟通特训营", sub:"限时 5 折 · 前 100 名赠 1v1 咨询", link:"课程详情 · 亲子沟通基础课", on:true, cls:"" },
+  { id:"B2", title:"家庭教育风格测评免费测", sub:"3 分钟了解你的教养风格", link:"领课兑换页", on:true, cls:"c2" },
+  { id:"B3", title:"开学第一课 · 家长专场直播", sub:"9 月 12 日 20:00 开播", link:"直播预告 · 开学第一课家长专场", on:false, cls:"c3" }
+];
+var CATS = [
+  { id:"T1", name:"全部", scope:"全部在售课程", on:true },
+  { id:"T2", name:"家长必修", scope:"商品分组 · 家长必修", on:true },
+  { id:"T3", name:"训练营", scope:"商品分组 · 亲子训练营", on:true },
+  { id:"T4", name:"音频课", scope:"商品分组 · 音频课", on:false }
+];
+var FLOORS = [
+  { id:"F1", name:"本周必看", title:"本周必看", type:"课程横滑位（最多 6 个）", courses:["亲子沟通基础课","非暴力沟通父母工作坊","家庭会议实践指南"], on:true },
+  { id:"F2", name:"精选课程", title:"精选好课", type:"课程卡片位（最多 6 个）", courses:["家庭教育风格训练营","青春期沟通 21 天营","亲子情绪管理音频课","写作业不吼不叫"], on:true }
+];
+var COURSE_POOL = ["亲子沟通基础课","非暴力沟通父母工作坊","家庭会议实践指南","家庭教育风格训练营","青春期沟通 21 天营","亲子情绪管理音频课","写作业不吼不叫","二孩家庭平衡课"];
+
+var mask = document.getElementById("mask");
+var modals = ["modal-banner","modal-cat","modal-floor"];
+function closeAll(){ mask.classList.remove("open"); modals.forEach(function(id){ document.getElementById(id).classList.remove("open"); }); }
+var editCtx = {};
+
+function renderBanners(){
+  document.getElementById("banner-tbody").innerHTML = BANNERS.map(function(b,i){
+    return '<tr>' +
+      '<td><div class="deco-cover '+b.cls+'" style="width:120px;height:44px;font-size:11px">'+esc(b.title)+'</div></td>' +
+      '<td><div class="as-name">'+esc(b.title)+'</div><div class="as-desc">'+esc(b.sub)+'</div></td>' +
+      '<td style="font-size:12px">'+esc(b.link)+'</td>' +
+      '<td>'+stTag(b.on)+'</td>' +
+      '<td class="row-actions">' +
+        '<a href="javascript:;" data-b-move="'+b.id+'">'+(i===0?"—" : "上移")+'</a>' +
+        '<a href="javascript:;" data-b-edit="'+b.id+'">编辑</a>' +
+        '<a href="javascript:;" data-b-toggle="'+b.id+'">'+(b.on?"隐藏":"展示")+'</a>' +
+        (BANNERS.length>1 ? '<a href="javascript:;" class="row-more" data-b-del="'+b.id+'">删除</a>' : '') +
+      '</td></tr>';
+  }).join("");
+}
+function renderCats(){
+  document.getElementById("cat-tbody").innerHTML = CATS.map(function(c,i){
+    return '<tr>' +
+      '<td style="text-align:center">'+(i+1)+'</td>' +
+      '<td><b>'+esc(c.name)+'</b></td>' +
+      '<td style="font-size:12px">'+esc(c.scope)+'</td>' +
+      '<td>'+stTag(c.on)+'</td>' +
+      '<td class="row-actions">' +
+        '<a href="javascript:;" data-c-move="'+c.id+'">'+(i===0?"—" : "上移")+'</a>' +
+        '<a href="javascript:;" data-c-edit="'+c.id+'">编辑</a>' +
+        '<a href="javascript:;" data-c-toggle="'+c.id+'">'+(c.on?"隐藏":"展示")+'</a>' +
+        (c.name!=="全部" ? '<a href="javascript:;" class="row-more" data-c-del="'+c.id+'">删除</a>' : '') +
+      '</td></tr>';
+  }).join("");
+}
+function renderFloors(){
+  document.getElementById("floor-tbody").innerHTML = FLOORS.map(function(f,i){
+    return '<tr>' +
+      '<td><b>'+esc(f.name)+'</b><div class="as-desc">'+esc(f.type)+'</div></td>' +
+      '<td><input class="input" value="'+esc(f.title)+'" style="width:180px" data-f-title="'+f.id+'" /></td>' +
+      '<td><div class="as-desc">已选 '+f.courses.length+' 个课程<br>'+esc(f.courses.join("、"))+'</div></td>' +
+      '<td>'+stTag(f.on)+'</td>' +
+      '<td class="row-actions">' +
+        '<a href="javascript:;" data-f-config="'+f.id+'">选课</a>' +
+        '<a href="javascript:;" data-f-toggle="'+f.id+'">'+(f.on?"隐藏":"展示")+'</a>' +
+      '</td></tr>';
+  }).join("");
+}
+
+function move(arr, id, key){
+  var i = arr.findIndex(function(x){return x.id===id;});
+  if (i<=0) return;
+  var t = arr[i-1]; arr[i-1]=arr[i]; arr[i]=t;
+  renderAll();
+}
+function renderAll(){ renderBanners(); renderCats(); renderFloors(); }
+
+// Banner 弹窗
+function openBanner(b){
+  editCtx.banner = b || null;
+  document.getElementById("banner-modal-title").textContent = b ? "编辑 Banner" : "新增 Banner";
+  document.getElementById("b-title").value = b ? b.title : "";
+  document.getElementById("b-sub").value = b ? b.sub : "";
+  document.getElementById("b-link").value = b ? b.link : "课程详情 · 亲子沟通基础课";
+  mask.classList.add("open"); document.getElementById("modal-banner").classList.add("open");
+}
+// 分类标签弹窗
+function openCat(c){
+  editCtx.cat = c || null;
+  document.getElementById("cat-modal-title").textContent = c ? "编辑分类标签" : "新增分类标签";
+  document.getElementById("c-name").value = c ? c.name : "";
+  document.getElementById("c-scope").value = c ? c.scope : "全部在售课程";
+  mask.classList.add("open"); document.getElementById("modal-cat").classList.add("open");
+}
+// 楼层选课弹窗
+function openFloor(f){
+  editCtx.floor = f;
+  document.getElementById("floor-modal-title").textContent = "配置「" + f.name + "」课程";
+  document.getElementById("floor-course-list").innerHTML = COURSE_POOL.map(function(n){
+    var checked = f.courses.indexOf(n)>=0 ? "checked" : "";
+    return '<div class="as-task"><label style="display:flex;align-items:center;gap:8px;cursor:pointer">' +
+      '<input type="checkbox" data-fc="'+esc(n)+'" '+checked+' /> <span style="flex:1">'+esc(n)+'</span></label></div>';
+  }).join("");
+  mask.classList.add("open"); document.getElementById("modal-floor").classList.add("open");
+}
+
+document.addEventListener("click", function(e){
+  var el;
+  if ((el = e.target.closest("[data-b-move]"))) { move(BANNERS, el.getAttribute("data-b-move")); return; }
+  if ((el = e.target.closest("[data-c-move]"))) { move(CATS, el.getAttribute("data-c-move")); return; }
+  if ((el = e.target.closest("[data-b-edit]"))) { openBanner(BANNERS.find(function(x){return x.id===el.getAttribute("data-b-edit");})); return; }
+  if ((el = e.target.closest("[data-b-add]"))) { openBanner(null); return; }
+  if ((el = e.target.closest("[data-c-edit]"))) { openCat(CATS.find(function(x){return x.id===el.getAttribute("data-c-edit");})); return; }
+  if ((el = e.target.closest("[data-c-add]"))) { openCat(null); return; }
+  if ((el = e.target.closest("[data-f-config]"))) { openFloor(FLOORS.find(function(x){return x.id===el.getAttribute("data-f-config");})); return; }
+  if ((el = e.target.closest("[data-b-toggle]"))) { var b=BANNERS.find(function(x){return x.id===el.getAttribute("data-b-toggle");}); b.on=!b.on; renderAll(); Proto.toast(b.on?"Banner 已展示":"Banner 已隐藏"); return; }
+  if ((el = e.target.closest("[data-c-toggle]"))) { var c=CATS.find(function(x){return x.id===el.getAttribute("data-c-toggle");}); c.on=!c.on; renderAll(); Proto.toast(c.on?"标签已展示":"标签已隐藏"); return; }
+  if ((el = e.target.closest("[data-f-toggle]"))) { var f=FLOORS.find(function(x){return x.id===el.getAttribute("data-f-toggle");}); f.on=!f.on; renderAll(); Proto.toast(f.on?"楼层已展示":"楼层已隐藏"); return; }
+  if ((el = e.target.closest("[data-b-del]"))) {
+    var id = el.getAttribute("data-b-del");
+    if (confirm("确认删除该 Banner？")) { BANNERS = BANNERS.filter(function(x){return x.id!==id;}); renderAll(); Proto.toast("已删除"); }
+    return;
+  }
+  if ((el = e.target.closest("[data-c-del]"))) {
+    var cid = el.getAttribute("data-c-del");
+    if (confirm("确认删除该分类标签？")) { CATS = CATS.filter(function(x){return x.id!==cid;}); renderAll(); Proto.toast("已删除"); }
+    return;
+  }
+});
+document.addEventListener("change", function(e){
+  var t = e.target;
+  if (t.getAttribute && t.getAttribute("data-f-title")) {
+    var f = FLOORS.find(function(x){return x.id===t.getAttribute("data-f-title");});
+    if (f) f.title = t.value;
+  }
+});
+
+document.getElementById("banner-ok").onclick = function(){
+  var title = document.getElementById("b-title").value.trim();
+  if (!title) { Proto.toast("请填写 Banner 标题"); return; }
+  var data = { title:title, sub:document.getElementById("b-sub").value.trim(), link:document.getElementById("b-link").value, cls:"c2" };
+  if (editCtx.banner) { Object.assign(editCtx.banner, data); }
+  else {
+    if (BANNERS.length>=3) { Proto.toast("最多 3 条 Banner"); return; }
+    BANNERS.push(Object.assign({ id:"B"+Date.now(), on:true }, data));
+  }
+  closeAll(); renderAll(); Proto.toast("Banner 已保存（演示）");
+};
+document.getElementById("cat-ok").onclick = function(){
+  var name = document.getElementById("c-name").value.trim();
+  if (!name) { Proto.toast("请填写标签名称"); return; }
+  var data = { name:name, scope:document.getElementById("c-scope").value };
+  if (editCtx.cat) { Object.assign(editCtx.cat, data); }
+  else {
+    if (CATS.length>=6) { Proto.toast("最多 6 个标签"); return; }
+    CATS.push(Object.assign({ id:"T"+Date.now(), on:true }, data));
+  }
+  closeAll(); renderAll(); Proto.toast("标签已保存（演示）");
+};
+document.getElementById("floor-ok").onclick = function(){
+  var picked = [];
+  document.querySelectorAll("[data-fc]").forEach(function(cb){ if (cb.checked) picked.push(cb.getAttribute("data-fc")); });
+  if (!picked.length) { Proto.toast("请至少选择 1 个课程"); return; }
+  if (picked.length>6) { Proto.toast("最多选择 6 个课程"); return; }
+  editCtx.floor.courses = picked;
+  closeAll(); renderAll(); Proto.toast("楼层内容已保存（演示）");
+};
+document.getElementById("btn-save").onclick = function(){ Proto.toast("首页装修已保存，C 端即时生效（演示）"); };
+
+mask.addEventListener("click", closeAll);
+document.querySelectorAll("[data-close]").forEach(function(b){ b.addEventListener("click", closeAll); });
+renderAll();
+</script>
+</body>
+</html>

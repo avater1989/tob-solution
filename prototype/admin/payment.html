@@ -3,42 +3,39 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>收款账户 · 商家管理后台</title>
+<title>收款与清分 · 商家管理后台</title>
 <link rel="stylesheet" href="../assets/css/proto.css?v=9" />
 </head>
-<body class="admin-body" data-module="trade" data-nav="payment" data-title="收款账户" data-crumb="交易 / 交易设置 / 收款账户">
+<body class="admin-body" data-module="trade" data-nav="payment" data-title="收款与清分" data-crumb="交易 / 交易设置 / 收款与清分">
 <div id="header-actions">
-  <button class="btn" id="btn-guide">接入指引</button>
+  <button class="btn" onclick="location.href='split-rules.html'">分账规则配置</button>
+  <button class="btn btn-primary" id="btn-guide">接入指引</button>
 </div>
 <div id="page-content" style="display:none">
 
-  <!-- 收款方式总览 -->
-  <div class="card" style="margin-bottom:12px"><div class="card-hd"><h2>收款方式</h2><span class="muted" style="font-size:12px">C 端支持的支付渠道与商户号配置</span></div>
+  <div class="alert alert-info" style="margin-bottom:12px;padding:10px 12px;border-radius:8px;background:#e8f3ff;border:1px solid #a0cfff;color:#165dff;font-size:13px">
+    C 端小程序支付由<b>通联支付</b>提供收单；订单资金先进入<b>艺博平台商户号</b>，支付成功后按分账规则自动清分至各 <b>IP 商户（分账会员）</b>，会员可独立提现至其绑定结算卡。
+  </div>
+
+  <!-- 收单渠道 -->
+  <div class="card" style="margin-bottom:12px"><div class="card-hd"><h2>收单渠道</h2><span class="muted" style="font-size:12px">当前生效的支付通道</span></div>
     <div class="card-bd" style="padding:0">
       <table class="data">
-        <thead><tr><th>支付渠道</th><th>模式</th><th>状态</th><th>费率</th><th>结算账户</th><th style="width:170px">操作</th></tr></thead>
+        <thead><tr><th>支付渠道</th><th>接入模式</th><th>状态</th><th>费率</th><th>结算方式</th><th style="width:190px">操作</th></tr></thead>
         <tbody>
           <tr>
-            <td><b>微信支付</b><br><span class="muted" style="font-size:12px">小程序 / H5 / 扫码</span></td>
-            <td>服务商模式（微信支付服务商）</td>
+            <td><b>通联支付</b><br><span class="muted" style="font-size:12px">小程序支付 / 微信内 H5</span></td>
+            <td>平台商户收单 + 会员分账</td>
             <td><span class="badge badge-success">收款中</span></td>
-            <td>0.6%（可按交易额议价）</td>
-            <td>招商银行 ****8888</td>
-            <td class="row-actions"><a href="#" data-row-act="detail">账户信息</a><a href="withdraw.html">提现</a></td>
+            <td>0.6%（按协议，可议价）</td>
+            <td>T+1 自动分账</td>
+            <td class="row-actions"><a href="#" data-row-act="detail">账户信息</a><a href="split-rules.html">分账规则</a><a href="settlement.html">结算单</a></td>
           </tr>
           <tr>
-            <td><b>支付宝</b><br><span class="muted" style="font-size:12px">直付通 / 扫码</span></td>
-            <td>直付通二级商户</td>
-            <td><span class="badge badge-warn">待开通收单</span></td>
-            <td>0.6%（花呗分期可单独开通）</td>
+            <td><b>微信支付（直连备用）</b><br><span class="muted" style="font-size:12px">通联通道异常时的降级方案</span></td>
+            <td>服务商模式</td>
+            <td><span class="badge">未启用</span></td>
             <td>—</td>
-            <td class="row-actions"><a href="#" data-row-act="detail">账户信息</a><a href="#" data-row-act="open">去开通</a></td>
-          </tr>
-          <tr>
-            <td><b>易宝支付（备选）</b><br><span class="muted" style="font-size:12px">增值 / 定制场景</span></td>
-            <td>易宝服务商</td>
-            <td><span class="badge">未接入</span></td>
-            <td>按协议</td>
             <td>—</td>
             <td class="row-actions"><a href="#" data-row-act="open">查看接入指引</a></td>
           </tr>
@@ -47,90 +44,98 @@
     </div>
   </div>
 
-  <!-- 微信支付账户详情卡片 -->
-  <div class="card" style="margin-bottom:12px"><div class="card-hd"><h2>微信支付账户信息</h2></div>
+  <!-- 通联平台商户 -->
+  <div class="card" style="margin-bottom:12px"><div class="card-hd"><h2>通联平台商户信息</h2></div>
     <div class="card-bd">
       <div class="kv-cols">
         <div class="kv">
-          <div class="kv-row"><span>商户号（服务商）</span><b class="mono">19000001XX</b></div>
-          <div class="kv-row"><span>特约商户号</span><b class="mono">19888XXX</b></div>
-          <div class="kv-row"><span>开户主体</span><b>艺博教育科技（××）有限公司</b></div>
-          <div class="kv-row"><span>结算方式</span><b>每日自动结算至银行账户</b></div>
-          <div class="kv-row"><span>账户状态</span><b><span class="badge badge-success">正常</span></b></div>
+          <div class="kv-row"><span>平台商户号</span><b class="mono">TL-MCH-8801XXXX</b></div>
+          <div class="kv-row"><span>商户名称</span><b>艺博教育科技（××）有限公司</b></div>
+          <div class="kv-row"><span>进件状态</span><b><span class="badge badge-success">已通过</span></b></div>
+          <div class="kv-row"><span>收单权限</span><b>小程序支付、微信内 H5</b></div>
         </div>
         <div class="kv">
-          <div class="kv-row"><span>审核时间</span><b>2026-06-30 审核通过</b></div>
-          <div class="kv-row"><span>客服电话</span><b>400-xxx-xxxx</b></div>
-          <div class="kv-row"><span>消息接收</span><b>站内信 + 服务商通知</b></div>
-          <div class="kv-row"><span>手续费发票</span><b><a href="invoice.html" class="link">去申请 →</a></b></div>
+          <div class="kv-row"><span>清分模式</span><b>平台收单 + 会员分账（抽佣）</b></div>
+          <div class="kv-row"><span>手续费扣费</span><b>按日结（通联协议）</b></div>
+          <div class="kv-row"><span>结算银行卡</span><b>招商银行 ****8888（对公）</b></div>
+          <div class="kv-row"><span>进件时间</span><b>2026-06-28 审核通过</b></div>
         </div>
       </div>
+      <p class="muted" style="margin-top:10px;font-size:12px">平台商户结算卡为进件时上送的<b>唯一结算账户</b>；修改需重新提交通联审核（1-5 个工作日）。</p>
     </div>
   </div>
 
-  <!-- 银行结算账户 -->
-  <div class="card"><div class="card-hd"><h2>银行结算账户</h2></div>
+  <!-- 分账会员 -->
+  <div class="card" style="margin-bottom:12px"><div class="card-hd"><h2>分账会员（IP 商户）</h2><span class="muted" style="font-size:12px">各机构独立进件，订单分账后可独立提现</span></div>
+    <div class="card-bd" style="padding:0">
+      <table class="data">
+        <thead><tr><th>机构 / IP</th><th>通联会员号</th><th>进件状态</th><th>绑定结算卡</th><th>默认分账比例</th><th>提现方式</th><th style="width:130px">操作</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><b>星启家庭教育</b><br><span class="muted" style="font-size:12px">本店铺主体</span></td>
+            <td class="mono">MEM-1001XX</td>
+            <td><span class="badge badge-success">已通过</span></td>
+            <td>工商银行 ****2233</td>
+            <td><b>90%</b>（平台抽佣 10%）</td>
+            <td>自动提现（每周一）</td>
+            <td class="row-actions"><a href="withdraw.html">提现记录</a></td>
+          </tr>
+          <tr>
+            <td><b>晨光少儿成长</b></td>
+            <td class="mono">MEM-1002XX</td>
+            <td><span class="badge badge-success">已通过</span></td>
+            <td>建设银行 ****6688</td>
+            <td><b>88%</b>（平台抽佣 12%）</td>
+            <td>手动提现</td>
+            <td class="row-actions"><a href="withdraw.html">提现记录</a></td>
+          </tr>
+          <tr>
+            <td><b>慧心教育</b></td>
+            <td class="mono">MEM-1003XX</td>
+            <td><span class="badge badge-warn">审核中</span></td>
+            <td>—</td>
+            <td>待定</td>
+            <td>—</td>
+            <td class="row-actions"><a href="#" data-row-act="detail">查看进度</a></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- 口径说明 -->
+  <div class="card"><div class="card-hd"><h2>结算与手续费口径</h2></div>
     <div class="card-bd">
-      <div class="kv-cols">
-        <div class="kv">
-          <div class="kv-row"><span>开户名</span><b>艺博教育科技（××）有限公司</b></div>
-          <div class="kv-row"><span>结算银行</span><b>招商银行深圳分行</b></div>
-          <div class="kv-row"><span>银行卡号</span><b>6225 **** **** 8888</b></div>
-          <div class="kv-row"><span>账户类型</span><b>对公账户</b></div>
-        </div>
-        <div class="kv">
-          <div class="kv-row"><span>修改审核</span><b>预计 1-5 个工作日</b></div>
-          <div class="kv-row"><span>验证方式</span><b>0.01 元打款验证</b></div>
-          <div class="kv-row"><span>自动提现</span><b><span class="badge badge-success">已开启</span> 每日 08:00</b></div>
-          <div class="kv-row"><span>修改入口</span><b><a href="withdraw.html" class="link">提现管理 →</a></b></div>
-        </div>
+      <div class="kv">
+        <div class="kv-row"><span>入账口径</span><b>按订单<b>支付时间</b>入账（与通联、微信账单一致）</b></div>
+        <div class="kv-row"><span>分账时点</span><b>支付成功后 T+1 自动分账；异常订单支持手动补分账</b></div>
+        <div class="kv-row"><span>退款处理</span><b>支持「仅退回买家金额」或「同时退回分账资金」，1 年内订单可发起</b></div>
+        <div class="kv-row"><span>提现规则</span><b>会员提现至进件绑定的唯一结算卡，提现时段 7:00-20:00</b></div>
+        <div class="kv-row"><span>手续费发票</span><b><a href="invoice.html" class="link">去申请 →</a></b></div>
       </div>
-      <p class="muted" style="margin-top:10px;font-size:12px">支持修改同主体银行卡；同主体非同名卡（如结算至总公司/党费账户等）需上传银行账户证明与资金管理关系材料。</p>
+      <p class="muted" style="margin-top:10px;font-size:12px">对账请前往「交易-资产管理-对账管理」，口径统一按支付时间；分账明细见「结算单」与「交易账单」。</p>
     </div>
-  </div>
-</div>
-
-<!-- 弹窗 -->
-<div class="proto-mask" id="mask"></div>
-<div class="proto-modal" id="modal-account" style="width:560px">
-  <div class="proto-modal-hd"><h3 style="font-size:16px;font-weight:600">微信支付账户信息</h3><button class="btn btn-sm btn-ghost" data-close>×</button></div>
-  <div class="proto-modal-bd">
-    <div class="form-grid" style="grid-template-columns:1fr 1fr">
-      <div class="field"><label>商户号</label><div class="mono">19000001XX</div></div>
-      <div class="field"><label>开户主体</label><div>艺博教育科技</div></div>
-      <div class="field"><label>进件时间</label><div>2026-06-20</div></div>
-      <div class="field"><label>审核状态</label><div><span class="badge badge-success">审核通过</span></div></div>
-      <div class="field"><label>结算账户</label><div>招商银行 ****8888</div></div>
-      <div class="field"><label>客服电话</label><div>400-xxx-xxxx</div></div>
-    </div>
-  </div>
-  <div class="proto-drawer-ft" style="border-top:1px solid var(--color-border);padding:12px 20px;display:flex;gap:8px;justify-content:flex-end">
-    <button class="btn" data-close>关闭</button>
   </div>
 </div>
 
 <style>
-.kv-cols{display:grid;grid-template-columns:1fr 1fr;gap:24px}
-.kv-row{display:flex;justify-content:space-between;padding:7px 0;font-size:13px;border-bottom:1px dashed var(--color-border)}
-.kv-row:last-child{border-bottom:none}
-.kv-row span{color:var(--color-text-secondary)}
-.mono{font-family:ui-monospace,Consolas,monospace;font-size:12px}
-.link{color:var(--color-primary);text-decoration:none}
+.link { color:var(--color-primary); text-decoration:none; }
+.mono { font-family:ui-monospace,Consolas,monospace; font-size:12px; }
 </style>
 
 <script src="../assets/js/proto.js"></script>
 <script src="../assets/js/admin-shell.js?v=13"></script>
 <script>
 (function () {
-  var mask=document.getElementById("mask");
-  function closeAll(){ mask.classList.remove("open"); document.querySelectorAll(".proto-modal,.proto-drawer").forEach(function(n){n.classList.remove("open");}); }
-  function open(n){ mask.classList.add("open"); n.classList.add("open"); }
-  mask.addEventListener("click", closeAll);
-  document.querySelectorAll("[data-close]").forEach(function(n){ n.addEventListener("click", closeAll); });
   document.querySelectorAll("[data-row-act]").forEach(function(a){
-    a.addEventListener("click", function(e){ e.preventDefault(); var act=a.getAttribute("data-row-act"); if(act==="detail") open(document.getElementById("modal-account")); else if(act==="open") Proto.toast("打开服务商账户申请指引（原型）"); });
+    a.addEventListener("click", function(e){
+      e.preventDefault();
+      var act = a.getAttribute("data-row-act");
+      if (act === "detail") Proto.toast("打开账户详情（原型）");
+      else if (act === "open") Proto.toast("打开微信支付直连接入指引（原型）");
+    });
   });
-  document.getElementById("btn-guide").addEventListener("click", function(){ Proto.toast("服务商账户申请指引：进件-收单-分账-提现（原型）"); });
+  document.getElementById("btn-guide").addEventListener("click", function(){ Proto.toast("打开通联支付接入指引（原型）"); });
 })();
 </script>
 </body>

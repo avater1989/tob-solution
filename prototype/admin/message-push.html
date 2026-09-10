@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>消息推送 · 商家管理后台</title>
+<link rel="stylesheet" href="../assets/css/proto.css?v=9" />
+</head>
+<body class="admin-body" data-module="sys" data-nav="message-push" data-title="消息推送" data-crumb="系统管理 / 消息推送">
+<div id="header-actions">
+  <button class="btn" id="btn-test">测试发送</button>
+  <button class="btn btn-primary" id="btn-save">保存设置</button>
+</div>
+<div id="page-content" style="display:none">
+
+  <div class="alert alert-info" style="margin-bottom:12px;padding:10px 12px;border-radius:8px;background:#e8f3ff;border:1px solid #a0cfff;color:#165dff;font-size:13px">
+    统一配置 C 端触达渠道与场景模板。<b>下单/支付/退款</b>等交易通知建议开启；<b>短信</b>渠道与「直播促到 SOP」复用同一签名与额度。
+  </div>
+
+  <!-- 发送渠道 -->
+  <div class="card" style="margin-bottom:12px"><div class="card-hd"><h2>发送渠道</h2><span class="muted" style="font-size:12px">渠道需先在平台侧开通</span></div>
+    <div class="card-bd" style="padding:0">
+      <table class="data">
+        <thead><tr><th>渠道</th><th>说明</th><th>配置状态</th><th>每日限额</th><th>启用</th><th style="width:150px">操作</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><b>小程序服务通知</b></td>
+            <td>支付成功、开课提醒、直播开播等，需用户订阅</td>
+            <td><span class="badge badge-success">已配置</span></td>
+            <td>无限制</td>
+            <td><span class="switch on" data-switch></span></td>
+            <td class="row-actions"><a href="#" data-row-act="tpl">模板配置</a></td>
+          </tr>
+          <tr>
+            <td><b>短信</b></td>
+            <td>与直播促到复用同一签名与额度</td>
+            <td><span class="badge badge-success">已配置</span></td>
+            <td>5,000 条</td>
+            <td><span class="switch on" data-switch></span></td>
+            <td class="row-actions"><a href="#" data-row-act="sms">签名与模板</a><a href="live-invite.html">短信额度</a></td>
+          </tr>
+          <tr>
+            <td><b>站内信</b></td>
+            <td>商家后台通知（审核结果、异常订单等）</td>
+            <td><span class="badge badge-success">已配置</span></td>
+            <td>无限制</td>
+            <td><span class="switch on" data-switch></span></td>
+            <td class="row-actions"><a href="#" data-row-act="tpl">模板配置</a></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- 场景模板 -->
+  <div class="card" style="margin-bottom:12px"><div class="card-hd"><h2>场景模板</h2><span class="muted" style="font-size:12px">按业务场景配置触发时机与发送渠道</span></div>
+    <div class="card-bd" style="padding:0">
+      <table class="data">
+        <thead>
+          <tr><th>场景</th><th>触发时机</th><th>发送渠道</th><th>状态</th><th>操作</th></tr>
+        </thead>
+        <tbody id="scene-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- 发送记录 -->
+  <div class="card"><div class="card-hd"><h2>最近发送记录</h2><span class="muted" style="font-size:12px">近 7 日</span></div>
+    <div class="card-bd" style="padding:0">
+      <table class="data">
+        <thead><tr><th>时间</th><th>场景</th><th>接收人</th><th>渠道</th><th>结果</th></tr></thead>
+        <tbody>
+          <tr><td>2026-09-07 14:23</td><td>支付成功</td><td>李***（138****2610）</td><td>小程序服务通知</td><td><span class="badge badge-success">送达</span></td></tr>
+          <tr><td>2026-09-07 14:23</td><td>权益开通</td><td>李***（138****2610）</td><td>站内信</td><td><span class="badge badge-success">送达</span></td></tr>
+          <tr><td>2026-09-07 09:20</td><td>开课提醒</td><td>张***（139****7742）</td><td>短信</td><td><span class="badge badge-success">送达</span></td></tr>
+          <tr><td>2026-09-06 20:31</td><td>领课兑换成功</td><td>刘***（137****0012）</td><td>小程序服务通知</td><td><span class="badge badge-warn">用户未订阅</span></td></tr>
+          <tr><td>2026-09-06 20:19</td><td>退款结果</td><td>陈***（186****4411）</td><td>短信</td><td><span class="badge badge-success">送达</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- 场景编辑弹窗 -->
+<div class="proto-mask" id="mask"></div>
+<div class="proto-modal" id="modal-scene" style="width:560px">
+  <div class="proto-modal-hd"><h3 id="sc-title" style="font-size:16px;font-weight:600">编辑场景模板</h3><button class="btn btn-sm btn-ghost" data-close>×</button></div>
+  <div class="proto-modal-bd">
+    <div class="form-grid" style="grid-template-columns:1fr 1fr;gap:10px 16px">
+      <div class="field"><label>场景</label><div id="sc-name">—</div></div>
+      <div class="field"><label>触发时机</label><input id="sc-when" /></div>
+      <div class="field"><label>发送渠道 *</label>
+        <select id="sc-ch" style="width:100%;padding:7px 8px;border:1px solid var(--color-border);border-radius:6px">
+          <option>小程序服务通知</option><option>短信</option><option>站内信</option>
+          <option>小程序服务通知 + 短信</option><option>短信 + 站内信</option>
+        </select>
+      </div>
+      <div class="field"><label>启用状态</label>
+        <select id="sc-on" style="width:100%;padding:7px 8px;border:1px solid var(--color-border);border-radius:6px">
+          <option value="1">启用</option><option value="0">停用</option>
+        </select>
+      </div>
+      <div class="field" style="grid-column:1/-1"><label>通知文案 *</label>
+        <textarea id="sc-text" rows="3" style="width:100%;padding:8px;border:1px solid var(--color-border);border-radius:6px"></textarea>
+        <span class="muted" style="font-size:12px">支持变量：{学员昵称} {课程名称} {开课时间} {直播时间} {退款金额}</span>
+      </div>
+    </div>
+    <p class="muted" style="margin-top:8px">交易类通知（支付成功 / 退款结果）建议保持启用，停用后买家将收不到关键状态变更提醒。</p>
+  </div>
+  <div class="proto-drawer-ft" style="border-top:1px solid var(--color-border);padding:12px 20px;display:flex;gap:8px;justify-content:flex-end">
+    <button class="btn" data-close>取消</button>
+    <button class="btn btn-primary" id="sc-save">保存</button>
+  </div>
+</div>
+
+<style>
+.switch{width:40px;height:22px;border-radius:11px;background:#c9cdd4;position:relative;cursor:pointer;display:inline-block;vertical-align:middle}
+.switch::after{content:"";position:absolute;top:2px;left:2px;width:18px;height:18px;border-radius:50%;background:#fff;transition:all .15s}
+.switch.on{background:#165dff}
+.switch.on::after{left:20px}
+</style>
+
+<script src="../assets/js/proto.js"></script>
+<script src="../assets/js/admin-shell.js?v=13"></script>
+<script>
+(function () {
+  var SCENES = [
+    { id:"pay",     name:"支付成功",       when:"支付回调成功后即时",       ch:"小程序服务通知 + 短信", on:true,  txt:"{学员昵称}，你已成功报名《{课程名称}》，点击立即开始学习。" },
+    { id:"benefit", name:"权益开通",       when:"权益开通成功后即时",       ch:"站内信",               on:true,  txt:"权益已开通：{课程名称}，有效期至 {有效期}。" },
+    { id:"course",  name:"开课提醒",       when:"开课前 1 小时",            ch:"小程序服务通知 + 短信", on:true,  txt:"{学员昵称}，你报名的《{课程名称}》将于 {开课时间} 开课，记得准时参加。" },
+    { id:"live",    name:"直播开播提醒",   when:"开播前 30 分钟",           ch:"小程序服务通知",       on:true,  txt:"{学员昵称}，你预约的直播《{直播名称}》将于 {直播时间} 开播。" },
+    { id:"claim",   name:"领课兑换成功",   when:"兑换成功后即时",           ch:"小程序服务通知",       on:true,  txt:"兑换成功！《{课程名称}》已加入你的学习清单，添加企微老师领取学习资料。" },
+    { id:"member",  name:"会员到期提醒",   when:"到期前 7 天 / 到期当天",   ch:"短信",                 on:false, txt:"{学员昵称}，你的会员将于 {到期时间} 到期，续费可继续学习全部课程。" },
+    { id:"refund",  name:"退款结果",       when:"退款成功 / 驳回后即时",     ch:"短信 + 站内信",        on:true,  txt:"你的退款申请已处理，退款金额 {退款金额} 元，预计 1-3 个工作日到账。" },
+    { id:"replay",  name:"直播回放生成",   when:"回放生成后即时",           ch:"小程序服务通知",       on:false, txt:"《{直播名称}》回放已生成，点击继续观看。" }
+  ];
+
+  var mask = document.getElementById("mask");
+  function closeAll(){ mask.classList.remove("open"); document.querySelectorAll(".proto-modal").forEach(function(n){n.classList.remove("open");}); }
+  function open(n){ mask.classList.add("open"); n.classList.add("open"); }
+  mask.addEventListener("click", closeAll);
+  document.querySelectorAll("[data-close]").forEach(function(n){ n.addEventListener("click", closeAll); });
+
+  function esc(s){ return String(s==null?"":s).replace(/[&<>"']/g,function(c){return({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"})[c];}); }
+
+  function render(){
+    document.getElementById("scene-tbody").innerHTML = SCENES.map(function(s){
+      return '<tr data-id="'+s.id+'">' +
+        "<td><b>"+esc(s.name)+"</b></td>" +
+        "<td>"+esc(s.when)+"</td>" +
+        "<td><span class=\"tag\">"+esc(s.ch)+"</span></td>" +
+        "<td>"+(s.on?'<span class="badge badge-success">已启用</span>':'<span class="badge">已停用</span>')+"</td>" +
+        '<td class="row-actions"><a href="#" data-row-act="edit">编辑</a><a href="#" data-row-act="test">测试发送</a></td>' +
+        "</tr>";
+    }).join("");
+  }
+
+  var current = null;
+  document.addEventListener("click", function(e){
+    var el = e.target.closest("[data-row-act]");
+    if (!el) return;
+    e.preventDefault();
+    var act = el.getAttribute("data-row-act");
+    if (act === "sms") { Proto.toast("短信签名与模板 ID 配置（原型）"); return; }
+    if (act === "tpl") { Proto.toast("打开渠道模板配置（原型）"); return; }
+    var tr = el.closest("tr");
+    var id = tr ? tr.getAttribute("data-id") : null;
+    var s = SCENES.find(function(x){ return x.id === id; });
+    if (act === "test") { Proto.toast("已向管理员手机号发送测试通知（原型）"); return; }
+    if (act === "edit" && s) {
+      current = s;
+      document.getElementById("sc-title").textContent = "编辑场景模板 · " + s.name;
+      document.getElementById("sc-name").textContent = s.name;
+      document.getElementById("sc-when").value = s.when;
+      document.getElementById("sc-ch").value = s.ch;
+      document.getElementById("sc-on").value = s.on ? "1" : "0";
+      document.getElementById("sc-text").value = s.txt;
+      open(document.getElementById("modal-scene"));
+    }
+  });
+
+  document.getElementById("sc-save").addEventListener("click", function(){
+    if (!current) return;
+    current.when = document.getElementById("sc-when").value.trim();
+    current.ch = document.getElementById("sc-ch").value;
+    current.on = document.getElementById("sc-on").value === "1";
+    current.txt = document.getElementById("sc-text").value.trim();
+    closeAll(); render(); Proto.toast("场景模板已保存（原型）");
+  });
+
+  document.querySelectorAll("[data-switch]").forEach(function(s){
+    s.addEventListener("click", function(){ this.classList.toggle("on"); Proto.toast(this.classList.contains("on")?"渠道已启用":"渠道已停用"); });
+  });
+
+  document.getElementById("btn-test").addEventListener("click", function(){ Proto.toast("测试通知已发送（原型）"); });
+  document.getElementById("btn-save").addEventListener("click", function(){ Proto.toast("消息推送设置已保存（原型）"); });
+  render();
+})();
+</script>
+</body>
+</html>

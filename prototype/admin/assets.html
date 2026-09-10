@@ -37,22 +37,22 @@
         <thead><tr><th>账户</th><th>商户号</th><th>账户余额（实时）</th><th>昨日收入</th><th>昨日支出</th><th>账户状态</th><th style="width:170px">操作</th></tr></thead>
         <tbody>
           <tr>
-            <td><b>微信支付（服务商模式）</b><br><span class="muted" style="font-size:12px">艺博教育科技服务商</span></td>
-            <td><span class="mono">19000xxxx</span></td>
+            <td><b>通联支付（平台商户）</b><br><span class="muted" style="font-size:12px">艺博教育科技 · 收单 + 分账</span></td>
+            <td><span class="mono">TL-MCH-8801XXXX</span></td>
             <td><b>¥3,286.50</b></td>
             <td>¥1,028.90</td>
             <td>-¥63.40</td>
             <td><span class="badge badge-success">正常</span></td>
-            <td class="row-actions"><a href="#" data-toast="查看账户明细（原型）">账单</a><a href="withdraw.html">提现</a><a href="payment.html">账户设置</a></td>
+            <td class="row-actions"><a href="bills.html">账单</a><a href="withdraw.html">提现</a><a href="payment.html">账户设置</a></td>
           </tr>
           <tr>
-            <td><b>支付宝（直付通）</b><br><span class="muted" style="font-size:12px">支付宝二级商户</span></td>
-            <td><span class="mono">2088xxxx</span></td>
-            <td><b>¥0.00</b></td>
-            <td>—</td>
-            <td>—</td>
-            <td><span class="badge badge-warn">未开通收单</span></td>
-            <td class="row-actions"><a href="payment.html">去开通</a></td>
+            <td><b>通联分账会员 · 星启家庭教育</b><br><span class="muted" style="font-size:12px">分账余额，可独立提现</span></td>
+            <td><span class="mono">MEM-1001XX</span></td>
+            <td><b>¥1,042.00</b></td>
+            <td>¥912.60</td>
+            <td>-¥18.40</td>
+            <td><span class="badge badge-success">正常</span></td>
+            <td class="row-actions"><a href="withdraw.html">提现</a><a href="split-rules.html">分账规则</a></td>
           </tr>
         </tbody>
       </table>
@@ -87,8 +87,8 @@
   <!-- 说明 -->
   <div class="card"><div class="card-bd">
     <p class="muted" style="font-size:12px;line-height:1.8">
-      <b>口径说明：</b>新版资产管理交易账单按「订单支付时间」入账，与微信支付/支付宝流水一致；
-      概况页累计支付金额≠账户余额（余额已剔除退款、手续费、分成）。跨平台对账请下载交易账单与支付渠道资金账单核对，详见「对账管理」。
+      <b>口径说明：</b>资产管理交易账单按「订单<b>支付时间</b>」入账，与通联支付账单一致；平台商户收单后按分账规则清分至 IP 商户，
+      概况页累计支付金额≠账户余额（余额已剔除退款、手续费、分账）。跨平台对账请下载交易账单与通联资金账单核对，详见「对账管理」。
     </p>
   </div></div>
 </div>
@@ -99,7 +99,7 @@
   <div class="proto-modal-hd"><h3 style="font-size:16px;font-weight:600">发起提现</h3><button class="btn btn-sm btn-ghost" data-close>×</button></div>
   <div class="proto-modal-bd">
     <div class="form-grid" style="grid-template-columns:1fr 1fr">
-      <div class="field"><label>提现账户</label><div>微信支付结算账户</div></div>
+      <div class="field"><label>提现账户</label><div>通联支付结算卡（进件绑定）</div></div>
       <div class="field"><label>可提现金额</label><div>¥3,286.50</div></div>
       <div class="field"><label>提现金额 *</label><input id="wd-amount" type="number" value="3000" /></div>
       <div class="field"><label>到账时间</label><div>提交后 1-5 个工作日</div></div>

@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>定向运营计划 · 商家管理后台</title>
+<link rel="stylesheet" href="../assets/css/proto.css?v=9" />
+</head>
+<body class="admin-body" data-module="user" data-nav="ops-plans" data-title="定向运营计划" data-crumb="用户 / 用户运营 / 定向运营计划">
+<div id="header-actions">
+  <button class="btn" id="btn-export">导出效果</button>
+  <button class="btn btn-primary" id="btn-new">新建运营计划</button>
+</div>
+<div id="page-content" style="display:none">
+
+  <div class="alert alert-info" style="margin-bottom:12px;padding:10px 12px;border-radius:8px;background:#e8f3ff;border:1px solid #a0cfff;color:#165dff;font-size:13px">
+    定向运营计划 = <b>目标人群</b> × <b>发放内容</b> × <b>执行周期</b>。对选定人群在指定时间自动发放通知与权益，并回收触达与转化效果。人群来自「<a href="user-segments.html" style="color:inherit;text-decoration:underline">用户分群</a>」，通知渠道见「<a href="message-push.html" style="color:inherit;text-decoration:underline">消息推送</a>」。
+  </div>
+
+  <!-- 顶部统计 -->
+  <div class="grid-4" style="margin-bottom:16px">
+    <div class="stat"><div class="label">进行中</div><div class="value" id="st-running">0</div><div class="hint">按周期自动执行</div></div>
+    <div class="stat"><div class="label">待开始</div><div class="value" id="st-waiting">0</div><div class="hint">已到时间自动启动</div></div>
+    <div class="stat"><div class="label">已完成</div><div class="value" id="st-done">0</div><div class="hint">可复制复用</div></div>
+    <div class="stat"><div class="label">累计触达</div><div class="value">1,432</div><div class="hint">去重用户数</div></div>
+  </div>
+
+  <!-- 计划列表 -->
+  <div class="card" style="margin-bottom:12px"><div class="card-hd"><h2>运营计划</h2></div>
+    <div class="card-bd" style="padding:0">
+      <table class="data">
+        <thead>
+          <tr>
+            <th>计划名称</th>
+            <th>目标人群</th>
+            <th>发放内容</th>
+            <th>通知渠道</th>
+            <th>执行周期</th>
+            <th>状态</th>
+            <th>触达 / 转化</th>
+            <th style="width:180px">操作</th>
+          </tr>
+        </thead>
+        <tbody id="plan-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card"><div class="card-bd">
+    <p class="muted" style="font-size:12px;line-height:1.8">
+      <b>说明：</b>计划启动后，系统按「例行更新」的人群<b>每日增量发放</b>，无需人工重复操作；同一用户在同一计划内默认只发放一次。
+      发放内容当前支持<b>通知（站内信 / 短信）</b>、<b>企微老师引导</b>、<b>学习资料包</b>与<b>课程试听权益</b>；优惠券、积分等营销权益可在「营销工具」上线后接入。
+    </p>
+  </div></div>
+</div>
+
+<!-- 新建计划弹窗 -->
+<div class="proto-mask" id="mask"></div>
+<div class="proto-modal" id="modal-plan" style="width:640px">
+  <div class="proto-modal-hd"><h3 id="pl-title" style="font-size:16px;font-weight:600">新建运营计划</h3><button class="btn btn-sm btn-ghost" data-close>×</button></div>
+  <div class="proto-modal-bd">
+    <div class="form-grid" style="grid-template-columns:1fr 1fr;gap:10px 16px">
+      <div class="field"><label>计划名称 *</label><input id="pl-name" placeholder="如：新客首单转化" /></div>
+      <div class="field"><label>目标人群 *</label>
+        <select id="pl-seg" style="width:100%;padding:7px 8px;border:1px solid var(--color-border);border-radius:6px">
+          <option>新客（系统人群）</option>
+          <option>高价值用户（系统人群）</option>
+          <option>家长必修课未购买者</option>
+          <option>领课未加微用户</option>
+          <option>直播预约未到课</option>
+        </select>
+      </div>
+      <div class="field"><label>发放内容 *</label>
+        <select id="pl-gift" style="width:100%;padding:7px 8px;border:1px solid var(--color-border);border-radius:6px">
+          <option>学习资料包（电子版）</option>
+          <option>课程试听权益（7 天）</option>
+          <option>企微老师 1v1 引导</option>
+          <option>开课 / 直播提醒</option>
+          <option>老学员回馈通知</option>
+        </select>
+      </div>
+      <div class="field"><label>通知渠道 *</label>
+        <select id="pl-ch" style="width:100%;padding:7px 8px;border:1px solid var(--color-border);border-radius:6px">
+          <option>站内信</option><option>短信</option><option>站内信 + 短信</option>
+        </select>
+      </div>
+      <div class="field"><label>执行方式 *</label>
+        <select id="pl-cycle" style="width:100%;padding:7px 8px;border:1px solid var(--color-border);border-radius:6px">
+          <option>立即开始（每日增量发放）</option>
+          <option>定时开始</option>
+          <option>按周期（每周 / 每月）</option>
+        </select>
+      </div>
+      <div class="field"><label>每人限领</label>
+        <select style="width:100%;padding:7px 8px;border:1px solid var(--color-border);border-radius:6px">
+          <option>1 次</option><option>不限</option>
+        </select>
+      </div>
+      <div class="field" style="grid-column:1/-1"><label>排除条件</label>
+        <div class="checks" style="display:flex;gap:18px;flex-wrap:wrap;font-size:13px">
+          <label><input type="checkbox" checked /> 已购买该课程</label>
+          <label><input type="checkbox" /> 已加企微</label>
+          <label><input type="checkbox" /> 近 7 天已触达</label>
+        </div>
+      </div>
+      <div class="field" style="grid-column:1/-1"><label>通知文案 *</label>
+        <textarea id="pl-text" rows="3" style="width:100%;padding:8px;border:1px solid var(--color-border);border-radius:6px">家长你好，这是一份《亲子沟通实用手册》，添加老师即可领取完整资料包。</textarea>
+      </div>
+    </div>
+    <p class="muted" style="margin-top:8px">计划保存后可在列表查看触达与转化；暂停后不再增量发放，已发放内容不回收。</p>
+  </div>
+  <div class="proto-drawer-ft" style="border-top:1px solid var(--color-border);padding:12px 20px;display:flex;gap:8px;justify-content:flex-end">
+    <button class="btn" data-close>取消</button>
+    <button class="btn btn-primary" id="pl-save">保存并启动</button>
+  </div>
+</div>
+
+<script src="../assets/js/proto.js"></script>
+<script src="../assets/js/admin-shell.js?v=13"></script>
+<script>
+(function () {
+  var PLANS = [
+    { id:"P1", name:"新客首单转化", seg:"新客（系统人群）", gift:"学习资料包（电子版）", ch:"站内信 + 短信", cycle:"T+1 每日增量", status:"running", touch:286, conv:"领取 132 · 转化 48" },
+    { id:"P2", name:"领课未加微唤醒", seg:"领课未加微用户", gift:"企微老师 1v1 引导", ch:"短信", cycle:"T+1 每日增量", status:"running", touch:168, conv:"加微 42" },
+    { id:"P3", name:"沉默用户唤醒", seg:"沉默用户（30 天未互动）", gift:"课程试听权益（7 天）", ch:"短信", cycle:"每周一 10:00", status:"waiting", touch:0, conv:"—" },
+    { id:"P4", name:"高价值用户专属回馈", seg:"高价值用户（系统人群）", gift:"老学员回馈通知", ch:"站内信", cycle:"一次性", status:"done", touch:142, conv:"复购 19" }
+  ];
+
+  var mask = document.getElementById("mask");
+  function closeAll(){ mask.classList.remove("open"); document.querySelectorAll(".proto-modal").forEach(function(n){n.classList.remove("open");}); }
+  function open(n){ mask.classList.add("open"); n.classList.add("open"); }
+  mask.addEventListener("click", closeAll);
+  document.querySelectorAll("[data-close]").forEach(function(n){ n.addEventListener("click", closeAll); });
+
+  function esc(s){ return String(s==null?"":s).replace(/[&<>"']/g,function(c){return({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"})[c];}); }
+  function stTag(st){
+    if (st === "running") return '<span class="badge badge-success">进行中</span>';
+    if (st === "waiting") return '<span class="badge badge-warn">待开始</span>';
+    if (st === "paused") return '<span class="badge">已暂停</span>';
+    return '<span class="badge badge-info">已完成</span>';
+  }
+
+  function render(){
+    document.getElementById("plan-tbody").innerHTML = PLANS.map(function(p){
+      return '<tr data-id="'+p.id+'">' +
+        "<td><b>"+esc(p.name)+"</b></td>" +
+        "<td>"+esc(p.seg)+"</td>" +
+        "<td>"+esc(p.gift)+"</td>" +
+        "<td>"+esc(p.ch)+"</td>" +
+        "<td>"+esc(p.cycle)+"</td>" +
+        "<td>"+stTag(p.status)+"</td>" +
+        "<td>触达 <b>"+p.touch+"</b><br><span class=\"muted\" style=\"font-size:12px\">"+esc(p.conv)+"</span></td>" +
+        '<td class="row-actions">' +
+          (p.status === "running" ? '<a href="#" data-row-act="pause">暂停</a>' : "") +
+          (p.status === "waiting" ? '<a href="#" data-row-act="start">启动</a>' : "") +
+          '<a href="#" data-row-act="edit">编辑</a>' +
+          '<a href="#" data-row-act="copy">复制</a>' +
+        "</td></tr>";
+    }).join("");
+    document.getElementById("st-running").textContent = String(PLANS.filter(function(p){return p.status==="running";}).length);
+    document.getElementById("st-waiting").textContent = String(PLANS.filter(function(p){return p.status==="waiting";}).length);
+    document.getElementById("st-done").textContent = String(PLANS.filter(function(p){return p.status==="done";}).length);
+  }
+
+  document.addEventListener("click", function(e){
+    var el = e.target.closest("[data-row-act]");
+    if (!el) return;
+    e.preventDefault();
+    var act = el.getAttribute("data-row-act");
+    var tr = el.closest("tr");
+    var p = PLANS.find(function(x){ return x.id === (tr && tr.getAttribute("data-id")); });
+    if (!p) { Proto.toast("操作已记录（原型）"); return; }
+    if (act === "pause") { p.status = "paused"; render(); Proto.toast("计划已暂停，不再增量发放"); }
+    else if (act === "start") { p.status = "running"; render(); Proto.toast("计划已启动（原型）"); }
+    else if (act === "copy") { PLANS.push(Object.assign({}, p, { id: "P"+Date.now(), name: p.name + "（副本）", status: "waiting", touch: 0, conv: "—" })); render(); Proto.toast("已复制计划，请编辑后启动"); }
+    else if (act === "edit") { openNew("编辑运营计划 · " + p.name); }
+  });
+
+  function openNew(title){
+    document.getElementById("pl-title").textContent = title || "新建运营计划";
+    document.getElementById("pl-name").value = "";
+    open(document.getElementById("modal-plan"));
+  }
+  document.getElementById("btn-new").addEventListener("click", function(){ openNew("新建运营计划"); });
+  document.getElementById("pl-save").addEventListener("click", function(){
+    if (!document.getElementById("pl-name").value.trim()) { Proto.toast("请填写计划名称"); return; }
+    closeAll();
+    Proto.toast("运营计划已保存并启动（原型）");
+  });
+  document.getElementById("btn-export").addEventListener("click", function(){ Proto.toast("运营效果报表导出任务已创建（原型）"); });
+
+  render();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>测评结果 · 商家管理后台</title>
+<link rel="stylesheet" href="../assets/css/proto.css?v=9" />
+<link rel="stylesheet" href="../assets/css/assess.css?v=3" />
+</head>
+<body class="admin-body" data-module="content" data-nav="assess-results" data-title="测评结果" data-crumb="商家管理后台 / 内容 / 测评管理 / 测评结果">
+
+<div id="header-actions">
+  <button class="btn" id="btn-export">导出数据</button>
+</div>
+
+<div id="page-content" style="display:none">
+  <div class="as-banner">查看本店铺学员的测评记录与报告。测评来源包含「商家自建」与「平台同步」两类测评。</div>
+
+  <div class="card" style="margin-bottom:14px"><div class="card-bd" style="padding:12px 16px">
+    <div class="toolbar" style="border:none;padding:0;background:transparent;flex-wrap:wrap">
+      <input class="input" id="f-q" placeholder="搜索用户名、测试名称、人群..." style="width:260px" />
+      <select class="input" id="f-type" style="width:110px">
+        <option value="">全部类型</option><option>实名</option><option>匿名</option>
+      </select>
+      <select class="input" id="f-status" style="width:110px">
+        <option value="">全部状态</option><option>已完成</option><option>进行中</option><option>已放弃</option>
+      </select>
+      <select class="input" id="f-src" style="width:130px">
+        <option value="">全部测评来源</option><option value="self">商家自建</option><option value="platform">平台同步</option>
+      </select>
+      <button class="btn btn-primary" id="btn-query">查询</button>
+      <button class="btn" id="btn-reset">重置</button>
+    </div>
+  </div></div>
+
+  <table class="as-table">
+    <thead>
+      <tr>
+        <th>参与者</th>
+        <th>测评名称</th>
+        <th style="width:100px">测评来源</th>
+        <th style="width:90px">类型</th>
+        <th style="width:90px">状态</th>
+        <th style="width:100px">结果等级</th>
+        <th style="width:140px">完成时间</th>
+        <th style="width:100px">操作</th>
+      </tr>
+    </thead>
+    <tbody id="tbody"></tbody>
+  </table>
+  <div style="margin-top:12px;font-size:12px;color:#8c8c8c">共 <b id="cnt">0</b> 条</div>
+</div>
+
+<div class="proto-modal as-wide-modal" id="modal-view">
+  <div style="background:#fff;border-radius:10px;width:min(720px,94vw);max-height:90vh;overflow:hidden;display:flex;flex-direction:column">
+    <div class="proto-modal-hd"><h3 style="margin:0;font-size:16px">测评结果详情</h3><button class="ctrl-icon-btn" data-close>×</button></div>
+    <div class="proto-modal-bd" id="view-bd" style="overflow:auto"></div>
+    <div class="proto-modal-ft" style="justify-content:flex-end;gap:8px">
+      <button class="btn" id="btn-dl" data-toast="报告已导出（演示）">导出报告</button>
+      <button class="btn" data-close>关闭</button>
+    </div>
+  </div>
+</div>
+
+<div class="proto-mask" id="mask"></div>
+
+<script src="../assets/js/proto.js"></script>
+<script src="../assets/js/admin-shell.js?v=13"></script>
+<script>
+var ROWS = [
+  { id:"R1", user:"李女士", test:"亲子沟通能力测评", src:"self", type:"实名", status:"已完成", level:"中等风险", score:45, time:"2026-09-06 14:22", crowd:"家长",
+    portrait:"沟通以说教为主，倾听与共情偏弱；冲突后修复对话不足，建议关注非暴力表达。",
+    actions:["完成《亲子沟通基础》第 1-2 节学习。","记录一周亲子对话中的三次倾听练习。"],
+    dims:[{n:"倾听表达",v:62},{n:"情绪应对",v:71},{n:"规则边界",v:48}] },
+  { id:"R2", user:"匿名用户#6612", test:"家庭教育风格测评", src:"self", type:"匿名", status:"已完成", level:"中等", score:42, time:"2026-09-05 19:08", crowd:"家长",
+    portrait:"偏权威型教养风格，温暖回应中等；建议增加自主性支持。",
+    actions:["参与家庭会议方法课。","复测边界设定相关题目。"],
+    dims:[{n:"温暖回应",v:55},{n:"自主支持",v:40}] },
+  { id:"R3", user:"张妈妈", test:"心理健康测评", src:"platform", type:"实名", status:"进行中", level:"—", score:null, time:"—", crowd:"家长", portrait:"", actions:[], dims:[] },
+  { id:"R4", user:"王同学", test:"新生入学心理系列", src:"platform", type:"实名", status:"已放弃", level:"—", score:null, time:"2026-09-03 10:11", crowd:"初一", portrait:"", actions:[], dims:[] },
+  { id:"R5", user:"陈爸爸", test:"心理健康测评", src:"platform", type:"实名", status:"已完成", level:"高风险", score:72, time:"2026-09-07 09:40", crowd:"家长",
+    portrait:"情绪与压力双维度得分偏高，睡眠质量下降明显。",
+    actions:["触发人工关怀跟进。","推送情绪管理基础课。"],
+    dims:[{n:"情绪状态",v:78},{n:"压力水平",v:74},{n:"社交适应",v:66}] }
+];
+
+function esc(s){ return String(s).replace(/[&<>"']/g,function(c){return({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"})[c];}); }
+function srcTag(src){
+  return src === "platform"
+    ? '<span class="as-tag purple">平台同步</span>'
+    : '<span class="as-tag green">商家自建</span>';
+}
+function levelTag(lv){
+  if (lv==="低风险"||lv==="中等"||lv==="中等风险") return '<span class="as-tag '+(lv.indexOf("低")>=0?"green":"orange")+'">'+esc(lv)+'</span>';
+  if (lv==="高风险") return '<span class="as-tag red">'+esc(lv)+'</span>';
+  return '<span class="as-tag gray">'+esc(lv)+'</span>';
+}
+function statusTag(st){
+  var c = st==="已完成"?"green":(st==="进行中"?"blue":"gray");
+  return '<span class="as-tag '+c+'">'+esc(st)+'</span>';
+}
+function levelClass(lv){
+  if (lv.indexOf("高")>=0) return "as-report-level high";
+  if (lv.indexOf("低")>=0) return "as-report-level low";
+  return "as-report-level";
+}
+
+function render(){
+  var q=(document.getElementById("f-q").value||"").trim();
+  var type=document.getElementById("f-type").value;
+  var status=document.getElementById("f-status").value;
+  var src=document.getElementById("f-src").value;
+  var list = ROWS.filter(function(r){
+    if (type && r.type!==type) return false;
+    if (status && r.status!==status) return false;
+    if (src === "self" && r.src!=="self") return false;
+    if (src === "platform" && r.src!=="platform") return false;
+    if (q && (r.user+r.test+r.crowd).indexOf(q)<0) return false;
+    return true;
+  });
+  document.getElementById("cnt").textContent = list.length;
+  document.getElementById("tbody").innerHTML = list.map(function(r){
+    return '<tr>' +
+      '<td><div class="as-name">'+esc(r.user)+'</div><div class="as-desc">人群：'+esc(r.crowd)+'</div></td>' +
+      '<td>'+esc(r.test)+'</td>' +
+      '<td>'+srcTag(r.src)+'</td>' +
+      '<td><span class="as-tag '+(r.type==="实名"?"blue":"purple")+'">'+esc(r.type)+'</span></td>' +
+      '<td>'+statusTag(r.status)+'</td>' +
+      '<td>'+levelTag(r.level)+'</td>' +
+      '<td style="font-size:12px;color:#8c8c8c">'+esc(r.time)+'</td>' +
+      '<td><button class="btn" data-view="'+r.id+'">查看</button></td></tr>';
+  }).join("");
+}
+
+var mask = document.getElementById("mask");
+function closeAll(){ mask.classList.remove("open"); document.getElementById("modal-view").classList.remove("open"); }
+
+document.getElementById("btn-query").onclick = render;
+document.getElementById("btn-reset").onclick = function(){
+  ["f-q","f-type","f-status","f-src"].forEach(function(id){ document.getElementById(id).value=""; });
+  render();
+};
+document.getElementById("btn-export").onclick = function(){ Proto.toast("导出任务已创建（演示）"); };
+
+document.addEventListener("click", function(e){
+  var v = e.target.closest("[data-view]"); if (!v) return;
+  var r = ROWS.find(function(x){return x.id===v.getAttribute("data-view");});
+  var html = '<div style="margin-bottom:6px;font-size:15px;font-weight:600">'+esc(r.user)+' · '+esc(r.test)+'</div>' +
+    '<div class="form-grid" style="grid-template-columns:1fr 1fr;gap:10px 16px;font-size:13px;margin-bottom:14px">' +
+      '<div><span class="muted">测评来源</span><div style="margin-top:2px">'+srcTag(r.src)+'</div></div>' +
+      '<div><span class="muted">状态</span><div style="margin-top:2px">'+statusTag(r.status)+'</div></div>' +
+      '<div><span class="muted">类型 / 人群</span><div style="margin-top:2px">'+esc(r.type)+' · '+esc(r.crowd)+'</div></div>' +
+      '<div><span class="muted">完成时间</span><div style="margin-top:2px">'+esc(r.time)+'</div></div>' +
+    '</div>';
+
+  if (r.status==="已完成") {
+    html += '<div class="as-report-preview">' +
+      '<div class="'+levelClass(r.level)+'">'+esc(r.level)+'</div>' +
+      '<div class="muted" style="font-size:12px;margin-bottom:12px">'+esc(r.user)+' · '+esc(r.crowd)+' · 得分 '+(r.score==null?"—":r.score)+'</div>' +
+      '<h4 style="margin:0 0 8px;font-size:14px">核心状态画像</h4>' +
+      '<div class="as-seg" style="font-size:12px;line-height:1.6;color:#595959">'+esc(r.portrait||"暂无画像")+'</div>' +
+      (r.dims.length ? ('<h4 style="margin:12px 0 8px;font-size:14px">维度得分</h4>' +
+        r.dims.map(function(d){ return '<div class="as-task"><span style="flex:1">'+esc(d.n)+'</span><b>'+d.v+'</b></div>'; }).join("")) : "") +
+      '<h4 style="margin:12px 0 8px;font-size:14px">下一步行动</h4>' +
+      (r.actions.map(function(a){ return '<div class="as-preview-item">'+esc(a)+'</div>'; }).join("") || '<div class="muted">暂无建议</div>') +
+    '</div>';
+    document.getElementById("btn-dl").style.display = "";
+  } else {
+    html += '<div class="as-banner" style="margin-bottom:0">该记录尚未完成，暂无完整报告。</div>';
+    document.getElementById("btn-dl").style.display = "none";
+  }
+  document.getElementById("view-bd").innerHTML = html;
+  mask.classList.add("open");
+  document.getElementById("modal-view").classList.add("open");
+});
+
+mask.addEventListener("click", closeAll);
+document.querySelectorAll("[data-close]").forEach(function(b){ b.addEventListener("click", closeAll); });
+render();
+</script>
+</body>
+</html>

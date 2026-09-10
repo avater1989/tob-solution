@@ -3,22 +3,26 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>售后维权 · 商家管理后台</title>
+<title>退款与权益回收 · 商家管理后台</title>
 <link rel="stylesheet" href="../assets/css/proto.css?v=9" />
 </head>
-<body class="admin-body" data-module="trade" data-nav="aftersales" data-title="售后维权" data-crumb="交易 / 售后管理 / 售后维权">
+<body class="admin-body" data-module="trade" data-nav="aftersales" data-title="退款与权益回收" data-crumb="交易 / 售后管理 / 退款与权益回收">
 <div id="header-actions">
-  <button class="btn" id="btn-export">导出售后单</button>
-  <button class="btn btn-primary" id="btn-rule">售后规则</button>
+  <button class="btn" id="btn-export">导出退款单</button>
+  <button class="btn btn-primary" id="btn-rule">退款规则</button>
 </div>
 <div id="page-content" style="display:none">
+
+  <div class="alert alert-info" style="margin-bottom:12px;padding:10px 14px;border-radius:8px;background:#e8f3ff;border:1px solid #a0cfff;color:#165dff">
+    本店铺商品均为<b>虚拟商品（课程 / 服务）</b>，无「退货 / 换货」环节。买家在 C 端发起的退款申请在此处理，退款成功后按规则<b>回收课程权益或服务额度</b>。
+  </div>
 
   <!-- 顶部统计 -->
   <div class="grid-4" style="margin-bottom:16px">
     <div class="stat"><div class="label">待处理</div><div class="value">4</div><div class="hint">需 7 天内处理，超时自动同意</div></div>
-    <div class="stat"><div class="label">待退货</div><div class="value">1</div><div class="hint">等待买家寄回</div></div>
-    <div class="stat"><div class="label">待收货退款</div><div class="value">2</div><div class="hint">商家验收后退款</div></div>
-    <div class="stat"><div class="label">本月售后率</div><div class="value">2.4%</div><div class="hint">售后单/已支付订单</div></div>
+    <div class="stat"><div class="label">退款中</div><div class="value">1</div><div class="hint">通联原路退回处理中</div></div>
+    <div class="stat"><div class="label">待回收权益</div><div class="value">2</div><div class="hint">退款成功后自动回收</div></div>
+    <div class="stat"><div class="label">本月退款率</div><div class="value">2.4%</div><div class="hint">退款单 / 已支付订单</div></div>
   </div>
 
   <!-- 类型与状态 Tab -->
@@ -29,21 +33,20 @@
     <a href="#" data-tab="done">已完成</a>
     <a href="#" data-tab="closed">已关闭</a>
     <span class="spacer"></span>
-    <a href="#" data-tab="refund-only">仅退款</a>
-    <a href="#" data-tab="return">退货退款</a>
-    <a href="#" data-tab="exchange">换货</a>
+    <a href="#" data-tab="refund-recycle">退款并回收权益</a>
+    <a href="#" data-tab="refund-keep">退款并保留权益</a>
   </div>
 
   <!-- 筛选 -->
   <div class="card" style="margin-bottom:8px"><div class="card-bd">
     <div class="form-grid" style="grid-template-columns:repeat(6,minmax(0,1fr));gap:8px 12px">
-      <input id="f-no" placeholder="售后单号 / 订单号" />
+      <input id="f-no" placeholder="退款单号 / 订单号" />
       <input id="f-buyer" placeholder="买家（姓名/手机号）" />
       <select id="f-type">
-        <option value="">售后类型</option><option>仅退款</option><option>退货退款</option><option>换货</option>
+        <option value="">权益处理</option><option>退款并回收权益</option><option>退款并保留权益</option>
       </select>
       <select id="f-status">
-        <option value="">状态</option><option>待商家处理</option><option>待买家退货</option><option>待商家收货</option><option>已完成</option><option>已关闭</option>
+        <option value="">状态</option><option>待商家处理</option><option>退款中</option><option>已完成</option><option>已关闭</option>
       </select>
       <input id="f-time1" type="datetime-local" />
       <input id="f-time2" type="datetime-local" />
@@ -57,9 +60,9 @@
     <table class="data">
       <thead>
         <tr>
-          <th>售后单号</th>
-          <th>类型</th>
-          <th>关联订单/商品</th>
+          <th>退款单号</th>
+          <th>权益处理</th>
+          <th>关联订单 / 商品</th>
           <th>买家</th>
           <th>退款金额</th>
           <th>申请原因</th>
@@ -71,54 +74,54 @@
       <tbody id="as-tbody">
         <tr>
           <td><a href="aftersale-detail.html" class="link-mono">AS202609080001</a></td>
-          <td><span class="tag tag-warn">退货退款</span></td>
-          <td><a href="order-detail.html" class="link-mono">YB20260907000331</a><br><span class="muted" style="font-size:12px">家长手册 · 2 件</span></td>
+          <td><span class="tag tag-warn">退款并回收权益</span></td>
+          <td><a href="order-detail.html" class="link-mono">YB20260907000331</a><br><span class="muted" style="font-size:12px">春启 03 期家长必修课</span></td>
           <td>李*** 138****2610</td>
-          <td><b class="danger">¥78.00</b><br><span class="muted" style="font-size:12px">含退运费 ¥0</span></td>
-          <td>尺码/规格不符</td>
+          <td><b class="danger">¥9.90</b><br><span class="muted" style="font-size:12px">已学 1/12 节</span></td>
+          <td>用户主动申请（买错）</td>
           <td><span class="badge badge-warn">待商家处理</span></td>
           <td>2026-09-08 10:12</td>
           <td class="row-actions"><a href="aftersale-detail.html">处理</a><a href="aftersale-detail.html">详情</a></td>
         </tr>
         <tr>
           <td><a href="aftersale-detail.html" class="link-mono">AS202609070005</a></td>
-          <td><span class="tag tag-blue">仅退款</span></td>
-          <td><a href="order-detail.html" class="link-mono">YB20260905100981</a><br><span class="muted" style="font-size:12px">引流课+手册 · 未发货</span></td>
+          <td><span class="tag tag-warn">退款并回收权益</span></td>
+          <td><a href="order-detail.html" class="link-mono">YB20260905100981</a><br><span class="muted" style="font-size:12px">亲子沟通 21 天训练营</span></td>
           <td>刘*** 137****0012</td>
-          <td><b class="danger">¥9.90</b></td>
-          <td>拍错了/不想要了</td>
-          <td><span class="badge badge-info">待买家退货</span></td>
+          <td><b class="danger">¥299.00</b><br><span class="muted" style="font-size:12px">未开始学习</span></td>
+          <td>拍错了 / 不想要了</td>
+          <td><span class="badge badge-info">退款中</span></td>
           <td>2026-09-07 16:41</td>
           <td class="row-actions"><a href="aftersale-detail.html">详情</a></td>
         </tr>
         <tr>
           <td><a href="aftersale-detail.html" class="link-mono">AS202609060002</a></td>
-          <td><span class="tag tag-green">仅退款</span></td>
-          <td><a href="order-detail.html" class="link-mono">YB20260906000892</a><br><span class="muted" style="font-size:12px">家长手册</span></td>
+          <td><span class="tag tag-warn">退款并回收权益</span></td>
+          <td><a href="order-detail.html" class="link-mono">YB20260906000892</a><br><span class="muted" style="font-size:12px">家庭教育指导手册（电子版）</span></td>
           <td>陈*** 186****4411</td>
-          <td><b class="danger">¥39.00</b></td>
-          <td>商品质量问题</td>
-          <td><span class="badge badge-warn">待商家收货</span></td>
+          <td><b class="danger">¥39.00</b><br><span class="muted" style="font-size:12px">已学 3/8 节</span></td>
+          <td>内容与描述不符</td>
+          <td><span class="badge badge-warn">待商家处理</span></td>
           <td>2026-09-06 21:30</td>
           <td class="row-actions"><a href="aftersale-detail.html">处理</a><a href="aftersale-detail.html">详情</a></td>
         </tr>
         <tr>
           <td><a href="aftersale-detail.html" class="link-mono">AS202609040009</a></td>
-          <td><span class="tag tag-purple">换货</span></td>
-          <td><a href="order-detail.html" class="link-mono">YB20260902007721</a><br><span class="muted" style="font-size:12px">咨询手册（换新版）</span></td>
+          <td><span class="tag tag-purple">退款并保留权益</span></td>
+          <td><a href="order-detail.html" class="link-mono">YB20260902007721</a><br><span class="muted" style="font-size:12px">家庭咨询 60 分钟服务卡</span></td>
           <td>周*** 133****7788</td>
-          <td>¥0.00</td>
-          <td>印刷瑕疵需换货</td>
+          <td><b class="danger">¥199.00</b><br><span class="muted" style="font-size:12px">客诉安抚</span></td>
+          <td>服务体验问题</td>
           <td><span class="badge badge-success">已完成</span></td>
           <td>2026-09-04 09:15</td>
           <td class="row-actions"><a href="aftersale-detail.html">详情</a></td>
         </tr>
         <tr>
           <td><a href="aftersale-detail.html" class="link-mono">AS202609020003</a></td>
-          <td><span class="tag tag-green">仅退款</span></td>
-          <td><a href="order-detail.html" class="link-mono">YB20260831002210</a><br><span class="muted" style="font-size:12px">课程重复购买</span></td>
+          <td><span class="tag tag-warn">退款并回收权益</span></td>
+          <td><a href="order-detail.html" class="link-mono">YB20260831002210</a><br><span class="muted" style="font-size:12px">9.9 引流课 · 亲子沟通</span></td>
           <td>郑*** 139****2266</td>
-          <td><b class="danger">¥9.90</b></td>
+          <td><b class="danger">¥9.90</b><br><span class="muted" style="font-size:12px">已学 0 节</span></td>
           <td>重复购买</td>
           <td><span class="badge">已关闭</span><br><span class="muted" style="font-size:12px">商家拒绝，可再申请</span></td>
           <td>2026-09-02 11:22</td>
@@ -136,30 +139,33 @@
 
   <div class="card" style="margin-top:16px"><div class="card-bd">
     <p class="muted" style="font-size:12px;line-height:1.8">
-      <b>售后时效：</b>售后单 <b>7 天</b>内未处理将自动同意并退款；退货退款需商家提供退货地址，买家寄回、商家确认收货后原路退款；
-      换货由商家重新发货。已分佣的推广订单退款后佣金损失由商家承担；退款将返还微信支付手续费并扣减对应商品库存。
-      售后规则可在「交易选项-售后设置」中调整。
+      <b>退款规则：</b>退款单 <b>7 天</b>内未处理将自动同意；虚拟商品不适用「7 天无理由退货」，退款以「未使用可退 + 已学习部分按比例退」为原则（见交易选项-退款设置）。
+      退款成功后系统自动回收课程权益 / 服务额度；「退款并保留权益」仅用于客诉安抚，需人工选择。
+      <b>分账回退：</b>已分账订单退款时，通联支付支持按「仅退回买家金额 / 同时退回分账资金」处理，分账资金回退结果见退款单详情。
     </p>
   </div></div>
 </div>
 
-<!-- 售后规则弹窗 -->
+<!-- 退款规则弹窗 -->
 <div class="proto-mask" id="mask"></div>
 <div class="proto-modal" id="modal-rule" style="width:560px">
-  <div class="proto-modal-hd"><h3 style="font-size:16px;font-weight:600">售后规则（售后设置）</h3><button class="btn btn-sm btn-ghost" data-close>×</button></div>
+  <div class="proto-modal-hd"><h3 style="font-size:16px;font-weight:600">退款规则（退款设置）</h3><button class="btn btn-sm btn-ghost" data-close>×</button></div>
   <div class="proto-modal-bd">
     <div class="form-grid" style="grid-template-columns:1fr 1fr">
-      <div class="field"><label>售后申请时限</label>
-        <select style="width:100%;padding:7px 8px;border:1px solid var(--color-border);border-radius:6px"><option>确认收货后 7 天内</option><option>确认收货后 14 天内</option><option>确认收货后 30 天内</option></select>
+      <div class="field"><label>退款申请时限</label>
+        <select style="width:100%;padding:7px 8px;border:1px solid var(--color-border);border-radius:6px"><option>支付后 7 天内</option><option>支付后 14 天内</option><option>支付后 30 天内</option></select>
       </div>
       <div class="field"><label>商家处理超时</label>
         <select style="width:100%;padding:7px 8px;border:1px solid var(--color-border);border-radius:6px"><option>7 天自动同意</option><option>3 天自动同意</option></select>
       </div>
-      <div class="field" style="grid-column:1/-1"><label>退货物流超时</label>
-        <select style="width:100%;padding:7px 8px;border:1px solid var(--color-border);border-radius:6px"><option>买家 7 天未寄回自动关闭</option><option>买家 15 天未寄回自动关闭</option></select>
+      <div class="field"><label>已学习部分处理</label>
+        <select style="width:100%;padding:7px 8px;border:1px solid var(--color-border);border-radius:6px"><option>按已学课节比例扣除</option><option>已学超过 30% 不可退</option></select>
+      </div>
+      <div class="field"><label>权益回收</label>
+        <select style="width:100%;padding:7px 8px;border:1px solid var(--color-border);border-radius:6px"><option>退款成功后自动回收</option><option>人工确认后回收</option></select>
       </div>
     </div>
-    <p class="muted" style="margin-top:8px">完整售后设置（7 天无理由、运费险、退货地址）请前往「交易设置-交易选项-售后设置」。</p>
+    <p class="muted" style="margin-top:8px">完整退款设置（退款时限、权益处理、分账回退）请前往「交易设置-交易选项-退款设置」。</p>
   </div>
   <div class="proto-drawer-ft" style="border-top:1px solid var(--color-border);padding:12px 20px;display:flex;gap:8px;justify-content:flex-end">
     <button class="btn" data-close>取消</button>
@@ -170,6 +176,7 @@
 <style>
 .link-mono { font-family:ui-monospace,Consolas,monospace; font-size:12px; color:var(--color-primary); text-decoration:none; }
 .danger { color:#cb2634; }
+.alert { padding:10px 14px; border-radius:8px; line-height:1.7; }
 .tag { display:inline-block; padding:2px 8px; border-radius:4px; font-size:12px; background:#f2f3f5; color:#4e5969; }
 .tag-warn{background:#fff3e0;color:#ad6800} .tag-blue{background:#e8f3ff;color:#165dff} .tag-green{background:#e8ffea;color:#009a29} .tag-purple{background:#f4f0ff;color:#722ed1}
 </style>
@@ -186,7 +193,7 @@
 
   document.querySelectorAll("#as-tabs a").forEach(function(a){ a.addEventListener("click", function(e){ e.preventDefault(); document.querySelectorAll("#as-tabs a").forEach(function(n){n.classList.remove("active");}); a.classList.add("active"); Proto.toast("已切换到「"+a.textContent+"」（原型）"); }); });
   document.getElementById("btn-rule").addEventListener("click", function(){ open(document.getElementById("modal-rule")); });
-  document.getElementById("btn-export").addEventListener("click", function(){ Proto.toast("已导出售后单（原型）"); });
+  document.getElementById("btn-export").addEventListener("click", function(){ Proto.toast("已导出退款单（原型）"); });
   document.getElementById("btn-query").addEventListener("click", function(){ Proto.toast("已筛选（原型）"); });
   document.getElementById("btn-reset").addEventListener("click", function(){ Proto.toast("已重置（原型）"); });
 })();

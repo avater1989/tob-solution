@@ -301,7 +301,7 @@
       "<tr><td>已执行直播促到SOP</td><td>" + (g.sent || 0) + "</td><td>" + (g.sentAvg || "—") + "</td></tr>" +
       "<tr><td>未执行直播促到SOP</td><td>" + (g.miss || 0) + "</td><td>" + (g.missAvg || "—") + "</td></tr>" +
       "<tr><td>数据不足场次</td><td>" + (g.pending || 0) + "</td><td>—</td></tr>";
-    document.getElementById("invite-note").textContent = "全部场次比较：期次影响场次库存；获客渠道不影响场次。直播促到SOP执行组与未执行组到场率为相关表现。";
+    document.getElementById("invite-note").textContent = "全部场次比较：期次影响场次名额；获客渠道不影响场次。直播促到SOP执行组与未执行组到场率为相关表现。";
 
     if (liveState.selected) openPanel(liveState.selected);
     BoardMetrics.renderActiveFilters();

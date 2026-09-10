@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>小程序数据 · 商家管理后台</title>
+<link rel="stylesheet" href="../assets/css/proto.css?v=9" />
+<link rel="stylesheet" href="../assets/css/assess.css?v=3" />
+<style>
+  .funnel { display: flex; flex-direction: column; gap: 6px; }
+  .funnel .f-row { display: flex; align-items: center; gap: 10px; }
+  .funnel .f-bar { height: 26px; border-radius: 4px; background: linear-gradient(90deg,#4d7cfe,#7db3ff); color: #fff; font-size: 12px; display: flex; align-items: center; padding: 0 10px; min-width: 60px; }
+  .funnel .f-label { font-size: 12px; color: var(--color-text-secondary); white-space: nowrap; }
+  .funnel .f-rate { font-size: 12px; color: #0e42d2; font-weight: 600; }
+</style>
+</head>
+<body class="admin-body" data-module="mp" data-nav="mp-data" data-title="小程序数据" data-crumb="商家管理后台 / 小程序 / 数据 / 小程序数据">
+
+<div id="header-actions">
+  <div class="segmented" id="range-seg">
+    <button class="active" data-range="7">近 7 天</button>
+    <button data-range="30">近 30 天</button>
+  </div>
+  <button class="btn" id="btn-export">导出报表</button>
+</div>
+
+<div id="page-content" style="display:none">
+  <div class="as-banner">您店铺小程序的访问、转化与内容数据概览。数据口径：微信小程序访问（UV）、领课兑换、课程订单支付。</div>
+
+  <!-- 概览 -->
+  <div class="as-stats" style="grid-template-columns:repeat(5,1fr);margin-bottom:14px">
+    <div class="as-stat"><div class="l">访问人数 (UV)</div><div class="n" id="k-uv">4,862</div><div class="l">环比 +18%</div></div>
+    <div class="as-stat"><div class="l">新增学员</div><div class="n" id="k-new">312</div><div class="l">环比 +9%</div></div>
+    <div class="as-stat"><div class="l">领课兑换</div><div class="n" id="k-claim">138</div><div class="l">环比 +21%</div></div>
+    <div class="as-stat"><div class="l">支付订单</div><div class="n" id="k-pay">96</div><div class="l">环比 -4%</div></div>
+    <div class="as-stat"><div class="l">支付金额</div><div class="n" id="k-gmv">¥23,406</div><div class="l">环比 +6%</div></div>
+  </div>
+
+  <div class="two-col" style="grid-template-columns:1fr 1fr">
+    <!-- 访问趋势 -->
+    <div class="card" style="margin-bottom:14px">
+      <div class="card-hd"><h2>访问趋势</h2><span class="muted" style="margin-left:10px">小程序 UV</span></div>
+      <div class="card-bd">
+        <div class="chart-bars" id="trend"></div>
+      </div>
+    </div>
+
+    <!-- 转化漏斗 -->
+    <div class="card" style="margin-bottom:14px">
+      <div class="card-hd"><h2>核心转化漏斗</h2></div>
+      <div class="card-bd">
+        <div class="funnel">
+          <div class="f-row"><div class="f-bar" style="width:100%">4,862</div><div class="f-label">访问小程序</div></div>
+          <div class="f-row"><div class="f-bar" style="width:72%;background:linear-gradient(90deg,#5b8dfe,#8fbfff)">3,501</div><div class="f-label">浏览课程/直播</div><div class="f-rate">72%</div></div>
+          <div class="f-row"><div class="f-bar" style="width:41%;background:linear-gradient(90deg,#6f9ffe,#a3c8ff)">1,994</div><div class="f-label">进入课程详情</div><div class="f-rate">41%</div></div>
+          <div class="f-row"><div class="f-bar" style="width:18%;background:linear-gradient(90deg,#8ab0ff,#bcd4ff)">875</div><div class="f-label">领课 / 提交订单</div><div class="f-rate">18%</div></div>
+          <div class="f-row"><div class="f-bar" style="width:9.6%;background:linear-gradient(90deg,#2fbf71,#6fdcad);min-width:76px">234</div><div class="f-label">支付成功</div><div class="f-rate">4.8%</div></div>
+          <div class="f-row"><div class="f-bar" style="width:7.2%;background:linear-gradient(90deg,#2fbf71,#8fe6c5);min-width:70px">175</div><div class="f-label">进入学习</div><div class="f-rate">3.6%</div></div>
+        </div>
+        <div class="muted" style="margin-top:10px">领课兑换与购买合并计入「领课 / 提交订单」环节；支付转化 = 支付成功 / 访问。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 内容排行 -->
+  <div class="two-col" style="grid-template-columns:1fr 1fr">
+    <div class="card" style="margin-bottom:14px">
+      <div class="card-hd"><h2>课程访问 / 销量 TOP</h2></div>
+      <div class="card-bd">
+        <table class="as-table">
+          <thead><tr><th>课程</th><th style="width:90px">访问</th><th style="width:90px">领课/销量</th><th style="width:80px">转化</th></tr></thead>
+          <tbody id="top-course"></tbody>
+        </table>
+      </div>
+    </div>
+    <div class="card" style="margin-bottom:14px">
+      <div class="card-hd"><h2>直播预约 / 观看 TOP</h2></div>
+      <div class="card-bd">
+        <table class="as-table">
+          <thead><tr><th>直播场次</th><th style="width:90px">预约</th><th style="width:90px">观看</th><th style="width:110px">预约转化</th></tr></thead>
+          <tbody id="top-live"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- 来源与领课 -->
+  <div class="card" style="margin-bottom:14px">
+    <div class="card-hd"><h2>访问来源</h2></div>
+    <div class="card-bd">
+      <table class="as-table">
+        <thead><tr><th style="width:60px">#</th><th>来源</th><th style="width:120px">访问占比</th><th style="width:140px">进入课程详情率</th><th style="width:120px">支付转化率</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td>企微会话 / 群聊分享</td><td><b>46%</b></td><td>52%</td><td><span class="as-tag green">7.2%</span></td></tr>
+          <tr><td>2</td><td>小程序「我的」复访</td><td><b>24%</b></td><td>38%</td><td>5.1%</td></tr>
+          <tr><td>3</td><td>朋友圈海报扫码</td><td><b>15%</b></td><td>27%</td><td>2.9%</td></tr>
+          <tr><td>4</td><td>直播间跳转</td><td><b>10%</b></td><td>61%</td><td><span class="as-tag green">8.8%</span></td></tr>
+          <tr><td>5</td><td>其他（搜索/收藏）</td><td><b>5%</b></td><td>20%</td><td>1.8%</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<script src="../assets/js/proto.js"></script>
+<script src="../assets/js/admin-shell.js?v=13"></script>
+<script>
+function esc(s){ return String(s).replace(/[&<>"']/g,function(c){return({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"})[c];}); }
+
+var DATA = {
+  "7":  { uv:"4,862", nu:"312", cl:"138", pay:"96", gmv:"¥23,406",
+    trend:[520,610,580,640,720,830,962],
+    courses:[["亲子沟通基础课","1,862","214","11.5%"],["亲子情绪管理音频课","1,204","167","13.9%"],["家庭教育风格训练营","886","46","5.2%"],["青春期沟通 21 天营","612","38","6.2%"]],
+    lives:[["开学第一课 · 家长专场","286","1,042","36%"],["亲子沟通训练营 · 第 4 期","203","782","38%"],["家庭教育风格测评解读","154","610","34%"]] },
+  "30": { uv:"19,438", nu:"1,265", cl:"577", pay:"402", gmv:"¥98,320",
+    trend:[430,512,488,536,590,644,610,668,702,745,782,810,838,860,872,904,928,946,970,1002,1028,1046,1068,1090,1112,1130,1152,1178,1204,1236],
+    courses:[["亲子沟通基础课","7,204","862","12.0%"],["亲子情绪管理音频课","4,868","690","14.2%"],["家庭教育风格训练营","3,502","187","5.3%"],["家庭会议实践指南","2,431","205","8.4%"]],
+    lives:[["开学第一课 · 家长专场","286","1,042","36%"],["亲子沟通训练营 · 第 4 期","203","782","38%"],["青春期沟通避坑指南","176","688","39%"]] }
+};
+var range = "7";
+
+function render(){
+  var d = DATA[range];
+  document.getElementById("k-uv").textContent = d.uv;
+  document.getElementById("k-new").textContent = d.nu;
+  document.getElementById("k-claim").textContent = d.cl;
+  document.getElementById("k-pay").textContent = d.pay;
+  document.getElementById("k-gmv").textContent = d.gmv;
+  var max = Math.max.apply(null, d.trend);
+  document.getElementById("trend").innerHTML = d.trend.map(function(v,i){
+    var label = d.trend.length>10 ? (i%5===0 ? "D"+(i+1) : "") : "周"+"一二三四五六日"[i] || ("D"+(i+1));
+    return '<div class="bar" style="height:'+Math.round(v/max*100)+'%"><span>'+label+'</span></div>';
+  }).join("");
+  document.getElementById("top-course").innerHTML = d.courses.map(function(c,i){
+    return '<tr><td><b>'+(i+1)+'</b> · '+esc(c[0])+'</td><td>'+c[1]+'</td><td><b>'+c[2]+'</b></td><td>'+c[3]+'</td></tr>';
+  }).join("");
+  document.getElementById("top-live").innerHTML = d.lives.map(function(l,i){
+    return '<tr><td><b>'+(i+1)+'</b> · '+esc(l[0])+'</td><td>'+l[1]+'</td><td><b>'+l[2]+'</b></td><td>'+l[3]+'</td></tr>';
+  }).join("");
+}
+document.getElementById("range-seg").addEventListener("click", function(e){
+  var b = e.target.closest("button[data-range]"); if (!b) return;
+  this.querySelectorAll("button").forEach(function(x){ x.classList.remove("active"); });
+  b.classList.add("active");
+  range = b.getAttribute("data-range");
+  render();
+});
+document.getElementById("btn-export").onclick = function(){ Proto.toast("小程序数据报表已导出（演示）"); };
+render();
+</script>
+</body>
+</html>

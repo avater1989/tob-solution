@@ -33,7 +33,7 @@
       <input id="f-bill-no" placeholder="对账单号" />
       <select id="f-channel">
         <option value="">账单渠道</option>
-        <option>微信支付</option><option>视频号小店</option>
+        <option>通联支付</option><option>视频号小店</option>
       </select>
       <select id="f-status">
         <option value="">对账状态</option>
@@ -65,7 +65,7 @@
         <tr>
           <td><a href="#" class="link-mono" data-toast="查看对账单明细（原型）">RC20260407001</a></td>
           <td>04-01 ~ 04-07</td>
-          <td>微信支付</td>
+          <td>通联支付</td>
           <td>86</td>
           <td>86</td>
           <td><b>¥8,432.20</b></td>
@@ -96,7 +96,7 @@
         <tr>
           <td><a href="#" class="link-mono" data-toast="查看对账单明细（原型）">RC20260331001</a></td>
           <td>03-25 ~ 03-31</td>
-          <td>微信支付</td>
+          <td>通联支付</td>
           <td>42</td>
           <td>42</td>
           <td><b>¥4,135.30</b></td>
@@ -126,7 +126,7 @@
         <tr>
           <td><span class="link-mono muted">RC20260408001</span></td>
           <td>04-08</td>
-          <td>微信支付</td>
+          <td>通联支付</td>
           <td>—</td>
           <td>—</td>
           <td>—</td>
@@ -145,7 +145,7 @@
   <!-- 差异处理面板 -->
   <div class="card" id="panel-diffs" style="display:none">
     <div class="card-hd">
-      <h2>对账差异 · RC20260407001（04-01 ~ 04-07 · 微信支付）</h2>
+      <h2>对账差异 · RC20260407001（04-01 ~ 04-07 · 通联支付）</h2>
       <span class="muted" style="font-size:12px">差异 2 笔，处理后将重新汇总至结算单</span>
     </div>
     <div class="card-bd" style="padding:0">
@@ -206,7 +206,7 @@
   <div class="card" style="margin-top:8px"><div class="card-hd"><h2>对账规则说明</h2></div>
     <div class="card-bd">
       <ul class="muted" style="font-size:13px;line-height:1.9;padding-left:16px">
-        <li>每日 T+1 自动拉取微信支付 / 视频号小店账单，与平台订单按交易单号逐笔核对；</li>
+        <li>每日 T+1 自动拉取通联支付 / 视频号小店账单，与平台订单按交易单号逐笔核对；</li>
         <li>差异类型：金额不一致、平台/渠道单边账、退款状态不一致；</li>
         <li>金额与笔数全部一致 → 对账单状态「已对平」，可参与结算；存在差异 → 需处理完差异后重算；</li>
         <li>MVP 为商户侧对账视图；平台侧对账异常工单流转为后续能力。</li>

@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>直播展示 · 商家管理后台</title>
+<link rel="stylesheet" href="../assets/css/proto.css?v=9" />
+<link rel="stylesheet" href="../assets/css/assess.css?v=3" />
+</head>
+<body class="admin-body" data-module="mp" data-nav="mp-live" data-title="直播展示" data-crumb="商家管理后台 / 小程序 / 功能配置 / 直播展示">
+
+<div id="header-actions">
+  <button class="btn" onclick="window.open('../miniprogram/lives.html','_blank')">预览 C 端直播页</button>
+  <button class="btn btn-primary" id="btn-save">保存设置</button>
+</div>
+
+<div id="page-content" style="display:none">
+  <div class="as-banner">配置您店铺小程序中「直播」tab 的内容展示：直播排期、直播间商品挂载、聊天与回放等互动策略。</div>
+
+  <div class="as-stats" style="margin-bottom:14px">
+    <div class="as-stat"><div class="l">C 端展示场次</div><div class="n">6</div><div class="l">预告 2 / 直播中 1 / 回放 3</div></div>
+    <div class="as-stat"><div class="l">近 30 日预约</div><div class="n">486</div><div class="l">预约转化率 38%</div></div>
+    <div class="as-stat"><div class="l">直播间挂载商品</div><div class="n">3</div><div class="l">含 1 个讲解中</div></div>
+    <div class="as-stat"><div class="l">回放累计观看</div><div class="n ok">2,102</div><div class="l">环比 +12%</div></div>
+  </div>
+
+  <!-- 直播排期展示 -->
+  <div class="card" style="margin-bottom:14px">
+    <div class="card-hd"><h2>直播排期展示</h2><span class="muted" style="margin-left:10px">控制在您店铺小程序「直播」tab 展示的场次；直播数据与中控请在「直播」模块管理</span></div>
+    <div class="card-bd">
+      <table class="as-table">
+        <thead>
+          <tr>
+            <th>直播场次</th>
+            <th style="width:150px">开播时间</th>
+            <th style="width:100px">状态</th>
+            <th style="width:110px">C 端展示</th>
+            <th style="width:160px">操作</th>
+          </tr>
+        </thead>
+        <tbody id="live-tbody"></tbody>
+      </table>
+      <div class="muted" style="margin-top:10px">创建与审核直播请前往 <a href="lives.html">直播模块 · 直播列表</a>；通过审核的场次默认自动展示在 C 端。</div>
+    </div>
+  </div>
+
+  <!-- 直播间商品挂载 -->
+  <div class="card" style="margin-bottom:14px">
+    <div class="card-hd"><h2>直播间商品挂载</h2><span class="muted" style="margin-left:10px">直播中与回放页展示的商品清单，学员可直接购买</span></div>
+    <div class="card-bd">
+      <div class="toolbar" style="border:none;padding:0;background:transparent;margin-bottom:10px">
+        <select class="input" id="goods-live" style="width:280px">
+          <option>开学第一课 · 家长专场（直播中）</option>
+          <option>亲子沟通 21 天训练营 · 第 4 期（回放）</option>
+        </select>
+        <button class="btn" id="btn-goods-add">+ 挂载商品</button>
+      </div>
+      <table class="as-table">
+        <thead>
+          <tr>
+            <th>商品</th>
+            <th style="width:110px">价格</th>
+            <th style="width:110px">讲解状态</th>
+            <th style="width:100px">已售</th>
+            <th style="width:140px">操作</th>
+          </tr>
+        </thead>
+        <tbody id="goods-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- 互动设置 -->
+  <div class="card" style="margin-bottom:14px">
+    <div class="card-hd"><h2>互动设置</h2><span class="muted" style="margin-left:10px">直播间与回放页的通用互动策略</span></div>
+    <div class="card-bd">
+      <div class="form-grid">
+        <div class="field"><label>直播间聊天</label>
+          <select class="input"><option selected>开启（全员可发言）</option><option>仅企微好友可发言</option><option>关闭（仅主播发言）</option></select>
+        </div>
+        <div class="field"><label>聊天敏感词过滤</label>
+          <select class="input"><option selected>平台默认词库 + 自定义词库</option><option>仅平台默认词库</option></select>
+        </div>
+        <div class="field"><label>回放自动生成</label>
+          <select class="input"><option selected>结束后自动生成回放</option><option>手动上传回放</option><option>不提供回放</option></select>
+        </div>
+        <div class="field"><label>回放观看权限</label>
+          <select class="input"><option selected>免费回放（引流）</option><option>仅购买学员可看</option><option>仅预约学员可看</option></select>
+        </div>
+        <div class="field"><label>预约提醒</label>
+          <select class="input"><option selected>开播前 30 分钟小程序服务通知</option><option>开播前 15 / 60 分钟两次提醒</option><option>不提醒</option></select>
+        </div>
+        <div class="field"><label>预约后引导</label>
+          <select class="input"><option selected>引导添加企微老师进开播群</option><option>无引导</option></select>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 挂载商品弹窗 -->
+<div class="proto-modal" id="modal-goods" style="width:520px">
+  <div class="proto-modal-hd"><h3 style="margin:0;font-size:16px">挂载商品</h3><button class="ctrl-icon-btn" data-close>×</button></div>
+  <div class="proto-modal-bd">
+    <div class="muted" style="margin-bottom:10px" id="goods-live-name">挂载到：开学第一课 · 家长专场（直播中）</div>
+    <div id="goods-pool"></div>
+  </div>
+  <div class="proto-modal-ft" style="justify-content:flex-end;gap:8px">
+    <button class="btn" data-close>取消</button>
+    <button class="btn btn-primary" id="goods-ok">确定挂载</button>
+  </div>
+</div>
+
+<div class="proto-mask" id="mask"></div>
+
+<script src="../assets/js/proto.js"></script>
+<script src="../assets/js/admin-shell.js?v=13"></script>
+<script>
+function esc(s){ return String(s).replace(/[&<>"']/g,function(c){return({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"})[c];}); }
+
+var LIVES = [
+  { id:"L1", name:"开学第一课 · 家长专场", time:"09-12 20:00", status:"直播中", on:true },
+  { id:"L2", name:"非暴力沟通 · 案例答疑", time:"09-15 20:00", status:"预告", on:true },
+  { id:"L3", name:"写作业不吼不叫 · 方法拆解", time:"09-20 19:30", status:"预告", on:true },
+  { id:"L4", name:"亲子沟通 21 天训练营 · 第 4 期", time:"09-05 20:00", status:"回放", on:true },
+  { id:"L5", name:"家庭教育风格测评 · 报告解读", time:"08-28 20:00", status:"回放", on:true },
+  { id:"L6", name:"青春期沟通避坑指南", time:"08-21 20:00", status:"回放", on:true }
+];
+var GOODS = [
+  { id:"G1", name:"亲子沟通基础课", price:"¥199", hot:true, sold:86, on:true },
+  { id:"G2", name:"家庭教育风格训练营", price:"¥899", hot:false, sold:12, on:true },
+  { id:"G3", name:"亲子情绪管理音频课", price:"¥69", hot:false, sold:143, on:true }
+];
+var GOODS_POOL = ["青春期沟通 21 天营", "写作业不吼不叫专题课", "家庭会议实践指南", "1v1 家庭教育咨询（60 分钟）"];
+
+var mask = document.getElementById("mask");
+function closeAll(){ mask.classList.remove("open"); document.querySelectorAll(".proto-modal").forEach(function(m){ m.classList.remove("open"); }); }
+
+function liveTag(st){
+  var c = st==="直播中"?"red":(st==="预告"?"blue":"gray");
+  return '<span class="as-tag '+c+'">'+esc(st)+'</span>';
+}
+function renderLives(){
+  document.getElementById("live-tbody").innerHTML = LIVES.map(function(l){
+    return '<tr>' +
+      '<td><div class="as-name">'+esc(l.name)+'</div></td>' +
+      '<td style="font-size:12px">'+esc(l.time)+'</td>' +
+      '<td>'+liveTag(l.status)+'</td>' +
+      '<td>'+(l.on?'<span class="as-tag green">展示中</span>':'<span class="as-tag gray">已隐藏</span>')+'</td>' +
+      '<td class="row-actions">' +
+        '<a href="javascript:;" data-l-toggle="'+l.id+'">'+(l.on?"从 C 端隐藏":"展示到 C 端")+'</a>' +
+        '<a href="javascript:;" data-l-link="'+l.id+'">查看预告页</a>' +
+      '</td></tr>';
+  }).join("");
+}
+function renderGoods(){
+  document.getElementById("goods-tbody").innerHTML = GOODS.filter(function(g){return g.on;}).map(function(g){
+    return '<tr>' +
+      '<td>'+esc(g.name)+' '+(g.hot?'<span class="as-tag orange">讲解中</span>':'')+'</td>' +
+      '<td style="font-weight:600">'+esc(g.price)+'</td>' +
+      '<td>'+(g.hot?'<span class="as-tag orange">讲解中</span>':'<span class="as-tag gray">待讲解</span>')+'</td>' +
+      '<td>'+g.sold+'</td>' +
+      '<td class="row-actions">' +
+        '<a href="javascript:;" data-g-hot="'+g.id+'">'+(g.hot?"取消讲解":"设为讲解中")+'</a>' +
+        '<a href="javascript:;" class="row-more" data-g-off="'+g.id+'">下架</a>' +
+      '</td></tr>';
+  }).join("");
+}
+function renderPool(){
+  document.getElementById("goods-pool").innerHTML = GOODS_POOL.map(function(n){
+    return '<div class="as-task"><label style="display:flex;align-items:center;gap:8px;cursor:pointer">' +
+      '<input type="checkbox" data-gp="'+esc(n)+'" /> <span style="flex:1">'+esc(n)+'</span></label></div>';
+  }).join("");
+}
+
+document.getElementById("goods-live").addEventListener("change", function(){
+  document.getElementById("goods-live-name").textContent = "挂载到：" + this.value;
+});
+document.getElementById("btn-goods-add").onclick = function(){
+  renderPool();
+  mask.classList.add("open"); document.getElementById("modal-goods").classList.add("open");
+};
+document.getElementById("goods-ok").onclick = function(){
+  var picked = [];
+  document.querySelectorAll("[data-gp]").forEach(function(cb){ if (cb.checked) picked.push(cb.getAttribute("data-gp")); });
+  if (!picked.length) { Proto.toast("请至少选择 1 个商品"); return; }
+  picked.forEach(function(n,i){
+    GOODS.push({ id:"G"+(GOODS.length+i+1), name:n, price:"¥99", hot:false, sold:0, on:true });
+  });
+  closeAll(); renderGoods();
+  Proto.toast("商品已挂载到直播间（演示）");
+};
+document.addEventListener("click", function(e){
+  var el;
+  if ((el = e.target.closest("[data-l-toggle]"))) {
+    var l = LIVES.find(function(x){return x.id===el.getAttribute("data-l-toggle");});
+    l.on = !l.on; renderLives();
+    Proto.toast(l.on?"已展示到 C 端直播页":"已从 C 端隐藏");
+    return;
+  }
+  if ((el = e.target.closest("[data-l-link]"))) {
+    window.open("../miniprogram/live-room.html","_blank");
+    return;
+  }
+  if ((el = e.target.closest("[data-g-hot]"))) {
+    var id = el.getAttribute("data-g-hot");
+    var g = GOODS.find(function(x){return x.id===id;});
+    GOODS.forEach(function(x){ x.hot = false; });
+    g.hot = !g.hot; renderGoods();
+    Proto.toast(g.hot?"已设为讲解中，C 端直播间置顶展示":"已取消讲解");
+    return;
+  }
+  if ((el = e.target.closest("[data-g-off]"))) {
+    var gid = el.getAttribute("data-g-off");
+    if (confirm("下架后直播间与回放页将不再展示该商品，确认下架？")) {
+      GOODS.find(function(x){return x.id===gid;}).on = false; renderGoods(); Proto.toast("商品已下架");
+    }
+    return;
+  }
+});
+document.getElementById("btn-save").onclick = function(){ Proto.toast("直播展示设置已保存（演示）"); };
+mask.addEventListener("click", closeAll);
+document.querySelectorAll("[data-close]").forEach(function(b){ b.addEventListener("click", closeAll); });
+renderLives(); renderGoods();
+</script>
+</body>
+</html>
