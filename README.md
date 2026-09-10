@@ -2,9 +2,19 @@
 
 面向内部评审：双端可点击 HTML 原型 + MVP PRD。核心命题是**几个 IP 快速上线可用**。
 
+## 对外链接
+
+| 用途 | 链接 |
+|------|------|
+| GitHub 仓库 | https://github.com/avater1989/tob-solution |
+| 在线演示（GitHub Pages） | https://avater1989.github.io/tob-solution/ |
+| 原型导航入口 | https://avater1989.github.io/tob-solution/prototype/index.html |
+| 商家工作台 | https://avater1989.github.io/tob-solution/prototype/admin/dashboard.html |
+| 直播列表 | https://avater1989.github.io/tob-solution/prototype/admin/lives.html |
+
 ## 怎么打开
 
-用浏览器直接打开：
+本地可直接打开：
 
 [`prototype/index.html`](prototype/index.html)
 

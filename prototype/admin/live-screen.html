@@ -644,7 +644,9 @@ body.ctrl-mode { background: #0a0f1c; color: #e8eaed; }
 </style>
 
 <script src="../assets/js/proto.js"></script>
-<script src="../assets/js/admin-shell.js?v=13"></script>
+<script src="../assets/js/prototype-business-store.js"></script>
+<script src="../assets/js/live-ops.js?v=1"></script>
+<script src="../assets/js/admin-shell.js?v=16"></script>
 <script>
 (function () {
   // ===== Trend tabs =====
@@ -693,11 +695,35 @@ body.ctrl-mode { background: #0a0f1c; color: #e8eaed; }
 
   // ===== 当前直播列表（多场直播切换） =====
   var streamingLives = [
-    { id: "LV20260905001", name: "测试直播123",   teacher: "阮荣均", duration: "54:22", viewers: 3 },
-    { id: "LV20260905002", name: "明日直播·春启04 招生", teacher: "赵老师", duration: "23:08", viewers: 8 },
-    { id: "LV20260905003", name: "家长答疑会·音频直播", teacher: "王助教", duration: "12:45", viewers: 5 }
+    { id: "L005", name: "午间答疑 · 直播中", teacher: "赵老师", duration: "54:22", viewers: 96 },
+    { id: "L001", name: "春启 03 期家长公开课", teacher: "阮荣均", duration: "23:08", viewers: 8 },
+    { id: "L003", name: "明日直播 · 春启04招生", teacher: "阮荣均", duration: "12:45", viewers: 5 }
   ];
-  var currentLiveId = (new URLSearchParams(location.search)).get("live_id") || streamingLives[0].id;
+  if (window.LiveOps) {
+    LiveOps.getLives().filter(function (l) { return l.runtimeStatus === "living"; }).forEach(function (l) {
+      if (!streamingLives.some(function (x) { return x.id === l.liveId; })) {
+        streamingLives.unshift({ id: l.liveId, name: l.liveName, teacher: l.teacher || "—", duration: "00:00", viewers: l.attendedUsers || 0 });
+      }
+    });
+  }
+  var currentLiveId = (window.LiveOps && LiveOps.idFromSearch()) || (new URLSearchParams(location.search)).get("live_id") || streamingLives[0].id;
+  if (window.LiveOps) {
+    var resolved = LiveOps.resolveId(currentLiveId);
+    if (resolved) currentLiveId = resolved;
+    var opsLive = LiveOps.getLive(currentLiveId);
+    if (opsLive) {
+      LiveOps.renderContextBanner({ live: opsLive });
+      streamingLives = streamingLives.map(function (l) {
+        if (l.id === opsLive.liveId) return { id: opsLive.liveId, name: opsLive.liveName, teacher: opsLive.teacher || "—", duration: l.duration, viewers: opsLive.attendedUsers || l.viewers };
+        return l;
+      });
+    } else if (currentLiveId) {
+      LiveOps.renderEmptyLive(document.getElementById("page-content"), "未找到直播 " + currentLiveId);
+      return;
+    } else {
+      LiveOps.renderContextBanner({ showEmpty: true });
+    }
+  }
 
   // 同步显示
   var current = streamingLives.filter(function (l) { return l.id === currentLiveId; })[0] || streamingLives[0];

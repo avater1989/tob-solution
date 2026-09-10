@@ -1,0 +1,1435 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>期次经营复盘 · 商家管理后台</title>
+<link rel="stylesheet" href="../assets/css/proto.css?v=14" />
+<style>
+.board-kpi-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-bottom:16px; }
+@media (max-width:960px) { .board-kpi-grid { grid-template-columns:repeat(2,1fr); } }
+.board-kpi { background:#fff; border:1px solid var(--color-border); border-radius:8px; padding:14px 16px; }
+.board-kpi .kpi-label { font-size:12px; color:var(--color-text-muted); margin-bottom:4px; }
+.board-kpi .kpi-value { font-size:24px; font-weight:700; line-height:1.2; }
+.board-kpi .kpi-sub { font-size:12px; color:var(--color-text-muted); margin-top:4px; }
+.board-kpi .kpi-meta { font-size:11px; color:var(--color-text-muted); margin-top:8px; line-height:1.5; }
+.board-kpi .kpi-meta .up { color:#00b42a; }
+.board-kpi .kpi-meta .down { color:#f53f3f; }
+.board-funnel .step.clickable { cursor:pointer; transition:border-color .15s, box-shadow .15s; }
+.board-funnel .step.clickable:hover { border-color:#94bfff; }
+.board-funnel .step.funnel-active { border-color:var(--color-primary); box-shadow:0 0 0 2px rgba(22,93,255,.15); }
+.board-funnel-analysis { margin-top:12px; padding-top:12px; border-top:1px dashed var(--color-border); }
+.board-funnel-analysis .dim-tabs { display:flex; flex-wrap:wrap; gap:6px; margin:8px 0 12px; }
+.board-funnel-analysis .dim-tabs button { font-size:12px; }
+.board-funnel-analysis .dim-tabs button.active { background:var(--color-primary); color:#fff; border-color:var(--color-primary); }
+.board-split { display:grid; grid-template-columns:2fr 1fr; gap:16px; margin-bottom:16px; }
+@media (max-width:960px) { .board-split { grid-template-columns:1fr; } }
+.bottleneck-item { padding:12px 0; border-bottom:1px solid var(--color-border); }
+.bottleneck-item:last-child { border-bottom:none; }
+.bottleneck-item h4 { margin:0 0 6px; font-size:14px; }
+.bottleneck-item.is-active { background:#f2f7ff; margin:0 -12px; padding:12px; border-radius:6px; }
+.todo-risk-item { display:flex; flex-direction:column; gap:4px; padding:10px 0; border-bottom:1px solid var(--color-border); font-size:13px; }
+.todo-risk-item:last-child { border-bottom:none; }
+.todo-urgency { font-size:11px; padding:2px 6px; border-radius:4px; flex-shrink:0; }
+.todo-urgency.high { background:#fff1f0; color:#f53f3f; }
+.todo-urgency.medium { background:#fff7e8; color:#ff7d00; }
+.todo-urgency.low { background:#f2f3f5; color:#86909c; }
+.board-filter-note { font-size:12px; color:var(--color-text-muted); margin-left:8px; }
+.term-hero-meta { display:flex; flex-wrap:wrap; gap:8px 16px; font-size:13px; margin:8px 0 0; }
+.term-hero-meta span { color:var(--color-text-secondary); }
+.term-focus { margin-top:12px; font-size:13px; }
+.term-focus ul { margin:6px 0 0; padding-left:18px; }
+.term-empty { text-align:center; padding:48px 16px; background:#fff; border:1px dashed var(--color-border); border-radius:8px; margin-bottom:16px; }
+.trend-metric-bar { display:flex; flex-wrap:wrap; gap:6px; margin-bottom:12px; }
+.trend-metric-bar button.active { background:var(--color-primary); color:#fff; border-color:var(--color-primary); }
+#from-source { margin:0 0 12px; padding:10px 12px; background:#f2f7ff; border:1px solid #bedaff; border-radius:6px; font-size:13px; }
+#term-trend-chart { min-height:220px; }
+.is-focus-flash { outline:2px solid var(--color-primary); outline-offset:2px; border-radius:8px; }
+tr.is-selected td { background:#f2f7ff; }
+.bn-children { margin:8px 0 0; padding:0; list-style:none; font-size:12px; color:var(--color-text-muted); }
+.bn-children li { padding:4px 0 4px 10px; border-left:2px solid #bedaff; margin-bottom:4px; }
+</style>
+</head>
+<body class="admin-body" data-module="data" data-nav="board-t" data-title="期次经营复盘" data-crumb="经营分析 / 期次经营复盘" data-assist="1">
+<div id="header-actions">
+  <div class="segmented" id="range-seg" style="margin-right:8px">
+    <button type="button" class="active" data-range="7d">近7日</button>
+    <button type="button" data-range="30d">近30日</button>
+    <button type="button" data-range="today">今日</button>
+    <button type="button" data-range="yesterday">昨日</button>
+  </div>
+  <span class="muted" id="board-updated" style="margin-right:8px;font-size:12px"></span>
+  <button class="btn" id="btn-refresh">刷新</button>
+</div>
+<div id="page-content" style="display:none">
+
+  <div class="board-tip">
+    <b>期次经营看板：</b>围绕单个招生期次复盘获客、私域承接、直播促到SOP、到场与支付全链路，定位瓶颈并下钻专项报表。
+    <span class="muted" id="scope-help-brief"></span>
+  </div>
+
+  <div class="board-filter">
+    <select id="f-term" title="选择期次"></select>
+    <select id="f-channel"></select>
+    <button class="btn" id="btn-reset">重置筛选</button>
+    <span class="board-filter-note">请选择具体期次进行经营复盘；筛选变更后立即生效</span>
+  </div>
+  <div id="active-filters"></div>
+  <div id="from-source" hidden></div>
+
+  <div id="term-empty" class="term-empty" hidden>
+    <h2 style="margin:0 0 8px;font-size:16px">请选择一个具体期次进行经营复盘</h2>
+    <p class="muted" style="margin:0 0 16px;font-size:13px">「全部期次」不能作为单个期次复盘对象。请在上方筛选中选择春启 03 期、春启 04 期或试听公开课。</p>
+    <button type="button" class="btn btn-primary" id="btn-pick-default">打开默认经营期次</button>
+  </div>
+
+  <div id="term-main" hidden>
+
+    <div class="card" style="margin-bottom:16px" id="term-hero">
+      <div class="card-bd">
+        <div style="display:flex;flex-wrap:wrap;align-items:center;gap:8px">
+          <h2 style="margin:0;font-size:18px" id="th-name">—</h2>
+          <span class="tag" id="th-status">—</span>
+          <span class="muted" style="font-size:12px" id="th-stage"></span>
+        </div>
+        <div class="term-hero-meta">
+          <span>负责人：<b id="th-owner">—</b></span>
+          <span>经营周期：<b id="th-dates">—</b></span>
+          <span>转化截止：<b id="th-deadline">—</b></span>
+          <span id="th-days-wrap">剩余：<b id="th-days">—</b></span>
+          <span>关联直播：<b id="th-lives">—</b> 场</span>
+          <span>获客渠道：<b id="th-channels">—</b> 个</span>
+        </div>
+        <div class="term-focus" id="th-focus"></div>
+      </div>
+    </div>
+
+    <h2 style="margin:0 0 12px;font-size:14px">期次核心目标 <span class="muted" style="font-weight:400"> · <span data-range-label>近7日</span></span></h2>
+    <div class="board-kpi-grid" id="term-kpis"></div>
+
+    <div class="card" style="margin-bottom:16px" id="funnel-section">
+      <div class="card-hd">
+        <h2>期次端到端漏斗</h2>
+        <span class="muted" style="font-size:12px;font-weight:400">私域池 → 分配 → 加微 → 跟进 → 到场 → 支付</span>
+      </div>
+      <div class="card-bd">
+        <div class="board-funnel slope lg" id="term-funnel"></div>
+        <p class="board-attr" data-board-attr></p>
+
+        <div class="board-funnel-analysis" id="term-funnel-analysis">
+          <div id="tf-source-banner" class="board-analysis-source" hidden></div>
+          <div style="display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-bottom:8px">
+            <span class="muted" style="font-size:12px">当前分析：</span>
+            <b id="tf-step-label">加微转化</b>
+            <span class="muted" style="font-size:12px">·</span>
+            <button type="button" class="btn btn-sm" id="tf-clear">清除选择</button>
+            <button type="button" class="btn btn-sm" id="tf-back-bn" hidden>返回经营瓶颈</button>
+          </div>
+          <div class="dim-tabs" id="tf-dim-tabs"></div>
+          <div style="overflow-x:auto">
+            <table class="data" style="min-width:640px">
+              <thead>
+                <tr>
+                  <th>维度</th><th>上游人数</th><th>下游人数</th><th>转化率</th><th>与整体差异</th><th>影响规模</th><th>操作</th>
+                </tr>
+              </thead>
+              <tbody id="tf-tbody"></tbody>
+            </table>
+          </div>
+          <p class="muted" style="font-size:12px;margin:8px 0 0" id="tf-note"></p>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-bottom:16px">
+      <div class="card-hd">
+        <h2>期次趋势</h2>
+        <span class="muted" style="font-size:12px;font-weight:400">按日 / 累计 / 目标进度 / 上一期同期</span>
+      </div>
+      <div class="card-bd">
+        <div class="trend-metric-bar" id="trend-metric-bar">
+          <button type="button" class="btn btn-sm active" data-trend="pool_new">新增入池</button>
+          <button type="button" class="btn btn-sm" data-trend="pool_cum">累计入池</button>
+          <button type="button" class="btn btn-sm" data-trend="wecomRate">加微率</button>
+          <button type="button" class="btn btn-sm" data-trend="followRate">跟进覆盖率</button>
+          <button type="button" class="btn btn-sm" data-trend="attend">到场人数</button>
+          <button type="button" class="btn btn-sm" data-trend="pay">支付人数</button>
+          <button type="button" class="btn btn-sm" data-trend="pay_cum">累计支付</button>
+          <button type="button" class="btn btn-sm" data-trend="gmv">GMV</button>
+        </div>
+        <div id="term-trend-chart"></div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-bottom:16px">
+      <div class="card-hd" style="flex-wrap:wrap;gap:8px">
+        <h2>渠道质量贡献</h2>
+        <div class="board-sort-bar" style="margin:0">
+          <span class="muted">排序：</span>
+          <button type="button" class="btn btn-sm active" data-ch-sort="pool">规模</button>
+          <button type="button" class="btn btn-sm" data-ch-sort="payRate">支付率</button>
+          <button type="button" class="btn btn-sm" data-ch-sort="gmv">成交贡献</button>
+        </div>
+      </div>
+      <div class="card-bd" style="padding:0;overflow-x:auto">
+        <table class="data" style="min-width:900px">
+          <thead>
+            <tr>
+              <th>渠道</th><th>入池</th><th>占比</th><th>加微率</th><th>到场率</th>
+              <th>支付率</th><th>归因GMV</th><th>vs 期次</th><th>主要流失</th><th>操作</th>
+            </tr>
+          </thead>
+          <tbody id="term-ch-tbody"></tbody>
+        </table>
+      </div>
+      <p class="muted" style="padding:8px 16px;font-size:12px;margin:0">
+        本表仅展示当前期次内渠道表现。
+        <a data-board-link="board-acquire.html" href="board-acquire.html" id="link-full-acquire">查看完整渠道分析</a>
+      </p>
+    </div>
+
+    <div class="card" style="margin-bottom:16px">
+      <div class="card-hd">
+        <h2>私域承接</h2>
+        <span class="muted" style="font-size:12px;font-weight:400">团队执行摘要 · 详细分析进私域转化</span>
+      </div>
+      <div class="card-bd">
+        <div class="stat-cards board-stats" style="grid-template-columns:repeat(4,1fr);margin-bottom:12px" id="term-private-stats"></div>
+        <div style="overflow-x:auto">
+          <table class="data" style="min-width:880px">
+            <thead>
+              <tr>
+                <th>员工</th><th>承接</th><th>及时率</th><th>加微率</th><th>覆盖率</th>
+                <th>未跟进</th><th>支付</th><th>标签</th><th>操作</th>
+              </tr>
+            </thead>
+            <tbody id="term-staff-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-bottom:16px">
+      <div class="card-hd" style="flex-wrap:wrap;gap:8px">
+        <h2>关联直播</h2>
+        <div class="segmented" id="term-live-tab">
+          <button type="button" class="active" data-live-tab="ended">已结束场次</button>
+          <button type="button" data-live-tab="upcoming">待开播场次</button>
+        </div>
+      </div>
+      <div class="card-bd" style="padding:0;overflow-x:auto">
+        <table class="data" style="min-width:960px">
+          <thead id="term-live-thead"></thead>
+          <tbody id="term-live-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="card" style="margin-bottom:16px" id="zone-convert-a">
+      <div class="card-hd">
+        <h2>A. 转化效果（可归因）</h2>
+        <span class="muted" style="font-size:12px;font-weight:400">支付结构与贡献</span>
+      </div>
+      <div class="card-bd">
+        <div class="stat-cards board-stats" style="grid-template-columns:repeat(5,1fr);margin-bottom:12px" id="term-convert-a"></div>
+        <div class="board-two">
+          <div>
+            <h3 style="margin:0 0 8px;font-size:13px">按渠道支付贡献</h3>
+            <table class="data"><thead><tr><th>渠道</th><th>支付</th><th>支付率</th><th>操作</th></tr></thead>
+              <tbody id="term-pay-ch"></tbody></table>
+          </div>
+          <div>
+            <h3 style="margin:0 0 8px;font-size:13px">按直播场次支付贡献</h3>
+            <table class="data"><thead><tr><th>场次</th><th>支付</th><th>支付率</th><th>操作</th></tr></thead>
+              <tbody id="term-pay-live"></tbody></table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-bottom:16px" id="zone-convert-b">
+      <div class="card-hd">
+        <h2>B. 成交结果</h2>
+        <span class="muted" style="font-size:12px;font-weight:400">全量订单与商品 · 口径固定</span>
+      </div>
+      <div class="card-bd">
+        <div class="stat-cards board-stats" style="grid-template-columns:repeat(4,1fr);margin-bottom:12px" id="term-convert-b"></div>
+        <p class="muted" style="font-size:12px;margin:0 0 8px" id="term-cover-note"></p>
+        <table class="data">
+          <thead><tr><th>商品</th><th>类型</th><th>订单</th><th>GMV</th><th>操作</th></tr></thead>
+          <tbody id="term-product-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="board-split">
+      <div class="card">
+        <div class="card-hd"><h2>经营瓶颈</h2><span class="muted" style="font-size:12px;font-weight:400">为什么未达预期</span></div>
+        <div class="card-bd" id="term-bn-list"></div>
+      </div>
+      <div class="card">
+        <div class="card-hd"><h2>待办风险</h2><span class="muted" style="font-size:12px;font-weight:400">现在需要处理</span></div>
+        <div class="card-bd" id="term-todo-list"></div>
+      </div>
+    </div>
+
+    <h2 style="margin:0 0 12px;font-size:14px">专项分析入口</h2>
+    <div class="board-topic-entries" id="topic-entries">
+      <a class="board-topic-entry" data-board-link="board-acquire.html" href="board-acquire.html">
+        <div class="t">获客质量分析</div>
+        <div class="d">保留当前期次，查看完整渠道比较</div>
+      </a>
+      <a class="board-topic-entry" data-board-link="board-private.html" href="board-private.html">
+        <div class="t">私域承接分析</div>
+        <div class="d">保留当前期次，查看员工与阶段运营</div>
+      </a>
+      <a class="board-topic-entry" data-board-link="board-live.html" href="board-live.html?live_tab=ended">
+        <div class="t">直播场次复盘</div>
+        <div class="d">保留当前期次，查看关联场次与直播促到SOP</div>
+      </a>
+      <a class="board-topic-entry" data-board-link="board-convert.html" href="board-convert.html">
+        <div class="t">转化贡献分析</div>
+        <div class="d">保留当前期次，查看可归因转化与全量成交</div>
+      </a>
+    </div>
+
+  </div>
+</div>
+<script src="../assets/js/proto.js"></script>
+<script src="../assets/js/board-data.js?v=10"></script>
+<script src="../assets/js/board-metrics.js?v=15"></script>
+<script src="../assets/js/board-insights.js?v=9"></script>
+<script src="../assets/js/board-term.js?v=1"></script>
+<script src="../assets/js/board-dictionary.js?v=4"></script>
+<script src="../assets/js/board-tools.js?v=5"></script>
+<script src="../assets/js/admin-shell.js?v=16"></script>
+<script>
+(function () {
+  BoardMetrics.ensureCaliberUI();
+  BoardMetrics.setUpdatedNow();
+  BoardMetrics.fillAttr();
+  var brief = document.getElementById("scope-help-brief");
+  if (brief) brief.textContent = " · " + (BoardMetrics.FILTER_SCOPE_HELP || "").slice(0, 48) + "…";
+
+  var pageState = {
+    trendMetric: "pool_new",
+    liveTab: "ended",
+    chSort: "pool",
+    bootstrappedTerm: false
+  };
+
+  var FROM_LABELS = {
+    overview: "经营总览",
+    acquire: "获客分析",
+    private: "私域转化分析",
+    live: "直播分析",
+    convert: "交易分析",
+    term_review: "期次经营看板"
+  };
+
+  function trendClass(t) {
+    return t === "up" ? "up" : t === "down" ? "down" : "";
+  }
+
+  function currentTermId() {
+    return (BoardMetrics.getFilters().term || "").trim();
+  }
+
+  function ensureDefaultTerm() {
+    if (pageState.bootstrappedTerm) return;
+    pageState.bootstrappedTerm = true;
+    var q = new URLSearchParams(location.search);
+    if (q.has("term")) return;
+    var def = BoardTerm.defaultTermId();
+    if (!def) return;
+    BoardMetrics.setFilters({ term: def }, { push: true });
+    var sel = document.getElementById("f-term");
+    if (sel) sel.value = def;
+  }
+
+  function bootAnalyticsFromUrl() {
+    var q = new URLSearchParams(location.search);
+    var patch = {};
+    if (q.get("funnel_step")) patch.funnelStep = q.get("funnel_step");
+    if (q.get("funnel_dim")) patch.funnelDim = q.get("funnel_dim");
+    if (q.get("bottleneck_id")) {
+      patch.bottleneckId = q.get("bottleneck_id");
+      patch.scrollAnchor = "term-funnel-analysis";
+    }
+    if (q.get("selected_channel")) patch.selectedChannel = q.get("selected_channel");
+    if (q.get("selected_term")) patch.selectedTerm = q.get("selected_term");
+    if (q.get("selected_owner")) patch.selectedOwner = q.get("selected_owner");
+    if (q.get("selected_live") || q.get("live_id")) {
+      patch.selectedLive = q.get("selected_live") || q.get("live_id");
+    }
+    if (q.get("live_tab")) {
+      patch.liveTab = q.get("live_tab");
+      pageState.liveTab = q.get("live_tab");
+    }
+    if (q.get("section")) patch.section = q.get("section");
+    if (q.get("anchor")) patch.scrollAnchor = q.get("anchor");
+    if (q.get("metric")) pageState.trendMetric = q.get("metric");
+    if (Object.keys(patch).length) BoardInsights.setAnalyticsState(patch, { syncUrl: false });
+  }
+
+  function renderFromSource() {
+    var el = document.getElementById("from-source");
+    var q = new URLSearchParams(location.search);
+    var from = q.get("from_board") || q.get("from") || "";
+    if (!from || from === "term_review") {
+      el.hidden = true;
+      el.innerHTML = "";
+      return;
+    }
+    var label = FROM_LABELS[from] || from;
+    var term = BoardTerm.getTermById(currentTermId());
+    var bits = ["来自：" + label];
+    if (q.get("selected_channel") || q.get("channel")) {
+      var cid = q.get("selected_channel") || q.get("channel");
+      bits.push(BoardMetrics.channelLabel(cid) || cid);
+    }
+    if (term) bits.push(term.name);
+    var href = (BoardInsights.buildReturnBoardUrl
+      ? BoardInsights.buildReturnBoardUrl("board-overview.html")
+      : "board-overview.html");
+    el.hidden = false;
+    el.innerHTML = "<b>" + bits.join(" / ") +
+      '</b> <a href="' + href + '" style="margin-left:8px">返回来源报表</a>';
+  }
+
+  function showEmpty(show) {
+    document.getElementById("term-empty").hidden = !show;
+    document.getElementById("term-main").hidden = show;
+  }
+
+  function renderHero(bundle) {
+    var term = bundle.term;
+    document.getElementById("th-name").textContent = term.name;
+    document.getElementById("th-status").textContent = term.statusLabel || term.status;
+    document.getElementById("th-stage").textContent = term.currentStage ? ("经营阶段：" + term.currentStage) : "";
+    document.getElementById("th-owner").textContent = term.owner || "—";
+    document.getElementById("th-dates").textContent =
+      (term.startDate || "—") + " — " + (term.endDate || "—");
+    document.getElementById("th-deadline").textContent = term.conversionDeadline || "—";
+    var days = bundle.daysLeft;
+    var daysWrap = document.getElementById("th-days-wrap");
+    if (term.status === "ended") {
+      daysWrap.innerHTML = "状态：<b>已结束</b>";
+    } else if (days == null) {
+      daysWrap.innerHTML = "剩余：<b>—</b>";
+    } else if (days < 0) {
+      daysWrap.innerHTML = "已过转化截止 <b>" + Math.abs(days) + "</b> 天";
+    } else {
+      daysWrap.innerHTML = "距离转化结束：<b>" + days + "</b> 天";
+    }
+    document.getElementById("th-lives").textContent = String(bundle.liveCount);
+    document.getElementById("th-channels").textContent = String(bundle.channelCount);
+    var focus = bundle.focus || {};
+    document.getElementById("th-focus").innerHTML =
+      "<b>" + (focus.title || "关注重点") + "：</b><ul>" +
+      (focus.items || []).map(function (x) { return "<li>" + x + "</li>"; }).join("") +
+      "</ul>";
+  }
+
+  function renderKpis(bundle) {
+    var host = document.getElementById("term-kpis");
+    host.innerHTML = (bundle.kpis || []).map(function (k) {
+      var tgt = "";
+      if (k.targetDisplay != null) {
+        if (k.kind === "count" && k.doneRate != null) {
+          tgt = "目标 " + k.targetDisplay + " · 完成 " + k.doneRate + "%";
+        } else if (k.kind === "rate" && k.gap != null) {
+          tgt = "目标 " + k.targetDisplay + " · 差距 " + (k.gap > 0 ? "+" : "") + k.gap + "pp";
+        } else {
+          tgt = "目标 " + k.targetDisplay;
+        }
+      }
+      var prior = "";
+      if (k.vsPrior) {
+        if (k.vsPrior.none) {
+          prior = '<span class="muted">' + k.vsPrior.text + "</span>";
+        } else {
+          prior = '<span class="' + trendClass(k.vsPrior.trend) + '">较上一期 ' + k.vsPrior.text + "</span>";
+        }
+      }
+      return '<div class="board-kpi" data-kpi="' + k.id + '">' +
+        '<div class="kpi-label" data-metric="' + k.id + '">' + k.label + "</div>" +
+        '<div class="kpi-value">' + k.display + "</div>" +
+        (tgt ? '<div class="kpi-sub">' + tgt + "</div>" : "") +
+        '<div class="kpi-meta">' + prior +
+        ' <a href="#" data-kpi-trend="' + k.id + '" style="margin-left:6px">查看趋势</a></div></div>';
+    }).join("");
+    host.querySelectorAll("[data-kpi-trend]").forEach(function (a) {
+      a.onclick = function (e) {
+        e.preventDefault();
+        var map = {
+          pool: "pool_new",
+          wecomRate: "wecomRate",
+          attendRate: "attend",
+          payUsers: "pay",
+          payRate: "pay",
+          gmv: "gmv"
+        };
+        var m = map[a.getAttribute("data-kpi-trend")] || "pool_new";
+        pageState.trendMetric = m;
+        document.querySelectorAll("#trend-metric-bar [data-trend]").forEach(function (b) {
+          b.classList.toggle("active", b.getAttribute("data-trend") === m);
+        });
+        renderTrend(currentTermId());
+        var chart = document.getElementById("term-trend-chart");
+        if (chart) chart.scrollIntoView({ behavior: "smooth", block: "start" });
+      };
+    });
+    if (window.BoardTools) BoardTools.bindMetricTips(host);
+  }
+
+  function mapFunnelStep(stepId) {
+    var map = {
+      pool: null,
+      assign: "pool_wecom",
+      wecom: "pool_wecom",
+      follow: "wecom_attend",
+      attend: "wecom_attend",
+      pay: "attend_pay"
+    };
+    return map[stepId] || stepId;
+  }
+
+  function renderFunnel(termId, filters) {
+    var funnel = BoardTerm.getTermFunnel(termId, filters);
+    var st = BoardInsights.getAnalyticsState();
+    var active = st.funnelStep || "";
+    var host = document.getElementById("term-funnel");
+    var max = 1;
+    (funnel.steps || []).forEach(function (s) {
+      if (s.count != null && s.count > max) max = s.count;
+    });
+    host.innerHTML = (funnel.steps || []).map(function (s) {
+      var h = Math.max(18, Math.round((s.count || 0) / max * 100));
+      var fs = s.funnelStep || mapFunnelStep(s.id);
+      var clickable = !!fs;
+      var isActive = clickable && active && active === fs;
+      var rateText = s.rateLabel
+        ? (s.rate != null ? s.rate + "%" : "—")
+        : "100%";
+      var gap = s.gap != null
+        ? (' · 目标差 <span class="' + (s.gap < 0 ? "down" : "up") + '">' +
+          (s.gap > 0 ? "+" : "") + s.gap + "pp</span>")
+        : "";
+      return '<div class="step' + (clickable ? " clickable" : "") +
+        (isActive ? " funnel-active" : "") +
+        '" data-funnel-step="' + (fs || "") + '" data-term-step="' + s.id +
+        '" style="--h:' + h + '%">' +
+        '<div class="n">' + BoardMetrics.fmt(s.count) + "</div>" +
+        '<div class="l">' + s.label + "</div>" +
+        '<div class="r">' + rateText + gap + "</div></div>";
+    }).join("");
+    host.querySelectorAll(".step.clickable").forEach(function (el) {
+      el.addEventListener("click", function () {
+        var id = el.getAttribute("data-funnel-step");
+        if (!id) return;
+        BoardInsights.setAnalyticsState({
+          funnelStep: id,
+          scrollAnchor: "term-funnel-analysis",
+          bottleneckId: ""
+        }, { syncUrl: true, push: true });
+        renderFunnelAnalysis(termId, filters);
+        var fa = document.getElementById("term-funnel-analysis");
+        if (fa) {
+          fa.scrollIntoView({ behavior: "smooth", block: "start" });
+          fa.classList.add("is-focus-flash");
+          setTimeout(function () { fa.classList.remove("is-focus-flash"); }, 1200);
+        }
+      });
+    });
+  }
+
+  function analysisDims(step) {
+    var dims = (step && step.dims) ? step.dims.slice() : ["channel", "staff", "live"];
+    return dims.filter(function (d) { return d !== "term"; });
+  }
+
+  function renderFunnelAnalysis(termId, filters) {
+    filters = BoardTerm.getTermBundle(termId, filters) ? BoardTerm.getTermBundle(termId, filters).filters : filters;
+    var st = BoardInsights.getAnalyticsState();
+    var stepId = st.funnelStep || "pool_wecom";
+    var dim = st.funnelDim || "channel";
+    if (dim === "term") dim = "channel";
+    var step = BoardInsights.FUNNEL_STEPS.find(function (s) { return s.id === stepId; }) || BoardInsights.FUNNEL_STEPS[0];
+    var dims = analysisDims(step);
+    if (dims.indexOf(dim) < 0) dim = dims[0] || "channel";
+    var selectedObj = st.selectedChannel || st.selectedOwner || st.selectedLive || "";
+
+    document.getElementById("tf-step-label").textContent =
+      step.label + " / " + (BoardInsights.DIM_LABELS[dim] || dim);
+
+    var srcBanner = document.getElementById("tf-source-banner");
+    var backBn = document.getElementById("tf-back-bn");
+    if (st.bottleneckId) {
+      var bnList = BoardTerm.getTermBottlenecks(termId, filters);
+      var bn = bnList.find(function (b) { return b.id === st.bottleneckId; });
+      srcBanner.hidden = false;
+      srcBanner.innerHTML = "<b>来自经营瓶颈：</b>" + (bn ? bn.title : st.bottleneckId) +
+        ' <span class="muted">· 当前分析：' + step.label + " / " +
+        (BoardInsights.DIM_LABELS[dim] || dim) + "</span>";
+      if (backBn) backBn.hidden = false;
+    } else {
+      srcBanner.hidden = true;
+      srcBanner.innerHTML = "";
+      if (backBn) backBn.hidden = true;
+    }
+
+    var tabs = document.getElementById("tf-dim-tabs");
+    tabs.innerHTML = dims.map(function (d) {
+      return '<button type="button" class="btn btn-sm' + (d === dim ? " active" : "") +
+        '" data-tf-dim="' + d + '">' + BoardInsights.DIM_LABELS[d] + "</button>";
+    }).join("");
+    tabs.querySelectorAll("[data-tf-dim]").forEach(function (btn) {
+      btn.onclick = function () {
+        BoardInsights.setAnalyticsState({ funnelDim: btn.getAttribute("data-tf-dim") }, { syncUrl: true, push: true });
+        renderFunnelAnalysis(termId, BoardMetrics.getFilters());
+      };
+    });
+
+    var bd = BoardInsights.getFunnelDimensionBreakdown(filters, stepId, dim);
+    var tbody = document.getElementById("tf-tbody");
+    if (!bd.rows.length) {
+      BoardMetrics.renderEmpty(tbody, 7, "当前筛选下暂无维度数据");
+    } else {
+      tbody.innerHTML = bd.rows.map(function (r) {
+        var listHref = "#";
+        if (dim === "channel" || dim === "staff") {
+          listHref = BoardMetrics.buildDrilldownUrl("leads.html",
+            Object.assign(BoardInsights.drillExtraForAnalysis(stepId, dim, r.id), {
+              term: termId,
+              from_board: "term_review"
+            }));
+        } else if (dim === "live") {
+          listHref = BoardMetrics.buildDrilldownUrl("board-live.html", {
+            term: termId,
+            selected_live: r.id,
+            live_id: r.id,
+            live_tab: "ended",
+            from_board: "term_review"
+          });
+        }
+        var sel = selectedObj && String(selectedObj) === String(r.id) ? " is-selected" : "";
+        var localBtn = ' <a href="#" data-local-dim="' + dim + '" data-local-id="' + r.id +
+          '" data-local-label="' + r.label + '">局部高亮</a>';
+        var applyBtn = (dim === "channel")
+          ? (' <a href="#" data-apply-global="channel" data-apply-id="' + r.id +
+            '" data-apply-label="' + r.label + '">仅看</a>')
+          : (dim === "staff"
+            ? (' <a href="#" data-apply-owner="' + r.id + '" data-apply-label="' + r.label + '">仅看</a>')
+            : "");
+        return '<tr class="' + sel + '"><td><b>' + r.label + "</b></td><td>" +
+          BoardMetrics.fmt(r.from) + "</td><td>" + BoardMetrics.fmt(r.to) + "</td><td>" +
+          (r.rate != null ? r.rate + "%" : "—") + "</td><td>" + r.diffText + "</td><td>" +
+          (r.impact ? "约 " + r.impact + " 人" : "—") +
+          '</td><td class="row-actions"><a href="' + listHref +
+          '" data-drill-save="1">查看名单</a>' + localBtn + applyBtn + "</td></tr>";
+      }).join("");
+    }
+    document.getElementById("tf-note").textContent =
+      "整体 " + step.rateLabel + " " + (bd.overallRate != null ? bd.overallRate + "%" : "—") +
+      "（" + BoardMetrics.fmt(bd.overallFrom) + " → " + BoardMetrics.fmt(bd.overallTo) +
+      "）。局部高亮不改变顶部全局筛选；「仅看」会应用为全局筛选。";
+
+    tbody.querySelectorAll("[data-drill-save]").forEach(function (a) {
+      a.addEventListener("click", function () {
+        BoardInsights.saveReturnState();
+        BoardInsights.setAnalyticsState({ scrollAnchor: "term-funnel-analysis" });
+      });
+    });
+    tbody.querySelectorAll("[data-local-dim]").forEach(function (a) {
+      a.addEventListener("click", function (e) {
+        e.preventDefault();
+        var dimKey = a.getAttribute("data-local-dim");
+        var id = a.getAttribute("data-local-id");
+        var label = a.getAttribute("data-local-label");
+        var patch = { selectedChannel: "", selectedTerm: "", selectedOwner: "", selectedLive: "" };
+        if (dimKey === "channel") patch.selectedChannel = id;
+        if (dimKey === "staff") patch.selectedOwner = id;
+        if (dimKey === "live") patch.selectedLive = id;
+        BoardInsights.setAnalyticsState(patch, { syncUrl: true, push: true });
+        renderFunnelAnalysis(termId, BoardMetrics.getFilters());
+        Proto.toast("已局部选中：" + label + "（未改全局筛选）");
+      });
+    });
+    tbody.querySelectorAll("[data-apply-global]").forEach(function (a) {
+      a.addEventListener("click", function (e) {
+        e.preventDefault();
+        var id = a.getAttribute("data-apply-id");
+        var label = a.getAttribute("data-apply-label");
+        BoardMetrics.setFilters({ channel: id }, { push: true });
+        var ch = document.getElementById("f-channel");
+        if (ch) ch.value = id;
+        sync();
+        Proto.toast("已仅看：" + label);
+      });
+    });
+    tbody.querySelectorAll("[data-apply-owner]").forEach(function (a) {
+      a.addEventListener("click", function (e) {
+        e.preventDefault();
+        var id = a.getAttribute("data-apply-owner");
+        var label = a.getAttribute("data-apply-label");
+        BoardInsights.setAnalyticsState({ selectedOwner: id }, { syncUrl: true, push: true });
+        location.href = BoardMetrics.buildDrilldownUrl("board-private.html", {
+          term: termId,
+          owner: id,
+          selected_owner: id,
+          from_board: "term_review"
+        });
+        Proto.toast("仅看员工：" + label);
+      });
+    });
+  }
+
+  function renderTrend(termId) {
+    var series = BoardTerm.buildTrendSeries(termId, pageState.trendMetric, {
+      filters: BoardMetrics.getFilters()
+    });
+    BoardTerm.renderTrendChart(document.getElementById("term-trend-chart"), series);
+  }
+
+  function renderChannels(termId, filters) {
+    var rows = BoardTerm.getTermChannels(termId, filters).slice();
+    var sortKey = pageState.chSort;
+    rows.sort(function (a, b) {
+      var av = a[sortKey] == null ? -Infinity : a[sortKey];
+      var bv = b[sortKey] == null ? -Infinity : b[sortKey];
+      return bv - av;
+    });
+    var st = BoardInsights.getAnalyticsState();
+    var tbody = document.getElementById("term-ch-tbody");
+    if (!rows.length) {
+      BoardMetrics.renderEmpty(tbody, 10, "当前期次暂无渠道数据");
+      return;
+    }
+    tbody.innerHTML = rows.map(function (r) {
+      var sel = st.selectedChannel === r.id ? " is-selected" : "";
+      var vs = r.payDiff == null ? "—" : ((r.payDiff > 0 ? "+" : "") + r.payDiff + "pp");
+      var gmv = r.gmv == null ? "—" : BoardMetrics.money(r.gmv);
+      var acquireHref = BoardMetrics.buildDrilldownUrl("board-acquire.html", {
+        term: termId,
+        selected_channel: r.id,
+        from_board: "term_review"
+      });
+      var leadsHref = BoardMetrics.buildDrilldownUrl("leads.html", {
+        term: termId,
+        channel: r.id,
+        from_board: "term_review"
+      });
+      return '<tr class="' + sel + '"><td><b>' + r.label + "</b></td><td>" +
+        BoardMetrics.fmt(r.pool) + "</td><td>" + (r.share != null ? r.share + "%" : "—") +
+        "</td><td>" + (r.wecomRate != null ? r.wecomRate + "%" : "—") +
+        "</td><td>" + (r.attendRate != null ? r.attendRate + "%" : "—") +
+        "</td><td>" + (r.payRate != null ? r.payRate + "%" : "—") +
+        "</td><td>" + gmv + "</td><td>" + vs + "</td><td>" + (r.dropLabel || "—") +
+        '</td><td class="row-actions">' +
+        '<a href="#" data-local-ch="' + r.id + '" data-local-label="' + r.label + '">局部高亮</a> · ' +
+        '<a href="#" data-only-ch="' + r.id + '" data-only-label="' + r.label + '">仅看</a> · ' +
+        '<a href="' + leadsHref + '" data-drill-save="1">查看用户</a> · ' +
+        '<a href="' + acquireHref + '" data-drill-save="1">完整分析</a></td></tr>';
+    }).join("");
+    tbody.querySelectorAll("[data-local-ch]").forEach(function (a) {
+      a.onclick = function (e) {
+        e.preventDefault();
+        BoardInsights.setAnalyticsState({
+          selectedChannel: a.getAttribute("data-local-ch"),
+          selectedOwner: "",
+          selectedLive: ""
+        }, { syncUrl: true, push: true });
+        renderChannels(termId, filters);
+        Proto.toast("已局部选中：" + a.getAttribute("data-local-label"));
+      };
+    });
+    tbody.querySelectorAll("[data-only-ch]").forEach(function (a) {
+      a.onclick = function (e) {
+        e.preventDefault();
+        var id = a.getAttribute("data-only-ch");
+        BoardMetrics.setFilters({ channel: id }, { push: true });
+        var ch = document.getElementById("f-channel");
+        if (ch) ch.value = id;
+        sync();
+        Proto.toast("已仅看：" + a.getAttribute("data-only-label"));
+      };
+    });
+    tbody.querySelectorAll("[data-drill-save]").forEach(function (a) {
+      a.addEventListener("click", function () { BoardInsights.saveReturnState(); });
+    });
+  }
+
+  function renderPrivate(termId, filters) {
+    var bundle = BoardTerm.getTermBundle(termId, filters);
+    var d = bundle.metrics;
+    var se = BoardInsights.getStaffExecution(filters);
+    var team = se.team || {};
+    var wecomRate = d.poolLeads ? Math.round((d.wecomLeads / d.poolLeads) * 1000) / 10 : null;
+    var cover = d.wecomLeads
+      ? Math.round(((d.wecomLeads - (d.noFollow || 0)) / d.wecomLeads) * 1000) / 10
+      : null;
+    var attendNoPay = Math.max(0, (d.attendUsers || 0) - (d.payWithAttend || 0));
+    var highIntent = Math.round(Math.max(0, (d.wecomLeads || 0) * 0.08));
+    document.getElementById("term-private-stats").innerHTML =
+      '<a class="stat-card" href="' + BoardMetrics.buildDrilldownUrl("leads.html", {
+        term: termId, focus: "unassigned", from_board: "term_review"
+      }) + '"><div class="stat-label">待分配</div><div class="stat-value" style="color:#ff7d00">' +
+      BoardMetrics.fmt(d.backlog) + '</div><div class="stat-hint">超时 ' +
+      BoardMetrics.fmt(d.backlogLate) + "</div></a>" +
+      '<div class="stat-card"><div class="stat-label">团队及时率</div><div class="stat-value">' +
+      (team.timely != null ? team.timely + "%" : "—") +
+      '</div><div class="stat-hint">加微率 ' + (wecomRate != null ? wecomRate + "%" : "—") + "</div></div>" +
+      '<a class="stat-card" href="' + BoardMetrics.buildDrilldownUrl("follow-ups.html", {
+        term: termId, focus: "no_follow", from_board: "term_review"
+      }) + '"><div class="stat-label">未跟进</div><div class="stat-value" style="color:#ff7d00">' +
+      BoardMetrics.fmt(d.noFollow) + '</div><div class="stat-hint">覆盖率 ' +
+      (cover != null ? cover + "%" : "—") + "</div></a>" +
+      '<a class="stat-card" href="' + BoardMetrics.buildDrilldownUrl("follow-ups.html", {
+        term: termId, focus: "attend_no_pay", from_board: "term_review"
+      }) + '"><div class="stat-label">到场未支付</div><div class="stat-value">' +
+      BoardMetrics.fmt(attendNoPay) + '</div><div class="stat-hint">高意向约 ' +
+      BoardMetrics.fmt(highIntent) + "</div></a>";
+
+    var st = BoardInsights.getAnalyticsState();
+    var rows = (se.rows || []).filter(function (r) { return !r.isOther; });
+    var tbody = document.getElementById("term-staff-tbody");
+    if (!rows.length) {
+      BoardMetrics.renderEmpty(tbody, 9, "暂无员工执行数据");
+      return;
+    }
+    tbody.innerHTML = rows.map(function (r) {
+      var sel = st.selectedOwner === r.id ? " is-selected" : "";
+      var tags = [];
+      if (r.volumeHigh) tags.push("量大");
+      if (r.efficiencyLow) tags.push("需关注");
+      var privateHref = BoardMetrics.buildDrilldownUrl("board-private.html", {
+        term: termId, selected_owner: r.id, owner: r.id, from_board: "term_review"
+      });
+      var leadsHref = BoardMetrics.buildDrilldownUrl("leads.html", {
+        term: termId, owner: r.id, from_board: "term_review"
+      });
+      return '<tr class="' + sel + '"><td><b>' + r.label + "</b></td><td>" +
+        BoardMetrics.fmt(r.assigned) + "</td><td>" + r.timelyRate + "%</td><td>" +
+        (r.wecomRate != null ? r.wecomRate + "%" : "—") + "</td><td>" +
+        (r.cover != null ? r.cover + "%" : "—") + "</td><td>" +
+        BoardMetrics.fmt(r.noFollow) + "</td><td>" + BoardMetrics.fmt(r.pay) +
+        "</td><td>" + (tags.length ? tags.join(" · ") : "—") +
+        '</td><td class="row-actions">' +
+        '<a href="#" data-local-owner="' + r.id + '" data-local-label="' + r.label + '">局部高亮</a> · ' +
+        '<a href="' + leadsHref + '" data-drill-save="1">查看用户</a> · ' +
+        '<a href="' + privateHref + '" data-drill-save="1">进入私域</a></td></tr>';
+    }).join("");
+    tbody.querySelectorAll("[data-local-owner]").forEach(function (a) {
+      a.onclick = function (e) {
+        e.preventDefault();
+        BoardInsights.setAnalyticsState({
+          selectedOwner: a.getAttribute("data-local-owner"),
+          selectedChannel: "",
+          selectedLive: ""
+        }, { syncUrl: true, push: true });
+        renderPrivate(termId, filters);
+        Proto.toast("已局部选中：" + a.getAttribute("data-local-label"));
+      };
+    });
+    tbody.querySelectorAll("[data-drill-save]").forEach(function (a) {
+      a.addEventListener("click", function () { BoardInsights.saveReturnState(); });
+    });
+  }
+
+  function closeLiveDrawer() {
+    var d = document.getElementById("live-drawer");
+    if (d) d.remove();
+    BoardInsights.setAnalyticsState({ selectedLive: "", liveId: "" }, { syncUrl: true, push: true });
+    if (pageState.liveScrollY != null) window.scrollTo(0, pageState.liveScrollY);
+    var focusBtn = document.querySelector('[data-open-live="' + (pageState.openedLive || "") + '"]');
+    if (focusBtn && focusBtn.focus) focusBtn.focus();
+    pageState.openedLive = "";
+  }
+
+  function openLiveDrawer(liveId) {
+    var detail = BoardInsights.getLiveSessionDetail(liveId, BoardMetrics.getFilters());
+    if (!detail) {
+      Proto.toast("未找到场次 " + liveId);
+      return;
+    }
+    var r = detail.row;
+    pageState.liveScrollY = window.scrollY || 0;
+    pageState.openedLive = r.id;
+    BoardInsights.setAnalyticsState({
+      selectedLive: r.id,
+      liveId: r.id,
+      liveTab: pageState.liveTab,
+      scrollAnchor: "term-live-tab"
+    }, { syncUrl: true, push: true });
+
+    var existing = document.getElementById("live-drawer");
+    if (existing) existing.remove();
+    var drawer = document.createElement("div");
+    drawer.id = "live-drawer";
+    drawer.className = "board-drawer-overlay";
+    drawer.innerHTML =
+      '<div class="board-drawer live-recap-drawer" role="dialog" aria-modal="true" aria-label="场次详情">' +
+      '<div class="board-drawer-hd"><h3 id="live-panel-title"></h3><button type="button" class="btn btn-sm" data-close>关闭</button></div>' +
+      '<div class="board-drawer-bd">' +
+      '<p class="muted" style="font-size:12px;margin:0 0 8px" id="live-panel-sub"></p>' +
+      '<div class="board-mini-funnel" id="live-funnel"></div>' +
+      '<div class="board-two" style="margin-top:12px">' +
+      '<div><h4 style="margin:0 0 8px;font-size:13px">渠道 / 期次表现</h4>' +
+      '<table class="data"><thead><tr><th>维度</th><th>到场</th><th>支付</th><th>支付率</th></tr></thead><tbody id="live-dim-tbody"></tbody></table></div>' +
+      '<div><h4 style="margin:0 0 8px;font-size:13px">风险与操作</h4>' +
+      '<p style="font-size:13px;margin:0 0 10px" id="live-risks"></p>' +
+      '<div style="display:flex;gap:8px;flex-wrap:wrap" id="live-actions"></div></div></div></div></div>';
+    document.body.appendChild(drawer);
+
+    document.getElementById("live-panel-title").textContent =
+      (r.upcoming ? "准备情况 · " : "场次复盘 · ") + r.id + " " + r.name;
+    document.getElementById("live-panel-sub").textContent =
+      (r.upcoming ? "待开播 · 准备状态" : "已结束 · 效果复盘") +
+      " · 直播促到SOP：" + (r.sopDone ? "已执行" : "未执行") +
+      (r.sopMissing && r.sopMissing.length ? " · " + r.sopMissing.join("、") : "");
+
+    document.getElementById("live-funnel").innerHTML = [
+      ["目标", r.target], ["邀约", r.invite], ["推送成功", r.pushOk],
+      ["到场", r.attend == null ? "—" : r.attend],
+      ["有效观看", r.watch == null ? "—" : r.watch],
+      ["支付", r.payUsers || 0]
+    ].map(function (x) {
+      return '<div class="mf"><div class="n">' + BoardMetrics.fmt(x[1]) + '</div><div class="l">' + x[0] + "</div></div>";
+    }).join("");
+
+    var dims = detail.channels.map(function (c) {
+      return "<tr><td>渠道 · " + c.label + "</td><td>" + BoardMetrics.fmt(c.attend) + "</td><td>" +
+        BoardMetrics.fmt(c.pay) + "</td><td>" + (c.payRate != null ? c.payRate + "%" : "—") + "</td></tr>";
+    }).concat(detail.terms.map(function (tm) {
+      return "<tr><td>期次 · " + tm.label + "</td><td>" + BoardMetrics.fmt(tm.attend) + "</td><td>" +
+        BoardMetrics.fmt(tm.pay) + "</td><td>—</td></tr>";
+    }));
+    document.getElementById("live-dim-tbody").innerHTML = dims.join("") || "<tr><td colspan='4' class='muted'>暂无维度数据</td></tr>";
+
+    var termId = currentTermId();
+    if (r.upcoming) {
+      document.getElementById("live-risks").textContent =
+        (r.sopMissing && r.sopMissing.length ? "当前风险：" + r.sopMissing.join("；") : "准备就绪，可继续跟进触达。");
+      document.getElementById("live-actions").innerHTML =
+        '<a class="btn btn-sm btn-primary" href="live-booking.html?live_id=' + r.id + '&term=' + termId + '&from_board=term_review">去配置</a>' +
+        '<a class="btn btn-sm" href="live-invite.html?live_id=' + r.id + '&term=' + termId + '&from_board=term_review">去发送</a>' +
+        '<a class="btn btn-sm" href="live-invite.html?live_id=' + r.id + '&term=' + termId + '&from_board=term_review">查看直播促到SOP</a>';
+    } else {
+      document.getElementById("live-risks").textContent =
+        "未到场 " + detail.noShow + " · 到场未支付 " + detail.attendNoPay +
+        " · 推送缺口 " + detail.pushFail +
+        (r.sopDone ? "" : " · 未执行直播促到SOP");
+      var noShow = BoardMetrics.buildDrilldownUrl("follow-ups.html", { term: termId, live_id: r.id, focus: "no_show", from_board: "term_review" });
+      var noPay = BoardMetrics.buildDrilldownUrl("follow-ups.html", { term: termId, live_id: r.id, focus: "attend_no_pay", from_board: "term_review" });
+      document.getElementById("live-actions").innerHTML =
+        '<a class="btn btn-sm btn-primary" href="live-invite.html?live_id=' + r.id + '&term=' + termId + '&from_board=term_review">查看直播促到SOP</a>' +
+        '<a class="btn btn-sm" href="' + noShow + '" data-drill-save="1">查看未到场用户</a>' +
+        '<a class="btn btn-sm" href="' + noPay + '" data-drill-save="1">查看到场未支付用户</a>';
+    }
+    drawer.querySelectorAll("[data-drill-save]").forEach(function (a) {
+      a.addEventListener("click", function () { BoardInsights.saveReturnState(); });
+    });
+    var closeBtn = drawer.querySelector("[data-close]");
+    closeBtn.onclick = closeLiveDrawer;
+    drawer.addEventListener("click", function (e) { if (e.target === drawer) closeLiveDrawer(); });
+    document.addEventListener("keydown", function onEsc(ev) {
+      if (ev.key === "Escape") {
+        document.removeEventListener("keydown", onEsc);
+        closeLiveDrawer();
+      }
+    });
+    closeBtn.focus();
+  }
+
+  function renderLives(termId, filters) {
+    var lives = BoardTerm.getTermLives(termId, filters);
+    var tab = pageState.liveTab || "ended";
+    document.querySelectorAll("#term-live-tab [data-live-tab]").forEach(function (b) {
+      b.classList.toggle("active", b.getAttribute("data-live-tab") === tab);
+    });
+    var thead = document.getElementById("term-live-thead");
+    var tbody = document.getElementById("term-live-tbody");
+    var st = BoardInsights.getAnalyticsState();
+    if (tab === "upcoming") {
+      thead.innerHTML = "<tr><th>场次ID</th><th>主题</th><th>期次角色</th><th>开播时间</th><th>目标</th><th>直播促到SOP</th><th>推送</th><th>风险</th><th>操作</th></tr>";
+      var up = lives.upcoming || [];
+      if (!up.length) {
+        BoardMetrics.renderEmpty(tbody, 9, "当前期次暂无待开播场次");
+        return;
+      }
+      tbody.innerHTML = up.map(function (r) {
+        var sel = st.selectedLive === r.id ? " is-selected" : "";
+        var risk = (r.sopMissing && r.sopMissing.length) ? r.sopMissing.join("；") : "—";
+        return '<tr class="' + sel + '"><td>' + r.id + "</td><td>" + r.name +
+          "</td><td>" + (r.roleInTerm || "—") + "</td><td>" + (r.startAt || "—") +
+          "</td><td>" + BoardMetrics.fmt(r.target) + "</td><td>" +
+          (r.sopDone ? "已创建" : "未创建") + "</td><td>" + (r.remindStatus || "—") +
+          "</td><td>" + risk + '</td><td class="row-actions">' +
+          '<a href="#" data-open-live="' + r.id + '">准备情况</a> · ' +
+          '<a href="live-invite.html?live_id=' + r.id + '&term=' + termId + '&from_board=term_review">去配置</a></td></tr>';
+      }).join("");
+    } else {
+      thead.innerHTML = "<tr><th>场次ID</th><th>主题</th><th>期次角色</th><th>邀约</th><th>推送成功</th><th>到场 / 率</th><th>支付</th><th>直播促到SOP</th><th>操作</th></tr>";
+      var ended = lives.ended || [];
+      if (!ended.length) {
+        BoardMetrics.renderEmpty(tbody, 9, "当前期次暂无已结束场次");
+        return;
+      }
+      tbody.innerHTML = ended.map(function (r) {
+        var sel = st.selectedLive === r.id ? " is-selected" : "";
+        var noShow = BoardMetrics.buildDrilldownUrl("follow-ups.html", {
+          term: termId, live_id: r.id, focus: "no_show", from_board: "term_review"
+        });
+        var noPay = BoardMetrics.buildDrilldownUrl("follow-ups.html", {
+          term: termId, live_id: r.id, focus: "attend_no_pay", from_board: "term_review"
+        });
+        return '<tr class="' + sel + '"><td>' + r.id + "</td><td>" + r.name +
+          "</td><td>" + (r.roleInTerm || "—") + "</td><td>" + BoardMetrics.fmt(r.invite) +
+          "</td><td>" + BoardMetrics.fmt(r.pushOk) + "</td><td>" +
+          (r.attend == null ? "—" : BoardMetrics.fmt(r.attend)) + " / " + (r.attendRate || "—") +
+          "</td><td>" + BoardMetrics.fmt(r.payUsers) + "</td><td>" +
+          (r.sopDone ? "已执行" : "未执行") +
+          '</td><td class="row-actions">' +
+          '<a href="#" data-open-live="' + r.id + '">场次复盘</a> · ' +
+          '<a href="' + noShow + '" data-drill-save="1">未到场</a> · ' +
+          '<a href="' + noPay + '" data-drill-save="1">到场未支付</a></td></tr>';
+      }).join("");
+    }
+    tbody.querySelectorAll("[data-open-live]").forEach(function (a) {
+      a.onclick = function (e) {
+        e.preventDefault();
+        openLiveDrawer(a.getAttribute("data-open-live"));
+      };
+    });
+    tbody.querySelectorAll("[data-drill-save]").forEach(function (a) {
+      a.addEventListener("click", function () { BoardInsights.saveReturnState(); });
+    });
+  }
+
+  function renderConvert(termId, filters) {
+    var cv = BoardTerm.getTermConvert(termId, filters);
+    document.getElementById("term-convert-a").innerHTML =
+      '<div class="stat-card"><div class="stat-label">可归因支付</div><div class="stat-value">' +
+      BoardMetrics.fmt(cv.payUsers) + '</div><div class="stat-hint">GMV ' +
+      (cv.attrGmv == null || cv.attrGmv === "—" ? "—" : (typeof cv.attrGmv === "number" ? BoardMetrics.money(cv.attrGmv) : cv.attrGmv)) +
+      "</div></div>" +
+      '<div class="stat-card"><div class="stat-label">到场支付</div><div class="stat-value">' +
+      BoardMetrics.fmt(cv.payWithAttend) + '</div><div class="stat-hint">未到场支付 ' +
+      BoardMetrics.fmt(cv.payNoAttend) + "</div></div>" +
+      '<a class="stat-card" href="' + BoardMetrics.buildDrilldownUrl("follow-ups.html", {
+        term: termId, focus: "attend_no_pay", from_board: "term_review"
+      }) + '"><div class="stat-label">到场未支付</div><div class="stat-value" style="color:#ff7d00">' +
+      BoardMetrics.fmt(cv.attendNoPay) + '</div><div class="stat-hint">去跟进</div></a>' +
+      '<a class="stat-card" href="' + BoardMetrics.buildDrilldownUrl("follow-ups.html", {
+        term: termId, follow_stage: "高意向", from_board: "term_review"
+      }) + '"><div class="stat-label">高意向未支付</div><div class="stat-value">' +
+      BoardMetrics.fmt(cv.highIntentNoPay) + '</div><div class="stat-hint">约估</div></a>' +
+      '<div class="stat-card"><div class="stat-label">可归因订单</div><div class="stat-value">' +
+      (cv.attrOrders == null || cv.attrOrders === "—" ? "—" : BoardMetrics.fmt(cv.attrOrders)) +
+      '</div><div class="stat-hint">可归因口径</div></div>';
+
+    function payRows(list, kind) {
+      list = (list || []).slice(0, 5);
+      if (!list.length) return '<tr><td colspan="4" class="muted">暂无数据</td></tr>';
+      return list.map(function (r) {
+        var href;
+        if (kind === "live") {
+          href = "#";
+        } else {
+          href = BoardMetrics.buildDrilldownUrl("orders.html", {
+            term: termId, channel: r.id, attribution: "attributed", from_board: "term_review"
+          });
+        }
+        return "<tr><td>" + r.label + "</td><td>" + BoardMetrics.fmt(r.pay) +
+          "</td><td>" + (r.payRate != null ? r.payRate + "%" : "—") +
+          '</td><td class="row-actions">' +
+          (kind === "live"
+            ? ('<a href="#" data-open-live="' + r.id + '">场次复盘</a>')
+            : ('<a href="' + href + '" data-drill-save="1">查看支付</a>')) +
+          "</td></tr>";
+      }).join("");
+    }
+    document.getElementById("term-pay-ch").innerHTML = payRows(cv.byChannel, "channel");
+    document.getElementById("term-pay-live").innerHTML = payRows(cv.byLive, "live");
+    document.querySelectorAll("#term-pay-live [data-open-live]").forEach(function (a) {
+      a.onclick = function (e) {
+        e.preventDefault();
+        openLiveDrawer(a.getAttribute("data-open-live"));
+      };
+    });
+    document.querySelectorAll("#zone-convert-a [data-drill-save]").forEach(function (a) {
+      a.addEventListener("click", function () { BoardInsights.saveReturnState(); });
+    });
+
+    var aov = null;
+    if (cv.fullOrders && cv.fullGmv != null && typeof cv.fullGmv === "number") {
+      aov = BoardMetrics.money(Math.round(cv.fullGmv / cv.fullOrders));
+    }
+    document.getElementById("term-convert-b").innerHTML =
+      '<div class="stat-card"><div class="stat-label">全量订单</div><div class="stat-value">' +
+      BoardMetrics.fmt(cv.fullOrders) + '</div><div class="stat-hint">全量口径</div></div>' +
+      '<div class="stat-card"><div class="stat-label">全量 GMV</div><div class="stat-value" style="font-size:20px">' +
+      (cv.fullGmv == null ? "—" : (typeof cv.fullGmv === "number" ? BoardMetrics.money(cv.fullGmv) : cv.fullGmv)) +
+      '</div><div class="stat-hint">客单价 ' + (aov || "—") + "</div></div>" +
+      '<div class="stat-card"><div class="stat-label">归因覆盖率</div><div class="stat-value">' +
+      (cv.coverage && cv.coverage.coverRate != null ? cv.coverage.coverRate + "%" : "—") +
+      '</div><div class="stat-hint">可归因 / 全量订单</div></div>' +
+      '<a class="stat-card" data-board-link="board-convert.html" data-board-section="full" href="board-convert.html">' +
+      '<div class="stat-label">进入交易分析</div><div class="stat-value" style="font-size:18px">B 区</div>' +
+      '<div class="stat-hint">保留当前期次</div></a>';
+
+    var cov = cv.coverage;
+    document.getElementById("term-cover-note").textContent = cov
+      ? ("归因覆盖：可归因订单 " + (cov.attrOrders != null ? cov.attrOrders : "—") +
+        " · 未归因 " + (cov.unmappedOrders != null ? cov.unmappedOrders : "—") +
+        " · 缺失映射显示「—」，不以 0 冒充")
+      : "成交口径固定：可归因与全量分区展示。";
+
+    var products = cv.products || [];
+    var pt = document.getElementById("term-product-tbody");
+    if (!products.length) {
+      BoardMetrics.renderEmpty(pt, 5, "暂无商品成交数据");
+    } else {
+      pt.innerHTML = products.map(function (p) {
+        var href = BoardMetrics.buildDrilldownUrl("orders.html", {
+          term: termId, goods: p.name || p.id, attribution: "full", from_board: "term_review"
+        });
+        return "<tr><td>" + (p.name || "—") + "</td><td>" + (p.type || "—") +
+          "</td><td>" + BoardMetrics.fmt(p.orders) + "</td><td>" +
+          (p.gmv == null ? "—" : BoardMetrics.money(p.gmv)) +
+          '</td><td class="row-actions"><a href="' + href + '" data-drill-save="1">查看订单</a></td></tr>';
+      }).join("");
+    }
+    document.querySelectorAll("#zone-convert-a [data-drill-save], #zone-convert-b [data-drill-save]").forEach(function (a) {
+      a.addEventListener("click", function () { BoardInsights.saveReturnState(); });
+    });
+  }
+
+  function openBottleneck(termId, b) {
+    if (!b || !b.action) return;
+    BoardInsights.saveReturnState();
+    if (b.action.type === "analysis") {
+      BoardInsights.setAnalyticsState({
+        bottleneckId: b.id,
+        funnelStep: b.action.funnelStep,
+        funnelDim: b.action.dimension || "channel",
+        scrollAnchor: "term-funnel-analysis",
+        selectedChannel: b.action.selectedChannel || "",
+        selectedLive: b.action.selectedLive || "",
+        selectedOwner: b.action.selectedOwner || ""
+      }, { syncUrl: true, push: true });
+      renderFunnel(termId, BoardMetrics.getFilters());
+      renderFunnelAnalysis(termId, BoardMetrics.getFilters());
+      renderBottlenecks(termId, BoardMetrics.getFilters());
+      var target = document.getElementById("term-funnel-analysis");
+      if (target) {
+        target.scrollIntoView({ behavior: "smooth", block: "start" });
+        target.classList.add("is-focus-flash");
+        setTimeout(function () { target.classList.remove("is-focus-flash"); }, 1200);
+      }
+      Proto.toast("已打开：" + b.title);
+    }
+  }
+
+  function renderBottlenecks(termId, filters) {
+    var list = BoardTerm.getTermBottlenecks(termId, filters);
+    var host = document.getElementById("term-bn-list");
+    var active = BoardInsights.getAnalyticsState().bottleneckId;
+    if (!list.length) {
+      host.innerHTML = '<p class="muted" style="padding:12px 0">当前期次未发现显著经营瓶颈。</p>';
+      return;
+    }
+    host.innerHTML = list.map(function (b) {
+      var children = (b.children && b.children.length)
+        ? ('<ul class="bn-children">' + b.children.map(function (c) {
+          return "<li><b>" + c.title + "</b> · " + (c.detail || "") + "</li>";
+        }).join("") + "</ul>")
+        : "";
+      return '<div class="bottleneck-item' + (active === b.id ? " is-active" : "") +
+        '" id="bn-' + b.id + '"><h4>' + b.title + "</h4>" +
+        '<p style="margin:0 0 4px;font-size:13px">当前 <b>' + b.current +
+        "</b> · 目标 " + b.target + " · 差距 " + b.gap + "</p>" +
+        '<p class="muted" style="margin:0 0 4px;font-size:12px">' + b.impact +
+        " · 主要来源：" + b.sources + "</p>" +
+        (b.reason ? '<p class="muted" style="margin:0 0 8px;font-size:12px">关联原因：' + b.reason + "</p>" : "") +
+        children +
+        '<button type="button" class="btn btn-sm btn-primary" data-bn-id="' + b.id + '">' +
+        (b.action && b.action.label ? b.action.label : "查看分析") + "</button></div>";
+    }).join("");
+    host.querySelectorAll("[data-bn-id]").forEach(function (btn) {
+      btn.onclick = function () {
+        openBottleneck(termId, list.find(function (x) { return x.id === btn.getAttribute("data-bn-id"); }));
+      };
+    });
+  }
+
+  function renderTodos(termId, filters) {
+    var list = BoardTerm.getTermTodos(termId, filters);
+    var host = document.getElementById("term-todo-list");
+    if (!list.length) {
+      host.innerHTML = '<p class="muted" style="padding:12px 0">当前暂无待办风险。</p>';
+      return;
+    }
+    host.innerHTML = list.map(function (r) {
+      var extra = {
+        term: termId,
+        focus: (r.action && r.action.focus) || "",
+        from_board: "term_review"
+      };
+      if (r.action && r.action.liveId) {
+        extra.live_id = r.action.liveId;
+        extra.selected_live = r.action.liveId;
+      }
+      if (r.action && r.action.section) extra.section = r.action.section;
+      var href = BoardMetrics.buildDrilldownUrl(
+        (r.action && r.action.href) || "leads.html",
+        extra
+      );
+      var urg = r.urgencyLabel || (r.urgency === "high" ? "紧急" : (r.urgency === "medium" ? "关注" : "一般"));
+      return '<div class="todo-risk-item">' +
+        '<div style="display:flex;justify-content:space-between;gap:8px;align-items:center">' +
+        "<b>" + r.type + " " + BoardMetrics.fmt(r.count) + (r.count === 1 && r.type.indexOf("SOP") >= 0 ? "" : " 人") + "</b>" +
+        '<span class="todo-urgency ' + (r.urgency || "low") + '">' + urg + "</span></div>" +
+        '<p class="muted" style="margin:0;font-size:12px">' + r.note +
+        (r.owner ? (" · " + r.owner) : "") + "</p>" +
+        '<a class="btn btn-sm btn-primary" href="' + href + '" data-drill-save="1">' +
+        ((r.action && r.action.label) || "去处理") + "</a></div>";
+    }).join("");
+    host.querySelectorAll("[data-drill-save]").forEach(function (a) {
+      a.addEventListener("click", function () { BoardInsights.saveReturnState(); });
+    });
+  }
+
+  function maybeScrollSection() {
+    var st = BoardInsights.getAnalyticsState();
+    var q = new URLSearchParams(location.search);
+    var section = q.get("section") || st.section || "";
+    if (section === "attributed" || section === "attr") {
+      var za = document.getElementById("zone-convert-a");
+      if (za) za.scrollIntoView({ behavior: "smooth", block: "start" });
+    } else if (section === "full") {
+      var zb = document.getElementById("zone-convert-b");
+      if (zb) zb.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+    if (st.scrollAnchor === "term-funnel-analysis") {
+      setTimeout(function () {
+        var fa = document.getElementById("term-funnel-analysis");
+        if (fa) fa.scrollIntoView({ behavior: "smooth", block: "start" });
+      }, 80);
+    }
+  }
+
+  function sync() {
+    ensureDefaultTerm();
+    BoardMetrics.setUpdatedNow();
+    renderFromSource();
+    var filters = BoardMetrics.getFilters();
+    var termId = (filters.term || "").trim();
+    BoardMetrics.renderActiveFilters();
+    BoardMetrics.renderActiveFilters._onClear = function () { sync(); };
+
+    var emptyTitle = document.querySelector("#term-empty h2");
+    var emptyDesc = document.querySelector("#term-empty p");
+    if (!termId) {
+      showEmpty(true);
+      if (emptyTitle) emptyTitle.textContent = "请选择一个具体期次进行经营复盘";
+      if (emptyDesc) {
+        emptyDesc.textContent =
+          "「全部期次」不能作为单个期次复盘对象。请在上方筛选中选择春启 03 期、春启 04 期或试听公开课。";
+      }
+      BoardMetrics.wireBoardLinks();
+      return;
+    }
+    var bundle = BoardTerm.getTermBundle(termId, filters);
+    if (!bundle) {
+      showEmpty(true);
+      if (emptyTitle) emptyTitle.textContent = "未找到该期次";
+      if (emptyDesc) {
+        emptyDesc.textContent = "URL 中的期次无效或不存在，请重新选择一个具体期次。";
+      }
+      BoardMetrics.wireBoardLinks();
+      return;
+    }
+    showEmpty(false);
+    try {
+      renderHero(bundle);
+      renderKpis(bundle);
+      renderFunnel(termId, filters);
+      renderFunnelAnalysis(termId, filters);
+      renderTrend(termId);
+      renderChannels(termId, filters);
+      renderPrivate(termId, filters);
+      renderLives(termId, filters);
+      renderConvert(termId, filters);
+      renderBottlenecks(termId, filters);
+      renderTodos(termId, filters);
+      BoardMetrics.fillAttr();
+      BoardMetrics.wireBoardLinks();
+      maybeScrollSection();
+      var stLive = BoardInsights.getAnalyticsState().selectedLive;
+      if (stLive && pageState.openedLive !== stLive && !document.getElementById("live-drawer")) {
+        setTimeout(function () { openLiveDrawer(stLive); }, 120);
+      }
+    } catch (err) {
+      console.error("[board-term-review sync]", err);
+      try {
+        renderBottlenecks(termId, filters);
+        renderTodos(termId, filters);
+      } catch (e2) { console.error(e2); }
+    }
+  }
+
+  document.getElementById("btn-pick-default").onclick = function () {
+    var def = BoardTerm.defaultTermId();
+    if (!def) {
+      Proto.toast("暂无可用期次");
+      return;
+    }
+    BoardMetrics.setFilters({ term: def }, { push: true });
+    var sel = document.getElementById("f-term");
+    if (sel) sel.value = def;
+    sync();
+  };
+
+  document.getElementById("tf-clear").onclick = function () {
+    BoardInsights.setAnalyticsState({
+      funnelStep: "pool_wecom",
+      funnelDim: "channel",
+      bottleneckId: "",
+      selectedChannel: "",
+      selectedTerm: "",
+      selectedOwner: "",
+      selectedLive: "",
+      scrollAnchor: ""
+    }, { syncUrl: true, push: true });
+    sync();
+  };
+  var backBn = document.getElementById("tf-back-bn");
+  if (backBn) {
+    backBn.onclick = function () {
+      var el = document.getElementById("term-bn-list");
+      if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+    };
+  }
+
+  document.querySelectorAll("#trend-metric-bar [data-trend]").forEach(function (btn) {
+    btn.onclick = function () {
+      pageState.trendMetric = btn.getAttribute("data-trend");
+      document.querySelectorAll("#trend-metric-bar [data-trend]").forEach(function (b) {
+        b.classList.toggle("active", b === btn);
+      });
+      var termId = currentTermId();
+      if (termId) renderTrend(termId);
+    };
+  });
+
+  document.querySelectorAll("[data-ch-sort]").forEach(function (btn) {
+    btn.onclick = function () {
+      pageState.chSort = btn.getAttribute("data-ch-sort");
+      document.querySelectorAll("[data-ch-sort]").forEach(function (b) {
+        b.classList.toggle("active", b === btn);
+      });
+      var termId = currentTermId();
+      if (termId) renderChannels(termId, BoardMetrics.getFilters());
+    };
+  });
+
+  document.querySelectorAll("#term-live-tab [data-live-tab]").forEach(function (btn) {
+    btn.onclick = function () {
+      pageState.liveTab = btn.getAttribute("data-live-tab");
+      BoardInsights.setAnalyticsState({ liveTab: pageState.liveTab }, { syncUrl: true, push: true });
+      var termId = currentTermId();
+      if (termId) renderLives(termId, BoardMetrics.getFilters());
+    };
+  });
+
+  bootAnalyticsFromUrl();
+  BoardMetrics.bindRange("range-seg", function () { sync(); });
+  BoardMetrics.bindFilterBar({ onApply: function () { sync(); }, autoApply: true });
+  BoardTools.init({
+    onApply: function () { sync(); },
+    collectExtra: function () {
+      var st = BoardInsights.getAnalyticsState();
+      return {
+        funnel_step: st.funnelStep || "",
+        funnel_dim: st.funnelDim || "",
+        bottleneck_id: st.bottleneckId || "",
+        selected_channel: st.selectedChannel || "",
+        selected_term: st.selectedTerm || "",
+        selected_owner: st.selectedOwner || "",
+        selected_live: st.selectedLive || "",
+        live_tab: pageState.liveTab || st.liveTab || "",
+        section: st.section || "",
+        metric: pageState.trendMetric || ""
+      };
+    },
+    getExportTable: function () {
+      var filters = BoardMetrics.getFilters();
+      var termId = filters.term;
+      if (!termId) {
+        return { reason: "请先选择具体期次后再导出", headers: [], rows: [] };
+      }
+      var st = BoardInsights.getAnalyticsState();
+      var bd = BoardInsights.getFunnelDimensionBreakdown
+        ? BoardInsights.getFunnelDimensionBreakdown(filters, st.funnelStep || "pool_wecom", st.funnelDim === "term" ? "channel" : (st.funnelDim || "channel"))
+        : null;
+      var rows = bd && bd.rows ? bd.rows : [];
+      if (rows.length) {
+        return {
+          name: "期次经营_漏斗维度",
+          filename: BoardMetrics.exportFileName("期次经营_漏斗维度"),
+          headers: ["维度", "上游人数", "下游人数", "转化率", "差异", "影响"],
+          rows: rows.map(function (r) {
+            return [
+              r.label || "",
+              r.from != null ? r.from : "",
+              r.to != null ? r.to : "",
+              r.rate != null ? r.rate : "",
+              r.diffText || "",
+              r.impact != null ? r.impact : ""
+            ];
+          })
+        };
+      }
+      var channels = BoardTerm.getTermChannels(termId, filters);
+      if (channels.length) {
+        return {
+          name: "期次经营_渠道贡献",
+          filename: BoardMetrics.exportFileName("期次经营_渠道贡献"),
+          headers: ["渠道", "入池", "占比", "加微率", "到场率", "支付率", "归因GMV", "流失"],
+          rows: channels.map(function (r) {
+            return [
+              r.label,
+              r.pool,
+              r.share != null ? r.share : "",
+              r.wecomRate != null ? r.wecomRate : "",
+              r.attendRate != null ? r.attendRate : "",
+              r.payRate != null ? r.payRate : "",
+              r.gmv != null ? r.gmv : "",
+              r.dropLabel || ""
+            ];
+          })
+        };
+      }
+      var bundle = BoardTerm.getTermBundle(termId, filters);
+      return {
+        name: "期次经营_核心指标",
+        filename: BoardMetrics.exportFileName("期次经营_核心指标"),
+        headers: ["指标", "数值", "目标", "较上一期"],
+        rows: (bundle.kpis || []).map(function (k) {
+          return [
+            k.label,
+            k.display,
+            k.targetDisplay || "",
+            (k.vsPrior && k.vsPrior.text) || ""
+          ];
+        })
+      };
+    }
+  });
+  sync();
+})();
+</script>
+</body>
+</html>

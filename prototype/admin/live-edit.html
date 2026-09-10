@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8" />
@@ -9,8 +9,7 @@
 <body class="admin-body" data-module="live" data-nav="live-edit" data-title="创建直播" data-crumb="直播 / 直播管理 / 新建直播">
 <div id="header-actions">
   <button class="btn" id="btn-cancel">取消</button>
-  <button class="btn" id="btn-save-draft">存草稿</button>
-  <button class="btn btn-primary" id="btn-save">保存并提交审核</button>
+  <button class="btn btn-primary" id="btn-save-draft">存草稿</button>
 </div>
 <div id="page-content" style="display:none">
 
@@ -18,16 +17,13 @@
   <div class="audit-banner audit-banner-rejected" id="audit-banner" style="display:none">
     <div class="audit-banner-icon">✕</div>
     <div class="audit-banner-bd">
-      <div class="audit-banner-title">审核未通过 · 已驳回</div>
+      <div class="audit-banner-title">平台审核未通过 · 已驳回</div>
       <div class="audit-banner-meta">
-        审核人：<b id="ab-auditor">刘管理</b>　·　驳回时间：<b id="ab-time">2026-09-03 17:30</b>　·　驳回维度：<span class="audit-tag fail">内容合规 ✕</span>
+        审核方：平台　·　驳回时间：<b id="ab-time">2026-09-03 17:30</b>
       </div>
       <div class="audit-banner-reason" id="ab-reason">
         直播封面图包含第三方水印，请重新设计后再提交。建议尺寸 750*422px，去掉水印 logo。
       </div>
-    </div>
-    <div class="audit-banner-act">
-      <a href="live-audit-detail.html" class="link-blue">查看审核详情</a>
     </div>
   </div>
 
@@ -35,14 +31,14 @@
   <div class="audit-banner audit-banner-pending" id="audit-banner-pending" style="display:none">
     <div class="audit-banner-icon">⏱</div>
     <div class="audit-banner-bd">
-      <div class="audit-banner-title">该直播已进入审核流程</div>
+      <div class="audit-banner-title">该直播已提交平台审核</div>
       <div class="audit-banner-meta">
-        提交时间：<b id="ab-submit-time">2026-09-04 14:30</b>　·　当前不可编辑，需先撤回
+        提交时间：<b id="ab-submit-time">2026-09-04 14:30</b>　·　当前不可编辑，可在列表撤回后修改
       </div>
     </div>
   </div>
 
-  <h2 class="page-section-title">基本信息</h2>
+  <h2 class="page-section-title" id="sec-basic">基本信息</h2>
   <div class="card"><div class="card-bd">
     <div class="form-grid" style="grid-template-columns:1fr 1fr">
       <div class="field"><label>直播名称 *</label><input id="le-name" placeholder="如：春启 03 期家长公开课" /></div>
@@ -57,8 +53,10 @@
         <select id="le-course">
           <option>请选择</option>
           <option>春启 03 期家长必修课</option>
+          <option>春启 04 期家长必修课</option>
           <option>9.9 引流课 · 亲子沟通</option>
           <option>家长训练营</option>
+          <option>试听公开课</option>
         </select>
       </div>
       <div class="field"><label>直播间类型 *</label>
@@ -67,36 +65,37 @@
           <option>沉浸直播间</option>
         </select>
       </div>
-      <div class="field"><label>开始时间 *</label><input type="datetime-local" value="2026-03-30 20:00" /></div>
-      <div class="field"><label>结束时间 *</label><input type="datetime-local" value="2026-03-30 22:00" /></div>
+      <div class="field"><label>开始时间 *</label><input id="le-start" type="datetime-local" value="2026-09-12T20:00" /></div>
+      <div class="field"><label>结束时间 *</label><input id="le-end" type="datetime-local" value="2026-09-12T22:00" /></div>
       <div class="field"><label>主讲老师 *</label>
-        <select><option>阮荣均</option><option>赵老师</option><option>王助教</option></select>
+        <select id="le-teacher"><option>阮荣均</option><option>赵老师</option><option>王助教</option></select>
       </div>
       <div class="field"><label>助教</label>
-        <select multiple style="height:60px;padding:8px">
+        <select id="le-assist" multiple style="height:60px;padding:8px">
           <option>王助教</option><option>刘助教</option>
         </select>
       </div>
       <div class="field" style="grid-column:1/-1"><label>直播介绍</label>
-        <textarea rows="3" style="width:100%;padding:8px;border:1px solid var(--color-border);border-radius:6px" placeholder="介绍本次直播内容、主讲老师、适合人群等"></textarea>
+        <textarea id="le-intro" rows="3" style="width:100%;padding:8px;border:1px solid var(--color-border);border-radius:6px" placeholder="介绍本次直播内容、主讲老师、适合人群等"></textarea>
       </div>
     </div>
   </div></div>
 
-  <h2 class="page-section-title">详情封面</h2>
-  <div class="card"><div class="card-bd">
+  <h2 class="page-section-title" id="sec-cover">详情封面</h2>
+  <div class="card" id="cover-card"><div class="card-bd">
     <div class="cover-row">
-      <div class="cover-preview">
-        <img src="../assets/img/covers/live.jpg" alt="详情封面" style="width:100%;height:100%;object-fit:cover;display:block;border-radius:inherit" />
+      <div class="cover-preview" id="le-cover-preview">
+        <img id="le-cover-img" src="../assets/img/covers/live.jpg" alt="详情封面" style="width:100%;height:100%;object-fit:cover;display:block;border-radius:inherit" />
       </div>
       <div class="cover-side">
-        <a href="#" data-act="design" class="link-blue">在线设计 ⓘ</a>
-        <p class="muted cover-tip">建议尺寸 750*422px 或 16:9，小于 5M 的 JPG、PNG 格式图片 <a href="#" class="link-blue">尺寸变更说明</a></p>
+        <a href="#" data-act="design" class="link-blue" id="btn-cover-design">在线设计 ⓘ</a>
+        <button type="button" class="btn btn-sm" id="btn-cover-ok" style="margin-left:8px">标记封面已配置</button>
+        <p class="muted cover-tip" id="cover-fix-hint">建议尺寸 750*422px 或 16:9，小于 5M 的 JPG、PNG 格式图片 <a href="#" class="link-blue">尺寸变更说明</a></p>
       </div>
     </div>
   </div></div>
 
-  <h2 class="page-section-title">直播详情</h2>
+  <h2 class="page-section-title" id="sec-detail">直播详情</h2>
   <div class="card"><div class="card-bd" style="padding:0">
     <div class="rich-editor">
       <div class="rich-toolbar">
@@ -132,7 +131,12 @@
         <span class="muted">字数统计</span>
       </div>
     </div>
-    <p class="muted" style="margin:8px 12px 12px">我已阅读并同意遵守 <a href="#" class="link-blue">《艺博直播运营规范》</a></p>
+    <p class="muted" style="margin:8px 12px 12px" id="sec-agree">
+      <label style="display:inline-flex;align-items:center;gap:6px;cursor:pointer">
+        <input type="checkbox" id="le-agree" />
+        我已阅读并同意遵守 <a href="#" class="link-blue">《艺博直播运营规范》</a>
+      </label>
+    </p>
   </div></div>
 
   <h2 class="page-section-title">直播暖场</h2>
@@ -250,7 +254,7 @@
     </div>
   </div></div>
 
-  <h2 class="page-section-title">挂载商品</h2>
+  <h2 class="page-section-title" id="sec-goods">挂载商品</h2>
   <div class="card"><div class="card-bd">
     <p class="muted" style="margin-bottom:12px">挂载商品将在直播间以「购物车」形式展示，观众可边看边买。</p>
     <div class="toolbar" style="margin-bottom:12px">
@@ -266,7 +270,7 @@
     </table>
   </div></div>
 
-  <h2 class="page-section-title">售卖方式</h2>
+  <h2 class="page-section-title" id="sec-sale">售卖方式</h2>
   <div class="card"><div class="card-bd">
     <div class="goods-section">
       <div class="goods-line">
@@ -607,139 +611,599 @@
   pointer-events: none; background: #f7f8fa; color: var(--color-text-muted);
 }
 .is-readonly .form-grid button,
-.is-readonly .toolbar button { display: none !important; }
+.is-readonly .toolbar button,
+.is-readonly .card-bd > .btn,
+.is-readonly .card-bd .btn:not([data-allow-readonly]),
+.is-readonly .cover-side a { display: none !important; }
 .is-readonly .cover-upload { pointer-events: none; opacity: 0.6; }
+.is-readonly .editor-toolbar,
+.is-readonly [class*="toolbar"]:not(.le-ops-more),
+.is-readonly .card-bd button.btn,
+.is-readonly .card-bd > button { display: none !important; }
+.is-readonly .card-bd a.link-blue[href="#"],
+.is-readonly .card-bd a[data-act] { display: none !important; }
 .is-readonly .proto-mask { display: none !important; }
+.le-status-bar {
+  display: flex; flex-wrap: wrap; gap: 8px 12px; align-items: center;
+  margin-bottom: 12px; padding: 10px 14px;
+  background: #f7f8fa; border: 1px solid var(--color-border); border-radius: 6px;
+  font-size: 13px;
+}
+.le-status-bar .chip {
+  display: inline-block; padding: 2px 8px; border-radius: 10px;
+  font-size: 12px; background: #fff; border: 1px solid #e5e6eb;
+}
+.le-ops-more { position: relative; display: inline-block; }
+.le-ops-more-menu {
+  display: none; position: absolute; right: 0; top: calc(100% + 4px);
+  min-width: 148px; background: #fff; border: 1px solid var(--color-border);
+  border-radius: 6px; box-shadow: 0 6px 16px rgba(0,0,0,.08); z-index: 40; padding: 4px 0;
+}
+.le-ops-more.open .le-ops-more-menu { display: block; }
+.le-ops-more-menu a,
+.le-ops-more-menu button {
+  display: block; width: 100%; text-align: left; border: 0; background: none;
+  padding: 8px 14px; font-size: 13px; color: var(--color-primary, #165dff);
+  cursor: pointer; text-decoration: none;
+}
+.le-ops-more-menu a:hover,
+.le-ops-more-menu button:hover { background: #f7f8fa; }
+.field-warn, .card.field-warn {
+  outline: 2px solid #ff7d00;
+  outline-offset: 2px;
+  border-radius: 8px;
+}
+.cover-fix-tip {
+  margin-top: 8px;
+  padding: 8px 10px;
+  background: #fff7e8;
+  border: 1px solid #ffcf8b;
+  border-radius: 6px;
+  font-size: 12px;
+  color: #ad6800;
+}
+.is-readonly .rich-toolbar,
+.is-readonly [data-act="design"],
+.is-readonly #btn-cover-ok,
+.is-readonly #btn-add-goods,
+.is-readonly #btn-import-crm,
+.is-readonly #btn-add-role,
+.is-readonly #btn-pick-owner,
+.is-readonly #btn-pick-course,
+.is-readonly #btn-more-config,
+.is-readonly [data-act="del"] { display: none !important; }
+.is-readonly input,
+.is-readonly select,
+.is-readonly textarea {
+  pointer-events: none;
+  background: #f7f8fa;
+  color: #4e5969;
+}
 </style>
 
 <script src="../assets/js/proto.js"></script>
+<script src="../assets/js/prototype-business-store.js"></script>
+<script src="../assets/js/live-ops.js?v=7"></script>
 <script src="../assets/js/live-reach.js"></script>
-<script src="../assets/js/admin-shell.js?v=13"></script>
+<script src="../assets/js/admin-shell.js?v=18"></script>
 <script>
 (function () {
-  var params = new URLSearchParams(location.search);
-  var audit = params.get("status") || "new";
-  var liveId = params.get("live_id") || params.get("id") || "";
-
-  // 统一示例时间为 2026-09
-  var startEl = document.querySelector('input[type="datetime-local"]');
-  var endEls = document.querySelectorAll('input[type="datetime-local"]');
-  if (startEl && !liveId) {
-    startEl.value = "2026-09-12T20:00";
-    if (endEls[1]) endEls[1].value = "2026-09-12T22:00";
+  function toast(msg) { if (window.Proto && Proto.toast) Proto.toast(msg); }
+  function $(id) { return document.getElementById(id); }
+  function on(el, ev, fn) { if (el) el.addEventListener(ev, fn); }
+  function headerSlot() {
+    return document.getElementById("page-header-actions") || document.getElementById("header-actions");
   }
 
-  function collectRemind() {
+  var params = new URLSearchParams(location.search);
+  var copyFrom = params.get("copy_from") || "";
+  var liveId = LiveOps.idFromSearch();
+  var from = params.get("from") || "";
+  var focus = params.get("focus") || "";
+  var returnUrl = params.get("return_url") || "";
+  var modeParam = (params.get("mode") || "").toLowerCase();
+  var mode = !liveId && !copyFrom ? "create" : (modeParam === "view" || modeParam === "readonly" ? "view" : "edit");
+  var isView = mode === "view";
+  var isEdit = mode === "edit";
+  var isCreate = mode === "create" || (!liveId && !!copyFrom);
+  var live = liveId ? LiveOps.getLive(liveId) : null;
+  var dirty = false;
+  var baseline = "";
+  var warnOnSave = false;
+  var isRejectedFlow = false;
+
+  if (copyFrom && !liveId) {
+    var copied = LiveOps.copyLive(copyFrom);
+    if (copied) {
+      location.replace(LiveOps.editLiveUrl(copied.liveId));
+      return;
+    }
+  }
+
+  if (liveId && !live) {
+    LiveOps.renderEmptyLive($("page-content"), "未找到直播 " + liveId + "。");
+    var ha0 = headerSlot();
+    if (ha0) ha0.innerHTML = '<a class="btn" type="button" href="' + listBack() + '">返回直播列表</a>';
+    return;
+  }
+
+  function listBack() {
+    if (returnUrl) return decodeURIComponent(returnUrl);
+    return LiveOps.listReturnUrl ? LiveOps.listReturnUrl() : "lives.html";
+  }
+  function viewHref(id) { return LiveOps.viewLiveUrl(id); }
+  function editHref(id, extra) { return LiveOps.editLiveUrl(id, extra); }
+
+  /* edit entry gates */
+  if (isEdit && live) {
+    var gate = LiveOps.editGateMessage(live);
+    if (!gate.allow) {
+      toast(gate.message);
+      location.replace(viewHref(live.liveId));
+      return;
+    }
+    if (gate.needWithdraw) {
+      if (!confirm(gate.message + "\n\n确认撤回并编辑？")) {
+        location.replace(viewHref(live.liveId));
+        return;
+      }
+      LiveOps.withdrawAndEdit(live.liveId);
+      live = LiveOps.getLive(live.liveId);
+    }
+    if (gate.warnOnSave) {
+      warnOnSave = true;
+      if (!confirm(gate.message + "\n\n进入编辑页不会立刻改状态；只有保存修改后才会退回草稿。")) {
+        location.replace(viewHref(live.liveId));
+        return;
+      }
+    }
+    isRejectedFlow = live.platformReviewStatus === "rejected" || from === "platform_rejected";
+  }
+
+  function titleText() {
+    if (isCreate) return "创建直播";
+    if (isView) return "查看直播";
+    if (isRejectedFlow) return "修改并重新提交";
+    return "编辑直播";
+  }
+
+  document.body.setAttribute("data-nav", "lives");
+  document.body.setAttribute("data-title", titleText());
+  document.body.setAttribute("data-crumb", "直播 / 直播管理 / " + titleText());
+  document.title = titleText() + " · 商家管理后台";
+  setTimeout(function () {
+    var p2 = document.getElementById("page-title");
+    if (p2) p2.textContent = titleText();
+    var crumb = document.querySelector(".breadcrumb");
+    if (crumb) crumb.textContent = "直播 / 直播管理 / " + titleText();
+  }, 0);
+
+  function toLocal(s) {
+    if (!s) return "";
+    return String(s).replace(" ", "T").slice(0, 16);
+  }
+
+  function fillForm(v) {
+    if (!v) return;
+    if ($("le-name")) $("le-name").value = v.liveName || v.name || "";
+    if ($("le-mode")) $("le-mode").value = v.liveMode || "视频直播";
+    if ($("le-course") && v.courseName) {
+      var opts = $("le-course").options;
+      var matched = false;
+      for (var i = 0; i < opts.length; i++) {
+        if (opts[i].text === v.courseName || opts[i].value === v.courseName) {
+          opts[i].selected = true; matched = true; break;
+        }
+      }
+      if (!matched) {
+        for (var j = 0; j < opts.length; j++) {
+          if (opts[j].text && opts[j].text !== "请选择" &&
+            (v.courseName.indexOf(opts[j].text) >= 0 || opts[j].text.indexOf(v.courseName.slice(0, 4)) >= 0)) {
+            opts[j].selected = true; break;
+          }
+        }
+      }
+    }
+    if ($("le-style")) $("le-style").value = v.roomType || "传统直播间";
+    if ($("le-start")) $("le-start").value = toLocal(v.startAt) || "2026-09-12T20:00";
+    if ($("le-end")) $("le-end").value = toLocal(v.endAt) || "2026-09-12T22:00";
+    if ($("le-teacher")) $("le-teacher").value = v.teacher || "阮荣均";
+    if ($("le-intro")) $("le-intro").value = v.description || "";
+    if ($("le-content") && v.content) $("le-content").value = v.content;
+    if ($("le-remind-enable")) $("le-remind-enable").value = v.reminderEnabled === false ? "0" : "1";
+    if ($("le-remind-pre")) $("le-remind-pre").value = v.preRemindOffset || "1h";
+    if ($("le-remind-start")) $("le-remind-start").value = v.remindOnStart === false ? "0" : "1";
+    if ($("le-remind-replay")) $("le-remind-replay").value = v.remindReplay === false ? "0" : "1";
+    if ($("le-agree")) $("le-agree").checked = !!v.agreedOpsRules;
+  }
+
+  function collect() {
+    var courseSel = $("le-course");
+    var courseName = courseSel && courseSel.selectedIndex > 0 ? courseSel.options[courseSel.selectedIndex].text : "";
+    var salePaid = document.querySelector('input[name="sale"][value="paid"]:checked') ||
+      document.querySelector(".goods-sale input[type=radio]:checked");
+    var saleMode = "免费";
+    var solo = document.querySelector(".goods-checkbox input[type=checkbox]");
+    if (solo && solo.checked) saleMode = "付费";
+    var products = [];
+    var rows = document.querySelectorAll("#goods-tbody tr");
+    rows.forEach(function (tr) {
+      var nameCell = tr.querySelector("td:nth-child(2)");
+      if (nameCell) products.push({ name: nameCell.textContent.trim(), price: 0 });
+    });
     return {
-      reminderEnabled: document.getElementById("le-remind-enable").value === "1",
-      preRemindOffset: document.getElementById("le-remind-pre").value,
-      remindOnStart: document.getElementById("le-remind-start").value === "1",
-      remindReplay: document.getElementById("le-remind-replay").value === "1"
+      name: ($("le-name") && $("le-name").value.trim()) || "",
+      liveMode: ($("le-mode") && $("le-mode").value) || "视频直播",
+      courseName: courseName,
+      roomType: ($("le-style") && $("le-style").value) || "传统直播间",
+      startAt: ($("le-start") && $("le-start").value) ? $("le-start").value.replace("T", " ") : "",
+      endAt: ($("le-end") && $("le-end").value) ? $("le-end").value.replace("T", " ") : "",
+      teacher: ($("le-teacher") && $("le-teacher").value) || "",
+      description: ($("le-intro") && $("le-intro").value) || "",
+      content: ($("le-content") && $("le-content").value) || "",
+      saleMode: saleMode,
+      products: products,
+      coverConfigured: live ? live.coverConfigured !== false : true,
+      agreedOpsRules: $("le-agree") ? $("le-agree").checked : false,
+      reminderEnabled: $("le-remind-enable") ? $("le-remind-enable").value === "1" : true,
+      preRemindOffset: $("le-remind-pre") ? $("le-remind-pre").value : "1h",
+      remindOnStart: $("le-remind-start") ? $("le-remind-start").value === "1" : true,
+      remindReplay: $("le-remind-replay") ? $("le-remind-replay").value === "1" : true
     };
+  }
+
+  function snapshotForm() {
+    try { return JSON.stringify(collect()); } catch (e) { return ""; }
   }
 
   function enableBookingLink(id) {
-    var btn = document.getElementById("btn-view-booking");
-    var hint = document.getElementById("le-booking-hint");
-    var adv = document.getElementById("btn-advanced-remind");
+    var btn = $("btn-view-booking");
+    var hint = $("le-booking-hint");
+    var adv = $("btn-advanced-remind");
+    if (!btn) return;
     btn.disabled = false;
     btn.removeAttribute("title");
-    hint.textContent = "已关联直播 " + id;
-    btn.onclick = function () {
-      location.href = "live-booking.html?live_id=" + encodeURIComponent(id) + "&tab=reminders";
-    };
-    adv.href = "live-booking.html?live_id=" + encodeURIComponent(id) + "&tab=reminders";
+    if (hint) hint.textContent = "已关联直播 " + id;
+    var href = LiveOps.buildUrl("live-booking.html", { live_id: id, tab: "reminders", from: "detail" });
+    btn.onclick = function () { location.href = href; };
+    if (adv) adv.href = href;
   }
 
-  if (liveId) {
-    var existing = LiveReach.getLive(liveId);
-    if (existing) {
-      document.getElementById("le-name").value = existing.name;
-      document.getElementById("le-remind-enable").value = existing.reminderEnabled === false ? "0" : "1";
-      document.getElementById("le-remind-pre").value = existing.preRemindOffset || "1h";
-      document.getElementById("le-remind-start").value = existing.remindOnStart === false ? "0" : "1";
-      document.getElementById("le-remind-replay").value = existing.remindReplay === false ? "0" : "1";
-      enableBookingLink(liveId);
+  function canGoEdit(v) {
+    return LiveOps.canEditLive(v);
+  }
+
+  function showRejectBanner(v) {
+    var ban = $("audit-banner");
+    if (!ban) return;
+    ban.style.display = "flex";
+    if ($("ab-reason")) {
+      $("ab-reason").textContent = (v.rejectReason || "请按平台驳回意见修改。") +
+        (v.rejectItems && v.rejectItems.length
+          ? " · 涉及：" + v.rejectItems.map(function (i) { return i.label || i.id; }).join("、")
+          : "");
+    }
+    if ($("ab-time")) $("ab-time").textContent = v.submittedPlatformAt || v.updatedAt || "—";
+    var coverCard = $("cover-card");
+    if (coverCard && (focus === "cover" || (v.rejectItems || []).some(function (i) { return i.id === "cover"; }))) {
+      coverCard.classList.add("field-warn");
+      var tip = document.createElement("div");
+      tip.className = "cover-fix-tip";
+      tip.id = "cover-fix-tip";
+      tip.textContent = "整改说明：封面包含第三方水印，请更换合规封面后重新提交。";
+      if (!$("cover-fix-tip")) coverCard.querySelector(".card-bd").appendChild(tip);
+      setTimeout(function () {
+        try { coverCard.scrollIntoView({ behavior: "smooth", block: "center" }); } catch (e) {}
+      }, 200);
     }
   }
 
-  if (audit === "rejected") {
-    document.getElementById("audit-banner").style.display = "flex";
-    document.getElementById("btn-save").textContent = "重新提交审核";
-    document.title = "编辑直播（已驳回） · 商家管理后台";
-  } else if (audit === "pending") {
-    document.getElementById("audit-banner-pending").style.display = "flex";
-    document.body.classList.add("is-readonly");
-    document.getElementById("btn-save-draft").style.display = "none";
-    document.getElementById("btn-save").textContent = "撤回审核";
-    document.getElementById("btn-save").classList.remove("btn-primary");
-    document.title = "查看直播（审核中） · 商家管理后台";
-  }
-
-  document.getElementById("btn-cancel").addEventListener("click", function () { location.href = "lives.html"; });
-  document.getElementById("btn-save-draft").addEventListener("click", function () {
-    var n = document.getElementById("le-name").value.trim();
-    if (!n) { Proto.toast("请输入直播名称"); return; }
-    var remind = collectRemind();
-    LiveReach.saveEditDraft({ name: n, remind: remind, savedAt: Date.now() });
-    Proto.toast("已存草稿（预约提醒配置已保留）");
-  });
-  document.getElementById("btn-save").addEventListener("click", function () {
-    var n = document.getElementById("le-name").value.trim();
-    if (!n) { Proto.toast("请输入直播名称"); return; }
-    var remind = collectRemind();
-    var starts = document.querySelectorAll('input[type="datetime-local"]');
-    var startAt = (starts[0] && starts[0].value) ? starts[0].value.replace("T", " ") : "2026-09-12 20:00";
-    var endAt = (starts[1] && starts[1].value) ? starts[1].value.replace("T", " ") : "2026-09-12 22:00";
-
-    var live;
-    if (liveId && LiveReach.getLive(liveId)) {
-      live = LiveReach.getLive(liveId);
-      live.name = n;
-      live.startAt = startAt;
-      live.endAt = endAt;
-      Object.assign(live, remind);
-      LiveReach.saveLive(live);
-      LiveReach.createDefaultReminders(live, true);
-    } else {
-      live = LiveReach.createLiveFromEdit({
-        name: n, startAt: startAt, endAt: endAt,
-        reminderEnabled: remind.reminderEnabled,
-        preRemindOffset: remind.preRemindOffset,
-        remindOnStart: remind.remindOnStart,
-        remindReplay: remind.remindReplay
+  function renderViewHeader(v) {
+    var ha = headerSlot();
+    if (!ha) return;
+    var pack = LiveOps.buildActions(v);
+    var html = '<a class="btn" href="' + listBack() + '">返回列表</a>';
+    if (canGoEdit(v)) {
+      html += '<a class="btn btn-primary" href="' + editHref(v.liveId) + '">编辑直播</a>';
+    }
+    html += '<button type="button" class="btn" id="btn-share-view" data-allow-readonly>分享</button>';
+    var moreItems = [];
+    (pack.secondary || []).forEach(function (it) {
+      if (it.action === "share") return;
+      if (it.label === "查看详情" || it.label === "编辑" || it.label === "修改直播" || it.label === "继续编辑" || it.label === "修改并重新提交") return;
+      moreItems.push(it);
+    });
+    if (pack.primary && pack.primary.action && pack.primary.action !== "share") {
+      if (pack.primary.action !== "submit_platform" || scenarioAllowsSubmit(v)) moreItems.unshift(pack.primary);
+    } else if (pack.primary && pack.primary.href && pack.primary.label !== "查看详情") {
+      /* keep primary href actions like 中控 in more if not already header */
+    }
+    if (v.runtimeStatus === "living") {
+      moreItems = (pack.secondary || []).concat(pack.primary && pack.primary.href ? [pack.primary] : []);
+    }
+    if (moreItems.length) {
+      html += '<span class="le-ops-more"><button type="button" class="btn" id="btn-ops-more" data-allow-readonly>更多 ▾</button>';
+      html += '<div class="le-ops-more-menu">';
+      moreItems.forEach(function (it) {
+        if (it.href) html += '<a href="' + it.href + '">' + it.label + "</a>";
+        else if (it.action) html += '<button type="button" data-live-action="' + it.action + '">' + it.label + "</button>";
       });
-      liveId = live.id;
+      html += "</div></span>";
     }
-    enableBookingLink(live.id);
-    Proto.toast("已保存并提交审核 · 已生成标准提醒草稿");
-    setTimeout(function () {
-      location.href = "live-booking.html?live_id=" + encodeURIComponent(live.id) + "&tab=reminders";
-    }, 700);
+    ha.innerHTML = html;
+    on($("btn-share-view"), "click", function () { LiveOps.openShareModal(v); });
+    on($("btn-ops-more"), "click", function (e) {
+      e.preventDefault();
+      e.stopPropagation();
+      var wrap = this.parentNode;
+      document.querySelectorAll(".le-ops-more.open").forEach(function (n) {
+        if (n !== wrap) n.classList.remove("open");
+      });
+      wrap.classList.toggle("open");
+    });
+    ha.querySelectorAll("[data-live-action]").forEach(function (btn) {
+      on(btn, "click", function () {
+        var act = btn.getAttribute("data-live-action");
+        if (act === "submit_platform") {
+          LiveOps.openSubmitPlatformModal(v.liveId, {
+            reload: false,
+            onSuccess: function () { location.reload(); }
+          });
+          return;
+        }
+        if (act === "withdraw_edit") {
+          if (!confirm("确认撤回并编辑？")) return;
+          LiveOps.withdrawAndEdit(v.liveId);
+          location.href = editHref(v.liveId);
+          return;
+        }
+        if (act === "withdraw_platform") {
+          if (!confirm("确认撤回平台审核？")) return;
+          LiveOps.withdrawAndEdit(v.liveId);
+          toast("已撤回");
+          location.reload();
+          return;
+        }
+        if (act === "publish") { LiveOps.publish(v.liveId); toast("已上架"); location.reload(); return; }
+        if (act === "unpublish") {
+          if (!confirm("确认取消上架？")) return;
+          LiveOps.unpublish(v.liveId); toast("已下架"); location.reload(); return;
+        }
+        if (act === "force_offline") {
+          if (!confirm("确认强制下架？")) return;
+          LiveOps.forceOffline(v.liveId); toast("已强制下架"); location.reload(); return;
+        }
+        if (act === "copy") {
+          var c = LiveOps.copyLive(v.liveId);
+          if (c) location.href = editHref(c.liveId);
+          return;
+        }
+        toast("操作：" + act);
+      });
+    });
+  }
+
+  function scenarioAllowsSubmit(v) {
+    var k = LiveOps.scenarioKey(v);
+    return k === "draft" || k === "platform_rejected";
+  }
+
+  function renderEditHeader() {
+    var ha = headerSlot();
+    if (!ha) return;
+    var html = '<button type="button" class="btn" id="btn-cancel">取消</button>';
+    html += '<button type="button" class="btn" id="btn-save-draft">保存草稿</button>';
+    if (isRejectedFlow) {
+      html += '<button type="button" class="btn btn-primary" id="btn-save-resubmit">保存并重新提交</button>';
+    } else if (warnOnSave) {
+      html += '<button type="button" class="btn btn-primary" id="btn-save-revert">保存修改并退回草稿</button>';
+    } else {
+      html += '<button type="button" class="btn btn-primary" id="btn-save-submit">保存并提交平台审核</button>';
+    }
+    ha.innerHTML = html;
+  }
+
+  function insertStatusBar(v, label) {
+    var pc = $("page-content");
+    if (!pc || !v) return;
+    var old = $("le-status-bar");
+    if (old) old.remove();
+    var bar = document.createElement("div");
+    bar.className = "le-status-bar";
+    bar.id = "le-status-bar";
+    bar.innerHTML =
+      "<b>" + label + "</b>" +
+      "<span>ID " + v.liveId + "</span>" +
+      "<span>版本 v" + (v.currentVersion || 1) + "</span>" +
+      '<span class="chip">平台：' + (v.platformReviewStatusLabel || "") + "</span>" +
+      '<span class="chip">上架：' + (v.shelfStatusLabel || "") + "</span>" +
+      '<span class="chip">直播：' + (v.runtimeStatusLabel || "") + "</span>";
+    pc.insertBefore(bar, pc.firstChild);
+  }
+
+  function applyReadonly() {
+    document.body.classList.add("is-readonly");
+    document.querySelectorAll("#page-content input, #page-content select, #page-content textarea").forEach(function (el) {
+      el.setAttribute("disabled", "disabled");
+      el.setAttribute("readonly", "readonly");
+    });
+  }
+
+  if (isView) {
+    applyReadonly();
+    fillForm(live);
+    enableBookingLink(live.liveId);
+    insertStatusBar(live, "查看直播");
+    renderViewHeader(live);
+    if (live.platformReviewStatus === "rejected" || focus === "platform" || focus === "cover") {
+      if (live.platformReviewStatus === "rejected") showRejectBanner(live);
+    }
+    if (live.platformReviewStatus === "pending") {
+      var banP = $("audit-banner-pending");
+      if (banP) {
+        banP.style.display = "flex";
+        if ($("ab-submit-time") && live.submittedPlatformAt) $("ab-submit-time").textContent = live.submittedPlatformAt;
+      }
+    }
+    document.addEventListener("click", function () {
+      document.querySelectorAll(".le-ops-more.open").forEach(function (n) { n.classList.remove("open"); });
+    });
+    return;
+  }
+
+  /* create / edit */
+  renderEditHeader();
+  if (live) {
+    fillForm(live);
+    enableBookingLink(live.liveId);
+    insertStatusBar(live, isRejectedFlow ? "修改并重新提交" : "编辑直播");
+    if (isRejectedFlow || live.platformReviewStatus === "rejected") {
+      showRejectBanner(live);
+      isRejectedFlow = true;
+      renderEditHeader();
+    }
+  }
+  baseline = snapshotForm();
+
+  document.querySelectorAll("#page-content input, #page-content select, #page-content textarea").forEach(function (el) {
+    el.addEventListener("change", function () { dirty = snapshotForm() !== baseline; });
+    el.addEventListener("input", function () { dirty = snapshotForm() !== baseline; });
+  });
+  window.addEventListener("beforeunload", function (e) {
+    if (!dirty || isView) return;
+    e.preventDefault();
+    e.returnValue = "";
   });
 
-  document.getElementById("btn-view-booking").addEventListener("click", function () {
-    if (this.disabled) {
-      Proto.toast("保存直播后可进入预约管理");
+  on($("btn-cover-ok"), "click", function () {
+    if (liveId) LiveOps.patchLive(liveId, { coverConfigured: true });
+    if (live) live.coverConfigured = true;
+    dirty = true;
+    var tip = $("cover-fix-tip");
+    if (tip) tip.remove();
+    var card = $("cover-card");
+    if (card) card.classList.remove("field-warn");
+    toast("已标记封面配置完成");
+  });
+
+  function persistDraft(extra) {
+    var f = collect();
+    if (!f.name) { toast("请输入直播名称"); return null; }
+    extra = extra || {};
+    var patch = Object.assign({}, f, extra);
+    var saved;
+    if (liveId) {
+      if (isRejectedFlow || (live && live.platformReviewStatus === "rejected")) {
+        patch.platformReviewStatus = "not_submitted";
+        patch.currentVersion = (live.currentVersion || 1) + 1;
+        patch.lastRejectReason = live.rejectReason || "";
+      } else if (warnOnSave) {
+        /* only revert when explicitly saving with revert button */
+      }
+      saved = LiveOps.patchLive(liveId, patch);
+    } else {
+      saved = LiveOps.createLive(patch);
+      liveId = saved.liveId;
+    }
+    if (window.LiveReach && LiveReach.createDefaultReminders) {
+      try { LiveReach.createDefaultReminders(saved, true); } catch (e) {}
+    }
+    live = saved;
+    baseline = snapshotForm();
+    dirty = false;
+    return saved;
+  }
+
+  on($("btn-cancel"), "click", function () {
+    if (dirty && !confirm("有未保存修改，确认离开？")) return;
+    dirty = false;
+    location.href = liveId ? viewHref(liveId) : listBack();
+  });
+
+  on($("btn-save-draft"), "click", function () {
+    var saved = persistDraft({
+      platformReviewStatus: (live && live.platformReviewStatus === "rejected") ? "not_submitted" : ((live && live.platformReviewStatus) || "not_submitted"),
+      nextActionHint: "完善后提交平台审核"
+    });
+    if (!saved) return;
+    if (warnOnSave) {
+      /* draft save without revert for approved? Spec: only on save of changes revert. Saving draft of approved should revert. */
+      LiveOps.revertApprovedOnSave(liveId);
+      saved = LiveOps.getLive(liveId);
+    }
+    toast("草稿已保存");
+    setTimeout(function () { location.href = viewHref(liveId); }, 400);
+  });
+
+  on($("btn-save-revert"), "click", function () {
+    if (snapshotForm() === baseline) {
+      toast("尚未修改内容");
       return;
     }
+    var saved = persistDraft({});
+    if (!saved) return;
+    LiveOps.revertApprovedOnSave(liveId);
+    toast("已保存并退回草稿，请重新提交平台审核");
+    setTimeout(function () { location.href = viewHref(liveId); }, 400);
   });
 
-  document.getElementById("btn-add-role").addEventListener("click", function () { Proto.toast("打开添加角色（原型）"); });
-  document.getElementById("btn-pick-owner").addEventListener("click", function () { Proto.toast("选择员工（原型）"); });
-  document.getElementById("btn-pick-course").addEventListener("click", function () { Proto.toast("选择课程/专栏/训练营/会员（原型）"); });
-  document.getElementById("btn-add-goods").addEventListener("click", function () { Proto.toast("打开商品选择（原型）"); });
-  document.getElementById("btn-import-crm").addEventListener("click", function () { Proto.toast("打开 SCRM 商品（原型）"); });
-  document.getElementById("btn-more-config").addEventListener("click", function () { Proto.toast("更多设置（原型）"); });
+  function afterSaveOpenSubmit() {
+    LiveOps.openSubmitPlatformModal(liveId, {
+      form: collect(),
+      reload: false,
+      onSuccess: function () {
+        dirty = false;
+        location.href = LiveOps.viewLiveUrl(liveId, { focus: "platform" });
+      }
+    });
+  }
+
+  on($("btn-save-submit"), "click", function () {
+    var saved = persistDraft({ platformReviewStatus: "not_submitted" });
+    if (!saved) return;
+    toast("草稿已保存，请确认提交检查");
+    afterSaveOpenSubmit();
+  });
+
+  on($("btn-save-resubmit"), "click", function () {
+    if (snapshotForm() === baseline && live && live.coverConfigured === false) {
+      toast("尚未修改驳回问题，不能重新提交");
+      return;
+    }
+    if (snapshotForm() === baseline) {
+      toast("尚未修改驳回问题，不能重新提交");
+      return;
+    }
+    var saved = persistDraft({
+      platformReviewStatus: "not_submitted",
+      coverConfigured: live && live.coverConfigured !== false
+    });
+    if (!saved) return;
+    toast("已保存新版本，请确认提交检查");
+    afterSaveOpenSubmit();
+  });
+
+  on($("btn-view-booking"), "click", function () {
+    if (this.disabled) toast("保存直播后可进入预约管理");
+  });
+  ["btn-add-role", "btn-pick-owner", "btn-pick-course", "btn-add-goods", "btn-import-crm", "btn-more-config"].forEach(function (id) {
+    on($(id), "click", function () { toast("原型操作"); dirty = true; });
+  });
   document.querySelectorAll('[data-act="del"]').forEach(function (a) {
-    a.addEventListener("click", function (e) {
+    on(a, "click", function (e) {
       e.preventDefault();
-      a.closest("tr").remove();
-      Proto.toast("已移除（原型）");
+      var tr = a.closest("tr");
+      if (tr) tr.remove();
+      dirty = true;
+      toast("已移除（原型）");
     });
   });
   document.querySelectorAll('[data-act="design"]').forEach(function (a) {
-    a.addEventListener("click", function (e) { e.preventDefault(); Proto.toast("打开在线设计（原型）"); });
+    on(a, "click", function (e) {
+      e.preventDefault();
+      dirty = true;
+      toast("打开在线设计（原型）");
+    });
   });
 })();
 </script>

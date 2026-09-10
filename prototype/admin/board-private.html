@@ -174,12 +174,13 @@
 
 </div>
 <script src="../assets/js/proto.js"></script>
-<script src="../assets/js/board-data.js?v=8"></script>
-<script src="../assets/js/board-metrics.js?v=14"></script>
-<script src="../assets/js/board-insights.js?v=8"></script>
-<script src="../assets/js/board-dictionary.js?v=3"></script>
-<script src="../assets/js/board-tools.js?v=4"></script>
-<script src="../assets/js/admin-shell.js?v=13"></script>
+<script src="../assets/js/board-data.js?v=10"></script>
+<script src="../assets/js/board-metrics.js?v=15"></script>
+<script src="../assets/js/board-insights.js?v=9"></script>
+<script src="../assets/js/board-term.js?v=1"></script>
+<script src="../assets/js/board-dictionary.js?v=4"></script>
+<script src="../assets/js/board-tools.js?v=5"></script>
+<script src="../assets/js/admin-shell.js?v=16"></script>
 <script>
 (function () {
   BoardMetrics.ensureCaliberUI();
@@ -233,13 +234,21 @@
       var leads = BoardMetrics.buildDrilldownUrl("leads.html", { owner: r.id, from_board: "private" });
       var late = BoardMetrics.buildDrilldownUrl("leads.html", { owner: r.id, focus: "unassigned", from_board: "private" });
       var noFollow = BoardMetrics.buildDrilldownUrl("follow-ups.html", { owner: r.id, focus: "no_follow", from_board: "private" });
+      var termId = (filters && filters.term) || "";
+      var termBoard = "";
+      if (window.BoardTerm) {
+        var tid = termId || BoardTerm.defaultTermId();
+        termBoard = ' · <a href="' + BoardTerm.termBoardUrl(tid, {
+          selected_owner: r.id, owner: r.id, from_board: "private"
+        }) + '" data-drill-save="1">' + (termId ? "查看当前期次" : "进入期次经营看板") + "</a>";
+      }
       return '<tr data-owner="' + r.id + '"><td><b>' + r.label + "</b>" + tags + "</td><td>" + BoardMetrics.fmt(r.assigned) +
         "</td><td>" + r.timelyRate + "%</td><td>" + BoardMetrics.fmt(r.wecom) + " / " +
         (r.wecomRate != null ? r.wecomRate + "%" : "—") + "</td><td>" +
         (r.cover != null ? r.cover + "%" : "—") + '</td><td><a href="' + late + '" data-drill-save="1">' +
         BoardMetrics.fmt(r.late) + '</a></td><td><a href="' + noFollow + '" data-drill-save="1">' +
         BoardMetrics.fmt(r.noFollow) + "</a></td><td>" + BoardMetrics.fmt(r.pay) + "</td><td>" +
-        vs.join(" · ") + '</td><td class="row-actions"><a href="' + leads + '" data-drill-save="1">查看用户</a></td></tr>';
+        vs.join(" · ") + '</td><td class="row-actions"><a href="' + leads + '" data-drill-save="1">查看用户</a>' + termBoard + "</td></tr>";
     }).join("");
     tbody.querySelectorAll("[data-drill-save]").forEach(function (a) {
       a.addEventListener("click", function () {
@@ -281,8 +290,16 @@
         var listHref = BoardMetrics.buildDrilldownUrl("follow-ups.html", {
           follow_stage: state.stage, from_board: "private"
         });
+        var termAct = "";
+        if (window.BoardTerm) {
+          var tid = filters.term || BoardTerm.defaultTermId();
+          termAct = '<a class="btn btn-sm" href="' + BoardTerm.termBoardUrl(tid, {
+            from_board: "private", section: "private"
+          }) + '" data-drill-save="1">' + (filters.term ? "查看当前期次" : "进入期次经营看板") + "</a>";
+        }
         document.getElementById("stage-detail-actions").innerHTML =
           '<a class="btn btn-sm btn-primary" href="' + listHref + '" data-drill-save="1">查看该阶段用户</a>' +
+          termAct +
           '<a class="btn btn-sm" href="todo-calendar.html">安排触达</a>';
         panel.querySelectorAll("[data-drill-save]").forEach(function (x) {
           x.addEventListener("click", function () { BoardInsights.saveReturnState(); });

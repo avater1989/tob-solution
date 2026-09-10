@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>直播详情 · 商家管理后台</title>
+<link rel="stylesheet" href="../assets/css/proto.css?v=9" />
+</head>
+<body class="admin-body" data-module="live" data-nav="lives" data-title="直播详情" data-crumb="直播 / 直播管理 / 直播详情">
+<div id="page-content" style="padding:48px;text-align:center">正在跳转到查看页…</div>
+<script src="../assets/js/proto.js"></script>
+<script src="../assets/js/prototype-business-store.js"></script>
+<script src="../assets/js/live-ops.js?v=5"></script>
+<script>
+(function () {
+  var id = LiveOps.idFromSearch();
+  var q = new URLSearchParams(location.search);
+  var focus = q.get("tab") === "review" || q.get("focus") === "review" ? "review" : (q.get("focus") || "");
+  if (!id) {
+    location.replace("lives.html");
+    return;
+  }
+  var extra = {};
+  if (focus) extra.focus = focus;
+  location.replace(LiveOps.viewLiveUrl(id, extra));
+})();
+</script>
+</body>
+</html>

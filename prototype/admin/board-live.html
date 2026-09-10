@@ -110,12 +110,13 @@
 
 </div>
 <script src="../assets/js/proto.js"></script>
-<script src="../assets/js/board-data.js?v=8"></script>
-<script src="../assets/js/board-metrics.js?v=14"></script>
-<script src="../assets/js/board-insights.js?v=8"></script>
-<script src="../assets/js/board-dictionary.js?v=3"></script>
-<script src="../assets/js/board-tools.js?v=4"></script>
-<script src="../assets/js/admin-shell.js?v=13"></script>
+<script src="../assets/js/board-data.js?v=10"></script>
+<script src="../assets/js/board-metrics.js?v=15"></script>
+<script src="../assets/js/board-insights.js?v=9"></script>
+<script src="../assets/js/board-term.js?v=1"></script>
+<script src="../assets/js/board-dictionary.js?v=4"></script>
+<script src="../assets/js/board-tools.js?v=5"></script>
+<script src="../assets/js/admin-shell.js?v=16"></script>
 <script>
 (function () {
   BoardMetrics.ensureCaliberUI();
@@ -192,7 +193,12 @@
       return "<tr><td>渠道 · " + c.label + "</td><td>" + BoardMetrics.fmt(c.attend) + "</td><td>" +
         BoardMetrics.fmt(c.pay) + "</td><td>" + (c.payRate != null ? c.payRate + "%" : "—") + "</td></tr>";
     }).concat(detail.terms.map(function (tm) {
-      return "<tr><td>期次 · " + tm.label + "</td><td>" + BoardMetrics.fmt(tm.attend) + "</td><td>" +
+      var termLink = (tm.id && tm.id !== "mixed" && window.BoardTerm)
+        ? (' <a href="' + BoardTerm.termBoardUrl(tm.id, {
+            selected_live: r.id, live_id: r.id, from_board: "live"
+          }) + '" data-drill-save="1">查看期次经营看板</a>')
+        : "";
+      return "<tr><td>期次 · " + tm.label + termLink + "</td><td>" + BoardMetrics.fmt(tm.attend) + "</td><td>" +
         BoardMetrics.fmt(tm.pay) + "</td><td>—</td></tr>";
     }));
     document.getElementById("live-dim-tbody").innerHTML = dims.join("") || "<tr><td colspan='4' class='muted'>暂无维度数据</td></tr>";

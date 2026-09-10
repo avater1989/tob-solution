@@ -5,410 +5,635 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>直播列表 · 商家管理后台</title>
 <link rel="stylesheet" href="../assets/css/proto.css?v=9" />
+<style>
+.status-dot {
+  display: inline-block; width: 8px; height: 8px; border-radius: 50%;
+  margin-right: 4px; vertical-align: middle;
+}
+.status-living { background: #f53f3f; animation: live-pulse 1.5s infinite; }
+.status-pending { background: #ff7d00; }
+.status-finished { background: #86909c; }
+.status-ok { background: #00b42a; }
+@keyframes live-pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
+.live-more { position: relative; display: inline-block; vertical-align: baseline; margin-right: 8px; }
+.live-more > a.row-more {
+  cursor: pointer;
+  color: var(--color-primary, #165dff);
+  font-size: 13px;
+  text-decoration: none;
+  white-space: nowrap;
+  font-weight: 400;
+}
+.live-more > a.row-more:hover { text-decoration: underline; }
+.live-more-menu {
+  display: none;
+  position: absolute;
+  right: 0;
+  top: calc(100% + 4px);
+  z-index: 30;
+  background: #fff;
+  border: 1px solid var(--color-border, #e5e6eb);
+  border-radius: 4px;
+  box-shadow: 0 4px 12px rgba(0,0,0,.08);
+  min-width: 132px;
+  padding: 4px 0;
+}
+.live-more.open .live-more-menu { display: block; }
+.live-more-menu a,
+.live-more-menu button {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 6px 12px;
+  font-size: 13px;
+  color: var(--color-primary, #165dff);
+  background: none;
+  border: 0;
+  cursor: pointer;
+  text-decoration: none;
+  white-space: nowrap;
+  box-sizing: border-box;
+  font-weight: 400;
+  line-height: 1.4;
+}
+.live-more-menu a:hover,
+.live-more-menu button:hover { background: #f2f3f5; text-decoration: underline; }
+.live-more-menu .danger { color: #f53f3f; }
+.row-actions {
+  white-space: nowrap;
+  line-height: 22px;
+}
+.row-actions > a,
+.row-actions > button.act-btn {
+  display: inline-block;
+  margin-right: 8px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--color-primary, #165dff);
+  font-size: 13px;
+  cursor: pointer;
+  white-space: nowrap;
+  text-decoration: none;
+  vertical-align: baseline;
+  font-weight: 400;
+  line-height: 22px;
+}
+.row-actions > a:hover,
+.row-actions > button.act-btn:hover { text-decoration: underline; }
+.row-actions > a.is-primary,
+.row-actions > button.act-btn.is-primary { font-weight: 600; }
+.row-actions a.danger,
+.row-actions button.danger { color: #f53f3f; }
+tr.live-highlight { background: #f0f5ff; }
+.audit-stack { line-height: 1.6; }
+.pub-stack { line-height: 1.6; font-size: 12px; }
+</style>
 </head>
 <body class="admin-body" data-module="live" data-nav="lives" data-title="直播列表" data-crumb="直播 / 直播管理 / 直播列表">
 <div id="header-actions">
-  <button class="btn" id="btn-tutorial">使用教程</button>
-  <button class="btn" id="btn-batch">批量创建</button>
+  <button type="button" class="btn" id="btn-tutorial">使用教程</button>
   <a class="btn btn-primary" href="live-edit.html" id="btn-create">+ 新建直播</a>
 </div>
 <div id="page-content" style="display:none">
 
-  <!-- 3 个 Tab -->
-  <div class="tabs" id="live-tabs">
-    <a class="active" href="#video" data-tab="video">视频直播</a>
-    <a href="#audio" data-tab="audio">语音直播</a>
-    <a href="#record" data-tab="record">录播直播</a>
-  </div>
-
-  <!-- 顶部 4 个统计卡片 -->
-  <div class="stat-cards" style="margin:8px 0">
+  <div class="stat-cards" style="margin:0 0 8px">
     <div class="stat-card">
-      <div class="stat-label">今日待审核</div>
-      <div class="stat-value">12</div>
-      <div class="stat-hint"><span class="up">+3</span> 较昨日</div>
+      <div class="stat-label">待提交平台审核</div>
+      <div class="stat-value" id="stat-draft" style="color:#d48806">0</div>
+      <div class="stat-hint">草稿 / 可提交</div>
     </div>
     <div class="stat-card">
-      <div class="stat-label">今日通过</div>
-      <div class="stat-value" style="color:#00b42a">28</div>
-      <div class="stat-hint"><span class="up">+5</span> 较昨日</div>
+      <div class="stat-label">平台审核中</div>
+      <div class="stat-value" id="stat-platform-pending">0</div>
+      <div class="stat-hint">等待平台结果</div>
     </div>
     <div class="stat-card">
-      <div class="stat-label">今日驳回</div>
-      <div class="stat-value" style="color:#f53f3f">4</div>
-      <div class="stat-hint"><span class="down">-1</span> 较昨日</div>
+      <div class="stat-label">已上架待开播</div>
+      <div class="stat-value" id="stat-upcoming" style="color:#165dff">0</div>
+      <div class="stat-hint">已上架 · 未开始</div>
     </div>
     <div class="stat-card">
-      <div class="stat-label">累计上架中</div>
-      <div class="stat-value">136</div>
-      <div class="stat-hint">本周直播</div>
+      <div class="stat-label">直播中</div>
+      <div class="stat-value" id="stat-living" style="color:#f53f3f">0</div>
+      <div class="stat-hint">进行中场次</div>
     </div>
   </div>
 
-  <!-- 筛选 -->
   <div class="card" style="margin-bottom:8px"><div class="card-bd">
-    <div class="form-grid" style="grid-template-columns:repeat(6,minmax(0,1fr));gap:8px 12px">
-      <input id="f-name" placeholder="请输入直播名称" />
-      <select id="f-course">
-        <option value="">全部课程</option>
-        <option>店铺课程</option>
-        <option>转播课程</option>
-      </select>
+    <div class="form-grid" style="grid-template-columns:repeat(5,minmax(0,1fr));gap:8px 12px">
+      <input id="f-name" type="text" placeholder="直播名称 / ID" />
       <select id="f-mode">
         <option value="">全部模式</option>
-        <option>视频直播</option>
-        <option>语音直播</option>
-        <option>录播直播</option>
+        <option value="视频直播">视频直播</option>
+        <option value="语音直播">语音直播</option>
+        <option value="录播直播">录播直播</option>
       </select>
-      <select id="f-style">
-        <option value="">全部模式</option>
-        <option>传统直播间</option>
-        <option>沉浸直播间</option>
+      <select id="f-platform">
+        <option value="">平台审核状态</option>
       </select>
-      <select id="f-audit">
-        <option value="">审核状态</option>
-        <option>草稿</option>
-        <option>待审核</option>
-        <option>已通过</option>
-        <option>已驳回</option>
-        <option>已取消</option>
+      <select id="f-shelf">
+        <option value="">上架状态</option>
       </select>
-      <select id="f-status">
+      <select id="f-runtime">
         <option value="">直播状态</option>
-        <option>未开始</option>
-        <option>直播中</option>
-        <option>已结束</option>
       </select>
     </div>
     <div class="toolbar" style="margin-top:8px">
-      <button class="btn btn-primary" id="btn-query">查询</button>
-      <button class="btn" id="btn-reset">重置</button>
+      <button type="button" class="btn btn-primary" id="btn-query">查询</button>
+      <button type="button" class="btn" id="btn-reset">重置</button>
       <div class="spacer"></div>
-      <button class="btn" id="btn-export">导出</button>
-      <button class="btn" id="btn-shelf">上架</button>
-      <button class="btn" id="btn-unshelf">下架</button>
-      <button class="btn" id="btn-del">删除</button>
+      <button type="button" class="btn" id="btn-batch-publish" disabled>上架</button>
+      <button type="button" class="btn" id="btn-batch-unpublish" disabled>下架</button>
+      <button type="button" class="btn" id="btn-batch-delete" disabled>删除</button>
     </div>
   </div></div>
 
-  <!-- 表格 -->
   <div class="card"><div class="card-bd" style="padding:0">
     <table class="data">
       <thead>
         <tr>
           <th style="width:36px"><input type="checkbox" id="check-all" /></th>
-          <th>课程</th><th>直播名称</th><th>模式</th><th>直播间</th>
-          <th>审核状态</th><th>直播状态</th><th>开始时间</th><th>创建人</th>
-          <th>审核人</th><th>提交时间</th>
-          <th style="width:220px">操作</th>
+          <th>直播ID</th>
+          <th>课程/期次</th>
+          <th>直播名称</th>
+          <th>模式</th>
+          <th>开播时间</th>
+          <th>负责人</th>
+          <th>审核状态</th>
+          <th>发布状态</th>
+          <th style="width:240px">操作</th>
         </tr>
       </thead>
-      <tbody id="lv-tbody">
-        <!-- 待审核 -->
-        <tr data-audit="pending">
-          <td><input type="checkbox" class="row-check" /></td>
-          <td><div class="course-cell"><div class="thumb video"></div><div>春启 03 期家长必修课</div></div></td>
-          <td>春启 03 期家长公开课</td>
-          <td>视频直播</td>
-          <td>传统直播间</td>
-          <td><span class="audit-badge audit-pending">待审核</span></td>
-          <td><span class="status-dot status-pending"></span>未开始</td>
-          <td>2026-03-30 20:00</td>
-          <td>阮荣均</td>
-          <td>—</td><td>2026-09-04 14:30</td>
-          <td class="row-actions">
-            <a href="live-audit-detail.html" data-row-act="audit">审核</a>
-            <a href="#" data-row-act="withdraw">撤回</a>
-            <a href="#" data-row-act="detail">详情</a>
-          </td>
-        </tr>
-        <!-- 已驳回 -->
-        <tr data-audit="rejected">
-          <td><input type="checkbox" class="row-check" /></td>
-          <td><div class="course-cell"><div class="thumb video"></div><div>9.9 引流课 · 亲子沟通</div></div></td>
-          <td>9.9 引流试听课</td>
-          <td>视频直播</td>
-          <td>沉浸直播间</td>
-          <td><span class="audit-badge audit-rejected">已驳回</span></td>
-          <td><span class="status-dot status-pending"></span>未开始</td>
-          <td>2026-03-31 19:30</td>
-          <td>赵老师</td>
-          <td>刘管理</td><td>2026-09-03 16:00</td>
-          <td class="row-actions">
-            <a href="#" data-row-act="view-reject">查看原因</a>
-            <a href="live-edit.html" data-row-act="edit">编辑</a>
-            <a href="#" data-row-act="detail">详情</a>
-          </td>
-        </tr>
-        <!-- 草稿 -->
-        <tr data-audit="draft">
-          <td><input type="checkbox" class="row-check" /></td>
-          <td><div class="course-cell"><div class="thumb audio"></div><div>家长训练营</div></div></td>
-          <td>家长答疑会·音频直播</td>
-          <td>语音直播</td>
-          <td>传统直播间</td>
-          <td><span class="audit-badge audit-draft">草稿</span></td>
-          <td><span class="status-dot status-pending"></span>未开始</td>
-          <td>2026-04-01 20:00</td>
-          <td>王助教</td>
-          <td>—</td><td>—</td>
-          <td class="row-actions">
-            <a href="live-edit.html" data-row-act="edit">编辑</a>
-            <a href="#" data-row-act="submit">提交审核</a>
-            <a href="#" data-row-act="del" class="danger">删除</a>
-          </td>
-        </tr>
-        <!-- 已通过 + 直播中 -->
-        <tr data-audit="approved">
-          <td><input type="checkbox" class="row-check" /></td>
-          <td><div class="course-cell"><div class="thumb video"></div><div>今晚直播 · 复盘</div></div></td>
-          <td>今晚直播 · 公开课</td>
-          <td>视频直播</td>
-          <td>传统直播间</td>
-          <td><span class="audit-badge audit-approved">已通过</span></td>
-          <td><span class="status-dot status-livestreaming"></span>直播中</td>
-          <td>2026-09-04 20:00</td>
-          <td>阮荣均</td>
-          <td>李管理</td><td>2026-09-03 11:30</td>
-          <td class="row-actions">
-            <a href="live-screen.html?live_id=LV20260904001" data-row-act="screen" style="color:#165dff;font-weight:600">大屏</a>
-            <a href="live-stats.html" data-row-act="data">数据</a>
-            <a href="live-control.html?live_id=LV20260904001" data-row-act="control">中控台</a>
-            <a href="#" data-row-act="takedown" class="danger">强制下架</a>
-          </td>
-        </tr>
-        <!-- 已通过 + 未开始 -->
-        <tr data-audit="approved">
-          <td><input type="checkbox" class="row-check" /></td>
-          <td><div class="course-cell"><div class="thumb video"></div><div>春启 04 期</div></div></td>
-          <td>明日直播·春启04 招生</td>
-          <td>视频直播</td>
-          <td>沉浸直播间</td>
-          <td><span class="audit-badge audit-approved">已通过</span></td>
-          <td><span class="status-dot status-pending"></span>未开始</td>
-          <td>2026-09-05 19:00</td>
-          <td>赵老师</td>
-          <td>李管理</td><td>2026-09-03 18:00</td>
-          <td class="row-actions">
-            <a href="live-control.html?live_id=LV20260905002" data-row-act="control" style="color:#165dff;font-weight:600">中控台</a>
-            <a href="live-edit.html" data-row-act="edit">编辑</a>
-            <a href="#" data-row-act="cancel" class="danger">取消上架</a>
-          </td>
-        </tr>
-        <!-- 已取消 -->
-        <tr data-audit="cancelled">
-          <td><input type="checkbox" class="row-check" /></td>
-          <td><div class="course-cell"><div class="thumb video"></div><div>试听公开课</div></div></td>
-          <td>试听公开课·已取消</td>
-          <td>视频直播</td>
-          <td>传统直播间</td>
-          <td><span class="audit-badge audit-cancelled">已取消</span></td>
-          <td><span class="status-dot status-finished"></span>已结束</td>
-          <td>2026-03-15 20:00</td>
-          <td>王助教</td>
-          <td>—</td><td>2026-03-14 09:30</td>
-          <td class="row-actions">
-            <a href="#" data-row-act="detail">详情</a>
-            <a href="#" data-row-act="copy">复制</a>
-          </td>
-        </tr>
-      </tbody>
+      <tbody id="lv-tbody"></tbody>
     </table>
   </div></div>
 
-  <!-- 分页 -->
   <div class="toolbar" style="margin-top:8px">
-    <span class="muted">共 <b>6</b> 条</span>
+    <span class="muted" id="pager-hint">共 <b>0</b> 条</span>
     <div class="spacer"></div>
-    <select><option>10条/页</option><option>20条/页</option><option>50条/页</option></select>
-    <button class="btn btn-sm" disabled>上一页</button>
-    <button class="btn btn-sm" disabled>1</button>
-    <button class="btn btn-sm" disabled>下一页</button>
+    <select disabled><option>全部</option></select>
   </div>
 
 </div>
-
-<!-- ============ 弹窗 / 抽屉 ============ -->
-<div class="proto-mask" id="mask"></div>
-
-<!-- 驳回原因抽屉 -->
-<div class="proto-drawer" id="drawer-reject">
-  <div class="proto-drawer-hd">
-    <h3>驳回原因</h3>
-    <button class="btn btn-sm btn-ghost" data-close>×</button>
-  </div>
-  <div class="proto-drawer-bd">
-    <div class="field"><label>审核人</label><div>刘管理</div></div>
-    <div class="field"><label>驳回时间</label><div>2026-09-03 17:30</div></div>
-    <div class="field"><label>驳回理由</label>
-      <div style="background:#fff5f5;border:1px solid #ffccc7;border-radius:4px;padding:12px;color:#cf1322">
-        直播封面图包含第三方水印，请重新设计后再提交。建议尺寸 750*422px，去掉水印 logo。
-      </div>
-    </div>
-    <div class="field">
-      <label>审核维度</label>
-      <div style="display:flex;gap:8px;flex-wrap:wrap">
-        <span class="audit-tag fail">内容合规 ✕</span>
-        <span class="audit-tag pass">主讲资质 ✓</span>
-        <span class="audit-tag pass">商品合规 ✓</span>
-        <span class="audit-tag pass">直播间设置 ✓</span>
-      </div>
-    </div>
-  </div>
-  <div class="proto-drawer-ft">
-    <button class="btn" data-close>关闭</button>
-    <a class="btn btn-primary" href="live-edit.html">去编辑</a>
-  </div>
-</div>
-
-<!-- 撤回确认弹窗 -->
-<div class="proto-modal" id="modal-withdraw">
-  <div class="proto-modal-hd">
-    <h3>确认撤回</h3>
-    <button class="btn btn-sm btn-ghost" data-close>×</button>
-  </div>
-  <div class="proto-modal-bd">
-    <p>撤回后该直播将回到"草稿"状态，可继续编辑后重新提交。</p>
-    <div class="field"><label>撤回原因（选填）</label>
-      <textarea rows="3" placeholder="请输入撤回原因"></textarea>
-    </div>
-  </div>
-  <div class="proto-modal-ft">
-    <button class="btn" data-close>取消</button>
-    <button class="btn btn-primary" id="btn-confirm-withdraw">确认撤回</button>
-  </div>
-</div>
-
-<style>
-.thumb {
-  width: 48px; height: 32px; border-radius: 4px;
-  background: #f2f3f5 center/cover no-repeat;
-  flex-shrink: 0;
-  overflow: hidden;
-}
-.thumb.video { background-image: url("../assets/img/covers/live.jpg"); }
-.thumb.audio { background-image: url("../assets/img/covers/emotion.jpg"); }
-.course-cell { display: flex; align-items: center; gap: 8px; font-size: 12px; }
-.status-dot {
-  display: inline-block; width: 8px; height: 8px; border-radius: 50%;
-  margin-right: 4px; vertical-align: middle;
-}
-.status-livestreaming { background: var(--color-danger); animation: pulse 1.5s infinite; }
-.status-pending { background: var(--color-warning); }
-.status-finished { background: var(--color-text-muted); }
-@keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
-.row-actions a.danger { color: var(--color-danger); }
-
-/* 审核状态徽标 */
-.audit-badge {
-  display: inline-block; padding: 2px 10px; border-radius: 12px;
-  font-size: 12px; line-height: 18px; font-weight: 500;
-}
-.audit-draft    { background: #f0f1f3; color: #4e5969; }
-.audit-pending  { background: #fff7e6; color: #d48806; border: 1px solid #ffd591; }
-.audit-approved { background: #e8f5e9; color: #00b42a; }
-.audit-rejected { background: #fff1f0; color: #cf1322; border: 1px solid #ffa39e; }
-.audit-cancelled{ background: #f5f5f5; color: #86909c; }
-
-.audit-tag {
-  display: inline-block; padding: 2px 10px; border-radius: 4px;
-  font-size: 12px; line-height: 20px;
-}
-.audit-tag.pass { background: #e8f5e9; color: #00b42a; }
-.audit-tag.fail { background: #fff1f0; color: #cf1322; }
-
-/* 统计卡片 */
-.stat-cards {
-  display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px;
-}
-.stat-card {
-  background: #fff; border: 1px solid var(--color-border);
-  border-radius: 8px; padding: 14px 18px;
-}
-.stat-label { font-size: 13px; color: var(--color-text-muted); margin-bottom: 6px; }
-.stat-value { font-size: 24px; font-weight: 700; color: var(--color-text); line-height: 1.2; }
-.stat-hint  { font-size: 12px; color: var(--color-text-muted); margin-top: 4px; }
-.stat-hint .up   { color: #00b42a; margin-right: 4px; }
-.stat-hint .down { color: #f53f3f; margin-right: 4px; }
-</style>
 
 <script src="../assets/js/proto.js"></script>
-<script src="../assets/js/admin-shell.js?v=13"></script>
+<script src="../assets/js/prototype-business-store.js"></script>
+<script src="../assets/js/live-ops.js?v=7"></script>
+<script src="../assets/js/admin-shell.js?v=18"></script>
 <script>
 (function () {
-  // ===== Tabs =====
-  document.querySelectorAll("#live-tabs a[data-tab]").forEach(function (a) {
-    a.addEventListener("click", function (e) {
-      e.preventDefault();
-      document.querySelectorAll("#live-tabs a").forEach(function (x) { x.classList.remove("active"); });
-      a.classList.add("active");
-      Proto.toast("已切换：" + a.textContent);
-    });
-  });
+  var LO = window.LiveOps;
+  if (!LO) return;
 
-  // ===== Mask =====
-  var mask = document.getElementById("mask");
-  function closeAll() {
-    mask.classList.remove("open");
-    document.querySelectorAll(".proto-modal, .proto-drawer").forEach(function (n) { n.classList.remove("open"); });
+  var tbody = document.getElementById("lv-tbody");
+  var checkAll = document.getElementById("check-all");
+  var pagerHint = document.getElementById("pager-hint");
+  var selected = {};
+  var currentRows = [];
+  var filters = {
+    name: "",
+    mode: "",
+    platform: "",
+    shelf: "",
+    runtime: ""
+  };
+
+  function toast(msg) {
+    if (window.Proto && typeof Proto.toast === "function") Proto.toast(msg);
   }
-  function open(node) { mask.classList.add("open"); node.classList.add("open"); }
-  mask.addEventListener("click", closeAll);
-  document.querySelectorAll("[data-close]").forEach(function (n) { n.addEventListener("click", closeAll); });
 
-  // ===== Batch =====
-  document.getElementById("check-all").addEventListener("change", function () {
-    var c = this;
-    document.querySelectorAll(".row-check").forEach(function (x) { x.checked = c.checked; });
-  });
+  function esc(s) {
+    return String(s == null ? "" : s)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;");
+  }
 
-  // ===== Row actions =====
-  document.querySelectorAll("#lv-tbody tr").forEach(function (tr) {
-    tr.querySelectorAll("[data-row-act]").forEach(function (a) {
-      a.addEventListener("click", function (e) {
-        e.preventDefault();
-        var act = a.getAttribute("data-row-act");
-        var name = tr.querySelectorAll("td")[2].textContent.trim();
-        if (act === "audit")         location.href = "live-audit-detail.html";
-        else if (act === "withdraw") open(document.getElementById("modal-withdraw"));
-        else if (act === "view-reject") open(document.getElementById("drawer-reject"));
-        else if (act === "submit")   Proto.toast("已提交审核：" + name);
-        else if (act === "takedown") { if (confirm("强制下架「" + name + "」？")) Proto.toast("已下架（原型）"); }
-        else if (act === "cancel")   { if (confirm("取消上架「" + name + "」？")) Proto.toast("已取消（原型）"); }
-        else if (act === "edit")     location.href = "live-edit.html";
-        else if (act === "data")     location.href = "live-stats.html";
-        else if (act === "control")  location.href = a.getAttribute("href");
-        else if (act === "screen")   location.href = a.getAttribute("href");
-        else if (act === "copy")     Proto.toast("已复制链接（原型）");
-        else if (act === "detail")   Proto.toast("打开详情（原型）");
-        else if (act === "del") {
-          if (confirm("确认删除「" + name + "」?")) { tr.remove(); Proto.toast("已删除（原型）"); }
-        }
-      });
+  function fillSelect(sel, map, placeholder) {
+    var html = '<option value="">' + esc(placeholder) + "</option>";
+    Object.keys(map).forEach(function (k) {
+      html += '<option value="' + esc(k) + '">' + esc(map[k]) + "</option>";
     });
+    sel.innerHTML = html;
+  }
+
+  fillSelect(document.getElementById("f-platform"), LO.PLATFORM_LABEL, "平台审核状态");
+  fillSelect(document.getElementById("f-shelf"), LO.SHELF_LABEL, "上架状态");
+  fillSelect(document.getElementById("f-runtime"), LO.RUNTIME_LABEL, "直播状态");
+
+  function readFiltersFromUI() {
+    return {
+      name: (document.getElementById("f-name").value || "").trim(),
+      mode: document.getElementById("f-mode").value || "",
+      platform: document.getElementById("f-platform").value || "",
+      shelf: document.getElementById("f-shelf").value || "",
+      runtime: document.getElementById("f-runtime").value || ""
+    };
+  }
+
+  function applyFiltersToUI(f) {
+    f = f || {};
+    document.getElementById("f-name").value = f.name || "";
+    document.getElementById("f-mode").value = f.mode || "";
+    document.getElementById("f-platform").value = f.platform || "";
+    document.getElementById("f-shelf").value = f.shelf || "";
+    document.getElementById("f-runtime").value = f.runtime || "";
+  }
+
+  function matchFilters(v, f) {
+    if (f.name) {
+      var q = f.name.toLowerCase();
+      var hay = ((v.liveName || v.name || "") + " " + (v.liveId || v.id || "")).toLowerCase();
+      if (hay.indexOf(q) < 0) return false;
+    }
+    if (f.mode && (v.liveMode || "") !== f.mode) return false;
+    if (f.platform && v.platformReviewStatus !== f.platform) return false;
+    if (f.shelf && v.shelfStatus !== f.shelf) return false;
+    if (f.runtime && v.runtimeStatus !== f.runtime) return false;
+    return true;
+  }
+
+  function auditBadgeClass(status) {
+    if (status === "pending" || status === "reviewing") return "audit-pending";
+    if (status === "passed") return "audit-approved";
+    if (status === "rejected") return "audit-rejected";
+    if (status === "withdrawn") return "audit-cancelled";
+    return "";
+  }
+
+  function runtimeDotClass(runtime) {
+    if (runtime === "living") return "status-living";
+    if (runtime === "ended" || runtime === "cancelled") return "status-finished";
+    if (runtime === "not_started") return "status-pending";
+    return "status-pending";
+  }
+
+  function saveCtx(extra) {
+    var ctx = {
+      filters: readFiltersFromUI(),
+      scrollY: window.scrollY || 0,
+      highlightId: (extra && extra.highlightId) || ""
+    };
+    LO.saveListContext(ctx);
+  }
+
+  function detailHref(id) {
+    return LO.viewLiveUrl ? LO.viewLiveUrl(id) : LO.buildUrl("live-edit.html", { live_id: id, mode: "view" });
+  }
+
+  function actionHandlers() {
+    return {
+      submit_platform: function (id) {
+        LO.openSubmitPlatformModal(id, {
+          reload: false,
+          onSuccess: function () {
+            selected = {};
+            render();
+          }
+        });
+        return false;
+      },
+      withdraw_platform: function (id) {
+        if (!confirm("确认撤回平台审核？撤回后将变为未提交草稿。")) return false;
+        LO.withdrawPlatform(id);
+        LO.patchLive(id, { platformReviewStatus: "not_submitted" });
+        toast("已撤回平台审核");
+      },
+      withdraw_edit: function (id) {
+        if (!confirm("当前直播正在平台审核中，编辑前需要撤回审核。撤回后直播将变为草稿，需要修改并重新提交。\n\n确认撤回并编辑？")) return false;
+        LO.withdrawAndEdit(id);
+        saveCtx({ highlightId: id });
+        location.href = LO.editLiveUrl(id);
+        return false;
+      },
+      publish: function (id) {
+        LO.publish(id);
+        toast("已上架");
+      },
+      unpublish: function (id) {
+        if (!confirm("确认取消上架？")) return false;
+        LO.unpublish(id);
+        toast("已下架");
+      },
+      force_offline: function (id) {
+        if (!confirm("确认强制下架该直播？")) return false;
+        LO.forceOffline(id);
+        toast("已强制下架");
+      },
+      copy: function (id) {
+        var copy = LO.copyLive(id);
+        toast(copy ? ("已复制为 " + copy.liveId) : "复制失败");
+        if (copy) {
+          saveCtx({ highlightId: copy.liveId });
+          location.href = LO.editLiveUrl(copy.liveId);
+          return false;
+        }
+      },
+      share: function (id) {
+        LO.openShareModal(id);
+        return false;
+      },
+      delete: function (id) {
+        if (!confirm("确认删除该直播？仅草稿/已取消可删。")) return false;
+        var ok = LO.deleteLive(id);
+        toast(ok ? "已删除" : "当前状态不可删除");
+      }
+    };
+  }
+
+  function runAction(type, liveId) {
+    var map = actionHandlers();
+    var fn = map[type];
+    if (!fn) return;
+    var ret = fn(liveId);
+    if (ret === false) return;
+    selected = {};
+    render();
+  }
+
+  function actionNode(item, liveId, asButton) {
+    var danger = item.action === "delete" || item.action === "force_offline" || item.action === "unpublish";
+    var cls = danger ? " danger" : "";
+    if (item.href) {
+      return '<a href="' + esc(item.href) + '" data-nav-live="' + esc(liveId) + '"' +
+        (danger ? ' class="danger"' : "") + ">" + esc(item.label) + "</a>";
+    }
+    if (item.action) {
+      if (asButton) {
+        return '<button type="button" class="act-btn' + cls + '" data-act="' + esc(item.action) +
+          '" data-live-id="' + esc(liveId) + '">' + esc(item.label) + "</button>";
+      }
+      return '<button type="button" class="' + (danger ? "danger" : "") + '" data-act="' +
+        esc(item.action) + '" data-live-id="' + esc(liveId) + '">' + esc(item.label) + "</button>";
+    }
+    return "";
+  }
+
+  function renderActions(v) {
+    var pack = LO.buildActions(v);
+    var id = v.liveId || v.id;
+    var html = "";
+    if (pack.primary) {
+      if (pack.primary.href) {
+        html += '<a class="is-primary" href="' + esc(pack.primary.href) + '" data-nav-live="' + esc(id) +
+          '">' + esc(pack.primary.label) + "</a>";
+      } else if (pack.primary.action) {
+        html += '<button type="button" class="act-btn is-primary" data-act="' +
+          esc(pack.primary.action) + '" data-live-id="' + esc(id) + '">' +
+          esc(pack.primary.label) + "</button>";
+      }
+    }
+    var secs = (pack.secondary || []).filter(function (s) {
+      if (!pack.primary) return true;
+      if (pack.primary.label && s.label === pack.primary.label) return false;
+      if (pack.primary.href && s.href === pack.primary.href) return false;
+      return true;
+    });
+    var visible = [];
+    var more = secs;
+    visible.forEach(function (s) {
+      html += actionNode(s, id, true);
+    });
+    if (more.length) {
+      html += '<span class="live-more"><a href="javascript:;" class="row-more" data-more-toggle>更多</a>';
+      html += '<div class="live-more-menu">';
+      more.forEach(function (s) {
+        html += actionNode(s, id, false);
+      });
+      html += "</div></span>";
+    }
+    return html;
+  }
+
+  function renderEmpty() {
+    tbody.innerHTML =
+      '<tr><td colspan="10" style="padding:48px;text-align:center;color:#86909c">暂无符合条件的直播</td></tr>';
+    pagerHint.innerHTML = "共 <b>0</b> 条";
+    checkAll.checked = false;
+    updateBatchButtons();
+  }
+
+  function updateStats(all) {
+    var draft = 0;
+    var platformPending = 0;
+    var upcoming = 0;
+    var living = 0;
+    all.forEach(function (v) {
+      var key = LO.scenarioKey(v);
+      if (key === "draft" || key === "platform_rejected") draft++;
+      if (key === "platform_pending") platformPending++;
+      if (key === "upcoming") upcoming++;
+      if (key === "living") living++;
+    });
+    document.getElementById("stat-draft").textContent = String(draft);
+    document.getElementById("stat-platform-pending").textContent = String(platformPending);
+    document.getElementById("stat-upcoming").textContent = String(upcoming);
+    document.getElementById("stat-living").textContent = String(living);
+  }
+
+  function updateBatchButtons() {
+    var n = Object.keys(selected).length;
+    document.getElementById("btn-batch-publish").disabled = n === 0;
+    document.getElementById("btn-batch-unpublish").disabled = n === 0;
+    document.getElementById("btn-batch-delete").disabled = n === 0;
+  }
+
+  function courseTerm(v) {
+    var course = v.courseName || "—";
+    var term = v.termName || "";
+    if (term) return esc(course) + '<div class="muted">' + esc(term) + "</div>";
+    return esc(course);
+  }
+
+  function render() {
+    var all = LO.getLives() || [];
+    updateStats(all);
+    filters = readFiltersFromUI();
+    currentRows = all.filter(function (v) { return matchFilters(v, filters); });
+    if (!currentRows.length) {
+      renderEmpty();
+      return;
+    }
+    var html = "";
+    currentRows.forEach(function (v) {
+      var id = v.liveId || v.id;
+      var checked = selected[id] ? " checked" : "";
+      html += '<tr data-live-id="' + esc(id) + '">';
+      html += '<td><input type="checkbox" class="row-check" data-live-id="' + esc(id) + '"' + checked + " /></td>";
+      html += "<td>" + esc(id) + "</td>";
+      html += "<td>" + courseTerm(v) + "</td>";
+      html += '<td><a href="' + esc(detailHref(id)) + '" data-nav-live="' + esc(id) + '">' +
+        esc(v.liveName || v.name || "—") + "</a></td>";
+      html += "<td>" + esc(v.liveMode || "—") + "</td>";
+      html += "<td>" + esc(v.startAt || "—") + "</td>";
+      html += "<td>" + esc(v.owner || v.creator || "—") + "</td>";
+      html += '<td class="audit-stack">';
+      html += '<span class="audit-badge ' + auditBadgeClass(v.platformReviewStatus) + '">' +
+        esc(v.platformReviewStatusLabel || "—") + "</span>";
+      html += "</td>";
+      html += '<td class="pub-stack">';
+      html += '<span class="status-dot ' + runtimeDotClass(v.runtimeStatus) + '"></span>' +
+        esc(v.runtimeStatusLabel || "—") + "<br/>";
+      html += '<span class="muted">上架：' + esc(v.shelfStatusLabel || "—") + "</span>";
+      html += "</td>";
+      html += '<td class="row-actions">' + renderActions(v) + "</td>";
+      html += "</tr>";
+    });
+    tbody.innerHTML = html;
+    pagerHint.innerHTML = "共 <b>" + currentRows.length + "</b> 条";
+    checkAll.checked = currentRows.length > 0 &&
+      currentRows.every(function (v) { return selected[v.liveId || v.id]; });
+    updateBatchButtons();
+  }
+
+  function selectedLives() {
+    var map = {};
+    (LO.getLives() || []).forEach(function (v) { map[v.liveId || v.id] = v; });
+    return Object.keys(selected).map(function (id) { return map[id]; }).filter(Boolean);
+  }
+
+  function runBatch(action, label) {
+    var lives = selectedLives();
+    var gate = LO.canBatch(action, lives);
+    if (!lives.length) {
+      toast("请先选择直播");
+      return;
+    }
+    if (!gate.okList || !gate.okList.length) {
+      toast(gate.reason || ("选中项均不支持" + label));
+      return;
+    }
+    if (gate.failList && gate.failList.length) {
+      toast((gate.reason || "部分不可操作") + "，将对 " + gate.okList.length + " 场执行" + label);
+    }
+    if (action === "delete" && !confirm("确认删除 " + gate.okList.length + " 场直播？")) return;
+    gate.okList.forEach(function (v) {
+      var id = v.liveId || v.id;
+      if (action === "publish") LO.publish(id);
+      else if (action === "unpublish") LO.unpublish(id);
+      else if (action === "delete") LO.deleteLive(id);
+    });
+    selected = {};
+    toast("已对 " + gate.okList.length + " 场执行" + label);
+    render();
+  }
+
+  /* events */
+  document.getElementById("btn-tutorial").addEventListener("click", function () {
+    toast("打开使用教程（原型）");
   });
 
-  // ===== Confirm withdraw =====
-  document.getElementById("btn-confirm-withdraw").addEventListener("click", function () {
-    Proto.toast("已撤回，回到草稿状态（原型）");
-    closeAll();
+  document.getElementById("btn-create").addEventListener("click", function () {
+    saveCtx({});
   });
 
-  // ===== Header buttons =====
-  document.getElementById("btn-tutorial").addEventListener("click", function () { Proto.toast("打开使用教程（原型）"); });
-  document.getElementById("btn-batch").addEventListener("click", function () { Proto.toast("打开批量创建（原型）"); });
-  document.getElementById("btn-export").addEventListener("click", function () { Proto.toast("已导出（原型）"); });
-  document.getElementById("btn-shelf").addEventListener("click", function () { Proto.toast("已上架选中（原型）"); });
-  document.getElementById("btn-unshelf").addEventListener("click", function () { Proto.toast("已下架选中（原型）"); });
-  document.getElementById("btn-del").addEventListener("click", function () {
-    if (confirm("确认批量删除？")) Proto.toast("已批量删除（原型）");
+  document.getElementById("btn-query").addEventListener("click", function () {
+    selected = {};
+    render();
   });
-  document.getElementById("btn-query").addEventListener("click", function () { Proto.toast("已查询（原型）"); });
+
   document.getElementById("btn-reset").addEventListener("click", function () {
-    document.getElementById("f-name").value = "";
-    ["f-course","f-mode","f-style","f-audit","f-status"].forEach(function (id) { document.getElementById(id).value = ""; });
-    Proto.toast("已重置");
+    applyFiltersToUI({});
+    selected = {};
+    render();
+    toast("已重置筛选");
   });
+
+  document.getElementById("btn-batch-publish").addEventListener("click", function () {
+    runBatch("publish", "上架");
+  });
+  document.getElementById("btn-batch-unpublish").addEventListener("click", function () {
+    runBatch("unpublish", "下架");
+  });
+  document.getElementById("btn-batch-delete").addEventListener("click", function () {
+    runBatch("delete", "删除");
+  });
+
+  checkAll.addEventListener("change", function () {
+    var on = checkAll.checked;
+    currentRows.forEach(function (v) {
+      var id = v.liveId || v.id;
+      if (on) selected[id] = true;
+      else delete selected[id];
+    });
+    tbody.querySelectorAll(".row-check").forEach(function (c) { c.checked = on; });
+    updateBatchButtons();
+  });
+
+  tbody.addEventListener("change", function (e) {
+    var t = e.target;
+    if (!t.classList || !t.classList.contains("row-check")) return;
+    var id = t.getAttribute("data-live-id");
+    if (t.checked) selected[id] = true;
+    else delete selected[id];
+    checkAll.checked = currentRows.length > 0 &&
+      currentRows.every(function (v) { return selected[v.liveId || v.id]; });
+    updateBatchButtons();
+  });
+
+  tbody.addEventListener("click", function (e) {
+    var moreToggle = e.target.closest("[data-more-toggle]");
+    if (moreToggle) {
+      e.preventDefault();
+      e.stopPropagation();
+      var wrap = moreToggle.closest(".live-more");
+      document.querySelectorAll(".live-more.open").forEach(function (n) {
+        if (n !== wrap) n.classList.remove("open");
+      });
+      wrap.classList.toggle("open");
+      return;
+    }
+
+    var actEl = e.target.closest("[data-act]");
+    if (actEl) {
+      e.preventDefault();
+      e.stopPropagation();
+      runAction(actEl.getAttribute("data-act"), actEl.getAttribute("data-live-id"));
+      return;
+    }
+
+    var nav = e.target.closest("[data-nav-live]");
+    if (nav) {
+      saveCtx({ highlightId: nav.getAttribute("data-nav-live") });
+    }
+  });
+
+  document.addEventListener("click", function (e) {
+    if (!e.target.closest(".live-more")) {
+      document.querySelectorAll(".live-more.open").forEach(function (n) {
+        n.classList.remove("open");
+      });
+    }
+  });
+
+  /* restore context */
+  var ctx = LO.loadListContext() || {};
+  try {
+    var urlParams = new URLSearchParams(location.search);
+    var fromUrl = {
+      name: urlParams.get("name") || "",
+      mode: urlParams.get("mode") || "",
+      platform: urlParams.get("platform") || "",
+      shelf: urlParams.get("shelf") || "",
+      runtime: urlParams.get("runtime") || ""
+    };
+    if (fromUrl.name || fromUrl.mode || fromUrl.platform || fromUrl.shelf || fromUrl.runtime) {
+      ctx.filters = Object.assign({}, ctx.filters || {}, fromUrl);
+    }
+  } catch (e) {}
+  if (ctx.filters) applyFiltersToUI(ctx.filters);
+  render();
+  if (ctx.highlightId) {
+    var row = tbody.querySelector('tr[data-live-id="' + ctx.highlightId + '"]');
+    if (row) {
+      row.classList.add("live-highlight");
+      try { row.scrollIntoView({ block: "center", behavior: "smooth" }); } catch (err) {}
+    }
+  } else if (typeof ctx.scrollY === "number" && ctx.scrollY > 0) {
+    window.scrollTo(0, ctx.scrollY);
+  }
 })();
 </script>
 </body>

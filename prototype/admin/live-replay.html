@@ -428,21 +428,50 @@
 </style>
 
 <script src="../assets/js/proto.js"></script>
-<script src="../assets/js/admin-shell.js?v=13"></script>
+<script src="../assets/js/prototype-business-store.js"></script>
+<script src="../assets/js/live-ops.js?v=7"></script>
+<script src="../assets/js/admin-shell.js?v=18"></script>
 <script>
 (function () {
+  var liveId = window.LiveOps ? LiveOps.idFromSearch() : "";
+  var live = liveId && LiveOps.getLive(liveId);
+  if (liveId && !live) {
+    LiveOps.renderEmptyLive(document.getElementById("page-content"), "未找到直播 " + liveId);
+    return;
+  }
+  if (live) {
+    LiveOps.renderContextBanner({ live: live });
+    var ha = document.getElementById("page-header-actions") || document.getElementById("header-actions");
+    if (ha) {
+      ha.innerHTML =
+        '<a class="btn" href="' + LiveOps.viewLiveUrl(live.liveId) + '">返回直播详情</a>' +
+        '<button type="button" class="btn" id="btn-tutorial">使用教程</button>' +
+        '<button type="button" class="btn" id="btn-import">导入外部回放</button>';
+    }
+    document.body.setAttribute("data-crumb", "直播 / 直播管理 / 直播回放 / " + live.liveName);
+    document.title = "直播回放 · " + live.liveName + " · 商家管理后台";
+    /* highlight matching row if present */
+    document.querySelectorAll("#rp-tbody tr, tbody tr").forEach(function (tr) {
+      if (tr.textContent && tr.textContent.indexOf(live.liveName.slice(0, 4)) >= 0) {
+        tr.style.background = "#f0f5ff";
+      }
+    });
+  }
+
   // ===== Mask =====
   var mask = document.getElementById("mask");
   function closeAll() {
+    if (!mask) return;
     mask.classList.remove("open");
     document.querySelectorAll(".proto-modal, .proto-drawer").forEach(function (n) { n.classList.remove("open"); });
   }
-  function open(node) { mask.classList.add("open"); node.classList.add("open"); }
-  mask.addEventListener("click", closeAll);
+  function open(node) { if (mask) mask.classList.add("open"); node.classList.add("open"); }
+  if (mask) mask.addEventListener("click", closeAll);
   document.querySelectorAll("[data-close]").forEach(function (n) { n.addEventListener("click", closeAll); });
 
   // ===== Batch =====
-  document.getElementById("check-all").addEventListener("change", function () {
+  var checkAll = document.getElementById("check-all");
+  if (checkAll) checkAll.addEventListener("change", function () {
     var c = this;
     document.querySelectorAll(".row-check").forEach(function (x) { x.checked = c.checked; });
   });

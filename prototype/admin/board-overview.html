@@ -90,7 +90,7 @@
           <div class="l">有到场</div>
           <div class="r" id="funnel-attend-rate">47%</div>
         </div>
-        <div class="step" data-m-h="pay" style="--h:21%">
+        <div class="step clickable" data-funnel-step="attend_pay" data-m-h="pay" style="--h:21%">
           <div class="n" data-m="pay">128</div>
           <div class="l">可归因支付</div>
           <div class="r" data-m="stepPay">33%</div>
@@ -136,6 +136,10 @@
 
   <h2 style="margin:0 0 12px;font-size:14px">专题分析入口</h2>
   <div class="board-topic-entries" id="topic-entries">
+    <a class="board-topic-entry" data-board-link="board-term-review.html" href="board-term-review.html">
+      <div class="t">期次经营复盘</div>
+      <div class="d" id="topic-term">查看某一期次从获客到成交的完整经营链路</div>
+    </a>
     <a class="board-topic-entry" data-board-link="board-acquire.html" href="board-acquire.html">
       <div class="t">获客质量分析</div>
       <div class="d" id="topic-acquire">查看渠道质量、流失环节与名单</div>
@@ -154,14 +158,27 @@
     </a>
   </div>
 
+  <div class="card" id="overview-trend-card" style="margin-bottom:16px" hidden>
+    <div class="card-hd" style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap">
+      <h2 style="margin:0">核心指标趋势</h2>
+      <button type="button" class="btn btn-sm" id="btn-close-trend">关闭</button>
+    </div>
+    <div class="card-bd">
+      <p class="muted" style="font-size:12px;margin:0 0 8px" id="overview-trend-note"></p>
+      <div id="overview-trend-chart" style="min-height:220px"></div>
+      <p style="margin:8px 0 0;font-size:12px"><a href="#" id="overview-trend-term-link">在期次经营看板中查看完整趋势</a></p>
+    </div>
+  </div>
+
 </div>
 <script src="../assets/js/proto.js"></script>
-<script src="../assets/js/board-data.js?v=8"></script>
-<script src="../assets/js/board-metrics.js?v=14"></script>
-<script src="../assets/js/board-insights.js?v=8"></script>
-<script src="../assets/js/board-dictionary.js?v=3"></script>
-<script src="../assets/js/board-tools.js?v=4"></script>
-<script src="../assets/js/admin-shell.js?v=13"></script>
+<script src="../assets/js/board-data.js?v=10"></script>
+<script src="../assets/js/board-metrics.js?v=15"></script>
+<script src="../assets/js/board-insights.js?v=9"></script>
+<script src="../assets/js/board-term.js?v=1"></script>
+<script src="../assets/js/board-dictionary.js?v=4"></script>
+<script src="../assets/js/board-tools.js?v=5"></script>
+<script src="../assets/js/admin-shell.js?v=16"></script>
 <script>
 (function () {
   BoardMetrics.ensureCaliberUI();
@@ -197,6 +214,14 @@
 
   function renderCoreKpis(d, filters) {
     var kpis = BoardInsights.getCoreKpis(filters);
+    var trendMap = {
+      pool: "pool_cum",
+      wecom_rate: "wecom_rate",
+      attend: "attend_users",
+      pay: "pay_users",
+      gmv: "gmv",
+      refund: "pay_users"
+    };
     document.getElementById("core-kpis").innerHTML = kpis.map(function (k) {
       var cmp = k.compare && k.compare.comparable
         ? '<span class="' + trendClass(k.compare.trend) + '">' + k.compareLabel + " " + k.compare.text + "</span>"
@@ -204,13 +229,37 @@
       var tgt = k.targetInfo && k.targetInfo.detail
         ? "<br/>" + k.targetInfo.detail
         : (k.target == null ? "" : "");
+      var metric = trendMap[k.id] || "pool_new";
       return '<div class="board-kpi" data-kpi="' + k.id + '">' +
         '<div class="kpi-label" data-metric="' + k.id + '">' + k.label + "</div>" +
         '<div class="kpi-value">' + k.value + "</div>" +
         (k.sub ? '<div class="kpi-sub">' + k.sub + "</div>" : "") +
-        '<div class="kpi-meta">' + cmp + tgt + "</div></div>";
+        '<div class="kpi-meta">' + cmp + tgt +
+        '<br/><a href="#" data-open-trend="' + metric + '" data-trend-label="' + k.label + '">查看趋势</a></div></div>';
     }).join("");
     if (window.BoardTools) BoardTools.bindMetricTips(document.getElementById("core-kpis"));
+    document.querySelectorAll("[data-open-trend]").forEach(function (a) {
+      a.onclick = function (e) {
+        e.preventDefault();
+        openOverviewTrend(a.getAttribute("data-open-trend"), a.getAttribute("data-trend-label"));
+      };
+    });
+  }
+
+  function openOverviewTrend(metric, label) {
+    if (!window.BoardTerm) return;
+    var filters = BoardMetrics.getFilters();
+    var termId = filters.term || BoardTerm.defaultTermId();
+    var card = document.getElementById("overview-trend-card");
+    var note = document.getElementById("overview-trend-note");
+    var host = document.getElementById("overview-trend-chart");
+    var link = document.getElementById("overview-trend-term-link");
+    card.hidden = false;
+    note.textContent = (label || "指标") + " · 期次 " + ((BoardTerm.getTermById(termId) || {}).name || termId) +
+      "（总览趋势复用期次趋势组件；未选期次时默认当前经营期次）";
+    BoardTerm.renderTrendChart(host, BoardTerm.buildTrendSeries(termId, metric, filters));
+    link.href = BoardTerm.termBoardUrl(termId, { metric: metric, from_board: "overview", section: "trend" });
+    card.scrollIntoView({ behavior: "smooth", block: "nearest" });
   }
 
   function updateTradeCard(d) { return; }
@@ -294,10 +343,19 @@
         var localBtn = (dim === "channel" || dim === "term" || dim === "staff" || dim === "live")
           ? ' <a href="#" data-local-dim="' + dim + '" data-local-id="' + r.id + '" data-local-label="' + r.label + '">局部高亮</a>'
           : "";
+        var termBoardBtn = "";
+        if (dim === "term" && r.id && r.id !== "mixed" && window.BoardTerm) {
+          var tbHref = BoardTerm.termBoardUrl(r.id, {
+            from_board: "overview",
+            funnel_step: stepId,
+            funnel_dim: "channel"
+          });
+          termBoardBtn = ' <a href="' + tbHref + '" data-drill-save="1">查看期次经营看板</a>';
+        }
         return '<tr class="' + sel + '"><td><b>' + r.label + "</b></td><td>" + BoardMetrics.fmt(r.from) + "</td><td>" +
           BoardMetrics.fmt(r.to) + "</td><td>" + (r.rate != null ? r.rate + "%" : "—") + "</td><td>" +
           r.diffText + "</td><td>" + (r.impact ? "约 " + r.impact + " 人" : "—") + '</td><td class="row-actions">' +
-          '<a href="' + listHref + '" data-drill-save="1">查看名单</a>' + localBtn + applyBtn + "</td></tr>";
+          '<a href="' + listHref + '" data-drill-save="1">查看名单</a>' + localBtn + applyBtn + termBoardBtn + "</td></tr>";
       }).join("");
     }
     document.getElementById("fa-note").textContent =
@@ -485,6 +543,12 @@
     }, { syncUrl: true, push: true });
     sync(null, BoardMetrics.aggregateLeadMetrics());
   };
+  var closeTrend = document.getElementById("btn-close-trend");
+  if (closeTrend) {
+    closeTrend.onclick = function () {
+      document.getElementById("overview-trend-card").hidden = true;
+    };
+  }
   var backBn = document.getElementById("fa-back-bn");
   if (backBn) {
     backBn.onclick = function () {

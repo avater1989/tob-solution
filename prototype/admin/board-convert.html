@@ -165,12 +165,13 @@
 
 </div>
 <script src="../assets/js/proto.js"></script>
-<script src="../assets/js/board-data.js?v=8"></script>
-<script src="../assets/js/board-metrics.js?v=14"></script>
-<script src="../assets/js/board-insights.js?v=8"></script>
-<script src="../assets/js/board-dictionary.js?v=3"></script>
-<script src="../assets/js/board-tools.js?v=4"></script>
-<script src="../assets/js/admin-shell.js?v=13"></script>
+<script src="../assets/js/board-data.js?v=10"></script>
+<script src="../assets/js/board-metrics.js?v=15"></script>
+<script src="../assets/js/board-insights.js?v=9"></script>
+<script src="../assets/js/board-term.js?v=1"></script>
+<script src="../assets/js/board-dictionary.js?v=4"></script>
+<script src="../assets/js/board-tools.js?v=5"></script>
+<script src="../assets/js/admin-shell.js?v=16"></script>
 <script>
 (function () {
   BoardMetrics.ensureCaliberUI();
@@ -238,6 +239,11 @@
           selected_live: r.id, live_id: r.id, live_tab: "ended", from_board: "convert"
         }) + '" data-drill-save="1">查看场次复盘</a>';
         if (!r.canViewPayUsers) { href = ""; act = ""; }
+      }
+      if (state.dim === "term" && r.id && r.id !== "mixed" && window.BoardTerm) {
+        extra += ' · <a href="' + BoardTerm.termBoardUrl(r.id, {
+          from_board: "convert", section: "convert"
+        }) + '" data-drill-save="1">查看期次经营看板</a>';
       }
       var diff = r.payDiff == null ? "—" : ((r.payDiff > 0 ? "+" : "") + r.payDiff + "pp");
       var fromCell = r.from == null ? "—" : BoardMetrics.fmt(r.from);

@@ -775,9 +775,34 @@
 
   function describeAnalyticsContext(q) {
     q = q || new URLSearchParams(location.search);
-    var parts = ["经营分析"];
     var from = q.get("from_board") || q.get("from");
+    var parts = [];
+    if (from === "term_review" || from === "term-review") {
+      parts.push("期次经营看板");
+      if (q.get("term")) {
+        var tCat = ((BD().termCatalog) || []).find(function (o) { return o.id === q.get("term"); });
+        var tOpt = (BD().termOptions || []).find(function (o) { return o.value === q.get("term"); });
+        parts.push((tCat && tCat.name) || (tOpt && tOpt.label) || q.get("term"));
+      }
+      var focusMap = {
+        unassigned: "待分配",
+        no_follow: "未跟进",
+        attend_no_pay: "到场未支付",
+        no_show: "未到场",
+        high_intent: "高意向未支付",
+        sms_failed: "推送失败",
+        nopay: "到场未支付"
+      };
+      if (q.get("focus") && focusMap[q.get("focus")]) parts.push(focusMap[q.get("focus")]);
+      else if (q.get("focus")) parts.push(q.get("focus"));
+      return parts.join(" / ");
+    }
+    parts.push("经营分析");
     if (from === "overview" || /board-overview/.test(location.pathname)) parts.push("总览");
+    if (from === "acquire") parts.push("获客分析");
+    if (from === "private") parts.push("私域转化");
+    if (from === "live") parts.push("直播分析");
+    if (from === "convert") parts.push("交易分析");
     var step = q.get("funnel_step");
     if (step) {
       var s = FUNNEL_STEPS.find(function (x) { return x.id === step; });
@@ -804,7 +829,9 @@
       private: "board-private.html",
       live: "board-live.html",
       convert: "board-convert.html",
-      overview: "board-overview.html"
+      overview: "board-overview.html",
+      term_review: "board-term-review.html",
+      "term-review": "board-term-review.html"
     };
     return map[from] || "";
   }

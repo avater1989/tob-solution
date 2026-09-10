@@ -13,6 +13,17 @@
 </div>
 <div id="page-content" style="display:none">
 
+  <div id="post-live-actions" class="card" style="display:none;margin-bottom:12px">
+    <div class="card-hd"><h2>直播后操作</h2></div>
+    <div class="card-bd" style="display:flex;flex-wrap:wrap;gap:8px">
+      <a class="btn" id="pla-replay" href="#">查看回放</a>
+      <a class="btn" id="pla-noshow" href="#">跟进已预约未到场</a>
+      <a class="btn" id="pla-notorder" href="#">跟进已到场未下单</a>
+      <a class="btn" id="pla-copy" href="#">复制本场直播</a>
+      <a class="btn" id="pla-back" href="#">返回直播详情</a>
+    </div>
+  </div>
+
   <!-- 顶部 5 大核心数据 -->
   <div class="grid-4" style="margin-bottom:16px">
     <div class="stat"><div class="label">累计观看人次</div><div class="value">8,642</div></div>
@@ -186,14 +197,55 @@
 </style>
 
 <script src="../assets/js/proto.js"></script>
-<script src="../assets/js/admin-shell.js?v=13"></script>
+<script src="../assets/js/prototype-business-store.js"></script>
+<script src="../assets/js/live-ops.js?v=7"></script>
+<script src="../assets/js/admin-shell.js?v=18"></script>
 <script>
 (function () {
-  document.getElementById("btn-export").addEventListener("click", function () { Proto.toast("已导出（原型）"); });
-  document.getElementById("btn-refresh").addEventListener("click", function () { Proto.toast("已刷新（原型）"); });
-  document.getElementById("btn-query").addEventListener("click", function () { Proto.toast("已查询（原型）"); });
+  function on(el, ev, fn) { if (el) el.addEventListener(ev, fn); }
+  var liveId = LiveOps.idFromSearch();
+  var live = liveId ? LiveOps.getLive(liveId) : null;
+  if (liveId && !live) {
+    LiveOps.renderEmptyLive(document.getElementById("page-content"), "未找到直播 " + liveId);
+    return;
+  }
+  if (live) {
+    LiveOps.renderContextBanner({ live: live });
+    var ha = document.getElementById("page-header-actions") || document.getElementById("header-actions");
+    if (ha) {
+      ha.innerHTML =
+        '<a class="btn" href="' + LiveOps.viewLiveUrl(live.liveId) + '">返回直播详情</a>' +
+        '<button type="button" class="btn" id="btn-export">导出</button>' +
+        '<button type="button" class="btn" id="btn-refresh">↻</button>';
+    }
+    var sel = document.getElementById("f-live");
+    if (sel) {
+      var opt = document.createElement("option");
+      opt.value = live.liveId;
+      opt.textContent = live.liveName + "（" + live.liveId + "）";
+      opt.selected = true;
+      sel.insertBefore(opt, sel.firstChild.nextSibling);
+    }
+    if (live.runtimeStatus === "ended") {
+      var box = document.getElementById("post-live-actions");
+      if (box) {
+        box.style.display = "block";
+        var id = live.liveId;
+        document.getElementById("pla-replay").href = LiveOps.buildUrl("live-replay.html", { live_id: id });
+        document.getElementById("pla-noshow").href = LiveOps.buildUrl("leads.html", { scene: "post_live", segment: "no_show", live_id: id });
+        document.getElementById("pla-notorder").href = LiveOps.buildUrl("leads.html", { scene: "post_live", segment: "attended_not_ordered", live_id: id });
+        document.getElementById("pla-copy").href = LiveOps.buildUrl("live-edit.html", { copy_from: id });
+        document.getElementById("pla-back").href = LiveOps.viewLiveUrl(id);
+      }
+    }
+  } else {
+    LiveOps.renderContextBanner({ showEmpty: true });
+  }
+  on(document.getElementById("btn-export"), "click", function () { Proto.toast("已导出（原型）"); });
+  on(document.getElementById("btn-refresh"), "click", function () { Proto.toast("已刷新（原型）"); });
+  on(document.getElementById("btn-query"), "click", function () { Proto.toast("已查询（原型）"); });
   document.querySelectorAll('[data-row-act="detail"]').forEach(function (a) {
-    a.addEventListener("click", function (e) {
+    on(a, "click", function (e) {
       e.preventDefault();
       Proto.toast("打开直播详细数据（原型）");
     });

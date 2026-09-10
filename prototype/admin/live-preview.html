@@ -392,9 +392,25 @@
 </style>
 
 <script src="../assets/js/proto.js"></script>
-<script src="../assets/js/admin-shell.js?v=13"></script>
+<script src="../assets/js/prototype-business-store.js"></script>
+<script src="../assets/js/live-ops.js?v=1"></script>
+<script src="../assets/js/admin-shell.js?v=16"></script>
 <script>
 (function () {
+  var liveId = LiveOps.idFromSearch();
+  var live = liveId ? LiveOps.getLive(liveId) : null;
+  if (liveId && !live) {
+    LiveOps.renderEmptyLive(document.getElementById("page-content"), "未找到直播 " + liveId + "，无法预览。");
+    return;
+  }
+  if (live) {
+    LiveOps.renderContextBanner({ live: live });
+    var nameEl = document.querySelector(".m-title, .preview-title, #m-live-name");
+    if (nameEl) nameEl.textContent = live.liveName;
+  } else {
+    LiveOps.renderContextBanner({ showEmpty: true });
+  }
+
   // ===== Countdown =====
   var target = new Date();
   target.setDate(target.getDate() + 2);

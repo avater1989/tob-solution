@@ -449,6 +449,122 @@
     "无效/战败": { dwellHours: 120, timeout: 8, retrigger: 6, highIntent: false }
   };
 
+  /* 期次经营看板：期次主数据（演示） */
+  var termCatalog = [
+    {
+      id: "spring03",
+      name: "春启 03 期",
+      status: "convert_sprint",
+      statusLabel: "转化冲刺中",
+      owner: "赵老师",
+      startDate: "2026-09-01",
+      endDate: "2026-09-15",
+      conversionDeadline: "2026-09-15",
+      currentStage: "转化冲刺",
+      compareTermId: "spring02",
+      compareTermLabel: "春启 02 期",
+      goals: {
+        poolLeads: 450,
+        wecomRate: 68,
+        attendRate: 62,
+        payUsers: 100,
+        payRate: 35,
+        gmv: 52000
+      },
+      enabledChannels: ["video", "livecode", "link"],
+      relatedLiveIds: ["L01", "L02", "L05", "L11", "L13", "L16"],
+      liveRoles: {
+        L01: "正式公开课",
+        L02: "复盘场",
+        L05: "答疑场",
+        L11: "转化冲刺场",
+        L13: "引流场",
+        L16: "正式公开课"
+      }
+    },
+    {
+      id: "spring04",
+      name: "春启 04 期",
+      status: "live_running",
+      statusLabel: "直播进行中",
+      owner: "阮荣均",
+      startDate: "2026-09-05",
+      endDate: "2026-09-20",
+      conversionDeadline: "2026-09-22",
+      currentStage: "直播邀约与到场",
+      compareTermId: "spring03",
+      compareTermLabel: "春启 03 期",
+      goals: {
+        poolLeads: 280,
+        wecomRate: 65,
+        attendRate: 48,
+        payUsers: 55,
+        payRate: 30,
+        gmv: 28000
+      },
+      enabledChannels: ["video", "link"],
+      relatedLiveIds: ["L07", "L14", "L15"],
+      liveRoles: {
+        L07: "引流场",
+        L14: "引流场",
+        L15: "正式公开课"
+      }
+    },
+    {
+      id: "trial",
+      name: "试听公开课",
+      status: "ended",
+      statusLabel: "已结束",
+      owner: "李管理",
+      startDate: "2026-08-25",
+      endDate: "2026-09-05",
+      conversionDeadline: "2026-09-08",
+      currentStage: "复盘收口",
+      compareTermId: null,
+      compareTermLabel: null,
+      goals: {
+        poolLeads: 120,
+        wecomRate: 60,
+        attendRate: 45,
+        payUsers: 25,
+        payRate: 28,
+        gmv: 9000
+      },
+      enabledChannels: ["link", "import"],
+      relatedLiveIds: ["L08", "L12", "L17"],
+      liveRoles: {
+        L08: "正式公开课",
+        L12: "引流场",
+        L17: "正式公开课"
+      }
+    },
+    {
+      id: "spring02",
+      name: "春启 02 期",
+      status: "ended",
+      statusLabel: "已结束",
+      owner: "赵老师",
+      startDate: "2026-08-10",
+      endDate: "2026-08-25",
+      conversionDeadline: "2026-08-28",
+      currentStage: "已结束",
+      compareTermId: null,
+      compareTermLabel: null,
+      goals: {
+        poolLeads: 400,
+        wecomRate: 66,
+        attendRate: 50,
+        payUsers: 90,
+        payRate: 33,
+        gmv: 46000
+      },
+      enabledChannels: ["video", "livecode"],
+      relatedLiveIds: [],
+      liveRoles: {},
+      demoOnly: true
+    }
+  ];
+
   global.BoardData = {
     money: money,
     ranges: ranges,
@@ -456,6 +572,7 @@
     priorRangeMap: priorRangeMap,
     kpiTargets: kpiTargets,
     stageOps: stageOps,
+    termCatalog: termCatalog,
     leadSlices: leadSlices,
     productRows: productRows,
     liveRows: liveRows,

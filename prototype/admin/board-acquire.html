@@ -129,12 +129,13 @@
 
 </div>
 <script src="../assets/js/proto.js"></script>
-<script src="../assets/js/board-data.js?v=8"></script>
-<script src="../assets/js/board-metrics.js?v=14"></script>
-<script src="../assets/js/board-insights.js?v=8"></script>
-<script src="../assets/js/board-dictionary.js?v=3"></script>
-<script src="../assets/js/board-tools.js?v=4"></script>
-<script src="../assets/js/admin-shell.js?v=13"></script>
+<script src="../assets/js/board-data.js?v=10"></script>
+<script src="../assets/js/board-metrics.js?v=15"></script>
+<script src="../assets/js/board-insights.js?v=9"></script>
+<script src="../assets/js/board-term.js?v=1"></script>
+<script src="../assets/js/board-dictionary.js?v=4"></script>
+<script src="../assets/js/board-tools.js?v=5"></script>
+<script src="../assets/js/admin-shell.js?v=16"></script>
 <script>
 (function () {
   BoardMetrics.ensureCaliberUI();
@@ -240,11 +241,18 @@
         var href = BoardMetrics.buildDrilldownUrl("leads.html", {
           channel: state.selected, term: t.id === "mixed" ? "" : t.id, from_board: "acquire"
         });
+        var termBoard = (t.id && t.id !== "mixed" && window.BoardTerm)
+          ? (' · <a href="' + BoardTerm.termBoardUrl(t.id, {
+              selected_channel: state.selected,
+              channel: state.selected,
+              from_board: "acquire"
+            }) + '" data-drill-save="1">查看期次经营看板</a>')
+          : "";
         return "<tr><td>" + t.label + "</td><td>" + BoardMetrics.fmt(t.pool) + "</td><td>" +
           (t.wecomRate != null ? t.wecomRate + "%" : "—") + "</td><td>" +
           (t.attendRate != null ? t.attendRate + "%" : "—") + "</td><td>" +
           (t.payRate != null ? t.payRate + "%" : "—") +
-          '</td><td class="row-actions"><a href="' + href + '" data-drill-save="1">查看名单</a></td></tr>';
+          '</td><td class="row-actions"><a href="' + href + '" data-drill-save="1">查看名单</a>' + termBoard + "</td></tr>";
       }).join("");
     }
     var leadsHref = BoardMetrics.buildDrilldownUrl("leads.html", { channel: state.selected, from_board: "acquire" });

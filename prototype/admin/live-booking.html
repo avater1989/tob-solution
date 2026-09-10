@@ -167,9 +167,9 @@
         <span id="bk-current-live-text">—</span>
       </span>
       <span id="bk-current-live-meta" class="muted" style="font-size:12px"></span>
-      <a class="bk-selector-back" href="live-booking.html">
+      <a class="bk-selector-back" id="bk-back-link" href="lives.html">
         <svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
-        返回直播列表
+        <span id="bk-back-text">返回直播列表</span>
       </a>
     </div>
 
@@ -577,8 +577,10 @@
 </div>
 
 <script src="../assets/js/proto.js"></script>
+<script src="../assets/js/prototype-business-store.js"></script>
+<script src="../assets/js/live-ops.js?v=7"></script>
 <script src="../assets/js/live-reach.js"></script>
-<script src="../assets/js/admin-shell.js?v=13"></script>
+<script src="../assets/js/admin-shell.js?v=16"></script>
 <script>
 (function () {
   var LR = window.LiveReach;
@@ -1246,6 +1248,21 @@
     document.getElementById("bk-current-live-text").textContent = live.name;
     document.getElementById("bk-current-live-meta").innerHTML =
       liveStatusBadge(live) + " " + auditBadge(live) + " · 开播 " + esc(live.startAt);
+    var from = (qs().get("from") || "");
+    var back = document.getElementById("bk-back-link");
+    var backText = document.getElementById("bk-back-text");
+    if (back) {
+      if (from === "detail" || from === "edit" || from === "live-detail") {
+        back.href = (window.LiveOps ? LiveOps.viewLiveUrl(liveId) : ("live-edit.html?live_id=" + encodeURIComponent(liveId) + "&mode=view"));
+        if (backText) backText.textContent = "返回直播详情";
+      } else {
+        back.href = "lives.html";
+        if (backText) backText.textContent = "返回直播列表";
+      }
+    }
+    if (window.LiveOps) {
+      LiveOps.renderContextBanner({ liveId: liveId, host: document.getElementById("view-single") });
+    }
     document.title = "预约管理 · " + live.name + " · 商家管理后台";
     document.body.setAttribute("data-crumb", "直播 / 直播管理 / 预约管理 / " + live.name);
     updateHeaderInvite(liveId);

@@ -27,6 +27,7 @@
 
   function pageKey() {
     var p = pageFile();
+    if (/term-review|term_review/.test(p)) return "term_review";
     if (/acquire/.test(p)) return "acquire";
     if (/private/.test(p)) return "private";
     if (/live/.test(p)) return "live";
@@ -255,6 +256,7 @@
     var demos = [
       { name: "视频号近7天", page: "board-acquire.html", pageKey: "acquire", state: { range: "7d", channel: "video", term: "", sort: "pool" } },
       { name: "春季03期复盘", page: "board-overview.html", pageKey: "overview", state: { range: "7d", channel: "", term: "spring03", funnel_step: "wecom_attend", funnel_dim: "channel" } },
+      { name: "春启03期经营看板", page: "board-term-review.html", pageKey: "term_review", state: { range: "7d", term: "spring03", funnel_step: "wecom_attend", funnel_dim: "channel", selected_channel: "video" } },
       { name: "团队执行异常", page: "board-private.html", pageKey: "private", state: { range: "7d", tab: "handoff", sort: "noFollow" } },
       { name: "已结束直播场次", page: "board-live.html", pageKey: "live", state: { range: "7d", live_id: "L03" } },
       { name: "到场未支付分析", page: "board-convert.html", pageKey: "convert", state: { range: "7d", dimension: "nopay", section: "attributed" } }
@@ -772,9 +774,20 @@
       "</div></div>";
     document.body.appendChild(modal);
     function close() {
+      document.removeEventListener("keydown", onEsc);
       modal.remove();
-      if (_lastFocus && _lastFocus.focus) _lastFocus.focus();
+      if (_lastFocus && _lastFocus.focus) {
+        try { _lastFocus.focus(); } catch (e) {}
+      }
     }
+    function onEsc(ev) {
+      if (ev.key === "Escape") {
+        ev.preventDefault();
+        close();
+      }
+    }
+    document.addEventListener("keydown", onEsc);
+    modal.addEventListener("click", function (e) { if (e.target === modal) close(); });
     modal.querySelectorAll("[data-close],[data-close2]").forEach(function (b) { b.onclick = close; });
     var err = document.getElementById("sv-error");
     modal.querySelector("[data-save]").onclick = function () {

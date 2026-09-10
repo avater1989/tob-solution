@@ -1587,24 +1587,42 @@ body.ctrl-mode { background: #0a0f1c; color: #e8eaed; }
 </style>
 
 <script src="../assets/js/proto.js"></script>
-<script src="../assets/js/admin-shell.js?v=13"></script>
+<script src="../assets/js/prototype-business-store.js"></script>
+<script src="../assets/js/live-ops.js?v=1"></script>
+<script src="../assets/js/admin-shell.js?v=16"></script>
 <script>
 (function () {
+  function on(el, ev, fn) { if (el) el.addEventListener(ev, fn); }
+  var currentLiveId = LiveOps.idFromSearch();
+  var live = currentLiveId ? LiveOps.getLive(currentLiveId) : null;
+  if (currentLiveId && !live) {
+    LiveOps.renderEmptyLive(document.getElementById("page-content"), "未找到直播 " + currentLiveId);
+    return;
+  }
+  if (live) {
+    currentLiveId = live.liveId;
+    LiveOps.renderContextBanner({ live: live });
+    var titleNode = document.querySelector(".ctrl-live-name, #ctrl-live-name");
+    if (titleNode) titleNode.textContent = live.liveName;
+  } else {
+    LiveOps.renderContextBanner({ showEmpty: true });
+  }
+
   var mask = document.getElementById("mask");
   function closeAll() {
-    mask.classList.remove("open");
+    if (mask) mask.classList.remove("open");
     document.querySelectorAll(".proto-modal").forEach(function (n) { n.classList.remove("open"); });
   }
-  function open(node) { mask.classList.add("open"); node.classList.add("open"); }
-  mask.addEventListener("click", closeAll);
-  document.querySelectorAll("[data-close]").forEach(function (n) { n.addEventListener("click", closeAll); });
+  function open(node) { if (mask) mask.classList.add("open"); if (node) node.classList.add("open"); }
+  on(mask, "click", closeAll);
+  document.querySelectorAll("[data-close]").forEach(function (n) { on(n, "click", closeAll); });
 
   // ===== Source buttons =====
-  document.getElementById("btn-add-camera").addEventListener("click", function () { Proto.toast("打开摄像头（原型）"); });
-  document.getElementById("btn-add-screen").addEventListener("click", function () { Proto.toast("打开屏幕共享（原型）"); });
-  document.getElementById("btn-add-image").addEventListener("click", function () { Proto.toast("打开图片选择（原型）"); });
-  document.getElementById("btn-add-class").addEventListener("click", function () { Proto.toast("打开本地视频（原型）"); });
-  document.getElementById("btn-add-text").addEventListener("click", function () { Proto.toast("打开文字编辑（原型）"); });
+  on(document.getElementById("btn-add-camera"), "click", function () { Proto.toast("打开摄像头（原型）"); });
+  on(document.getElementById("btn-add-screen"), "click", function () { Proto.toast("打开屏幕共享（原型）"); });
+  on(document.getElementById("btn-add-image"), "click", function () { Proto.toast("打开图片选择（原型）"); });
+  on(document.getElementById("btn-add-class"), "click", function () { Proto.toast("打开本地视频（原型）"); });
+  on(document.getElementById("btn-add-text"), "click", function () { Proto.toast("打开文字编辑（原型）"); });
 
   // ===== Layout buttons =====
   document.querySelectorAll(".ctrl-layout-btn").forEach(function (b) {
@@ -1877,7 +1895,7 @@ body.ctrl-mode { background: #0a0f1c; color: #e8eaed; }
     closeAll();
     // 1.5 秒后跳转到大屏，带 live_id 参数
     setTimeout(function () {
-      location.href = "live-screen.html?live_id=LV20260905001";
+      location.href = "live-screen.html?live_id=" + encodeURIComponent(currentLiveId || "L005");
     }, 1500);
   });
 

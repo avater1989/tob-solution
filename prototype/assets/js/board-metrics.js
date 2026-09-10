@@ -1608,9 +1608,13 @@
       : ((global.BoardInsights && BoardInsights.buildReturnOverviewUrl)
         ? BoardInsights.buildReturnOverviewUrl()
         : "board-overview.html");
-    el.innerHTML = "<b>来自经营分析</b> · " + (ctx || text) +
+    var fromQ = "";
+    try { fromQ = new URLSearchParams(location.search).get("from_board") || ""; } catch (e) {}
+    var fromLabel = (fromQ === "term_review" || fromQ === "term-review") ? "来自期次经营看板" : "来自经营分析";
+    var backLabel = (fromQ === "term_review" || fromQ === "term-review") ? "返回期次经营看板" : "返回经营分析";
+    el.innerHTML = "<b>" + fromLabel + "</b> · " + (ctx || text) +
       (visible >= 0 ? " · 匹配 <b>" + visible + "</b> / " + total + " 行（演示样本）" : "") +
-      ' · <a href="' + backHref + '" style="color:var(--color-primary);margin-right:8px">返回经营分析</a>' +
+      ' · <a href="' + backHref + '" style="color:var(--color-primary);margin-right:8px">' + backLabel + "</a>" +
       '<a href="' + location.pathname.split("/").pop() + '" style="color:var(--color-primary)">清除筛选</a>';
   }
 

@@ -147,8 +147,8 @@
   </div>
 
   <div class="wb-tip" id="wb-tip">
-    <p id="wb-tip-text"><b>星启家庭教育</b> · 建议优先处理未分配线索与 L003 待内部复核；今晚公开课的预约提醒与直播促到SOP已排期，由系统执行，关注失败重试即可。</p>
-    <a class="btn btn-sm" id="wb-tip-cta" href="live-audit.html?status=pending">去内部复核工作台</a>
+    <p id="wb-tip-text"><b>星启家庭教育</b> · 建议优先处理未分配线索，并将 L003 等草稿在直播列表提交平台审核；今晚公开课的预约提醒与直播促到SOP已排期，由系统执行，关注失败重试即可。</p>
+    <a class="btn btn-sm" id="wb-tip-cta" href="lives.html">去直播列表</a>
   </div>
 
   <!-- 一、经营结果（受时间筛选） -->
@@ -192,10 +192,10 @@
       <div class="stat-value warn" data-rt="unassigned">36</div>
       <div class="stat-hint">视频号流入待认领</div>
     </a>
-    <a class="stat-card" id="rt-audit" href="live-audit.html?status=pending">
-      <div class="stat-label">待内部复核直播</div>
-      <div class="stat-value warn" data-rt="audit">1</div>
-      <div class="stat-hint" id="rt-audit-hint">L003 待内部复核</div>
+    <a class="stat-card" id="rt-audit" href="lives.html">
+      <div class="stat-label">待提交平台审核</div>
+      <div class="stat-value warn" data-rt="audit">0</div>
+      <div class="stat-hint" id="rt-audit-hint">草稿 / 驳回待改</div>
     </a>
     <a class="stat-card" id="rt-urge" href="live-invite.html?live_id=L001&focus=pending">
       <div class="stat-label">待执行直播促到SOP</div>
@@ -281,7 +281,7 @@
 <script src="../assets/js/proto.js"></script>
 <script src="../assets/js/board-data.js?v=5"></script>
 <script src="../assets/js/board-metrics.js?v=10"></script>
-<script src="../assets/js/admin-shell.js?v=15"></script>
+<script src="../assets/js/admin-shell.js?v=18"></script>
 <script>
 (function () {
   /* ========== 原型配置 ========== */
@@ -299,8 +299,8 @@
     admin: {
       id: "admin",
       label: "商户管理员",
-      tip: "<b>星启家庭教育</b> · 建议优先处理未分配线索与 L003 待内部复核；今晚公开课的预约提醒与直播促到SOP已排期，由系统执行，关注失败重试即可。",
-      tipCta: { href: "live-audit.html?status=pending", text: "去内部复核工作台" },
+      tip: "<b>星启家庭教育</b> · 建议优先处理未分配线索，并将 L003 等草稿在直播列表提交平台审核；今晚公开课的预约提醒与直播促到SOP已排期，由系统执行，关注失败重试即可。",
+      tipCta: { href: "lives.html", text: "去直播列表" },
       create: ["series", "live", "urge", "lead"],
       entry: ["content", "lives", "channels", "leads"],
       todoTypes: null,
@@ -325,8 +325,8 @@
     auditor: {
       id: "auditor",
       label: "审核员",
-      tip: "<b>审核视角</b> · 优先处理 L003 待内部复核，避免卡场；今晚 L001 已审核通过，无需再审。",
-      tipCta: { href: "live-audit.html?status=pending", text: "去内部复核工作台" },
+      tip: "<b>审核视角</b> · 商家侧已取消内部复核；请督促创建人在直播列表提交平台审核，并关注平台驳回待改场次。",
+      tipCta: { href: "lives.html", text: "去直播列表" },
       create: [],
       entry: ["lives", "content"],
       todoTypes: ["audit"],
@@ -338,7 +338,7 @@
     content: {
       id: "content",
       label: "内容运营",
-      tip: "<b>内容视角</b> · 推进系列课上架与直播场次创建，保证售卖货盘充足；L003 仍待内部复核。",
+      tip: "<b>内容视角</b> · 推进系列课上架与直播场次创建，保证售卖货盘充足；L003 草稿待在列表提交平台审核。",
       tipCta: { href: "content-series-edit.html", text: "新建系列课" },
       create: ["series", "live"],
       entry: ["content", "lives"],
@@ -352,7 +352,7 @@
 
   var CREATE_ITEMS = {
     series: { tag: "创建", title: "新建系列课", desc: "创建线上系列课并进入上架流程", href: "content-series-edit.html" },
-    live: { tag: "创建", title: "新建直播", desc: "创建场次并提交内部复核", href: "live-edit.html" },
+    live: { tag: "创建", title: "新建直播", desc: "创建场次并保存草稿，列表提交平台审核", href: "live-edit.html" },
     urge: { tag: "创建", title: "新建直播促到SOP", desc: "面向私域人群配置直播前邀约、开播催到或回放触达", href: "live-invite.html" },
     lead: { tag: "创建", title: "新建线索", desc: "手工录入或导入线索", href: "leads.html?action=create" }
   };
@@ -548,17 +548,28 @@
       var today = demoTodayPrefix();
       var lives = ProtoBiz.getLives().filter(function (l) {
         var day = String(l.startAt || "").slice(0, 10);
-        return day === today || l.auditStatus === "pending_internal_review";
+        var needsSubmit =
+          l.auditStatus === "draft" ||
+          l.auditStatus === "platform_rejected" ||
+          l.auditStatus === "pending_platform_submit" ||
+          l.auditStatus === "pending_internal_review" ||
+          l.auditStatus === "internal_rejected";
+        return day === today || needsSubmit;
       });
       return lives.map(function (l) {
-        var auditPending = l.auditStatus === "pending_internal_review";
+        var needsSubmit =
+          l.auditStatus === "draft" ||
+          l.auditStatus === "platform_rejected" ||
+          l.auditStatus === "pending_platform_submit" ||
+          l.auditStatus === "pending_internal_review" ||
+          l.auditStatus === "internal_rejected";
         var state = l.execStatus === "ended" || l.liveStatus === "ended"
           ? "ended"
-          : (auditPending ? "pending_audit" : (l.liveStatus === "live" || l.execStatus === "live" ? "live" : "upcoming"));
+          : (needsSubmit ? "pending_audit" : (l.liveStatus === "live" || l.execStatus === "live" ? "live" : "upcoming"));
         var invite = sopInviteForLive(l.id);
         var actions = [];
         if (state === "pending_audit") {
-          actions.push({ label: "去内部复核", href: "live-audit-detail.html?live_id=" + l.id });
+          actions.push({ label: "去直播列表提交", href: "lives.html" });
         } else if (state === "live") {
           actions.push({ label: "进入中控台", href: "live-control.html?live_id=" + l.id });
           actions.push({ label: "查看大屏", href: "live-screen.html?live_id=" + l.id });
@@ -576,8 +587,8 @@
           id: l.id,
           name: l.name,
           time: timeShort,
-          audit: auditPending ? "pending" : (l.auditStatus === "approved" ? "passed" : ""),
-          auditLabel: l.auditStatusLabel || (auditPending ? "待内部复核" : (state === "ended" ? "已结束" : "待开播")),
+          audit: needsSubmit ? "pending" : (l.auditStatus === "approved" ? "passed" : ""),
+          auditLabel: l.auditStatusLabel || (needsSubmit ? "待提交平台" : (state === "ended" ? "已结束" : "待开播")),
           booked: l.bookedUsers || 0,
           remindStatus: l.remindStatusLabel || "—",
           remindReached: l.remindReached || 0,
@@ -594,7 +605,7 @@
       var state = r.wbState || (r.status === "ended" ? "ended" : r.audit === "pending" ? "pending_audit" : "upcoming");
       var actions = [];
       if (state === "pending_audit") {
-        actions.push({ label: "去内部复核", href: "live-audit-detail.html?live_id=" + r.id });
+        actions.push({ label: "去直播列表提交", href: "lives.html" });
       } else if (state === "live") {
         actions.push({ label: "进入中控台", href: "live-control.html?live_id=" + r.id });
         actions.push({ label: "查看大屏", href: "live-screen.html?live_id=" + r.id });
@@ -611,7 +622,7 @@
         name: r.name,
         time: r.time || (r.startAt || "").replace("今天 ", ""),
         audit: r.audit || "",
-        auditLabel: r.auditLabel || (r.audit === "pending" ? "待内部复核" : (r.status === "ended" ? "已结束" : "待开播")),
+        auditLabel: r.auditLabel || (r.audit === "pending" ? "待提交平台" : (r.status === "ended" ? "已结束" : "待开播")),
         booked: r.booked || 0,
         remindStatus: r.remindStatus || "—",
         remindReached: r.remindReached || 0,
@@ -802,12 +813,12 @@
     var urgeEl = document.getElementById("rt-urge");
     if (urgeEl) urgeEl.href = "live-invite.html?live_id=" + firstScheduledSopLiveId() + "&focus=pending";
     var auditEl = document.getElementById("rt-audit");
-    if (auditEl) auditEl.href = "live-audit.html?status=pending";
+    if (auditEl) auditEl.href = "lives.html";
     var afterEl = document.getElementById("rt-aftersale");
     if (afterEl) afterEl.href = "aftersales.html?status=pending";
     var auditHint = document.getElementById("rt-audit-hint");
     if (auditHint) {
-      auditHint.textContent = rt.audit > 0 ? "含 L003 待内部复核" : "暂无待复核场次";
+      auditHint.textContent = rt.audit > 0 ? ("含 " + rt.audit + " 场待提交/待改") : "暂无待提交场次";
     }
     var asHint = document.getElementById("rt-aftersale-hint");
     if (asHint) {

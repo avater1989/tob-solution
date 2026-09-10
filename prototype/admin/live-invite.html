@@ -358,8 +358,9 @@
 
 <script src="../assets/js/proto.js"></script>
 <script src="../assets/js/prototype-business-store.js"></script>
+<script src="../assets/js/live-ops.js?v=7"></script>
 <script src="../assets/js/live-reach.js"></script>
-<script src="../assets/js/admin-shell.js?v=13"></script>
+<script src="../assets/js/admin-shell.js?v=16"></script>
 <script>
 (function () {
   var mask = document.getElementById("mask");
@@ -371,10 +372,18 @@
     try { return new URLSearchParams(location.search); } catch (e) { return new URLSearchParams(); }
   }
   function liveIdFromUrl() {
+    if (window.LiveOps) return LiveOps.idFromSearch() || "";
     if (window.ProtoBiz) return ProtoBiz.liveIdFromSearch(location.search) || "";
     var p = qs();
     return p.get("live_id") || p.get("liveId") || "";
   }
+  /* context banner */
+  setTimeout(function () {
+    if (!window.LiveOps) return;
+    var lid = liveIdFromUrl();
+    if (lid) LiveOps.renderContextBanner({ liveId: lid });
+    else LiveOps.renderContextBanner({ showEmpty: true });
+  }, 0);
   function sopIdFromUrl() {
     return qs().get("sop_id") || qs().get("sopId") || "";
   }

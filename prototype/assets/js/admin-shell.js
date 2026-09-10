@@ -1,7 +1,7 @@
 ﻿/* Mix shell per docs/DESIGN.md: Top modules + Side + Main + Assist */
 /* v4 (2026-09-04): 精简侧栏，移除公客池/工单中心/系统管理/加群/组织角色权限；提升"主播促到"为顶级模块 */
 /* v5 (2026-09-05): 增强容错 - 缺失 page-content 时显示重试提示而非静默失败 */
-/* v6: 接入 ProtoBiz；内部复核 / 直播促到SOP 命名统一 */
+/* v7: 去掉商家内部复核；工作台 / 直播列表走平台审核 */
 (function () {
   if (!window.ProtoBiz) {
     try {
@@ -109,22 +109,9 @@
         group: "直播",
         links: [
           { id: "lives", href: "lives.html", label: "直播列表" },
-          { id: "live-edit", href: "live-edit.html", label: "创建直播" },
           { id: "live-booking", href: "live-booking.html", label: "预约管理" },
-          { id: "live-share", href: "live-share.html", label: "分享邀请" },
           { id: "live-replay", href: "live-replay.html", label: "直播回放" },
           { id: "live-stats", href: "live-stats.html", label: "直播数据" },
-          { id: "live-control", href: "live-control.html", label: "中控台" },
-          { id: "live-screen", href: "live-screen.html", label: "直播大屏" },
-          { id: "live-preview", href: "live-preview.html", label: "预告页预览" },
-        ],
-      },
-      {
-        group: "内部复核",
-        links: [
-          { id: "live-audit", href: "live-audit.html", label: "内部复核工作台", badge: 0 },
-          { id: "live-rejected", href: "live-rejected.html", label: "内部复核记录" },
-          { id: "live-audit-detail", href: "live-audit.html", label: "复核详情" },
         ],
       },
     ],
@@ -206,6 +193,7 @@
         group: "经营分析",
         links: [
           { id: "board-o", href: "board-overview.html", label: "总览" },
+          { id: "board-t", href: "board-term-review.html", label: "期次经营复盘" },
           { id: "board-a", href: "board-acquire.html", label: "获客" },
           { id: "board-p", href: "board-private.html", label: "私域转化" },
           { id: "board-l", href: "board-live.html", label: "直播" },
@@ -287,13 +275,9 @@
 
   function sideHtml() {
     var groups = sidebars[moduleId] || [];
-    var pendingAudit = 0;
     var pendingAs = 0;
     try {
       if (window.ProtoBiz) {
-        pendingAudit = ProtoBiz.getLives().filter(function (l) {
-          return l.auditStatus === "pending_internal_review";
-        }).length;
         pendingAs = ProtoBiz.load().aftersales.filter(function (a) {
           return a.status === "pending_merchant";
         }).length;
@@ -305,7 +289,6 @@
       g.links.forEach(function (l) {
         var cls = "nav-item" + (l.id === active ? " active" : "");
         var badgeVal = l.badge;
-        if (l.id === "live-audit") badgeVal = pendingAudit || 0;
         if (l.id === "aftersales" && window.ProtoBiz) badgeVal = pendingAs || 0;
         var badge = badgeVal ? '<span class="nav-badge">' + badgeVal + "</span>" : "";
         var href = l.href;

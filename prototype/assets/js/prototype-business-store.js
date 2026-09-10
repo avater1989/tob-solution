@@ -5,8 +5,8 @@
  * - 兼容旧参数：liveId / spring03 / live-spring-03 等
  */
 (function (global) {
-  var STORE_KEY = "proto_biz_store_v5";
-  var VERSION = 5;
+  var STORE_KEY = "proto_biz_store_v6";
+  var VERSION = 6;
   var DEMO_NOW = "2026-09-09 16:00:00";
 
   var LIVE_ALIASES = {
@@ -108,8 +108,8 @@
           endAt: "2026-09-10 21:00",
           execStatus: "preparing",
           execStatusLabel: "准备中",
-          auditStatus: "pending_internal_review",
-          auditStatusLabel: "待内部复核",
+          auditStatus: "draft",
+          auditStatusLabel: "草稿",
           bookedUsers: 0,
           subscribedUsers: 0,
           remindStatus: "none",
@@ -125,13 +125,13 @@
           remindOnStart: true,
           remindReplay: true,
           createdAt: "2026-09-09 09:30",
-          submittedInternalAt: "2026-09-09 10:05",
+          submittedInternalAt: null,
           internalApprovedAt: null,
           submittedPlatformAt: null,
           platformApprovedAt: null,
           shelvedAt: null,
-          liveStatus: "draft_pending",
-          liveStatusLabel: "待内部复核"
+          liveStatus: "draft",
+          liveStatusLabel: "草稿"
         }
       ],
       sops: [
@@ -356,8 +356,8 @@
 
   function mapAuditForReach(s) {
     if (s === "approved") return "approved";
-    if (s === "pending_internal_review" || s === "pending_platform_review" || s === "pending_platform_submit") return "pending";
-    if (s === "internal_rejected" || s === "platform_rejected") return "rejected";
+    if (s === "pending_platform_review" || s === "pending_internal_review" || s === "pending_platform_submit") return "pending";
+    if (s === "platform_rejected" || s === "internal_rejected") return "rejected";
     return s || "pending";
   }
 
@@ -464,40 +464,59 @@
 
   var AUDIT_LABEL = {
     draft: "草稿",
-    pending_internal_review: "待内部复核",
-    internal_rejected: "内部复核驳回",
-    pending_platform_submit: "待提交平台审核",
     pending_platform_review: "待平台审核",
     platform_rejected: "平台审核驳回",
-    approved: "审核通过"
+    approved: "审核通过",
+    /* legacy aliases kept for old logs / migration */
+    pending_internal_review: "草稿",
+    internal_rejected: "平台审核驳回",
+    pending_platform_submit: "草稿"
   };
 
   function setAuditStatus(liveId, status, meta) {
     var live = getLive(liveId);
     if (!live) return null;
+    /* collapse legacy internal statuses */
+    if (status === "pending_internal_review" || status === "pending_platform_submit") status = "draft";
+    if (status === "internal_rejected") status = "platform_rejected";
     live.auditStatus = status;
     live.auditStatusLabel = AUDIT_LABEL[status] || status;
     meta = meta || {};
-    if (status === "pending_platform_submit") {
-      live.internalApprovedAt = DEMO_NOW;
+    if (status === "draft") {
+      live.platformReviewStatus = "not_submitted";
       live.execStatus = "preparing";
       live.execStatusLabel = "准备中";
     }
     if (status === "pending_platform_review") {
+      live.platformReviewStatus = "pending";
       live.submittedPlatformAt = DEMO_NOW;
     }
     if (status === "approved") {
+      live.platformReviewStatus = "passed";
       live.platformApprovedAt = DEMO_NOW;
       live.execStatus = "scheduled";
       live.execStatusLabel = "待开播";
       live.shelf = true;
+      live.shelfStatus = "published";
       live.shelvedAt = DEMO_NOW;
     }
-    if (status === "internal_rejected" || status === "platform_rejected") {
+    if (status === "platform_rejected") {
+      live.platformReviewStatus = "rejected";
       live.rejectReason = meta.reason || "";
     }
     syncLiveCompat(live);
     saveLive(live);
+    /* keep LiveOps overlay in sync when ops platform acts */
+    try {
+      var ovKey = "live_ops_overlay_v2";
+      var ov = JSON.parse(localStorage.getItem(ovKey) || '{"version":2,"byId":{}}');
+      ov.byId = ov.byId || {};
+      ov.byId[liveId] = Object.assign({}, ov.byId[liveId] || {}, {
+        platformReviewStatus: live.platformReviewStatus,
+        shelfStatus: live.shelf ? "published" : (live.shelfStatus || "unpublished")
+      });
+      localStorage.setItem(ovKey, JSON.stringify(ov));
+    } catch (e) {}
     var data = load();
     data.reviewLogs = data.reviewLogs || [];
     data.reviewLogs.push({
@@ -572,26 +591,33 @@
     var todos = [];
 
     data.lives.forEach(function (l) {
-      if (l.auditStatus === "pending_internal_review") {
-        todos.push({
-          id: "TODO_AUDIT_" + l.id,
-          type: "audit",
-          typeLabel: "内部复核",
-          completeMode: "business",
-          title: l.name + " 待内部复核",
-          owner: "阮荣均",
-          mine: false,
-          dueLabel: l.startAt,
-          dueSort: 1,
-          sla: "near",
-          slaLabel: "临近开播",
-          status: "pending",
-          statusLabel: "待处理",
-          href: "live-audit-detail.html?live_id=" + l.id,
-          roles: ["admin", "auditor", "content"],
-          liveId: l.id
-        });
-      }
+      var needsPlatform =
+        l.auditStatus === "draft" ||
+        l.auditStatus === "pending_platform_submit" ||
+        l.auditStatus === "pending_internal_review";
+      var needsFix = l.auditStatus === "platform_rejected" || l.auditStatus === "internal_rejected";
+      if (!needsPlatform && !needsFix) return;
+      if (l.execStatus === "ended" || l.liveStatus === "ended" || l.execStatus === "cancelled") return;
+      todos.push({
+        id: "TODO_PLATFORM_" + l.id,
+        type: "audit",
+        typeLabel: needsFix ? "平台驳回待改" : "提交平台审核",
+        completeMode: "business",
+        title: needsFix
+          ? (l.name + " · 平台驳回待修改")
+          : (l.name + " · 待提交平台审核"),
+        owner: l.owner || l.creator || "阮荣均",
+        mine: true,
+        dueLabel: l.startAt,
+        dueSort: 1,
+        sla: "near",
+        slaLabel: "临近开播",
+        status: "pending",
+        statusLabel: "待处理",
+        href: "lives.html",
+        roles: ["admin", "auditor", "content"],
+        liveId: l.id
+      });
     });
 
     /* 已排期的直播促到SOP / 预约提醒：由系统调度执行，不进入待办中心。
@@ -705,7 +731,14 @@
     }
     var failed = getChannelOrders("failed").length;
     var pendingAs = load().aftersales.filter(function (a) { return a.status === "pending_merchant"; }).length;
-    var pendingAudit = load().lives.filter(function (l) { return l.auditStatus === "pending_internal_review"; }).length;
+    var pendingAudit = load().lives.filter(function (l) {
+      if (l.execStatus === "ended" || l.liveStatus === "ended" || l.execStatus === "cancelled") return false;
+      return l.auditStatus === "draft" ||
+        l.auditStatus === "pending_platform_submit" ||
+        l.auditStatus === "pending_internal_review" ||
+        l.auditStatus === "platform_rejected" ||
+        l.auditStatus === "internal_rejected";
+    }).length;
     var pendingSop = load().sops.filter(function (s) { return s.status === "scheduled"; }).length;
     var sopTarget = 0;
     load().sops.forEach(function (s) {

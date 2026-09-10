@@ -212,7 +212,7 @@
 
     var tbody = document.getElementById("audit-tbody");
     if (!list.length) {
-      tbody.innerHTML = '<tr><td colspan="8" class="muted" style="text-align:center;padding:24px">暂无待平台审核直播（商家内部复核通过并提交后会出现在此）</td></tr>';
+      tbody.innerHTML = '<tr><td colspan="8" class="muted" style="text-align:center;padding:24px">暂无待平台审核直播（商家在直播列表提交后会出现在此）</td></tr>';
       return;
     }
     tbody.innerHTML = list.map(function (l) {
