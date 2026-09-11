@@ -79,6 +79,7 @@
       <div class="card-bd">
         <div class="kv">
           <div class="kv-row"><span>买家</span><b id="kv-buyer">—</b></div>
+          <div class="kv-row"><span>用户 ID</span><b id="kv-user-id">—</b></div>
           <div class="kv-row"><span>手机号</span><b id="kv-phone">—</b></div>
           <div class="kv-row"><span>退货收货地址（待发送）</span><b id="kv-addr">商家待同意后提供</b></div>
         </div>
@@ -88,12 +89,26 @@
     <div class="card"><div class="card-hd"><h2>处理时效</h2></div>
       <div class="card-bd">
         <div class="kv">
-          <div class="kv-row"><span>商家处理截止</span><b>2026-09-15 10:12</b></div>
-          <div class="kv-row"><span>超时规则</span><b>自动同意并退款</b></div>
+          <div class="kv-row"><span>商家处理截止</span><b id="kv-deadline">2026-09-15 10:12</b></div>
+          <div class="kv-row"><span>超时规则</span><b id="kv-timeout-rule">自动同意并退款</b></div>
           <div class="kv-row"><span>当前处理人</span><b>店长（主账号）</b></div>
           <div class="kv-row"><span>客服备注</span><b class="muted" id="kv-note">—</b></div>
         </div>
       </div>
+    </div>
+  </div>
+
+  <div class="card" id="as-rights-card" style="display:none;margin-bottom:8px"><div class="card-hd"><h2>退款与权益回收</h2></div>
+    <div class="card-bd">
+      <div class="kv-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:0 32px">
+        <div class="kv-row"><span>退款单号</span><b class="mono" id="kv-refund-id">—</b></div>
+        <div class="kv-row"><span>退款状态</span><b id="kv-refund-status">—</b></div>
+        <div class="kv-row"><span>退款商品</span><b id="kv-refund-product">—</b></div>
+        <div class="kv-row"><span>权益回收状态</span><b id="kv-rights-status">—</b></div>
+        <div class="kv-row"><span>退款后课程访问</span><b id="kv-course-access">—</b></div>
+        <div class="kv-row"><span>权益是否已回收</span><b id="kv-rights-recycled">—</b></div>
+      </div>
+      <div class="alert alert-warning" id="as-story" style="margin-top:12px;font-size:13px;display:none"></div>
     </div>
   </div>
 
@@ -107,11 +122,13 @@
     <span style="font-weight:600">商家处理：</span>
     <button class="btn" id="btn-reject">拒绝申请</button>
     <button class="btn btn-primary" id="btn-agree">同意并发退货地址</button>
-    <button class="btn" data-toast="查看商品原下单记录（原型）">查看原订单</button>
+    <a class="btn" id="btn-view-order" href="order-detail.html">查看原订单</a>
   </div></div>
 
-  <div class="toolbar" style="margin-top:8px">
-    <button class="btn" id="btn-back-bottom" onclick="location.href='aftersales.html'">← 返回售后列表</button>
+  <div class="toolbar" style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap">
+    <button class="btn" id="btn-back-bottom" type="button">← 返回售后列表</button>
+    <a class="btn" id="btn-back-rights" href="users.html" style="display:none">返回用户权益</a>
+    <a class="btn" id="btn-back-users" href="users.html" style="display:none">返回原用户列表</a>
   </div>
   </div>
 </div>
@@ -179,30 +196,88 @@
 .alert{position:relative;padding:8px 14px;border-radius:8px;font-size:13px}
 .alert-warning{background:#fff7e8;border:1px solid #ffe1ba;color:#ad6800}
 .btn-danger{background:#fff;color:#f53f3f;border:1px solid #ffa39e}
-@media(max-width:1100px){.detail-cols{grid-template-columns:1fr}}
+@media(max-width:1100px){.detail-cols,.kv-grid{grid-template-columns:1fr}}
 </style>
 
 <script src="../assets/js/proto.js"></script>
+<script src="../assets/js/user-store.js"></script>
 <script src="../assets/js/prototype-business-store.js"></script>
 <script src="../assets/js/admin-shell.js?v=13"></script>
 <script>
 (function () {
   var Biz = window.ProtoBiz;
+  var US = window.UserStore;
   var rawId = "";
   var fromDash = false;
+  var fromUser = false;
+  var uidParam = "";
+  var returnTo = "";
   var returnUrl = "";
   var dashHref = "dashboard.html?restore=1";
   try {
     var q = new URLSearchParams(location.search);
     rawId = q.get("id") || q.get("as_id") || q.get("aftersale_id") || "";
     fromDash = q.get("from") === "dashboard";
+    fromUser = q.get("from") === "user";
+    uidParam = String(q.get("user") || "").trim();
     returnUrl = q.get("return_url") || "";
+    returnTo = q.get("returnTo") || q.get("return_to") || "";
+    if (returnTo) {
+      try { returnTo = decodeURIComponent(returnTo); } catch (e0) {}
+    }
     if (returnUrl) {
       try { dashHref = decodeURIComponent(returnUrl); } catch (e) { dashHref = returnUrl; }
       fromDash = fromDash || /dashboard\.html/i.test(dashHref);
     }
   } catch (e) {}
+
   var row = rawId ? Biz.getAftersale(rawId) : null;
+  /* Enrich / fallback from UserStore when ProtoBiz row is thin */
+  var ur = (rawId && US && US.findRefund) ? US.findRefund(rawId, uidParam) : null;
+  if (!row && ur && ur.refund) {
+    row = {
+      id: ur.refund.id,
+      orderId: ur.refund.orderId || (ur.order && ur.order.id) || "",
+      buyer: ur.user.name,
+      userId: ur.user.id,
+      phone: US.maskPhone(ur.user.phone),
+      amount: ur.refund.amount,
+      type: ur.refund.type || "仅退款",
+      reason: ur.refund.reason || "",
+      status: ur.refund.status || "done",
+      statusLabel: ur.refund.statusLabel || "退款处理完成",
+      createdAt: ur.refund.createdAt || "",
+      product: ur.refund.product || (ur.order && ur.order.product) || "",
+      rightsRecycled: !!ur.refund.rightsRecycled,
+      rightsStatus: ur.refund.rightsStatus || (ur.right && ur.right.status) || "",
+      courseAccess: ur.refund.courseAccess || (ur.right && ur.right.access) || "不可访问",
+      logs: ur.refund.logs || []
+    };
+  } else if (row && ur) {
+    if (!row.userId && ur.user) row.userId = ur.user.id;
+    if (!row.rightsStatus && ur.right) row.rightsStatus = ur.right.status;
+    if (!row.courseAccess && ur.right) row.courseAccess = ur.right.access;
+    if (row.rightsRecycled == null && ur.right) {
+      row.rightsRecycled = ur.right.status === "已退款回收";
+    }
+  }
+
+  function buildOrderHref(orderId, userId) {
+    var href = "order-detail.html?id=" + encodeURIComponent(orderId || "");
+    if (userId) href += "&user=" + encodeURIComponent(userId) + "&from=user&tab=rights";
+    if (returnTo) href += "&returnTo=" + encodeURIComponent(returnTo);
+    return href;
+  }
+
+  function buildUserRightsHref(userId) {
+    var href = "user-detail.html?id=" + encodeURIComponent(userId || "") + "&tab=rights";
+    if (returnTo) href += "&returnTo=" + encodeURIComponent(returnTo);
+    return href;
+  }
+
+  function usersListHref() {
+    return returnTo || "users.html";
+  }
 
   function applyDashBack() {
     if (!fromDash) return;
@@ -220,6 +295,28 @@
     });
   }
   applyDashBack();
+
+  if (!fromDash) {
+    var btnBottom = document.getElementById("btn-back-bottom");
+    if (btnBottom) {
+      btnBottom.onclick = function () { location.href = "aftersales.html"; };
+    }
+  }
+
+  function applyUserBack(userId) {
+    var showUserNav = fromUser || !!uidParam || !!userId;
+    if (!showUserNav || fromDash) return;
+    var rights = document.getElementById("btn-back-rights");
+    var users = document.getElementById("btn-back-users");
+    if (rights && userId) {
+      rights.style.display = "";
+      rights.href = buildUserRightsHref(userId);
+    }
+    if (users) {
+      users.style.display = "";
+      users.href = usersListHref();
+    }
+  }
 
   function offerDashContinue(msg) {
     if (!fromDash) return;
@@ -259,15 +356,24 @@
     return "";
   }
 
+  function isKnowledgeRefund(row) {
+    return !!(row && (row.rightsStatus || row.courseAccess || row.rightsRecycled ||
+      String(row.id || "").indexOf("RF") === 0));
+  }
+
   function render(row) {
     if (!row) {
       document.getElementById("as-empty").style.display = "";
       document.getElementById("as-found").style.display = "none";
       document.getElementById("btn-contact").style.display = "none";
+      applyUserBack(uidParam);
       return;
     }
     document.getElementById("as-empty").style.display = "none";
     document.getElementById("as-found").style.display = "";
+
+    var userId = row.userId || uidParam || "";
+    applyUserBack(userId);
 
     var badge = document.getElementById("as-status-badge");
     badge.className = "badge " + badgeClass(row.status);
@@ -282,12 +388,50 @@
     document.getElementById("kv-reason").textContent = row.reason || "—";
     document.getElementById("kv-desc").textContent = row.reason || "—";
     document.getElementById("kv-created").textContent = row.createdAt || "—";
-    document.getElementById("kv-order").textContent = row.orderId || "—";
+
+    var orderEl = document.getElementById("kv-order");
+    orderEl.textContent = row.orderId || "—";
+    orderEl.href = buildOrderHref(row.orderId, userId);
+
     document.getElementById("kv-product").textContent = row.product || "—";
     document.getElementById("kv-product-sub").textContent = "退款金额 ¥" + Number(row.amount || 0).toFixed(2);
-    document.getElementById("kv-buyer").innerHTML = esc(row.buyer || "—") + ' <a href="user-detail.html" class="link">查看用户 →</a>';
+
+    var buyerHtml = esc(row.buyer || "—");
+    if (userId) {
+      buyerHtml += ' <a href="' + esc(buildUserRightsHref(userId)) + '" class="link">查看用户 →</a>';
+    }
+    document.getElementById("kv-buyer").innerHTML = buyerHtml;
+    document.getElementById("kv-user-id").textContent = userId || "—";
     document.getElementById("kv-phone").textContent = row.phone || "—";
     document.getElementById("agree-amount").value = Number(row.amount || 0).toFixed(2);
+
+    var viewOrder = document.getElementById("btn-view-order");
+    if (viewOrder) viewOrder.href = buildOrderHref(row.orderId, userId);
+
+    var rightsCard = document.getElementById("as-rights-card");
+    if (isKnowledgeRefund(row)) {
+      rightsCard.style.display = "";
+      document.getElementById("kv-refund-id").textContent = row.id;
+      document.getElementById("kv-refund-status").innerHTML =
+        '<span class="badge ' + badgeClass(row.status) + '">' + esc(row.statusLabel || row.status || "—") + "</span>";
+      document.getElementById("kv-refund-product").textContent = row.product || "—";
+      document.getElementById("kv-rights-status").textContent = row.rightsStatus || "—";
+      document.getElementById("kv-course-access").textContent = row.courseAccess || "—";
+      document.getElementById("kv-rights-recycled").textContent =
+        row.rightsRecycled ? "是（已回收）" : "否";
+      var story = document.getElementById("as-story");
+      story.style.display = "";
+      story.innerHTML = "表达链路：订单已退款 → 退款处理完成 → 权益被回收 → 用户当前不能访问课程。";
+      document.getElementById("kv-addr").textContent = "知识商品仅退款，无需退货";
+      document.getElementById("kv-deadline").textContent = "—";
+      document.getElementById("kv-timeout-rule").textContent = "仅退款 · 无退货时效";
+      var warn = document.querySelector("#as-found .alert.alert-warning");
+      if (warn && warn.id !== "as-story") {
+        warn.innerHTML = "本单为<b>知识商品仅退款</b>：退款完成后系统自动回收课程权益，买家无法再访问对应课程。";
+      }
+    } else {
+      rightsCard.style.display = "none";
+    }
 
     if (row.status === "returning") {
       document.getElementById("kv-addr").textContent = "默认退货地址（深圳仓）已发送";
@@ -297,10 +441,18 @@
         '<div class="os-step cur"><i>3</i>买家退货</div>' +
         '<div class="os-step"><i>4</i>收货退款</div>';
     } else if (row.status === "rejected" || row.status === "done") {
-      document.getElementById("as-flow").innerHTML =
-        '<div class="os-step done"><i>1</i>买家申请</div>' +
-        '<div class="os-step done"><i>2</i>商家审核</div>' +
-        '<div class="os-step done"><i>3</i>已完结</div>';
+      if (isKnowledgeRefund(row)) {
+        document.getElementById("as-flow").innerHTML =
+          '<div class="os-step done"><i>1</i>买家申请</div>' +
+          '<div class="os-step done"><i>2</i>商家同意退款</div>' +
+          '<div class="os-step done"><i>3</i>退款完成</div>' +
+          '<div class="os-step cur"><i>4</i>权益已回收</div>';
+      } else {
+        document.getElementById("as-flow").innerHTML =
+          '<div class="os-step done"><i>1</i>买家申请</div>' +
+          '<div class="os-step done"><i>2</i>商家审核</div>' +
+          '<div class="os-step done"><i>3</i>已完结</div>';
+      }
     }
 
     var logs = row.logs || [];
@@ -312,7 +464,18 @@
       : "<li class=\"muted\">暂无记录</li>";
 
     var pending = row.status === "pending_merchant";
-    document.getElementById("as-actions").style.display = pending ? "" : "none";
+    var actions = document.getElementById("as-actions");
+    if (pending) {
+      actions.style.display = "";
+    } else if (isKnowledgeRefund(row)) {
+      /* Keep a compact action bar for navigation on completed knowledge refunds */
+      actions.style.display = "";
+      actions.querySelector("span").textContent = "快捷入口：";
+      document.getElementById("btn-reject").style.display = "none";
+      document.getElementById("btn-agree").style.display = "none";
+    } else {
+      actions.style.display = "none";
+    }
     if (row.rejectReason) {
       document.getElementById("kv-note").textContent = "拒绝原因：" + row.rejectReason;
     }

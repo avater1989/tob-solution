@@ -591,7 +591,13 @@
     if (!String(name).trim()) addBlock("name", "直播名称已填写", "name", "live-edit.html?live_id=" + (live && live.liveId) + "#sec-basic");
     if (!String(liveMode).trim()) addBlock("mode", "直播模式已选择", "mode", "live-edit.html?live_id=" + (live && live.liveId) + "#sec-basic");
     if (!String(courseName).trim() || courseName === "请选择") {
-      addBlock("course", "关联课程已选择", "course", "live-edit.html?live_id=" + (live && live.liveId) + "#sec-basic");
+      // 仅「加入课程目录」时必选所属课程；独立直播不阻断
+      var mustCourse = false;
+      if (form && form.catalogJoin != null) mustCourse = form.catalogJoin === true;
+      else if (live && live.catalogJoin != null) mustCourse = live.catalogJoin === true;
+      if (mustCourse) {
+        addBlock("course", "内容归属已选择所属课程", "course", "live-edit.html?live_id=" + (live && live.liveId) + "#sec-catalog");
+      }
     }
     if (!String(startAt).trim() || !String(endAt).trim()) {
       addBlock("time", "开始时间和结束时间已填写", "time", "live-edit.html?live_id=" + (live && live.liveId) + "#sec-basic");
@@ -608,9 +614,20 @@
       addBlock("intro", "直播介绍或直播详情已填写", "intro", "live-edit.html?live_id=" + (live && live.liveId) + "#sec-basic");
     }
     if (!String(saleMode).trim()) {
-      addBlock("sale", "售卖方式已配置", "sale", "live-edit.html?live_id=" + (live && live.liveId) + "#sec-sale");
-    } else if ((saleMode === "付费" || saleMode === "单独售卖") && (!products || !products.length)) {
-      addBlock("goods", "开启商品售卖时至少挂载一个有效商品", "goods", "live-edit.html?live_id=" + (live && live.liveId) + "#sec-goods");
+      addBlock("sale", "观看资格已配置", "sale", "live-edit.html?live_id=" + (live && live.liveId) + "#sec-access");
+    } else if (saleMode === "加密" || saleMode === "观看密码") {
+      var watchPwd = form && form.watchPassword != null ? form.watchPassword : (live && live.watchPassword) || "";
+      if (!String(watchPwd).trim()) {
+        addBlock("watch_pwd", "已设置观众观看密码", "sale", "live-edit.html?live_id=" + (live && live.liveId) + "#sec-access");
+      }
+    }
+    // 挂载商品与观看资格解耦：付费观看不要求必须挂载带货商品
+    if (!products || products.length === 0) {
+      warnings.push({
+        id: "goods",
+        label: "未挂载直播间商品（不影响观看资格，不阻断提交）",
+        field: "goods"
+      });
     }
     if (!agreed) {
       addBlock("agree", "已阅读并同意直播运营规范", "agree", "live-edit.html?live_id=" + (live && live.liveId) + "#sec-agree");
@@ -880,6 +897,7 @@
       name: (src.liveName || src.name || "直播") + "（副本）",
       liveMode: src.liveMode || "视频直播",
       courseName: src.courseName || "",
+      catalogJoin: src.catalogJoin != null ? !!src.catalogJoin : !!(src.courseName),
       roomType: src.roomType || "传统直播间",
       teacher: src.teacher || "阮荣均",
       assistants: (src.assistants || []).slice(),
@@ -892,6 +910,11 @@
         return Object.assign({}, p);
       }),
       saleMode: src.saleMode || "免费",
+      accessMode: src.accessMode || "",
+      accessPrice: src.accessPrice,
+      watchPassword: src.watchPassword || "",
+      hostPassword: src.hostPassword || "",
+      soloSell: src.soloSell !== false,
       reminderEnabled: src.reminderEnabled !== false,
       preRemindOffset: src.preRemindOffset || "1h",
       remindOnStart: src.remindOnStart !== false,

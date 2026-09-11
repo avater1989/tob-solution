@@ -10,7 +10,7 @@
     '<a href="lives.html">直播</a><span class="sep">·</span>' +
     '<a href="claim.html">领课</a><span class="sep">·</span>' +
     '<a href="mine.html">我的</a><span class="sep">|</span>' +
-    '<a href="../admin/dashboard.html">切管理端</a><span class="sep">·</span>' +
+    '<a href="../admin/dashboard.html">原型切换·管理端</a><span class="sep">·</span>' +
     '<a href="../index.html">导航</a>' +
     "</div>";
 

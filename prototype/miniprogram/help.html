@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>账号与帮助 · 星启家庭教育</title>
+  <link rel="stylesheet" href="../assets/css/proto.css" />
+  <link rel="stylesheet" href="../assets/css/mp.css?v=taste2" />
+  <style>
+    .mp-faq-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 15px 16px;
+      border-bottom: 1px solid #f3f4f6;
+      background: #fff;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 550;
+      color: var(--mp-text);
+      width: 100%;
+      border-left: 0;
+      border-right: 0;
+      border-top: 0;
+      text-align: left;
+      font-family: inherit;
+    }
+    .mp-faq-item:last-child { border-bottom: 0; }
+    .mp-faq-item:active { background: #fafbfc; }
+    .mp-faq-item .arrow { margin-left: auto; color: #c9cdd4; font-size: 16px; font-weight: 300; }
+    .mp-sheet-mask {
+      position: absolute;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.45);
+      z-index: 20;
+      display: none;
+      align-items: flex-end;
+    }
+    .mp-sheet-mask.open { display: flex; }
+    .mp-sheet {
+      width: 100%;
+      background: #fff;
+      border-radius: 18px 18px 0 0;
+      padding: 8px 18px 28px;
+      max-height: 78%;
+      overflow-y: auto;
+      box-shadow: 0 -12px 32px rgba(0, 0, 0, 0.12);
+    }
+    .mp-sheet-handle {
+      width: 36px;
+      height: 4px;
+      border-radius: 4px;
+      background: #e5e6eb;
+      margin: 6px auto 14px;
+    }
+    .mp-sheet h3 {
+      font-size: 17px;
+      font-weight: 750;
+      letter-spacing: -0.02em;
+      color: var(--mp-ink);
+      margin: 0 0 10px;
+    }
+    .mp-sheet p {
+      font-size: 13px;
+      color: #5c6575;
+      line-height: 1.7;
+      margin: 0 0 16px;
+    }
+    .mp-sheet-actions { display: flex; flex-direction: column; gap: 10px; }
+  </style>
+</head>
+<body class="mp-page" data-tabbar="0">
+  <div class="mp-frame">
+    <div class="mp-status">
+      <span>9:41</span>
+      <span class="mp-notch" aria-hidden="true"></span>
+      <span>100%</span>
+    </div>
+    <div class="mp-nav"><a class="back" href="mine.html" aria-label="返回">‹</a>账号与帮助</div>
+    <div class="mp-body">
+      <div class="mp-panel" style="margin-top:10px;border-radius:var(--mp-radius);margin-left:16px;margin-right:16px;box-shadow:var(--mp-shadow)">
+        <div style="font-size:15px;font-weight:750;letter-spacing:-0.02em;margin-bottom:4px">常见问题</div>
+        <p style="font-size:12px;color:var(--mp-muted);margin:0;line-height:1.55">购课后看课、领课与联系商家的最短指引</p>
+      </div>
+
+      <div style="margin:0 16px 14px;background:#fff;border-radius:var(--mp-radius);box-shadow:var(--mp-shadow);overflow:hidden">
+        <button type="button" class="mp-faq-item" data-faq="missing">
+          找不到已购课程
+          <span class="arrow">›</span>
+        </button>
+        <button type="button" class="mp-faq-item" data-faq="claim">
+          领课失败
+          <span class="arrow">›</span>
+        </button>
+        <button type="button" class="mp-faq-item" data-faq="play">
+          无法观看
+          <span class="arrow">›</span>
+        </button>
+        <button type="button" class="mp-faq-item" data-faq="merchant">
+          联系商家
+          <span class="arrow">›</span>
+        </button>
+      </div>
+
+      <div style="padding:0 16px 28px">
+        <a class="mp-btn mp-btn-outline" href="orders.html">查看我的订单</a>
+        <a class="mp-btn mp-btn-outline" href="claim.html" style="margin-top:10px">去领课兑换</a>
+      </div>
+    </div>
+
+    <div class="mp-sheet-mask" id="faq-sheet" aria-hidden="true">
+      <div class="mp-sheet" role="dialog" aria-labelledby="faq-title">
+        <div class="mp-sheet-handle"></div>
+        <h3 id="faq-title">—</h3>
+        <p id="faq-body">—</p>
+        <div class="mp-sheet-actions" id="faq-actions"></div>
+        <button type="button" class="mp-btn mp-btn-ghost" id="faq-close" style="margin-top:8px">关闭</button>
+      </div>
+    </div>
+  </div>
+  <p class="mp-hint"><span style="opacity:.75">原型切换</span> · <a href="../admin/dashboard.html">切管理端</a></p>
+  <script src="../assets/js/proto.js"></script>
+  <script src="../assets/js/mp-shell.js"></script>
+  <script>
+    var FAQS = {
+      missing: {
+        title: "找不到已购课程",
+        body: "请先在「我的订单」确认支付是否成功。小程序购买的课程会出现在「我的课程」；视频号购买需先完成领课兑换后才会出现。",
+        actions: [
+          { label: "去我的订单", href: "orders.html" },
+          { label: "去领课兑换", href: "claim.html", outline: true }
+        ]
+      },
+      claim: {
+        title: "领课失败",
+        body: "常见原因：短信链接过期、手机号不一致、或订单尚未同步。可重新打开领课页重试；仍失败请联系商家并说明订单号。",
+        actions: [
+          { label: "重新领课", href: "claim.html" },
+          { label: "联系商家（带订单上下文）", href: "help.html?contact=1&ctx=领课失败", outline: true, contact: true }
+        ]
+      },
+      play: {
+        title: "无法观看",
+        body: "先确认课程权益已开通、网络正常，并尝试切换章节。若订单显示已支付但仍无法播放，可在订单详情申请售后或联系客服。",
+        actions: [
+          { label: "继续学习", href: "learn.html" },
+          { label: "查看订单 / 售后", href: "orders.html", outline: true }
+        ]
+      },
+      merchant: {
+        title: "联系商家",
+        body: "将为你打开客服会话，并自动带上当前订单或课程信息，方便商家快速定位问题。本原型仅演示留言预填，不做完整工单。",
+        actions: [
+          { label: "联系客服", href: "#", contact: true },
+          { label: "先看我的订单", href: "orders.html", outline: true }
+        ]
+      }
+    };
+
+    var sheet = document.getElementById("faq-sheet");
+    var titleEl = document.getElementById("faq-title");
+    var bodyEl = document.getElementById("faq-body");
+    var actionsEl = document.getElementById("faq-actions");
+
+    function openContact(ctx) {
+      var msg = "你好，我需要帮助。" + (ctx ? "\n问题：" + ctx : "") + "\n用户：李女士 · 138****2610";
+      try {
+        sessionStorage.setItem("mp_cs_draft", msg);
+      } catch (e) {}
+      location.href = "contact.html?from=help" + (ctx ? "&ctx=" + encodeURIComponent(ctx) : "");
+    }
+
+    function openFaq(key) {
+      var f = FAQS[key];
+      if (!f) return;
+      titleEl.textContent = f.title;
+      bodyEl.textContent = f.body;
+      actionsEl.innerHTML = "";
+      f.actions.forEach(function (a) {
+        var btn = document.createElement(a.contact ? "button" : "a");
+        btn.className = "mp-btn" + (a.outline ? " mp-btn-outline" : "");
+        btn.textContent = a.label;
+        if (a.contact) {
+          btn.type = "button";
+          btn.addEventListener("click", function () {
+            openContact(key === "merchant" ? "联系商家" : f.title);
+          });
+        } else {
+          btn.href = a.href;
+        }
+        actionsEl.appendChild(btn);
+      });
+      sheet.classList.add("open");
+      sheet.setAttribute("aria-hidden", "false");
+    }
+
+    function closeFaq() {
+      sheet.classList.remove("open");
+      sheet.setAttribute("aria-hidden", "true");
+    }
+
+    document.querySelectorAll("[data-faq]").forEach(function (el) {
+      el.addEventListener("click", function () {
+        openFaq(el.getAttribute("data-faq"));
+      });
+    });
+    document.getElementById("faq-close").addEventListener("click", closeFaq);
+    sheet.addEventListener("click", function (e) {
+      if (e.target === sheet) closeFaq();
+    });
+
+    var params = new URLSearchParams(location.search);
+    if (params.get("contact") === "1") {
+      openContact(params.get("ctx") || "联系商家");
+    }
+    var open = params.get("faq");
+    if (open && FAQS[open]) openFaq(open);
+  </script>
+</body>
+</html>

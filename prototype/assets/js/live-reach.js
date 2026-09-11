@@ -690,13 +690,288 @@
       save(data);
       return sop;
     },
+    AUDIENCE_PRESETS: {
+      sop_filters: { id: "sop_filters", label: "沿用本 SOP 人群筛选" },
+      high_intent_unbooked: { id: "high_intent_unbooked", label: "高意向但未预约" },
+      booked: { id: "booked", label: "已预约用户" },
+      booked_not_entered: { id: "booked_not_entered", label: "已预约但未进入直播间" },
+      watched_not_ordered: { id: "watched_not_ordered", label: "观看未下单" },
+      new_booked: { id: "new_booked", label: "新预约用户" }
+    },
+    CHANNEL_OPTIONS: ["企微", "短信", "站内信"],
+    CONTENT_LIBRARY: {
+      phrase: [
+        { id: "PH1", title: "开播催到话术", preview: "家长你好，今晚《{{live}}》即将开始，记得准时进入直播间，老师会讲关键干货～" },
+        { id: "PH2", title: "预约邀请话术", preview: "家长你好，为你留了《{{live}}》席位，点开卡片一键预约，开播前会提醒你。" },
+        { id: "PH3", title: "未到场召回话术", preview: "直播已开始啦，你预约的位置还在，点这里立即进入～错过前半段也可看回放。" }
+      ],
+      material: [
+        { id: "MT1", title: "9.9 引流课报名海报", preview: "[图片] 9.9 引流课报名海报 · 朋友圈/群发首图" },
+        { id: "MT2", title: "今晚直播预告片段", preview: "[视频] 今晚直播预告片段 · 开课前群发" },
+        { id: "MT3", title: "星启家庭教育介绍链接", preview: "[链接] 星启家庭教育介绍 · 点击查看机构介绍" }
+      ],
+      live_card: [
+        { id: "LC1", title: "本场直播预约卡片", preview: "[直播卡片] 《{{live}}》\n开播时间：{{startAt}}\n点击预约 / 进入直播间" },
+        { id: "LC2", title: "本场直播进入卡片", preview: "[直播卡片] 《{{live}}》正在直播\n点击立即进入" }
+      ]
+    },
+    EXCLUDE_PRODUCTS: [
+      { id: "P2026030101", name: "春启 03 期家长必修课" },
+      { id: "P2026040101", name: "春启 04 期家长必修课" },
+      { id: "P2026090102", name: "家庭教育指导手册（电子版）" },
+      { id: "P_LIVE_RELATED", name: "本场直播关联课程（自动）" }
+    ],
+    formatTriggerLabel: function (tr) {
+      if (!tr || !tr.type) return "未设置";
+      if (tr.type === "link_booking") return "关联预约管理（标准提醒）";
+      var n = Number(tr.value) || 0;
+      var unit = ({ m: "分钟", h: "小时", d: "天" })[tr.unit] || "小时";
+      if (tr.type === "before_live") return "开播前 " + n + " " + unit;
+      if (tr.type === "after_live_start") return "开播后 " + n + " " + unit;
+      if (tr.type === "after_live_end") return "结束后 " + n + " " + unit;
+      if (tr.type === "after_booking") return "预约成功后 " + n + " " + unit;
+      return "自定义";
+    },
+    parseLegacyTiming: function (timing) {
+      var t = String(timing || "");
+      if (/关联预约/.test(t)) return { type: "link_booking", value: 0, unit: "h" };
+      var m;
+      if ((m = t.match(/(?:直播|开播)前\s*(\d+)\s*(小时|分钟|天)/))) {
+        return { type: "before_live", value: +m[1], unit: m[2] === "分钟" ? "m" : (m[2] === "天" ? "d" : "h") };
+      }
+      if ((m = t.match(/开播后\s*(\d+)\s*(小时|分钟|天)/))) {
+        return { type: "after_live_start", value: +m[1], unit: m[2] === "分钟" ? "m" : (m[2] === "天" ? "d" : "h") };
+      }
+      if ((m = t.match(/结束后\s*(\d+)\s*(小时|分钟|天)/))) {
+        return { type: "after_live_end", value: +m[1], unit: m[2] === "分钟" ? "m" : (m[2] === "天" ? "d" : "h") };
+      }
+      if ((m = t.match(/预约(?:成功)?后\s*(\d+)\s*(小时|分钟|天)/))) {
+        return { type: "after_booking", value: +m[1], unit: m[2] === "分钟" ? "m" : (m[2] === "天" ? "d" : "h") };
+      }
+      if (/预约后/.test(t)) return { type: "after_booking", value: 2, unit: "h" };
+      return { type: "before_live", value: 1, unit: "h" };
+    },
+    normalizeStep: function (st) {
+      if (!st) return st;
+      var s = deepClone(st);
+      if (!s.trigger) s.trigger = api.parseLegacyTiming(s.timing);
+      if (s.trigger.type === "link_booking" || s.linkBooking) {
+        s.linkBooking = true;
+        s.trigger = { type: "link_booking", value: 0, unit: "h" };
+        if (s.status === "draft" || !s.status) s.status = "linked_booking";
+      }
+      s.timing = api.formatTriggerLabel(s.trigger);
+      if (!s.audienceMode) {
+        if (s.audienceSegmentId) s.audienceMode = "segment";
+        else s.audienceMode = "preset";
+      }
+      if (!s.audiencePreset) {
+        var al = String(s.audience || "");
+        if (/高意向|未预约/.test(al)) s.audiencePreset = "high_intent_unbooked";
+        else if (/新预约/.test(al)) s.audiencePreset = "new_booked";
+        else if (/未进入|未到场/.test(al)) s.audiencePreset = "booked_not_entered";
+        else if (/未下单|观看/.test(al)) s.audiencePreset = "watched_not_ordered";
+        else if (/已预约/.test(al)) s.audiencePreset = "booked";
+        else s.audiencePreset = "sop_filters";
+      }
+      var preset = api.AUDIENCE_PRESETS[s.audiencePreset];
+      if (s.audienceMode === "segment" && s.audienceSegmentId && global.UserStore) {
+        var meta = global.UserStore.segmentMeta(s.audienceSegmentId);
+        s.audience = meta.name || s.audienceSegmentId;
+      } else if (preset) {
+        s.audience = preset.label;
+      }
+      if (!Array.isArray(s.channels)) s.channels = s.channels ? [s.channels] : ["企微"];
+      if (s.auto === false) {
+        s.manualRequirement = s.manualRequirement || "按执行要求完成跟进并回填结果";
+        s.ownerRule = s.ownerRule || "lead_owner";
+        s.deadlineHours = s.deadlineHours != null ? s.deadlineHours : 24;
+      }
+      if (!s.contentType) {
+        if (s.linkBooking) s.contentType = "none";
+        else if (!s.auto) s.contentType = "phrase";
+        else s.contentType = "phrase";
+      }
+      if (!s.contentId && s.contentType !== "none" && !s.linkBooking) {
+        var lib = api.CONTENT_LIBRARY[s.contentType] || [];
+        if (lib[0]) {
+          s.contentId = lib[0].id;
+          s.contentLabel = lib[0].title;
+        }
+      }
+      return s;
+    },
+    contentPreviewText: function (step, live) {
+      var s = api.normalizeStep(step || {});
+      if (s.linkBooking) {
+        return "本步骤关联「预约管理」标准提醒，内容与发送规则以预约提醒配置为准，此处不维护第二套规则。";
+      }
+      if (s.auto === false) {
+        return "【助教任务】" + (s.manualRequirement || "按要求执行") +
+          "\n负责人：" + ({ live_owner: "直播负责人", lead_owner: "线索负责人", fixed: ("指定：" + (s.ownerFixed || "—")) })[s.ownerRule || "lead_owner"] +
+          "\n截止：触发后 " + (s.deadlineHours || 24) + " 小时内完成";
+      }
+      var lib = api.CONTENT_LIBRARY[s.contentType] || [];
+      var item = null;
+      for (var i = 0; i < lib.length; i++) if (lib[i].id === s.contentId) item = lib[i];
+      var text = item ? item.preview : (s.contentPreview || "（未选择发送内容）");
+      var liveName = (live && live.name) || "本场直播";
+      var startAt = (live && live.startAt) || "待定";
+      return String(text).replace(/\{\{live\}\}/g, liveName).replace(/\{\{startAt\}\}/g, startAt);
+    },
     defaultSopSteps: function () {
       return [
-        { id: uid("ST"), name: "直播前邀约", timing: "直播前 24 小时", audience: "高意向但未预约线索", channels: ["企微", "短信"], goal: "完成预约", auto: true, status: "draft", target: 0, reached: 0, converted: 0 },
-        { id: uid("ST"), name: "预约后催到", timing: "预约成功后 2 小时", audience: "新预约用户", channels: ["企微"], goal: "确认到课意向", auto: true, status: "draft", target: 0, reached: 0, converted: 0 },
-        { id: uid("ST"), name: "开播前提醒", timing: "关联预约管理", audience: "已预约用户", channels: ["系统提醒"], goal: "到课", auto: true, status: "linked_booking", target: 0, reached: 0, converted: 0, linkBooking: true },
-        { id: uid("ST"), name: "开播中未到场召回", timing: "开播后 10 分钟", audience: "已预约但未进入直播间", channels: ["企微"], goal: "到课", auto: true, status: "draft", target: 0, reached: 0, converted: 0 }
+        api.normalizeStep({
+          id: uid("ST"), name: "直播前邀约",
+          trigger: { type: "before_live", value: 24, unit: "h" },
+          audienceMode: "preset", audiencePreset: "high_intent_unbooked",
+          channels: ["企微", "短信"], goal: "完成预约", auto: true, status: "draft",
+          contentType: "phrase", contentId: "PH2",
+          target: 0, reached: 0, converted: 0
+        }),
+        api.normalizeStep({
+          id: uid("ST"), name: "预约后催到",
+          trigger: { type: "after_booking", value: 2, unit: "h" },
+          audienceMode: "preset", audiencePreset: "new_booked",
+          channels: ["企微"], goal: "确认到课意向", auto: true, status: "draft",
+          contentType: "phrase", contentId: "PH1",
+          target: 0, reached: 0, converted: 0
+        }),
+        api.normalizeStep({
+          id: uid("ST"), name: "开播前提醒（标准预约提醒）",
+          trigger: { type: "link_booking", value: 0, unit: "h" },
+          audienceMode: "preset", audiencePreset: "booked",
+          channels: ["系统提醒"], goal: "到课", auto: true, status: "linked_booking",
+          linkBooking: true, contentType: "none",
+          target: 0, reached: 0, converted: 0
+        }),
+        api.normalizeStep({
+          id: uid("ST"), name: "开播中未到场召回",
+          trigger: { type: "after_live_start", value: 10, unit: "m" },
+          audienceMode: "preset", audiencePreset: "booked_not_entered",
+          channels: ["企微"], goal: "到课", auto: true, status: "draft",
+          contentType: "phrase", contentId: "PH3",
+          target: 0, reached: 0, converted: 0
+        })
       ];
+    },
+    estimateStepFireAt: function (live, step) {
+      var s = api.normalizeStep(step);
+      if (!live || !live.startAt || s.linkBooking || s.trigger.type === "link_booking") return null;
+      var start = new Date(String(live.startAt).replace(/-/g, "/"));
+      if (isNaN(start.getTime())) return null;
+      var mins = (Number(s.trigger.value) || 0) * ({ m: 1, h: 60, d: 1440 }[s.trigger.unit] || 60);
+      var d = new Date(start.getTime());
+      if (s.trigger.type === "before_live") d.setMinutes(d.getMinutes() - mins);
+      else if (s.trigger.type === "after_live_start") d.setMinutes(d.getMinutes() + mins);
+      else if (s.trigger.type === "after_live_end") {
+        var end = live.endAt ? new Date(String(live.endAt).replace(/-/g, "/")) : new Date(start.getTime() + 2 * 60 * 60 * 1000);
+        d = new Date(end.getTime());
+        d.setMinutes(d.getMinutes() + mins);
+      } else if (s.trigger.type === "after_booking") {
+        /* 预约成功后为相对事件，启动时可执行；不视为绝对过期 */
+        return null;
+      }
+      return d;
+    },
+    validateSopStart: function (sop) {
+      var issues = [];
+      if (!sop) return [{ code: "missing", severity: "hard", reason: "未找到直播促到SOP", fixLabel: "返回列表", fixHref: "live-invite.html" }];
+      var live = api.getLive(sop.liveId);
+      if (!live) {
+        issues.push({ code: "no_live", severity: "hard", reason: "关联直播不存在", fixLabel: "重新选择直播", fixHref: "live-invite.html?sop_id=" + encodeURIComponent(sop.id) });
+        return issues;
+      }
+      var ended = live.liveStatus === "ended" || live.execStatus === "ended" ||
+        (global.LiveOps && LiveOps.scenarioKey && LiveOps.scenarioKey(live) === "ended");
+      if (ended) {
+        issues.push({
+          code: "live_ended",
+          severity: "hard",
+          reason: "直播「" + live.name + "」已结束，不可再启动促到SOP",
+          fixLabel: "查看预约管理",
+          fixHref: "live-booking.html?live_id=" + encodeURIComponent(live.id)
+        });
+      }
+      var target = sop.targetUsers || sop.targetCount || 0;
+      if (!target) {
+        issues.push({
+          code: "empty_audience",
+          severity: "hard",
+          reason: "目标人群为空（当前筛选/排除后预估 0 人）",
+          fixLabel: "调整人群与排除条件",
+          fixAction: "edit"
+        });
+      }
+      var steps = sop.steps || [];
+      if (!steps.length) {
+        issues.push({ code: "no_steps", severity: "hard", reason: "尚未配置任何步骤", fixLabel: "添加步骤", fixAction: "edit" });
+      }
+      var now = new Date();
+      var allAbsolutePassed = steps.length > 0;
+      var hasRunnable = false;
+      steps.forEach(function (st, idx) {
+        var ns = api.normalizeStep(st);
+        if (ns.linkBooking) { hasRunnable = true; allAbsolutePassed = false; return; }
+        if (ns.trigger && ns.trigger.type === "after_booking") { hasRunnable = true; allAbsolutePassed = false; return; }
+        var fireAt = api.estimateStepFireAt(live, ns);
+        if (!fireAt) { allAbsolutePassed = false; hasRunnable = true; return; }
+        if (fireAt.getTime() > now.getTime()) {
+          hasRunnable = true;
+          allAbsolutePassed = false;
+        } else if (ns.status !== "completed") {
+          issues.push({
+            code: "trigger_passed",
+            severity: "warn",
+            reason: "步骤「" + ns.name + "」触发时间（" + api.formatTriggerLabel(ns.trigger) + "）已过，启动后该步将跳过",
+            fixLabel: "调整触发时机",
+            fixAction: "edit_step",
+            stepIndex: idx
+          });
+        }
+      });
+      if (allAbsolutePassed && !hasRunnable && !ended) {
+        issues.push({
+          code: "all_triggers_passed",
+          severity: "hard",
+          reason: "全部可执行步骤的触发时间均已过，启动后不会产生新触达",
+          fixLabel: "编辑步骤时机",
+          fixAction: "edit"
+        });
+      }
+      if (!ended && live.auditStatus && live.auditStatus !== "approved") {
+        issues.push({
+          code: "audit",
+          severity: "hard",
+          reason: "直播未通过审核并上架，无法启动",
+          fixLabel: "去直播编辑/送审",
+          fixHref: "live-edit.html?live_id=" + encodeURIComponent(live.id)
+        });
+      }
+      if (!ended && live.shelf === false && live.auditStatus === "approved") {
+        issues.push({
+          code: "shelf",
+          severity: "hard",
+          reason: "直播已通过审核但未上架",
+          fixLabel: "去直播编辑上架",
+          fixHref: "live-edit.html?live_id=" + encodeURIComponent(live.id)
+        });
+      }
+      return issues;
+    },
+    completeManualStep: function (sopId, stepIndex) {
+      var sop = api.getSop(sopId);
+      if (!sop || !sop.steps || !sop.steps[stepIndex]) return { error: "步骤不存在" };
+      var st = api.normalizeStep(sop.steps[stepIndex]);
+      if (st.auto !== false) return { error: "仅人工任务可手动完成" };
+      if (st.status === "completed") return { error: "该步骤已完成" };
+      st.status = "completed";
+      st.completedAt = new Date().toISOString().slice(0, 16).replace("T", " ");
+      st.completedBy = "当前助教";
+      sop.steps[stepIndex] = st;
+      sop.updatedAt = st.completedAt;
+      api.saveSop(sop);
+      return { ok: true, sop: sop };
     },
     createSop: function (payload) {
       var live = api.getLive(payload.liveId);
@@ -712,6 +987,9 @@
         owner: payload.owner || "赵老师",
         filters: payload.filters || {},
         excludes: payload.excludes || ["已购买", "已退订营销", "近期已触达"],
+        excludeProductId: payload.excludeProductId || "P_LIVE_RELATED",
+        excludeProductName: payload.excludeProductName || "",
+        recentReachDays: payload.recentReachDays != null ? payload.recentReachDays : 7,
         targetUsers: payload.targetUsers || 0,
         targetCount: payload.targetUsers || 0,
         reachedUsers: 0, reachedCount: 0, newBookings: 0, attendedUsers: 0, orderUsers: 0, gmv: 0, costPerTouch: 0,
@@ -719,7 +997,7 @@
         updatedAt: new Date().toISOString().slice(0, 16).replace("T", " "),
         startedAt: null,
         executionLogs: [],
-        steps: payload.steps || api.defaultSopSteps()
+        steps: (payload.steps || api.defaultSopSteps()).map(function (st) { return api.normalizeStep(st); })
       };
       return api.saveSop(sop);
     },

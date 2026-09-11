@@ -14,6 +14,11 @@
 </div>
 <div id="page-content" style="display:none">
 
+  <div id="user-from-banner" class="card" style="display:none;margin-bottom:8px"><div class="card-bd" style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap">
+    <span id="user-from-text" style="font-size:13px">正在查看用户</span>
+    <a class="btn btn-sm btn-primary" id="btn-back-user" href="users.html">返回用户详情</a>
+  </div></div>
+
   <!-- 筛选 -->
   <div class="tabs" id="lead-tabs">
     <a class="active" href="#pool" data-tab="pool">待分配线索</a>
@@ -26,8 +31,12 @@
 
   <!-- ===== 待分配线索 ===== -->
   <div id="panel-pool">
+    <div id="lead-user-empty" class="card" style="display:none;margin-bottom:8px"><div class="card-bd" style="padding:48px;text-align:center">
+      <p style="font-size:15px;margin:0 0 16px" id="lead-user-empty-text">该用户暂无SCRM线索</p>
+      <button class="btn btn-primary" type="button" id="btn-create-lead-empty">创建跟进线索</button>
+    </div></div>
     <!-- 筛选条 -->
-    <div class="card" style="margin-bottom:8px"><div class="card-bd">
+    <div class="card" id="lead-filters-card" style="margin-bottom:8px"><div class="card-bd">
       <div class="form-grid" style="grid-template-columns:repeat(6,minmax(0,1fr));gap:8px 12px">
         <input id="f-keyword" placeholder="姓名 / 手机号" />
         <input id="f-keyword2" placeholder="订单号 / 关键词" />
@@ -65,7 +74,7 @@
     </div></div>
 
     <!-- 表格 -->
-    <div class="card"><div class="card-bd" style="padding:0">
+    <div class="card" id="lead-table-card"><div class="card-bd" style="padding:0">
       <table class="data">
         <thead>
           <tr>
@@ -154,7 +163,7 @@
       </table>
     </div></div>
     <!-- 分页 -->
-    <div class="toolbar" style="margin-top:8px">
+    <div class="toolbar" id="lead-pager" style="margin-top:8px">
       <span class="muted">共 <b id="lead-total">184</b> 条</span>
       <div class="spacer"></div>
       <button class="btn btn-sm" disabled>上一页</button>
@@ -454,7 +463,7 @@
   </div>
   <div class="proto-drawer-ft">
     <button class="btn" data-close>关闭</button>
-    <a class="btn btn-primary" href="follow-ups.html">写跟进</a>
+    <a class="btn btn-primary" id="btn-write-follow" href="follow-ups.html?write=1&from=leads">写跟进</a>
   </div>
 </div>
 
@@ -501,6 +510,7 @@
 <script src="../assets/js/board-data.js?v=6"></script>
 <script src="../assets/js/board-metrics.js?v=11"></script>
 <script src="../assets/js/board-insights.js?v=4"></script>
+<script src="../assets/js/user-store.js"></script>
 <script src="../assets/js/admin-shell.js?v=13"></script>
 <script>
 (function () {
@@ -545,22 +555,27 @@
   });
 
   // ===== Unmask full name/phone =====
-  document.querySelectorAll('[data-act="unmask"]').forEach(function (b) {
-    b.addEventListener("click", function () {
-      var cell = b.closest("td");
-      var tr = cell.parentElement;
-      var idx = Array.prototype.indexOf.call(tr.children, cell);
-      // Pick a deterministic sample based on the row order
-      var samples = [
-        { name: "李女士", phone: "13800002610" },
-        { name: "张妈妈", phone: "15900008832" },
-        { name: "陈先生", phone: "18600004411" },
-        { name: "刘爸爸", phone: "13700000012" },
-      ];
-      var rowIndex = Array.prototype.indexOf.call(tr.parentElement.children, tr);
-      var sample = samples[rowIndex % samples.length];
-      cell.textContent = idx === 0 ? sample.name : sample.phone;
-    });
+  document.getElementById("lead-tbody").addEventListener("click", function (e) {
+    var b = e.target.closest && e.target.closest('[data-act="unmask"]');
+    if (!b || !document.getElementById("lead-tbody").contains(b)) return;
+    var cell = b.closest("td");
+    var tr = cell.parentElement;
+    var idx = Array.prototype.indexOf.call(tr.children, cell);
+    var fullName = tr.getAttribute("data-name") || "";
+    var fullPhone = tr.getAttribute("data-phone") || "";
+    if (fullName || fullPhone) {
+      cell.textContent = idx === 1 ? (fullName || cell.textContent) : (fullPhone || cell.textContent);
+      return;
+    }
+    var samples = [
+      { name: "李女士", phone: "13800002610" },
+      { name: "张妈妈", phone: "15900008832" },
+      { name: "陈先生", phone: "18600004411" },
+      { name: "刘爸爸", phone: "13700000012" },
+    ];
+    var rowIndex = Array.prototype.indexOf.call(tr.parentElement.children, tr);
+    var sample = samples[rowIndex % samples.length];
+    cell.textContent = idx === 1 ? sample.name : sample.phone;
   });
 
   // ===== Batch select =====
@@ -575,14 +590,63 @@
     document.querySelectorAll(".row-check").forEach(function (c) { c.checked = checkAll.checked; });
     syncBatch();
   });
-  document.querySelectorAll(".row-check").forEach(function (c) { c.addEventListener("change", syncBatch); });
+  document.getElementById("lead-tbody").addEventListener("change", function (e) {
+    if (e.target && e.target.classList && e.target.classList.contains("row-check")) syncBatch();
+  });
 
   // ===== Row actions =====
+  var currentLeadCtx = null;
+
+  function pageQuery() {
+    try { return new URLSearchParams(location.search); } catch (e) { return new URLSearchParams(); }
+  }
+
+  function buildWriteFollowHref(d) {
+    var q = pageQuery();
+    var userId = (d && d.userId) || q.get("user") || "";
+    var leadId = (d && d.leadId) || "";
+    if (!leadId && d && d.order && d.order !== "—") leadId = "LD-ORD-" + d.order;
+    var name = (d && d.name) || "";
+    var phone = (d && d.phone) || "";
+    var fromTab = q.get("fromTab") || q.get("tab") || "";
+    var listReturnTo = "";
+    try {
+      listReturnTo = q.get("returnTo") || q.get("return_to") || "";
+      if (listReturnTo) {
+        try { listReturnTo = decodeURIComponent(listReturnTo); } catch (e1) {}
+      }
+    } catch (e2) {}
+    var returnTo = "";
+    if (userId) {
+      returnTo = "user-detail.html?id=" + encodeURIComponent(userId) +
+        "&tab=" + encodeURIComponent(fromTab || "overview");
+      if (listReturnTo) returnTo += "&returnTo=" + encodeURIComponent(listReturnTo);
+    } else if (listReturnTo) {
+      returnTo = listReturnTo;
+    } else {
+      returnTo = location.pathname.split("/").pop() + (location.search || "");
+    }
+    var href = "follow-ups.html?write=1&from=leads";
+    if (userId) href += "&user=" + encodeURIComponent(userId);
+    if (leadId) href += "&lead=" + encodeURIComponent(leadId);
+    if (name) href += "&name=" + encodeURIComponent(name);
+    if (phone) href += "&phone=" + encodeURIComponent(phone);
+    if (fromTab) href += "&fromTab=" + encodeURIComponent(fromTab);
+    if (returnTo) href += "&returnTo=" + encodeURIComponent(returnTo);
+    return href;
+  }
+
+  function syncWriteFollowLink(d) {
+    currentLeadCtx = d || null;
+    var btn = document.getElementById("btn-write-follow");
+    if (btn) btn.href = buildWriteFollowHref(d || {});
+  }
+
   function rowData(tr) {
     var tds = tr.querySelectorAll("td");
     return {
-      name: tds[1] ? tds[1].textContent.trim() : "",
-      phone: tds[2] ? tds[2].textContent.trim() : "",
+      name: tr.getAttribute("data-name") || (tds[1] ? tds[1].textContent.trim() : ""),
+      phone: tr.getAttribute("data-phone") || (tds[2] ? tds[2].textContent.trim() : ""),
       order: tds[3] ? tds[3].textContent.trim() : "",
       level: tds[4] ? tds[4].textContent.trim() : "",
       stage: tds[5] ? tds[5].textContent.trim() : "",
@@ -593,6 +657,9 @@
       fuTime: tds[10] ? tds[10].textContent.trim() : "",
       fuCount: tds[11] ? tds[11].textContent.trim() : "",
       asgTime: tds[12] ? tds[12].textContent.trim() : "",
+      timeline: tr._leadTimeline || null,
+      userId: tr.getAttribute("data-user") || "",
+      leadId: tr.getAttribute("data-lead") || "",
     };
   }
   function fillDrawer(d) {
@@ -609,30 +676,42 @@
     document.getElementById("dd-dept").textContent = d.dept;
     document.getElementById("dd-asg-time").textContent = d.asgTime;
     document.getElementById("dd-fu-count").textContent = d.fuCount;
-    document.getElementById("dd-timeline").innerHTML =
-      d.fuCount !== "0"
-        ? "<li>" + d.fuTime + " · " + d.owner + " · 写跟进（原型）</li><li>—</li>"
-        : "<li>暂无跟进</li>";
+    if (d.timeline && d.timeline.length) {
+      document.getElementById("dd-timeline").innerHTML = d.timeline.map(function (f) {
+        return "<li>" + (f.time || "") + " · " + (f.text || "") + "</li>";
+      }).join("");
+    } else {
+      document.getElementById("dd-timeline").innerHTML =
+        d.fuCount !== "0"
+          ? "<li>" + d.fuTime + " · " + d.owner + " · 写跟进（原型）</li><li>—</li>"
+          : "<li>暂无跟进</li>";
+    }
+    syncWriteFollowLink(d);
   }
   function fillEdit(d) {
     document.getElementById("ed-name").value = d.name;
     document.getElementById("ed-phone").value = d.phone;
   }
-  document.querySelectorAll("#lead-tbody tr").forEach(function (tr) {
-    tr.querySelectorAll("[data-row-act]").forEach(function (a) {
-      a.addEventListener("click", function (e) {
-        e.preventDefault();
-        var act = a.getAttribute("data-row-act");
-        var d = rowData(tr);
-        if (act === "detail") { fillDrawer(d); open(document.getElementById("drawer-detail")); }
-        else if (act === "edit") { fillEdit(d); open(document.getElementById("modal-edit")); }
-        else if (act === "del") {
-          if (confirm("确认删除线索 " + d.name + " ?")) {
-            tr.remove(); Proto.toast("已删除（原型）");
-          }
-        }
-      });
-    });
+  function openLeadDetail(tr) {
+    var d = rowData(tr);
+    fillDrawer(d);
+    open(document.getElementById("drawer-detail"));
+  }
+  document.getElementById("lead-tbody").addEventListener("click", function (e) {
+    var a = e.target.closest && e.target.closest("[data-row-act]");
+    if (!a || !document.getElementById("lead-tbody").contains(a)) return;
+    e.preventDefault();
+    var tr = a.closest("tr");
+    if (!tr) return;
+    var act = a.getAttribute("data-row-act");
+    var d = rowData(tr);
+    if (act === "detail") openLeadDetail(tr);
+    else if (act === "edit") { fillEdit(d); open(document.getElementById("modal-edit")); }
+    else if (act === "del") {
+      if (confirm("确认删除线索 " + d.name + " ?")) {
+        tr.remove(); Proto.toast("已删除（原型）");
+      }
+    }
   });
 
   // ===== Header / toolbar buttons =====
@@ -716,10 +795,285 @@
   });
 
   if (window.BoardMetrics && BoardMetrics.applyDrilldownToList) {
-    BoardMetrics.applyDrilldownToList({
-      tbody: "lead-tbody",
-      cols: { owner: 8, stage: 5 }
+    var _qBoot;
+    try { _qBoot = new URLSearchParams(location.search); } catch (eB) { _qBoot = null; }
+    if (!_qBoot || !_qBoot.get("user")) {
+      BoardMetrics.applyDrilldownToList({
+        tbody: "lead-tbody",
+        cols: { owner: 8, stage: 5 }
+      });
+    }
+  }
+
+  // ===== User → SCRM lead locate =====
+  function ensureUserStore(cb) {
+    if (window.UserStore) { cb(window.UserStore); return; }
+    var s = document.createElement("script");
+    s.src = "../assets/js/user-store.js";
+    s.onload = function () { cb(window.UserStore); };
+    s.onerror = function () { cb(null); };
+    document.head.appendChild(s);
+  }
+
+  function escHtml(s) {
+    return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) {
+      return ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c];
     });
+  }
+
+  function isScrmFollow(f) {
+    if (!f) return false;
+    if (f.type === "SCRM跟进") return true;
+    return String(f.text || "").indexOf("SCRM") >= 0;
+  }
+
+  function ownerFromFollow(f) {
+    var t = String((f && f.text) || "");
+    var m = t.match(/SCRM(?:\s*销售)?\s*([^\s跟]+)/);
+    return m ? m[1] : "";
+  }
+
+  function stageBadge(stage) {
+    var cls = "badge-info";
+    if (stage === "新线索") cls = "badge-warn";
+    else if (stage === "已转化") cls = "badge-success";
+    else if (stage === "无效") cls = "badge-danger";
+    return '<span class="badge ' + cls + '">' + escHtml(stage) + "</span>";
+  }
+
+  function intentHtml(intent) {
+    if (intent === "高意向") return '<span class="badge badge-success">高意向</span>';
+    return escHtml(intent || "—");
+  }
+
+  function buildLeadsForUser(user, US) {
+    if (!user) return [];
+    var scrmFollows = (user.follows || []).filter(isScrmFollow);
+    // Explicit demo map: who has SCRM vs empty
+    var hasScrm = {
+      U001: true,
+      U002: true,
+      U003: false,
+      U004: true,
+      U005: false
+    };
+    if (Object.prototype.hasOwnProperty.call(hasScrm, user.id)) {
+      if (!hasScrm[user.id]) return [];
+    } else if (!scrmFollows.length) {
+      return [];
+    }
+
+    var tags = (user.tags || []).map(function (t) { return t.name || t; }).filter(Boolean);
+    var orders = user.orders || [];
+    var leads = [];
+
+    function pushLead(opts) {
+      var orderId = opts.order || (orders[0] && orders[0].id) || "—";
+      var idx = leads.length + 1;
+      leads.push({
+        leadId: opts.leadId || ("LD-" + user.id + "-" + idx),
+        userId: user.id,
+        name: user.name,
+        phone: user.phone || "",
+        phoneMasked: US && US.maskPhone ? US.maskPhone(user.phone) : (user.phone || ""),
+        order: orderId,
+        level: opts.level || "A",
+        stage: opts.stage || "跟进中",
+        intent: opts.intent || (tags.indexOf("高意向") >= 0 ? "高意向" : "观望"),
+        tag: opts.tag || (tags[0] || "—"),
+        owner: opts.owner || (user.owner && user.owner !== "未分配" ? user.owner : "—"),
+        dept: opts.dept || user.dept || "—",
+        fuTime: opts.fuTime || "—",
+        fuCount: String(opts.fuCount != null ? opts.fuCount : scrmFollows.length || 1),
+        asgTime: opts.asgTime || opts.fuTime || "—",
+        timeline: opts.timeline || scrmFollows
+      });
+    }
+
+    if (user.id === "U001") {
+      pushLead({
+        owner: "赵老师",
+        dept: "销售一部",
+        order: (orders[1] && orders[1].id) || (orders[0] && orders[0].id) || "YB202608220017",
+        level: "A",
+        stage: "跟进中",
+        intent: "高意向",
+        tag: "训练营学员",
+        fuTime: scrmFollows[0] ? scrmFollows[0].time : "2026-08-22 21:30",
+        asgTime: "2026-08-22 21:10",
+        fuCount: scrmFollows.length || 1
+      });
+      if (orders.length > 1) {
+        pushLead({
+          owner: "赵老师",
+          dept: "销售一部",
+          order: orders[0].id,
+          level: "B",
+          stage: "已转化",
+          intent: "高意向",
+          tag: "已购引流课",
+          fuTime: "2026-09-05 15:40",
+          asgTime: "2026-09-05 15:33",
+          fuCount: 1,
+          timeline: scrmFollows
+        });
+      }
+    } else if (user.id === "U002") {
+      pushLead({
+        owner: "周销售",
+        dept: user.dept || "销售部",
+        order: orders[0] && orders[0].id,
+        level: "A",
+        stage: "跟进中",
+        intent: "高意向",
+        tag: tags[0] || "流失预警",
+        fuTime: scrmFollows[0] ? scrmFollows[0].time : "2026-09-10 21:05",
+        asgTime: "2026-09-10 20:18",
+        fuCount: scrmFollows.length || 1
+      });
+    } else if (user.id === "U004") {
+      pushLead({
+        owner: ownerFromFollow(scrmFollows[0]) || user.owner || "王助教",
+        dept: user.dept || "运营部",
+        order: orders[0] && orders[0].id,
+        level: "H",
+        stage: "跟进中",
+        intent: "高意向",
+        tag: tags[0] || "老客复购",
+        fuTime: scrmFollows[0] ? scrmFollows[0].time : "2026-09-01 10:00",
+        asgTime: "2026-09-01 09:21",
+        fuCount: scrmFollows.length || 1
+      });
+    } else {
+      // Generic: one lead when SCRM follows exist
+      var ow = ownerFromFollow(scrmFollows[0]) || user.owner || "—";
+      pushLead({
+        owner: ow === "未分配" ? "—" : ow,
+        fuTime: scrmFollows[0] ? scrmFollows[0].time : "—",
+        asgTime: scrmFollows[0] ? scrmFollows[0].time : "—"
+      });
+    }
+    return leads;
+  }
+
+  function renderLeadRow(lead) {
+    var tr = document.createElement("tr");
+    tr.setAttribute("data-name", lead.name || "");
+    tr.setAttribute("data-phone", lead.phone || "");
+    if (lead.userId) tr.setAttribute("data-user", lead.userId);
+    if (lead.leadId) tr.setAttribute("data-lead", lead.leadId);
+    tr._leadTimeline = lead.timeline || null;
+    var phoneShow = lead.phoneMasked || lead.phone || "—";
+    tr.innerHTML =
+      '<td><input type="checkbox" class="row-check" /></td>' +
+      "<td>" + escHtml(lead.name || "—") + "</td>" +
+      "<td>" + escHtml(phoneShow) + "</td>" +
+      "<td>" + escHtml(lead.order || "—") + "</td>" +
+      "<td>" + escHtml(lead.level || "—") + "</td>" +
+      "<td>" + stageBadge(lead.stage || "跟进中") + "</td>" +
+      "<td>" + intentHtml(lead.intent) + "</td>" +
+      "<td>" + escHtml(lead.tag || "—") + "</td>" +
+      "<td>" + escHtml(lead.owner || "—") + "</td>" +
+      "<td>" + escHtml(lead.dept || "—") + "</td>" +
+      "<td>" + escHtml(lead.fuTime || "—") + "</td>" +
+      "<td>" + escHtml(lead.fuCount || "0") + "</td>" +
+      "<td>" + escHtml(lead.asgTime || "—") + "</td>" +
+      '<td class="row-actions">' +
+        '<a href="#" data-row-act="detail">详情</a> ' +
+        '<a href="#" data-row-act="edit">编辑</a> ' +
+        '<a href="#" data-row-act="del" class="danger">删除</a>' +
+      "</td>";
+    return tr;
+  }
+
+  function showUserEmpty(user) {
+    var empty = document.getElementById("lead-user-empty");
+    var filters = document.getElementById("lead-filters-card");
+    var table = document.getElementById("lead-table-card");
+    var pager = document.getElementById("lead-pager");
+    if (empty) {
+      empty.style.display = "";
+      var txt = document.getElementById("lead-user-empty-text");
+      if (txt) txt.textContent = "该用户暂无SCRM线索";
+    }
+    if (filters) filters.style.display = "none";
+    if (table) table.style.display = "none";
+    if (pager) pager.style.display = "none";
+    var btn = document.getElementById("btn-create-lead-empty");
+    if (btn && !btn._bound) {
+      btn._bound = true;
+      btn.addEventListener("click", function () {
+        if (user) {
+          var n = document.getElementById("cr-name");
+          var p = document.getElementById("cr-phone");
+          if (n) n.value = user.name || "";
+          if (p) p.value = user.phone || "";
+        }
+        open(document.getElementById("modal-create"));
+      });
+    }
+  }
+
+  function locateUserLeads(userId, US) {
+    var user = US && US.byId ? US.byId(userId) : null;
+    var name = user ? user.name : userId;
+    var banner = document.getElementById("user-from-banner");
+    var fromText = document.getElementById("user-from-text");
+    var back = document.getElementById("btn-back-user");
+    var q;
+    try { q = new URLSearchParams(location.search); } catch (e) { q = new URLSearchParams(); }
+    var returnTab = q.get("fromTab") || q.get("tab") || "overview";
+    var returnTo = "";
+    try {
+      returnTo = q.get("returnTo") || q.get("return_to") || "";
+      if (returnTo) {
+        try { returnTo = decodeURIComponent(returnTo); } catch (e2) {}
+      }
+    } catch (e3) {}
+
+    if (banner) banner.style.display = "";
+    if (fromText) fromText.textContent = "正在查看用户：" + name;
+    if (back) {
+      var href = "user-detail.html?id=" + encodeURIComponent(userId) +
+        "&tab=" + encodeURIComponent(returnTab || "overview");
+      if (returnTo) href += "&returnTo=" + encodeURIComponent(returnTo);
+      back.href = href;
+    }
+
+    show("pool");
+
+    var leads = buildLeadsForUser(user, US);
+    if (!leads.length) {
+      showUserEmpty(user || { name: name, phone: "" });
+      document.getElementById("lead-tbody").innerHTML = "";
+      var total0 = document.getElementById("lead-total");
+      if (total0) total0.textContent = "0";
+      return;
+    }
+
+    var empty = document.getElementById("lead-user-empty");
+    var filters = document.getElementById("lead-filters-card");
+    var table = document.getElementById("lead-table-card");
+    var pager = document.getElementById("lead-pager");
+    if (empty) empty.style.display = "none";
+    if (filters) filters.style.display = "";
+    if (table) table.style.display = "";
+    if (pager) pager.style.display = "";
+
+    var tbody = document.getElementById("lead-tbody");
+    tbody.innerHTML = "";
+    leads.forEach(function (lead) {
+      tbody.appendChild(renderLeadRow(lead));
+    });
+    var total = document.getElementById("lead-total");
+    if (total) total.textContent = String(leads.length);
+    syncBatch();
+
+    // Open detail drawer for the first matching lead only
+    var first = tbody.querySelector("tr");
+    if (first) {
+      setTimeout(function () { openLeadDetail(first); }, 0);
+    }
   }
 
   // URL boot (dashboard closed-loop)
@@ -729,7 +1083,7 @@
     if (q.get("action") === "create") {
       open(document.getElementById("modal-create"));
     }
-    if (q.get("focus") === "unassigned") {
+    if (q.get("focus") === "unassigned" && !q.get("user")) {
       Proto.toast("已筛选未分配线索");
       var stageSel = document.getElementById("f-stage");
       if (stageSel) {
@@ -753,7 +1107,7 @@
       syncBatch();
     }
     if (q.get("from") === "dashboard") {
-      var ha = document.getElementById("header-actions");
+      var ha = document.getElementById("header-actions") || document.getElementById("page-header-actions");
       if (ha && !ha.querySelector("[data-back-dashboard]")) {
         var a = document.createElement("a");
         a.className = "btn";
@@ -765,7 +1119,9 @@
     }
     var userId = q.get("user");
     if (userId) {
-      Proto.toast("已定位用户 " + userId + " 的线索/客户（原型）");
+      ensureUserStore(function (US) {
+        locateUserLeads(userId, US);
+      });
     }
   })();
 })();

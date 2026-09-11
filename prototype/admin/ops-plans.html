@@ -14,13 +14,13 @@
 <div id="page-content" style="display:none">
 
   <div class="alert alert-info" style="margin-bottom:12px;padding:10px 12px;border-radius:8px;background:#e8f3ff;border:1px solid #a0cfff;color:#165dff;font-size:13px">
-    定向运营计划 = <b>目标人群</b> × <b>发放内容</b> × <b>执行周期</b>。对选定人群在指定时间自动发放通知与权益，并回收触达与转化效果。人群来自「<a href="user-segments.html" style="color:inherit;text-decoration:underline">用户分群</a>」，通知渠道见「<a href="message-push.html" style="color:inherit;text-decoration:underline">消息推送</a>」。
+    定向运营计划 = <b>目标人群</b> × <b>运营动作</b> × <b>执行周期</b>。对选定人群在指定时间自动执行通知、发资料、赠送试听或创建跟进等动作，并回收触达与转化效果。人群来自「<a href="user-segments.html" style="color:inherit;text-decoration:underline">用户分群</a>」，通知渠道见「<a href="message-push.html" style="color:inherit;text-decoration:underline">消息推送</a>」。
   </div>
 
   <!-- 顶部统计 -->
   <div class="grid-4" style="margin-bottom:16px">
     <div class="stat"><div class="label">进行中</div><div class="value" id="st-running">0</div><div class="hint">按周期自动执行</div></div>
-    <div class="stat"><div class="label">待开始</div><div class="value" id="st-waiting">0</div><div class="hint">已到时间自动启动</div></div>
+    <div class="stat"><div class="label">待开始</div><div class="value" id="st-waiting">0</div><div class="hint">草稿 / 定时启动</div></div>
     <div class="stat"><div class="label">已完成</div><div class="value" id="st-done">0</div><div class="hint">可复制复用</div></div>
     <div class="stat"><div class="label">累计触达</div><div class="value">1,432</div><div class="hint">去重用户数</div></div>
   </div>
@@ -33,12 +33,12 @@
           <tr>
             <th>计划名称</th>
             <th>目标人群</th>
-            <th>发放内容</th>
+            <th>运营动作</th>
             <th>通知渠道</th>
             <th>执行周期</th>
             <th>状态</th>
             <th>触达 / 转化</th>
-            <th style="width:180px">操作</th>
+            <th style="width:220px">操作</th>
           </tr>
         </thead>
         <tbody id="plan-tbody"></tbody>
@@ -48,71 +48,213 @@
 
   <div class="card"><div class="card-bd">
     <p class="muted" style="font-size:12px;line-height:1.8">
-      <b>说明：</b>计划启动后，系统按「例行更新」的人群<b>每日增量发放</b>，无需人工重复操作；同一用户在同一计划内默认只发放一次。
-      发放内容当前支持<b>通知（站内信 / 短信）</b>、<b>企微老师引导</b>、<b>学习资料包</b>与<b>课程试听权益</b>；优惠券、积分等营销权益可在「营销工具」上线后接入。
+      <b>说明：</b>计划启动后，系统按「例行更新」的人群<b>每日增量执行</b>，无需人工重复操作；同一用户在同一计划内默认只执行一次。
+      运营动作当前支持<b>发资料</b>、<b>赠送试听</b>、<b>创建跟进任务</b>与<b>关联直播促到 SOP</b>；优惠券、积分等营销权益可在「营销工具」上线后接入。
     </p>
   </div></div>
 </div>
 
-<!-- 新建计划弹窗 -->
+<!-- 新建 / 编辑计划弹窗 -->
 <div class="proto-mask" id="mask"></div>
-<div class="proto-modal" id="modal-plan" style="width:640px">
+<div class="proto-modal" id="modal-plan" style="width:680px;max-height:90vh">
   <div class="proto-modal-hd"><h3 id="pl-title" style="font-size:16px;font-weight:600">新建运营计划</h3><button class="btn btn-sm btn-ghost" data-close>×</button></div>
-  <div class="proto-modal-bd">
+  <div class="proto-modal-bd" style="max-height:calc(90vh - 120px);overflow:auto">
     <div class="form-grid" style="grid-template-columns:1fr 1fr;gap:10px 16px">
       <div class="field"><label>计划名称 *</label><input id="pl-name" placeholder="如：新客首单转化" /></div>
       <div class="field"><label>目标人群 *</label>
         <select id="pl-seg" style="width:100%;padding:7px 8px;border:1px solid var(--color-border);border-radius:6px">
-          <option>新客（系统人群）</option>
-          <option>高价值用户（系统人群）</option>
-          <option>家长必修课未购买者</option>
-          <option>领课未加微用户</option>
-          <option>直播预约未到课</option>
+          <option value="新客（系统人群）">新客（系统人群）</option>
+          <option value="高价值用户（系统人群）">高价值用户（系统人群）</option>
+          <option value="家长必修课未购买者">家长必修课未购买者</option>
+          <option value="领课未加微用户">领课未加微用户</option>
+          <option value="直播预约未到课">直播预约未到课</option>
+          <option value="沉默用户（30 天未互动）">沉默用户（30 天未互动）</option>
         </select>
       </div>
-      <div class="field"><label>发放内容 *</label>
-        <select id="pl-gift" style="width:100%;padding:7px 8px;border:1px solid var(--color-border);border-radius:6px">
-          <option value="pack">学习资料包（电子版）</option>
-          <option value="trial">课程试听权益（7 天）</option>
-          <option value="scrm">为对应负责人创建 SCRM 跟进任务</option>
-          <option value="live">关联直播促到 SOP 提醒</option>
-          <option value="notice">老学员回馈通知（站内信/短信）</option>
+      <div class="field" style="grid-column:1/-1"><label>运营动作 *</label>
+        <select id="pl-action" style="width:100%;padding:7px 8px;border:1px solid var(--color-border);border-radius:6px">
+          <option value="pack">发资料</option>
+          <option value="trial">赠送试听</option>
+          <option value="scrm">创建跟进任务</option>
+          <option value="live">关联直播促到 SOP</option>
         </select>
       </div>
-      <p class="muted" id="pl-gift-hint" style="grid-column:1/-1;margin:0;font-size:12px">站内信、短信、资料与试听权益在本计划内发放；企微跟进将创建 SCRM 任务；直播提醒跳转直播促到 SOP，不在此维护第二套规则。</p>
-      <div class="field"><label>通知渠道 *</label>
-        <select id="pl-ch" style="width:100%;padding:7px 8px;border:1px solid var(--color-border);border-radius:6px">
-          <option>站内信</option><option>短信</option><option>站内信 + 短信</option>
-        </select>
+      <p class="muted" id="pl-action-hint" style="grid-column:1/-1;margin:0;font-size:12px"></p>
+
+      <!-- 发资料 -->
+      <div class="action-panel" data-action="pack" style="display:contents">
+        <div class="field"><label>指定资料 *</label>
+          <select id="pl-material" style="width:100%;padding:7px 8px;border:1px solid var(--color-border);border-radius:6px">
+            <option value="">请选择资料</option>
+            <option value="亲子沟通实用手册">亲子沟通实用手册</option>
+            <option value="入学准备清单（PDF）">入学准备清单（PDF）</option>
+            <option value="春启03·家长资料包">春启03·家长资料包</option>
+          </select>
+        </div>
+        <div class="field"><label>领取方式 *</label>
+          <select id="pl-claim" style="width:100%;padding:7px 8px;border:1px solid var(--color-border);border-radius:6px">
+            <option value="add_wecom">添加企微老师后领取</option>
+            <option value="direct">站内直接领取</option>
+            <option value="sms_link">短信链接领取</option>
+          </select>
+        </div>
+        <div class="field" id="pl-limit-wrap"><label>每人限领</label>
+          <select id="pl-limit" style="width:100%;padding:7px 8px;border:1px solid var(--color-border);border-radius:6px">
+            <option value="1">1 次</option>
+            <option value="unlimited">不限</option>
+          </select>
+        </div>
+        <div class="field"><label>通知渠道 *</label>
+          <select id="pl-ch-pack" class="pl-ch" style="width:100%;padding:7px 8px;border:1px solid var(--color-border);border-radius:6px">
+            <option>站内信</option><option>短信</option><option>站内信 + 短信</option>
+          </select>
+        </div>
+        <div class="field" style="grid-column:1/-1"><label>通知内容 *</label>
+          <textarea id="pl-notify" rows="3" style="width:100%;padding:8px;border:1px solid var(--color-border);border-radius:6px" placeholder="家长你好，这是一份资料……"></textarea>
+        </div>
       </div>
-      <div class="field"><label>执行方式 *</label>
+
+      <!-- 赠送试听 -->
+      <div class="action-panel" data-action="trial" style="display:none">
+        <div class="form-grid" style="grid-template-columns:1fr 1fr;gap:10px 16px">
+          <div class="field"><label>指定课程 *</label>
+            <select id="pl-course" style="width:100%;padding:7px 8px;border:1px solid var(--color-border);border-radius:6px">
+              <option value="">请选择课程</option>
+              <option value="家长必修课">家长必修课</option>
+              <option value="9.9 引流试听课">9.9 引流试听课</option>
+              <option value="春启正式课">春启正式课</option>
+            </select>
+          </div>
+          <div class="field"><label>试听范围 *</label>
+            <select id="pl-trial-scope" style="width:100%;padding:7px 8px;border:1px solid var(--color-border);border-radius:6px">
+              <option value="first_n">前 3 节课</option>
+              <option value="first_audio">前 1 条音频免费试听</option>
+              <option value="preview_60">每条前 60 秒试听</option>
+              <option value="full_trial">整课试听（限时）</option>
+            </select>
+          </div>
+          <div class="field"><label>有效期 *</label>
+            <select id="pl-trial-days" style="width:100%;padding:7px 8px;border:1px solid var(--color-border);border-radius:6px">
+              <option value="3">3 天</option>
+              <option value="7" selected>7 天</option>
+              <option value="14">14 天</option>
+              <option value="30">30 天</option>
+            </select>
+          </div>
+          <div class="field"><label>通知渠道 *</label>
+            <select id="pl-ch-trial" class="pl-ch" style="width:100%;padding:7px 8px;border:1px solid var(--color-border);border-radius:6px">
+              <option>站内信</option><option>短信</option><option>站内信 + 短信</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- 创建跟进任务 -->
+      <div class="action-panel" data-action="scrm" style="display:none">
+        <div class="form-grid" style="grid-template-columns:1fr 1fr;gap:10px 16px">
+          <div class="field" style="grid-column:1/-1"><label>跟进要求 *</label>
+            <textarea id="pl-follow-req" rows="3" style="width:100%;padding:8px;border:1px solid var(--color-border);border-radius:6px" placeholder="如：引导加微并确认是否领取资料，意向高则约直播"></textarea>
+          </div>
+          <div class="field"><label>截止时间 *</label>
+            <select id="pl-deadline" style="width:100%;padding:7px 8px;border:1px solid var(--color-border);border-radius:6px">
+              <option value="T+1">领取后 T+1 天内跟进</option>
+              <option value="T+2">领取后 T+2 天内跟进</option>
+              <option value="today">当日 20:00 前</option>
+              <option value="fixed">固定截止：计划启动后 48 小时</option>
+            </select>
+          </div>
+          <div class="field"><label>负责人规则 *</label>
+            <select id="pl-owner-rule" style="width:100%;padding:7px 8px;border:1px solid var(--color-border);border-radius:6px">
+              <option value="current">沿用用户当前负责人</option>
+              <option value="last_scrm">最近一次 SCRM 跟进人</option>
+              <option value="round">按销售组轮询分配</option>
+              <option value="fixed">指定固定负责人</option>
+            </select>
+          </div>
+          <div class="field" style="grid-column:1/-1"><label>无负责人时 *</label>
+            <select id="pl-no-owner" style="width:100%;padding:7px 8px;border:1px solid var(--color-border);border-radius:6px">
+              <option value="pool">进入公海 / 待分配池</option>
+              <option value="manager">分配给销售主管</option>
+              <option value="skip">跳过该用户并记入异常</option>
+              <option value="block">阻断启动并提示补齐负责人</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- 关联直播促到 SOP -->
+      <div class="action-panel" data-action="live" style="display:none">
+        <div class="form-grid" style="grid-template-columns:1fr 1fr;gap:10px 16px">
+          <div class="field"><label>关联直播 *</label>
+            <select id="pl-live" style="width:100%;padding:7px 8px;border:1px solid var(--color-border);border-radius:6px">
+              <option value="">请选择直播</option>
+              <option value="L101">春启03 · 家长答疑直播</option>
+              <option value="L102">入学准备公开课</option>
+              <option value="L103">9.9 引流试听课直播</option>
+            </select>
+          </div>
+          <div class="field"><label>促到 SOP *</label>
+            <select id="pl-sop" style="width:100%;padding:7px 8px;border:1px solid var(--color-border);border-radius:6px">
+              <option value="">请先选择直播</option>
+            </select>
+          </div>
+          <div class="field" style="grid-column:1/-1">
+            <label style="display:flex;align-items:center;gap:8px;font-weight:400">
+              <input type="checkbox" id="pl-bring-seg" checked />
+              将本计划目标人群带入该 SOP（复用已有触达规则，不在此维护第二套）
+            </label>
+            <p class="muted" style="margin:6px 0 0;font-size:12px">步骤、渠道与文案请在「直播促到 SOP」中配置；本计划只负责圈人并关联执行。</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- 公共：执行方式 / 排除 -->
+      <div class="field" id="pl-cycle-wrap"><label>执行方式 *</label>
         <select id="pl-cycle" style="width:100%;padding:7px 8px;border:1px solid var(--color-border);border-radius:6px">
-          <option>立即开始（每日增量发放）</option>
-          <option>定时开始</option>
-          <option>按周期（每周 / 每月）</option>
-        </select>
-      </div>
-      <div class="field"><label>每人限领</label>
-        <select style="width:100%;padding:7px 8px;border:1px solid var(--color-border);border-radius:6px">
-          <option>1 次</option><option>不限</option>
+          <option value="立即开始（每日增量发放）">立即开始（每日增量执行）</option>
+          <option value="定时开始">定时开始</option>
+          <option value="按周期（每周 / 每月）">按周期（每周 / 每月）</option>
         </select>
       </div>
       <div class="field" style="grid-column:1/-1"><label>排除条件</label>
         <div class="checks" style="display:flex;gap:18px;flex-wrap:wrap;font-size:13px">
-          <label><input type="checkbox" checked /> 已购买该课程</label>
-          <label><input type="checkbox" /> 已加企微</label>
-          <label><input type="checkbox" /> 近 7 天已触达</label>
+          <label><input type="checkbox" id="pl-ex-bought" checked /> 已购买该课程</label>
+          <label><input type="checkbox" id="pl-ex-wecom" /> 已加企微</label>
+          <label><input type="checkbox" id="pl-ex-reach" /> 近 7 天已触达</label>
         </div>
       </div>
-      <div class="field" style="grid-column:1/-1"><label>通知文案 *</label>
-        <textarea id="pl-text" rows="3" style="width:100%;padding:8px;border:1px solid var(--color-border);border-radius:6px">家长你好，这是一份《亲子沟通实用手册》，添加老师即可领取完整资料包。</textarea>
-      </div>
     </div>
-    <p class="muted" style="margin-top:8px">计划保存后可在列表查看触达与转化；暂停后不再增量发放，已发放内容不回收。</p>
+    <p class="muted" style="margin-top:8px">可先保存草稿再完善；启动后按执行方式增量执行，暂停后不再增量，已发放权益不回收。</p>
   </div>
   <div class="proto-drawer-ft" style="border-top:1px solid var(--color-border);padding:12px 20px;display:flex;gap:8px;justify-content:flex-end">
     <button class="btn" data-close>取消</button>
-    <button class="btn btn-primary" id="pl-save">保存并启动</button>
+    <button class="btn" id="pl-draft">保存草稿</button>
+    <button class="btn btn-primary" id="pl-start">启动执行</button>
+  </div>
+</div>
+
+<!-- 启动前动作摘要 -->
+<div class="proto-modal" id="modal-summary" style="width:520px">
+  <div class="proto-modal-hd"><h3 style="font-size:16px;font-weight:600">启动前确认</h3><button class="btn btn-sm btn-ghost" data-close>×</button></div>
+  <div class="proto-modal-bd">
+    <p class="muted" style="margin:0 0 10px;font-size:13px">请确认本次运营动作将如何执行：</p>
+    <div id="pl-summary" style="padding:12px 14px;background:#f7f8fa;border-radius:8px;font-size:13px;line-height:1.7;white-space:pre-wrap"></div>
+  </div>
+  <div class="proto-drawer-ft" style="border-top:1px solid var(--color-border);padding:12px 20px;display:flex;gap:8px;justify-content:flex-end">
+    <button class="btn" id="pl-summary-back">返回修改</button>
+    <button class="btn btn-primary" id="pl-confirm-start">确认启动</button>
+  </div>
+</div>
+
+<!-- 启动成功：结果入口 -->
+<div class="proto-modal" id="modal-started" style="width:480px">
+  <div class="proto-modal-hd"><h3 style="font-size:16px;font-weight:600">计划已启动</h3><button class="btn btn-sm btn-ghost" data-close>×</button></div>
+  <div class="proto-modal-bd">
+    <p id="pl-started-msg" style="margin:0 0 12px;font-size:14px;line-height:1.6"></p>
+    <div id="pl-started-links" style="display:flex;flex-wrap:wrap;gap:8px"></div>
+  </div>
+  <div class="proto-drawer-ft" style="border-top:1px solid var(--color-border);padding:12px 20px;display:flex;gap:8px;justify-content:flex-end">
+    <button class="btn btn-primary" data-close>知道了</button>
   </div>
 </div>
 
@@ -120,80 +262,481 @@
 <script src="../assets/js/admin-shell.js?v=13"></script>
 <script>
 (function () {
+  var ACTION_LABEL = {
+    pack: "发资料",
+    trial: "赠送试听",
+    scrm: "创建跟进任务",
+    live: "关联直播促到 SOP"
+  };
+  var ACTION_HINT = {
+    pack: "选择资料与领取方式，并向目标人群发送通知；每人限领仅对本动作生效。",
+    trial: "为目标人群开通指定课程的试听权益，并设置范围与有效期。",
+    scrm: "按规则为对应负责人创建 SCRM 跟进任务；无负责人时按下方策略处理。",
+    live: "将目标人群带入已有直播促到 SOP，复用其步骤与触达规则，不在此维护第二套。"
+  };
+  var DEFAULT_NOTIFY = "家长你好，这是一份《亲子沟通实用手册》，添加老师即可领取完整资料包。";
+  var SOP_BY_LIVE = {
+    L101: [
+      { value: "S101", text: "春启03 · 开播前邀约 SOP" },
+      { value: "S102", text: "春启03 · 预约催到 SOP" }
+    ],
+    L102: [
+      { value: "S201", text: "入学准备 · 开播提醒 SOP" }
+    ],
+    L103: [
+      { value: "S301", text: "引流试听 · 召回 SOP" }
+    ]
+  };
+
   var PLANS = [
-    { id:"P1", name:"新客首单转化", seg:"新客（系统人群）", gift:"学习资料包（电子版）", ch:"站内信 + 短信", cycle:"T+1 每日增量", status:"running", touch:286, conv:"领取 132 · 转化 48" },
-    { id:"P2", name:"领课未加微唤醒", seg:"领课未加微用户", gift:"企微老师 1v1 引导", ch:"短信", cycle:"T+1 每日增量", status:"running", touch:168, conv:"加微 42" },
-    { id:"P3", name:"沉默用户唤醒", seg:"沉默用户（30 天未互动）", gift:"课程试听权益（7 天）", ch:"短信", cycle:"每周一 10:00", status:"waiting", touch:0, conv:"—" },
-    { id:"P4", name:"高价值用户专属回馈", seg:"高价值用户（系统人群）", gift:"老学员回馈通知", ch:"站内信", cycle:"一次性", status:"done", touch:142, conv:"复购 19" }
+    { id:"P1", name:"新客首单转化", seg:"新客（系统人群）", action:"pack", actionLabel:"发资料", giftDetail:"亲子沟通实用手册", ch:"站内信 + 短信", cycle:"T+1 每日增量", status:"running", touch:286, conv:"领取 132 · 转化 48" },
+    { id:"P2", name:"领课未加微唤醒", seg:"领课未加微用户", action:"scrm", actionLabel:"创建跟进任务", giftDetail:"企微老师 1v1 引导", ch:"—", cycle:"T+1 每日增量", status:"running", touch:168, conv:"加微 42" },
+    { id:"P3", name:"沉默用户唤醒", seg:"沉默用户（30 天未互动）", action:"trial", actionLabel:"赠送试听", giftDetail:"家长必修课 · 7 天", ch:"短信", cycle:"每周一 10:00", status:"waiting", touch:0, conv:"—" },
+    { id:"P4", name:"直播预约未到课催到", seg:"直播预约未到课", action:"live", actionLabel:"关联直播促到 SOP", giftDetail:"春启03 · 预约催到 SOP", ch:"—", cycle:"一次性", status:"done", touch:142, conv:"到课 37" }
   ];
 
   var mask = document.getElementById("mask");
-  function closeAll(){ mask.classList.remove("open"); document.querySelectorAll(".proto-modal").forEach(function(n){n.classList.remove("open");}); }
-  function open(n){ mask.classList.add("open"); n.classList.add("open"); }
-  mask.addEventListener("click", closeAll);
-  document.querySelectorAll("[data-close]").forEach(function(n){ n.addEventListener("click", closeAll); });
+  var editingId = null;
+  var currentAction = "pack";
+  var pendingStart = null;
+  var suppressActionChange = false;
 
-  function esc(s){ return String(s==null?"":s).replace(/[&<>"']/g,function(c){return({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"})[c];}); }
+  function closeAll(){
+    mask.classList.remove("open");
+    document.querySelectorAll(".proto-modal").forEach(function(n){ n.classList.remove("open"); });
+  }
+  function open(n){
+    mask.classList.add("open");
+    n.classList.add("open");
+  }
+  mask.addEventListener("click", closeAll);
+  document.querySelectorAll("[data-close]").forEach(function(n){
+    n.addEventListener("click", closeAll);
+  });
+
+  function esc(s){
+    return String(s==null?"":s).replace(/[&<>"']/g,function(c){
+      return ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"})[c];
+    });
+  }
   function stTag(st){
     if (st === "running") return '<span class="badge badge-success">进行中</span>';
     if (st === "waiting") return '<span class="badge badge-warn">待开始</span>';
+    if (st === "draft") return '<span class="badge">草稿</span>';
     if (st === "paused") return '<span class="badge">已暂停</span>';
     return '<span class="badge badge-info">已完成</span>';
+  }
+  function actionCell(p){
+    var main = p.actionLabel || ACTION_LABEL[p.action] || p.gift || "—";
+    var sub = p.giftDetail ? '<br><span class="muted" style="font-size:12px">' + esc(p.giftDetail) + "</span>" : "";
+    return esc(main) + sub;
   }
 
   function render(){
     document.getElementById("plan-tbody").innerHTML = PLANS.map(function(p){
+      var resultLink = "";
+      if (p.status === "running" || p.status === "done") {
+        if (p.action === "scrm") resultLink = '<a href="follow-ups.html" data-row-act="goto">查看跟进任务</a>';
+        else if (p.action === "live") resultLink = '<a href="live-invite.html" data-row-act="goto">查看促到 SOP</a>';
+        else resultLink = '<a href="#" data-row-act="result">查看执行结果</a>';
+      }
       return '<tr data-id="'+p.id+'">' +
         "<td><b>"+esc(p.name)+"</b></td>" +
         "<td>"+esc(p.seg)+"</td>" +
-        "<td>"+esc(p.gift)+"</td>" +
+        "<td>"+actionCell(p)+"</td>" +
         "<td>"+esc(p.ch)+"</td>" +
         "<td>"+esc(p.cycle)+"</td>" +
         "<td>"+stTag(p.status)+"</td>" +
         "<td>触达 <b>"+p.touch+"</b><br><span class=\"muted\" style=\"font-size:12px\">"+esc(p.conv)+"</span></td>" +
         '<td class="row-actions">' +
           (p.status === "running" ? '<a href="#" data-row-act="pause">暂停</a>' : "") +
-          (p.status === "waiting" ? '<a href="#" data-row-act="start">启动</a>' : "") +
+          (p.status === "waiting" || p.status === "draft" ? '<a href="#" data-row-act="start">启动</a>' : "") +
+          resultLink +
           '<a href="#" data-row-act="edit">编辑</a>' +
           '<a href="#" data-row-act="copy">复制</a>' +
         "</td></tr>";
     }).join("");
     document.getElementById("st-running").textContent = String(PLANS.filter(function(p){return p.status==="running";}).length);
-    document.getElementById("st-waiting").textContent = String(PLANS.filter(function(p){return p.status==="waiting";}).length);
+    document.getElementById("st-waiting").textContent = String(PLANS.filter(function(p){return p.status==="waiting"||p.status==="draft";}).length);
     document.getElementById("st-done").textContent = String(PLANS.filter(function(p){return p.status==="done";}).length);
   }
+
+  function panelHasContent(action){
+    if (action === "pack") {
+      return !!(document.getElementById("pl-material").value ||
+        (document.getElementById("pl-notify").value.trim() && document.getElementById("pl-notify").value.trim() !== DEFAULT_NOTIFY));
+    }
+    if (action === "trial") {
+      return !!(document.getElementById("pl-course").value);
+    }
+    if (action === "scrm") {
+      return !!(document.getElementById("pl-follow-req").value.trim());
+    }
+    if (action === "live") {
+      return !!(document.getElementById("pl-live").value || document.getElementById("pl-sop").value);
+    }
+    return false;
+  }
+
+  function clearActionFields(action){
+    if (action === "pack") {
+      document.getElementById("pl-material").value = "";
+      document.getElementById("pl-claim").value = "add_wecom";
+      document.getElementById("pl-limit").value = "1";
+      document.getElementById("pl-ch-pack").selectedIndex = 0;
+      document.getElementById("pl-notify").value = DEFAULT_NOTIFY;
+    } else if (action === "trial") {
+      document.getElementById("pl-course").value = "";
+      document.getElementById("pl-trial-scope").selectedIndex = 0;
+      document.getElementById("pl-trial-days").value = "7";
+      document.getElementById("pl-ch-trial").selectedIndex = 0;
+    } else if (action === "scrm") {
+      document.getElementById("pl-follow-req").value = "";
+      document.getElementById("pl-deadline").selectedIndex = 0;
+      document.getElementById("pl-owner-rule").selectedIndex = 0;
+      document.getElementById("pl-no-owner").selectedIndex = 0;
+    } else if (action === "live") {
+      document.getElementById("pl-live").value = "";
+      fillSopOptions("");
+      document.getElementById("pl-bring-seg").checked = true;
+    }
+  }
+
+  function showActionPanel(action){
+    document.querySelectorAll(".action-panel").forEach(function(panel){
+      var match = panel.getAttribute("data-action") === action;
+      if (!match) {
+        panel.style.display = "none";
+        return;
+      }
+      if (action === "pack") {
+        panel.style.display = "contents";
+      } else {
+        panel.style.display = "block";
+        panel.style.gridColumn = "1 / -1";
+      }
+    });
+    document.getElementById("pl-action-hint").textContent = ACTION_HINT[action] || "";
+    currentAction = action;
+  }
+
+  function applyAction(action, opts){
+    opts = opts || {};
+    var prev = currentAction;
+    if (!opts.force && prev && prev !== action && panelHasContent(prev)) {
+      if (!confirm("切换运营动作将清空当前动作下已填写的内容，是否继续？")) {
+        suppressActionChange = true;
+        document.getElementById("pl-action").value = prev;
+        suppressActionChange = false;
+        return false;
+      }
+      clearActionFields(prev);
+    }
+    if (prev && prev !== action) clearActionFields(prev);
+    showActionPanel(action);
+    return true;
+  }
+
+  function fillSopOptions(liveId){
+    var sel = document.getElementById("pl-sop");
+    sel.innerHTML = "";
+    var list = SOP_BY_LIVE[liveId] || [];
+    if (!liveId) {
+      sel.appendChild(new Option("请先选择直播", ""));
+      return;
+    }
+    if (!list.length) {
+      sel.appendChild(new Option("该直播暂无 SOP，请先去创建", ""));
+      return;
+    }
+    sel.appendChild(new Option("请选择 SOP", ""));
+    list.forEach(function(item){ sel.appendChild(new Option(item.text, item.value)); });
+  }
+
+  function resetForm(){
+    document.getElementById("pl-name").value = "";
+    document.getElementById("pl-seg").selectedIndex = 0;
+    document.getElementById("pl-cycle").selectedIndex = 0;
+    document.getElementById("pl-ex-bought").checked = true;
+    document.getElementById("pl-ex-wecom").checked = false;
+    document.getElementById("pl-ex-reach").checked = false;
+    ["pack","trial","scrm","live"].forEach(clearActionFields);
+    suppressActionChange = true;
+    document.getElementById("pl-action").value = "pack";
+    suppressActionChange = false;
+    showActionPanel("pack");
+    document.getElementById("pl-notify").value = DEFAULT_NOTIFY;
+  }
+
+  function fillFormFromPlan(p){
+    resetForm();
+    document.getElementById("pl-name").value = p.name || "";
+    var seg = document.getElementById("pl-seg");
+    var matched = false;
+    [].forEach.call(seg.options, function(opt){
+      if (opt.value === p.seg || opt.textContent === p.seg) { seg.value = opt.value; matched = true; }
+    });
+    if (!matched && p.seg) {
+      var opt = document.createElement("option");
+      opt.value = p.seg; opt.textContent = p.seg; opt.selected = true;
+      seg.insertBefore(opt, seg.firstChild);
+    }
+    var act = p.action || "pack";
+    suppressActionChange = true;
+    document.getElementById("pl-action").value = act;
+    suppressActionChange = false;
+    showActionPanel(act);
+    if (act === "pack") {
+      if (p.giftDetail) document.getElementById("pl-material").value = p.giftDetail;
+      document.getElementById("pl-notify").value = DEFAULT_NOTIFY;
+      if (p.ch) {
+        var ch = document.getElementById("pl-ch-pack");
+        [].forEach.call(ch.options, function(o){ if (o.textContent === p.ch) ch.value = o.value || o.textContent; });
+      }
+    } else if (act === "trial") {
+      document.getElementById("pl-course").value = "家长必修课";
+    } else if (act === "scrm") {
+      document.getElementById("pl-follow-req").value = p.giftDetail || "引导加微并确认意向";
+    } else if (act === "live") {
+      document.getElementById("pl-live").value = "L101";
+      fillSopOptions("L101");
+      document.getElementById("pl-sop").value = "S102";
+    }
+  }
+
+  function openNew(title, plan){
+    editingId = plan ? plan.id : null;
+    document.getElementById("pl-title").textContent = title || "新建运营计划";
+    if (plan) fillFormFromPlan(plan);
+    else resetForm();
+    open(document.getElementById("modal-plan"));
+  }
+
+  function selectedText(id){
+    var el = document.getElementById(id);
+    if (!el) return "";
+    var opt = el.options[el.selectedIndex];
+    return opt ? opt.textContent : "";
+  }
+  function channelForAction(action){
+    if (action === "pack") return selectedText("pl-ch-pack");
+    if (action === "trial") return selectedText("pl-ch-trial");
+    return "—";
+  }
+  function giftDetailFor(action){
+    if (action === "pack") return selectedText("pl-material") || "资料";
+    if (action === "trial") {
+      return (selectedText("pl-course") || "课程") + " · " + selectedText("pl-trial-days");
+    }
+    if (action === "scrm") {
+      var req = document.getElementById("pl-follow-req").value.trim();
+      return req ? (req.length > 24 ? req.slice(0, 24) + "…" : req) : "跟进任务";
+    }
+    if (action === "live") return selectedText("pl-sop") || selectedText("pl-live") || "促到 SOP";
+    return "";
+  }
+
+  function validateForm(){
+    var name = document.getElementById("pl-name").value.trim();
+    if (!name) { Proto.toast("请填写计划名称"); return false; }
+    var action = document.getElementById("pl-action").value;
+    if (action === "pack") {
+      if (!document.getElementById("pl-material").value) { Proto.toast("请选择指定资料"); return false; }
+      if (!document.getElementById("pl-notify").value.trim()) { Proto.toast("请填写通知内容"); return false; }
+    } else if (action === "trial") {
+      if (!document.getElementById("pl-course").value) { Proto.toast("请选择指定课程"); return false; }
+    } else if (action === "scrm") {
+      if (!document.getElementById("pl-follow-req").value.trim()) { Proto.toast("请填写跟进要求"); return false; }
+    } else if (action === "live") {
+      if (!document.getElementById("pl-live").value) { Proto.toast("请选择关联直播"); return false; }
+      if (!document.getElementById("pl-sop").value) { Proto.toast("请选择促到 SOP"); return false; }
+    }
+    return true;
+  }
+
+  function buildPayload(status){
+    var action = document.getElementById("pl-action").value;
+    return {
+      id: editingId || ("P" + Date.now()),
+      name: document.getElementById("pl-name").value.trim(),
+      seg: selectedText("pl-seg"),
+      action: action,
+      actionLabel: ACTION_LABEL[action],
+      giftDetail: giftDetailFor(action),
+      ch: channelForAction(action),
+      cycle: selectedText("pl-cycle"),
+      status: status,
+      touch: 0,
+      conv: "—",
+      material: document.getElementById("pl-material").value,
+      claim: selectedText("pl-claim"),
+      limit: selectedText("pl-limit"),
+      notify: document.getElementById("pl-notify").value.trim(),
+      course: selectedText("pl-course"),
+      trialScope: selectedText("pl-trial-scope"),
+      trialDays: selectedText("pl-trial-days"),
+      followReq: document.getElementById("pl-follow-req").value.trim(),
+      deadline: selectedText("pl-deadline"),
+      ownerRule: selectedText("pl-owner-rule"),
+      noOwner: selectedText("pl-no-owner"),
+      liveId: document.getElementById("pl-live").value,
+      liveName: selectedText("pl-live"),
+      sopId: document.getElementById("pl-sop").value,
+      sopName: selectedText("pl-sop"),
+      bringSeg: document.getElementById("pl-bring-seg").checked
+    };
+  }
+
+  function buildSummary(p){
+    var who = "目标人群「" + p.seg + "」";
+    var lines = [];
+    lines.push("计划：" + p.name);
+    lines.push("运营动作：" + p.actionLabel);
+    if (p.action === "pack") {
+      lines.push("谁得到什么：" + who + " 将收到通知，并按「" + p.claim + "」领取「" + p.material + "」。");
+      lines.push("每人限领：" + p.limit + "；通知渠道：" + p.ch + "。");
+      lines.push("通知内容：" + (p.notify || "—"));
+    } else if (p.action === "trial") {
+      lines.push("谁得到什么：" + who + " 将获得「" + p.course + "」试听权益。");
+      lines.push("试听范围：" + p.trialScope + "；有效期：" + p.trialDays + "；通知渠道：" + p.ch + "。");
+    } else if (p.action === "scrm") {
+      lines.push("谁必须做什么：按「" + p.ownerRule + "」确定的负责人，需在「" + p.deadline + "」完成跟进。");
+      lines.push("跟进要求：" + (p.followReq || "—"));
+      lines.push("无负责人时：" + p.noOwner + "。");
+      lines.push("对象人群：" + who + "。");
+    } else if (p.action === "live") {
+      lines.push("谁得到什么：" + who + (p.bringSeg ? " 将被带入" : " 可关联") + "「" + p.sopName + "」。");
+      lines.push("关联直播：" + p.liveName + "；触达步骤与文案复用该 SOP 已有规则。");
+    }
+    lines.push("执行方式：" + p.cycle + "。");
+    return lines.join("\n");
+  }
+
+  function upsertPlan(payload){
+    var idx = PLANS.findIndex(function(x){ return x.id === payload.id; });
+    var row = {
+      id: payload.id,
+      name: payload.name,
+      seg: payload.seg,
+      action: payload.action,
+      actionLabel: payload.actionLabel,
+      giftDetail: payload.giftDetail,
+      ch: payload.ch,
+      cycle: payload.cycle,
+      status: payload.status,
+      touch: idx >= 0 ? PLANS[idx].touch : 0,
+      conv: idx >= 0 ? PLANS[idx].conv : "—",
+      liveId: payload.liveId,
+      sopId: payload.sopId
+    };
+    if (idx >= 0) PLANS[idx] = Object.assign({}, PLANS[idx], row);
+    else PLANS.unshift(row);
+    editingId = payload.id;
+    render();
+  }
+
+  function showStarted(payload){
+    var msg = "「" + payload.name + "」已启动。";
+    var links = [];
+    if (payload.action === "pack" || payload.action === "trial") {
+      msg += "可在列表查看触达与转化效果。";
+      links.push('<button type="button" class="btn" data-close>留在本页查看结果</button>');
+    } else if (payload.action === "scrm") {
+      msg += "系统将按规则创建 SCRM 跟进任务。";
+      links.push('<a class="btn btn-primary" href="follow-ups.html">查看跟进任务</a>');
+      links.push('<button type="button" class="btn" data-close>稍后查看</button>');
+    } else if (payload.action === "live") {
+      msg += "已关联直播促到 SOP，人群与执行以 SOP 规则为准。";
+      var href = "live-invite.html";
+      if (payload.liveId) href += "?live_id=" + encodeURIComponent(payload.liveId);
+      if (payload.sopId) href += (href.indexOf("?") >= 0 ? "&" : "?") + "sop_id=" + encodeURIComponent(payload.sopId);
+      links.push('<a class="btn btn-primary" href="' + href + '">查看促到 SOP</a>');
+      links.push('<button type="button" class="btn" data-close>稍后查看</button>');
+    }
+    document.getElementById("pl-started-msg").textContent = msg;
+    document.getElementById("pl-started-links").innerHTML = links.join("");
+    open(document.getElementById("modal-started"));
+  }
+
+  document.getElementById("pl-action").addEventListener("change", function(){
+    if (suppressActionChange) return;
+    applyAction(this.value);
+  });
+  document.getElementById("pl-live").addEventListener("change", function(){
+    fillSopOptions(this.value);
+  });
 
   document.addEventListener("click", function(e){
     var el = e.target.closest("[data-row-act]");
     if (!el) return;
-    e.preventDefault();
     var act = el.getAttribute("data-row-act");
+    if (act === "goto") return; // allow real navigation
+    e.preventDefault();
     var tr = el.closest("tr");
     var p = PLANS.find(function(x){ return x.id === (tr && tr.getAttribute("data-id")); });
     if (!p) { Proto.toast("操作已记录（原型）"); return; }
-    if (act === "pause") { p.status = "paused"; render(); Proto.toast("计划已暂停，不再增量发放"); }
-    else if (act === "start") { p.status = "running"; render(); Proto.toast("计划已启动（原型）"); }
-    else if (act === "copy") { PLANS.push(Object.assign({}, p, { id: "P"+Date.now(), name: p.name + "（副本）", status: "waiting", touch: 0, conv: "—" })); render(); Proto.toast("已复制计划，请编辑后启动"); }
-    else if (act === "edit") { openNew("编辑运营计划 · " + p.name); }
+    if (act === "pause") { p.status = "paused"; render(); Proto.toast("计划已暂停，不再增量执行"); }
+    else if (act === "start") {
+      pendingStart = Object.assign({}, p, { status: "running" });
+      document.getElementById("pl-summary").textContent =
+        "计划：" + p.name + "\n运营动作：" + (p.actionLabel || ACTION_LABEL[p.action] || "") +
+        "\n目标人群：" + p.seg +
+        "\n详情：" + (p.giftDetail || "—") +
+        "\n执行方式：" + p.cycle +
+        "\n说明：确认后将按当前配置开始执行。";
+      open(document.getElementById("modal-summary"));
+    }
+    else if (act === "copy") {
+      PLANS.push(Object.assign({}, p, { id: "P"+Date.now(), name: p.name + "（副本）", status: "draft", touch: 0, conv: "—" }));
+      render();
+      Proto.toast("已复制为草稿，请编辑后启动");
+    }
+    else if (act === "edit") { openNew("编辑运营计划 · " + p.name, p); }
+    else if (act === "result") { Proto.toast("执行结果：触达 " + p.touch + " · " + p.conv + "（原型）"); }
   });
 
-  function openNew(title){
-    document.getElementById("pl-title").textContent = title || "新建运营计划";
-    document.getElementById("pl-name").value = "";
-    open(document.getElementById("modal-plan"));
-  }
   document.getElementById("btn-new").addEventListener("click", function(){ openNew("新建运营计划"); });
-  document.getElementById("pl-save").addEventListener("click", function(){
+
+  document.getElementById("pl-draft").addEventListener("click", function(){
     if (!document.getElementById("pl-name").value.trim()) { Proto.toast("请填写计划名称"); return; }
-    var gift = document.getElementById("pl-gift").value;
+    var payload = buildPayload("draft");
+    upsertPlan(payload);
     closeAll();
-    if (gift === "scrm") Proto.toast("已保存：将为对应负责人创建 SCRM 跟进任务（原型）");
-    else if (gift === "live") {
-      Proto.toast("已保存；直播提醒请在直播促到 SOP 中配置");
-      setTimeout(function(){ location.href = "live-invite.html"; }, 600);
-    } else Proto.toast("运营计划已保存并启动（原型）");
+    Proto.toast("草稿已保存");
   });
-  document.getElementById("btn-export").addEventListener("click", function(){ Proto.toast("运营效果报表导出任务已创建（原型）"); });
+
+  document.getElementById("pl-start").addEventListener("click", function(){
+    if (!validateForm()) return;
+    pendingStart = buildPayload("running");
+    pendingStart._fromForm = true;
+    document.getElementById("pl-summary").textContent = buildSummary(pendingStart);
+    document.getElementById("modal-plan").classList.remove("open");
+    open(document.getElementById("modal-summary"));
+  });
+
+  document.getElementById("pl-summary-back").addEventListener("click", function(){
+    document.getElementById("modal-summary").classList.remove("open");
+    if (pendingStart && pendingStart._fromForm) {
+      open(document.getElementById("modal-plan"));
+    } else {
+      closeAll();
+      pendingStart = null;
+    }
+  });
+
+  document.getElementById("pl-confirm-start").addEventListener("click", function(){
+    if (!pendingStart) return;
+    var payload = pendingStart;
+    pendingStart = null;
+    delete payload._fromForm;
+    upsertPlan(payload);
+    closeAll();
+    showStarted(payload);
+  });
+
+  document.getElementById("btn-export").addEventListener("click", function(){
+    Proto.toast("运营效果报表导出任务已创建（原型）");
+  });
 
   // 从分群「发起运营」带入人群并打开新建弹窗
   (function bootFromSegment(){
@@ -225,6 +768,8 @@
     } catch (e) {}
   })();
 
+  showActionPanel("pack");
+  document.getElementById("pl-notify").value = DEFAULT_NOTIFY;
   render();
 })();
 </script>

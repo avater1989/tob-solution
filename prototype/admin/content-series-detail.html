@@ -18,6 +18,17 @@
 <div id="page-content" style="display:none">
   <a class="cm-back" href="content-series.html">← 返回系列课列表</a>
 
+  <div id="cs-from-banner" class="card" style="display:none;margin-bottom:12px"><div class="card-bd" style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap">
+    <span style="font-size:13px">来自用户权益</span>
+    <a class="btn btn-sm btn-primary" id="cs-back-rights" href="users.html">返回用户权益</a>
+  </div></div>
+
+  <div id="cs-empty" class="card" style="display:none"><div class="card-bd" style="padding:48px;text-align:center">
+    <p style="font-size:15px;margin:0 0 16px">未找到课程</p>
+    <a class="btn" href="content-series.html">返回系列课列表</a>
+  </div></div>
+
+  <div id="cs-found">
   <div class="cm-page-hd">
     <div>
       <h1 id="d-name">小学语文阅读启蒙系列</h1>
@@ -66,6 +77,7 @@
     </div>
     <p style="margin:0;font-size:13px;color:#8c8c8c">目录包含章节与视频编排，可在「目录管理」中调整顺序、必修与试看。</p>
   </div>
+  </div>
 </div>
 
 <!-- 分享弹窗 -->
@@ -102,11 +114,56 @@ var DATA = {
   S002: { name:"家长情绪管理训练营", cat:"家庭教育", teacher:"李老师", desc:"8 周系统训练，帮助家长识别情绪、管理情绪、与孩子正向沟通。", summary:"2 章 · 4 视频", duration:"1.8h", access:"付费 · ¥199", group:"家庭教育", shelf:"草稿", pub:"草稿", updated:"2026-08-20", color:"green" },
   S003: { name:"AI 学习规划入门", cat:"学习能力", teacher:"王博士", desc:"AI 助力学习规划，10 节实操课让孩子学会用 AI 工具提升学习效率。", summary:"4 章 · 5 视频", duration:"3.2h", access:"免费", group:"学习能力", shelf:"已上架", updated:"2026-09-04", color:"orange" }
 };
-var id = new URLSearchParams(location.search).get("id") || "S001";
-var d = DATA[id] || DATA.S001;
+/* Aliases: rights courseId / legacy ids → catalog entry (+ optional display name) */
+var ALIASES = {
+  CS_TRAIN: { id: "S002", name: "训练营主课" },
+  "训练营主课": { id: "S002", name: "训练营主课" },
+  "引流体验课": { id: "S003", name: "引流体验课" }
+};
+
+var q = new URLSearchParams(location.search);
+var rawId = q.get("id") || q.get("courseId") || "";
+var alias = ALIASES[rawId] || null;
+var id = alias ? alias.id : (rawId || "S001");
+var nameOverride = alias && alias.name ? alias.name : "";
+var d = DATA[id] || null;
+
+var from = q.get("from") || "";
+var userId = q.get("user") || "";
+var returnTo = "";
+try {
+  returnTo = q.get("returnTo") || q.get("return_to") || "";
+  if (returnTo) {
+    try { returnTo = decodeURIComponent(returnTo); } catch (eRt) {}
+  }
+} catch (eQ) {}
+
+/* Rights courseIds S002/S003 map to 训练营主课 / 引流体验课 when opened from user */
+if (!nameOverride && (from === "user" || userId)) {
+  if (id === "S002") nameOverride = "训练营主课";
+  if (id === "S003") nameOverride = "引流体验课";
+}
+
+function buildUserRightsHref() {
+  var href = "user-detail.html?id=" + encodeURIComponent(userId || "") + "&tab=rights";
+  if (returnTo) href += "&returnTo=" + encodeURIComponent(returnTo);
+  return href;
+}
+
+if (from === "user" || userId) {
+  var banner = document.getElementById("cs-from-banner");
+  var back = document.getElementById("cs-back-rights");
+  if (banner) banner.style.display = "";
+  if (back) {
+    back.href = buildUserRightsHref();
+    back.textContent = "返回用户权益";
+  }
+}
+
 function apply() {
-  ["d-name","d-name2"].forEach(function(k){ document.getElementById(k).textContent = d.name; });
-  document.getElementById("d-avatar").textContent = d.name.charAt(0);
+  var displayName = nameOverride || d.name;
+  ["d-name","d-name2"].forEach(function(k){ document.getElementById(k).textContent = displayName; });
+  document.getElementById("d-avatar").textContent = displayName.charAt(0);
   document.getElementById("d-avatar").className = "cm-avatar " + (d.color||"");
   document.getElementById("d-desc").textContent = d.desc;
   document.getElementById("d-cat").textContent = d.cat;
@@ -119,12 +176,31 @@ function apply() {
   document.getElementById("d-shelf").textContent = d.shelf;
   document.getElementById("d-shelf").className = "cm-pill" + (d.shelf === "已上架" ? "" : " off");
   document.getElementById("d-pub").textContent = d.pub || "已发布";
-  document.getElementById("d-outline-link").href = "content-series-outline.html?id=" + id;
-  document.querySelector('#header-actions a[href*="outline"]').href = "content-series-outline.html?id=" + id;
-  document.querySelector('#header-actions a[href*="edit"]').href = "content-series-edit.html?id=" + id;
+  document.getElementById("d-outline-link").href = "content-series-outline.html?id=" + encodeURIComponent(id);
+  var outlineA = document.querySelector('#header-actions a[href*="outline"]') ||
+    document.querySelector('#page-header-actions a[href*="outline"]');
+  var editA = document.querySelector('#header-actions a[href*="edit"]') ||
+    document.querySelector('#page-header-actions a[href*="edit"]');
+  if (outlineA) outlineA.href = "content-series-outline.html?id=" + encodeURIComponent(id);
+  if (editA) editA.href = "content-series-edit.html?id=" + encodeURIComponent(id);
   document.getElementById("share-url").textContent = "https://yibo.app/s/" + id;
 }
-apply();
+
+var emptyEl = document.getElementById("cs-empty");
+var foundEl = document.getElementById("cs-found");
+if (!d) {
+  if (emptyEl) emptyEl.style.display = "";
+  if (foundEl) foundEl.style.display = "none";
+  var haShare = document.getElementById("btn-share");
+  if (haShare) haShare.style.display = "none";
+  document.querySelectorAll('#header-actions a[href*="outline"], #header-actions a[href*="edit"], #page-header-actions a[href*="outline"], #page-header-actions a[href*="edit"]').forEach(function (a) {
+    a.style.display = "none";
+  });
+} else {
+  if (emptyEl) emptyEl.style.display = "none";
+  if (foundEl) foundEl.style.display = "";
+  apply();
+}
 
 var mask = document.getElementById("mask");
 function closeAll() {
@@ -132,7 +208,8 @@ function closeAll() {
   document.querySelectorAll(".proto-modal,.proto-drawer").forEach(function(n){ n.classList.remove("open"); });
 }
 document.getElementById("btn-share").addEventListener("click", function(){
-  mask.classList.add("open");
+  if (!d) return;
+  if (mask) mask.classList.add("open");
   document.getElementById("modal-share").classList.add("open");
 });
 document.getElementById("btn-copy-link").addEventListener("click", function(){

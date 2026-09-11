@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>领课 · 星启家庭教育</title>
   <link rel="stylesheet" href="../assets/css/proto.css" />
-  <link rel="stylesheet" href="../assets/css/mp.css?v=taste2" />
+  <link rel="stylesheet" href="../assets/css/mp.css?v=taste3" />
 </head>
 <body class="mp-page" data-tabbar="0">
   <div class="mp-frame">
@@ -25,19 +25,21 @@
           <p style="font-size:12px;color:var(--mp-muted);margin:10px 0 0;line-height:1.55">
             订单 VX202603291088<br />点击短信链接进入本页完成领课
           </p>
-          <div style="margin-top:18px;text-align:left;background:#f7f8fa;border-radius:14px;padding:13px 14px;font-size:12px;color:#5c6575;line-height:1.75">
-            · 领课后开通对应线上课权益<br />
-            · 可引导添加企微老师完成私域承接<br />
-            · 权益与视频号订单自动关联
+          <div style="margin-top:18px;text-align:left;background:#f7f8fa;border-radius:14px;padding:13px 14px;font-size:12px;color:#5c6575;line-height:1.75" id="claim-notice">
+            <div style="font-weight:700;color:var(--mp-ink);margin-bottom:6px">领取须知 · 试听权益</div>
+            · 包含内容：引流体验课试听内容（非整套正式课）<br />
+            · 开课方式：领取成功后立即开通，可前往学习<br />
+            · 有效期：领取后 30 天（领取成功即日起算）<br />
+            · 客服 / 售后：领课异常可在「我的 → 账号与帮助」联系商家
           </div>
           <a class="mp-btn" href="#" id="btn-claim" style="margin-top:18px">立即领课</a>
           <a class="mp-btn mp-btn-outline" href="#" id="btn-wecom" style="margin-top:10px">添加企微老师</a>
         </div>
 
         <div id="claim-ok" class="mp-success-box" style="display:none">
-          <strong style="display:block;margin-bottom:6px">领课成功</strong>
-          权益已开通，可前往学习或进入直播。<br /><br />
-          <a href="learn.html" style="color:#237804;font-weight:650">去学习</a>
+          <strong style="display:block;margin-bottom:6px">领课成功 · 已获得试听权益</strong>
+          下一步：开始学习试听内容，或进入直播间继续了解。<br /><br />
+          <a href="learn.html?course=comm&amp;lesson=1" style="color:#237804;font-weight:650">去学习</a>
           ·
           <a href="lives.html" style="color:#237804;font-weight:650">看直播</a>
           ·
@@ -49,11 +51,22 @@
   <p class="mp-hint">视频号短信承接 · <a href="../admin/orders.html">管理端订单</a></p>
   <script src="../assets/js/proto.js"></script>
   <script src="../assets/js/mp-shell.js"></script>
+  <script src="../assets/js/mp-commerce.js"></script>
   <script>
     document.getElementById("btn-claim").addEventListener("click", function (e) {
       e.preventDefault();
-      document.getElementById("claim-ok").style.display = "block";
-      Proto.toast("权益已开通（原型）");
+      MpCommerce.openBuyNotice({
+        catalogId: "trialClaim",
+        from: "claim",
+        onConfirm: function () {
+          MpCommerce.grantRights("trialClaim", { source: "claim" });
+          document.getElementById("claim-ok").style.display = "block";
+          Proto.toast("试听权益已开通（原型）");
+        },
+        onCancel: function () {
+          Proto.toast("已取消领取");
+        }
+      });
     });
     document.getElementById("btn-wecom").addEventListener("click", function (e) {
       e.preventDefault();

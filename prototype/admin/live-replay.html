@@ -34,7 +34,7 @@
 
   <!-- 筛选 -->
   <div class="card" style="margin-bottom:8px"><div class="card-bd">
-    <div class="form-grid" style="grid-template-columns:repeat(4,minmax(0,1fr));gap:12px">
+    <div class="form-grid" style="grid-template-columns:repeat(5,minmax(0,1fr));gap:12px">
       <div class="field" style="margin:0">
         <label>回放标题</label>
         <input id="f-title" placeholder="请输入回放标题" />
@@ -49,6 +49,16 @@
           <option value="">全部</option>
           <option>已上架</option>
           <option>未上架</option>
+        </select>
+      </div>
+      <div class="field" style="margin:0">
+        <label>生成状态</label>
+        <select id="f-gen">
+          <option value="">全部</option>
+          <option value="pending">待生成</option>
+          <option value="processing">处理中</option>
+          <option value="ready">可用</option>
+          <option value="failed">生成失败</option>
         </select>
       </div>
       <div class="field" style="margin:0">
@@ -86,16 +96,16 @@
           <th>直播时间</th>
           <th>回放时长</th>
           <th>文件大小</th>
+          <th>生成状态</th>
           <th>上架状态</th>
           <th>权重</th>
           <th>播放量</th>
           <th>完播率</th>
-          <th style="width:200px">操作</th>
+          <th style="width:240px">操作</th>
         </tr>
       </thead>
       <tbody id="rp-tbody">
-        <!-- L002 早间家长课回放 -->
-        <tr data-shelf="on" data-live-id="L002">
+        <tr data-shelf="on" data-gen="ready" data-live-id="L002" data-scope="公开可看" data-valid="长期有效">
           <td><input type="checkbox" class="row-check" /></td>
           <td><div class="rp-thumb" style="background:linear-gradient(135deg,#0ea5e9,#6366f1)"></div></td>
           <td><a href="#" class="link-blue" data-row-act="detail">早间家长课 · 复盘（回放）</a></td>
@@ -104,18 +114,14 @@
           <td><span class="rp-time">2026-09-09 08:00:00<br/>至 09:12:00</span></td>
           <td>72分钟</td>
           <td>428.50MB</td>
+          <td><span class="rp-badge rp-gen-ready">可用</span></td>
           <td><span class="rp-badge rp-on">已上架</span></td>
           <td><span class="rp-price">¥0</span></td>
           <td>186</td>
           <td>42%</td>
-          <td class="row-actions">
-            <a href="#" data-row-act="play">预览</a>
-            <a href="#" data-row-act="weight">权重</a>
-            <a href="#" data-row-act="off">下架</a>
-          </td>
+          <td class="row-actions"></td>
         </tr>
-        <!-- 已上架 -->
-        <tr data-shelf="on" data-live-id="L004">
+        <tr data-shelf="on" data-gen="ready" data-live-id="L004" data-scope="付费本场资格" data-valid="购买后 48 小时">
           <td><input type="checkbox" class="row-check" /></td>
           <td><div class="rp-thumb" style="background:linear-gradient(135deg,#ff7a45,#ffbb96)"></div></td>
           <td><a href="#" class="link-blue" data-row-act="detail">测试2</a></td>
@@ -124,17 +130,14 @@
           <td><span class="rp-time">2026-07-16 13:48:06<br/>至 13:53:28</span></td>
           <td>6分钟</td>
           <td>19.97MB</td>
+          <td><span class="rp-badge rp-gen-ready">可用</span></td>
           <td><span class="rp-badge rp-on">已上架</span></td>
           <td><span class="rp-price">¥0</span></td>
           <td>4</td>
           <td>0%</td>
-          <td class="row-actions">
-            <a href="#" data-row-act="play">预览</a>
-            <a href="#" data-row-act="weight">权重</a>
-            <a href="#" data-row-act="off">下架</a>
-          </td>
+          <td class="row-actions"></td>
         </tr>
-        <tr data-shelf="off" data-live-id="L001">
+        <tr data-shelf="off" data-gen="pending" data-live-id="L001" data-scope="已购学员授课 · 春启03" data-valid="长期有效">
           <td><input type="checkbox" class="row-check" /></td>
           <td><div class="rp-thumb" style="background:linear-gradient(135deg,#165dff,#4080ff)"></div></td>
           <td><a href="#" class="link-blue" data-row-act="detail">春启 03 期家长公开课（预生成）</a></td>
@@ -143,55 +146,46 @@
           <td><span class="rp-time">待开播后生成</span></td>
           <td>—</td>
           <td>—</td>
+          <td><span class="rp-badge rp-gen-pending">待生成</span></td>
           <td><span class="rp-badge rp-off">未上架</span></td>
           <td><span class="rp-price">¥0</span></td>
           <td>0</td>
           <td>0%</td>
-          <td class="row-actions">
-            <a href="#" data-row-act="play">预览</a>
-            <a href="#" data-row-act="weight">权重</a>
-            <a href="#" data-row-act="on">上架</a>
-          </td>
+          <td class="row-actions"></td>
         </tr>
-        <tr data-shelf="off" data-live-id="L004">
+        <tr data-shelf="off" data-gen="processing" data-live-id="L004" data-scope="公开可看" data-valid="长期有效">
           <td><input type="checkbox" class="row-check" /></td>
           <td><div class="rp-thumb" style="background:linear-gradient(135deg,#165dff,#4080ff)"></div></td>
           <td><a href="#" class="link-blue" data-row-act="detail">测试0820001</a></td>
           <td><span class="rp-room">ROOM_178719<br/>6392970</span></td>
           <td>褚悠悠</td>
           <td><span class="rp-time">2026-08-20 11:52:48<br/>至 12:08:41</span></td>
-          <td>16分钟</td>
-          <td>154.78MB</td>
+          <td>—</td>
+          <td>—</td>
+          <td><span class="rp-badge rp-gen-processing">处理中</span></td>
           <td><span class="rp-badge rp-off">未上架</span></td>
           <td><span class="rp-price">¥0</span></td>
           <td>0</td>
           <td>0%</td>
-          <td class="row-actions">
-            <a href="#" data-row-act="play">预览</a>
-            <a href="#" data-row-act="weight">权重</a>
-            <a href="#" data-row-act="on">上架</a>
-          </td>
+          <td class="row-actions"></td>
         </tr>
-        <tr data-shelf="off" data-live-id="L003">
+        <tr data-shelf="off" data-gen="failed" data-live-id="L003" data-scope="指定用户" data-valid="长期有效">
           <td><input type="checkbox" class="row-check" /></td>
-          <td><div class="rp-thumb" style="background:linear-gradient(135deg,#165dff,#4080ff)"></div></td>
+          <td><div class="rp-thumb" style="background:linear-gradient(135deg,#f53f3f,#f98981)"></div></td>
           <td><a href="#" class="link-blue" data-row-act="detail">测试0820002</a></td>
           <td><span class="rp-room">ROOM_178720<br/>8100936</span></td>
           <td>褚悠悠</td>
           <td><span class="rp-time">2026-08-20 14:51:34<br/>至 14:58:58</span></td>
-          <td>3分钟</td>
-          <td>16.28MB</td>
+          <td>—</td>
+          <td>—</td>
+          <td><span class="rp-badge rp-gen-failed">生成失败</span></td>
           <td><span class="rp-badge rp-off">未上架</span></td>
           <td><span class="rp-price">¥0</span></td>
           <td>0</td>
           <td>0%</td>
-          <td class="row-actions">
-            <a href="#" data-row-act="play">预览</a>
-            <a href="#" data-row-act="weight">权重</a>
-            <a href="#" data-row-act="on">上架</a>
-          </td>
+          <td class="row-actions"></td>
         </tr>
-        <tr data-shelf="off">
+        <tr data-shelf="off" data-gen="ready" data-live-id="L004" data-scope="公开可看" data-valid="上架后 7 天">
           <td><input type="checkbox" class="row-check" /></td>
           <td><div class="rp-thumb" style="background:linear-gradient(135deg,#165dff,#4080ff)"></div></td>
           <td><a href="#" class="link-blue" data-row-act="detail">测试0820001-副本</a></td>
@@ -200,17 +194,14 @@
           <td><span class="rp-time">2026-08-20 13:46:17<br/>至 13:49:13</span></td>
           <td>3分钟</td>
           <td>34.17MB</td>
+          <td><span class="rp-badge rp-gen-ready">可用</span></td>
           <td><span class="rp-badge rp-off">未上架</span></td>
           <td><span class="rp-price">¥0</span></td>
           <td>0</td>
           <td>0%</td>
-          <td class="row-actions">
-            <a href="#" data-row-act="play">预览</a>
-            <a href="#" data-row-act="weight">权重</a>
-            <a href="#" data-row-act="on">上架</a>
-          </td>
+          <td class="row-actions"></td>
         </tr>
-        <tr data-shelf="off">
+        <tr data-shelf="off" data-gen="ready" data-scope="已购学员授课" data-valid="长期有效">
           <td><input type="checkbox" class="row-check" /></td>
           <td><div class="rp-thumb" style="background:linear-gradient(135deg,#722ed1,#a066f5)"></div></td>
           <td><a href="#" class="link-blue" data-row-act="detail">测试数据大屏01</a></td>
@@ -219,110 +210,28 @@
           <td><span class="rp-time">2026-08-26 10:07:03<br/>至 10:39:34</span></td>
           <td>148分钟</td>
           <td>1505.13MB</td>
+          <td><span class="rp-badge rp-gen-ready">可用</span></td>
           <td><span class="rp-badge rp-off">未上架</span></td>
           <td><span class="rp-price">¥0</span></td>
           <td>0</td>
           <td>0%</td>
-          <td class="row-actions">
-            <a href="#" data-row-act="play">预览</a>
-            <a href="#" data-row-act="weight">权重</a>
-            <a href="#" data-row-act="on">上架</a>
-          </td>
+          <td class="row-actions"></td>
         </tr>
-        <tr data-shelf="off">
-          <td><input type="checkbox" class="row-check" /></td>
-          <td><div class="rp-thumb" style="background:linear-gradient(135deg,#00b42a,#5fd068)"></div></td>
-          <td><a href="#" class="link-blue" data-row-act="detail">硬信息看喻康师傅</a></td>
-          <td><span class="rp-room">ROOM_178425<br/>3648289</span></td>
-          <td>王翠花</td>
-          <td><span class="rp-time">2026-07-17 10:00:49<br/>至 10:37:35</span></td>
-          <td>3分钟</td>
-          <td>16.28MB</td>
-          <td><span class="rp-badge rp-off">未上架</span></td>
-          <td><span class="rp-price">¥0</span></td>
-          <td>0</td>
-          <td>0%</td>
-          <td class="row-actions">
-            <a href="#" data-row-act="play">预览</a>
-            <a href="#" data-row-act="weight">权重</a>
-            <a href="#" data-row-act="on">上架</a>
-          </td>
-        </tr>
-        <tr data-shelf="off">
+        <tr data-shelf="off" data-gen="processing" data-scope="公开可看" data-valid="长期有效">
           <td><input type="checkbox" class="row-check" /></td>
           <td><div class="rp-thumb" style="background:linear-gradient(135deg,#faad14,#ffd666)"></div></td>
           <td><a href="#" class="link-blue" data-row-act="detail">惊屏直播04</a></td>
           <td><span class="rp-room">ROOM_178728<br/>5534366</span></td>
           <td>LsanKin·</td>
           <td><span class="rp-time">2026-08-20 15:18:38<br/>至 15:23:49</span></td>
-          <td>1分钟</td>
-          <td>1.1MB</td>
+          <td>—</td>
+          <td>—</td>
+          <td><span class="rp-badge rp-gen-processing">处理中</span></td>
           <td><span class="rp-badge rp-off">未上架</span></td>
           <td><span class="rp-price">¥0</span></td>
           <td>0</td>
           <td>0%</td>
-          <td class="row-actions">
-            <a href="#" data-row-act="play">预览</a>
-            <a href="#" data-row-act="weight">权重</a>
-            <a href="#" data-row-act="on">上架</a>
-          </td>
-        </tr>
-        <tr data-shelf="off">
-          <td><input type="checkbox" class="row-check" /></td>
-          <td><div class="rp-thumb" style="background:linear-gradient(135deg,#faad14,#ffd666)"></div></td>
-          <td><a href="#" class="link-blue" data-row-act="detail">惊屏直播04-副本</a></td>
-          <td><span class="rp-room">ROOM_178729<br/>2396886</span></td>
-          <td>LsanKin·</td>
-          <td><span class="rp-time">2026-08-21 15:48:32<br/>至 15:05:34</span></td>
-          <td>2分钟</td>
-          <td>3.97MB</td>
-          <td><span class="rp-badge rp-off">未上架</span></td>
-          <td><span class="rp-price">¥0</span></td>
-          <td>0</td>
-          <td>0%</td>
-          <td class="row-actions">
-            <a href="#" data-row-act="play">预览</a>
-            <a href="#" data-row-act="weight">权重</a>
-            <a href="#" data-row-act="on">上架</a>
-          </td>
-        </tr>
-        <tr data-shelf="off">
-          <td><input type="checkbox" class="row-check" /></td>
-          <td><div class="rp-thumb" style="background:linear-gradient(135deg,#faad14,#ffd666)"></div></td>
-          <td><a href="#" class="link-blue" data-row-act="detail">惊屏直播05</a></td>
-          <td><span class="rp-room">ROOM_178736<br/>7037786</span></td>
-          <td>LsanKin·</td>
-          <td><span class="rp-time">2026-08-24 18:25:01<br/>至 18:25:31</span></td>
-          <td>1分钟</td>
-          <td>2.32MB</td>
-          <td><span class="rp-badge rp-off">未上架</span></td>
-          <td><span class="rp-price">¥0</span></td>
-          <td>0</td>
-          <td>0%</td>
-          <td class="row-actions">
-            <a href="#" data-row-act="play">预览</a>
-            <a href="#" data-row-act="weight">权重</a>
-            <a href="#" data-row-act="on">上架</a>
-          </td>
-        </tr>
-        <tr data-shelf="off">
-          <td><input type="checkbox" class="row-check" /></td>
-          <td><div class="rp-thumb" style="background:linear-gradient(135deg,#faad14,#ffd666)"></div></td>
-          <td><a href="#" class="link-blue" data-row-act="detail">逆屏直播02</a></td>
-          <td><span class="rp-room">ROOM_178738<br/>4997299</span></td>
-          <td>LsanKin·</td>
-          <td><span class="rp-time">2026-08-20 13:39:50<br/>至 13:43:47</span></td>
-          <td>4分钟</td>
-          <td>26.65MB</td>
-          <td><span class="rp-badge rp-off">未上架</span></td>
-          <td><span class="rp-price">¥0</span></td>
-          <td>0</td>
-          <td>0%</td>
-          <td class="row-actions">
-            <a href="#" data-row-act="play">预览</a>
-            <a href="#" data-row-act="weight">权重</a>
-            <a href="#" data-row-act="on">上架</a>
-          </td>
+          <td class="row-actions"></td>
         </tr>
       </tbody>
     </table>
@@ -371,6 +280,24 @@
   </div>
 </div>
 
+<!-- 上架确认：展示观看范围与有效期 -->
+<div class="proto-modal" id="modal-publish">
+  <div class="proto-modal-hd">
+    <h3>确认上架回放</h3>
+    <button class="btn btn-sm btn-ghost" data-close>×</button>
+  </div>
+  <div class="proto-modal-bd">
+    <div class="field"><label>回放标题</label><div id="pub-title">—</div></div>
+    <div class="field"><label>观看范围</label><div id="pub-scope" class="muted">复用本场直播配置</div></div>
+    <div class="field"><label>有效期</label><div id="pub-valid" class="muted">—</div></div>
+    <p class="muted" style="font-size:12px;margin:8px 0 0">上架后学员端仅在回放可用、已发布且有效期内可观看。</p>
+  </div>
+  <div class="proto-modal-ft">
+    <button class="btn" data-close>取消</button>
+    <button class="btn btn-primary" id="btn-confirm-publish">确认上架</button>
+  </div>
+</div>
+
 <!-- 回放详情抽屉 -->
 <div class="proto-drawer" id="drawer-detail">
   <div class="proto-drawer-hd">
@@ -386,7 +313,10 @@
       <div class="field"><label>直播时间</label><div id="dd-time">—</div></div>
       <div class="field"><label>回放时长</label><div id="dd-duration">—</div></div>
       <div class="field"><label>文件大小</label><div id="dd-size">—</div></div>
+      <div class="field"><label>生成状态</label><div id="dd-gen">—</div></div>
       <div class="field"><label>上架状态</label><div id="dd-shelf">—</div></div>
+      <div class="field"><label>观看范围</label><div id="dd-scope">—</div></div>
+      <div class="field"><label>有效期</label><div id="dd-valid">—</div></div>
       <div class="field"><label>权重</label><div id="dd-weight">—</div></div>
       <div class="field"><label>播放量</label><div id="dd-plays">—</div></div>
       <div class="field"><label>完播率</label><div id="dd-finish">—</div></div>
@@ -423,6 +353,16 @@
 }
 .rp-on  { background: #e8f5e9; color: #389e0d; }
 .rp-off { background: #f5f5f5; color: #86909c; }
+.rp-gen-ready { background: #e8f3ff; color: #165dff; }
+.rp-gen-pending { background: #f5f5f5; color: #86909c; }
+.rp-gen-processing { background: #fff7e6; color: #d48806; }
+.rp-gen-failed { background: #fff1f0; color: #cf1322; }
+.row-actions .is-disabled {
+  color: #c9cdd4; cursor: not-allowed; text-decoration: none;
+}
+.row-actions .act-hint {
+  display: block; font-size: 11px; color: #86909c; margin-top: 4px; font-weight: 400;
+}
 
 .rp-price {
   display: inline-block; padding: 2px 8px; border-radius: 12px;
@@ -520,7 +460,7 @@
     if (!matched) {
       var tb = document.getElementById("rp-tbody");
       if (tb) {
-        tb.innerHTML = '<tr id="rp-empty-row"><td colspan="13" class="muted" style="text-align:center;padding:36px">本场暂无回放</td></tr>';
+        tb.innerHTML = '<tr id="rp-empty-row"><td colspan="14" class="muted" style="text-align:center;padding:36px">本场暂无回放</td></tr>';
       }
     }
   }
@@ -544,6 +484,14 @@
   });
 
   // ===== Row data =====
+  var GEN_LABEL = {
+    pending: "待生成",
+    processing: "处理中",
+    ready: "可用",
+    failed: "生成失败"
+  };
+  var pendingPublishTr = null;
+
   function rowData(tr) {
     var tds = tr.querySelectorAll("td");
     return {
@@ -553,32 +501,73 @@
       time: tds[5] ? tds[5].textContent.trim() : "",
       duration: tds[6] ? tds[6].textContent.trim() : "",
       size: tds[7] ? tds[7].textContent.trim() : "",
+      gen: tr.dataset.gen || "ready",
       shelf: tr.dataset.shelf,
-      weight: tds[9] ? tds[9].textContent.trim() : "¥0",
-      plays: tds[10] ? tds[10].textContent.trim() : "0",
-      finish: tds[11] ? tds[11].textContent.trim() : "0%"
+      scope: tr.getAttribute("data-scope") || "复用本场直播观看配置",
+      valid: tr.getAttribute("data-valid") || "长期有效",
+      weight: tds[10] ? tds[10].textContent.trim() : "¥0",
+      plays: tds[11] ? tds[11].textContent.trim() : "0",
+      finish: tds[12] ? tds[12].textContent.trim() : "0%"
     };
   }
 
+  function renderActions(tr) {
+    var gen = tr.dataset.gen || "ready";
+    var shelf = tr.dataset.shelf || "off";
+    var actCell = tr.querySelector(".row-actions");
+    if (!actCell) return;
+    var html = "";
+    if (gen === "pending" || gen === "processing") {
+      var why = gen === "pending" ? "回放尚未生成，无法预览或上架" : "回放处理中，无法预览或上架";
+      html =
+        '<a href="#" class="is-disabled" data-row-act="play" title="' + why + '">预览</a>' +
+        '<a href="#" data-row-act="weight">权重</a>' +
+        '<a href="#" class="is-disabled" data-row-act="on" title="' + why + '">上架</a>' +
+        '<span class="act-hint">' + why + "</span>";
+    } else if (gen === "failed") {
+      html =
+        '<a href="#" class="is-disabled" data-row-act="play" title="生成失败，无法预览">预览</a>' +
+        '<a href="#" data-row-act="retry">重试生成</a>' +
+        '<a href="#" data-row-act="import">补充回放</a>' +
+        '<span class="act-hint">生成失败，可重试或导入外部回放</span>';
+    } else if (shelf === "on") {
+      html =
+        '<a href="#" data-row-act="play">预览</a>' +
+        '<a href="#" data-row-act="weight">权重</a>' +
+        '<a href="#" data-row-act="off">下架</a>';
+    } else {
+      html =
+        '<a href="#" data-row-act="play">预览</a>' +
+        '<a href="#" data-row-act="weight">权重</a>' +
+        '<a href="#" data-row-act="on">上架</a>';
+    }
+    actCell.innerHTML = html;
+    bindRow(tr);
+  }
+
   function rowShelf(tr, newState) {
-    var badge = tr.querySelectorAll("td")[8].querySelector(".rp-badge");
-    var actCell = tr.querySelectorAll("td")[12];
+    var badge = tr.querySelectorAll("td")[9].querySelector(".rp-badge");
     if (newState === "on") {
       tr.dataset.shelf = "on";
       badge.className = "rp-badge rp-on";
       badge.textContent = "已上架";
-      actCell.innerHTML = '<a href="#" data-row-act="play">预览</a>' +
-                           '<a href="#" data-row-act="weight">权重</a>' +
-                           '<a href="#" data-row-act="off">下架</a>';
     } else {
       tr.dataset.shelf = "off";
       badge.className = "rp-badge rp-off";
       badge.textContent = "未上架";
-      actCell.innerHTML = '<a href="#" data-row-act="play">预览</a>' +
-                           '<a href="#" data-row-act="weight">权重</a>' +
-                           '<a href="#" data-row-act="on">上架</a>';
     }
-    bindRow(tr);
+    renderActions(tr);
+  }
+
+  function setGenReady(tr) {
+    tr.dataset.gen = "ready";
+    var badge = tr.querySelectorAll("td")[8].querySelector(".rp-badge");
+    badge.className = "rp-badge rp-gen-ready";
+    badge.textContent = "可用";
+    var tds = tr.querySelectorAll("td");
+    if (tds[6] && tds[6].textContent.trim() === "—") tds[6].textContent = "3分钟";
+    if (tds[7] && tds[7].textContent.trim() === "—") tds[7].textContent = "16.28MB";
+    renderActions(tr);
   }
 
   function fillDetail(d) {
@@ -589,32 +578,88 @@
     document.getElementById("dd-time").textContent     = d.time;
     document.getElementById("dd-duration").textContent = d.duration;
     document.getElementById("dd-size").textContent     = d.size;
+    document.getElementById("dd-gen").textContent      = GEN_LABEL[d.gen] || d.gen;
     document.getElementById("dd-shelf").textContent    = d.shelf === "on" ? "已上架" : "未上架";
+    document.getElementById("dd-scope").textContent    = d.scope;
+    document.getElementById("dd-valid").textContent    = d.valid;
     document.getElementById("dd-weight").textContent   = d.weight;
     document.getElementById("dd-plays").textContent    = d.plays;
     document.getElementById("dd-finish").textContent   = d.finish;
     open(document.getElementById("drawer-detail"));
   }
 
+  function openPublishConfirm(tr) {
+    var d = rowData(tr);
+    pendingPublishTr = tr;
+    document.getElementById("pub-title").textContent = d.name;
+    document.getElementById("pub-scope").textContent = d.scope + "（复用本场直播配置）";
+    document.getElementById("pub-valid").textContent = d.valid;
+    open(document.getElementById("modal-publish"));
+  }
+
   function bindRow(tr) {
     tr.querySelectorAll("[data-row-act]").forEach(function (a) {
       a.onclick = function (e) {
         e.preventDefault();
+        if (a.classList.contains("is-disabled")) {
+          Proto.toast(a.getAttribute("title") || "当前状态不可操作");
+          return;
+        }
         var act = a.getAttribute("data-row-act");
         var d = rowData(tr);
+        var gen = tr.dataset.gen || "ready";
         if (act === "detail") fillDetail(d);
-        else if (act === "play")  Proto.toast("打开预览（原型）");
+        else if (act === "play") {
+          if (gen !== "ready") {
+            Proto.toast(gen === "failed" ? "生成失败，无法预览" : "回放未就绪，无法预览");
+            return;
+          }
+          Proto.toast("打开预览（原型）");
+        }
         else if (act === "weight") {
           document.getElementById("wt-title").textContent = d.name;
           open(document.getElementById("modal-weight"));
         }
-        else if (act === "on")  rowShelf(tr, "on");
+        else if (act === "on") {
+          if (gen !== "ready") {
+            Proto.toast("仅「可用」状态可上架");
+            return;
+          }
+          openPublishConfirm(tr);
+        }
         else if (act === "off") rowShelf(tr, "off");
+        else if (act === "retry") {
+          Proto.toast("已提交重试生成（原型）");
+          tr.dataset.gen = "processing";
+          var badge = tr.querySelectorAll("td")[8].querySelector(".rp-badge");
+          badge.className = "rp-badge rp-gen-processing";
+          badge.textContent = "处理中";
+          renderActions(tr);
+          setTimeout(function () {
+            setGenReady(tr);
+            Proto.toast("重试完成，回放已可用（原型）");
+          }, 1200);
+        }
+        else if (act === "import") {
+          Proto.toast("打开补充回放 / 导入入口（原型）");
+          setGenReady(tr);
+        }
       };
     });
   }
 
-  document.querySelectorAll("#rp-tbody tr").forEach(bindRow);
+  document.querySelectorAll("#rp-tbody tr").forEach(function (tr) {
+    renderActions(tr);
+  });
+
+  document.getElementById("btn-confirm-publish").addEventListener("click", function () {
+    if (pendingPublishTr) {
+      rowShelf(pendingPublishTr, "on");
+      Proto.toast("已上架（原型）");
+      pendingPublishTr = null;
+    }
+    closeAll();
+  });
 
   // ===== Save weight =====
   document.getElementById("btn-save-weight").addEventListener("click", function () {
@@ -631,8 +676,14 @@
   function batchUpdate(target) {
     var rows = Array.from(document.querySelectorAll(".row-check:checked")).map(function (c) { return c.closest("tr"); });
     if (!rows.length) { Proto.toast("请先选择回放"); return; }
-    rows.forEach(function (r) { rowShelf(r, target); });
-    Proto.toast(rows.length + " 个回放已" + (target === "on" ? "上架" : "下架") + "（原型）");
+    var skipped = 0;
+    rows.forEach(function (r) {
+      if (target === "on" && r.dataset.gen !== "ready") { skipped++; return; }
+      rowShelf(r, target);
+    });
+    var msg = rows.length - skipped + " 个回放已" + (target === "on" ? "上架" : "下架") + "（原型）";
+    if (skipped) msg += "；跳过 " + skipped + " 个未就绪";
+    Proto.toast(msg);
   }
   document.getElementById("btn-batch-on").addEventListener("click", function () { batchUpdate("on"); });
   document.getElementById("btn-batch-off").addEventListener("click", function () { batchUpdate("off"); });
@@ -646,6 +697,8 @@
     document.getElementById("f-title").value = "";
     document.getElementById("f-anchor").value = "";
     document.getElementById("f-shelf").value = "";
+    var fg = document.getElementById("f-gen");
+    if (fg) fg.value = "";
     Proto.toast("已重置");
   });
 })();

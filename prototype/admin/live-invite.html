@@ -209,15 +209,38 @@
 
     <h4 style="margin:16px 0 8px;font-size:14px">排除条件</h4>
     <div style="display:flex;flex-wrap:wrap;gap:12px 20px;font-size:13px">
-      <label><input type="checkbox" class="c-exclude" value="已购买" checked /> 已购买</label>
-      <label><input type="checkbox" class="c-exclude" value="已退订营销" checked /> 已退订</label>
-      <label><input type="checkbox" class="c-exclude" value="近期已触达" checked /> 近期已触达</label>
+      <label><input type="checkbox" class="c-exclude" value="已购买" checked id="c-ex-bought" /> 已购买指定商品</label>
+      <label><input type="checkbox" class="c-exclude" value="已退订营销" checked /> 已退订营销</label>
+      <label><input type="checkbox" class="c-exclude" value="近期已触达" checked id="c-ex-recent" /> 近期已触达</label>
       <label><input type="checkbox" class="c-exclude" value="已流失" /> 已流失</label>
       <label><input type="checkbox" class="c-exclude" value="黑名单" /> 黑名单</label>
     </div>
+    <div class="form-grid" id="c-exclude-detail" style="grid-template-columns:1fr 1fr;gap:10px 14px;margin-top:10px">
+      <div class="field" id="c-ex-product-wrap">
+        <label>「已购买」对应商品</label>
+        <select id="c-ex-product"></select>
+        <div class="muted" style="font-size:11px;margin-top:4px">排除已购买该商品的用户；默认取本场直播关联课程。</div>
+      </div>
+      <div class="field" id="c-ex-days-wrap">
+        <label>「近期已触达」时间窗</label>
+        <select id="c-ex-days">
+          <option value="3">近 3 天</option>
+          <option value="7" selected>近 7 天</option>
+          <option value="14">近 14 天</option>
+          <option value="30">近 30 天</option>
+        </select>
+        <div class="muted" style="font-size:11px;margin-top:4px">统计窗口内任意渠道营销触达均计入。</div>
+      </div>
+    </div>
+
+    <div class="alert alert-info" style="margin:14px 0 0;font-size:12px">
+      标准预约提醒（开播前/开播时/改期/取消）请在
+      <a class="link-blue" id="c-booking-link" href="live-booking.html">预约管理</a>
+      配置。步骤中若选择「关联预约管理」，仅作关联说明，不在本页维护第二套提醒规则。
+    </div>
 
     <div class="toolbar" style="margin:16px 0 8px;padding:0;border:none;background:transparent">
-      <h4 style="margin:0;font-size:14px">促到步骤（可编辑）</h4>
+      <h4 style="margin:0;font-size:14px">直播促到SOP 步骤（可配置）</h4>
       <div class="spacer"></div>
       <button type="button" class="btn btn-sm" id="c-add-step">+ 添加步骤</button>
     </div>
@@ -225,7 +248,7 @@
       <table class="data" id="c-steps-table">
         <thead>
           <tr>
-            <th>步骤名称</th><th>触发时机</th><th>受众</th><th>渠道</th><th>目标</th><th>自动</th><th style="width:100px">操作</th>
+            <th>步骤名称</th><th>触发时机</th><th>受众</th><th>渠道</th><th>发送内容</th><th>类型</th><th style="width:100px">操作</th>
           </tr>
         </thead>
         <tbody id="c-steps-tbody"></tbody>
@@ -239,47 +262,140 @@
 </div>
 
 <!-- 步骤编辑弹窗 -->
-<div class="proto-modal" id="modal-step" style="width:520px">
+<div class="proto-modal" id="modal-step" style="width:640px;max-height:92vh">
   <div class="proto-modal-hd">
     <h3 id="modal-step-title" style="margin:0;font-size:16px;font-weight:600">编辑步骤</h3>
     <button class="btn btn-sm btn-ghost" data-close-step>×</button>
   </div>
-  <div class="proto-modal-bd">
+  <div class="proto-modal-bd" style="max-height:calc(92vh - 120px);overflow:auto">
     <div class="form-grid" style="grid-template-columns:1fr 1fr;gap:10px 14px">
       <div class="field" style="grid-column:1/-1"><label>步骤名称 *</label>
         <input id="st-name" placeholder="如：开播前催到" />
       </div>
-      <div class="field"><label>触发时机</label>
-        <input id="st-timing" placeholder="如：直播前 1 小时" />
+      <div class="field" style="grid-column:1/-1"><label>触发时机 *</label>
+        <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center">
+          <select id="st-trigger-type" style="min-width:140px">
+            <option value="before_live">开播前</option>
+            <option value="after_live_start">开播后</option>
+            <option value="after_live_end">结束后</option>
+            <option value="after_booking">预约成功后</option>
+            <option value="link_booking">关联预约管理（标准提醒）</option>
+          </select>
+          <span id="st-trigger-num-wrap" style="display:inline-flex;gap:6px;align-items:center">
+            <input id="st-trigger-value" type="number" min="1" value="1" style="width:72px" />
+            <select id="st-trigger-unit" style="width:88px">
+              <option value="m">分钟</option>
+              <option value="h" selected>小时</option>
+              <option value="d">天</option>
+            </select>
+          </span>
+        </div>
+        <div class="muted" id="st-trigger-hint" style="font-size:11px;margin-top:4px"></div>
+      </div>
+      <div class="field" style="grid-column:1/-1"><label>受众 *</label>
+        <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:6px">
+          <label style="font-size:12px"><input type="radio" name="st-aud-mode" value="preset" checked /> 场景条件</label>
+          <label style="font-size:12px"><input type="radio" name="st-aud-mode" value="segment" /> 用户分群</label>
+        </div>
+        <select id="st-audience-preset"></select>
+        <select id="st-audience-segment" style="display:none;margin-top:6px"></select>
+        <div class="muted" style="font-size:11px;margin-top:4px">复用用户分群与本页筛选条件，不另建人群体系。可到 <a class="link-blue" href="user-segments.html" target="_blank">用户分群</a> 查看。</div>
+      </div>
+      <div class="field" style="grid-column:1/-1" id="st-channels-wrap"><label>渠道 *</label>
+        <div class="chk-row" id="st-channels" style="font-size:13px;margin-top:4px"></div>
       </div>
       <div class="field"><label>目标</label>
         <input id="st-goal" placeholder="如：进入直播间" />
       </div>
-      <div class="field" style="grid-column:1/-1"><label>受众</label>
-        <input id="st-audience" placeholder="如：已预约用户" />
-      </div>
-      <div class="field" style="grid-column:1/-1"><label>渠道（逗号分隔）</label>
-        <input id="st-channels" placeholder="企微,短信" />
-      </div>
-      <div class="field"><label>自动执行</label>
+      <div class="field"><label>执行方式 *</label>
         <select id="st-auto">
-          <option value="1">是</option>
-          <option value="0">否（助教任务）</option>
+          <option value="1">自动发送</option>
+          <option value="0">助教人工任务</option>
         </select>
       </div>
-      <div class="field"><label>状态</label>
-        <select id="st-status">
-          <option value="draft">草稿</option>
-          <option value="pending">待执行</option>
-          <option value="running">执行中</option>
-          <option value="completed">已完成</option>
-        </select>
+    </div>
+
+    <div id="st-auto-block">
+      <h4 style="margin:14px 0 8px;font-size:13px">发送内容</h4>
+      <div class="form-grid" style="grid-template-columns:1fr 1fr;gap:10px 14px">
+        <div class="field"><label>内容类型</label>
+          <select id="st-content-type">
+            <option value="phrase">快捷话术</option>
+            <option value="material">助销素材</option>
+            <option value="live_card">直播卡片</option>
+          </select>
+        </div>
+        <div class="field"><label>选用内容</label>
+          <select id="st-content-id"></select>
+        </div>
       </div>
+      <div class="field" style="margin-top:8px"><label>用户收到预览</label>
+        <div id="st-content-preview" class="step-preview"></div>
+        <div class="muted" style="font-size:11px;margin-top:4px">话术来自 <a class="link-blue" href="phrases.html" target="_blank">快捷话术库</a>；素材来自 <a class="link-blue" href="material.html" target="_blank">助销素材库</a>。</div>
+      </div>
+    </div>
+
+    <div id="st-manual-block" style="display:none">
+      <h4 style="margin:14px 0 8px;font-size:13px">人工任务配置</h4>
+      <div class="form-grid" style="grid-template-columns:1fr 1fr;gap:10px 14px">
+        <div class="field" style="grid-column:1/-1"><label>执行要求 *</label>
+          <textarea id="st-manual-req" rows="2" placeholder="如：对未到场高意向用户私聊确认到课障碍并邀约补看"></textarea>
+        </div>
+        <div class="field"><label>负责人规则 *</label>
+          <select id="st-owner-rule">
+            <option value="lead_owner">线索负责人</option>
+            <option value="live_owner">直播负责人</option>
+            <option value="fixed">指定助教</option>
+          </select>
+        </div>
+        <div class="field" id="st-owner-fixed-wrap" style="display:none"><label>指定助教</label>
+          <input id="st-owner-fixed" placeholder="如：王助教" />
+        </div>
+        <div class="field"><label>截止时间</label>
+          <select id="st-deadline">
+            <option value="2">触发后 2 小时</option>
+            <option value="6">触发后 6 小时</option>
+            <option value="12">触发后 12 小时</option>
+            <option value="24" selected>触发后 24 小时</option>
+            <option value="48">触发后 48 小时</option>
+          </select>
+        </div>
+      </div>
+      <div class="field" style="margin-top:8px"><label>任务说明预览</label>
+        <div id="st-manual-preview" class="step-preview"></div>
+      </div>
+    </div>
+
+    <div id="st-link-booking-block" style="display:none;margin-top:12px" class="alert alert-info">
+      本步骤关联标准预约提醒，发送内容与渠道以
+      <a class="link-blue" id="st-booking-link" href="live-booking.html">预约管理</a>
+      为准。此处不维护第二套提醒规则，也不可手工改写执行状态。
+    </div>
+
+    <div class="muted" style="margin-top:12px;font-size:12px" id="st-status-hint">
+      自动步骤状态由系统执行结果产生，编辑时不可随意设为「执行中/已完成」。
     </div>
   </div>
   <div class="proto-modal-ft">
     <button class="btn" data-close-step>取消</button>
     <button class="btn btn-primary" id="st-submit">确定</button>
+  </div>
+</div>
+
+<!-- 启动前执行摘要 -->
+<div class="proto-modal" id="modal-start" style="width:560px">
+  <div class="proto-modal-hd">
+    <h3 style="margin:0;font-size:16px;font-weight:600">启动前确认 · 执行摘要</h3>
+    <button class="btn btn-sm btn-ghost" data-close-start>×</button>
+  </div>
+  <div class="proto-modal-bd">
+    <div id="start-blockers" style="display:none;margin-bottom:12px"></div>
+    <div id="start-summary" class="start-summary"></div>
+  </div>
+  <div class="proto-modal-ft">
+    <button class="btn" data-close-start>取消</button>
+    <button class="btn" id="start-fix" style="display:none">去处理</button>
+    <button class="btn btn-primary" id="start-confirm">确认启动</button>
   </div>
 </div>
 
@@ -357,12 +473,32 @@
 .step-actions a { font-size: 12px; }
 .row-actions a.danger { color: var(--color-danger); }
 .chk-row { display: flex; flex-wrap: wrap; gap: 8px 16px; }
+.step-preview {
+  background: #f7f8fa; border: 1px solid var(--color-border); border-radius: 8px;
+  padding: 10px 12px; font-size: 13px; line-height: 1.6; white-space: pre-wrap; color: #1d2129;
+  min-height: 48px;
+}
+.start-summary { font-size: 13px; line-height: 1.7; }
+.start-summary .ss-row { display: flex; gap: 8px; padding: 6px 0; border-bottom: 1px solid #f2f3f5; }
+.start-summary .ss-k { width: 88px; color: #86909c; flex-shrink: 0; }
+.start-summary .ss-step {
+  border: 1px solid var(--color-border); border-radius: 8px; padding: 10px 12px; margin-top: 8px; background: #fafbfc;
+}
+.start-block-item {
+  background: #fff7e8; border: 1px solid #ffcf8b; border-radius: 8px;
+  padding: 10px 12px; margin-bottom: 8px; font-size: 13px;
+}
+.start-block-item a { margin-left: 8px; }
+.start-block-warn {
+  background: #f7f8fa; border-color: #c9cdd4;
+}
 </style>
 
 <script src="../assets/js/proto.js"></script>
+<script src="../assets/js/user-store.js"></script>
 <script src="../assets/js/prototype-business-store.js"></script>
 <script src="../assets/js/live-ops.js?v=9"></script>
-<script src="../assets/js/live-reach.js"></script>
+<script src="../assets/js/live-reach.js?v=2"></script>
 <script src="../assets/js/admin-shell.js?v=16"></script>
 <script>
 (function () {
@@ -370,6 +506,7 @@
   var currentSopId = null;
   var draftSteps = [];
   var stepEditCtx = null; // { mode: 'create'|'detail', index: number|null }
+  var pendingStartId = null;
 
   function qs() {
     try { return new URLSearchParams(location.search); } catch (e) { return new URLSearchParams(); }
@@ -404,7 +541,6 @@
     ha.insertBefore(a, ha.firstChild);
   }
   ensureDashBack();
-  /* context banner */
   setTimeout(function () {
     if (!window.LiveOps) return;
     var lid = liveIdFromUrl();
@@ -461,6 +597,7 @@
     setDrawerA11y(false);
     clearSopFromUrl();
     currentSopId = null;
+    pendingStartId = null;
   }
   function open(node) {
     mask.classList.add("open");
@@ -475,6 +612,12 @@
     var others = document.querySelectorAll(".proto-modal.open, .proto-drawer.open");
     if (!others.length) mask.classList.remove("open");
   }
+  function closeStartModal() {
+    document.getElementById("modal-start").classList.remove("open");
+    pendingStartId = null;
+    var others = document.querySelectorAll(".proto-modal.open, .proto-drawer.open");
+    if (!others.length) mask.classList.remove("open");
+  }
 
   mask.addEventListener("click", closeAll);
   document.querySelectorAll("[data-close]").forEach(function (n) {
@@ -482,6 +625,9 @@
   });
   document.querySelectorAll("[data-close-step]").forEach(function (n) {
     n.addEventListener("click", closeStepModal);
+  });
+  document.querySelectorAll("[data-close-start]").forEach(function (n) {
+    n.addEventListener("click", closeStartModal);
   });
 
   function fmtMoney(n) {
@@ -506,6 +652,60 @@
     if (!live) return 200;
     return Math.max(80, Math.round((live.bookedUsers || 100) * 1.6));
   }
+  function esc(s) {
+    return String(s == null ? "" : s)
+      .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;");
+  }
+  function contentLabel(step) {
+    var s = LiveReach.normalizeStep(step);
+    if (s.linkBooking) return "关联预约提醒";
+    if (s.auto === false) return "助教任务";
+    var lib = LiveReach.CONTENT_LIBRARY[s.contentType] || [];
+    for (var i = 0; i < lib.length; i++) if (lib[i].id === s.contentId) return lib[i].title;
+    return s.contentLabel || "未选择";
+  }
+  function fillExcludeProducts(preferred) {
+    var sel = document.getElementById("c-ex-product");
+    var cur = preferred || sel.value;
+    sel.innerHTML = "";
+    (LiveReach.EXCLUDE_PRODUCTS || []).forEach(function (p) {
+      sel.appendChild(new Option(p.name, p.id));
+    });
+    if (cur && [].some.call(sel.options, function (o) { return o.value === cur; })) sel.value = cur;
+    else sel.value = "P_LIVE_RELATED";
+  }
+  function syncExcludeDetailVisibility() {
+    var bought = document.getElementById("c-ex-bought").checked;
+    var recent = document.getElementById("c-ex-recent").checked;
+    document.getElementById("c-ex-product-wrap").style.display = bought ? "" : "none";
+    document.getElementById("c-ex-days-wrap").style.display = recent ? "" : "none";
+  }
+  document.getElementById("c-ex-bought").addEventListener("change", syncExcludeDetailVisibility);
+  document.getElementById("c-ex-recent").addEventListener("change", syncExcludeDetailVisibility);
+
+  function fillAudienceSelects() {
+    var preset = document.getElementById("st-audience-preset");
+    preset.innerHTML = "";
+    Object.keys(LiveReach.AUDIENCE_PRESETS).forEach(function (k) {
+      var p = LiveReach.AUDIENCE_PRESETS[k];
+      preset.appendChild(new Option(p.label, p.id));
+    });
+    var seg = document.getElementById("st-audience-segment");
+    seg.innerHTML = "";
+    if (window.UserStore && UserStore.SEGMENTS) {
+      Object.keys(UserStore.SEGMENTS).forEach(function (id) {
+        var m = UserStore.segmentMeta(id);
+        seg.appendChild(new Option(m.name, id));
+      });
+    }
+    var ch = document.getElementById("st-channels");
+    ch.innerHTML = (LiveReach.CHANNEL_OPTIONS || []).map(function (c) {
+      return '<label><input type="checkbox" class="st-ch" value="' + esc(c) + '" /> ' + esc(c) + "</label>";
+    }).join("");
+  }
+  fillAudienceSelects();
+  fillExcludeProducts();
 
   // ===== Live selects =====
   function liveRuntimeKey(live) {
@@ -536,8 +736,10 @@
     return k === "living" || live.liveStatus === "living" || live.execStatus === "living";
   }
   function isRecallStep(st) {
-    var n = (st && st.name) || "";
-    return n.indexOf("召回") >= 0 || n.indexOf("开播中") >= 0;
+    var s = LiveReach.normalizeStep(st);
+    var n = s.name || "";
+    return n.indexOf("召回") >= 0 || n.indexOf("开播中") >= 0 ||
+      (s.trigger && s.trigger.type === "after_live_start");
   }
   function syncCreateButton(liveId) {
     var btn = document.getElementById("btn-create");
@@ -578,8 +780,18 @@
 
     var tipLink = document.getElementById("tip-booking-link");
     if (tipLink && preselect) tipLink.href = "live-booking.html?live_id=" + encodeURIComponent(preselect) + "&tab=reminders";
+    var cBook = document.getElementById("c-booking-link");
+    if (cBook) {
+      var lid = document.getElementById("c-live").value || preselect || "";
+      cBook.href = lid ? ("live-booking.html?live_id=" + encodeURIComponent(lid) + "&tab=reminders") : "live-booking.html";
+    }
     syncCreateButton(preselect || "");
   }
+  document.getElementById("c-live").addEventListener("change", function () {
+    var lid = this.value;
+    var cBook = document.getElementById("c-booking-link");
+    if (cBook) cBook.href = lid ? ("live-booking.html?live_id=" + encodeURIComponent(lid) + "&tab=reminders") : "live-booking.html";
+  });
 
   // ===== List =====
   function getFilteredSops() {
@@ -603,7 +815,6 @@
       if (stage && f.stage !== stage) return false;
       if (!boolFilter(wecom, f.wecom)) return false;
       if (!boolFilter(booked, f.booked)) return false;
-      // list-level 到场/下单：有结果数据时按是否产生对应转化粗筛
       if (attended === "1" && !(s.attendedUsers > 0)) return false;
       if (attended === "0" && s.attendedUsers > 0) return false;
       if (ordered === "1" && !(s.orderUsers > 0)) return false;
@@ -617,7 +828,7 @@
     var tb = document.getElementById("sop-tbody");
     document.getElementById("sop-count").textContent = list.length;
     if (!list.length) {
-      tb.innerHTML = '<tr><td colspan="11" class="muted" style="text-align:center;padding:32px">暂无促到SOP，点击右上角新建</td></tr>';
+      tb.innerHTML = '<tr><td colspan="11" class="muted" style="text-align:center;padding:32px">暂无直播促到SOP，点击右上角新建</td></tr>';
       return;
     }
     tb.innerHTML = list.map(function (s) {
@@ -651,12 +862,6 @@
     }).join("");
   }
 
-  function esc(s) {
-    return String(s == null ? "" : s)
-      .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
-      .replace(/"/g, "&quot;");
-  }
-
   document.getElementById("sop-tbody").addEventListener("click", function (e) {
     var a = e.target.closest("[data-act]");
     if (!a) return;
@@ -665,24 +870,10 @@
     var act = a.getAttribute("data-act");
     if (act === "detail") openDetail(id);
     else if (act === "edit") openCreate(id);
-    else if (act === "start") {
-      var sop0 = LiveReach.getSop(id);
-      var live0 = sop0 ? LiveReach.getLive(sop0.liveId) : null;
-      if (!canStartSopForLive(live0)) {
-        Proto.toast(live0 && (live0.liveStatus === "ended" || liveRuntimeKey(live0) === "ended")
-          ? "已结束场次仅可查看，不可启动SOP"
-          : "当前直播状态下不可启动SOP（草稿/驳回/审核中仅可编辑）");
-        return;
-      }
-      if (isLivingLive(live0) && sop0 && sop0.steps && !sop0.steps.some(isRecallStep)) {
-        Proto.toast("直播中仅可启动召回类步骤");
-        return;
-      }
-      doSetStatus(id, "running");
-    }
+    else if (act === "start") requestStart(id);
     else if (act === "pause") doSetStatus(id, "paused");
     else if (act === "cancel") {
-      if (confirm("确认取消该促到SOP？")) doSetStatus(id, "cancelled");
+      if (confirm("确认取消该直播促到SOP？")) doSetStatus(id, "cancelled");
     }
   });
 
@@ -693,7 +884,7 @@
       return;
     }
     var msg = {
-      running: "已启动促到SOP",
+      running: "已启动直播促到SOP",
       scheduled: "已设为待启动",
       paused: "已暂停",
       cancelled: "已取消"
@@ -704,6 +895,142 @@
       openDetail(id);
     }
   }
+
+  function excludeSummary(sop) {
+    var excludes = sop.excludes || sop.excludeRules || [];
+    var bits = excludes.slice();
+    if (excludes.indexOf("已购买") >= 0) {
+      var pname = sop.excludeProductName || "";
+      if (!pname && sop.excludeProductId) {
+        var hit = (LiveReach.EXCLUDE_PRODUCTS || []).filter(function (p) { return p.id === sop.excludeProductId; })[0];
+        pname = hit ? hit.name : sop.excludeProductId;
+      }
+      if (!pname) {
+        var live = LiveReach.getLive(sop.liveId);
+        pname = (live && (live.courseName || live.name)) || "本场关联课程";
+      }
+      bits = bits.map(function (x) {
+        return x === "已购买" ? ("已购买「" + pname + "」") : x;
+      });
+    }
+    if (excludes.indexOf("近期已触达") >= 0) {
+      var days = sop.recentReachDays != null ? sop.recentReachDays : 7;
+      bits = bits.map(function (x) {
+        return x === "近期已触达" ? ("近 " + days + " 天已触达") : x;
+      });
+    }
+    return bits.length ? bits.join("、") : "无";
+  }
+
+  function requestStart(id) {
+    var sop = LiveReach.getSop(id);
+    if (!sop) {
+      Proto.toast("未找到对应直播促到SOP");
+      return;
+    }
+    var live = LiveReach.getLive(sop.liveId);
+    if (isLivingLive(live) && sop.steps && !sop.steps.some(isRecallStep)) {
+      Proto.toast("直播中仅可启动召回类步骤");
+      return;
+    }
+    pendingStartId = id;
+    var issues = LiveReach.validateSopStart(sop);
+    var blockers = document.getElementById("start-blockers");
+    var confirmBtn = document.getElementById("start-confirm");
+    var fixBtn = document.getElementById("start-fix");
+    var hard = issues.filter(function (iss) { return iss.severity !== "warn"; });
+    var warns = issues.filter(function (iss) { return iss.severity === "warn"; });
+    if (issues.length) {
+      blockers.style.display = "";
+      blockers.innerHTML = issues.map(function (iss) {
+        var link = "";
+        if (iss.fixHref) link = '<a class="link-blue" href="' + esc(iss.fixHref) + '">' + esc(iss.fixLabel || "去处理") + "</a>";
+        else if (iss.fixAction) link = '<a class="link-blue" href="#" data-start-fix="' + esc(iss.fixAction) + '" data-step-i="' + (iss.stepIndex != null ? iss.stepIndex : "") + '">' + esc(iss.fixLabel || "去处理") + "</a>";
+        var title = iss.severity === "warn" ? "注意：" : "无法启动：";
+        var cls = iss.severity === "warn" ? "start-block-item start-block-warn" : "start-block-item";
+        return '<div class="' + cls + '"><b>' + title + "</b>" + esc(iss.reason) + link + "</div>";
+      }).join("");
+      confirmBtn.disabled = hard.length > 0;
+      confirmBtn.style.opacity = hard.length ? ".55" : "";
+      fixBtn.style.display = hard.length || warns.length ? "" : "none";
+      fixBtn.textContent = hard.length ? "去处理" : "去调整";
+    } else {
+      blockers.style.display = "none";
+      blockers.innerHTML = "";
+      confirmBtn.disabled = false;
+      confirmBtn.style.opacity = "";
+      fixBtn.style.display = "none";
+    }
+
+    var filters = sop.filters || {};
+    var audBits = [];
+    if (filters.stage) audBits.push("阶段=" + filters.stage);
+    if (filters.wecom === true) audBits.push("已加微");
+    if (filters.wecom === false) audBits.push("未加微");
+    if (filters.booked === true) audBits.push("已预约");
+    if (filters.booked === false) audBits.push("未预约");
+    if (filters.intent) audBits.push("意向=" + filters.intent);
+    if (!audBits.length) audBits.push("不限（按步骤受众执行）");
+
+    var stepsHtml = (sop.steps || []).map(function (st, i) {
+      var s = LiveReach.normalizeStep(st);
+      return '<div class="ss-step"><b>' + (i + 1) + ". " + esc(s.name) + "</b>" +
+        '<div>时机：' + esc(s.timing) + '　·　受众：' + esc(s.audience) + "</div>" +
+        "<div>渠道：" + esc((s.channels || []).join(" / ") || "—") +
+        "　·　" + (s.auto === false ? "人工任务" : (s.linkBooking ? "关联标准提醒" : "自动发送")) + "</div>" +
+        "<div>内容：" + esc(contentLabel(s)) + "</div>" +
+        '<div class="muted" style="margin-top:4px;white-space:pre-wrap">' + esc(LiveReach.contentPreviewText(s, live)) + "</div>" +
+        "</div>";
+    }).join("");
+
+    document.getElementById("start-summary").innerHTML =
+      '<div class="ss-row"><div class="ss-k">计划</div><div>' + esc(sop.name || sop.sopName) + "</div></div>" +
+      '<div class="ss-row"><div class="ss-k">关联直播</div><div>' + esc(liveName(sop.liveId)) + "</div></div>" +
+      '<div class="ss-row"><div class="ss-k">目标对象</div><div>' + esc(audBits.join("；")) +
+        "（预估 " + (sop.targetUsers || sop.targetCount || 0) + " 人）</div></div>" +
+      '<div class="ss-row"><div class="ss-k">排除条件</div><div>' + esc(excludeSummary(sop)) + "</div></div>" +
+      '<div class="ss-row"><div class="ss-k">步骤摘要</div><div>' + (sop.steps || []).length + " 步</div></div>" +
+      stepsHtml;
+
+    openNested(document.getElementById("modal-start"));
+    mask.classList.add("open");
+  }
+
+  document.getElementById("start-confirm").addEventListener("click", function () {
+    if (!pendingStartId) return;
+    var id = pendingStartId;
+    closeStartModal();
+    doSetStatus(id, "running");
+  });
+  document.getElementById("start-fix").addEventListener("click", function () {
+    var firstFix = document.querySelector("#start-blockers [data-start-fix]");
+    var firstHref = document.querySelector("#start-blockers a.link-blue[href]:not([href='#'])");
+    if (firstFix) { firstFix.click(); return; }
+    if (firstHref) { location.href = firstHref.getAttribute("href"); return; }
+    if (pendingStartId) {
+      var sid = pendingStartId;
+      closeStartModal();
+      openCreate(sid);
+    }
+  });
+  document.getElementById("start-blockers").addEventListener("click", function (e) {
+    var a = e.target.closest("[data-start-fix]");
+    if (!a) return;
+    e.preventDefault();
+    var act = a.getAttribute("data-start-fix");
+    var sid = pendingStartId;
+    var stepI = a.getAttribute("data-step-i");
+    closeStartModal();
+    if (!sid) return;
+    if (act === "edit_step" && stepI !== "") {
+      openCreate(sid);
+      setTimeout(function () {
+        if (draftSteps[stepI]) openStepEditor("create", parseInt(stepI, 10), draftSteps[stepI]);
+      }, 0);
+    } else {
+      openCreate(sid);
+    }
+  });
 
   // ===== Detail =====
   function openDetail(id) {
@@ -724,8 +1051,7 @@
     document.getElementById("d-owner").textContent = sop.owner || "—";
     document.getElementById("d-status").innerHTML =
       '<span class="badge ' + LiveReach.statusBadge(sop.status) + '">' + LiveReach.statusLabel(sop.status) + "</span>";
-    document.getElementById("d-excludes").textContent =
-      (sop.excludes && sop.excludes.length) ? sop.excludes.join("、") : ((sop.excludeRules || []).join("、") || "无");
+    document.getElementById("d-excludes").textContent = excludeSummary(sop);
 
     var target = sop.targetUsers || sop.targetCount || 0;
     var reached = sop.reachedUsers || sop.reachedCount || 0;
@@ -768,19 +1094,27 @@
   function renderDetailSteps(sop) {
     var box = document.getElementById("d-steps");
     var steps = sop.steps || [];
+    var live = LiveReach.getLive(sop.liveId);
     if (!steps.length) {
       box.innerHTML = '<div class="muted" style="padding:12px;text-align:center">暂无步骤</div>';
       return;
     }
-    box.innerHTML = steps.map(function (st, i) {
+    box.innerHTML = steps.map(function (raw, i) {
+      var st = LiveReach.normalizeStep(raw);
       var bookingLink = st.linkBooking
         ? (' · <a class="link-blue" href="live-booking.html?live_id=' + encodeURIComponent(sop.liveId) + '&tab=reminders">配置预约提醒</a>')
         : "";
+      var completeBtn = (!st.auto && st.status !== "completed")
+        ? ('<a href="#" data-d-step="complete" data-i="' + i + '">完成</a>')
+        : "";
+      var typeLabel = st.linkBooking ? "标准提醒关联" : (st.auto ? "自动发送" : "助教任务");
       return '<div class="step-card" data-step-i="' + i + '">' +
         '<div class="step-card-hd">' +
           "<b>" + (i + 1) + ". " + esc(st.name) + "</b>" +
           '<span class="badge ' + LiveReach.statusBadge(st.status) + '">' + LiveReach.statusLabel(st.status) + "</span>" +
+          '<span class="badge">' + typeLabel + "</span>" +
           '<div class="step-actions">' +
+            completeBtn +
             '<a href="#" data-d-step="edit" data-i="' + i + '">编辑</a>' +
             '<a href="#" data-d-step="del" data-i="' + i + '" class="danger">删除</a>' +
           "</div>" +
@@ -789,9 +1123,12 @@
           "时机：" + esc(st.timing || "—") + "　·　受众：" + esc(st.audience || "—") + "<br>" +
           "渠道：" + esc((st.channels || []).join(" / ") || "—") +
           "　·　目标：" + esc(st.goal || "—") +
-          "　·　" + (st.auto ? "自动执行" : "助教任务") +
+          "　·　内容：" + esc(contentLabel(st)) +
           (st.target ? ("　·　触达 " + st.reached + "/" + st.target + "，转化 " + (st.converted || 0)) : "") +
           bookingLink +
+          '<div style="margin-top:6px;padding:8px 10px;background:#f7f8fa;border-radius:6px;white-space:pre-wrap">' +
+            esc(LiveReach.contentPreviewText(st, live)) +
+          "</div>" +
         "</div>" +
       "</div>";
     }).join("");
@@ -814,6 +1151,14 @@
       renderList();
       return;
     }
+    if (act === "complete") {
+      var res = LiveReach.completeManualStep(currentSopId, i);
+      if (res && res.error) { Proto.toast(res.error); return; }
+      Proto.toast("人工任务已标记完成");
+      openDetail(currentSopId);
+      renderList();
+      return;
+    }
     if (act === "edit") openStepEditor("detail", i, sop.steps[i]);
   });
 
@@ -821,28 +1166,19 @@
     openStepEditor("detail", null, null);
   });
   document.getElementById("d-edit").addEventListener("click", function () {
+    var id = currentSopId;
     closeAll();
-    openCreate(currentSopId);
+    openCreate(id);
   });
   document.getElementById("d-start").addEventListener("click", function () {
     if (!currentSopId) return;
-    var sop0 = LiveReach.getSop(currentSopId);
-    var live0 = sop0 ? LiveReach.getLive(sop0.liveId) : null;
-    if (!canStartSopForLive(live0)) {
-      Proto.toast("当前直播状态下不可启动SOP");
-      return;
-    }
-    if (isLivingLive(live0) && sop0 && sop0.steps && !sop0.steps.some(isRecallStep)) {
-      Proto.toast("直播中仅可启动召回类步骤");
-      return;
-    }
-    doSetStatus(currentSopId, "running");
+    requestStart(currentSopId);
   });
   document.getElementById("d-pause").addEventListener("click", function () {
     if (currentSopId) doSetStatus(currentSopId, "paused");
   });
   document.getElementById("d-cancel").addEventListener("click", function () {
-    if (currentSopId && confirm("确认取消该促到SOP？")) doSetStatus(currentSopId, "cancelled");
+    if (currentSopId && confirm("确认取消该直播促到SOP？")) doSetStatus(currentSopId, "cancelled");
   });
 
   // ===== Create / Edit modal =====
@@ -865,13 +1201,16 @@
     document.getElementById("c-booked").value = f.booked === true ? "1" : (f.booked === false ? "0" : "");
     document.getElementById("c-intent").value = f.intent || "";
 
-    var excludes = sop ? (sop.excludes || []) : ["已购买", "已退订营销", "近期已触达"];
+    var excludes = sop ? (sop.excludes || sop.excludeRules || []) : ["已购买", "已退订营销", "近期已触达"];
     document.querySelectorAll(".c-exclude").forEach(function (cb) {
       cb.checked = excludes.indexOf(cb.value) >= 0;
     });
+    fillExcludeProducts(sop && sop.excludeProductId);
+    document.getElementById("c-ex-days").value = String((sop && sop.recentReachDays != null) ? sop.recentReachDays : 7);
+    syncExcludeDetailVisibility();
 
     draftSteps = sop && sop.steps
-      ? JSON.parse(JSON.stringify(sop.steps))
+      ? sop.steps.map(function (st) { return LiveReach.normalizeStep(st); })
       : LiveReach.defaultSopSteps();
     renderCreateSteps();
     open(document.getElementById("modal-create"));
@@ -883,14 +1222,15 @@
       tb.innerHTML = '<tr><td colspan="7" class="muted" style="text-align:center">请添加步骤</td></tr>';
       return;
     }
-    tb.innerHTML = draftSteps.map(function (st, i) {
+    tb.innerHTML = draftSteps.map(function (raw, i) {
+      var st = LiveReach.normalizeStep(raw);
       return "<tr>" +
         "<td>" + esc(st.name) + "</td>" +
         "<td>" + esc(st.timing) + "</td>" +
         "<td>" + esc(st.audience) + "</td>" +
         "<td>" + esc((st.channels || []).join(" / ")) + "</td>" +
-        "<td>" + esc(st.goal) + "</td>" +
-        "<td>" + (st.auto ? "是" : "否") + "</td>" +
+        "<td>" + esc(contentLabel(st)) + "</td>" +
+        "<td>" + (st.linkBooking ? "标准提醒" : (st.auto ? "自动" : "人工")) + "</td>" +
         '<td class="row-actions">' +
           '<a href="#" data-c-step="edit" data-i="' + i + '">编辑</a>' +
           '<a href="#" data-c-step="del" data-i="' + i + '" class="danger">删除</a>' +
@@ -945,6 +1285,8 @@
     document.querySelectorAll(".c-exclude:checked").forEach(function (cb) {
       excludes.push(cb.value);
     });
+    var exProd = document.getElementById("c-ex-product");
+    var exProdName = exProd.options[exProd.selectedIndex] ? exProd.options[exProd.selectedIndex].text : "";
 
     var payload = {
       name: name,
@@ -953,19 +1295,27 @@
       channel: document.getElementById("c-channel").value,
       filters: filters,
       excludes: excludes,
+      excludeProductId: exProd.value,
+      excludeProductName: exProdName,
+      recentReachDays: parseInt(document.getElementById("c-ex-days").value, 10) || 7,
       targetUsers: estimateTarget(liveId),
-      steps: draftSteps
+      steps: draftSteps.map(function (st) { return LiveReach.normalizeStep(st); })
     };
 
     if (currentSopId) {
       var sop = LiveReach.getSop(currentSopId);
       if (!sop) { Proto.toast("SOP 不存在"); return; }
       sop.name = payload.name;
+      sop.sopName = payload.name;
       sop.liveId = payload.liveId;
       sop.period = payload.period;
       sop.channel = payload.channel;
       sop.filters = payload.filters;
       sop.excludes = payload.excludes;
+      sop.excludeRules = payload.excludes;
+      sop.excludeProductId = payload.excludeProductId;
+      sop.excludeProductName = payload.excludeProductName;
+      sop.recentReachDays = payload.recentReachDays;
       sop.steps = payload.steps;
       if (!sop.targetUsers) sop.targetUsers = payload.targetUsers;
       LiveReach.saveSop(sop);
@@ -979,17 +1329,134 @@
   });
 
   // ===== Step editor =====
+  function currentLiveForStep() {
+    var lid = document.getElementById("c-live").value ||
+      (currentSopId && (LiveReach.getSop(currentSopId) || {}).liveId) ||
+      liveIdFromUrl();
+    return LiveReach.getLive(lid);
+  }
+
+  function fillContentOptions(type, selectedId) {
+    var sel = document.getElementById("st-content-id");
+    sel.innerHTML = "";
+    var lib = LiveReach.CONTENT_LIBRARY[type] || [];
+    lib.forEach(function (item) {
+      sel.appendChild(new Option(item.title, item.id));
+    });
+    if (selectedId && [].some.call(sel.options, function (o) { return o.value === selectedId; })) {
+      sel.value = selectedId;
+    }
+  }
+
+  function syncStepFormUI() {
+    var type = document.getElementById("st-trigger-type").value;
+    var isLink = type === "link_booking";
+    var isAuto = document.getElementById("st-auto").value === "1";
+    document.getElementById("st-trigger-num-wrap").style.display = isLink ? "none" : "inline-flex";
+    document.getElementById("st-trigger-hint").textContent = isLink
+      ? "关联预约管理中的标准提醒，不在本页维护第二套规则。"
+      : (type === "after_booking" ? "相对用户预约成功时刻计时；可在预约后持续触发。" : "相对本场直播开播/结束时间计算。");
+    document.getElementById("st-link-booking-block").style.display = isLink ? "" : "none";
+    var live = currentLiveForStep();
+    var book = document.getElementById("st-booking-link");
+    if (book) book.href = live ? ("live-booking.html?live_id=" + encodeURIComponent(live.id) + "&tab=reminders") : "live-booking.html";
+
+    document.getElementById("st-auto").disabled = isLink;
+    if (isLink) document.getElementById("st-auto").value = "1";
+
+    var mode = (document.querySelector('input[name="st-aud-mode"]:checked') || {}).value || "preset";
+    document.getElementById("st-audience-preset").style.display = mode === "preset" ? "" : "none";
+    document.getElementById("st-audience-segment").style.display = mode === "segment" ? "" : "none";
+
+    document.getElementById("st-auto-block").style.display = (!isLink && isAuto) ? "" : "none";
+    document.getElementById("st-manual-block").style.display = (!isLink && !isAuto) ? "" : "none";
+    document.getElementById("st-channels-wrap").style.display = isLink ? "none" : "";
+
+    var ownerRule = document.getElementById("st-owner-rule").value;
+    document.getElementById("st-owner-fixed-wrap").style.display = ownerRule === "fixed" ? "" : "none";
+
+    if (!isLink && isAuto) {
+      fillContentOptions(document.getElementById("st-content-type").value, document.getElementById("st-content-id").value);
+      refreshContentPreview();
+    }
+    if (!isLink && !isAuto) refreshManualPreview();
+  }
+
+  function refreshContentPreview() {
+    var draft = {
+      auto: true,
+      linkBooking: document.getElementById("st-trigger-type").value === "link_booking",
+      contentType: document.getElementById("st-content-type").value,
+      contentId: document.getElementById("st-content-id").value
+    };
+    document.getElementById("st-content-preview").textContent =
+      LiveReach.contentPreviewText(draft, currentLiveForStep());
+  }
+  function refreshManualPreview() {
+    var draft = {
+      auto: false,
+      manualRequirement: document.getElementById("st-manual-req").value.trim() || "按执行要求完成跟进",
+      ownerRule: document.getElementById("st-owner-rule").value,
+      ownerFixed: document.getElementById("st-owner-fixed").value.trim(),
+      deadlineHours: parseInt(document.getElementById("st-deadline").value, 10) || 24
+    };
+    document.getElementById("st-manual-preview").textContent =
+      LiveReach.contentPreviewText(draft, currentLiveForStep());
+  }
+
+  ["st-trigger-type", "st-auto", "st-content-type", "st-owner-rule"].forEach(function (id) {
+    document.getElementById(id).addEventListener("change", function () {
+      if (id === "st-content-type") fillContentOptions(this.value, null);
+      syncStepFormUI();
+    });
+  });
+  document.getElementById("st-content-id").addEventListener("change", refreshContentPreview);
+  ["st-manual-req", "st-owner-fixed", "st-deadline"].forEach(function (id) {
+    document.getElementById(id).addEventListener("input", refreshManualPreview);
+    document.getElementById(id).addEventListener("change", refreshManualPreview);
+  });
+  document.querySelectorAll('input[name="st-aud-mode"]').forEach(function (r) {
+    r.addEventListener("change", syncStepFormUI);
+  });
+
   function openStepEditor(mode, index, step) {
     stepEditCtx = { mode: mode, index: index };
     document.getElementById("modal-step-title").textContent =
       index == null ? "添加步骤" : "编辑步骤";
-    document.getElementById("st-name").value = step ? (step.name || "") : "";
-    document.getElementById("st-timing").value = step ? (step.timing || "") : "";
-    document.getElementById("st-goal").value = step ? (step.goal || "") : "";
-    document.getElementById("st-audience").value = step ? (step.audience || "") : "";
-    document.getElementById("st-channels").value = step ? ((step.channels || []).join(",")) : "";
-    document.getElementById("st-auto").value = step && step.auto === false ? "0" : "1";
-    document.getElementById("st-status").value = step ? (step.status || "draft") : "draft";
+    var s = step ? LiveReach.normalizeStep(step) : null;
+    document.getElementById("st-name").value = s ? (s.name || "") : "";
+    document.getElementById("st-goal").value = s ? (s.goal || "") : "";
+
+    var tr = (s && s.trigger) || { type: "before_live", value: 1, unit: "h" };
+    document.getElementById("st-trigger-type").value = tr.type || "before_live";
+    document.getElementById("st-trigger-value").value = tr.value != null ? tr.value : 1;
+    document.getElementById("st-trigger-unit").value = tr.unit || "h";
+
+    var modeAud = (s && s.audienceMode) || "preset";
+    document.querySelectorAll('input[name="st-aud-mode"]').forEach(function (r) {
+      r.checked = r.value === modeAud;
+    });
+    document.getElementById("st-audience-preset").value = (s && s.audiencePreset) || "sop_filters";
+    if (s && s.audienceSegmentId) document.getElementById("st-audience-segment").value = s.audienceSegmentId;
+
+    document.querySelectorAll(".st-ch").forEach(function (cb) {
+      cb.checked = s ? ((s.channels || []).indexOf(cb.value) >= 0) : (cb.value === "企微");
+    });
+
+    document.getElementById("st-auto").value = s && s.auto === false ? "0" : "1";
+    document.getElementById("st-content-type").value = (s && s.contentType && s.contentType !== "none") ? s.contentType : "phrase";
+    fillContentOptions(document.getElementById("st-content-type").value, s && s.contentId);
+    document.getElementById("st-manual-req").value = (s && s.manualRequirement) || "";
+    document.getElementById("st-owner-rule").value = (s && s.ownerRule) || "lead_owner";
+    document.getElementById("st-owner-fixed").value = (s && s.ownerFixed) || "";
+    document.getElementById("st-deadline").value = String((s && s.deadlineHours) || 24);
+
+    document.getElementById("st-status-hint").textContent =
+      (s && s.auto === false)
+        ? "人工任务可在详情中点击「完成」标记；编辑表单不提供随意改状态。"
+        : "自动步骤状态由系统执行结果产生，编辑时不可设为「执行中/已完成」。";
+
+    syncStepFormUI();
     openNested(document.getElementById("modal-step"));
     mask.classList.add("open");
   }
@@ -997,46 +1464,87 @@
   document.getElementById("st-submit").addEventListener("click", function () {
     var name = document.getElementById("st-name").value.trim();
     if (!name) { Proto.toast("请输入步骤名称"); return; }
-    var channels = document.getElementById("st-channels").value
-      .split(/[,，]/).map(function (s) { return s.trim(); }).filter(Boolean);
-    var step = {
-      id: (stepEditCtx && stepEditCtx.index != null && stepEditCtx.mode === "create" && draftSteps[stepEditCtx.index])
-        ? draftSteps[stepEditCtx.index].id
-        : ("ST" + Date.now().toString(36)),
-      name: name,
-      timing: document.getElementById("st-timing").value.trim() || "自定义",
-      audience: document.getElementById("st-audience").value.trim() || "目标客户",
-      channels: channels.length ? channels : ["企微"],
-      goal: document.getElementById("st-goal").value.trim() || "完成触达",
-      auto: document.getElementById("st-auto").value === "1",
-      status: document.getElementById("st-status").value,
-      target: 0, reached: 0, converted: 0
+    var triggerType = document.getElementById("st-trigger-type").value;
+    var isLink = triggerType === "link_booking";
+    var trigger = {
+      type: triggerType,
+      value: parseInt(document.getElementById("st-trigger-value").value, 10) || 1,
+      unit: document.getElementById("st-trigger-unit").value || "h"
     };
+    if (!isLink && trigger.value < 1) { Proto.toast("请填写有效的触发间隔"); return; }
+
+    var audMode = (document.querySelector('input[name="st-aud-mode"]:checked') || {}).value || "preset";
+    var channels = [];
+    document.querySelectorAll(".st-ch:checked").forEach(function (cb) { channels.push(cb.value); });
+    var isAuto = document.getElementById("st-auto").value === "1";
+    if (isLink) {
+      isAuto = true;
+      channels = ["系统提醒"];
+    } else if (!channels.length) {
+      Proto.toast("请至少选择一个渠道");
+      return;
+    }
+    if (!isLink && !isAuto) {
+      var req = document.getElementById("st-manual-req").value.trim();
+      if (!req) { Proto.toast("请填写人工任务执行要求"); return; }
+      if (document.getElementById("st-owner-rule").value === "fixed" &&
+          !document.getElementById("st-owner-fixed").value.trim()) {
+        Proto.toast("请填写指定助教");
+        return;
+      }
+    }
+    if (!isLink && isAuto && !document.getElementById("st-content-id").value) {
+      Proto.toast("请选择发送内容");
+      return;
+    }
+
+    var prev = null;
+    if (stepEditCtx.mode === "create" && stepEditCtx.index != null) prev = draftSteps[stepEditCtx.index];
+    if (stepEditCtx.mode === "detail" && stepEditCtx.index != null) {
+      var sop0 = LiveReach.getSop(currentSopId);
+      prev = sop0 && sop0.steps ? sop0.steps[stepEditCtx.index] : null;
+    }
+    var keepStatus = prev ? (prev.status || "draft") : "draft";
+    if (isLink) keepStatus = "linked_booking";
+    else if (keepStatus === "linked_booking") keepStatus = "draft";
+    /* 不允许在编辑表单把自动步骤直接改成执行中/已完成 */
+    if (isAuto && (keepStatus === "running" || keepStatus === "completed") && (!prev || prev.auto === false)) {
+      keepStatus = "draft";
+    }
+
+    var step = LiveReach.normalizeStep({
+      id: prev && prev.id ? prev.id : ("ST" + Date.now().toString(36)),
+      name: name,
+      trigger: trigger,
+      linkBooking: isLink,
+      audienceMode: audMode,
+      audiencePreset: document.getElementById("st-audience-preset").value,
+      audienceSegmentId: audMode === "segment" ? document.getElementById("st-audience-segment").value : "",
+      channels: channels,
+      goal: document.getElementById("st-goal").value.trim() || (isAuto ? "完成触达" : "完成跟进"),
+      auto: isAuto,
+      contentType: isLink ? "none" : (isAuto ? document.getElementById("st-content-type").value : "phrase"),
+      contentId: isLink || !isAuto ? "" : document.getElementById("st-content-id").value,
+      manualRequirement: !isAuto ? document.getElementById("st-manual-req").value.trim() : "",
+      ownerRule: !isAuto ? document.getElementById("st-owner-rule").value : "",
+      ownerFixed: !isAuto ? document.getElementById("st-owner-fixed").value.trim() : "",
+      deadlineHours: !isAuto ? (parseInt(document.getElementById("st-deadline").value, 10) || 24) : null,
+      status: keepStatus,
+      target: prev ? (prev.target || 0) : 0,
+      reached: prev ? (prev.reached || 0) : 0,
+      converted: prev ? (prev.converted || 0) : 0
+    });
 
     if (stepEditCtx.mode === "create") {
       if (stepEditCtx.index == null) draftSteps.push(step);
-      else {
-        step.target = draftSteps[stepEditCtx.index].target || 0;
-        step.reached = draftSteps[stepEditCtx.index].reached || 0;
-        step.converted = draftSteps[stepEditCtx.index].converted || 0;
-        step.id = draftSteps[stepEditCtx.index].id;
-        draftSteps[stepEditCtx.index] = step;
-      }
+      else draftSteps[stepEditCtx.index] = step;
       renderCreateSteps();
     } else {
       var sop = LiveReach.getSop(currentSopId);
       if (!sop) return;
       if (!sop.steps) sop.steps = [];
-      if (stepEditCtx.index == null) {
-        sop.steps.push(step);
-      } else {
-        var old = sop.steps[stepEditCtx.index];
-        step.id = old.id;
-        step.target = old.target || 0;
-        step.reached = old.reached || 0;
-        step.converted = old.converted || 0;
-        sop.steps[stepEditCtx.index] = step;
-      }
+      if (stepEditCtx.index == null) sop.steps.push(step);
+      else sop.steps[stepEditCtx.index] = step;
       LiveReach.saveSop(sop);
       openDetail(currentSopId);
       renderList();

@@ -16,10 +16,10 @@
   <!-- 顶部 Tab（组） -->
   <div class="tabs" id="group-tabs">
     <a class="active" href="#all-group" data-tab="all-group">全部</a>
-    <a href="#peiyu" data-tab="peiyu">培育</a>
-    <a href="#kxian" data-tab="kxian">K线</a>
-    <a href="#zhuopei" data-tab="zhuopei">卓培</a>
-    <a href="#zhuoyue" data-tab="zhuoyue">卓越</a>
+    <a href="#group1" data-tab="group1">一组</a>
+    <a href="#group2" data-tab="group2">二组</a>
+    <a href="#group3" data-tab="group3">三组</a>
+    <a href="#group4" data-tab="group4">四组</a>
   </div>
 
   <!-- 二级 Tab（线索分组） -->
@@ -70,7 +70,7 @@
           <th>归属人</th><th>归属部门</th>
           <th>上次跟进</th><th>下次跟进</th>
           <th>状态</th>
-          <th style="width:280px">操作</th>
+          <th style="width:220px">操作</th>
         </tr>
       </thead>
       <tbody id="fu-tbody">
@@ -88,7 +88,6 @@
           <td class="row-actions">
             <a href="#" data-row-act="coop" class="muted">1 人</a>
             <a href="#" data-row-act="detail">详情</a>
-            <button type="button" class="link-btn" disabled style="opacity:.5;cursor:not-allowed">艺博士专家</button>
             <a href="#" data-row-act="write">跟进</a>
             <a href="#" data-row-act="invite">邀请加微</a>
             <a href="#" data-row-act="edit">编辑</a>
@@ -108,7 +107,6 @@
           <td class="row-actions">
             <a href="#" data-row-act="coop" class="muted">1 人</a>
             <a href="#" data-row-act="detail">详情</a>
-            <button type="button" class="link-btn" disabled style="opacity:.5;cursor:not-allowed">艺博士专家</button>
             <a href="#" data-row-act="write">跟进</a>
             <a href="#" data-row-act="invite">邀请加微</a>
             <a href="#" data-row-act="edit">编辑</a>
@@ -128,7 +126,6 @@
           <td class="row-actions">
             <a href="#" data-row-act="coop" class="muted">2 人</a>
             <a href="#" data-row-act="detail">详情</a>
-            <a href="#" data-row-act="expert">艺博士专家</a>
             <a href="#" data-row-act="write">跟进</a>
             <a href="#" data-row-act="invite">邀请加微</a>
             <a href="#" data-row-act="edit">编辑</a>
@@ -207,7 +204,7 @@
     <div class="form-grid">
       <div class="field"><label>新归属组</label>
         <select>
-          <option>培育</option><option>K线</option><option>卓培</option><option>卓越</option>
+          <option>一组</option><option>二组</option><option>三组</option><option>四组</option>
         </select>
       </div>
       <div class="field"><label>新归属人</label>
@@ -312,7 +309,7 @@
       <div class="field"><label>线索等级</label><select><option>A</option><option>B</option><option>D</option><option>H</option></select></div>
       <div class="field"><label>线索阶段</label><select><option>新线索</option><option>跟进中</option><option>已转化</option><option>无效</option></select></div>
       <div class="field"><label>意向等级</label><select><option>高意向</option><option>观望</option></select></div>
-      <div class="field"><label>归属组</label><select><option>培育</option><option>K线</option><option>卓培</option><option>卓越</option></select></div>
+      <div class="field"><label>归属组</label><select><option>一组</option><option>二组</option><option>三组</option><option>四组</option></select></div>
       <div class="field"><label>归属人</label><select><option>阮荣均</option><option>赵老师</option></select></div>
       <div class="field"><label>号码归属</label><select><option>北京市</option><option>上海市</option></select></div>
     </div>
@@ -329,7 +326,7 @@
   cursor: pointer; padding: 0; font-size: 13px;
 }
 .link-btn:hover { color: var(--color-primary-hover); text-decoration: underline; }
-td.row-actions { max-width:280px }
+td.row-actions { max-width:220px }
 .row-actions a { margin-right: 6px; }
 .row-actions a.danger { color: var(--color-danger); }
 .row-actions .muted { color: var(--color-text-muted); }
@@ -343,7 +340,7 @@ td.row-actions { max-width:280px }
 <script>
 (function () {
   // ===== Group tabs =====
-  var groupLabels = { "all-group": "全部", peiyu: "培育", kxian: "K线", zhuopei: "卓培", zhuoyue: "卓越" };
+  var groupLabels = { "all-group": "全部", group1: "一组", group2: "二组", group3: "三组", group4: "四组" };
   document.querySelectorAll("#group-tabs a[data-tab]").forEach(function (a) {
     a.addEventListener("click", function (e) {
       e.preventDefault();
@@ -451,7 +448,7 @@ td.row-actions { max-width:280px }
     document.getElementById("dd-intent").textContent = d.intent;
     document.getElementById("dd-region").textContent = "—";
     document.getElementById("dd-status").textContent = d.status;
-    document.getElementById("dd-group").textContent = "K线";
+    document.getElementById("dd-group").textContent = "二组";
     document.getElementById("dd-owner").textContent = d.owner;
     document.getElementById("dd-dept").textContent = d.dept;
     document.getElementById("dd-coop").textContent = d.coop;
@@ -486,7 +483,6 @@ td.row-actions { max-width:280px }
         else if (act === "write") { openWrite(d); }
         else if (act === "edit") { fillEdit(d); open(document.getElementById("modal-edit")); }
         else if (act === "coop") { Proto.toast("查看协作人（原型）：" + d.coop); }
-        else if (act === "expert") { Proto.toast("已请求艺博士专家（原型）"); }
         else if (act === "invite") { Proto.toast("已生成邀请加微链接（原型）"); }
       });
     });

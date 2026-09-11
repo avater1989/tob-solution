@@ -1,7 +1,11 @@
 /* 用户档案 / 订单 / 课程权益 — 列表与详情共用（localStorage 持久化处理结果） */
 (function (global) {
-  var KEY = "merchant_user_store_v2";
+  var KEY = "merchant_user_store_v3";
   var ROLE_KEY = "merchant_proto_role";
+  var COURSE_IDS = {
+    "训练营主课": "S002",
+    "引流体验课": "S003"
+  };
 
   function clone(o) {
     return JSON.parse(JSON.stringify(o));
@@ -41,23 +45,35 @@
       rights: [
         {
           id: "R001-1", course: "训练营主课", product: "训练营主课", chapters: 12,
-          acquire: "订单购买", orderId: "YB202608220017", orderStatus: "已支付",
+          rightType: "正式课", acquire: "订单购买", acquireMethod: "订单购买",
+          sourceRef: "YB202608220017", courseId: "S002",
+          orderId: "YB202608220017", orderStatus: "已支付",
           owner: "学员7576", startAt: "2026-08-22", endAt: "2027-08-22",
           status: "有效", learnStatus: "学习中", access: "可访问",
           courseStatus: "上架", lastChange: "2026-08-22 开通成功",
           acquireAt: "2026-08-22 21:10",
-          checks: { paid: "正常", generated: "正常", effective: "正常", valid: "正常", refund: "正常", bound: "正常", course: "正常" },
-          diagnose: { ok: true, title: "当前可以正常观看", desc: "课程权益有效，当前账号具备访问权限。" }
+          checks: { paid: "正常", generated: "正常", bound: "正常", effective: "正常", validity: "正常", course: "正常" },
+          diagnose: {
+            ok: true, title: "当前可以正常观看",
+            rootCause: "—", impact: "—", action: "查看课程配置",
+            desc: "课程权益有效，当前账号具备访问权限。"
+          }
         },
         {
           id: "R001-2", course: "引流体验课", product: "引流体验课", chapters: 3,
-          acquire: "订单购买", orderId: "YB202609050003", orderStatus: "已支付",
+          rightType: "试听权益", acquire: "订单购买", acquireMethod: "订单购买",
+          sourceRef: "YB202609050003", courseId: "S003",
+          orderId: "YB202609050003", orderStatus: "已支付",
           owner: "学员7576", startAt: "2026-09-05", endAt: "2026-12-05",
           status: "有效", learnStatus: "未学习", access: "可访问",
           courseStatus: "上架", lastChange: "2026-09-05 开通成功",
           acquireAt: "2026-09-05 15:33",
-          checks: { paid: "正常", generated: "正常", effective: "正常", valid: "正常", refund: "正常", bound: "正常", course: "正常" },
-          diagnose: { ok: true, title: "当前可以正常观看", desc: "课程权益有效，当前账号具备访问权限。" }
+          checks: { paid: "正常", generated: "正常", bound: "正常", effective: "正常", validity: "正常", course: "正常" },
+          diagnose: {
+            ok: true, title: "当前可以正常观看",
+            rootCause: "—", impact: "—", action: "查看课程配置",
+            desc: "课程权益有效，当前账号具备访问权限。"
+          }
         }
       ],
       lives: [
@@ -110,14 +126,22 @@
       rights: [
         {
           id: "R002-1", course: "训练营主课", product: "训练营主课", chapters: 12,
-          acquire: "订单购买", orderId: "YB202609100008", orderStatus: "已支付",
+          rightType: "正式课", acquire: "订单购买", acquireMethod: "订单购买",
+          sourceRef: "YB202609100008", courseId: "S002",
+          orderId: "YB202609100008", orderStatus: "已支付",
           owner: "卂十七", startAt: "—", endAt: "—",
           status: "开通失败", learnStatus: "不可学习", access: "不可访问",
           courseStatus: "上架", lastChange: "2026-09-10 发放失败：权益服务超时",
           acquireAt: "2026-09-10 20:18",
           failReason: "支付成功后权益发放失败",
-          checks: { paid: "正常", generated: "异常", effective: "待处理", valid: "待处理", refund: "正常", bound: "待处理", course: "正常" },
-          diagnose: { ok: false, title: "当前无法观看", desc: "订单已支付，但课程权益开通失败。" }
+          checks: { paid: "正常", generated: "异常", bound: "未检查", effective: "未检查", validity: "未检查", course: "未检查" },
+          diagnose: {
+            ok: false, title: "当前无法观看",
+            rootCause: "订单已支付，但权益生成失败",
+            impact: "训练营主课无法访问",
+            action: "重试开通",
+            desc: "订单已支付，但课程权益开通失败。"
+          }
         }
       ],
       lives: [
@@ -201,23 +225,37 @@
       rights: [
         {
           id: "R004-1", course: "训练营主课", product: "训练营主课", chapters: 12,
-          acquire: "订单购买", orderId: "YB202603150021", orderStatus: "已支付",
+          rightType: "正式课", acquire: "订单购买", acquireMethod: "订单购买",
+          sourceRef: "YB202603150021", courseId: "S002",
+          orderId: "YB202603150021", orderStatus: "已支付",
           owner: "学员7553", startAt: "2026-03-15", endAt: "2026-06-15",
           status: "已到期", learnStatus: "已学完", access: "不可访问",
           courseStatus: "上架", lastChange: "2026-06-15 到期自动失效",
           acquireAt: "2026-03-15 11:10",
-          checks: { paid: "正常", generated: "正常", effective: "正常", valid: "异常", refund: "正常", bound: "正常", course: "正常" },
-          diagnose: { ok: false, title: "当前无法观看", desc: "课程权益已到期，访问权限已关闭。" }
+          checks: { paid: "正常", generated: "正常", bound: "正常", effective: "正常", validity: "异常", course: "不适用" },
+          diagnose: {
+            ok: false, title: "当前无法观看",
+            rootCause: "权益已超过有效期",
+            impact: "训练营主课无法访问",
+            action: "延长有效期",
+            desc: "课程权益已到期，访问权限已关闭。"
+          }
         },
         {
           id: "R004-2", course: "引流体验课", product: "引流体验课", chapters: 3,
-          acquire: "订单购买", orderId: "YB202609010044", orderStatus: "已支付",
+          rightType: "试听权益", acquire: "订单购买", acquireMethod: "订单购买",
+          sourceRef: "YB202609010044", courseId: "S003",
+          orderId: "YB202609010044", orderStatus: "已支付",
           owner: "学员7553", startAt: "2026-09-01", endAt: "2026-12-01",
           status: "有效", learnStatus: "学习中", access: "可访问",
           courseStatus: "上架", lastChange: "2026-09-01 开通成功",
           acquireAt: "2026-09-01 09:21",
-          checks: { paid: "正常", generated: "正常", effective: "正常", valid: "正常", refund: "正常", bound: "正常", course: "正常" },
-          diagnose: { ok: true, title: "当前可以正常观看", desc: "课程权益有效，当前账号具备访问权限。" }
+          checks: { paid: "正常", generated: "正常", bound: "正常", effective: "正常", validity: "正常", course: "正常" },
+          diagnose: {
+            ok: true, title: "当前可以正常观看",
+            rootCause: "—", impact: "—", action: "查看课程配置",
+            desc: "课程权益有效，当前账号具备访问权限。"
+          }
         }
       ],
       lives: [
@@ -271,17 +309,42 @@
           refundId: "RF20260909001", rightId: "R005-1", rightStatus: "已退款回收", owner: "学员0017"
         }
       ],
+      refunds: [
+        {
+          id: "RF20260909001",
+          orderId: "YB202609090012",
+          amount: 9.9,
+          type: "仅退款",
+          reason: "课程不适合",
+          status: "done",
+          statusLabel: "退款处理完成",
+          createdAt: "2026-09-09 13:50:00",
+          product: "引流体验课",
+          rightsRecycled: true,
+          rightsStatus: "已退款回收",
+          courseAccess: "不可访问"
+        }
+      ],
       rights: [
         {
           id: "R005-1", course: "引流体验课", product: "引流体验课", chapters: 3,
-          acquire: "订单购买", orderId: "YB202609090012", orderStatus: "已退款",
+          rightType: "试听权益", acquire: "订单购买", acquireMethod: "订单购买",
+          sourceRef: "YB202609090012", courseId: "S003",
+          orderId: "YB202609090012", orderStatus: "已退款",
           owner: "学员0017", startAt: "2026-09-09", endAt: "2026-12-09",
           status: "已退款回收", learnStatus: "不可学习", access: "不可访问",
           courseStatus: "上架", lastChange: "2026-09-09 退款后回收权益",
           acquireAt: "2026-09-09 11:21",
           refundId: "RF20260909001",
-          checks: { paid: "异常", generated: "正常", effective: "正常", valid: "异常", refund: "异常", bound: "正常", course: "正常" },
-          diagnose: { ok: false, title: "当前无法观看", desc: "订单已退款，课程权益已回收。" }
+          checks: { paid: "正常", generated: "正常", bound: "正常", effective: "正常", validity: "异常", course: "不可访问" },
+          diagnose: {
+            ok: false, title: "当前无法观看",
+            rootCause: "关联订单已退款，权益被回收",
+            impact: "引流体验课无法访问",
+            action: "查看退款单",
+            secondaryAction: "补开权益",
+            desc: "订单已退款，课程权益已回收。"
+          }
         }
       ],
       lives: [
@@ -391,10 +454,26 @@
     user.follows = user.follows || [];
     user.follows.unshift({
       time: entry.time,
-      text: entry.operator + " " + entry.action + "：" + (entry.reason || "") +
-        (entry.from ? "（" + entry.from + " → " + entry.to + "）" : ""),
+      text: entry.operator + " " + entry.action +
+        (entry.from ? "：" + entry.from + " → " + entry.to : "") +
+        (entry.reason ? "；原因：" + entry.reason : ""),
       type: "客服处理"
     });
+  }
+
+  function okDiagnose(action) {
+    return {
+      ok: true,
+      title: "当前可以正常观看",
+      rootCause: "—",
+      impact: "—",
+      action: action || "查看课程配置",
+      desc: "课程权益有效，当前账号具备访问权限。"
+    };
+  }
+
+  function okChecks() {
+    return { paid: "正常", generated: "正常", bound: "正常", effective: "正常", validity: "正常", course: "正常" };
   }
 
   function reopenRight(uid, rid, remark) {
@@ -402,28 +481,39 @@
       var right = (u.rights || []).filter(function (r) { return r.id === rid; })[0];
       if (!right) return;
       var from = right.status;
+      var isRegrant = from === "已退款回收" || String(remark || "").indexOf("【补开】") === 0;
       right.status = "有效";
       right.learnStatus = "未学习";
       right.access = "可访问";
       right.startAt = right.startAt === "—" ? "2026-09-11" : right.startAt;
       right.endAt = right.endAt === "—" ? "2027-09-11" : right.endAt;
-      right.lastChange = "重新开通成功";
-      right.checks = { paid: "正常", generated: "正常", effective: "正常", valid: "正常", refund: "正常", bound: "正常", course: "正常" };
-      right.diagnose = { ok: true, title: "当前可以正常观看", desc: "课程权益有效，当前账号具备访问权限。" };
+      right.lastChange = isRegrant ? "补开权益成功" : "重试开通成功";
+      right.failReason = "";
+      right.checks = okChecks();
+      right.diagnose = okDiagnose("查看课程配置");
+      if (!right.rightType) right.rightType = "正式课";
+      if (!right.acquireMethod) right.acquireMethod = right.acquire || "管理员补开";
+      if (!right.courseId) right.courseId = COURSE_IDS[right.course] || "S002";
+      if (!right.sourceRef) right.sourceRef = right.orderId || "当前账号";
       (u.orders || []).forEach(function (o) {
         if (o.rightId === rid) o.rightStatus = "有效";
       });
       pushLog(u, {
         time: "2026-09-11 16:30",
         operator: "当前账号",
-        action: "重新开通权益",
+        action: isRegrant ? "补开权益" : "重试开通",
         from: from,
         to: "有效",
         reason: remark || "",
         orderId: right.orderId || "",
-        rightId: rid
+        rightId: rid,
+        object: right.course || rid
       });
     });
+  }
+
+  function regrantRight(uid, rid, remark) {
+    return reopenRight(uid, rid, "【补开】" + (remark || ""));
   }
 
   function extendRight(uid, rid, newEnd, reason, notify) {
@@ -437,8 +527,8 @@
       right.access = "可访问";
       right.learnStatus = right.learnStatus === "不可学习" ? "未学习" : right.learnStatus;
       right.lastChange = "有效期延长至 " + newEnd;
-      right.checks.valid = "正常";
-      right.diagnose = { ok: true, title: "当前可以正常观看", desc: "课程权益有效，当前账号具备访问权限。" };
+      right.checks = okChecks();
+      right.diagnose = okDiagnose("查看课程配置");
       (u.orders || []).forEach(function (o) {
         if (o.rightId === rid) o.rightStatus = "有效";
       });
@@ -446,11 +536,12 @@
         time: "2026-09-11 16:35",
         operator: "当前账号",
         action: "延长有效期",
-        from: from + " / 到期 " + oldEnd,
-        to: "有效 / 到期 " + newEnd,
+        from: from,
+        to: "有效",
         reason: reason || "",
         orderId: right.orderId || "",
         rightId: rid,
+        object: right.course || rid,
         notify: !!notify
       });
       if (notify) {
@@ -548,6 +639,94 @@
     });
   }
 
+  /** Resolve an order across all users. Prefer preferUserId when provided. */
+  function findOrder(orderId, preferUserId) {
+    var oid = String(orderId || "").trim();
+    if (!oid) return null;
+    var prefer = String(preferUserId || "").trim();
+    var data = loadAll();
+    var preferred = null;
+    var fallback = null;
+    Object.keys(data.users).forEach(function (id) {
+      var u = data.users[id];
+      (u.orders || []).forEach(function (o) {
+        if (String(o.id) !== oid) return;
+        var right = (u.rights || []).filter(function (r) {
+          return r.id === o.rightId || r.orderId === o.id;
+        })[0] || null;
+        var hit = {
+          user: clone(u),
+          order: clone(o),
+          right: right ? clone(right) : null
+        };
+        if (prefer && id === prefer) preferred = hit;
+        else if (!fallback) fallback = hit;
+      });
+    });
+    return preferred || fallback;
+  }
+
+  /** Resolve a refund from user.refunds or order.refundId / right.refundId. */
+  function findRefund(refundId, preferUserId) {
+    var rid = String(refundId || "").trim();
+    if (!rid) return null;
+    var prefer = String(preferUserId || "").trim();
+    var data = loadAll();
+    var preferred = null;
+    var fallback = null;
+
+    function pack(u, refund, order, right) {
+      return {
+        user: clone(u),
+        refund: clone(refund),
+        order: order ? clone(order) : null,
+        right: right ? clone(right) : null
+      };
+    }
+
+    Object.keys(data.users).forEach(function (id) {
+      var u = data.users[id];
+      var hit = null;
+      (u.refunds || []).forEach(function (rf) {
+        if (String(rf.id) !== rid) return;
+        var order = (u.orders || []).filter(function (o) {
+          return o.id === rf.orderId || o.refundId === rid;
+        })[0] || null;
+        var right = (u.rights || []).filter(function (r) {
+          return r.refundId === rid || (order && (r.id === order.rightId || r.orderId === order.id));
+        })[0] || null;
+        hit = pack(u, rf, order, right);
+      });
+      if (!hit) {
+        (u.orders || []).forEach(function (o) {
+          if (String(o.refundId || "") !== rid) return;
+          var right = (u.rights || []).filter(function (r) {
+            return r.refundId === rid || r.id === o.rightId || r.orderId === o.id;
+          })[0] || null;
+          var derived = {
+            id: rid,
+            orderId: o.id,
+            amount: o.amount,
+            type: "仅退款",
+            reason: "",
+            status: "done",
+            statusLabel: o.refundStatus || "已退款",
+            createdAt: o.time,
+            product: o.product,
+            rightsRecycled: !!(right && right.status === "已退款回收"),
+            rightsStatus: (right && right.status) || o.rightStatus || "",
+            courseAccess: (right && right.access) || "不可访问"
+          };
+          hit = pack(u, derived, o, right);
+        });
+      }
+      if (!hit) return;
+      if (prefer && id === prefer) preferred = hit;
+      else if (!fallback) fallback = hit;
+    });
+    return preferred || fallback;
+  }
+
   function findBySegment(segId) {
     var sid = String(segId || "").trim();
     if (!sid) return listBrief();
@@ -638,12 +817,15 @@
     canExtendRight: canExtendRight,
     role: role,
     reopenRight: reopenRight,
+    regrantRight: regrantRight,
     extendRight: extendRight,
     assignOwner: assignOwner,
     setMarketing: setMarketing,
     saveTags: saveTags,
     listBrief: listBrief,
     findByOrder: findByOrder,
+    findOrder: findOrder,
+    findRefund: findRefund,
     findBySegment: findBySegment,
     phoneExists: phoneExists,
     createUser: createUser,

@@ -153,15 +153,14 @@
     <div class="ua-pagination">
       <span class="muted">已选 <b id="ck-count">0</b> 项 · 共 <b id="ck-total">0</b> 条</span>
       <div class="spacer"></div>
-      <select class="ua-size">
-        <option>10条/页</option><option>20条/页</option><option>50条/页</option>
+      <select class="ua-size" id="pg-size">
+        <option value="10">10条/页</option>
+        <option value="20">20条/页</option>
+        <option value="50">50条/页</option>
       </select>
-      <button class="ua-page" disabled>‹</button>
-      <button class="ua-page active">1</button>
-      <button class="ua-page">2</button>
-      <button class="ua-page">3</button>
-      <span class="muted">…</span>
-      <button class="ua-page">›</button>
+      <button class="ua-page" type="button" id="pg-prev" disabled>‹</button>
+      <span class="muted" id="pg-info">第 1 / 1 页</span>
+      <button class="ua-page" type="button" id="pg-next" disabled>›</button>
     </div>
   </div></div>
 </div>
@@ -206,15 +205,21 @@
 </div>
 
 <!-- 导出用户弹窗 -->
-<div class="proto-modal" id="modal-export" style="width:480px">
+<div class="proto-modal" id="modal-export" style="width:520px">
   <div class="proto-modal-hd">
     <h3 style="font-size:16px;font-weight:600">导出用户</h3>
     <button class="btn btn-sm btn-ghost" data-close>×</button>
   </div>
   <div class="proto-modal-bd">
     <div class="ua-export-radios">
-      <label class="ua-radio"><input type="radio" name="export-mode" value="filter" checked /> 导出当前筛选结果</label>
-      <label class="ua-radio"><input type="radio" name="export-mode" value="checked" /> 导出已勾选用户</label>
+      <label class="ua-radio"><input type="radio" name="export-mode" value="filter" checked /> 导出当前筛选结果<span class="muted" id="export-filter-n">（0人）</span></label>
+      <label class="ua-radio" id="export-checked-label"><input type="radio" name="export-mode" value="checked" /> 导出已勾选用户<span class="muted" id="export-checked-n">（0人）</span></label>
+    </div>
+    <div class="field" style="margin-top:14px">
+      <label>手机号导出</label>
+      <label class="ua-radio" style="display:block;margin-top:6px"><input type="radio" name="export-phone" value="mask" checked /> 脱敏手机号（默认）</label>
+      <label class="ua-radio" style="display:block;margin-top:4px"><input type="radio" name="export-phone" value="full" id="export-phone-full" /> 完整手机号（需权限，将记录原因）</label>
+      <textarea id="export-phone-reason" rows="2" placeholder="导出完整手机号原因" style="margin-top:8px;display:none;width:100%"></textarea>
     </div>
     <p class="muted" style="margin:12px 0 0;font-size:12px">导出字段含姓名、手机号、来源、负责人、消费摘要、课程权益、标签、企微等（原型）。</p>
   </div>
@@ -499,7 +504,7 @@ button:disabled { opacity: .45; cursor: not-allowed; }
 
 <script src="../assets/js/proto.js"></script>
 <script src="../assets/js/user-tags.js"></script>
-<script src="../assets/js/user-store.js"></script>
+<script src="../assets/js/user-store.js?v=3"></script>
 <script src="../assets/js/admin-shell.js?v=14"></script>
 <script>
 (function () {
@@ -520,11 +525,36 @@ button:disabled { opacity: .45; cursor: not-allowed; }
 
   var urlParams = new URLSearchParams(location.search);
   var activeSegment = (urlParams.get("segment") || "").trim();
+  var listState = {
+    page: Math.max(1, parseInt(urlParams.get("page") || "1", 10) || 1),
+    pageSize: Math.max(1, parseInt(urlParams.get("pageSize") || "10", 10) || 10),
+    sort: (urlParams.get("sort") || "").trim(),
+    expand: urlParams.get("expand") === "1"
+  };
+  var applyingUrl = false;
+  var SCROLL_KEY = "users_list_scroll_v1";
+
   if (activeSegment) {
     var meta = UserStore.segmentMeta(activeSegment);
     document.getElementById("segment-banner").style.display = "flex";
     document.getElementById("segment-name").textContent = meta.name || activeSegment;
   }
+
+  var FILTER_URL_MAP = [
+    { param: "keyword", alt: "name", id: "f-name" },
+    { param: "phone", id: "f-phone" },
+    { param: "order", id: "f-order" },
+    { param: "source", id: "f-source" },
+    { param: "rightsStatus", id: "f-right-st" },
+    { param: "course", id: "f-course" },
+    { param: "wecom", id: "f-wecom" },
+    { param: "marketingStatus", id: "f-mkt" },
+    { param: "assigned", id: "f-assigned" },
+    { param: "department", id: "f-dept" },
+    { param: "owner", id: "f-owner" },
+    { param: "tag", id: "f-tag" },
+    { param: "activeRange", id: "f-active" }
+  ];
 
   var FILTER_DEFS = [
     { id: "f-name", label: "姓名", type: "text" },
@@ -541,6 +571,95 @@ button:disabled { opacity: .45; cursor: not-allowed; }
     { id: "f-tag", label: "标签", type: "select", tag: true },
     { id: "f-active", label: "最近活跃", type: "select", map: { "7": "7天内", "30": "30天内", "90": "90天内", over30: "30天以上" } }
   ];
+
+  function currentListUrl() {
+    return "users.html" + (location.search || "") + (location.hash || "");
+  }
+
+  function buildSearchParams() {
+    var sp = new URLSearchParams();
+    if (activeSegment) sp.set("segment", activeSegment);
+    FILTER_URL_MAP.forEach(function (m) {
+      var el = document.getElementById(m.id);
+      if (!el) return;
+      var val = (el.value || "").trim();
+      if (!val) return;
+      sp.set(m.param, val);
+    });
+    if (listState.page > 1) sp.set("page", String(listState.page));
+    if (listState.pageSize && listState.pageSize !== 10) sp.set("pageSize", String(listState.pageSize));
+    if (listState.sort) sp.set("sort", listState.sort);
+    if (listState.expand) sp.set("expand", "1");
+    return sp;
+  }
+
+  function syncUrl(mode) {
+    if (applyingUrl) return;
+    var sp = buildSearchParams();
+    var qs = sp.toString();
+    var url = location.pathname + (qs ? "?" + qs : "");
+    if (mode === "push") history.pushState({ usersFilter: 1 }, "", url);
+    else history.replaceState({ usersFilter: 1 }, "", url);
+  }
+
+  function applyUrlToForm() {
+    applyingUrl = true;
+    try {
+      var sp = new URLSearchParams(location.search);
+      activeSegment = (sp.get("segment") || "").trim();
+      if (activeSegment) {
+        var sm = UserStore.segmentMeta(activeSegment);
+        document.getElementById("segment-banner").style.display = "flex";
+        document.getElementById("segment-name").textContent = sm.name || activeSegment;
+      } else {
+        document.getElementById("segment-banner").style.display = "none";
+      }
+      FILTER_URL_MAP.forEach(function (m) {
+        var el = document.getElementById(m.id);
+        if (!el) return;
+        var val = sp.get(m.param);
+        if ((val == null || val === "") && m.alt) val = sp.get(m.alt);
+        el.value = val || "";
+      });
+      listState.page = Math.max(1, parseInt(sp.get("page") || "1", 10) || 1);
+      listState.pageSize = Math.max(1, parseInt(sp.get("pageSize") || "10", 10) || 10);
+      listState.sort = (sp.get("sort") || "").trim();
+      listState.expand = sp.get("expand") === "1";
+      var more = document.getElementById("search-more");
+      var toggle = document.getElementById("btn-toggle");
+      var needExpand = listState.expand || !!(sp.get("department") || sp.get("owner") || sp.get("tag") ||
+        sp.get("activeRange") || sp.get("wecom") || sp.get("marketingStatus") || sp.get("assigned") ||
+        sp.get("course") || sp.get("rightsStatus"));
+      if (more) more.style.display = needExpand ? "grid" : "none";
+      if (toggle) toggle.textContent = needExpand ? "收起" : "展开";
+      listState.expand = needExpand;
+      var sizeEl = document.getElementById("pg-size");
+      if (sizeEl) sizeEl.value = String(listState.pageSize);
+    } finally {
+      applyingUrl = false;
+    }
+  }
+
+  function rememberScroll() {
+    try {
+      sessionStorage.setItem(SCROLL_KEY, JSON.stringify({
+        key: currentListUrl(),
+        y: window.scrollY || document.documentElement.scrollTop || 0
+      }));
+    } catch (e) {}
+  }
+
+  function restoreScroll() {
+    try {
+      var raw = sessionStorage.getItem(SCROLL_KEY);
+      if (!raw) return;
+      var data = JSON.parse(raw);
+      if (!data || data.key !== currentListUrl()) return;
+      setTimeout(function () {
+        window.scrollTo(0, Number(data.y) || 0);
+      }, 30);
+    } catch (e) {}
+  }
 
   function isAssigned(u) {
     return !!(u.owner && u.owner !== "未分配");
@@ -636,7 +755,7 @@ button:disabled { opacity: .45; cursor: not-allowed; }
     var chips = [];
     if (activeSegment) {
       var sm = UserStore.segmentMeta(activeSegment);
-      chips.push({ id: "__segment", label: "分群", value: sm.name || activeSegment });
+      chips.push({ id: "__segment", label: "用户分群", value: sm.name || activeSegment });
     }
     FILTER_DEFS.forEach(function (def) {
       var el = document.getElementById(def.id);
@@ -645,11 +764,6 @@ button:disabled { opacity: .45; cursor: not-allowed; }
       if (!val) return;
       chips.push({ id: def.id, label: def.label, value: chipValueLabel(def, val) });
     });
-    if (!chips.length && !rowsLen && rowsLen !== 0) {
-      box.style.display = "none";
-      box.innerHTML = "";
-      return;
-    }
     if (!chips.length) {
       box.style.display = "flex";
       box.innerHTML = '<span class="ua-chips-count">共 ' + rowsLen + " 条结果</span>";
@@ -670,15 +784,12 @@ button:disabled { opacity: .45; cursor: not-allowed; }
         if (id === "__segment") {
           activeSegment = "";
           document.getElementById("segment-banner").style.display = "none";
-          try {
-            var u = new URL(location.href);
-            u.searchParams.delete("segment");
-            history.replaceState(null, "", u.pathname + u.search + u.hash);
-          } catch (e) {}
         } else {
           var el = document.getElementById(id);
           if (el) el.value = "";
         }
+        listState.page = 1;
+        syncUrl("push");
         render();
       });
     });
@@ -697,13 +808,21 @@ button:disabled { opacity: .45; cursor: not-allowed; }
   }
 
   function rightsHtml(u) {
-    var href = "user-detail.html?id=" + encodeURIComponent(u.id) + "&tab=rights";
-    if (u.rightsAbnormal > 0) href += "&focus=abn";
+    var href = userDetailHref(u.id, "rights", u.rightsAbnormal > 0);
     if (!u.rightsText || u.rightsText === "暂无权益") {
       return '<a href="' + href + '" class="ua-tag-empty">暂无权益</a>';
     }
     var cls = u.rightsAbnormal ? ' style="color:#f53f3f;font-weight:600"' : "";
     return '<a href="' + href + '"' + cls + ">" + esc(u.rightsText) + "</a>";
+  }
+
+  function userDetailHref(id, tab, focusAbn) {
+    rememberScroll();
+    var href = "user-detail.html?id=" + encodeURIComponent(id);
+    if (tab) href += "&tab=" + encodeURIComponent(tab);
+    if (focusAbn) href += "&focus=abn";
+    href += "&returnTo=" + encodeURIComponent(currentListUrl());
+    return href;
   }
 
   function consumeHtml(u) {
@@ -746,11 +865,22 @@ button:disabled { opacity: .45; cursor: not-allowed; }
   }
 
   function render() {
-    var rows = filtered();
+    var allRows = filtered();
+    var total = allRows.length;
+    var pages = Math.max(1, Math.ceil(total / listState.pageSize) || 1);
+    if (listState.page > pages) listState.page = pages;
+    var start = (listState.page - 1) * listState.pageSize;
+    var rows = allRows.slice(start, start + listState.pageSize);
     var tb = document.getElementById("users-tbody");
-    document.getElementById("ck-total").textContent = String(rows.length);
-    renderChips(rows.length);
-    if (!rows.length) {
+    document.getElementById("ck-total").textContent = String(total);
+    renderChips(total);
+    var pgInfo = document.getElementById("pg-info");
+    if (pgInfo) pgInfo.textContent = "第 " + listState.page + " / " + pages + " 页";
+    var prev = document.getElementById("pg-prev");
+    var next = document.getElementById("pg-next");
+    if (prev) prev.disabled = listState.page <= 1;
+    if (next) next.disabled = listState.page >= pages;
+    if (!allRows.length) {
       tb.innerHTML = '<tr><td colspan="10" style="text-align:center;padding:36px">' +
         '<div class="muted" style="margin-bottom:12px">未找到匹配用户</div>' +
         '<button class="btn" type="button" id="empty-clear">清空筛选</button></td></tr>';
@@ -764,7 +894,7 @@ button:disabled { opacity: .45; cursor: not-allowed; }
         ? '<div class="ua-mkt-badge">已停止主动营销</div>' : "";
       return '<tr data-uid="' + esc(u.id) + '" data-mkt="' + (u.marketingStopped ? "1" : "0") + '">' +
         '<td><input type="checkbox" class="ck-row" /></td>' +
-        "<td><a href=\"user-detail.html?id=" + encodeURIComponent(u.id) + "\"><b>" + esc(u.name) + "</b></a>" +
+        "<td><a href=\"" + userDetailHref(u.id) + "\"><b>" + esc(u.name) + "</b></a>" +
         mktBadge +
         (u.nick ? '<div class="ua-muted ua-nick">昵称：' + esc(u.nick) + "</div>" : "") +
         '<div class="ua-muted">' + esc(UserStore.maskPhone(u.phone)) + "</div></td>" +
@@ -776,7 +906,7 @@ button:disabled { opacity: .45; cursor: not-allowed; }
         "<td>" + tagHtml(u.tags) + "</td>" +
         "<td>" + (u.wecom ? "是" : "否") + "</td>" +
         '<td class="row-actions">' +
-        '<a href="user-detail.html?id=' + encodeURIComponent(u.id) + '">详情</a>' +
+        '<a href="' + userDetailHref(u.id) + '">详情</a>' +
         '<a href="#" data-row-act="tag">打标</a>' +
         '<a href="#" data-row-act="more" class="ua-more-btn">更多 ▾</a>' +
         "</td></tr>";
@@ -793,15 +923,13 @@ button:disabled { opacity: .45; cursor: not-allowed; }
       var el = document.getElementById(id); if (el) el.value = "";
     });
     activeSegment = "";
+    listState.page = 1;
+    listState.sort = "";
+    listState.expand = false;
     document.getElementById("segment-banner").style.display = "none";
-    try {
-      var u = new URL(location.href);
-      u.searchParams.delete("segment");
-      u.searchParams.delete("tag");
-      history.replaceState(null, "", u.pathname + (u.search || "") + u.hash);
-    } catch (e) {}
     document.getElementById("search-more").style.display = "none";
     document.getElementById("btn-toggle").textContent = "展开";
+    history.pushState({ usersFilter: 1 }, "", location.pathname);
     if (doRender) render();
   }
 
@@ -814,16 +942,10 @@ button:disabled { opacity: .45; cursor: not-allowed; }
       opt.textContent = tg.name + (tg.group ? "（" + tg.group + "）" : "");
       sel.appendChild(opt);
     });
-    try {
-      var tag = urlParams.get("tag");
-      if (tag) {
-        sel.value = tag;
-        document.getElementById("search-more").style.display = "grid";
-        document.getElementById("btn-toggle").textContent = "收起";
-      }
-      if (urlParams.get("batchTag") === "1") Proto.toast("请勾选用户后点击「批量打标」");
-    } catch (e) {}
   })();
+
+  applyUrlToForm();
+  if (urlParams.get("batchTag") === "1") Proto.toast("请勾选用户后点击「批量打标」");
 
   function openTagModal(label, selected) {
     document.getElementById("tag-user").textContent = label;
@@ -865,15 +987,52 @@ button:disabled { opacity: .45; cursor: not-allowed; }
     var show = more.style.display === "none";
     more.style.display = show ? "grid" : "none";
     toggle.textContent = show ? "收起" : "展开";
+    listState.expand = show;
+    syncUrl("replace");
   });
 
   document.getElementById("btn-query").addEventListener("click", function () {
+    listState.page = 1;
+    syncUrl("push");
     render();
     Proto.toast("已按条件查询");
   });
   document.getElementById("btn-reset").addEventListener("click", function () {
     resetFilters(true);
     Proto.toast("已重置");
+  });
+
+  var pgSize = document.getElementById("pg-size");
+  if (pgSize) {
+    pgSize.addEventListener("change", function () {
+      listState.pageSize = parseInt(pgSize.value, 10) || 10;
+      listState.page = 1;
+      syncUrl("push");
+      render();
+    });
+  }
+  var pgPrev = document.getElementById("pg-prev");
+  if (pgPrev) {
+    pgPrev.addEventListener("click", function () {
+      if (listState.page <= 1) return;
+      listState.page -= 1;
+      syncUrl("push");
+      render();
+    });
+  }
+  var pgNext = document.getElementById("pg-next");
+  if (pgNext) {
+    pgNext.addEventListener("click", function () {
+      listState.page += 1;
+      syncUrl("push");
+      render();
+    });
+  }
+
+  window.addEventListener("popstate", function () {
+    applyUrlToForm();
+    render();
+    restoreScroll();
   });
 
   var ckAll = document.getElementById("ck-all");
@@ -1013,26 +1172,57 @@ button:disabled { opacity: .45; cursor: not-allowed; }
   });
 
   function openExport(preferChecked) {
-    var radios = document.querySelectorAll('input[name="export-mode"]');
     var n = document.querySelectorAll(".ck-row:checked").length;
-    radios.forEach(function (r) {
-      if (preferChecked && n > 0) r.checked = r.value === "checked";
-      else r.checked = r.value === "filter";
+    var filterN = filtered().length;
+    document.getElementById("export-filter-n").textContent = "（" + filterN + "人）";
+    document.getElementById("export-checked-n").textContent = "（" + n + "人）";
+    var checkedRadio = document.querySelector('input[name="export-mode"][value="checked"]');
+    var filterRadio = document.querySelector('input[name="export-mode"][value="filter"]');
+    if (checkedRadio) {
+      checkedRadio.disabled = n === 0;
+      if (n === 0 && checkedRadio.checked && filterRadio) filterRadio.checked = true;
+    }
+    if (preferChecked && n > 0 && checkedRadio) checkedRadio.checked = true;
+    else if (filterRadio) filterRadio.checked = true;
+    var fullPhone = document.getElementById("export-phone-full");
+    var reasonBox = document.getElementById("export-phone-reason");
+    var canFull = UserStore.canDecryptPhone();
+    if (fullPhone) {
+      fullPhone.disabled = !canFull;
+      if (!canFull) {
+        var maskRadio = document.querySelector('input[name="export-phone"][value="mask"]');
+        if (maskRadio) maskRadio.checked = true;
+      }
+    }
+    if (reasonBox) reasonBox.style.display = "none";
+    document.querySelectorAll('input[name="export-phone"]').forEach(function (r) {
+      r.onchange = function () {
+        if (reasonBox) reasonBox.style.display = r.value === "full" && r.checked ? "block" : "none";
+      };
     });
     open(document.getElementById("modal-export"));
   }
   document.getElementById("btn-export").addEventListener("click", function () { openExport(false); });
   document.getElementById("export-confirm").addEventListener("click", function () {
     var mode = (document.querySelector('input[name="export-mode"]:checked') || {}).value || "filter";
+    var phoneMode = (document.querySelector('input[name="export-phone"]:checked') || {}).value || "mask";
     if (mode === "checked") {
       var n = document.querySelectorAll(".ck-row:checked").length;
       if (!n) { Proto.toast("请先勾选用户"); return; }
-      closeAll();
-      Proto.toast("已导出勾选的 " + n + " 位用户（原型）");
-      return;
+    }
+    if (phoneMode === "full") {
+      if (!UserStore.canDecryptPhone()) {
+        Proto.toast("当前账号无导出完整手机号权限");
+        return;
+      }
+      var reason = (document.getElementById("export-phone-reason").value || "").trim();
+      if (!reason) {
+        Proto.toast("请填写导出完整手机号的原因");
+        return;
+      }
     }
     closeAll();
-    Proto.toast("已导出当前筛选结果共 " + filtered().length + " 条（原型）");
+    Proto.toast("导出任务已创建");
   });
 
   function openBatchAssign() {
@@ -1101,6 +1291,8 @@ button:disabled { opacity: .45; cursor: not-allowed; }
   });
 
   render();
+  restoreScroll();
+  if (!location.search) syncUrl("replace");
 })();
 </script>
 </body>

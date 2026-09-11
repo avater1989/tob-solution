@@ -20,7 +20,7 @@
       <div class="card-bd" style="padding:40px 24px">
         <h2 style="margin:0 0 8px;font-size:18px">未找到该用户</h2>
         <p class="muted" style="margin:0 0 20px">该用户可能已被移除，或当前链接已失效。</p>
-        <a class="btn btn-primary" href="users.html">返回用户列表</a>
+        <a class="btn btn-primary" id="ud-empty-back" href="users.html">返回用户列表</a>
       </div>
     </div>
   </div>
@@ -102,22 +102,22 @@
   <div class="proto-drawer-ft" id="drawer-right-ft"></div>
 </div>
 
-<!-- 重新开通 -->
+<!-- 重试开通 -->
 <div class="proto-modal" id="modal-reopen" style="width:520px">
   <div class="proto-modal-hd">
-    <h3 style="font-size:16px;font-weight:600">重新开通课程权益</h3>
+    <h3 style="font-size:16px;font-weight:600">重试开通课程权益</h3>
     <button class="btn btn-sm btn-ghost" type="button" data-close>×</button>
   </div>
   <div class="proto-modal-bd">
     <div class="ud-info-box" id="reopen-summary"></div>
     <div class="field" style="margin-top:14px">
       <label>处理备注 <span style="color:var(--color-danger)">*</span></label>
-      <textarea id="reopen-remark" rows="3" placeholder="请填写重新开通原因与处理说明"></textarea>
+      <textarea id="reopen-remark" rows="3" placeholder="请填写重试开通原因与处理说明"></textarea>
     </div>
   </div>
   <div class="proto-modal-ft" style="border-top:1px solid var(--color-border);padding:12px 20px;display:flex;gap:8px;justify-content:flex-end">
     <button class="btn" type="button" data-close>取消</button>
-    <button class="btn btn-primary" type="button" id="reopen-submit">确认重新开通</button>
+    <button class="btn btn-primary" type="button" id="reopen-submit">确认重试开通</button>
   </div>
 </div>
 
@@ -392,13 +392,20 @@
 
 <script src="../assets/js/proto.js"></script>
 <script src="../assets/js/user-tags.js"></script>
-<script src="../assets/js/user-store.js"></script>
+<script src="../assets/js/user-store.js?v=3"></script>
 <script src="../assets/js/admin-shell.js?v=14"></script>
 <script>
 (function () {
   var US = window.UserStore;
   var params = new URLSearchParams(location.search);
   var uid = String(params.get("id") || "").trim();
+  var returnTo = "";
+  try {
+    returnTo = params.get("returnTo") || params.get("return_to") || "";
+    if (returnTo) {
+      try { returnTo = decodeURIComponent(returnTo); } catch (eRt) {}
+    }
+  } catch (eRt2) {}
   var user = null;
   var currentTab = "overview";
   var rightsFilter = "all";
@@ -423,14 +430,57 @@
   };
 
   var CHECK_LABELS = [
-    { key: "paid", label: "订单已支付／未支付" },
-    { key: "generated", label: "权益已生成／未生成" },
-    { key: "effective", label: "权益已生效／未生效" },
-    { key: "valid", label: "权益有效／已到期" },
-    { key: "refund", label: "未退款／已退款回收" },
-    { key: "bound", label: "已绑定当前用户／绑定其他成员" },
-    { key: "course", label: "课程可访问／课程不可访问" }
+    { key: "paid", label: "1. 订单是否支付" },
+    { key: "generated", label: "2. 是否成功生成权益" },
+    { key: "bound", label: "3. 权益是否绑定当前用户" },
+    { key: "effective", label: "4. 权益是否已生效" },
+    { key: "validity", label: "5. 权益是否过期或被回收" },
+    { key: "course", label: "6. 课程自身是否允许访问" }
   ];
+
+  function isAbnormalListReturn() {
+    try {
+      var q = returnTo.indexOf("?") >= 0 ? returnTo.split("?")[1] : "";
+      var sp = new URLSearchParams(q);
+      return sp.get("rightsStatus") === "存在异常";
+    } catch (e) {
+      return /rightsStatus=%E5%AD%98%E5%9C%A8%E5%BC%82%E5%B8%B8|rightsStatus=存在异常/.test(returnTo || "");
+    }
+  }
+
+  function listReturnLabel() {
+    return isAbnormalListReturn() ? "返回异常用户列表" : "返回用户列表";
+  }
+
+  function courseConfigHref(r) {
+    var cid = (r && (r.courseId || "")) || "";
+    if (!cid) {
+      if (r && r.course === "引流体验课") cid = "S003";
+      else cid = "S002";
+    }
+    var href = "content-series-detail.html?id=" + encodeURIComponent(cid) +
+      "&from=user&user=" + encodeURIComponent(uid) + "&tab=rights";
+    if (returnTo) href += "&returnTo=" + encodeURIComponent(returnTo);
+    return href;
+  }
+
+  function showPostActionBar(msg) {
+    var bar = el("ud-post-bar");
+    if (!bar) {
+      bar = document.createElement("div");
+      bar.id = "ud-post-bar";
+      bar.className = "alert alert-info";
+      bar.style.cssText = "margin:0 0 12px;display:flex;gap:10px;align-items:center;flex-wrap:wrap";
+      var main = el("page-main");
+      if (main) main.insertBefore(bar, main.firstChild);
+    }
+    bar.style.display = "flex";
+    bar.innerHTML = "<span>" + esc(msg || "处理完成") + "</span>" +
+      '<a class="btn btn-primary" href="' + esc(returnTo || "users.html") + '">' + esc(listReturnLabel()) + "</a>" +
+      '<button class="btn" type="button" id="ud-goto-logs">查看操作记录</button>';
+    var btn = el("ud-goto-logs");
+    if (btn) btn.addEventListener("click", function () { setTab("service"); });
+  }
 
   var REF_TODAY = "2026-09-11";
 
@@ -524,6 +574,9 @@
   }
 
   function checkBadge(v) {
+    if (v === "未检查" || v === "不适用") {
+      return '<span class="badge">' + esc(v) + "</span>";
+    }
     if (v === "正常") return '<span class="badge badge-success">正常</span>';
     if (v === "异常") return '<span class="badge badge-danger">异常</span>';
     return '<span class="badge badge-warn">待处理</span>';
@@ -597,9 +650,26 @@
   function orderLink(orderId, tab) {
     if (!orderId) return "—";
     var t = tab || currentTab;
-    return '<a class="mono" href="order-detail.html?id=' + encodeURIComponent(orderId) +
-      "&from=user&user=" + encodeURIComponent(uid) + "&tab=" + encodeURIComponent(t) + '">' +
-      esc(orderId) + "</a>";
+    var href = "order-detail.html?id=" + encodeURIComponent(orderId) +
+      "&from=user&user=" + encodeURIComponent(uid) + "&tab=" + encodeURIComponent(t);
+    if (returnTo) href += "&returnTo=" + encodeURIComponent(returnTo);
+    return '<a class="mono" href="' + href + '">' + esc(orderId) + "</a>";
+  }
+
+  function aftersaleLink(refundId) {
+    if (!refundId) return "";
+    var href = "aftersale-detail.html?id=" + encodeURIComponent(refundId) +
+      "&from=user&user=" + encodeURIComponent(uid);
+    if (returnTo) href += "&returnTo=" + encodeURIComponent(returnTo);
+    return href;
+  }
+
+  function orderDetailHref(orderId, tab) {
+    var href = "order-detail.html?id=" + encodeURIComponent(orderId) +
+      "&from=user&user=" + encodeURIComponent(uid) +
+      "&tab=" + encodeURIComponent(tab || "rights");
+    if (returnTo) href += "&returnTo=" + encodeURIComponent(returnTo);
+    return href;
   }
 
   function emptyBlock(title, sub) {
@@ -613,7 +683,19 @@
 
   function buildServiceRecords(u) {
     var items = [];
+    (u.logs || []).forEach(function (log) {
+      items.push({
+        time: log.time || "",
+        type: "权益操作",
+        text: (log.operator || "操作人") + " · " + (log.action || "操作") +
+          (log.object ? " · 对象：" + log.object : "") +
+          (log.from ? " · " + log.from + " → " + log.to : "") +
+          (log.reason ? " · 原因：" + log.reason : ""),
+        kind: "log"
+      });
+    });
     (u.follows || []).forEach(function (f) {
+      if (f.type === "客服处理" && (u.logs || []).length) return;
       items.push({
         time: f.time || "",
         type: f.type || "跟进",
@@ -718,7 +800,11 @@
     }
     showMainState();
     var scrm = el("btn-scrm");
-    if (scrm) scrm.href = "leads.html?user=" + encodeURIComponent(uid);
+    if (scrm) {
+      var scrmHref = "leads.html?user=" + encodeURIComponent(uid) + "&fromTab=" + encodeURIComponent(currentTab || "overview");
+      if (returnTo) scrmHref += "&returnTo=" + encodeURIComponent(returnTo);
+      scrm.href = scrmHref;
+    }
     renderProfile();
     renderActivePane();
     if (activeRightId) {
@@ -942,8 +1028,8 @@
       html += emptyBlock("当前筛选下暂无权益", "可切换上方筛选条件查看。");
     } else {
       html += '<div style="overflow:auto"><table class="data"><thead><tr>' +
-        "<th>课程名称</th><th>权益类型</th><th>权益状态</th><th>有效期</th><th>获取来源</th>" +
-        "<th>关联订单</th><th>当前访问结果</th><th>操作</th>" +
+        "<th>课程名称</th><th>权益类型</th><th>权益状态</th><th>有效期</th><th>获取方式</th>" +
+        "<th>关联来源</th><th>当前访问结果</th><th>操作</th>" +
         "</tr></thead><tbody>" + list.map(rightRow).join("") + "</tbody></table></div>";
     }
     setHtml(pane, html);
@@ -963,15 +1049,19 @@
     }
   }
 
+  function sourceRefHtml(r) {
+    if (r.orderId) return orderLink(r.orderId, "rights");
+    return esc(r.sourceRef || r.acquire || "—");
+  }
+
   function rightRow(r) {
     return '<tr id="right-row-' + esc(r.id) + '" data-rid="' + esc(r.id) + '">' +
       "<td>" + esc(r.course) + "</td>" +
-      "<td>" + esc(r.acquire || "—") + "</td>" +
+      "<td>" + esc(r.rightType || "正式课") + "</td>" +
       "<td>" + statusBadge(r.status) + "</td>" +
       "<td>" + esc(validityText(r)) + "</td>" +
-      "<td>" + esc(r.product || r.orderId || r.acquire || "—") +
-        (r.orderStatus ? '<div class="muted" style="font-size:12px">' + esc(r.orderStatus) + "</div>" : "") + "</td>" +
-      "<td>" + orderLink(r.orderId, "rights") + "</td>" +
+      "<td>" + esc(r.acquireMethod || r.acquire || "—") + "</td>" +
+      "<td>" + sourceRefHtml(r) + "</td>" +
       "<td>" + esc(accessResultText(r)) + "</td>" +
       '<td class="row-actions">' + rightActionsHtml(r) + "</td></tr>";
   }
@@ -979,26 +1069,27 @@
   function rightActionsHtml(r) {
     var parts = ['<a href="#" class="open-right" data-rid="' + esc(r.id) + '">详情</a>'];
     if (r.status === "开通失败" && US.canReopenRight()) {
-      parts.push('<a href="#" class="act-reopen" data-rid="' + esc(r.id) + '">重新开通</a>');
+      parts.push('<a href="#" class="act-reopen" data-rid="' + esc(r.id) + '">重试开通</a>');
     }
     if (r.status === "已到期" && US.canExtendRight()) {
       parts.push('<a href="#" class="act-extend" data-rid="' + esc(r.id) + '">延长有效期</a>');
     }
     if (r.status === "已退款回收") {
       if (r.orderId) {
-        parts.push('<a href="order-detail.html?id=' + encodeURIComponent(r.orderId) +
-          "&from=user&user=" + encodeURIComponent(uid) + '&tab=rights">查看订单</a>');
+        parts.push('<a href="' + orderDetailHref(r.orderId, "rights") + '">查看订单</a>');
       }
       if (r.refundId) {
-        parts.push('<a href="aftersale-detail.html?id=' + encodeURIComponent(r.refundId) +
-          "&from=user&user=" + encodeURIComponent(uid) + '">查看退款单</a>');
+        parts.push('<a href="' + aftersaleLink(r.refundId) + '">查看退款单</a>');
       }
       if (US.role && US.role() === "admin") {
-        parts.push('<a href="#" class="act-regrant" data-rid="' + esc(r.id) + '">补开</a>');
+        parts.push('<a href="#" class="act-regrant" data-rid="' + esc(r.id) + '">补开权益</a>');
       }
     }
+    if (r.status === "已停用") {
+      parts.push('<a href="#" class="act-reopen" data-rid="' + esc(r.id) + '">重新启用</a>');
+    }
     if (r.status === "有效") {
-      parts.push('<a href="#" data-toast="课程可正常访问（原型）">查看课程</a>');
+      parts.push('<a href="' + courseConfigHref(r) + '">查看课程配置</a>');
     }
     if (r.status === "未生效") {
       parts.push('<a href="#" class="open-right" data-rid="' + esc(r.id) + '">查看生效时间</a>');
@@ -1063,10 +1154,19 @@
     if (!bd || !ft) return;
 
     var reason = accessResultText(r);
+    var dig = r.diagnose || {};
+    var rootCause = dig.rootCause || dig.desc || reason;
+    var impact = dig.impact || ((r.course || "课程") + (ok ? "可访问" : "无法访问"));
+    var action = dig.action || (r.status === "开通失败" ? "重试开通" : r.status === "已到期" ? "延长有效期" : r.status === "已退款回收" ? "查看退款单" : "查看课程配置");
     setHtml(bd,
-      '<div class="ud-diag ' + (ok ? "ok" : "fail") + '"><h4>' +
-      esc((r.diagnose && r.diagnose.title) || (ok ? "当前可以正常观看" : "当前无法观看")) +
-      "</h4><div>" + esc((r.diagnose && r.diagnose.desc) || reason) + "</div></div>" +
+      '<div class="ud-diag ' + (ok ? "ok" : "fail") + '">' +
+      "<h4>当前结论：" + esc(dig.title || (ok ? "当前可以正常观看" : "当前无法观看")) + "</h4>" +
+      '<div class="ud-diag-grid" style="display:grid;gap:6px;margin-top:8px;font-size:13px">' +
+      "<div><b>不能访问的根因：</b>" + esc(rootCause) + "</div>" +
+      "<div><b>影响范围：</b>" + esc(impact) + "</div>" +
+      "<div><b>推荐处理动作：</b>" + esc(action) +
+      (dig.secondaryAction ? "（次要：" + esc(dig.secondaryAction) + "）" : "") +
+      "</div></div></div>" +
 
       '<div class="ud-sec"><h4>课程信息</h4><dl class="detail-grid">' +
       "<dt>课程名称</dt><dd>" + esc(r.course) + "</dd>" +
@@ -1076,10 +1176,10 @@
       "<dt>访问说明</dt><dd>" + esc(reason) + "</dd>" +
       "</dl></div>" +
 
-      '<div class="ud-sec"><h4>获取来源</h4><dl class="detail-grid">' +
-      "<dt>权益类型 / 获取方式</dt><dd>" + esc(r.acquire || "—") + "</dd>" +
-      "<dt>关联商品</dt><dd>" + esc(r.product || "—") + "</dd>" +
-      "<dt>关联订单</dt><dd>" + orderLink(r.orderId, "rights") + "</dd>" +
+      '<div class="ud-sec"><h4>获取与关联</h4><dl class="detail-grid">' +
+      "<dt>权益类型</dt><dd>" + esc(r.rightType || "正式课") + "</dd>" +
+      "<dt>获取方式</dt><dd>" + esc(r.acquireMethod || r.acquire || "—") + "</dd>" +
+      "<dt>关联来源</dt><dd>" + sourceRefHtml(r) + "</dd>" +
       "<dt>订单状态</dt><dd>" + statusBadge(r.orderStatus || "—") + "</dd>" +
       "<dt>获取时间</dt><dd>" + esc(r.acquireAt || "—") + "</dd>" +
       "</dl></div>" +
@@ -1104,26 +1204,24 @@
     var acts = [];
     acts.push('<button class="btn" type="button" data-close>关闭</button>');
     if (r.status === "开通失败" && US.canReopenRight()) {
-      acts.push('<button class="btn btn-primary" type="button" id="dr-reopen">重新开通权益</button>');
+      acts.push('<button class="btn btn-primary" type="button" id="dr-reopen">重试开通</button>');
     }
     if (r.status === "已到期" && US.canExtendRight()) {
       acts.push('<button class="btn btn-primary" type="button" id="dr-extend">延长有效期</button>');
     }
     if (r.status === "已退款回收") {
       if (r.orderId) {
-        acts.push('<a class="btn" href="order-detail.html?id=' + encodeURIComponent(r.orderId) +
-          "&from=user&user=" + encodeURIComponent(uid) + '&tab=rights">查看订单</a>');
+        acts.push('<a class="btn" href="' + orderDetailHref(r.orderId, "rights") + '">查看订单</a>');
       }
       if (r.refundId) {
-        acts.push('<a class="btn" href="aftersale-detail.html?id=' + encodeURIComponent(r.refundId) +
-          "&from=user&user=" + encodeURIComponent(uid) + '">查看退款单</a>');
+        acts.push('<a class="btn" href="' + aftersaleLink(r.refundId) + '">查看退款单</a>');
       }
       if (US.role && US.role() === "admin") {
-        acts.push('<button class="btn btn-primary" type="button" id="dr-regrant">补开</button>');
+        acts.push('<button class="btn btn-primary" type="button" id="dr-regrant">补开权益</button>');
       }
     }
     if (r.status === "有效") {
-      acts.push('<button class="btn" type="button" data-toast="课程可正常访问（原型）">查看课程</button>');
+      acts.push('<a class="btn" href="' + courseConfigHref(r) + '">查看课程配置</a>');
     }
     setHtml(ft, acts.join(""));
 
@@ -1157,8 +1255,7 @@
           "</td><td>" + statusBadge(o.refundStatus || "无") +
           '</td><td><a href="#" class="goto-right-status" data-rid="' + esc(o.rightId || "") + '">' +
           statusBadge(o.rightStatus) + "</a></td><td>" + esc(o.owner || "—") +
-          '</td><td class="row-actions"><a href="order-detail.html?id=' + encodeURIComponent(o.id) +
-          "&from=user&user=" + encodeURIComponent(uid) + '&tab=orders">查看</a></td></tr>';
+          '</td><td class="row-actions"><a href="' + orderDetailHref(o.id, "orders") + '">查看</a></td></tr>';
       }).join("") + "</tbody></table></div>");
 
     pane.querySelectorAll(".goto-right-status").forEach(function (a) {
@@ -1193,8 +1290,7 @@
           "</td><td>" + (l.orderId ? orderLink(l.orderId, "learn") : "—") +
           '</td><td class="row-actions"><a href="live-detail.html?live_id=' + encodeURIComponent(l.id) +
           '">查看直播</a>' +
-          (l.orderId ? ' <a href="order-detail.html?id=' + encodeURIComponent(l.orderId) +
-            "&from=user&user=" + encodeURIComponent(uid) + '&tab=learn">查看关联订单</a>' : "") +
+          (l.orderId ? ' <a href="' + orderDetailHref(l.orderId, "learn") + '">查看关联订单</a>' : "") +
           "</td></tr>";
       }).join("") + "</tbody></table></div>");
   }
@@ -1205,7 +1301,7 @@
     if (!pane) return;
     var list = buildServiceRecords(user);
     var html = '<div style="margin-bottom:12px;display:flex;justify-content:flex-end">' +
-      '<a class="btn btn-primary" href="leads.html?user=' + encodeURIComponent(uid) + '">去SCRM跟进</a></div>';
+      '<a class="btn btn-primary" href="leads.html?user=' + encodeURIComponent(uid) + '&fromTab=service' + (returnTo ? ('&returnTo=' + encodeURIComponent(returnTo)) : '') + '">去SCRM跟进</a></div>';
     if (!list.length) {
       html += emptyBlock("暂无服务记录", "跟进触达与咨询记录将汇总展示在这里。");
     } else {
@@ -1252,7 +1348,7 @@
     var btn = el("reopen-submit");
     if (btn) {
       btn.disabled = false;
-      btn.textContent = "确认重新开通";
+      btn.textContent = "确认重试开通";
     }
     openModal(el("modal-reopen"));
   }
@@ -1269,11 +1365,18 @@
       reopenSubmit.disabled = true;
       reopenSubmit.textContent = "处理中…";
       setTimeout(function () {
-        US.reopenRight(uid, modalRightId, remark);
-        Proto.toast("权益已重新开通");
-        closeAll();
-        renderAll();
-        if (activeRightId === modalRightId) openRightDrawer(modalRightId);
+        try {
+          US.reopenRight(uid, modalRightId, remark);
+          Proto.toast("权益已成功开通");
+          closeAll();
+          renderAll();
+          showPostActionBar("权益已成功开通");
+          if (activeRightId === modalRightId) openRightDrawer(modalRightId);
+        } catch (err) {
+          reopenSubmit.disabled = false;
+          reopenSubmit.textContent = "确认重试开通";
+          Proto.toast("开通失败，请稍后重试");
+        }
       }, 450);
     });
   }
@@ -1318,11 +1421,18 @@
       var notifyNode = el("extend-notify");
       var notify = notifyNode ? notifyNode.checked : false;
       setTimeout(function () {
-        US.extendRight(uid, modalRightId, newEnd, reason, notify);
-        Proto.toast("权益有效期已调整");
-        closeAll();
-        renderAll();
-        if (activeRightId === modalRightId) openRightDrawer(modalRightId);
+        try {
+          US.extendRight(uid, modalRightId, newEnd, reason, notify);
+          Proto.toast("权益有效期已调整");
+          closeAll();
+          renderAll();
+          showPostActionBar("有效期已延长");
+          if (activeRightId === modalRightId) openRightDrawer(modalRightId);
+        } catch (err) {
+          extendSubmit.disabled = false;
+          extendSubmit.textContent = "确认延长";
+          Proto.toast("延长失败，请稍后重试");
+        }
       }, 450);
     });
   }
@@ -1366,11 +1476,18 @@
       regrantSubmit.disabled = true;
       regrantSubmit.textContent = "处理中…";
       setTimeout(function () {
-        US.reopenRight(uid, modalRightId, "【补开】" + reason);
-        Proto.toast("已补开课程权益");
-        closeAll();
-        renderAll();
-        if (activeRightId === modalRightId) openRightDrawer(modalRightId);
+        try {
+          (US.regrantRight || US.reopenRight)(uid, modalRightId, reason);
+          Proto.toast("已补开课程权益");
+          closeAll();
+          renderAll();
+          showPostActionBar("补开权益完成");
+          if (activeRightId === modalRightId) openRightDrawer(modalRightId);
+        } catch (err) {
+          regrantSubmit.disabled = false;
+          regrantSubmit.textContent = "确认补开";
+          Proto.toast("补开失败，请稍后重试");
+        }
       }, 450);
     });
   }
@@ -1499,8 +1616,9 @@
   /* ---------- header / tabs ---------- */
   var btnBack = el("btn-back");
   if (btnBack) {
+    btnBack.textContent = "← " + listReturnLabel();
     btnBack.addEventListener("click", function () {
-      location.href = "users.html";
+      location.href = returnTo || "users.html";
     });
   }
   var btnTag = el("btn-tag");
@@ -1536,6 +1654,8 @@
     setDisplay(el("page-empty"), "block");
     setDisplay(el("page-main"), "none");
     hideHeaderButtons();
+    var emptyBack = el("ud-empty-back");
+    if (emptyBack && returnTo) emptyBack.href = returnTo;
     return;
   }
 

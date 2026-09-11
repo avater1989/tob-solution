@@ -316,6 +316,31 @@
           createdAt: "2026-09-07 15:20:00",
           product: "视频号体验课券",
           logs: []
+        },
+        {
+          id: "RF20260909001",
+          orderId: "YB202609090012",
+          buyer: "学员0017",
+          userId: "U005",
+          phone: "137****0017",
+          amount: 9.9,
+          type: "仅退款",
+          reason: "课程不适合",
+          status: "done",
+          statusLabel: "退款处理完成",
+          createdAt: "2026-09-09 13:50:00",
+          product: "引流体验课",
+          rightsRecycled: true,
+          rightsStatus: "已退款回收",
+          courseAccess: "不可访问",
+          logs: [
+            { at: "2026-09-09 11:20:00", text: "买家支付成功，订单 YB202609090012 已支付", by: "系统" },
+            { at: "2026-09-09 11:21:00", text: "系统开通课程权益「引流体验课」", by: "系统" },
+            { at: "2026-09-09 13:50:00", text: "买家申请仅退款：课程不适合", by: "买家" },
+            { at: "2026-09-09 14:10:00", text: "商家同意退款，通联支付原路退回 ¥9.90", by: "客服" },
+            { at: "2026-09-09 14:28:00", text: "订单已退款 · 退款处理完成", by: "系统" },
+            { at: "2026-09-09 14:28:30", text: "课程权益已回收，用户当前不可访问课程", by: "系统" }
+          ]
         }
       ],
       channelOrders: [
@@ -640,10 +665,45 @@
     return live;
   }
 
+  var RF20260909001_SEED = {
+    id: "RF20260909001",
+    orderId: "YB202609090012",
+    buyer: "学员0017",
+    userId: "U005",
+    phone: "137****0017",
+    amount: 9.9,
+    type: "仅退款",
+    reason: "课程不适合",
+    status: "done",
+    statusLabel: "退款处理完成",
+    createdAt: "2026-09-09 13:50:00",
+    product: "引流体验课",
+    rightsRecycled: true,
+    rightsStatus: "已退款回收",
+    courseAccess: "不可访问",
+    logs: [
+      { at: "2026-09-09 11:20:00", text: "买家支付成功，订单 YB202609090012 已支付", by: "系统" },
+      { at: "2026-09-09 11:21:00", text: "系统开通课程权益「引流体验课」", by: "系统" },
+      { at: "2026-09-09 13:50:00", text: "买家申请仅退款：课程不适合", by: "买家" },
+      { at: "2026-09-09 14:10:00", text: "商家同意退款，通联支付原路退回 ¥9.90", by: "客服" },
+      { at: "2026-09-09 14:28:00", text: "订单已退款 · 退款处理完成", by: "系统" },
+      { at: "2026-09-09 14:28:30", text: "课程权益已回收，用户当前不可访问课程", by: "系统" }
+    ]
+  };
+
   function getAftersale(id) {
     /* alias old RO id */
     if (id === "RO20260904012") id = "AS202609080001";
-    return load().aftersales.find(function (a) { return a.id === id; }) || null;
+    var data = load();
+    var row = (data.aftersales || []).find(function (a) { return a.id === id; }) || null;
+    /* Upsert missing RF seed without bumping VERSION / wiping other local state */
+    if (!row && id === "RF20260909001") {
+      row = deepClone(RF20260909001_SEED);
+      data.aftersales = data.aftersales || [];
+      data.aftersales.push(row);
+      save(data);
+    }
+    return row;
   }
 
   function saveAftersale(row) {

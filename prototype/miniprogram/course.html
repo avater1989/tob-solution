@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>课程详情 · 星启家庭教育</title>
   <link rel="stylesheet" href="../assets/css/proto.css" />
-  <link rel="stylesheet" href="../assets/css/mp.css?v=taste2" />
+  <link rel="stylesheet" href="../assets/css/mp.css?v=taste3" />
 </head>
 <body class="mp-page" data-tabbar="0">
   <div class="mp-frame" style="padding-bottom:72px">
@@ -18,7 +18,7 @@
     <div class="mp-body">
       <div class="mp-detail-cover">
         <img src="../assets/img/covers/comm.jpg" alt="" />
-        <span class="try">第 1 节可试看</span>
+        <a class="try" id="try-badge" href="learn.html?trial=1&amp;course=comm&amp;lesson=1">第 1 节可试看</a>
         <div style="font-size:12px;opacity:.85;margin-bottom:6px">星启家庭教育 · 精品课</div>
         <div style="font-size:22px;font-weight:750;letter-spacing:-0.03em">亲子沟通基础</div>
       </div>
@@ -26,10 +26,13 @@
       <div class="mp-panel">
         <h1>亲子沟通基础</h1>
         <p style="font-size:12px;color:var(--mp-muted);margin-top:8px">8 节视频 · 312 人已学 · 适合 3-12 岁家庭</p>
-        <div style="display:flex;align-items:baseline;gap:8px;margin-top:12px;flex-wrap:wrap">
+        <div id="price-row" style="display:flex;align-items:baseline;gap:8px;margin-top:12px;flex-wrap:wrap">
           <div class="mp-price" style="font-size:26px"><small>¥</small>199</div>
           <s style="color:#c5cad3;font-size:13px">¥299</s>
           <span class="mp-tag hot">限时优惠</span>
+        </div>
+        <div id="owned-tip" style="display:none;margin-top:12px;font-size:12px;color:#237804;background:#e8f8ec;border-radius:10px;padding:10px 12px;line-height:1.5">
+          已开通系列课权益 · 长期有效 · 可直接学习，无需重复购买
         </div>
         <div class="mp-teacher">
           <div class="av"><img src="../assets/img/covers/live-host.jpg" alt="" /></div>
@@ -45,6 +48,9 @@
         <p style="font-size:13px;color:#5c6575;line-height:1.7;margin:0">
           听懂孩子情绪背后的需求，用可落地的沟通话术减少对抗，建立有边界又有温度的亲子关系。
         </p>
+        <p style="font-size:11px;color:var(--mp-muted);margin:10px 0 0;line-height:1.55">
+          商户配置：获取方式=付费购买 · 有效期=长期有效 · 试看=第 1 节整节
+        </p>
       </div>
 
       <div class="mp-section" style="padding-top:0">
@@ -52,33 +58,7 @@
           <div class="mp-section-title">课程目录</div>
           <span class="mp-section-more">共 8 节</span>
         </div>
-        <div class="mp-outline" style="border-radius:var(--mp-radius);overflow:hidden;box-shadow:var(--mp-shadow)">
-          <div class="mp-outline-item on">
-            <span class="n">1</span>
-            <span>为什么孩子不听你说话</span>
-            <span class="right"><span class="mp-tag">试看</span></span>
-          </div>
-          <div class="mp-outline-item lock">
-            <span class="n">2</span>
-            <span>情绪先于道理</span>
-            <span class="right">锁定</span>
-          </div>
-          <div class="mp-outline-item lock">
-            <span class="n">3</span>
-            <span>边界与规则</span>
-            <span class="right">锁定</span>
-          </div>
-          <div class="mp-outline-item lock">
-            <span class="n">4</span>
-            <span>家庭会议怎么开</span>
-            <span class="right">锁定</span>
-          </div>
-          <div class="mp-outline-item lock">
-            <span class="n">5</span>
-            <span>冲突后的修复对话</span>
-            <span class="right">锁定</span>
-          </div>
-        </div>
+        <div class="mp-outline" id="outline" style="border-radius:var(--mp-radius);overflow:hidden;box-shadow:var(--mp-shadow)"></div>
       </div>
     </div>
     <div class="mp-bottom-bar">
@@ -86,11 +66,122 @@
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 17.3 6.2 20.5l1.1-6.5L2.5 9.5l6.6-1L12 2.5l2.9 6 6.6 1-4.8 4.5 1.1 6.5z"/></svg>
         收藏
       </a>
-      <a class="mp-btn" href="pay-result.html?from=course" style="flex:1">立即购买 ¥199</a>
+      <button type="button" class="mp-btn" id="cta-buy" style="flex:1">立即购买 ¥199</button>
+      <a class="mp-btn" id="cta-learn" href="learn.html?course=comm&amp;lesson=2" style="flex:1;display:none">继续学习</a>
     </div>
   </div>
-  <p class="mp-hint"><a href="home.html">返回首页</a> · <a href="../admin/content-series.html">管理端系列课</a></p>
+  <p class="mp-hint">
+    <a href="home.html">返回首页</a> ·
+    <a href="course.html?guest=1">演示未购试看</a> ·
+    <a href="course.html?owned=1">演示已购态</a> ·
+    <a href="../admin/content-series.html">管理端系列课</a>
+  </p>
   <script src="../assets/js/proto.js"></script>
   <script src="../assets/js/mp-shell.js"></script>
+  <script src="../assets/js/mp-commerce.js"></script>
+  <script>
+    (function () {
+      var params = MpCommerce.qs();
+      var courseId = params.get("course") || "comm";
+      var item = MpCommerce.CATALOG[courseId] || MpCommerce.CATALOG.comm;
+      if (params.get("guest") === "1") {
+        var map = MpCommerce.readRights();
+        delete map[courseId];
+        localStorage.setItem("mp_course_rights_v1", JSON.stringify(map));
+      }
+      if (params.get("owned") === "1") {
+        MpCommerce.grantRights(courseId, { source: "demo" });
+      }
+      var owned = MpCommerce.hasRights(courseId);
+
+      var outline = document.getElementById("outline");
+      outline.innerHTML = item.outline
+        .map(function (lesson, idx) {
+          if (owned) {
+            var on = idx === 1 ? " on" : "";
+            var right = idx === 0 ? "已学完" : idx === 1 ? '<span style="color:var(--mp-primary);font-weight:650">学习中</span>' : lesson.duration;
+            return (
+              '<a class="mp-outline-item is-link' +
+              on +
+              '" href="learn.html?course=' +
+              encodeURIComponent(courseId) +
+              "&lesson=" +
+              lesson.n +
+              '"><span class="n">' +
+              (idx === 0 ? "✓" : lesson.n) +
+              "</span><span>" +
+              lesson.title +
+              '</span><span class="right">' +
+              right +
+              "</span></a>"
+            );
+          }
+          if (lesson.trial) {
+            return (
+              '<a class="mp-outline-item is-link trial on" href="learn.html?trial=1&course=' +
+              encodeURIComponent(courseId) +
+              "&lesson=" +
+              lesson.n +
+              '"><span class="n">' +
+              lesson.n +
+              "</span><span>" +
+              lesson.title +
+              '</span><span class="right"><span class="mp-tag trial">可试看</span></span></a>'
+            );
+          }
+          return (
+            '<button type="button" class="mp-outline-item lock" data-lock="' +
+            lesson.n +
+            '" style="width:100%;border:0;background:#fff;text-align:left">' +
+            '<span class="n">' +
+            lesson.n +
+            "</span><span>" +
+            lesson.title +
+            '</span><span class="right"><span class="mp-tag lock">未购买</span></span></button>'
+          );
+        })
+        .join("");
+
+      document.getElementById("try-badge").style.display = owned ? "none" : "";
+      document.getElementById("price-row").style.display = owned ? "none" : "flex";
+      document.getElementById("owned-tip").style.display = owned ? "block" : "none";
+      document.getElementById("cta-buy").style.display = owned ? "none" : "";
+      document.getElementById("cta-learn").style.display = owned ? "" : "none";
+      document.getElementById("cta-learn").textContent =
+        params.get("progress") === "0" ? "开始学习" : "继续学习";
+
+      function openBuy(fromLesson) {
+        MpCommerce.openBuyNotice({
+          catalogId: courseId,
+          from: "course",
+          course: courseId,
+          lesson: fromLesson || item.trialLesson,
+          returnUrl:
+            "learn.html?course=" +
+            encodeURIComponent(courseId) +
+            "&lesson=" +
+            (fromLesson && Number(fromLesson) > 1 ? fromLesson : 2)
+        });
+      }
+
+      document.getElementById("cta-buy").addEventListener("click", function () {
+        openBuy(item.trialLesson);
+      });
+
+      outline.querySelectorAll("[data-lock]").forEach(function (el) {
+        el.addEventListener("click", function () {
+          Proto.toast("该节未购买，请先购买系列课");
+          openBuy(el.getAttribute("data-lock"));
+        });
+      });
+
+      if (!owned && params.get("needBuy") === "1") {
+        setTimeout(function () {
+          Proto.toast("该节需购买后学习");
+          openBuy(params.get("lesson") || item.trialLesson);
+        }, 280);
+      }
+    })();
+  </script>
 </body>
 </html>

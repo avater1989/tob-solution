@@ -49,27 +49,17 @@
           <option>录播直播</option>
         </select>
       </div>
-      <div class="field"><label>关联课程 *</label>
-        <select id="le-course">
-          <option>请选择</option>
-          <option>春启 03 期家长必修课</option>
-          <option>春启 04 期家长必修课</option>
-          <option>9.9 引流课 · 亲子沟通</option>
-          <option>家长训练营</option>
-          <option>试听公开课</option>
-        </select>
-      </div>
       <div class="field"><label>直播间类型 *</label>
         <select id="le-style">
           <option>传统直播间</option>
           <option>沉浸直播间</option>
         </select>
       </div>
-      <div class="field"><label>开始时间 *</label><input id="le-start" type="datetime-local" value="2026-09-12T20:00" /></div>
-      <div class="field"><label>结束时间 *</label><input id="le-end" type="datetime-local" value="2026-09-12T22:00" /></div>
       <div class="field"><label>主讲老师 *</label>
         <select id="le-teacher"><option>阮荣均</option><option>赵老师</option><option>王助教</option></select>
       </div>
+      <div class="field"><label>开始时间 *</label><input id="le-start" type="datetime-local" value="2026-09-12T20:00" /></div>
+      <div class="field"><label>结束时间 *</label><input id="le-end" type="datetime-local" value="2026-09-12T22:00" /></div>
       <div class="field"><label>助教</label>
         <select id="le-assist" multiple style="height:60px;padding:8px">
           <option>王助教</option><option>刘助教</option>
@@ -162,13 +152,150 @@
     </div>
   </div></div>
 
+  <h2 class="page-section-title" id="sec-preset">场景预设</h2>
+  <div class="card"><div class="card-bd">
+    <p class="muted" style="margin:0 0 12px;font-size:13px;line-height:1.6">
+      一键套用常见默认值，套用后仍可逐项修改。不替代下方三项业务配置。
+    </p>
+    <div class="preset-row" id="le-presets">
+      <button type="button" class="btn preset-btn" data-preset="open">免费招生公开课</button>
+      <button type="button" class="btn preset-btn" data-preset="enrolled">已购学员授课</button>
+      <button type="button" class="btn preset-btn" data-preset="paid">付费单场直播</button>
+    </div>
+    <p class="muted" id="le-preset-hint" style="margin:10px 0 0;font-size:12px">未套用预设</p>
+  </div></div>
+
+  <h2 class="page-section-title" id="sec-access">观看资格</h2>
+  <div class="card"><div class="card-bd">
+    <p class="sec-help">决定<strong>谁可以进入</strong>本场直播/回放。与下方「直播间商品」无关：挂载商品不会自动获得观看资格。</p>
+    <div class="goods-section">
+      <div class="goods-line goods-sale" id="le-access-modes">
+        <label><input type="radio" name="sale" value="free" checked /><span>免费</span></label>
+        <label><input type="radio" name="sale" value="paid" /><span>付费</span></label>
+        <label><input type="radio" name="sale" value="pwd" /><span>观看密码</span></label>
+        <label><input type="radio" name="sale" value="named" /><span>指定用户</span></label>
+      </div>
+
+      <div class="access-panel" id="access-panel-free">
+        <p class="muted" style="margin:0;font-size:12px">任意用户可进入本场直播与回放（仍受上架状态影响）。</p>
+      </div>
+      <div class="access-panel" id="access-panel-paid" style="display:none">
+        <div class="form-grid" style="grid-template-columns:1fr 1fr;margin-top:4px">
+          <div class="field"><label>单场价格（元）</label><input id="le-access-price" type="number" min="0" step="0.01" value="9.9" placeholder="如：9.9" /></div>
+          <div class="field"><label>说明</label><div class="muted" style="font-size:12px;padding-top:8px">付费购买的是本场观看资格，不是购物车里的挂载商品。</div></div>
+        </div>
+      </div>
+      <div class="access-panel" id="access-panel-pwd" style="display:none">
+        <div class="form-grid" style="grid-template-columns:1fr 1fr;margin-top:4px">
+          <div class="field"><label>观看密码（观众端）</label><input id="le-watch-pwd" type="text" placeholder="观众进房时输入" /></div>
+          <div class="field"><label>说明</label><div class="muted" style="font-size:12px;padding-top:8px">仅观众进房使用；与「直播设置」中的主播开播密码不是同一套。</div></div>
+        </div>
+      </div>
+      <div class="access-panel" id="access-panel-named" style="display:none">
+        <div class="toolbar" style="margin:4px 0 0;border:none;padding:0;background:transparent">
+          <button type="button" class="btn btn-sm" id="btn-pick-viewers">+ 选择可观看用户</button>
+          <button type="button" class="btn btn-sm" id="btn-edit-viewers" style="display:none">重新编辑</button>
+        </div>
+        <div id="viewer-summary" class="viewer-summary" style="display:none;margin-top:10px">
+          <div class="viewer-sum-block">
+            <div class="viewer-sum-label">按课程权益开放</div>
+            <div id="viewer-sum-courses" class="muted" style="font-size:13px">—</div>
+            <div class="muted" style="font-size:12px;margin-top:4px">持有所选课程有效权益的学员可观看；后续新购且权益仍有效的学员也会自动纳入。</div>
+          </div>
+          <div class="viewer-sum-block" style="margin-top:8px">
+            <div class="viewer-sum-label">手动补充名单</div>
+            <div id="viewer-sum-manual" class="muted" style="font-size:13px">暂无</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="goods-line" style="margin-top:16px">
+        <label class="goods-checkbox">
+          <input type="checkbox" id="le-solo-sell" checked />
+          <b>店铺单独售卖本场资格</b>
+          <span class="muted">用户可通过店铺或链接购买/领取本场观看资格；不表示挂载了带货商品</span>
+        </label>
+      </div>
+
+      <div class="goods-line goods-validity">
+        <span class="pro-badge">专业版</span>
+        <span class="validity-label">有效期：</span>
+        <label class="opt"><input type="radio" name="valid" checked /><span class="opt-text">长期有效，暂不支持修改</span></label>
+      </div>
+
+      <div class="goods-line goods-shelf-row">
+        <label class="shelf-label">上架设置：</label>
+        <label><input type="radio" name="shelf" checked /><span>立即上架</span></label>
+        <label class="shelf-time-label">
+          <input type="radio" name="shelf" /><span>定时上架</span>
+          <input type="datetime-local" placeholder="请设置时间" class="shelf-time-input" />
+        </label>
+        <label><input type="radio" name="shelf" /><span>暂不上架</span></label>
+      </div>
+    </div>
+  </div></div>
+
+  <h2 class="page-section-title" id="sec-catalog">内容归属</h2>
+  <div class="card"><div class="card-bd">
+    <p class="sec-help">
+      决定本场<strong>直播 + 回放</strong>是否作为某课程/专栏/训练营的<strong>目录内容</strong>出现。
+      已与原先「关联课程」「所属课程」合并，避免两处配置含义不清。
+    </p>
+    <div class="goods-line" style="margin-bottom:12px">
+      <label><input type="radio" name="catalog" id="le-catalog-none" value="none" checked /><span>不加入课程目录（独立直播）</span></label>
+      <label style="margin-left:16px"><input type="radio" name="catalog" id="le-catalog-join" value="join" /><span>加入课程目录</span></label>
+    </div>
+    <div class="form-grid" id="le-catalog-fields" style="grid-template-columns:1fr 1fr;display:none">
+      <div class="field" style="grid-column:1/-1">
+        <label>所属课程 / 专栏 / 训练营 *</label>
+        <select id="le-course">
+          <option value="">请选择</option>
+          <option>春启 03 期家长必修课</option>
+          <option>春启 04 期家长必修课</option>
+          <option>9.9 引流课 · 亲子沟通</option>
+          <option>家长训练营</option>
+          <option>试听公开课</option>
+        </select>
+        <p class="field-help">学员在课程目录中可看到本场直播与回放入口；不授予额外观看资格（仍由「观看资格」控制）。</p>
+      </div>
+      <div class="field" style="grid-column:1/-1">
+        <button type="button" class="btn" id="btn-pick-course">+ 从内容库选择课程/专栏/训练营/会员</button>
+      </div>
+    </div>
+  </div></div>
+
+  <h2 class="page-section-title" id="sec-goods">直播间商品</h2>
+  <div class="card"><div class="card-bd">
+    <p class="sec-help">
+      配置观众在直播中<strong>可购买的带货商品</strong>（购物车）。
+      <strong>挂载商品 ≠ 获得本场观看资格</strong>：即使用户买了挂载课，也不自动能进本场，除非观看资格本身允许。
+    </p>
+    <div class="toolbar" style="margin-bottom:12px">
+      <button class="btn btn-primary" id="btn-add-goods">+ 添加商品</button>
+      <button class="btn" id="btn-import-crm">从 SCRM 商品导入</button>
+    </div>
+    <table class="data">
+      <thead><tr><th>商品图</th><th>商品名称</th><th>价格</th><th>讲解话术</th><th>操作</th></tr></thead>
+      <tbody id="goods-tbody">
+        <tr><td><div class="thumb"></div></td><td>春启 03 期家长必修课</td><td>¥9.9</td><td><input placeholder="选填" style="width:240px" /></td><td><a href="#" data-act="del">移除</a></td></tr>
+        <tr><td><div class="thumb"></div></td><td>今晚直播·家长公开课</td><td>¥0</td><td><input placeholder="选填" style="width:240px" /></td><td><a href="#" data-act="del">移除</a></td></tr>
+      </tbody>
+    </table>
+  </div></div>
+
   <h2 class="page-section-title">直播设置</h2>
   <div class="card"><div class="card-bd">
     <div class="form-grid" style="grid-template-columns:1fr 1fr">
-      <div class="field"><label>开播密码</label>
-        <select><option>不设置</option><option>设置密码</option></select>
+      <div class="field"><label>开播密码（主播端）</label>
+        <select id="le-host-pwd-mode">
+          <option value="off">不设置</option>
+          <option value="on">设置密码</option>
+        </select>
+        <p class="field-help">仅主播/助教进入推流端开播时使用，观众进房不校验此密码。</p>
       </div>
-      <div class="field"><label>密码</label><input type="text" placeholder="如：123456" /></div>
+      <div class="field"><label>主播开播密码</label>
+        <input id="le-host-pwd" type="text" placeholder="如：host888" disabled />
+      </div>
       <div class="field" style="grid-column:1/-1">
         <label style="display:inline-block;vertical-align:middle">回放设置：</label>
         <label class="switch on" style="margin-left:8px"><input type="checkbox" checked /><span></span></label>
@@ -250,75 +377,6 @@
     <button class="btn btn-sm" id="btn-pick-owner">+ 选择员工</button>
   </div></div>
 
-  <h2 class="page-section-title">所属课程</h2>
-  <div class="card"><div class="card-bd">
-    <div class="form-grid">
-      <div class="field" style="grid-column:1/-1">
-        <label>作为目录内容：</label>
-        <button class="btn" id="btn-pick-course">+ 选择课程/专栏/训练营/会员</button>
-      </div>
-    </div>
-  </div></div>
-
-  <h2 class="page-section-title" id="sec-goods">挂载商品</h2>
-  <div class="card"><div class="card-bd">
-    <p class="muted" style="margin-bottom:12px">挂载商品将在直播间以「购物车」形式展示，观众可边看边买。</p>
-    <div class="toolbar" style="margin-bottom:12px">
-      <button class="btn btn-primary" id="btn-add-goods">+ 添加商品</button>
-      <button class="btn" id="btn-import-crm">从 SCRM 商品导入</button>
-    </div>
-    <table class="data">
-      <thead><tr><th>商品图</th><th>商品名称</th><th>价格</th><th>讲解话术</th><th>操作</th></tr></thead>
-      <tbody id="goods-tbody">
-        <tr><td><div class="thumb"></div></td><td>春启 03 期家长必修课</td><td>¥9.9</td><td><input placeholder="选填" style="width:240px" /></td><td><a href="#" data-act="del">移除</a></td></tr>
-        <tr><td><div class="thumb"></div></td><td>今晚直播·家长公开课</td><td>¥0</td><td><input placeholder="选填" style="width:240px" /></td><td><a href="#" data-act="del">移除</a></td></tr>
-      </tbody>
-    </table>
-  </div></div>
-
-  <h2 class="page-section-title" id="sec-sale">售卖方式</h2>
-  <div class="card"><div class="card-bd">
-    <div class="goods-section">
-      <div class="goods-line">
-        <label class="goods-checkbox">
-          <input type="checkbox" checked />
-          <b>单独售卖</b>
-          <span class="muted">用户可以通过店铺或链接的方式单独购买该商品</span>
-          <a href="#" class="link-blue">在线设计</a>
-        </label>
-      </div>
-
-      <div class="goods-line goods-sale">
-        <label><input type="radio" name="sale" checked /><span>免费</span></label>
-        <label><input type="radio" name="sale" /><span>付费</span></label>
-        <label><input type="radio" name="sale" /><span>加密</span></label>
-        <label><input type="radio" name="sale" /><span>指定用户</span></label>
-      </div>
-
-      <div class="goods-line goods-validity">
-        <span class="pro-badge">专业版</span>
-        <span class="validity-label">有效期：</span>
-        <label class="opt"><input type="radio" name="valid" checked /><span class="opt-text">长期有效，暂不支持修改</span></label>
-      </div>
-
-      <div class="goods-line goods-links">
-        <a href="#" class="link-blue">刷新</a>
-        <a href="#" class="link-blue">前往商品分组</a>
-        <a href="#" class="link-blue">查看教程</a>
-      </div>
-
-      <div class="goods-line goods-shelf-row">
-        <label class="shelf-label">上架设置：</label>
-        <label><input type="radio" name="shelf" checked /><span>立即上架</span></label>
-        <label class="shelf-time-label">
-          <input type="radio" name="shelf" /><span>定时上架</span>
-          <input type="datetime-local" placeholder="请设置时间" class="shelf-time-input" />
-        </label>
-        <label><input type="radio" name="shelf" /><span>暂不上架</span></label>
-      </div>
-    </div>
-  </div></div>
-
   <h2 class="page-section-title">预约提醒</h2>
   <div class="card"><div class="card-bd">
     <p class="muted" style="margin:0 0 12px;font-size:13px;line-height:1.6">
@@ -356,7 +414,51 @@
 
 </div>
 
+<div class="proto-mask" id="mask"></div>
+<div class="proto-modal" id="modal-viewers" style="width:560px">
+  <div class="proto-modal-hd">
+    <h3 style="font-size:16px;font-weight:600">选择可观看用户</h3>
+    <button class="btn btn-sm btn-ghost" type="button" data-close>×</button>
+  </div>
+  <div class="proto-modal-bd">
+    <div class="field">
+      <label>持有指定课程有效权益的学员</label>
+      <div id="vw-course-list" class="vw-check-list">
+        <label class="vw-check"><input type="checkbox" value="春启 03 期家长必修课" /> 春启 03 期家长必修课</label>
+        <label class="vw-check"><input type="checkbox" value="春启 04 期家长必修课" /> 春启 04 期家长必修课</label>
+        <label class="vw-check"><input type="checkbox" value="9.9 引流课 · 亲子沟通" /> 9.9 引流课 · 亲子沟通</label>
+        <label class="vw-check"><input type="checkbox" value="家长训练营" /> 家长训练营</label>
+        <label class="vw-check"><input type="checkbox" value="亲子沟通基础" /> 亲子沟通基础</label>
+      </div>
+      <p class="muted" style="margin:6px 0 0;font-size:12px">勾选后，持有对应课程<strong>有效权益</strong>的学员可观看；之后新购买且权益有效的学员也会自动获得观看资格。</p>
+    </div>
+    <div class="field" style="margin-top:14px">
+      <label>手动补充指定用户</label>
+      <div id="vw-user-list" class="vw-check-list">
+        <label class="vw-check"><input type="checkbox" value="U001" data-name="学员7576" /> 学员7576（U001）</label>
+        <label class="vw-check"><input type="checkbox" value="U002" data-name="卂十七" /> 卂十七（U002）</label>
+        <label class="vw-check"><input type="checkbox" value="U004" data-name="学员7553" /> 学员7553（U004）</label>
+        <label class="vw-check"><input type="checkbox" value="U005" data-name="学员0017" /> 学员0017（U005）</label>
+      </div>
+      <p class="muted" style="margin:6px 0 0;font-size:12px">手动补充名单与课程权益开放分开展示，互不影响。</p>
+    </div>
+  </div>
+  <div class="proto-modal-ft" style="border-top:1px solid var(--color-border);padding:12px 20px;display:flex;gap:8px;justify-content:flex-end">
+    <button class="btn" type="button" data-close>取消</button>
+    <button class="btn btn-primary" type="button" id="vw-confirm">确认</button>
+  </div>
+</div>
+
 <style>
+.viewer-summary {
+  padding: 10px 12px;
+  background: #f7f8fa;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+}
+.viewer-sum-label { font-size: 12px; font-weight: 600; color: var(--color-text-secondary); margin-bottom: 2px; }
+.vw-check-list { display: grid; gap: 6px; margin-top: 6px; }
+.vw-check { display: flex; align-items: center; gap: 8px; font-size: 13px; }
 .page-section-title {
   font-size: 15px; font-weight: 600;
   color: var(--color-text);
@@ -365,6 +467,30 @@
   border-left: 3px solid var(--color-primary);
 }
 .page-section-title:first-child { margin-top: 0; }
+.sec-help {
+  margin: 0 0 14px;
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--color-text-secondary);
+}
+.field-help {
+  margin: 6px 0 0;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--color-text-muted);
+}
+.preset-row { display: flex; flex-wrap: wrap; gap: 8px; }
+.preset-btn.is-active {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+  background: var(--color-primary-soft, #e8f3ff);
+}
+.access-panel {
+  margin: 4px 0 8px;
+  padding: 10px 12px;
+  background: #f7f8fa;
+  border-radius: 6px;
+}
 .cover-row { display: flex; gap: 16px; align-items: flex-start; }
 .cover-preview {
   width: 200px; height: 112px;
@@ -680,6 +806,8 @@
 .is-readonly #btn-add-role,
 .is-readonly #btn-pick-owner,
 .is-readonly #btn-pick-course,
+.is-readonly #btn-pick-viewers,
+.is-readonly .preset-btn,
 .is-readonly #btn-more-config,
 .is-readonly [data-act="del"] { display: none !important; }
 .is-readonly input,
@@ -693,7 +821,7 @@
 
 <script src="../assets/js/proto.js"></script>
 <script src="../assets/js/prototype-business-store.js"></script>
-<script src="../assets/js/live-ops.js?v=9"></script>
+<script src="../assets/js/live-ops.js?v=10"></script>
 <script src="../assets/js/live-reach.js"></script>
 <script src="../assets/js/admin-shell.js?v=19"></script>
 <script>
@@ -814,27 +942,150 @@
     return String(s).replace(" ", "T").slice(0, 16);
   }
 
+  function saleModeToAccess(mode) {
+    var m = String(mode || "免费");
+    if (m === "付费" || m === "单独售卖") return "paid";
+    if (m === "加密" || m === "观看密码") return "pwd";
+    if (m === "指定用户") return "named";
+    return "free";
+  }
+  function accessToSaleMode(v) {
+    if (v === "paid") return "付费";
+    if (v === "pwd") return "加密";
+    if (v === "named") return "指定用户";
+    return "免费";
+  }
+  function selectedAccess() {
+    var el = document.querySelector('input[name="sale"]:checked');
+    return el ? el.value : "free";
+  }
+  function setAccessMode(value) {
+    var radios = document.querySelectorAll('input[name="sale"]');
+    radios.forEach(function (r) { r.checked = r.value === value; });
+    syncAccessPanels();
+  }
+  function syncAccessPanels() {
+    var v = selectedAccess();
+    ["free", "paid", "pwd", "named"].forEach(function (k) {
+      var panel = $("access-panel-" + k);
+      if (panel) panel.style.display = k === v ? "" : "none";
+    });
+  }
+  function setCatalogJoin(join) {
+    var none = $("le-catalog-none");
+    var joinEl = $("le-catalog-join");
+    if (none) none.checked = !join;
+    if (joinEl) joinEl.checked = !!join;
+    syncCatalogFields();
+  }
+  function isCatalogJoin() {
+    var joinEl = $("le-catalog-join");
+    return !!(joinEl && joinEl.checked);
+  }
+  function syncCatalogFields() {
+    var box = $("le-catalog-fields");
+    if (box) box.style.display = isCatalogJoin() ? "" : "none";
+  }
+  function setCourseName(name) {
+    var sel = $("le-course");
+    if (!sel) return;
+    var matched = false;
+    for (var i = 0; i < sel.options.length; i++) {
+      if (sel.options[i].text === name || sel.options[i].value === name) {
+        sel.selectedIndex = i;
+        matched = true;
+        break;
+      }
+    }
+    if (!matched && name) {
+      for (var j = 0; j < sel.options.length; j++) {
+        if (sel.options[j].text && sel.options[j].text !== "请选择" &&
+          (name.indexOf(sel.options[j].text) >= 0 || sel.options[j].text.indexOf(String(name).slice(0, 4)) >= 0)) {
+          sel.selectedIndex = j;
+          matched = true;
+          break;
+        }
+      }
+    }
+    if (!matched) sel.selectedIndex = 0;
+  }
+  function setGoodsRows(rows) {
+    var tb = $("goods-tbody");
+    if (!tb) return;
+    tb.innerHTML = "";
+    (rows || []).forEach(function (p) {
+      var tr = document.createElement("tr");
+      var price = typeof p.price === "number" ? p.price : 0;
+      tr.innerHTML =
+        '<td><div class="thumb"></div></td>' +
+        "<td>" + (p.name || "商品") + "</td>" +
+        "<td>¥" + price + "</td>" +
+        '<td><input placeholder="选填" style="width:240px" /></td>' +
+        '<td><a href="#" data-act="del">移除</a></td>';
+      tb.appendChild(tr);
+    });
+    tb.querySelectorAll('[data-act="del"]').forEach(function (a) {
+      on(a, "click", function (e) {
+        e.preventDefault();
+        var tr = a.closest("tr");
+        if (tr) tr.remove();
+        dirty = true;
+        toast("已移除（原型）");
+      });
+    });
+  }
+  function syncHostPwd() {
+    var mode = $("le-host-pwd-mode");
+    var inp = $("le-host-pwd");
+    if (!mode || !inp) return;
+    var on = mode.value === "on";
+    inp.disabled = !on;
+    if (!on) inp.value = "";
+  }
+  function applyPreset(key) {
+    var labels = {
+      open: "免费招生公开课",
+      enrolled: "已购学员授课",
+      paid: "付费单场直播"
+    };
+    if (key === "open") {
+      setAccessMode("free");
+      if ($("le-solo-sell")) $("le-solo-sell").checked = true;
+      setCatalogJoin(false);
+      setGoodsRows([
+        { name: "9.9 引流课 · 亲子沟通", price: 9.9 },
+        { name: "春启 03 期家长必修课", price: 1999 }
+      ]);
+    } else if (key === "enrolled") {
+      setAccessMode("named");
+      if ($("le-solo-sell")) $("le-solo-sell").checked = false;
+      setCatalogJoin(true);
+      setCourseName("春启 03 期家长必修课");
+      setGoodsRows([]);
+      if (typeof window.__leSetViewers === "function") {
+        window.__leSetViewers({ courses: ["春启 03 期家长必修课"], users: [] });
+      }
+    } else if (key === "paid") {
+      setAccessMode("paid");
+      if ($("le-access-price")) $("le-access-price").value = "49";
+      if ($("le-solo-sell")) $("le-solo-sell").checked = true;
+      setCatalogJoin(false);
+      setGoodsRows([{ name: "课后答疑加餐包", price: 99 }]);
+    } else {
+      return;
+    }
+    document.querySelectorAll(".preset-btn").forEach(function (b) {
+      b.classList.toggle("is-active", b.getAttribute("data-preset") === key);
+    });
+    if ($("le-preset-hint")) $("le-preset-hint").textContent = "已套用「" + labels[key] + "」，可继续修改";
+    dirty = true;
+    toast("已套用预设：" + labels[key]);
+  }
+
   function fillForm(v) {
     if (!v) return;
     if ($("le-name")) $("le-name").value = v.liveName || v.name || "";
     if ($("le-mode")) $("le-mode").value = v.liveMode || "视频直播";
-    if ($("le-course") && v.courseName) {
-      var opts = $("le-course").options;
-      var matched = false;
-      for (var i = 0; i < opts.length; i++) {
-        if (opts[i].text === v.courseName || opts[i].value === v.courseName) {
-          opts[i].selected = true; matched = true; break;
-        }
-      }
-      if (!matched) {
-        for (var j = 0; j < opts.length; j++) {
-          if (opts[j].text && opts[j].text !== "请选择" &&
-            (v.courseName.indexOf(opts[j].text) >= 0 || opts[j].text.indexOf(v.courseName.slice(0, 4)) >= 0)) {
-            opts[j].selected = true; break;
-          }
-        }
-      }
-    }
     if ($("le-style")) $("le-style").value = v.roomType || "传统直播间";
     if ($("le-start")) {
       if (v.startAt === "" || v.startAt === null) $("le-start").value = "";
@@ -852,26 +1103,50 @@
     if ($("le-remind-start")) $("le-remind-start").value = v.remindOnStart === false ? "0" : "1";
     if ($("le-remind-replay")) $("le-remind-replay").value = v.remindReplay === false ? "0" : "1";
     if ($("le-agree")) $("le-agree").checked = !!v.agreedOpsRules;
+
+    setAccessMode(saleModeToAccess(v.saleMode || v.accessMode));
+    if ($("le-access-price") && v.accessPrice != null) $("le-access-price").value = v.accessPrice;
+    if ($("le-watch-pwd") && v.watchPassword) $("le-watch-pwd").value = v.watchPassword;
+    if ($("le-solo-sell")) $("le-solo-sell").checked = v.soloSell !== false;
+
+    var join = v.catalogJoin != null ? !!v.catalogJoin : !!(v.courseName && v.courseName !== "请选择");
+    setCatalogJoin(join);
+    if (v.courseName) setCourseName(v.courseName);
+
+    if (v.products && v.products.length) setGoodsRows(v.products);
+
+    if ($("le-host-pwd-mode")) {
+      $("le-host-pwd-mode").value = v.hostPassword ? "on" : "off";
+      if ($("le-host-pwd") && v.hostPassword) $("le-host-pwd").value = v.hostPassword;
+      syncHostPwd();
+    }
   }
 
   function collect() {
     var courseSel = $("le-course");
-    var courseName = courseSel && courseSel.selectedIndex > 0 ? courseSel.options[courseSel.selectedIndex].text : "";
-    var salePaid = document.querySelector('input[name="sale"][value="paid"]:checked') ||
-      document.querySelector(".goods-sale input[type=radio]:checked");
-    var saleMode = "免费";
-    var solo = document.querySelector(".goods-checkbox input[type=checkbox]");
-    if (solo && solo.checked) saleMode = "付费";
+    var catalogJoin = isCatalogJoin();
+    var courseName = "";
+    if (catalogJoin && courseSel && courseSel.selectedIndex > 0) {
+      courseName = courseSel.options[courseSel.selectedIndex].text;
+    }
+    var access = selectedAccess();
+    var saleMode = accessToSaleMode(access);
     var products = [];
     var rows = document.querySelectorAll("#goods-tbody tr");
     rows.forEach(function (tr) {
       var nameCell = tr.querySelector("td:nth-child(2)");
-      if (nameCell) products.push({ name: nameCell.textContent.trim(), price: 0 });
+      var priceCell = tr.querySelector("td:nth-child(3)");
+      if (nameCell) {
+        var priceTxt = priceCell ? priceCell.textContent.replace(/[^\d.]/g, "") : "0";
+        products.push({ name: nameCell.textContent.trim(), price: parseFloat(priceTxt) || 0 });
+      }
     });
+    var hostOn = $("le-host-pwd-mode") && $("le-host-pwd-mode").value === "on";
     return {
       name: ($("le-name") && $("le-name").value.trim()) || "",
       liveMode: ($("le-mode") && $("le-mode").value) || "视频直播",
       courseName: courseName,
+      catalogJoin: catalogJoin,
       roomType: ($("le-style") && $("le-style").value) || "传统直播间",
       startAt: ($("le-start") && $("le-start").value) ? $("le-start").value.replace("T", " ") : "",
       endAt: ($("le-end") && $("le-end").value) ? $("le-end").value.replace("T", " ") : "",
@@ -879,6 +1154,11 @@
       description: ($("le-intro") && $("le-intro").value) || "",
       content: ($("le-content") && $("le-content").value) || "",
       saleMode: saleMode,
+      accessMode: access,
+      accessPrice: $("le-access-price") ? Number($("le-access-price").value) || 0 : 0,
+      watchPassword: access === "pwd" && $("le-watch-pwd") ? $("le-watch-pwd").value.trim() : "",
+      hostPassword: hostOn && $("le-host-pwd") ? $("le-host-pwd").value.trim() : "",
+      soloSell: $("le-solo-sell") ? !!$("le-solo-sell").checked : true,
       products: products,
       coverConfigured: coverConfigured,
       agreedOpsRules: $("le-agree") ? $("le-agree").checked : false,
@@ -1135,6 +1415,9 @@
     applyReadonly();
     coverConfigured = live.coverConfigured !== false;
     fillForm(live);
+    syncAccessPanels();
+    syncCatalogFields();
+    syncHostPwd();
     if (live.coverUrl && $("le-cover-img")) $("le-cover-img").src = live.coverUrl;
     setCoverUi();
     enableBookingLink(live.liveId);
@@ -1181,11 +1464,24 @@
     disableBookingLinks();
   }
   setCoverUi();
+  syncAccessPanels();
+  syncCatalogFields();
+  syncHostPwd();
   baseline = snapshotForm();
 
   document.querySelectorAll("#page-content input, #page-content select, #page-content textarea").forEach(function (el) {
     el.addEventListener("change", function () { dirty = snapshotForm() !== baseline; });
     el.addEventListener("input", function () { dirty = snapshotForm() !== baseline; });
+  });
+  document.querySelectorAll('input[name="sale"]').forEach(function (r) {
+    on(r, "change", syncAccessPanels);
+  });
+  document.querySelectorAll('input[name="catalog"]').forEach(function (r) {
+    on(r, "change", syncCatalogFields);
+  });
+  on($("le-host-pwd-mode"), "change", syncHostPwd);
+  document.querySelectorAll(".preset-btn").forEach(function (btn) {
+    on(btn, "click", function () { applyPreset(btn.getAttribute("data-preset")); });
   });
   window.addEventListener("beforeunload", function (e) {
     if (!dirty || isView) return;
@@ -1356,6 +1652,116 @@
   ["btn-add-role", "btn-pick-owner", "btn-pick-course", "btn-add-goods", "btn-import-crm", "btn-more-config"].forEach(function (id) {
     on($(id), "click", function () { toast("原型操作"); dirty = true; });
   });
+
+  /* ---- 指定用户观看范围 ---- */
+  var viewerState = { courses: [], users: [] };
+  var viewerDraft = null;
+  var maskEl = $("mask");
+  function closeModals() {
+    if (maskEl) maskEl.classList.remove("open");
+    document.querySelectorAll(".proto-modal").forEach(function (n) { n.classList.remove("open"); });
+  }
+  function openModal(node) {
+    if (!node) return;
+    if (maskEl) maskEl.classList.add("open");
+    document.querySelectorAll(".proto-modal").forEach(function (n) { n.classList.remove("open"); });
+    node.classList.add("open");
+  }
+  function renderViewerSummary() {
+    var box = $("viewer-summary");
+    var editBtn = $("btn-edit-viewers");
+    var pickBtn = $("btn-pick-viewers");
+    if (!box) return;
+    var has = (viewerState.courses && viewerState.courses.length) || (viewerState.users && viewerState.users.length);
+    box.style.display = has ? "block" : "none";
+    if (editBtn) editBtn.style.display = has ? "" : "none";
+    if (pickBtn) pickBtn.textContent = has ? "调整观看范围" : "+ 选择可观看用户";
+    var cEl = $("viewer-sum-courses");
+    var uEl = $("viewer-sum-manual");
+    if (cEl) {
+      cEl.textContent = viewerState.courses.length
+        ? viewerState.courses.join("、") + "（有效权益学员，含后续新购）"
+        : "未按课程开放";
+    }
+    if (uEl) {
+      uEl.textContent = viewerState.users.length
+        ? viewerState.users.map(function (u) { return u.name + "（" + u.id + "）"; }).join("、")
+        : "暂无";
+    }
+  }
+
+  function fillViewerModalFrom(state) {
+    document.querySelectorAll("#vw-course-list input[type=checkbox]").forEach(function (cb) {
+      cb.checked = (state.courses || []).indexOf(cb.value) >= 0;
+    });
+    document.querySelectorAll("#vw-user-list input[type=checkbox]").forEach(function (cb) {
+      var ids = (state.users || []).map(function (u) { return u.id; });
+      cb.checked = ids.indexOf(cb.value) >= 0;
+    });
+  }
+
+  function openViewerPicker() {
+    viewerDraft = {
+      courses: (viewerState.courses || []).slice(),
+      users: (viewerState.users || []).map(function (u) { return { id: u.id, name: u.name }; })
+    };
+    fillViewerModalFrom(viewerDraft);
+    /* 已购学员授课：默认勾选当前内容归属课程 */
+    if (!viewerDraft.courses.length && $("le-course") && $("le-course").value) {
+      var courseName = $("le-course").options[$("le-course").selectedIndex].text;
+      document.querySelectorAll("#vw-course-list input[type=checkbox]").forEach(function (cb) {
+        if (cb.value === courseName || courseName.indexOf(cb.value) >= 0) cb.checked = true;
+      });
+    }
+    openModal($("modal-viewers"));
+  }
+
+  on($("btn-pick-viewers"), "click", openViewerPicker);
+  on($("btn-edit-viewers"), "click", openViewerPicker);
+  on($("vw-confirm"), "click", function () {
+    var courses = [];
+    document.querySelectorAll("#vw-course-list input[type=checkbox]:checked").forEach(function (cb) {
+      courses.push(cb.value);
+    });
+    var users = [];
+    document.querySelectorAll("#vw-user-list input[type=checkbox]:checked").forEach(function (cb) {
+      users.push({ id: cb.value, name: cb.getAttribute("data-name") || cb.value });
+    });
+    if (!courses.length && !users.length) {
+      toast("请至少选择一门课程或一位用户");
+      return;
+    }
+    viewerState = { courses: courses, users: users };
+    viewerDraft = null;
+    renderViewerSummary();
+    dirty = true;
+    closeModals();
+    toast("已更新观看范围");
+  });
+  /* 取消不保存：关闭时丢弃 draft，保留已确认的 viewerState */
+  function discardViewerDraftAndClose() {
+    viewerDraft = null;
+    fillViewerModalFrom(viewerState);
+    if (maskEl) maskEl.classList.remove("open");
+    document.querySelectorAll(".proto-modal").forEach(function (n) { n.classList.remove("open"); });
+  }
+  if (maskEl) {
+    maskEl.onclick = discardViewerDraftAndClose;
+  }
+  document.querySelectorAll("#modal-viewers [data-close]").forEach(function (n) {
+    n.onclick = function (e) { e.preventDefault(); discardViewerDraftAndClose(); };
+  });
+
+  window.__leSetViewers = function (st) {
+    viewerState = {
+      courses: (st && st.courses) || [],
+      users: (st && st.users) || []
+    };
+    renderViewerSummary();
+  };
+
+  renderViewerSummary();
+
   document.querySelectorAll('[data-act="del"]').forEach(function (a) {
     on(a, "click", function (e) {
       e.preventDefault();
