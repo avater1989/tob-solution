@@ -3,14 +3,15 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>学员7576 · 商家管理后台</title>
+<title>用户详情 · 商家管理后台</title>
 <link rel="stylesheet" href="../assets/css/proto.css?v=9" />
 </head>
-<body class="admin-body" data-module="user" data-nav="users" data-title="学员7576" data-crumb="学员 / 学员列表 / 学员7576">
+<body class="admin-body" data-module="user" data-nav="users" data-title="用户详情" data-crumb="用户 / 用户管理 / 用户详情">
 <div id="header-actions">
   <button class="btn" id="btn-tag">打标</button>
   <button class="btn" id="btn-assign">调整归属</button>
   <button class="btn btn-primary" id="btn-touch">发起触达</button>
+  <button class="btn btn-ghost" id="btn-back">← 返回列表</button>
 </div>
 <div id="page-content" style="display:none">
 
@@ -23,7 +24,7 @@
           <h2 style="margin:12px 0 4px;font-size:18px">学员7576
             <a class="link-edit" href="#" id="edit-profile" style="font-size:14px;color:var(--color-primary);text-decoration:none" title="编辑资料">✎</a>
           </h2>
-          <p class="muted" style="margin:0 0 8px;font-size:12px">手机 18919167576 · 临时家庭 · 女 · 推荐人：竹盟</p>
+          <p class="muted" style="margin:0 0 8px;font-size:12px">手机 18919167576 · 来源 视频号 · 归属 销售部 · 赵老师</p>
           <div class="ud-tags-mini">
             <span class="tag tag-blue">高意向</span>
             <span class="tag tag-green">训练营学员</span>
@@ -35,20 +36,20 @@
         <div class="card-hd"><h2>账户信息</h2></div>
         <div class="card-bd" style="padding:0">
           <div class="acc-card">
-            <div class="muted">总账户余额</div>
+            <div class="muted">订单数</div>
+            <div class="acc-value">2 笔</div>
+          </div>
+          <div class="acc-card">
+            <div class="muted">累计实付</div>
+            <div class="acc-value">¥320</div>
+          </div>
+          <div class="acc-card">
+            <div class="muted">账户余额</div>
             <div class="acc-value">0</div>
           </div>
           <div class="acc-card">
-            <div class="muted">当前于公司余额</div>
-            <div class="acc-value">970199</div>
-          </div>
-          <div class="acc-card">
-            <div class="muted">福点</div>
-            <div class="acc-value">0</div>
-          </div>
-          <div class="acc-card">
-            <div class="muted">成长档案</div>
-            <div class="acc-value">0</div>
+            <div class="muted">最近活跃</div>
+            <div class="acc-value">今天 09:12</div>
           </div>
         </div>
       </div>
@@ -58,27 +59,22 @@
     <div class="card ud-main">
       <div class="ud-tabs" id="ud-tabs">
         <a class="active" href="#" data-tab="follow">跟进记录</a>
-        <a href="#" data-tab="family">家庭信息</a>
         <a href="#" data-tab="order">订单记录</a>
-        <a href="#" data-tab="shop">商城记录</a>
-        <a href="#" data-tab="course">课程记录</a>
+        <a href="#" data-tab="live">直播参与</a>
+        <a href="#" data-tab="rights">权益</a>
         <a href="#" data-tab="account">账户明细</a>
-        <a href="#" data-tab="point">学点明细</a>
-        <a href="#" data-tab="fupoint">福点</a>
-        <a href="#" data-tab="card">卡明细</a>
         <a href="#" data-tab="consult">咨询记录</a>
-        <a href="#" data-tab="growth">成长档案</a>
       </div>
 
       <!-- 跟进记录 -->
       <div class="ud-pane" id="pane-follow">
-        <p class="muted" style="margin:0 0 8px">本模块跟进与营销驾驶舱-线索池跟进合并查看，此处仅展示订单/服务触达记录（原型）</p>
+        <p class="muted" style="margin:0 0 8px">与 SCRM 线索池跟进记录合并查看；此处仅展示订单/服务触达。</p>
         <div class="timeline">
           <div class="tl-item">
             <div class="tl-dot"></div>
             <div class="tl-content">
               <div class="tl-time">2026-09-05 15:40</div>
-              <div class="tl-text">后台客服 阮荣均 通过「短信」发送订单提醒，学员已读</div>
+              <div class="tl-text">后台客服 阮荣均 通过「短信」发送订单提醒，已读</div>
             </div>
           </div>
           <div class="tl-item">
@@ -92,70 +88,43 @@
             <div class="tl-dot"></div>
             <div class="tl-content">
               <div class="tl-time">2026-08-21 09:00</div>
-              <div class="tl-text">学员通过推荐人「竹盟」完成注册，加入「卓越家族·全家四代人学习」</div>
+              <div class="tl-text">用户通过视频号渠道完成注册</div>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- 家庭信息 -->
-      <div class="ud-pane" id="pane-family" style="display:none">
-        <p class="muted">临时家庭（待补全）</p>
-        <div class="form-grid" style="grid-template-columns:repeat(3,minmax(0,1fr));gap:10px 18px;margin-top:8px">
-          <div class="field"><label>主理人</label><input value="学员7576" disabled /></div>
-          <div class="field"><label>主理人手机</label><input value="18919167576" disabled /></div>
-          <div class="field"><label>主理人身份证</label><input value="—（未维护）" disabled /></div>
-          <div class="field"><label>配偶</label><input value="—" disabled /></div>
-          <div class="field"><label>子女</label><input value="—" disabled /></div>
-          <div class="field"><label>所属P团</label><input value="—（原型）" disabled /></div>
-        </div>
-      </div>
-
-      <!-- 订单记录（默认） -->
-      <div class="ud-pane" id="pane-order">
+      <!-- 订单记录 -->
+      <div class="ud-pane" id="pane-order" style="display:none">
         <div class="ud-search">
-          <select><option>请选择订单类型</option><option>卡片自用</option><option>消费</option><option>退款</option><option>转赠</option></select>
+          <select><option>全部订单类型</option><option>消费</option><option>退款</option><option>转赠</option></select>
           <input id="od-keyword" placeholder="请输入订单编号" />
           <button class="btn btn-primary" id="od-search">搜索</button>
           <button class="btn" id="od-reset">重置</button>
-          <button class="btn btn-ghost">展开</button>
         </div>
-        <div class="toolbar" style="margin:12px 0">
-          <button class="btn btn-primary">消费</button>
-          <button class="btn">退款</button>
-        </div>
-        <table class="data">
+        <table class="data" style="margin-top:12px">
           <thead><tr>
-            <th>订单类型</th><th>订单编号</th><th>商品类型</th><th>购买内容</th>
-            <th>所属大区</th><th>所属区域</th><th>初/复训</th><th>支付</th><th>操作</th>
+            <th>订单类型</th><th>订单编号</th><th>商品</th>
+            <th>实付</th><th>下单时间</th><th>状态</th><th>操作</th>
           </tr></thead>
           <tbody>
             <tr>
-              <td>卡片自用</td>
-              <td>TT_DD_XF_2026080500034</td>
-              <td>权益卡</td>
-              <td>VIP 服务卡</td>
-              <td>艺博集团</td>
-              <td>西部大区</td>
-              <td>—</td>
-              <td>学员7566</td>
-              <td class="row-actions">
-                <a href="#" data-toast="查看订单明细（原型）">查看明细</a>
-                <a href="#" data-toast="申请退款（原型）">申请退款</a>
-              </td>
+              <td>消费</td>
+              <td class="mono">YB202609050003</td>
+              <td>引流体验课</td>
+              <td>¥9.9</td>
+              <td>2026-09-05 15:32</td>
+              <td><span class="badge badge-success">已完成</span></td>
+              <td class="row-actions"><a href="order-detail.html?id=YB202609050003">查看</a></td>
             </tr>
             <tr>
               <td>消费</td>
-              <td>TT_DD_XF_2026080500033</td>
-              <td>权益卡</td>
-              <td>卓越家族·全家四代人学习</td>
-              <td>艺博集团</td>
-              <td>西部大区</td>
-              <td>—</td>
-              <td>学员7566</td>
-              <td class="row-actions">
-                <a href="#" data-toast="查看订单明细（原型）">查看明细</a>
-              </td>
+              <td class="mono">YB202608220017</td>
+              <td>训练营主课</td>
+              <td>¥299</td>
+              <td>2026-08-22 21:08</td>
+              <td><span class="badge badge-success">已完成</span></td>
+              <td class="row-actions"><a href="order-detail.html?id=YB202608220017">查看</a></td>
             </tr>
           </tbody>
         </table>
@@ -165,19 +134,58 @@
           <select class="ua-size"><option>5条/页</option><option>10条/页</option></select>
           <button class="ua-page" disabled>‹</button>
           <button class="ua-page active">1</button>
-          <button class="ua-page">›</button>
+          <button class="ua-page" disabled>›</button>
         </div>
       </div>
 
-      <!-- 其余 Tab：占位 -->
-      <div class="ud-pane" id="pane-shop" style="display:none"><p class="muted">商城记录（原型）</p></div>
-      <div class="ud-pane" id="pane-course" style="display:none"><p class="muted">课程记录（原型）</p></div>
-      <div class="ud-pane" id="pane-account" style="display:none"><p class="muted">账户明细（原型）</p></div>
-      <div class="ud-pane" id="pane-point" style="display:none"><p class="muted">学点明细（原型）</p></div>
-      <div class="ud-pane" id="pane-fupoint" style="display:none"><p class="muted">福点（原型）</p></div>
-      <div class="ud-pane" id="pane-card" style="display:none"><p class="muted">卡明细（原型）</p></div>
-      <div class="ud-pane" id="pane-consult" style="display:none"><p class="muted">咨询记录（原型）</p></div>
-      <div class="ud-pane" id="pane-growth" style="display:none"><p class="muted">成长档案（原型）</p></div>
+      <!-- 直播参与 -->
+      <div class="ud-pane" id="pane-live" style="display:none">
+        <table class="data">
+          <thead><tr>
+            <th>场次</th><th>状态</th><th>预约 / 到课</th>
+            <th>订单</th><th>GMV</th><th>最近一次</th>
+          </tr></thead>
+          <tbody>
+            <tr>
+              <td><a href="live-detail.html?live_id=L001" class="mono">L001 春启 03 期家长公开课</a></td>
+              <td><span class="badge badge-info">已到课</span></td>
+              <td>已预约 / 已到课</td>
+              <td>1 笔</td>
+              <td>¥299</td>
+              <td>2026-09-09 20:35</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- 权益 -->
+      <div class="ud-pane" id="pane-rights" style="display:none">
+        <table class="data">
+          <thead><tr>
+            <th>权益名称</th><th>来源</th><th>生效</th><th>到期</th><th>状态</th><th>操作</th>
+          </tr></thead>
+          <tbody>
+            <tr>
+              <td>训练营主课 · 12 节</td>
+              <td>YB202608220017</td>
+              <td>2026-08-22</td>
+              <td>2027-08-22</td>
+              <td><span class="badge badge-success">有效</span></td>
+              <td class="row-actions"><a href="#" data-toast="查看权益详情（原型）">详情</a></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- 账户明细 -->
+      <div class="ud-pane" id="pane-account" style="display:none">
+        <p class="muted">账户余额、成长值等明细（原型）。</p>
+      </div>
+
+      <!-- 咨询记录 -->
+      <div class="ud-pane" id="pane-consult" style="display:none">
+        <p class="muted">咨询 / 客服会话记录（原型）。</p>
+      </div>
     </div>
   </div>
 </div>
@@ -195,11 +203,38 @@
     <div class="field" style="margin-bottom:10px"><label>用户</label><div>学员7576</div></div>
     <div class="field"><label>选择标签（可多选）</label>
       <div class="tag-pick"></div>
+    </div>
     <p class="muted" style="margin:8px 0 0;font-size:12px">选项来自 <a href="user-tags.html">标签管理</a> 启用中的手动标签</p>
   </div>
   <div class="proto-modal-ft" style="border-top:1px solid var(--color-border);padding:12px 20px;display:flex;gap:8px;justify-content:flex-end">
     <button class="btn" data-close>取消</button>
     <button class="btn btn-primary" id="tag-save" data-close data-toast="标签已保存（原型）">保存</button>
+  </div>
+</div>
+
+<!-- 调整归属弹窗 -->
+<div class="proto-modal" id="modal-assign" style="width:480px">
+  <div class="proto-modal-hd">
+    <h3 style="font-size:16px;font-weight:600">调整归属</h3>
+    <button class="btn btn-sm btn-ghost" data-close>×</button>
+  </div>
+  <div class="proto-modal-bd">
+    <div class="form-grid">
+      <div class="field"><label>归属部门</label>
+        <select style="width:100%;padding:6px 8px;border:1px solid var(--color-border);border-radius:6px">
+          <option>销售部</option><option>运营部</option><option>内容部</option><option>客服部</option>
+        </select>
+      </div>
+      <div class="field"><label>归属人</label>
+        <select style="width:100%;padding:6px 8px;border:1px solid var(--color-border);border-radius:6px">
+          <option>赵老师</option><option>周销售</option><option>王助教</option>
+        </select>
+      </div>
+    </div>
+  </div>
+  <div class="proto-modal-ft" style="border-top:1px solid var(--color-border);padding:12px 20px;display:flex;gap:8px;justify-content:flex-end">
+    <button class="btn" data-close>取消</button>
+    <button class="btn btn-primary" data-close data-toast="归属已更新（原型）">保存</button>
   </div>
 </div>
 
@@ -254,7 +289,6 @@
 .ua-pagination {
   display: flex; align-items: center; gap: 12px; padding: 12px 0 0; font-size: 13px;
 }
-.ua-pages { display: flex; gap: 4px; }
 .ua-page {
   min-width: 28px; height: 28px; padding: 0 6px; border: 1px solid var(--color-border);
   background: #fff; border-radius: 4px; cursor: pointer; font-size: 13px;
@@ -264,12 +298,6 @@
 .ua-page.active { background: var(--color-primary); border-color: var(--color-primary); color: #fff; }
 .ua-page:disabled { color: var(--color-text-muted); cursor: not-allowed; }
 .ua-size { padding: 5px 8px; border: 1px solid var(--color-border); border-radius: 6px; font-family: inherit; font-size: 13px; }
-
-.timeline { padding: 0; margin: 0; }
-.tl-item { display: flex; gap: 12px; padding: 8px 0; }
-.tl-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--color-primary); margin-top: 6px; flex-shrink: 0; }
-.tl-time { font-size: 12px; color: var(--color-text-muted); }
-.tl-text { font-size: 13px; margin-top: 2px; }
 
 .tag-pick { display: flex; flex-wrap: wrap; gap: 8px; }
 .tp-item {
@@ -311,11 +339,14 @@
   });
 
   // 顶部按钮
+  document.getElementById("btn-back").addEventListener("click", function () {
+    location.href = "users.html";
+  });
   document.getElementById("btn-tag").addEventListener("click", function () {
-    if (window.UserTags) UserTags.renderPick(document.getElementById("tag-pick") || document.querySelector("#modal-tag .tag-pick"), ["t_high"]);
+    if (window.UserTags) UserTags.renderPick(document.querySelector("#modal-tag .tag-pick"), ["t_high"]);
     open(document.getElementById("modal-tag"));
   });
-  document.getElementById("btn-assign").addEventListener("click", function () { Proto.toast("调整归属（原型）"); });
+  document.getElementById("btn-assign").addEventListener("click", function () { open(document.getElementById("modal-assign")); });
   document.getElementById("btn-touch").addEventListener("click", function () { open(document.getElementById("modal-touch")); });
   document.getElementById("edit-profile").addEventListener("click", function (e) {
     e.preventDefault();
@@ -330,6 +361,12 @@
       b.classList.add("active");
       Proto.toast("已切换到第 " + b.textContent + " 页（原型）");
     });
+  });
+
+  document.getElementById("od-search").addEventListener("click", function () { Proto.toast("已按订单号筛选（原型）"); });
+  document.getElementById("od-reset").addEventListener("click", function () {
+    var i = document.getElementById("od-keyword"); if (i) i.value = "";
+    Proto.toast("已重置");
   });
 })();
 </script>
