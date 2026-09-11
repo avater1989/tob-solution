@@ -91,6 +91,7 @@ tr.is-selected td { background:#f2f7ff; }
           <h2 style="margin:0;font-size:18px" id="th-name">—</h2>
           <span class="tag" id="th-status">—</span>
           <span class="muted" style="font-size:12px" id="th-stage"></span>
+          <button type="button" class="btn btn-sm" id="btn-edit-term" style="margin-left:auto;display:none">编辑期次</button>
         </div>
         <div class="term-hero-meta">
           <span>负责人：<b id="th-owner">—</b></span>
@@ -297,12 +298,13 @@ tr.is-selected td { background:#f2f7ff; }
 </div>
 <script src="../assets/js/proto.js"></script>
 <script src="../assets/js/board-data.js?v=10"></script>
+<script src="../assets/js/term-store.js?v=1"></script>
 <script src="../assets/js/board-metrics.js?v=15"></script>
 <script src="../assets/js/board-insights.js?v=9"></script>
 <script src="../assets/js/board-term.js?v=1"></script>
 <script src="../assets/js/board-dictionary.js?v=4"></script>
 <script src="../assets/js/board-tools.js?v=5"></script>
-<script src="../assets/js/admin-shell.js?v=16"></script>
+<script src="../assets/js/admin-shell.js?v=20"></script>
 <script>
 (function () {
   BoardMetrics.ensureCaliberUI();
@@ -400,12 +402,15 @@ tr.is-selected td { background:#f2f7ff; }
   function showEmpty(show) {
     document.getElementById("term-empty").hidden = !show;
     document.getElementById("term-main").hidden = show;
+    var editBtn = document.getElementById("btn-edit-term");
+    if (editBtn) editBtn.style.display = show ? "none" : "";
   }
 
   function renderHero(bundle) {
     var term = bundle.term;
     document.getElementById("th-name").textContent = term.name;
-    document.getElementById("th-status").textContent = term.statusLabel || term.status;
+    document.getElementById("th-status").textContent =
+      (term.lifecycleLabel || term.statusLabel || term.status);
     document.getElementById("th-stage").textContent = term.currentStage ? ("经营阶段：" + term.currentStage) : "";
     document.getElementById("th-owner").textContent = term.owner || "—";
     document.getElementById("th-dates").textContent =
@@ -413,7 +418,7 @@ tr.is-selected td { background:#f2f7ff; }
     document.getElementById("th-deadline").textContent = term.conversionDeadline || "—";
     var days = bundle.daysLeft;
     var daysWrap = document.getElementById("th-days-wrap");
-    if (term.status === "ended") {
+    if (term.status === "ended" || term.lifecycle === "ended") {
       daysWrap.innerHTML = "状态：<b>已结束</b>";
     } else if (days == null) {
       daysWrap.innerHTML = "剩余：<b>—</b>";
@@ -429,6 +434,8 @@ tr.is-selected td { background:#f2f7ff; }
       "<b>" + (focus.title || "关注重点") + "：</b><ul>" +
       (focus.items || []).map(function (x) { return "<li>" + x + "</li>"; }).join("") +
       "</ul>";
+    var editBtn = document.getElementById("btn-edit-term");
+    if (editBtn) editBtn.style.display = term && term.id ? "" : "none";
   }
 
   function renderKpis(bundle) {
@@ -443,6 +450,8 @@ tr.is-selected td { background:#f2f7ff; }
         } else {
           tgt = "目标 " + k.targetDisplay;
         }
+      } else {
+        tgt = "目标 未设置";
       }
       var prior = "";
       if (k.vsPrior) {
@@ -455,7 +464,7 @@ tr.is-selected td { background:#f2f7ff; }
       return '<div class="board-kpi" data-kpi="' + k.id + '">' +
         '<div class="kpi-label" data-metric="' + k.id + '">' + k.label + "</div>" +
         '<div class="kpi-value">' + k.display + "</div>" +
-        (tgt ? '<div class="kpi-sub">' + tgt + "</div>" : "") +
+        '<div class="kpi-sub muted">' + tgt + "</div>" +
         '<div class="kpi-meta">' + prior +
         ' <a href="#" data-kpi-trend="' + k.id + '" style="margin-left:6px">查看趋势</a></div></div>';
     }).join("");
@@ -1291,6 +1300,36 @@ tr.is-selected td { background:#f2f7ff; }
     if (sel) sel.value = def;
     sync();
   };
+
+  var btnEditTerm = document.getElementById("btn-edit-term");
+  if (btnEditTerm) {
+    btnEditTerm.onclick = function () {
+      var tid = currentTermId();
+      if (!tid || !window.TermStore) {
+        Proto.toast("请先选择具体期次");
+        return;
+      }
+      var keepFilters = BoardMetrics.getFilters();
+      TermStore.openEditor({
+        mode: "edit",
+        termId: tid,
+        onSaved: function (saved) {
+          TermStore.syncBoardData();
+          BoardMetrics.fillFilterOptions();
+          BoardMetrics.setFilters({
+            range: keepFilters.range,
+            channel: keepFilters.channel,
+            term: saved.id,
+            src: keepFilters.src
+          }, { push: true });
+          var sel = document.getElementById("f-term");
+          if (sel) sel.value = saved.id;
+          sync();
+          Proto.toast("期次已更新，已保留当前筛选");
+        }
+      });
+    };
+  }
 
   document.getElementById("tf-clear").onclick = function () {
     BoardInsights.setAnalyticsState({

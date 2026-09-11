@@ -1172,6 +1172,7 @@
   }
 
   function fillFilterOptions(opts) {
+    if (global.TermStore) global.TermStore.syncBoardData();
     opts = opts || {};
     var f = getFilters();
     var ch = document.getElementById(opts.channelId || "f-channel");

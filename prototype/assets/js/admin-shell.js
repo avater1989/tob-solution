@@ -101,6 +101,7 @@
         group: "业务设置",
         links: [
           { id: "channel-mgmt", href: "channel-mgmt.html", label: "渠道管理" },
+          { id: "term-mgmt", href: "term-mgmt.html", label: "期次管理" },
           { id: "sidebar-mgmt", href: "sidebar-mgmt.html", label: "侧边栏管理" },
         ],
       },

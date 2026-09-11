@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>期次管理 · 商家管理后台</title>
+<link rel="stylesheet" href="../assets/css/proto.css?v=9" />
+</head>
+<body class="admin-body" data-module="scrm" data-nav="term-mgmt" data-title="期次管理" data-crumb="SCRM / 业务设置 / 期次管理">
+<div id="header-actions">
+  <button class="btn btn-primary" id="btn-create">新建期次</button>
+</div>
+<div id="page-content" style="display:none">
+
+  <div class="board-tip" style="margin-bottom:12px">
+    <b>期次：</b>一次招生/推广经营周期（如「春启03期」）。同一期可关联多场直播与多个推广商品；同一课程可用于不同期次。
+    期次不等于课程、教学班或单场直播。
+  </div>
+
+  <div class="card" style="margin-bottom:8px"><div class="card-bd">
+    <div class="form-grid" style="grid-template-columns:repeat(3,minmax(0,1fr));gap:8px 12px">
+      <div class="field" style="margin:0">
+        <label>期次名称</label>
+        <input id="f-name" placeholder="搜索期次名称" />
+      </div>
+      <div class="field" style="margin:0">
+        <label>状态</label>
+        <select id="f-status">
+          <option value="">全部</option>
+          <option value="upcoming">未开始</option>
+          <option value="active">进行中</option>
+          <option value="ended">已结束</option>
+        </select>
+      </div>
+    </div>
+    <div class="toolbar" style="margin-top:8px">
+      <button class="btn btn-primary" id="btn-query">查询</button>
+      <button class="btn" id="btn-reset">重置</button>
+    </div>
+  </div></div>
+
+  <div class="card"><div class="card-bd" style="padding:0">
+    <table class="data">
+      <thead>
+        <tr>
+          <th>期次名称</th>
+          <th>起止时间</th>
+          <th>负责人</th>
+          <th>状态</th>
+          <th style="width:220px">操作</th>
+        </tr>
+      </thead>
+      <tbody id="tm-tbody"></tbody>
+    </table>
+  </div></div>
+  <div class="toolbar" style="margin-top:8px">
+    <span class="muted">共 <b id="tm-count">0</b> 条</span>
+  </div>
+</div>
+
+<div class="proto-mask" id="mask"></div>
+
+<!-- 结束确认 -->
+<div class="proto-modal" id="modal-term-end" style="width:480px">
+  <div class="proto-modal-hd">
+    <h3 style="font-size:16px;font-weight:600">确认结束期次</h3>
+    <button class="btn btn-sm btn-ghost" type="button" data-close>×</button>
+  </div>
+  <div class="proto-modal-bd">
+    <p id="te-msg" style="margin:0;font-size:13px;line-height:1.6">—</p>
+    <p class="muted" style="margin:10px 0 0;font-size:12px">结束后不再用于新的业务配置；历史记录与期次复盘仍保留。</p>
+  </div>
+  <div class="proto-modal-ft">
+    <button class="btn" type="button" data-close>取消</button>
+    <button class="btn btn-primary" type="button" id="te-confirm">确认结束</button>
+  </div>
+</div>
+
+<style>
+.row-actions a { margin-right: 8px; }
+.row-actions a.danger { color: var(--color-danger); }
+.row-actions a.is-disabled { color: #c9cdd4; cursor: not-allowed; }
+</style>
+
+<script src="../assets/js/proto.js"></script>
+<script src="../assets/js/board-data.js?v=10"></script>
+<script src="../assets/js/term-store.js?v=1"></script>
+<script src="../assets/js/admin-shell.js?v=20"></script>
+<script>
+(function () {
+  var mask = document.getElementById("mask");
+  var pendingEndId = null;
+  function closeAll() {
+    mask.classList.remove("open");
+    document.querySelectorAll(".proto-modal").forEach(function (n) { n.classList.remove("open"); });
+  }
+  function open(node) {
+    mask.classList.add("open");
+    document.querySelectorAll(".proto-modal").forEach(function (n) { n.classList.remove("open"); });
+    node.classList.add("open");
+  }
+  mask.addEventListener("click", closeAll);
+  document.querySelectorAll("[data-close]").forEach(function (n) {
+    n.addEventListener("click", closeAll);
+  });
+
+  function badge(lc) {
+    if (lc === "ended") return '<span class="badge">已结束</span>';
+    if (lc === "upcoming") return '<span class="badge" style="background:#e8f3ff;color:#165dff">未开始</span>';
+    return '<span class="badge badge-success">进行中</span>';
+  }
+
+  function filtered() {
+    var name = (document.getElementById("f-name").value || "").trim();
+    var st = document.getElementById("f-status").value;
+    return TermStore.list().filter(function (t) {
+      if (name && t.name.indexOf(name) < 0) return false;
+      if (st && t.lifecycle !== st) return false;
+      return true;
+    });
+  }
+
+  function render() {
+    var rows = filtered();
+    var tb = document.getElementById("tm-tbody");
+    document.getElementById("tm-count").textContent = String(rows.length);
+    if (!rows.length) {
+      tb.innerHTML = '<tr><td colspan="5" class="muted" style="text-align:center;padding:36px">暂无期次</td></tr>';
+      return;
+    }
+    tb.innerHTML = rows.map(function (t) {
+      var acts = '<a href="#" data-act="edit" data-id="' + t.id + '">编辑</a>';
+      if (t.lifecycle !== "ended") {
+        acts += '<a href="#" data-act="end" data-id="' + t.id + '">结束期次</a>';
+      }
+      if (t.referenced) {
+        acts += '<a href="#" class="is-disabled" title="已有业务引用，不可删除" data-act="nodel">删除</a>';
+      } else {
+        acts += '<a href="#" class="danger" data-act="del" data-id="' + t.id + '">删除</a>';
+      }
+      return "<tr>" +
+        "<td><b>" + t.name + "</b>" + (t.remark ? '<div class="muted" style="font-size:12px">' + t.remark + "</div>" : "") + "</td>" +
+        "<td>" + t.startDate + " ~ " + t.endDate + "</td>" +
+        "<td>" + (t.owner || "—") + "</td>" +
+        "<td>" + badge(t.lifecycle) + "</td>" +
+        '<td class="row-actions">' + acts + "</td>" +
+        "</tr>";
+    }).join("");
+    tb.querySelectorAll("[data-act]").forEach(function (a) {
+      a.addEventListener("click", function (e) {
+        e.preventDefault();
+        var act = a.getAttribute("data-act");
+        var id = a.getAttribute("data-id");
+        if (act === "nodel") {
+          Proto.toast("该期次已有业务引用，不可删除");
+          return;
+        }
+        if (act === "edit") {
+          TermStore.openEditor({
+            mode: "edit",
+            termId: id,
+            onSaved: function () { render(); }
+          });
+        } else if (act === "end") {
+          var t = TermStore.get(id);
+          pendingEndId = id;
+          document.getElementById("te-msg").innerHTML =
+            "确认提前结束期次「<b>" + (t ? t.name : id) + "</b>」？结束后将不再出现在新业务的期次选择中。";
+          open(document.getElementById("modal-term-end"));
+        } else if (act === "del") {
+          if (!confirm("确认删除该期次？此操作仅适用于无业务引用的期次。")) return;
+          var r = TermStore.remove(id);
+          if (!r.ok) Proto.toast(r.reason || "无法删除");
+          else { Proto.toast("已删除"); render(); }
+        }
+      });
+    });
+  }
+
+  document.getElementById("btn-create").addEventListener("click", function () {
+    TermStore.openEditor({
+      mode: "create",
+      onSaved: function () { render(); }
+    });
+  });
+  document.getElementById("btn-query").addEventListener("click", render);
+  document.getElementById("btn-reset").addEventListener("click", function () {
+    document.getElementById("f-name").value = "";
+    document.getElementById("f-status").value = "";
+    render();
+  });
+  document.getElementById("te-confirm").addEventListener("click", function () {
+    if (pendingEndId) {
+      TermStore.endTerm(pendingEndId);
+      Proto.toast("期次已结束");
+      pendingEndId = null;
+      closeAll();
+      render();
+    }
+  });
+
+  TermStore.ensureEditorDom();
+  render();
+})();
+</script>
+</body>
+</html>

@@ -36,8 +36,6 @@
       <div class="field"><label>推广期次</label>
         <select id="f-period">
           <option value="">全部期次</option>
-          <option>春启 03 期</option>
-          <option>春启 04 期</option>
         </select>
       </div>
       <div class="field"><label>来源渠道</label>
@@ -158,8 +156,6 @@
       <div class="field"><label>推广期次</label>
         <select id="c-period">
           <option value="">请选择</option>
-          <option>春启 03 期</option>
-          <option>春启 04 期</option>
         </select>
       </div>
       <div class="field"><label>来源渠道</label>
@@ -497,9 +493,11 @@
 <script src="../assets/js/proto.js"></script>
 <script src="../assets/js/user-store.js"></script>
 <script src="../assets/js/prototype-business-store.js"></script>
+<script src="../assets/js/board-data.js?v=10"></script>
+<script src="../assets/js/term-store.js?v=1"></script>
 <script src="../assets/js/live-ops.js?v=9"></script>
 <script src="../assets/js/live-reach.js?v=2"></script>
-<script src="../assets/js/admin-shell.js?v=16"></script>
+<script src="../assets/js/admin-shell.js?v=20"></script>
 <script>
 (function () {
   var mask = document.getElementById("mask");
@@ -1192,7 +1190,16 @@
     var prefLive = (sop && sop.liveId) || document.getElementById("f-live").value || liveIdFromUrl();
     fillLiveSelects(document.getElementById("f-live").value || liveIdFromUrl());
     document.getElementById("c-live").value = prefLive || "";
-    document.getElementById("c-period").value = sop ? (sop.period || "") : "";
+    if (window.TermStore) {
+      TermStore.fillSelect(document.getElementById("c-period"), {
+        mode: sop ? "edit" : "create",
+        valueMode: "name",
+        value: sop ? (sop.period || "") : "",
+        placeholder: "请选择"
+      });
+    } else {
+      document.getElementById("c-period").value = sop ? (sop.period || "") : "";
+    }
     document.getElementById("c-channel").value = sop ? (sop.channel || "") : "";
 
     var f = (sop && sop.filters) || {};
@@ -1582,6 +1589,13 @@
   }
   fillLiveSelects(initLive);
   if (initLive) document.getElementById("f-live").value = initLive;
+  if (window.TermStore) {
+    TermStore.fillSelect(document.getElementById("f-period"), {
+      mode: "filter",
+      valueMode: "name",
+      allLabel: "全部期次"
+    });
+  }
   renderList();
   var initSop = sopIdFromUrl();
   if (initSop) {
