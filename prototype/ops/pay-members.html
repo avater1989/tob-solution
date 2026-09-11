@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>会员管理 · 运营后台</title>
+<link rel="stylesheet" href="../assets/css/proto.css?v=4" />
+</head>
+<body class="admin-body" data-module="trade" data-nav="pay-members" data-title="会员管理" data-crumb="运营后台 / 交易与结算 / 收款与进件 / 会员管理">
+<div id="header-actions">
+  <button class="btn" id="btn-export">导出会员</button>
+  <button class="btn" id="btn-sync">同步通联会员</button>
+</div>
+<div id="page-content" style="display:none">
+
+  <div class="alert alert-info" style="margin-bottom:12px">
+    <span>会员是通联云商通侧的收款主体（bizUserId ↔ userId 一一对应）：企业 memberType=2、个人 memberType=3。会员须完成<b>绑定手机</b>（否则不能创建订单）与<b>提现协议签约</b>（否则不能提现）。</span>
+  </div>
+
+  <!-- 统计 -->
+  <div class="grid-4" style="margin-bottom:16px">
+    <div class="stat"><div class="label">会员总数</div><div class="value">18</div><div class="hint">企业 15 / 个人 3</div></div>
+    <div class="stat"><div class="label">已进件通过</div><div class="value">12</div><div class="hint">审核中 4 / 驳回 2</div></div>
+    <div class="stat"><div class="label">已签约（可提现）</div><div class="value">9</div><div class="hint">未签约 3，提现受限</div></div>
+    <div class="stat"><div class="label">未绑定手机</div><div class="value">1</div><div class="hint">不能创建订单</div></div>
+  </div>
+
+  <!-- 筛选 -->
+  <div class="card" style="margin-bottom:8px"><div class="card-bd">
+    <div class="form-grid" style="grid-template-columns:repeat(5,minmax(0,1fr))">
+      <input id="f-name" placeholder="会员号 / 主体名称" />
+      <select id="f-type"><option value="">主体类型</option><option>企业</option><option>个人</option></select>
+      <select id="f-onboard"><option value="">进件状态</option><option>待提交</option><option>审核中</option><option>已通过</option><option>已驳回</option></select>
+      <select id="f-sign"><option value="">签约状态</option><option>已签约</option><option>未签约</option></select>
+      <button class="btn btn-primary" id="btn-query">筛选</button>
+    </div>
+  </div></div>
+
+  <!-- 列表 -->
+  <div class="card"><div class="card-bd" style="padding:0">
+    <table class="data">
+      <thead>
+        <tr>
+          <th>会员号</th>
+          <th>主体名称</th>
+          <th>类型</th>
+          <th>绑定手机</th>
+          <th>进件状态</th>
+          <th>签约状态</th>
+          <th>默认分账比例<br><span class="muted" style="font-weight:400">自建 99.4% / 平台内容 20%</span></th>
+          <th>提现方式</th>
+          <th style="width:160px">操作</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="mono">MEM-1001XX</td>
+          <td><b>星启家庭教育</b></td>
+          <td>企业</td>
+          <td>138****2610</td>
+          <td><span class="badge badge-success">已通过</span></td>
+          <td><span class="badge badge-success">已签约</span></td>
+          <td>99.4% / 20%</td>
+          <td>自动提现（每周一）</td>
+          <td class="row-actions"><a href="#" data-row-act="detail">详情</a><a href="payouts.html">提现</a></td>
+        </tr>
+        <tr>
+          <td class="mono">MEM-1002XX</td>
+          <td><b>晨光少儿成长</b></td>
+          <td>企业</td>
+          <td>139****5566</td>
+          <td><span class="badge badge-success">已通过</span></td>
+          <td><span class="badge badge-success">已签约</span></td>
+          <td>99.4% / 20%</td>
+          <td>手动提现</td>
+          <td class="row-actions"><a href="#" data-row-act="detail">详情</a><a href="payouts.html">提现</a></td>
+        </tr>
+        <tr>
+          <td class="mono">MEM-1003XX</td>
+          <td><b>慧心教育</b></td>
+          <td>企业</td>
+          <td>—</td>
+          <td><span class="badge badge-warn">审核中</span></td>
+          <td><span class="badge">未签约</span></td>
+          <td>待定</td>
+          <td>—</td>
+          <td class="row-actions"><a href="onboard-audit.html">去审核</a><a href="#" data-row-act="detail">详情</a></td>
+        </tr>
+        <tr>
+          <td class="mono">MEM-1006XX</td>
+          <td><b>青藤家长学堂</b></td>
+          <td>企业</td>
+          <td>136****7788</td>
+          <td><span class="badge badge-success">已通过</span></td>
+          <td><span class="badge badge-warn">未签约</span></td>
+          <td>99.4% / 20%</td>
+          <td>—（签约后可提现）</td>
+          <td class="row-actions"><a href="#" data-row-act="detail">详情</a><a href="#" data-row-act="notify">催签约</a></td>
+        </tr>
+        <tr>
+          <td class="mono">MEM-1007XX</td>
+          <td><b>某旧商户</b></td>
+          <td>企业</td>
+          <td>—</td>
+          <td><span class="badge badge-danger">已驳回</span></td>
+          <td><span class="badge">未签约</span></td>
+          <td>待定</td>
+          <td>—</td>
+          <td class="row-actions"><a href="onboard-audit.html">查看驳回</a></td>
+        </tr>
+        <tr>
+          <td class="mono">MEM-1005XX</td>
+          <td><b>知行家研习社</b></td>
+          <td>个人</td>
+          <td>137****0012</td>
+          <td><span class="badge badge-warn">审核中</span></td>
+          <td><span class="badge">未签约</span></td>
+          <td>待定</td>
+          <td>—</td>
+          <td class="row-actions"><a href="onboard-audit.html">去审核</a></td>
+        </tr>
+      </tbody>
+    </table>
+  </div></div>
+
+  <div class="toolbar" style="margin-top:8px">
+    <span class="muted">共 <b>18</b> 条</span>
+    <div class="spacer"></div>
+    <select><option>10条/页</option><option>20条/页</option></select>
+    <button class="btn btn-sm" disabled>上一页</button>
+    <button class="btn btn-sm">下一页</button>
+  </div>
+</div>
+
+<!-- 弹窗 -->
+<div class="proto-mask" id="mask"></div>
+<div class="proto-drawer" id="drawer-detail">
+  <div class="proto-drawer-hd"><h3 id="md-title">会员详情</h3><button class="btn btn-sm btn-ghost" data-close>×</button></div>
+  <div class="proto-drawer-bd">
+    <h4 style="margin:0 0 8px;font-size:14px">会员信息</h4>
+    <div class="form-grid readonly" style="grid-template-columns:1fr 1fr">
+      <div class="field"><label>会员号</label><div class="mono" id="md-member">—</div></div>
+      <div class="field"><label>主体名称</label><div id="md-name">—</div></div>
+      <div class="field"><label>主体类型</label><div id="md-type">—</div></div>
+      <div class="field"><label>绑定手机</label><div id="md-phone">—</div></div>
+      <div class="field"><label>进件状态</label><div id="md-onboard">—</div></div>
+      <div class="field"><label>签约状态</label><div id="md-sign">—</div></div>
+      <div class="field"><label>协议编号 ContractNo</label><div class="mono">TL-CTR-2026-0901-0088</div></div>
+      <div class="field"><label>结算卡</label><div>招商银行 ****8842（对公）</div></div>
+    </div>
+
+    <h4 style="margin:16px 0 8px;font-size:14px">收款与提现约束</h4>
+    <div class="kv">
+      <div class="kv-row"><span>创建订单</span><b>需已完成绑定手机</b></div>
+      <div class="kv-row"><span>发起提现</span><b>需已完成提现协议签约</b></div>
+      <div class="kv-row"><span>提现时点</span><b>D1（T+1 日 14:00 触发代付）</b></div>
+      <div class="kv-row"><span>结算卡变更</span><b>需重新提交通联审核</b></div>
+    </div>
+  </div>
+  <div class="proto-drawer-ft"><button class="btn" data-close>关闭</button><button class="btn" id="md-export">导出</button></div>
+</div>
+
+<style>
+.mono { font-family:ui-monospace,Consolas,monospace; font-size:12px; }
+.kv-row{display:flex;justify-content:space-between;padding:7px 0;font-size:13px;border-bottom:1px dashed var(--color-border)}
+.kv-row:last-child{border-bottom:none}
+.kv-row span{color:var(--color-text-secondary)}
+</style>
+
+<script src="../assets/js/proto.js"></script>
+<script src="../assets/js/ops-shell.js?v=6"></script>
+<script>
+(function () {
+  var mask = document.getElementById("mask");
+  function closeAll(){ mask.classList.remove("open"); document.querySelectorAll(".proto-drawer").forEach(function(n){n.classList.remove("open");}); }
+  mask.addEventListener("click", closeAll);
+  document.querySelectorAll("[data-close]").forEach(function(n){ n.addEventListener("click", closeAll); });
+
+  document.querySelectorAll("[data-row-act]").forEach(function (a) {
+    a.addEventListener("click", function (e) {
+      e.preventDefault();
+      var act = a.getAttribute("data-row-act");
+      var tr = a.closest("tr");
+      var tds = tr.querySelectorAll("td");
+      if (act === "detail") {
+        document.getElementById("md-title").textContent = "会员详情 · " + tds[0].textContent.trim();
+        document.getElementById("md-member").textContent = tds[0].textContent.trim();
+        document.getElementById("md-name").textContent = tds[1].textContent.trim();
+        document.getElementById("md-type").textContent = tds[2].textContent.trim();
+        document.getElementById("md-phone").textContent = tds[3].textContent.trim();
+        document.getElementById("md-onboard").textContent = tds[4].textContent.trim();
+        document.getElementById("md-sign").textContent = tds[5].textContent.trim();
+        mask.classList.add("open");
+        document.getElementById("drawer-detail").classList.add("open");
+      } else if (act === "notify") {
+        Proto.toast("已向该会员发送签约提醒（原型）");
+      }
+    });
+  });
+
+  document.getElementById("btn-export").addEventListener("click", function(){ Proto.toast("已导出会员列表（原型）"); });
+  document.getElementById("btn-sync").addEventListener("click", function(){ Proto.toast("已同步通联会员状态（原型）"); });
+  document.getElementById("btn-query").addEventListener("click", function(){ Proto.toast("已筛选（原型）"); });
+  document.getElementById("md-export").addEventListener("click", function(){ Proto.toast("已导出会员详情（原型）"); });
+})();
+</script>
+</body>
+</html>

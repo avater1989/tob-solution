@@ -30,8 +30,7 @@
     <a href="#" data-tab="closed">已关闭</a>
     <span class="spacer"></span>
     <a href="#" data-tab="refund-only">仅退款</a>
-    <a href="#" data-tab="return">退货退款</a>
-    <a href="#" data-tab="exchange">换货</a>
+    <a href="#" data-tab="return">退款并回收权益</a>
   </div>
 
   <!-- 筛选 -->
@@ -40,7 +39,7 @@
       <input id="f-no" placeholder="售后单号 / 订单号" />
       <input id="f-buyer" placeholder="买家（姓名/手机号）" />
       <select id="f-type">
-        <option value="">售后类型</option><option>仅退款</option><option>退货退款</option><option>换货</option>
+        <option value="">售后类型</option><option>仅退款</option><option>退款并回收权益</option>
       </select>
       <select id="f-status">
         <option value="">状态</option><option>待商家处理</option><option>待买家退货</option><option>待商家收货</option><option>已完成</option><option>已关闭</option>
@@ -83,11 +82,11 @@
         <tr>
           <td><a href="aftersale-detail.html?id=AS202609070005" class="link-mono">AS202609070005</a></td>
           <td><span class="tag tag-blue">仅退款</span></td>
-          <td><a href="order-detail.html" class="link-mono">YB20260905100981</a><br><span class="muted" style="font-size:12px">引流课+手册 · 未发货</span></td>
+          <td><a href="order-detail.html" class="link-mono">YB20260905100981</a><br><span class="muted" style="font-size:12px">引流课 · 虚拟商品</span></td>
           <td>刘*** 137****0012</td>
           <td><b class="danger">¥9.90</b></td>
           <td>拍错了/不想要了</td>
-          <td><span class="badge badge-info">待买家退货</span></td>
+          <td><span class="badge badge-info">待回收权益</span></td>
           <td>2026-09-07 16:41</td>
           <td class="row-actions"><a href="aftersale-detail.html?id=AS202609070005">详情</a></td>
         </tr>
@@ -98,17 +97,17 @@
           <td>陈*** 186****4411</td>
           <td><b class="danger">¥39.00</b></td>
           <td>商品质量问题</td>
-          <td><span class="badge badge-warn">待商家收货</span></td>
+          <td><span class="badge badge-warn">待回收权益</span></td>
           <td>2026-09-06 21:30</td>
           <td class="row-actions"><a href="aftersale-detail.html?id=AS202609060002">处理</a><a href="aftersale-detail.html?id=AS202609060002">详情</a></td>
         </tr>
         <tr>
           <td><a href="aftersale-detail.html?id=AS202609040009" class="link-mono">AS202609040009</a></td>
-          <td><span class="tag tag-purple">换货</span></td>
-          <td><a href="order-detail.html" class="link-mono">YB20260902007721</a><br><span class="muted" style="font-size:12px">咨询手册（换新版）</span></td>
+          <td><span class="tag tag-purple">退款并回收权益</span></td>
+          <td><a href="order-detail.html" class="link-mono">YB20260902007721</a><br><span class="muted" style="font-size:12px">亲子沟通训练营（权益回收）</span></td>
           <td>周*** 133****7788</td>
-          <td>¥0.00</td>
-          <td>印刷瑕疵需换货</td>
+          <td><b class="danger">¥299.00</b></td>
+          <td>已学部分按比例退款，回收课程权益</td>
           <td><span class="badge badge-success">已完成</span></td>
           <td>2026-09-04 09:15</td>
           <td class="row-actions"><a href="aftersale-detail.html?id=AS202609040009">详情</a></td>
@@ -136,9 +135,9 @@
 
   <div class="card" style="margin-top:16px"><div class="card-bd">
     <p class="muted" style="font-size:12px;line-height:1.8">
-      <b>售后时效：</b>售后单 <b>7 天</b>内未处理将自动同意并退款；退货退款需商家提供退货地址，买家寄回、商家确认收货后原路退款；
-      换货由商家重新发货。已分佣的推广订单退款后佣金损失由商家承担；退款将返还微信支付手续费并扣减对应商品库存。
-      售后规则可在「交易选项-售后设置」中调整。
+      <b>售后时效：</b>售后单 <b>7 天</b>内未处理将自动同意并退款；虚拟商品不涉及退货物流，退款时按设置回收课程权益 / 服务额度。
+      已分佣的推广订单退款后佣金损失由商家承担；退款将返还通联入金手续费。链路 A（平台内容）退款由平台主导，链路 B（商家自建）退回商家账户且受余额约束。
+      售后规则由平台统一配置（运营后台 · 交易选项），商家侧不再单独设置。
     </p>
   </div></div>
 </div>

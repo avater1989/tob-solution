@@ -15,7 +15,7 @@
 
   <!-- 顶部统计 -->
   <div class="grid-4" style="margin-bottom:16px">
-    <div class="stat"><div class="label">待确认结算额</div><div class="value">¥12,285.91</div><div class="hint">账期 03-25 ~ 03-31</div></div>
+    <div class="stat"><div class="label">待确认结算额</div><div class="value">¥12,335.44</div><div class="hint">账期 03-25 ~ 03-31</div></div>
     <div class="stat"><div class="label">结算中</div><div class="value">¥0.00</div><div class="hint">无进行中打款</div></div>
     <div class="stat"><div class="label">累计已结算</div><div class="value">¥46,830.55</div><div class="hint">共 6 期</div></div>
     <div class="stat"><div class="label">收款账户</div><div class="value" style="font-size:16px">招商银行 ****8842</div><div class="hint">星启家庭教育（对公）</div></div>
@@ -59,8 +59,8 @@
           <td>86</td>
           <td>¥8,432.20</td>
           <td>¥308.80</td>
-          <td>¥81.23</td>
-          <td><b>¥8,042.17</b></td>
+          <td>¥48.74</td>
+          <td><b>¥8,074.66</b></td>
           <td><span class="badge badge-warn">待确认</span></td>
           <td>2026-04-08 03:00</td>
           <td class="row-actions">
@@ -74,8 +74,8 @@
           <td>128</td>
           <td>¥12,648.50</td>
           <td>¥238.60</td>
-          <td>¥124.10</td>
-          <td><b>¥12,285.80</b></td>
+          <td>¥74.46</td>
+          <td><b>¥12,335.44</b></td>
           <td><span class="badge badge-warn">待确认</span></td>
           <td>2026-04-01 03:00</td>
           <td class="row-actions">
@@ -89,8 +89,8 @@
           <td>96</td>
           <td>¥9,876.40</td>
           <td>¥99.00</td>
-          <td>¥97.77</td>
-          <td><b>¥9,679.63</b></td>
+          <td>¥58.66</td>
+          <td><b>¥9,718.74</b></td>
           <td><span class="badge badge-success">已打款</span></td>
           <td>2026-03-25 03:00</td>
           <td class="row-actions">
@@ -103,8 +103,8 @@
           <td>74</td>
           <td>¥8,102.30</td>
           <td>¥0.00</td>
-          <td>¥81.02</td>
-          <td><b>¥8,021.28</b></td>
+          <td>¥48.61</td>
+          <td><b>¥8,053.69</b></td>
           <td><span class="badge badge-success">已完结</span></td>
           <td>2026-03-18 03:00</td>
           <td class="row-actions">
@@ -122,7 +122,7 @@
   </div>
 
   <!-- 分账规则说明 -->
-  <div class="card" style="margin-top:8px"><div class="card-hd"><h2>分账规则（示意）</h2></div>
+  <div class="card" style="margin-top:8px"><div class="card-hd"><h2>分账规则（示意）</h2><span class="muted" style="font-size:12px">本页为「商家自建内容 · 链路 B」结算</span></div>
     <div class="card-bd">
       <div class="split-flow">
         <div class="split-node">
@@ -132,24 +132,24 @@
         </div>
         <div class="split-arrow">→</div>
         <div class="split-node">
-          <div class="sn-title">平台商户号（通联支付）</div>
+          <div class="sn-title">艺博入金收款主体（通联 · 弱存管）</div>
           <div class="sn-amount">¥12,648.50</div>
-          <div class="muted" style="font-size:12px">按账期 T+1 汇总结算</div>
+          <div class="muted" style="font-size:12px">按账期 T+1 汇总结算至存管账户</div>
         </div>
         <div class="split-arrow">→</div>
         <div class="split-node node-fee">
-          <div class="sn-title">平台服务费 1%</div>
-          <div class="sn-amount">¥124.10</div>
-          <div class="muted" style="font-size:12px">交易额 × 1%</div>
+          <div class="sn-title">平台服务费 0.6%</div>
+          <div class="sn-amount">¥74.46</div>
+          <div class="muted" style="font-size:12px">（交易额 − 退款额）× 0.6%</div>
         </div>
         <div class="split-arrow">＋</div>
         <div class="split-node node-merchant">
-          <div class="sn-title">商户分账 99%</div>
-          <div class="sn-amount">¥12,285.80</div>
+          <div class="sn-title">商户分账 99.4%</div>
+          <div class="sn-amount">¥12,335.44</div>
           <div class="muted" style="font-size:12px">打款至商户对公账户</div>
         </div>
       </div>
-      <p class="muted" style="margin-top:12px;font-size:12px">应结算 =（交易额 − 退款额 − 平台服务费）；退款在账期内冲抵；商户自有商户号绑定为平台端后续能力。</p>
+      <p class="muted" style="margin-top:12px;font-size:12px"><b>链路 B（商家自建内容）</b>：商家拿课程金额，平台按套餐服务费率收服务费（默认 0.6%）。应结算 =（交易额 − 退款额 − 平台服务费）；退款在账期内冲抵。<b>链路 A（平台内容）</b>：课程金额留存艺博账户，商家按佣金率（默认 20%）分账，详见运营后台「结算规则配置」。</p>
     </div>
   </div>
 </div>
@@ -178,7 +178,7 @@
     <div class="settle-calc">
       <div class="calc-row"><span>交易额（已对平）</span><b id="sd-gross">—</b></div>
       <div class="calc-row"><span>退款冲抵</span><b id="sd-refund" class="danger">—</b></div>
-      <div class="calc-row"><span>平台服务费（1%）</span><b id="sd-fee" class="danger">—</b></div>
+      <div class="calc-row"><span>平台服务费（0.6%）</span><b id="sd-fee" class="danger">—</b></div>
       <div class="calc-row total"><span>应结算金额</span><b id="sd-net">—</b></div>
     </div>
 
@@ -186,8 +186,8 @@
     <table class="data">
       <thead><tr><th>分账方</th><th>比例</th><th>金额</th><th>状态</th></tr></thead>
       <tbody id="sd-split">
-        <tr><td>星启家庭教育（商户）</td><td>99%</td><td id="sd-split-m">—</td><td><span class="badge" id="sd-split-ms">待分账</span></td></tr>
-        <tr><td>艺博平台</td><td>1%</td><td id="sd-split-p">—</td><td><span class="badge" id="sd-split-ps">待分账</span></td></tr>
+        <tr><td>星启家庭教育（商户）</td><td>99.4%</td><td id="sd-split-m">—</td><td><span class="badge" id="sd-split-ms">待分账</span></td></tr>
+        <tr><td>艺博平台（服务费）</td><td>0.6%</td><td id="sd-split-p">—</td><td><span class="badge" id="sd-split-ps">待分账</span></td></tr>
       </tbody>
     </table>
 
@@ -246,10 +246,10 @@
   document.querySelectorAll("[data-close]").forEach(function (n) { n.addEventListener("click", closeAll); });
 
   var bills = {
-    ST20260407001: { period: "04-01 ~ 04-07", count: "86", gross: "¥8,432.20", refund: "¥308.80", fee: "¥81.23", net: "¥8,042.17", status: "待确认", time: "2026-04-08 03:00", payTime: "确认后 T+1", recon: "RC20260407001" },
-    ST20260331001: { period: "03-25 ~ 03-31", count: "128", gross: "¥12,648.50", refund: "¥238.60", fee: "¥124.10", net: "¥12,285.80", status: "待确认", time: "2026-04-01 03:00", payTime: "确认后 T+1", recon: "RC20260331001" },
-    ST20260324001: { period: "03-18 ~ 03-24", count: "96", gross: "¥9,876.40", refund: "¥99.00", fee: "¥97.77", net: "¥9,679.63", status: "已打款", time: "2026-03-25 03:00", payTime: "2026-03-26 10:20", recon: "RC20260324001" },
-    ST20260317001: { period: "03-11 ~ 03-17", count: "74", gross: "¥8,102.30", refund: "¥0.00", fee: "¥81.02", net: "¥8,021.28", status: "已完结", time: "2026-03-18 03:00", payTime: "2026-03-19 09:45", recon: "RC20260317001" },
+    ST20260407001: { period: "04-01 ~ 04-07", count: "86", gross: "¥8,432.20", refund: "¥308.80", fee: "¥48.74", net: "¥8,074.66", status: "待确认", time: "2026-04-08 03:00", payTime: "确认后 T+1", recon: "RC20260407001" },
+    ST20260331001: { period: "03-25 ~ 03-31", count: "128", gross: "¥12,648.50", refund: "¥238.60", fee: "¥74.46", net: "¥12,335.44", status: "待确认", time: "2026-04-01 03:00", payTime: "确认后 T+1", recon: "RC20260331001" },
+    ST20260324001: { period: "03-18 ~ 03-24", count: "96", gross: "¥9,876.40", refund: "¥99.00", fee: "¥58.66", net: "¥9,718.74", status: "已打款", time: "2026-03-25 03:00", payTime: "2026-03-26 10:20", recon: "RC20260324001" },
+    ST20260317001: { period: "03-11 ~ 03-17", count: "74", gross: "¥8,102.30", refund: "¥0.00", fee: "¥48.61", net: "¥8,053.69", status: "已完结", time: "2026-03-18 03:00", payTime: "2026-03-19 09:45", recon: "RC20260317001" },
   };
 
   function parseMoney(s) { return parseFloat(s.replace(/[¥,]/g, "")); }

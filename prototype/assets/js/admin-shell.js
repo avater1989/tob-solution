@@ -165,6 +165,13 @@
     ],
     trade: [
       {
+        group: "收款开通",
+        links: [
+          { id: "onboard", href: "onboard.html", label: "进件与收款开通" },
+          { id: "onboard-sign", href: "onboard-sign.html", label: "提现协议签约" },
+        ],
+      },
+      {
         group: "订单管理",
         links: [
           { id: "orders", href: "orders.html", label: "订单列表" },
@@ -193,15 +200,6 @@
           { id: "withdraw", href: "withdraw.html", label: "提现管理" },
           { id: "recon", href: "recon.html", label: "对账管理", badge: 2 },
           { id: "settlement", href: "settlement.html", label: "结算单", badge: 2 },
-        ],
-      },
-      {
-        group: "交易设置",
-        links: [
-          { id: "payment", href: "payment.html", label: "收款与清分" },
-          { id: "split-rules", href: "split-rules.html", label: "分账规则配置" },
-          { id: "invoice", href: "invoice.html", label: "开票设置" },
-          { id: "trade-opts", href: "trade-settings.html", label: "交易选项" },
         ],
       },
     ],

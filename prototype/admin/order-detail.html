@@ -82,6 +82,8 @@
         <div class="kv-row"><span>通联支付交易单号</span><b class="mono" id="od-pay-txn">—</b></div>
         <div class="kv-row"><span>订单类型</span><b>普通订单（知识商品 1 件）</b></div>
         <div class="kv-row"><span>渠道来源</span><b id="od-source">—</b></div>
+        <div class="kv-row"><span>内容来源</span><b id="od-content-source">—</b></div>
+        <div class="kv-row"><span>结算模式</span><b id="od-settle-mode">—</b></div>
         <div class="kv-row"><span>推广人</span><b>—</b></div>
         <div class="kv-row"><span>下单时间</span><b id="od-time">—</b></div>
         <div class="kv-row"><span>支付时间</span><b id="od-pay-time">—</b></div>
@@ -131,14 +133,15 @@
       </div>
     </div>
 
-    <div class="card"><div class="card-hd"><h2>分账信息</h2><span class="muted" style="font-size:12px">通联支付清分</span></div>
+    <div class="card"><div class="card-hd"><h2>分账信息</h2><span class="muted" style="font-size:12px">通联支付清分 · 弱存管</span></div>
       <div class="card-bd">
         <div class="kv">
-          <div class="kv-row"><span>收单主体</span><b>艺博平台商户（通联支付）</b></div>
+          <div class="kv-row"><span>收单主体</span><b>艺博入金收款主体（通联支付）</b></div>
           <div class="kv-row"><span>分账状态</span><b id="od-split-status">—</b></div>
-          <div class="kv-row"><span>平台抽佣（10%）</span><b id="od-split-plat">—</b></div>
-          <div class="kv-row"><span>商户分账（90%）</span><b id="od-split-mch">—</b></div>
-          <div class="kv-row"><span>分账规则</span><b><a href="split-rules.html" class="link">家长课堂类目分账规则 →</a></b></div>
+          <div class="kv-row"><span id="od-split-plat-label">平台所得</span><b id="od-split-plat">—</b></div>
+          <div class="kv-row"><span id="od-split-mch-label">商家所得</span><b id="od-split-mch">—</b></div>
+          <div class="kv-row"><span>入金手续费（0.3%）</span><b id="od-split-channel">—</b></div>
+          <div class="kv-row"><span>分账规则</span><b><span class="muted">由平台统一配置（运营后台 · 结算规则配置）</span></b></div>
           <div class="kv-row"><span>所属结算单</span><b><a href="settlement.html" class="link">查看结算 →</a></b></div>
         </div>
       </div>
@@ -430,10 +433,33 @@
 
   document.getElementById("od-rights-link").href = buildUserDetailHref(uid, "rights");
 
-  var plat = Math.round(amount * 10) / 100;
-  var mch = Math.round((amount - plat) * 100) / 100;
+  // ===== 分账：按内容来源走两条链路 =====
+  // 链路 A（平台内容）→ 佣金模式：商家拿佣金（默认 20%），课程金额留存艺博账户
+  // 链路 B（商家自建）→ 服务费模式：商家拿课程金额，平台收服务费（默认 0.6%）
+  var contentSource = order.contentSource || "self";
+  var isPlatform = contentSource === "platform";
+  var settleMode = order.settleMode || (isPlatform ? "commission" : "service_fee");
+  var rate = isPlatform
+    ? (order.commissionRate != null ? order.commissionRate : 20)
+    : (order.serviceFeeRate != null ? order.serviceFeeRate : 0.6);
+  var base = amount - (refunded ? amount : 0);
+  var plat = Math.round(base * rate) / 100;
+  var mch = Math.round((base - plat) * 100) / 100;
+  var channelFee = Math.round(amount * 0.3) / 100;
+
+  document.getElementById("od-content-source").textContent = isPlatform ? "平台内容（运营后台下发）" : "商家自建内容";
+  document.getElementById("od-settle-mode").textContent = isPlatform
+    ? "佣金模式（商家拿佣金 " + rate + "%）"
+    : "服务费模式（平台收服务费 " + rate + "%）";
+  document.getElementById("od-split-plat-label").textContent = isPlatform
+    ? "平台留存（" + (100 - rate) + "%）"
+    : "平台服务费（" + rate + "%）";
+  document.getElementById("od-split-mch-label").textContent = isPlatform
+    ? "商家佣金（" + rate + "%）"
+    : "商家应结（" + (100 - rate).toFixed(1) + "%）";
   document.getElementById("od-split-plat").textContent = money(plat);
   document.getElementById("od-split-mch").textContent = money(mch);
+  document.getElementById("od-split-channel").textContent = money(channelFee);
   document.getElementById("od-split-status").innerHTML = refunded
     ? '<span class="badge badge-danger">已冲正</span> 退款后清分回退'
     : '<span class="badge badge-warn">待分账</span> 支付成功后 T+1 自动分账';

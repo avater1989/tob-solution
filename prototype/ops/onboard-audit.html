@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>进件审核 · 运营后台</title>
+<link rel="stylesheet" href="../assets/css/proto.css?v=4" />
+</head>
+<body class="admin-body" data-module="trade" data-nav="onboard-audit" data-title="进件审核" data-crumb="运营后台 / 交易与结算 / 收款与进件 / 进件审核">
+<div id="header-actions">
+  <button class="btn" id="btn-export">导出进件记录</button>
+  <button class="btn" id="btn-rule">审核要点</button>
+</div>
+<div id="page-content" style="display:none">
+
+  <div class="alert alert-info" style="margin-bottom:12px">
+    <span>进件链路：商家提交 → <b>平台初审</b> → 通联审核（工商 + 法人实名 + 影印件 OCR）→ 审核通过 → 绑定手机 → <b>提现协议签约</b> → 可收款。平台初审不通过可直接驳回；通联审核结果通过异步通知回写。</span>
+  </div>
+
+  <!-- 统计 -->
+  <div class="grid-4" style="margin-bottom:16px">
+    <div class="stat"><div class="label">待平台初审</div><div class="value">3</div><div class="hint">共 3 个租户</div></div>
+    <div class="stat"><div class="label">通联审核中</div><div class="value">2</div><div class="hint">平均 1.8 个工作日</div></div>
+    <div class="stat"><div class="label">今日已审</div><div class="value">4</div><div class="hint">通过 3 / 驳回 1</div></div>
+    <div class="stat"><div class="label">待签约</div><div class="value">2</div><div class="hint">已通过未签约，提现受限</div></div>
+  </div>
+
+  <!-- Tab -->
+  <div class="tabs" id="oa-tabs">
+    <a class="active" href="#" data-tab="pending">待平台初审</a>
+    <a href="#" data-tab="ing">通联审核中</a>
+    <a href="#" data-tab="done">已通过 / 已驳回</a>
+  </div>
+
+  <!-- 列表 -->
+  <div class="card" style="margin-bottom:8px"><div class="card-bd" style="padding:0">
+    <table class="data">
+      <thead>
+        <tr>
+          <th>租户 / 主体</th>
+          <th>主体类型</th>
+          <th>通联会员号</th>
+          <th>资料完整度</th>
+          <th>提交时间</th>
+          <th>状态</th>
+          <th style="width:170px">操作</th>
+        </tr>
+      </thead>
+      <tbody id="oa-tbody">
+        <tr data-state="pending">
+          <td><b>慧心教育</b><br><span class="muted" style="font-size:12px">慧心教育咨询有限公司</span></td>
+          <td>企业（memberType=2）</td>
+          <td class="mono">MEM-1003XX</td>
+          <td><span class="badge badge-success">4/4 齐全</span></td>
+          <td>2026-09-11 10:05</td>
+          <td><span class="badge badge-warn">待平台初审</span></td>
+          <td class="row-actions"><a href="#" data-row-act="detail">审核</a><a href="#" data-row-act="reject">驳回</a></td>
+        </tr>
+        <tr data-state="pending">
+          <td><b>乐学伴家庭</b><br><span class="muted" style="font-size:12px">乐学伴（上海）文化有限公司</span></td>
+          <td>企业（memberType=2）</td>
+          <td class="mono">MEM-1004XX</td>
+          <td><span class="badge badge-warn">3/4 缺开户证明</span></td>
+          <td>2026-09-11 09:41</td>
+          <td><span class="badge badge-warn">待平台初审</span></td>
+          <td class="row-actions"><a href="#" data-row-act="detail">审核</a><a href="#" data-row-act="reject">驳回</a></td>
+        </tr>
+        <tr data-state="pending">
+          <td><b>知行家研习社</b><br><span class="muted" style="font-size:12px">个人主体</span></td>
+          <td>个人（memberType=3）</td>
+          <td class="mono">MEM-1005XX</td>
+          <td><span class="badge badge-success">实名已核验</span></td>
+          <td>2026-09-10 18:22</td>
+          <td><span class="badge badge-warn">待平台初审</span></td>
+          <td class="row-actions"><a href="#" data-row-act="detail">审核</a><a href="#" data-row-act="reject">驳回</a></td>
+        </tr>
+        <tr data-state="ing">
+          <td><b>星启家庭教育</b><br><span class="muted" style="font-size:12px">星启家庭教育咨询有限公司</span></td>
+          <td>企业（memberType=2）</td>
+          <td class="mono">MEM-1001XX</td>
+          <td><span class="badge badge-success">4/4 齐全</span></td>
+          <td>2026-09-08 10:12</td>
+          <td><span class="badge badge-info">通联审核中</span></td>
+          <td class="row-actions"><a href="#" data-row-act="detail">查看进度</a></td>
+        </tr>
+        <tr data-state="ing">
+          <td><b>晨光少儿成长</b><br><span class="muted" style="font-size:12px">晨光少儿成长咨询有限公司</span></td>
+          <td>企业（memberType=2）</td>
+          <td class="mono">MEM-1002XX</td>
+          <td><span class="badge badge-success">4/4 齐全</span></td>
+          <td>2026-09-07 15:30</td>
+          <td><span class="badge badge-info">通联审核中</span></td>
+          <td class="row-actions"><a href="#" data-row-act="detail">查看进度</a></td>
+        </tr>
+        <tr data-state="done">
+          <td><b>青藤家长学堂</b></td>
+          <td>企业（memberType=2）</td>
+          <td class="mono">MEM-1006XX</td>
+          <td><span class="badge badge-success">4/4 齐全</span></td>
+          <td>2026-09-05 11:08</td>
+          <td><span class="badge badge-success">已通过（待签约）</span></td>
+          <td class="row-actions"><a href="pay-members.html">查看会员</a></td>
+        </tr>
+        <tr data-state="done">
+          <td><b>某旧商户</b></td>
+          <td>企业（memberType=2）</td>
+          <td class="mono">MEM-1007XX</td>
+          <td><span class="badge badge-danger">OCR 姓名不一致</span></td>
+          <td>2026-09-04 09:20</td>
+          <td><span class="badge badge-danger">已驳回</span></td>
+          <td class="row-actions"><a href="#" data-row-act="detail">查看驳回</a></td>
+        </tr>
+      </tbody>
+    </table>
+  </div></div>
+
+  <div class="toolbar">
+    <span class="muted">共 <b>7</b> 条</span>
+    <div class="spacer"></div>
+    <select><option>10条/页</option><option>20条/页</option></select>
+    <button class="btn btn-sm" disabled>上一页</button>
+    <button class="btn btn-sm">下一页</button>
+  </div>
+</div>
+
+<!-- 弹窗 -->
+<div class="proto-mask" id="mask"></div>
+
+<!-- 审核详情 -->
+<div class="proto-drawer" id="drawer-detail">
+  <div class="proto-drawer-hd">
+    <h3 id="od-title">进件审核</h3>
+    <button class="btn btn-sm btn-ghost" data-close>×</button>
+  </div>
+  <div class="proto-drawer-bd">
+    <h4 style="margin:0 0 8px;font-size:14px">主体信息</h4>
+    <div class="form-grid readonly" style="grid-template-columns:1fr 1fr">
+      <div class="field"><label>租户 / 主体</label><div id="od-tenant">—</div></div>
+      <div class="field"><label>主体类型</label><div id="od-type">—</div></div>
+      <div class="field"><label>通联会员号</label><div class="mono" id="od-member">—</div></div>
+      <div class="field"><label>统一社会信用代码</label><div class="mono">91310000MA1K******</div></div>
+      <div class="field"><label>法人姓名 / 证件号</label><div>赵启明 / 310***********1234</div></div>
+      <div class="field"><label>提交时间</label><div id="od-time">—</div></div>
+    </div>
+
+    <h4 style="margin:16px 0 8px;font-size:14px">影印件与 OCR 校验</h4>
+    <table class="data">
+      <thead><tr><th>材料</th><th>是否必传</th><th>OCR 校验</th></tr></thead>
+      <tbody>
+        <tr><td>营业执照</td><td>必传</td><td><span class="badge badge-success">一致</span></td></tr>
+        <tr><td>法人身份证正面</td><td>必传</td><td><span class="badge badge-success">一致</span></td></tr>
+        <tr><td>法人身份证反面</td><td>必传</td><td><span class="badge badge-success">一致</span></td></tr>
+        <tr><td>银行开户证明</td><td>非必传</td><td><span class="badge">未上传</span></td></tr>
+      </tbody>
+    </table>
+
+    <h4 style="margin:16px 0 8px;font-size:14px">结算卡</h4>
+    <div class="form-grid readonly" style="grid-template-columns:1fr 1fr">
+      <div class="field"><label>开户名</label><div>星启家庭教育咨询有限公司</div></div>
+      <div class="field"><label>开户行 / 卡号</label><div>招商银行 ****8842</div></div>
+    </div>
+
+    <h4 style="margin:16px 0 8px;font-size:14px">审核记录</h4>
+    <div class="timeline">
+      <div class="tl-item"><div class="tl-dot info"></div><div class="tl-bd"><b>商家提交</b><span class="muted" id="od-t1">—</span></div></div>
+      <div class="tl-item"><div class="tl-dot"></div><div class="tl-bd"><b>平台初审</b><span class="muted">待处理</span><p class="muted">核对资料齐全性与一致性后转交通联审核。</p></div></div>
+    </div>
+  </div>
+  <div class="proto-drawer-ft">
+    <button class="btn" data-close>关闭</button>
+    <button class="btn" id="od-reject">驳回</button>
+    <button class="btn btn-primary" id="od-pass">初审通过并转通联</button>
+  </div>
+</div>
+
+<!-- 驳回弹窗 -->
+<div class="proto-modal" id="modal-reject" style="width:520px">
+  <div class="proto-modal-hd"><h3 style="font-size:16px;font-weight:600">驳回进件</h3><button class="btn btn-sm btn-ghost" data-close>×</button></div>
+  <div class="proto-modal-bd">
+    <div class="field"><label>驳回原因 *</label>
+      <select style="width:100%">
+        <option>资料不齐全（缺必传影印件）</option>
+        <option>影印件 OCR 与工商 / 实名信息不一致</option>
+        <option>结算卡主体与进件主体不一致</option>
+        <option>营业执照已过期 / 存续异常</option>
+        <option>其他（请填写说明）</option>
+      </select>
+    </div>
+    <div class="field" style="margin-top:10px"><label>驳回说明 *</label>
+      <textarea rows="3" style="width:100%" placeholder="请说明需商家补充 / 修改的具体内容"></textarea>
+    </div>
+    <p class="muted" style="font-size:12px;margin-top:8px">驳回后商家可在「进件与收款开通」修改资料并重新提交。</p>
+  </div>
+  <div class="proto-modal-ft">
+    <button class="btn" data-close>取消</button>
+    <button class="btn btn-primary" id="rj-submit">确认驳回</button>
+  </div>
+</div>
+
+<!-- 审核要点 -->
+<div class="proto-modal" id="modal-rule" style="width:560px">
+  <div class="proto-modal-hd"><h3 style="font-size:16px;font-weight:600">审核要点</h3><button class="btn btn-sm btn-ghost" data-close>×</button></div>
+  <div class="proto-modal-bd">
+    <ul class="muted" style="font-size:13px;line-height:1.9;padding-left:18px;margin:0">
+      <li>营业执照在存续期，名称与统一社会信用代码一致；</li>
+      <li>法人身份证正反面 OCR 姓名与工商法人、实名信息一致；</li>
+      <li>影印件单张 ≤ 1MB，格式 JPG/PNG，清晰可识别；</li>
+      <li>结算卡开户名与进件主体一致（同主体），非同名需提交银行账户证明；</li>
+      <li>企业主体须完成工商要素验证：企业名称、法人姓名、法人证件号、认证类型、统一社会信用代码、工商注册号、纳税人识别号、组织机构代码；</li>
+      <li>审核通过后仍须完成<b>绑定手机</b>与<b>提现协议签约</b>，否则不能下单 / 提现。</li>
+    </ul>
+  </div>
+  <div class="proto-modal-ft"><button class="btn btn-primary" data-close>我知道了</button></div>
+</div>
+
+<style>
+.mono { font-family:ui-monospace,Consolas,monospace; font-size:12px; }
+.timeline { position:relative; padding-left:18px; }
+.tl-item { position:relative; padding:0 0 14px 16px; border-left:1px solid var(--color-border); }
+.tl-item:last-child { padding-bottom:0; border-left-color:transparent; }
+.tl-dot { position:absolute; left:-5px; top:2px; width:9px; height:9px; border-radius:50%; background:#00b42a; }
+.tl-dot.info { background:#165dff; }
+.tl-bd b { font-size:13px; }
+.tl-bd span { font-size:12px; margin-left:8px; }
+.tl-bd p { margin:4px 0 0; font-size:12px; }
+</style>
+
+<script src="../assets/js/proto.js"></script>
+<script src="../assets/js/ops-shell.js?v=6"></script>
+<script>
+(function () {
+  var mask = document.getElementById("mask");
+  function closeAll(){ mask.classList.remove("open"); document.querySelectorAll(".proto-modal, .proto-drawer").forEach(function(n){n.classList.remove("open");}); }
+  function open(n){ mask.classList.add("open"); n.classList.add("open"); }
+  mask.addEventListener("click", closeAll);
+  document.querySelectorAll("[data-close]").forEach(function(n){ n.addEventListener("click", closeAll); });
+
+  var cur = "";
+  document.querySelectorAll("#oa-tbody [data-row-act]").forEach(function (a) {
+    a.addEventListener("click", function (e) {
+      e.preventDefault();
+      var act = a.getAttribute("data-row-act");
+      var tr = a.closest("tr");
+      var tenant = tr.querySelector("td b").textContent.trim();
+      cur = tenant;
+      if (act === "detail") {
+        document.getElementById("od-title").textContent = "进件审核 · " + tenant;
+        document.getElementById("od-tenant").textContent = tenant;
+        document.getElementById("od-type").textContent = tr.children[1].textContent.trim();
+        document.getElementById("od-member").textContent = tr.children[2].textContent.trim();
+        document.getElementById("od-time").textContent = tr.children[4].textContent.trim();
+        document.getElementById("od-t1").textContent = tr.children[4].textContent.trim();
+        open(document.getElementById("drawer-detail"));
+      } else if (act === "reject") {
+        open(document.getElementById("modal-reject"));
+      }
+    });
+  });
+
+  document.getElementById("od-reject").addEventListener("click", function(){ closeAll(); open(document.getElementById("modal-reject")); });
+  document.getElementById("od-pass").addEventListener("click", function(){ closeAll(); Proto.toast("初审通过，已转交通联审核（原型）"); });
+  document.getElementById("rj-submit").addEventListener("click", function(){ closeAll(); Proto.toast("已驳回「" + cur + "」并通知商家补充资料（原型）"); });
+
+  // Tab 过滤
+  document.querySelectorAll("#oa-tabs a").forEach(function (a) {
+    a.addEventListener("click", function (e) {
+      e.preventDefault();
+      document.querySelectorAll("#oa-tabs a").forEach(function (n) { n.classList.remove("active"); });
+      a.classList.add("active");
+      var key = a.getAttribute("data-tab");
+      document.querySelectorAll("#oa-tbody tr").forEach(function (tr) {
+        tr.style.display = (key === "done" ? (tr.getAttribute("data-state") === "done") : (tr.getAttribute("data-state") === key)) ? "" : "none";
+      });
+    });
+  });
+
+  document.getElementById("btn-rule").addEventListener("click", function(){ open(document.getElementById("modal-rule")); });
+  document.getElementById("btn-export").addEventListener("click", function(){ Proto.toast("已导出进件记录（原型）"); });
+})();
+</script>
+</body>
+</html>

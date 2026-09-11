@@ -16,13 +16,13 @@
 <div id="page-content" style="display:none">
 
   <div class="alert alert-info" style="margin-bottom:12px">
-    <span>口径：平台服务费收入 = 分账抽佣 + SaaS 订阅服务费（如保留）；退款按账期冲减。台账与对账单、结算单、发票同源，可相互追溯。</span>
+    <span>口径：平台费率收入 = 佣金收入（链路 A · 平台内容，默认 20%）+ 服务费收入（链路 B · 商家自建内容，默认 0.6%）；退款按账期冲减。台账与对账单、结算单、发票同源，可相互追溯。</span>
   </div>
 
   <!-- 统计 -->
   <div class="grid-4" style="margin-bottom:16px">
-    <div class="stat"><div class="label">本期服务费收入</div><div class="value">¥86,420.00</div><div class="hint">环比 +12.4%</div></div>
-    <div class="stat"><div class="label">累计服务费收入</div><div class="value">¥486,830.55</div><div class="hint">近 7 期</div></div>
+    <div class="stat"><div class="label">本期平台费率收入</div><div class="value">¥86,420.00</div><div class="hint">环比 +12.4%</div></div>
+    <div class="stat"><div class="label">累计平台费率收入</div><div class="value">¥486,830.55</div><div class="hint">近 7 期</div></div>
     <div class="stat"><div class="label">退款冲减</div><div class="value">¥6,930.20</div><div class="hint">占收入 8.0%</div></div>
     <div class="stat"><div class="label">到账率</div><div class="value">96.2%</div><div class="hint">含在途分账</div></div>
   </div>
@@ -77,16 +77,16 @@
         <thead>
           <tr>
             <th>账期</th><th>租户</th><th>商品分组</th><th>渠道</th>
-            <th>交易额</th><th>抽佣比例</th><th>服务费</th><th>退款冲减</th><th>开票状态</th><th>到账状态</th>
+            <th>交易额</th><th>结算模式 · 费率</th><th>平台收入</th><th>退款冲减</th><th>开票状态</th><th>到账状态</th>
           </tr>
         </thead>
         <tbody>
-          <tr><td>09-04 ~ 09-10</td><td>星启家庭教育</td><td>家长课堂</td><td>小程序</td><td>¥8,432.20</td><td>10%</td><td><b>¥843.22</b></td><td class="danger">-¥30.88</td><td><span class="badge badge-info">是</span></td><td><span class="badge badge-success">已到账</span></td></tr>
-          <tr><td>09-04 ~ 09-10</td><td>晨光少儿成长</td><td>家长课堂</td><td>小程序</td><td>¥12,648.50</td><td>10%</td><td><b>¥1,264.85</b></td><td class="danger">-¥23.86</td><td><span class="badge badge-info">是</span></td><td><span class="badge badge-success">已到账</span></td></tr>
-          <tr><td>09-04 ~ 09-10</td><td>青藤家长学堂</td><td>少儿专注力</td><td>视频号</td><td>¥3,069.00</td><td>10%</td><td><b>¥306.90</b></td><td class="danger">-¥0.00</td><td><span class="badge badge-info">是</span></td><td><span class="badge badge-warn">在途</span></td></tr>
-          <tr><td>09-04 ~ 09-10</td><td>慧心教育</td><td>亲子训练营</td><td>小程序</td><td>¥4,135.30</td><td>0.6%</td><td><b>¥24.81</b></td><td class="danger">-¥0.06</td><td><span class="badge">否</span></td><td><span class="badge badge-warn">在途</span></td></tr>
-          <tr><td>09-04 ~ 09-10</td><td>乐学伴家庭</td><td>全部商品</td><td>直播间</td><td>¥1,782.00</td><td>10%</td><td><b>¥178.20</b></td><td class="danger">-¥0.00</td><td><span class="badge">否</span></td><td><span class="badge badge-warn">在途</span></td></tr>
-          <tr><td>08-28 ~ 09-03</td><td>星启家庭教育</td><td>家长课堂</td><td>小程序</td><td>¥9,876.40</td><td>10%</td><td><b>¥987.64</b></td><td class="danger">-¥9.90</td><td><span class="badge badge-info">是</span></td><td><span class="badge badge-success">已到账</span></td></tr>
+          <tr><td>09-04 ~ 09-10</td><td>星启家庭教育</td><td>家长课堂</td><td>小程序</td><td>¥8,432.20</td><td>佣金 20%（链路 A）</td><td><b>¥6,745.76</b></td><td class="danger">-¥30.88</td><td><span class="badge badge-info">是</span></td><td><span class="badge badge-success">已到账</span></td></tr>
+          <tr><td>09-04 ~ 09-10</td><td>晨光少儿成长</td><td>家长课堂</td><td>小程序</td><td>¥12,648.50</td><td>服务费 0.6%（链路 B）</td><td><b>¥75.89</b></td><td class="danger">-¥23.86</td><td><span class="badge badge-info">是</span></td><td><span class="badge badge-success">已到账</span></td></tr>
+          <tr><td>09-04 ~ 09-10</td><td>青藤家长学堂</td><td>少儿专注力</td><td>视频号</td><td>¥3,069.00</td><td>服务费 0.6%（链路 B）</td><td><b>¥18.41</b></td><td class="danger">-¥0.00</td><td><span class="badge badge-info">是</span></td><td><span class="badge badge-warn">在途</span></td></tr>
+          <tr><td>09-04 ~ 09-10</td><td>慧心教育</td><td>亲子训练营</td><td>小程序</td><td>¥4,135.30</td><td>服务费 0.6%（链路 B）</td><td><b>¥24.81</b></td><td class="danger">-¥0.06</td><td><span class="badge">否</span></td><td><span class="badge badge-warn">在途</span></td></tr>
+          <tr><td>09-04 ~ 09-10</td><td>乐学伴家庭</td><td>全部商品</td><td>直播间</td><td>¥1,782.00</td><td>服务费 0.6%（链路 B）</td><td><b>¥10.69</b></td><td class="danger">-¥0.00</td><td><span class="badge">否</span></td><td><span class="badge badge-warn">在途</span></td></tr>
+          <tr><td>08-28 ~ 09-03</td><td>星启家庭教育</td><td>家长课堂</td><td>小程序</td><td>¥9,876.40</td><td>服务费 0.6%（链路 B）</td><td><b>¥59.26</b></td><td class="danger">-¥9.90</td><td><span class="badge badge-info">是</span></td><td><span class="badge badge-success">已到账</span></td></tr>
         </tbody>
       </table>
     </div>

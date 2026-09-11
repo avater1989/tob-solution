@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>提现协议签约 · 商家管理后台</title>
+<link rel="stylesheet" href="../assets/css/proto.css?v=9" />
+</head>
+<body class="admin-body" data-module="trade" data-nav="onboard-sign" data-title="提现协议签约" data-crumb="交易 / 收款开通 / 提现协议签约">
+<div id="header-actions">
+  <button class="btn btn-primary" id="btn-sign">前往签约</button>
+</div>
+<div id="page-content" style="display:none">
+
+  <div class="alert alert-error" style="margin-bottom:12px">
+    <span><b>未签约</b>：会员未完成提现协议签约，<b>提现功能已被限制</b>。请先完成签约，再发起提现。</span>
+  </div>
+
+  <!-- 状态 -->
+  <div class="grid-4" style="margin-bottom:16px">
+    <div class="stat"><div class="label">签约状态</div><div class="value" style="font-size:18px">未签约</div><div class="hint">限制提现</div></div>
+    <div class="stat"><div class="label">会员号</div><div class="value" style="font-size:16px">MEM-1001XX</div><div class="hint">通联云商通</div></div>
+    <div class="stat"><div class="label">签约主体</div><div class="value" style="font-size:16px">星启家庭教育</div><div class="hint">企业会员</div></div>
+    <div class="stat"><div class="label">协议编号</div><div class="value" style="font-size:16px">—</div><div class="hint">签约成功后回显</div></div>
+  </div>
+
+  <!-- 签约说明 -->
+  <div class="card" style="margin-bottom:12px"><div class="card-hd"><h2>协议说明</h2></div>
+    <div class="card-bd">
+      <p class="muted" style="font-size:13px;line-height:1.9;margin:0 0 10px">
+        提现协议为<b>会员、平台、通联支付</b>之间的三方电子协议，以 H5 页面形式签署；签约成功后返回<b>会员电子协议编号（ContractNo）</b>，系统需保存该编号。
+      </p>
+      <div class="kv">
+        <div class="kv-row"><span>签约主体</span><b>企业会员（memberType=2）</b></div>
+        <div class="kv-row"><span>签约前置</span><b>企业信息审核通过（已完成）</b></div>
+        <div class="kv-row"><span>签约方式</span><b>H5 页面签署（跳转通联签约页）</b></div>
+        <div class="kv-row"><span>签约结果通知</span><b>成功提供后台异步通知；失败仅页面提示原因</b></div>
+        <div class="kv-row"><span>未签约影响</span><b>提现功能被限制（收款与下单不受影响）</b></div>
+      </div>
+      <p class="muted" style="margin-top:10px;font-size:12px">个人会员签约前须完成实名认证；企业会员签约前须完成设置企业信息且审核成功。</p>
+    </div>
+  </div>
+
+  <!-- 签约记录 -->
+  <div class="card"><div class="card-hd"><h2>签约记录</h2></div>
+    <div class="card-bd" style="padding:0">
+      <table class="data">
+        <thead><tr><th>时间</th><th>动作</th><th>结果</th><th>协议编号</th><th>说明</th></tr></thead>
+        <tbody>
+          <tr><td>2026-09-10 17:05</td><td>发起签约</td><td><span class="badge badge-danger">失败</span></td><td class="muted">—</td><td>页面提示：企业信息审核未通过，暂不可签约</td></tr>
+          <tr><td>2026-09-11 09:20</td><td>企业信息审核</td><td><span class="badge badge-success">通过</span></td><td class="muted">—</td><td>已具备签约条件</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<style>
+.kv-row{display:flex;justify-content:space-between;padding:7px 0;font-size:13px;border-bottom:1px dashed var(--color-border)}
+.kv-row:last-child{border-bottom:none}
+.kv-row span{color:var(--color-text-secondary)}
+</style>
+
+<script src="../assets/js/proto.js"></script>
+<script src="../assets/js/admin-shell.js?v=13"></script>
+<script>
+(function () {
+  document.getElementById("btn-sign").addEventListener("click", function(){
+    Proto.toast("已跳转通联网商通签约页（原型）：签约成功后回写协议编号并解除提现限制");
+  });
+})();
+</script>
+</body>
+</html>

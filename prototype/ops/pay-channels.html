@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>收款与清分 · 运营后台</title>
+<link rel="stylesheet" href="../assets/css/proto.css?v=4" />
+</head>
+<body class="admin-body" data-module="trade" data-nav="pay-channels" data-title="收款与清分" data-crumb="运营后台 / 交易与结算 / 收款与进件 / 收款与清分">
+<div id="header-actions">
+  <button class="btn" id="btn-sync">同步渠道账单</button>
+  <button class="btn" id="btn-probe">订单状态查询</button>
+  <button class="btn btn-primary" id="btn-guide">接入说明</button>
+</div>
+<div id="page-content" style="display:none">
+
+  <div class="alert alert-info" style="margin-bottom:12px">
+    <span>资金模式：艺博教育作为大 B 与通联支付签约<b>云商通</b>，资金存管为<b>银行弱存管</b>（通联 + 艺博 + 招商银行三方协议）。用户支付经<b>托管代收</b>进入平台中间账户集，再按分账规则<b>托管代付</b>到各会员；收款 D+1 结算至存管账户。</span>
+  </div>
+
+  <!-- 收单渠道 -->
+  <div class="card" style="margin-bottom:12px"><div class="card-hd"><h2>收单渠道</h2><span class="muted" style="font-size:12px">平台级配置，商家侧只读</span></div>
+    <div class="card-bd" style="padding:0">
+      <table class="data">
+        <thead><tr><th>支付渠道</th><th>接入模式</th><th>收银台</th><th>状态</th><th>入金手续费</th><th>结算方式</th><th style="width:150px">操作</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><b>通联支付（云商通）</b><br><span class="muted" style="font-size:12px">微信 / 支付宝</span></td>
+            <td>托管代收 + 托管代付（多级分账）</td>
+            <td>通联小程序收银台</td>
+            <td><span class="badge badge-success">收款中</span></td>
+            <td>0.30%（方案报价 1）</td>
+            <td>D+1 结算至存管账户</td>
+            <td class="row-actions"><a href="#" data-row-act="detail">账户信息</a><a href="settle-rules.html">结算规则</a></td>
+          </tr>
+          <tr>
+            <td><b>微信支付（直连备用）</b><br><span class="muted" style="font-size:12px">通联通道异常时降级</span></td>
+            <td>服务商模式</td>
+            <td>微信原生</td>
+            <td><span class="badge">未启用</span></td>
+            <td>—</td>
+            <td>—</td>
+            <td class="row-actions"><a href="#" data-row-act="open">查看接入说明</a></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- 入金收款主体与商户号 -->
+  <div class="card" style="margin-bottom:12px"><div class="card-hd"><h2>入金收款主体与商户号</h2><span class="muted" style="font-size:12px">收款主体名称不含「教育」；资金统一归集到艺博存管账户</span></div>
+    <div class="card-bd" style="padding:0">
+      <table class="data">
+        <thead><tr><th>收款主体</th><th>商户号</th><th>开通省份</th><th>进件状态</th><th>资金归属</th><th>状态</th><th style="width:110px">操作</th></tr></thead>
+        <tbody>
+          <tr><td><b>艺博（上海）网络科技有限公司</b></td><td class="mono">TL-MCH-8801XXXX</td><td>上海</td><td><span class="badge badge-success">已通过</span></td><td>艺博教育存管账户</td><td><span class="badge badge-success">启用</span></td><td class="row-actions"><a href="#" data-row-act="detail">详情</a></td></tr>
+          <tr><td><b>艺博（浙江）信息科技有限公司</b></td><td class="mono">TL-MCH-8802XXXX</td><td>浙江</td><td><span class="badge badge-success">已通过</span></td><td>艺博教育存管账户</td><td><span class="badge badge-success">启用</span></td><td class="row-actions"><a href="#" data-row-act="detail">详情</a></td></tr>
+          <tr><td><b>艺博（广东）数字科技有限公司</b></td><td class="mono">TL-MCH-8803XXXX</td><td>广东</td><td><span class="badge badge-warn">进件中</span></td><td>艺博教育存管账户</td><td><span class="badge">未启用</span></td><td class="row-actions"><a href="#" data-row-act="detail">详情</a></td></tr>
+          <tr><td><b>艺博（北京）文化科技有限公司</b></td><td class="mono">TL-MCH-8804XXXX</td><td>北京</td><td><span class="badge badge-warn">进件中</span></td><td>艺博教育存管账户</td><td><span class="badge">未启用</span></td><td class="row-actions"><a href="#" data-row-act="detail">详情</a></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="card-bd" style="border-top:1px solid var(--color-border)">
+      <p class="muted" style="margin:0;font-size:12px">新增收款主体需在通联侧开通商户号；每个省份可开通一个或多个商户号，收款资金结算均统一归集至艺博教育存管账户。</p>
+    </div>
+  </div>
+
+  <!-- 存管与清分 -->
+  <div class="card" style="margin-bottom:12px"><div class="card-hd"><h2>存管与清分</h2></div>
+    <div class="card-bd">
+      <div class="form-grid readonly" style="grid-template-columns:1fr 1fr">
+        <div class="field"><label>存管模式</label><div>银行弱存管（三方协议：通联 + 艺博 + 招商银行）</div></div>
+        <div class="field"><label>结算节奏</label><div>收款后 D+1 结算至银行存管账户</div></div>
+        <div class="field"><label>平台中间账户集</label><div class="mono">10004（托管代收记账）</div></div>
+        <div class="field"><label>分账模式</label><div>托管代付，支持多级分账（规则随接口 splitRule 下发）</div></div>
+        <div class="field"><label>提现时点</label><div>D1（T+1 日 14:00 触发代付）</div></div>
+        <div class="field"><label>退款约束</label><div>当日退货额 ≤ 当日交易额；且 ≤ 原收款人账户余额（不足需先充值）</div></div>
+      </div>
+      <p class="muted" style="margin-top:10px;font-size:12px">兜底能力：<b>订单状态查询</b>（异步通知不保证 100% 到达，交易完成后未收到通知时主动查询）；<b>平台头寸查询</b>（通联通头寸 / 电子账户头寸）。</p>
+    </div>
+  </div>
+
+  <!-- 统一费率口径 -->
+  <div class="card"><div class="card-hd"><h2>统一费率口径</h2><span class="muted" style="font-size:12px">全站以此为准</span></div>
+    <div class="card-bd" style="padding:0">
+      <table class="data">
+        <thead><tr><th>概念</th><th>基准值</th><th>承担方</th><th>说明</th></tr></thead>
+        <tbody>
+          <tr><td>入金手续费</td><td><b>0.30%</b></td><td>渠道成本（交易额中扣除）</td><td>通联方案报价 1；不参与平台/商家分账</td></tr>
+          <tr><td>平台服务费（链路 B）</td><td><b>0.60%</b></td><td>商家承担</td><td>商家自建内容；套餐/合同可覆盖，战略可签 0.3%</td></tr>
+          <tr><td>平台佣金率（链路 A）</td><td><b>20%</b></td><td>平台留存</td><td>平台内容；商家拿佣金，课程金额留存艺博账户</td></tr>
+          <tr><td>提现手续费</td><td><b>1 元/笔</b></td><td>商家承担</td><td>通联代付</td></tr>
+          <tr><td>企业实名认证费</td><td><b>5 元/次</b></td><td>商家承担</td><td>进件企业认证（通联收取）</td></tr>
+          <tr><td>云商通系统费</td><td><b>年流水 ≥ 5,000 万免费</b></td><td>平台承担</td><td>否则首年 3 万 / 次年 2 万（方案报价 2）</td></tr>
+        </tbody>
+      </table>
+      <div class="card-bd"><p class="muted" style="margin:0;font-size:12px">已废弃口径：1% / 2% / 10% / 12% / 15% / 5% / 0.28%。口径来源：《交易口径 · 费率与分账基准》。</p></div>
+    </div>
+  </div>
+</div>
+
+<style>
+.mono { font-family:ui-monospace,Consolas,monospace; font-size:12px; }
+</style>
+
+<script src="../assets/js/proto.js"></script>
+<script src="../assets/js/ops-shell.js?v=6"></script>
+<script>
+(function () {
+  document.querySelectorAll("[data-row-act]").forEach(function (a) {
+    a.addEventListener("click", function (e) {
+      e.preventDefault();
+      var act = a.getAttribute("data-row-act");
+      if (act === "detail") Proto.toast("打开商户号详情（原型）");
+      else Proto.toast("打开微信支付直连接入说明（原型）");
+    });
+  });
+  document.getElementById("btn-guide").addEventListener("click", function(){ Proto.toast("打开通联云商通接入说明（原型）"); });
+  document.getElementById("btn-sync").addEventListener("click", function(){ Proto.toast("已同步通联渠道账单（原型）"); });
+  document.getElementById("btn-probe").addEventListener("click", function(){ Proto.toast("已发起订单状态查询（原型，用于异步通知未到达的兜底）"); });
+})();
+</script>
+</body>
+</html>

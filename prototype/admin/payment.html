@@ -13,8 +13,12 @@
 </div>
 <div id="page-content" style="display:none">
 
+  <div class="alert alert-warning" style="margin-bottom:12px;padding:10px 12px;border-radius:8px;background:#fff7e6;border:1px solid #ffd591;color:#d48806;font-size:13px">
+    <b>本页已下架</b>：收款与清分属平台级配置，已迁移至 <b>运营后台 → 交易与结算 → 收款与清分</b>。商家侧仅保留只读视图，本页仅作历史留痕，口径以《交易口径 · 费率与分账基准》为准。
+  </div>
+
   <div class="alert alert-info" style="margin-bottom:12px;padding:10px 12px;border-radius:8px;background:#e8f3ff;border:1px solid #a0cfff;color:#165dff;font-size:13px">
-    C 端小程序支付由<b>通联支付</b>提供收单；订单资金先进入<b>艺博平台商户号</b>，支付成功后按分账规则自动清分至各 <b>IP 商户（分账会员）</b>，会员可独立提现至其绑定结算卡。
+    C 端小程序支付由<b>通联支付</b>提供收单，资金走<b>银行弱存管</b>（通联 + 艺博 + 招商银行三方协议）；订单资金进入<b>艺博入金收款主体</b>后，按结算规则自动清分至各<b>小 B 会员（IP 商户）</b>，会员可独立提现至其绑定结算卡。
   </div>
 
   <!-- 收单渠道 -->
@@ -27,8 +31,8 @@
             <td><b>通联支付</b><br><span class="muted" style="font-size:12px">小程序支付 / 微信内 H5</span></td>
             <td>平台商户收单 + 会员分账</td>
             <td><span class="badge badge-success">收款中</span></td>
-            <td>0.6%（按协议，可议价）</td>
-            <td>T+1 自动分账</td>
+            <td>入金手续费 0.3%</td>
+            <td>D+1 结算至存管账户</td>
             <td class="row-actions"><a href="#" data-row-act="detail">账户信息</a><a href="split-rules.html">分账规则</a><a href="settlement.html">结算单</a></td>
           </tr>
           <tr>
@@ -45,7 +49,7 @@
   </div>
 
   <!-- 通联平台商户 -->
-  <div class="card" style="margin-bottom:12px"><div class="card-hd"><h2>通联平台商户信息</h2></div>
+  <div class="card" style="margin-bottom:12px"><div class="card-hd"><h2>入金收款主体与商户号</h2><span class="muted" style="font-size:12px">由平台侧维护（运营后台）</span></div>
     <div class="card-bd">
       <div class="kv-cols">
         <div class="kv">
@@ -55,7 +59,7 @@
           <div class="kv-row"><span>收单权限</span><b>小程序支付、微信内 H5</b></div>
         </div>
         <div class="kv">
-          <div class="kv-row"><span>清分模式</span><b>平台收单 + 会员分账（抽佣）</b></div>
+          <div class="kv-row"><span>清分模式</span><b>平台收单 + 会员分账（服务费 0.6%）</b></div>
           <div class="kv-row"><span>手续费扣费</span><b>按日结（通联协议）</b></div>
           <div class="kv-row"><span>结算银行卡</span><b>招商银行 ****8888（对公）</b></div>
           <div class="kv-row"><span>进件时间</span><b>2026-06-28 审核通过</b></div>
@@ -66,17 +70,18 @@
   </div>
 
   <!-- 分账会员 -->
-  <div class="card" style="margin-bottom:12px"><div class="card-hd"><h2>分账会员（IP 商户）</h2><span class="muted" style="font-size:12px">各机构独立进件，订单分账后可独立提现</span></div>
+  <div class="card" style="margin-bottom:12px"><div class="card-hd"><h2>分账会员（小 B · IP 商户）</h2><span class="muted" style="font-size:12px">各机构独立进件（企业会员 memberType=2），须完成绑定手机与提现签约</span></div>
     <div class="card-bd" style="padding:0">
       <table class="data">
-        <thead><tr><th>机构 / IP</th><th>通联会员号</th><th>进件状态</th><th>绑定结算卡</th><th>默认分账比例</th><th>提现方式</th><th style="width:130px">操作</th></tr></thead>
+        <thead><tr><th>机构 / IP</th><th>通联会员号</th><th>进件状态</th><th>绑定结算卡</th><th>签约状态</th><th>默认分账比例<br><span class="muted" style="font-weight:400">自建 · 服务费 0.6% / 平台内容 · 佣金 20%</span></th><th>提现方式</th><th style="width:130px">操作</th></tr></thead>
         <tbody>
           <tr>
             <td><b>星启家庭教育</b><br><span class="muted" style="font-size:12px">本店铺主体</span></td>
             <td class="mono">MEM-1001XX</td>
             <td><span class="badge badge-success">已通过</span></td>
             <td>工商银行 ****2233</td>
-            <td><b>90%</b>（平台抽佣 10%）</td>
+            <td><span class="badge badge-success">已签约</span></td>
+            <td><b>99.4%</b> / <b>20%</b></td>
             <td>自动提现（每周一）</td>
             <td class="row-actions"><a href="withdraw.html">提现记录</a></td>
           </tr>
@@ -85,7 +90,8 @@
             <td class="mono">MEM-1002XX</td>
             <td><span class="badge badge-success">已通过</span></td>
             <td>建设银行 ****6688</td>
-            <td><b>88%</b>（平台抽佣 12%）</td>
+            <td><span class="badge badge-success">已签约</span></td>
+            <td><b>99.4%</b> / <b>20%</b></td>
             <td>手动提现</td>
             <td class="row-actions"><a href="withdraw.html">提现记录</a></td>
           </tr>
@@ -94,6 +100,7 @@
             <td class="mono">MEM-1003XX</td>
             <td><span class="badge badge-warn">审核中</span></td>
             <td>—</td>
+            <td><span class="badge">未签约</span></td>
             <td>待定</td>
             <td>—</td>
             <td class="row-actions"><a href="#" data-row-act="detail">查看进度</a></td>
@@ -108,9 +115,10 @@
     <div class="card-bd">
       <div class="kv">
         <div class="kv-row"><span>入账口径</span><b>按订单<b>支付时间</b>入账（与通联、微信账单一致）</b></div>
-        <div class="kv-row"><span>分账时点</span><b>支付成功后 T+1 自动分账；异常订单支持手动补分账</b></div>
-        <div class="kv-row"><span>退款处理</span><b>支持「仅退回买家金额」或「同时退回分账资金」，1 年内订单可发起</b></div>
-        <div class="kv-row"><span>提现规则</span><b>会员提现至进件绑定的唯一结算卡，提现时段 7:00-20:00</b></div>
+        <div class="kv-row"><span>分账模式</span><b>平台内容按佣金率（默认 20%）；商家自建内容按服务费率（默认 0.6%）</b></div>
+        <div class="kv-row"><span>分账时点</span><b>支付成功后按结算规则自动分账；异常订单支持手动补分账</b></div>
+        <div class="kv-row"><span>退款处理</span><b>支持「仅退回买家金额」或「同时退回分账资金」；受原收款人账户余额约束</b></div>
+        <div class="kv-row"><span>提现规则</span><b>提现至进件绑定的唯一结算卡；<b>未完成提现协议签约禁止提现</b></b></div>
         <div class="kv-row"><span>手续费发票</span><b><a href="invoice.html" class="link">去申请 →</a></b></div>
       </div>
       <p class="muted" style="margin-top:10px;font-size:12px">对账请前往「交易-资产管理-对账管理」，口径统一按支付时间；分账明细见「结算单」与「交易账单」。</p>

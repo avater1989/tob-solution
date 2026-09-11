@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>进件与收款开通 · 商家管理后台</title>
+<link rel="stylesheet" href="../assets/css/proto.css?v=9" />
+</head>
+<body class="admin-body" data-module="trade" data-nav="onboard" data-title="进件与收款开通" data-crumb="交易 / 收款开通 / 进件与收款开通">
+<div id="header-actions">
+  <button class="btn" id="btn-save">保存草稿</button>
+  <button class="btn btn-primary" id="btn-submit">提交通联审核</button>
+</div>
+<div id="page-content" style="display:none">
+
+  <div class="alert alert-warning" style="margin-bottom:12px">
+    <span><b>驳回待修改</b>：法人身份证反面影印件 OCR 识别的姓名与工商信息不一致，请重新上传。驳回时间 2026-09-10 16:20 · 审核方：通联支付。</span>
+  </div>
+
+  <div class="alert alert-info" style="margin-bottom:12px">
+    <span>收款开通走通联云商通<b>会员进件</b>：资料提交 → 平台初审 → 通联审核（工商 + 法人实名 + 影印件 OCR）→ 审核通过 → 绑定手机 + <b>提现协议签约</b> → 可收款。<b>未完成绑定手机不能创建订单，未完成签约不能提现</b>。</span>
+  </div>
+
+  <!-- 进度 -->
+  <div class="card" style="margin-bottom:12px"><div class="card-hd"><h2>进件进度</h2><span class="badge badge-warn">资料待补</span></div>
+    <div class="card-bd">
+      <div class="steps" id="steps">
+        <div class="step done"><i>1</i><b>提交资料</b><span>2026-09-08</span></div>
+        <div class="step done"><i>2</i><b>平台初审</b><span>通过 09-09</span></div>
+        <div class="step cur"><i>3</i><b>通联审核</b><span>驳回待补</span></div>
+        <div class="step"><i>4</i><b>绑定手机</b><span>—</span></div>
+        <div class="step"><i>5</i><b>提现签约</b><span>—</span></div>
+        <div class="step"><i>6</i><b>可收款</b><span>—</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 主体信息 -->
+  <div class="cm-section">
+    <div class="cm-section-hd"><h3>主体信息</h3><span class="muted">个人会员 memberType=3 / 企业会员 memberType=2</span></div>
+    <div class="form-grid" style="grid-template-columns:1fr 1fr;gap:12px 16px">
+      <div class="field"><label>主体类型 *</label>
+        <select class="input"><option>企业（需工商 + 法人实名核验）</option><option>个人</option></select>
+      </div>
+      <div class="field"><label>企业 / 机构名称 *</label><input class="input" value="星启家庭教育咨询有限公司" /></div>
+      <div class="field"><label>统一社会信用代码 *</label><input class="input" value="91310000MA1K******" /></div>
+      <div class="field"><label>工商注册号 / 纳税人识别号</label><input class="input" value="91310000MA1K******" /></div>
+      <div class="field"><label>法人姓名 *</label><input class="input" value="赵启明" /></div>
+      <div class="field"><label>法人证件号 *</label><input class="input" value="310***********1234" /></div>
+      <div class="field"><label>联系人 *</label><input class="input" value="赵老师" /></div>
+      <div class="field"><label>联系人手机号 *</label><input class="input" value="138****2610" />
+        <span class="muted" style="font-size:12px">用于接收通联动态短信验证码，绑定后才能创建订单</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 影印件 -->
+  <div class="cm-section">
+    <div class="cm-section-hdr"><h3>影印件采集</h3><span class="muted">营业执照必传、法人身份证正反面必传、开户证明可选；单张 ≤ 1MB，JPG/PNG</span></div>
+    <div class="upload-grid">
+      <div class="up-item"><div class="up-box ok">已上传<em>营业执照.jpg</em></div><span class="up-label ok">OCR 校验通过</span></div>
+      <div class="up-item"><div class="up-box ok">已上传<em>法人身份证正面.jpg</em></div><span class="up-label ok">OCR 校验通过</span></div>
+      <div class="up-item"><div class="up-box err">已上传<em>法人身份证反面.jpg</em></div><span class="up-label err">OCR 姓名不一致，需重传</span></div>
+      <div class="up-item"><div class="up-box">＋<em>银行开户证明（可选）</em></div><span class="up-label">未上传</span></div>
+    </div>
+  </div>
+
+  <!-- 结算卡 -->
+  <div class="cm-section">
+    <div class="cm-section-hd"><h3>结算卡</h3><span class="muted">进件时上送的唯一结算账户，提现打款至该卡</span></div>
+    <div class="form-grid" style="grid-template-columns:1fr 1fr;gap:12px 16px">
+      <div class="field"><label>开户名 *</label><input class="input" value="星启家庭教育咨询有限公司" /></div>
+      <div class="field"><label>开户行 *</label><input class="input" value="招商银行上海分行" /></div>
+      <div class="field"><label>银行卡号 *</label><input class="input" value="6225 **** **** 8842" /></div>
+      <div class="field"><label>账户类型</label>
+        <select class="input"><option>对公账户</option><option>个人账户</option></select>
+      </div>
+    </div>
+    <p class="muted" style="margin:8px 0 0;font-size:12px">修改结算卡需重新提交通联审核。</p>
+  </div>
+
+  <!-- 审核记录 -->
+  <div class="card"><div class="card-hd"><h2>审核记录</h2></div>
+    <div class="card-bd">
+      <div class="timeline">
+        <div class="tl-item"><div class="tl-dot"></div><div class="tl-bd"><b>提交进件资料</b><span class="muted">商家 · 2026-09-08 10:12</span><p class="muted">提交企业主体资料与影印件。</p></div></div>
+        <div class="tl-item"><div class="tl-dot"></div><div class="tl-bd"><b>平台初审通过</b><span class="muted">平台运营 · 2026-09-09 09:30</span><p class="muted">资料齐全，转交通联审核。</p></div></div>
+        <div class="tl-item"><div class="tl-dot danger"></div><div class="tl-bd"><b>通联审核驳回</b><span class="muted">通联支付 · 2026-09-10 16:20</span><p class="muted">法人身份证反面 OCR 姓名与工商信息不一致，请重新上传。</p></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+.cm-section { background:#fff; border:1px solid var(--color-border); border-radius:8px; padding:16px; margin-bottom:12px; }
+.cm-section-hd, .cm-section-hdr { display:flex; justify-content:space-between; align-items:baseline; margin-bottom:12px; }
+.cm-section-hd h3, .cm-section-hdr h3 { font-size:15px; margin:0; }
+.steps { display:flex; gap:8px; flex-wrap:wrap; }
+.step { flex:1; min-width:110px; border:1px solid var(--color-border); border-radius:8px; padding:10px 12px; background:#fafbfc; }
+.step i { display:inline-flex; width:20px; height:20px; border-radius:50%; background:#c9cdd4; color:#fff; font-style:normal; font-size:12px; align-items:center; justify-content:center; margin-right:6px; }
+.step b { font-size:13px; }
+.step span { display:block; font-size:11px; color:var(--color-text-muted); margin-top:4px; }
+.step.done { border-color:#9ff0b3; background:#f2fdf4; }
+.step.done i { background:#009a29; }
+.step.cur { border-color:#ffd6a0; background:#fff9ef; }
+.step.cur i { background:#d25f00; }
+.upload-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; }
+.up-item { text-align:center; }
+.up-box { border:1px dashed #c9cdd4; border-radius:8px; padding:20px 10px; background:#fafbfc; color:var(--color-text-muted); font-size:13px; }
+.up-box.ok { border-style:solid; border-color:#9ff0b3; background:#f2fdf4; color:#009a29; }
+.up-box.err { border-style:solid; border-color:#ffa39e; background:#fff1f0; color:#cb2634; }
+.up-box em { display:block; font-style:normal; font-size:11px; margin-top:4px; word-break:break-all; }
+.up-label { display:block; font-size:11px; color:var(--color-text-muted); margin-top:6px; }
+.up-label.ok { color:#009a29; }
+.up-label.err { color:#cb2634; }
+.timeline { position:relative; padding-left:18px; }
+.tl-item { position:relative; padding:0 0 16px 16px; border-left:1px solid var(--color-border); }
+.tl-item:last-child { padding-bottom:0; border-left-color:transparent; }
+.tl-dot { position:absolute; left:-5px; top:2px; width:9px; height:9px; border-radius:50%; background:#00b42a; }
+.tl-dot.danger { background:#cb2634; }
+.tl-bd b { font-size:13px; }
+.tl-bd span { font-size:12px; margin-left:8px; }
+.tl-bd p { margin:4px 0 0; font-size:12px; }
+@media (max-width:900px){ .upload-grid { grid-template-columns:repeat(2,1fr); } }
+</style>
+
+<script src="../assets/js/proto.js"></script>
+<script src="../assets/js/admin-shell.js?v=13"></script>
+<script>
+(function () {
+  document.getElementById("btn-save").addEventListener("click", function(){ Proto.toast("进件草稿已保存（原型）"); });
+  document.getElementById("btn-submit").addEventListener("click", function(){
+    Proto.toast("已重新提交，转入通联审核（原型）");
+  });
+})();
+</script>
+</body>
+</html>

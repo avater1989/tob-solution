@@ -97,13 +97,18 @@
       <div class="field"><label>标题 *</label><input class="input" id="b-title" placeholder="如：开学季亲子沟通特训营" /></div>
       <div class="field"><label>副标题</label><input class="input" id="b-sub" placeholder="如：限时 5 折，扫码领课" /></div>
       <div class="field"><label>跳转链接 *</label>
-        <select class="input" id="b-link">
-          <option>课程详情 · 亲子沟通基础课</option>
-          <option>课程详情 · 家庭教育风格训练营</option>
-          <option>直播预告 · 开学第一课家长专场</option>
-          <option>领课兑换页</option>
-          <option>课程列表页</option>
-        </select>
+        <div style="display:grid;grid-template-columns:150px 1fr;gap:8px">
+          <select class="input" id="b-link-type">
+            <option value="series">系列课</option>
+            <option value="video">视频</option>
+            <option value="article">图文</option>
+            <option value="assess">测评项目</option>
+            <option value="plan">定制化计划</option>
+            <option value="page">固定页面</option>
+          </select>
+          <select class="input" id="b-link"></select>
+        </div>
+        <div class="muted" style="margin-top:4px">可选择「内容」板块的系列课 / 视频 / 图文 / 测评项目 / 定制化计划，点击后跳转到对应详情页</div>
       </div>
       <div class="field"><label>主图</label><input type="file" accept="image/*" /><div class="muted">建议 750×300px，JPG/PNG，≤500KB</div></div>
     </div>
@@ -159,10 +164,31 @@ function esc(s){ return String(s).replace(/[&<>"']/g,function(c){return({"&":"&a
 function stTag(on){ return on ? '<span class="as-tag green">展示中</span>' : '<span class="as-tag gray">已隐藏</span>'; }
 
 var BANNERS = [
-  { id:"B1", title:"开学季亲子沟通特训营", sub:"限时 5 折 · 前 100 名赠 1v1 咨询", link:"课程详情 · 亲子沟通基础课", on:true, cls:"" },
-  { id:"B2", title:"家庭教育风格测评免费测", sub:"3 分钟了解你的教养风格", link:"领课兑换页", on:true, cls:"c2" },
-  { id:"B3", title:"开学第一课 · 家长专场直播", sub:"9 月 12 日 20:00 开播", link:"直播预告 · 开学第一课家长专场", on:false, cls:"c3" }
+  { id:"B1", title:"开学季亲子沟通特训营", sub:"限时 5 折 · 前 100 名赠 1v1 咨询", linkType:"series", link:"家长情绪管理训练营", on:true, cls:"" },
+  { id:"B2", title:"家庭教育风格测评免费测", sub:"3 分钟了解你的教养风格", linkType:"assess", link:"家庭教育风格测评", on:true, cls:"c2" },
+  { id:"B3", title:"开学第一课 · 家长专场直播", sub:"9 月 12 日 20:00 开播", linkType:"page", link:"直播预告 · 开学第一课家长专场", on:false, cls:"c3" }
 ];
+/* Banner 跳转链接：按「内容」板块的内容类型分组 */
+var LINK_TYPE_LABEL = { series:"系列课", video:"视频", article:"图文", assess:"测评项目", plan:"定制化计划", page:"固定页面" };
+var LINK_OPTIONS = {
+  series:  ["小学语文阅读启蒙系列", "家长情绪管理训练营", "AI 学习规划入门"],
+  video:   ["如何让孩子爱上阅读", "亲子沟通的 5 个关键", "AI 助力学习规划"],
+  article: ["9 月新学期家长指南", "孩子注意力训练方法论", "家庭情绪急救指南"],
+  assess:  ["家庭教育风格测评", "亲子沟通能力测评", "孩子注意力测评"],
+  plan:    ["21 天阅读习惯养成计划", "亲子沟通训练营计划", "新学期学习规划计划"],
+  page:    ["领课兑换页", "课程列表页", "直播预告 · 开学第一课家长专场", "我的页面"]
+};
+function linkLabel(b){
+  var t = LINK_TYPE_LABEL[b.linkType] || "";
+  return (b.linkType && b.linkType !== "page") ? (t + " · " + b.link) : b.link;
+}
+function fillLinkOptions(type, selected){
+  var list = LINK_OPTIONS[type] || [];
+  if (!selected || list.indexOf(selected) < 0) selected = list[0] || "";
+  document.getElementById("b-link").innerHTML = list.map(function(o){
+    return '<option' + (o === selected ? ' selected' : '') + '>' + esc(o) + '</option>';
+  }).join("");
+}
 var CATS = [
   { id:"T1", name:"全部", scope:"全部在售课程", on:true },
   { id:"T2", name:"家长必修", scope:"商品分组 · 家长必修", on:true },
@@ -185,7 +211,7 @@ function renderBanners(){
     return '<tr>' +
       '<td><div class="deco-cover '+b.cls+'" style="width:120px;height:44px;font-size:11px">'+esc(b.title)+'</div></td>' +
       '<td><div class="as-name">'+esc(b.title)+'</div><div class="as-desc">'+esc(b.sub)+'</div></td>' +
-      '<td style="font-size:12px">'+esc(b.link)+'</td>' +
+      '<td style="font-size:12px">'+esc(linkLabel(b))+'</td>' +
       '<td>'+stTag(b.on)+'</td>' +
       '<td class="row-actions">' +
         '<a href="javascript:;" data-b-move="'+b.id+'">'+(i===0?"—" : "上移")+'</a>' +
@@ -238,7 +264,9 @@ function openBanner(b){
   document.getElementById("banner-modal-title").textContent = b ? "编辑 Banner" : "新增 Banner";
   document.getElementById("b-title").value = b ? b.title : "";
   document.getElementById("b-sub").value = b ? b.sub : "";
-  document.getElementById("b-link").value = b ? b.link : "课程详情 · 亲子沟通基础课";
+  var type = b ? (b.linkType || "page") : "series";
+  document.getElementById("b-link-type").value = type;
+  fillLinkOptions(type, b ? b.link : "");
   mask.classList.add("open"); document.getElementById("modal-banner").classList.add("open");
 }
 // 分类标签弹窗
@@ -292,16 +320,30 @@ document.addEventListener("change", function(e){
   }
 });
 
+document.getElementById("b-link-type").addEventListener("change", function(){
+  fillLinkOptions(this.value, "");
+});
+
 document.getElementById("banner-ok").onclick = function(){
   var title = document.getElementById("b-title").value.trim();
   if (!title) { Proto.toast("请填写 Banner 标题"); return; }
-  var data = { title:title, sub:document.getElementById("b-sub").value.trim(), link:document.getElementById("b-link").value, cls:"c2" };
+  var typeSel = document.getElementById("b-link-type");
+  var linkSel = document.getElementById("b-link");
+  if (!linkSel.value) { Proto.toast("请选择跳转的内容"); return; }
+  var data = {
+    title: title,
+    sub: document.getElementById("b-sub").value.trim(),
+    linkType: typeSel.value,
+    link: linkSel.value,
+    cls: "c2"
+  };
   if (editCtx.banner) { Object.assign(editCtx.banner, data); }
   else {
     if (BANNERS.length>=3) { Proto.toast("最多 3 条 Banner"); return; }
     BANNERS.push(Object.assign({ id:"B"+Date.now(), on:true }, data));
   }
-  closeAll(); renderAll(); Proto.toast("Banner 已保存（演示）");
+  closeAll(); renderAll();
+  Proto.toast("Banner 已保存，跳转至「" + linkLabel(data) + "」（演示）");
 };
 document.getElementById("cat-ok").onclick = function(){
   var name = document.getElementById("c-name").value.trim();

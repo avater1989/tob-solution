@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>开票设置 · 运营后台</title>
+<link rel="stylesheet" href="../assets/css/proto.css?v=4" />
+</head>
+<body class="admin-body" data-module="trade" data-nav="invoice-settings" data-title="开票设置" data-crumb="运营后台 / 交易与结算 / 财务 / 开票设置">
+<div id="header-actions">
+  <button class="btn" id="btn-preview">预览开票规则</button>
+  <button class="btn btn-primary" id="btn-save">保存设置</button>
+</div>
+<div id="page-content" style="display:none">
+
+  <div class="alert alert-info" style="margin-bottom:12px">
+    <span>本页为<b>平台侧开票规则</b>。原商家后台「开票设置」已下架；发票开具与台账见 <a href="invoices.html" class="link">发票管理</a>。开票方向随分账链路分化：链路 A 由<b>商家 → 艺博</b>（佣金），链路 B 由<b>艺博 → 商家</b>（服务费）。</span>
+  </div>
+
+  <!-- 买家开票 -->
+  <div class="card" style="margin-bottom:12px"><div class="card-hd"><h2>买家开票</h2></div>
+    <div class="card-bd">
+      <div class="setting-row">
+        <div><b>允许买家申请开票</b><p class="muted" style="font-size:12px;margin-top:2px">买家可在 C 端「我的-订单」申请开具发票</p></div>
+        <span class="switch on"></span>
+      </div>
+      <div class="form-grid" style="grid-template-columns:1fr 1fr;gap:12px 16px;margin-top:14px">
+        <div class="field"><label>默认开票主体</label>
+          <select><option>各租户开票给买家（商家主体）</option><option>平台统一开票给买家</option></select>
+        </div>
+        <div class="field"><label>默认发票类型</label>
+          <select><option>增值税电子普通发票</option><option>增值税纸质普通发票</option><option>增值税专用发票（需资质）</option></select>
+        </div>
+        <div class="field"><label>开票金额口径</label>
+          <select><option>按实付金额</option><option>按不含优惠券金额</option></select>
+        </div>
+        <div class="field"><label>买家开票申请时限</label>
+          <select><option>支付后 90 天内</option><option>支付后 180 天内</option><option>不限</option></select>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 平台与商家互开 -->
+  <div class="card" style="margin-bottom:12px"><div class="card-hd"><h2>平台与商家互开</h2><span class="muted" style="font-size:12px">按分账链路区分方向</span></div>
+    <div class="card-bd" style="padding:0">
+      <table class="data">
+        <thead><tr><th>链路</th><th>开票方向</th><th>开票内容</th><th>金额口径</th><th>是否先票后款</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><b>链路 A · 平台内容</b></td>
+            <td>商家 → 艺博平台</td>
+            <td>佣金发票</td>
+            <td>佣金金额（交易额 × 佣金率 20%）</td>
+            <td><span class="badge">否</span></td>
+          </tr>
+          <tr>
+            <td><b>链路 B · 商家自建内容</b></td>
+            <td>艺博平台 → 商家</td>
+            <td>技术服务费发票</td>
+            <td>平台服务费（交易额 × 服务费率 0.6%）</td>
+            <td><span class="badge badge-info">是</span></td>
+          </tr>
+          <tr>
+            <td><b>入金手续费</b></td>
+            <td>通联 / 渠道 → 艺博平台</td>
+            <td>手续费发票</td>
+            <td>交易额 × 0.30%</td>
+            <td><span class="badge">否</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- 开票资质与红冲 -->
+  <div class="card"><div class="card-hd"><h2>开票资质与红冲</h2></div>
+    <div class="card-bd">
+      <div class="form-grid" style="grid-template-columns:1fr 1fr;gap:12px 16px">
+        <div class="field"><label>平台开票主体名称</label><input class="input" value="艺博教育科技（上海）有限公司" /></div>
+        <div class="field"><label>平台纳税人识别号</label><input class="input" value="91310000MA1K******" /></div>
+        <div class="field"><label>注册地址</label><input class="input" value="上海市**区**路**号" /></div>
+        <div class="field"><label>开户行及账号</label><input class="input" value="招商银行上海分行 / 6225 **** 8888" /></div>
+        <div class="field"><label>红冲规则</label>
+          <select><option>需财务复核后红冲</option><option>允许直接红冲</option></select>
+        </div>
+        <div class="field"><label>红冲后结算处理</label>
+          <select><option>关联结算单标记待复核</option><option>自动暂停该租户结算</option></select>
+        </div>
+      </div>
+      <p class="muted" style="margin-top:10px;font-size:12px">企业会员开票需已完成工商与实名核验；专票需额外提交一般纳税人资质。作废 / 红冲记录进 <a href="invoices.html" class="link">发票管理</a> 台账。</p>
+    </div>
+  </div>
+</div>
+
+<style>
+.card-hd{display:flex;justify-content:space-between;align-items:center}
+.setting-row{display:flex;justify-content:space-between;align-items:center;gap:16px}
+.setting-row p{margin:0}
+.switch{width:40px;height:22px;border-radius:11px;background:#c9cdd4;position:relative;cursor:pointer;flex:none}
+.switch::after{content:"";position:absolute;top:2px;left:2px;width:18px;height:18px;border-radius:50%;background:#fff;transition:all .15s}
+.switch.on{background:#165dff}
+.switch.on::after{left:20px}
+.link{color:var(--color-primary);text-decoration:none;font-size:13px}
+</style>
+
+<script src="../assets/js/proto.js"></script>
+<script src="../assets/js/ops-shell.js?v=6"></script>
+<script>
+(function () {
+  document.querySelectorAll(".switch").forEach(function(s){ s.addEventListener("click", function(){ this.classList.toggle("on"); }); });
+  document.getElementById("btn-save").addEventListener("click", function(){ Proto.toast("开票设置已保存（原型）"); });
+  document.getElementById("btn-preview").addEventListener("click", function(){ Proto.toast("预览开票规则（原型）"); });
+})();
+</script>
+</body>
+</html>

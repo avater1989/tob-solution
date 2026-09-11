@@ -3,26 +3,26 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>交易选项 · 商家管理后台</title>
-<link rel="stylesheet" href="../assets/css/proto.css?v=9" />
+<title>交易选项 · 运营后台</title>
+<link rel="stylesheet" href="../assets/css/proto.css?v=4" />
 </head>
-<body class="admin-body" data-module="trade" data-nav="trade-opts" data-title="交易选项" data-crumb="交易 / 交易设置 / 交易选项">
+<body class="admin-body" data-module="trade" data-nav="trade-settings" data-title="交易选项" data-crumb="运营后台 / 交易与结算 / 风控与规则 / 交易选项">
 <div id="header-actions">
   <button class="btn" id="btn-reset">恢复默认</button>
   <button class="btn btn-primary" id="btn-save">保存设置</button>
 </div>
 <div id="page-content" style="display:none">
 
-  <div class="alert alert-warning" style="margin-bottom:12px;padding:10px 12px;border-radius:8px;background:#fff7e6;border:1px solid #ffd591;color:#d48806;font-size:13px">
-    <b>本页已下架</b>：交易选项为平台级默认值，已迁移至 <b>运营后台 → 交易与结算 → 交易选项</b>。商家侧不再单独配置。本页仅作历史留痕。
+  <div class="alert alert-info" style="margin-bottom:12px">
+    <span>本页为<b>平台默认值</b>。原商家后台「交易选项」已下架，商家侧不再单独配置；如需按租户差异化，可在租户/合同处覆盖。</span>
   </div>
 
   <!-- 下单设置 -->
-  <div class="card" style="margin-bottom:12px"><div class="card-hd"><h2>下单设置</h2><span class="muted" style="font-size:12px">合并下单、提升客单价</span></div>
+  <div class="card" style="margin-bottom:12px"><div class="card-hd"><h2>下单设置</h2><span class="muted" style="font-size:12px">合并下单，提升客单价</span></div>
     <div class="card-bd">
       <div class="setting-row">
         <div><b>开启合并下单</b><p class="muted" style="font-size:12px;margin-top:2px">开启后 C 端支持多门课程 / 服务一次性下单支付（虚拟商品无运费与物流环节）</p></div>
-        <span class="switch on" id="sw-cart"></span>
+        <span class="switch on"></span>
       </div>
       <div class="field" style="margin-top:14px"><label>支持合并下单的商品类型</label>
         <div class="checks">
@@ -31,27 +31,32 @@
           <label><input type="checkbox" /> 组合商品</label>
         </div>
       </div>
+      <div class="field" style="margin-top:14px"><label>商家可调范围</label>
+        <select><option>允许商家自行开关</option><option>平台统一锁定</option></select>
+      </div>
     </div>
   </div>
 
-  <!-- 订单与支付设置 -->
+  <!-- 订单与支付 -->
   <div class="card" style="margin-bottom:12px"><div class="card-hd"><h2>订单与支付</h2></div>
     <div class="card-bd">
       <div class="form-grid" style="grid-template-columns:1fr 1fr;gap:12px 16px">
         <div class="field"><label>待付款订单关闭时间</label>
-          <select style="width:100%;padding:7px 8px;border:1px solid var(--color-border);border-radius:6px"><option>30 分钟</option><option selected>2 小时</option><option>24 小时</option></select>
+          <select><option>30 分钟</option><option selected>2 小时</option><option>24 小时</option></select>
         </div>
         <div class="field"><label>支付成功开通权益</label>
-          <select style="width:100%;padding:7px 8px;border:1px solid var(--color-border);border-radius:6px"><option selected>立即自动开通</option><option>支付后 5 分钟开通</option></select>
+          <select><option selected>立即自动开通</option><option>支付后 5 分钟开通</option></select>
         </div>
         <div class="field"><label>课程权益有效期</label>
-          <select style="width:100%;padding:7px 8px;border:1px solid var(--color-border);border-radius:6px"><option selected>永久有效</option><option>按课程周期（系列课 / 计划）</option><option>自定义天数</option></select>
+          <select><option selected>永久有效</option><option>按课程周期（系列课 / 计划）</option><option>自定义天数</option></select>
         </div>
         <div class="field"><label>可退款订单时长</label>
-          <select style="width:100%;padding:7px 8px;border:1px solid var(--color-border);border-radius:6px"><option selected>1 年内订单可发起</option><option>不限制</option></select>
+          <select><option selected>1 年内订单可发起</option><option>不限制</option></select>
         </div>
       </div>
-      <p class="muted" style="font-size:12px;margin-top:6px">付款成功提醒已开启（系统管理-消息推送）。通联支付账户可退余额不足时无法退款。</p>
+      <p class="muted" style="font-size:12px;margin-top:6px">
+        支付前置约束（平台级，不可关闭）：会员须完成<b>绑定手机</b>才能创建订单；<b>未完成提现协议签约</b>的会员不能提现；退款受「当日退货额 ≤ 当日交易额」且「≤ 原收款人账户余额」约束，余额不足需先充值。
+      </p>
     </div>
   </div>
 
@@ -63,20 +68,21 @@
         <span class="switch on"></span>
       </div>
       <div class="setting-row" style="margin-top:12px">
-        <div><b>已学习部分按比例退款</b><p class="muted" style="font-size:12px;margin-top:2px">按已学课节占比扣除后退款，需商家人工审核确认</p></div>
+        <div><b>已学习部分按比例退款</b><p class="muted" style="font-size:12px;margin-top:2px">按已学课节占比扣除后退款，需人工审核确认</p></div>
         <span class="switch"></span>
       </div>
       <div class="form-grid" style="grid-template-columns:1fr 1fr 1fr;gap:12px 16px;margin-top:14px">
-        <div class="field"><label>商家处理超时</label>
-          <select style="width:100%;padding:7px 8px;border:1px solid var(--color-border);border-radius:6px"><option selected>7 天自动同意</option><option>3 天自动同意</option><option>不自动同意</option></select>
+        <div class="field"><label>处理超时</label>
+          <select><option selected>7 天自动同意</option><option>3 天自动同意</option><option>不自动同意</option></select>
         </div>
         <div class="field"><label>退款后权益处理</label>
-          <select style="width:100%;padding:7px 8px;border:1px solid var(--color-border);border-radius:6px"><option selected>自动回收课程权益</option><option>保留权益（需人工选择）</option></select>
+          <select><option selected>自动回收课程权益</option><option>保留权益（需人工选择）</option></select>
         </div>
         <div class="field"><label>退款申请时限</label>
-          <select style="width:100%;padding:7px 8px;border:1px solid var(--color-border);border-radius:6px"><option selected>支付后 7 天内</option><option>支付后 14 天内</option></select>
+          <select><option selected>支付后 7 天内</option><option>支付后 14 天内</option></select>
         </div>
       </div>
+      <p class="muted" style="font-size:12px;margin-top:6px">链路 A（平台内容）退款由平台主导并回退艺博账户资金；链路 B（商家自建）回退商家账户资金，受余额约束。</p>
     </div>
   </div>
 
@@ -91,8 +97,8 @@
         <div><b>隐藏商品销量</b><p class="muted" style="font-size:12px;margin-top:2px">开启后 C 端详情页不展示销量数据</p></div>
         <span class="switch"></span>
       </div>
-      <div class="field" style="margin-top:14px"><label>买家开票设置</label>
-        <div><a href="invoice.html" class="link">前往开票设置 →</a></div>
+      <div class="field" style="margin-top:14px"><label>开票设置</label>
+        <div><a href="invoice-settings.html" class="link">前往开票设置 →</a></div>
       </div>
     </div>
   </div>
@@ -111,12 +117,12 @@
 </style>
 
 <script src="../assets/js/proto.js"></script>
-<script src="../assets/js/admin-shell.js?v=13"></script>
+<script src="../assets/js/ops-shell.js?v=6"></script>
 <script>
 (function () {
   document.querySelectorAll(".switch").forEach(function(s){ s.addEventListener("click", function(){ this.classList.toggle("on"); }); });
-  document.getElementById("btn-save").addEventListener("click", function(){ Proto.toast("交易选项已保存（原型）"); });
-  document.getElementById("btn-reset").addEventListener("click", function(){ Proto.toast("已恢复默认设置（原型）"); });
+  document.getElementById("btn-save").addEventListener("click", function(){ Proto.toast("平台交易选项已保存（原型）"); });
+  document.getElementById("btn-reset").addEventListener("click", function(){ Proto.toast("已恢复平台默认设置（原型）"); });
 })();
 </script>
 </body>

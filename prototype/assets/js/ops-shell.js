@@ -84,6 +84,14 @@
     ],
     trade: [
       {
+        group: "收款与进件",
+        links: [
+          { id: "pay-channels", href: "pay-channels.html", label: "收款与清分" },
+          { id: "pay-members", href: "pay-members.html", label: "会员管理" },
+          { id: "onboard-audit", href: "onboard-audit.html", label: "进件审核", badge: 3 },
+        ],
+      },
+      {
         group: "资金",
         links: [
           { id: "recon", href: "recon.html", label: "对账管理", badge: 3 },
@@ -95,6 +103,7 @@
         group: "财务",
         links: [
           { id: "invoices", href: "invoices.html", label: "发票管理" },
+          { id: "invoice-settings", href: "invoice-settings.html", label: "开票设置" },
           { id: "fee-ledger", href: "fee-ledger.html", label: "服务费台账" },
         ],
       },
@@ -103,6 +112,7 @@
         links: [
           { id: "fund-risk", href: "fund-risk.html", label: "资金风控", badge: 2 },
           { id: "settle-rules", href: "settle-rules.html", label: "结算规则配置" },
+          { id: "trade-settings", href: "trade-settings.html", label: "交易选项" },
         ],
       },
     ],

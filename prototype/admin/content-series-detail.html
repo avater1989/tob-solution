@@ -67,6 +67,10 @@
       <div class="item"><span class="k">商品分组</span><span class="v" id="d-group">K12 教育</span></div>
       <div class="item"><span class="k">有效期</span><span class="v">长期有效</span></div>
       <div class="item"><span class="k">店铺显示</span><span class="v">显示</span></div>
+      <div class="item"><span class="k">交付方式</span><span class="v">支付后自动开通（线上内容）</span></div>
+      <div class="item"><span class="k">退款规则</span><span class="v">未使用可退 · 支持 7 天内未使用申请退款</span></div>
+      <div class="item"><span class="k">权益回收</span><span class="v">退款成功后自动回收课程权益</span></div>
+      <div class="item"><span class="k">上架设置</span><span class="v" id="d-shelfmode">立即上架（保存后提交内容审核队列）</span></div>
     </div>
   </div>
 
@@ -79,6 +83,9 @@
   </div>
   </div>
 </div>
+
+<!-- 弹窗遮罩 -->
+<div class="proto-mask" id="mask"></div>
 
 <!-- 分享弹窗 -->
 <div class="proto-modal" id="modal-share">
@@ -175,6 +182,8 @@ function apply() {
   document.getElementById("d-group").textContent = d.group;
   document.getElementById("d-shelf").textContent = d.shelf;
   document.getElementById("d-shelf").className = "cm-pill" + (d.shelf === "已上架" ? "" : " off");
+  var shelfmode = document.getElementById("d-shelfmode");
+  if (shelfmode) shelfmode.textContent = d.shelf === "草稿" ? "暂存草稿" : "立即上架（保存后提交内容审核队列）";
   document.getElementById("d-pub").textContent = d.pub || "已发布";
   document.getElementById("d-outline-link").href = "content-series-outline.html?id=" + encodeURIComponent(id);
   var outlineA = document.querySelector('#header-actions a[href*="outline"]') ||

@@ -77,6 +77,8 @@
           <th>买家</th>
           <th>实付金额</th>
           <th>渠道来源</th>
+          <th>内容来源</th>
+          <th>结算模式</th>
           <th>推广人</th>
           <th>支付状态</th>
           <th>权益状态</th>
@@ -92,6 +94,8 @@
           <td>李***<br><span class="muted">138****2610</span></td>
           <td><b>¥9.90</b></td>
           <td><span class="tag tag-green">视频号</span></td>
+          <td><span class="tag tag-purple">平台</span></td>
+          <td>佣金 20%</td>
           <td>—</td>
           <td><span class="badge badge-info">已支付</span></td>
           <td><span class="badge badge-info">已开通</span></td>
@@ -109,6 +113,8 @@
           <td>陈***<br><span class="muted">186****4411</span></td>
           <td><b>¥0.00</b></td>
           <td><span class="tag tag-purple">直播间</span></td>
+          <td><span class="tag tag-green">自建</span></td>
+          <td>服务费 0.6%</td>
           <td>阮荣均</td>
           <td><span class="badge badge-success">已完成</span></td>
           <td><span class="badge badge-info">已开通</span></td>
@@ -125,6 +131,8 @@
           <td>刘***<br><span class="muted">137****0012</span></td>
           <td><b>¥9.90</b></td>
           <td><span class="tag tag-blue">小程序</span></td>
+          <td><span class="tag tag-green">自建</span></td>
+          <td>服务费 0.6%</td>
           <td>王助教</td>
           <td><span class="badge badge-warn">待付款</span></td>
           <td><span class="muted">未开通</span></td>
@@ -141,6 +149,8 @@
           <td>赵***<br><span class="muted">186****2099</span></td>
           <td><b>¥9.90</b></td>
           <td><span class="tag tag-blue">小程序</span></td>
+          <td><span class="tag tag-green">自建</span></td>
+          <td>服务费 0.6%</td>
           <td>赵老师</td>
           <td><span class="badge badge-danger">已退款</span></td>
           <td><span class="badge">已回收</span></td>
@@ -157,6 +167,8 @@
           <td>张***<br><span class="muted">159****8832</span></td>
           <td><b>¥99.00</b></td>
           <td><span class="tag tag-green">视频号</span></td>
+          <td><span class="tag tag-purple">平台</span></td>
+          <td>佣金 20%</td>
           <td>—</td>
           <td><span class="badge badge-info">已支付</span></td>
           <td><span class="badge badge-info">已开通</span></td>
@@ -174,6 +186,8 @@
           <td>周***<br><span class="muted">133****7788</span></td>
           <td><b>¥299.00</b></td>
           <td><span class="tag tag-blue">小程序</span></td>
+          <td><span class="tag tag-green">自建</span></td>
+          <td>服务费 0.6%</td>
           <td>赵老师</td>
           <td><span class="badge badge-info">已支付</span></td>
           <td><span class="badge badge-info">已开通</span></td>
@@ -301,7 +315,8 @@
       product: tds[1] ? tds[1].textContent.trim() : "",
       buyer: tds[2] ? tds[2].childNodes[0].textContent.trim() : "",
       paid: tds[3] ? tds[3].textContent.trim() : "",
-      payStatus: tds[6] ? tds[6].textContent.trim() : "",
+      payStatus: tds[8] ? tds[8].textContent.trim() : "",
+      settleMode: tds[6] ? tds[6].textContent.trim() : "",
     };
   }
 
@@ -351,7 +366,7 @@
   if (window.BoardMetrics && BoardMetrics.applyDrilldownToList) {
     BoardMetrics.applyDrilldownToList({
       tbody: "ord-tbody",
-      cols: { product: 1, channel: 4, promoter: 5, payStatus: 6, refundStatus: 8, owner: 5 }
+      cols: { product: 1, channel: 4, promoter: 7, payStatus: 8, refundStatus: 10, owner: 7 }
     });
   }
 })();

@@ -100,11 +100,35 @@
       </div>
     </div>
     <div class="field">
-      <label>上架策略</label>
-      <div class="cm-choice">
-        <label><input type="radio" name="shelf"> 立即上架</label>
-        <label><input type="radio" name="shelf"> 定时上架</label>
-        <label><input type="radio" name="shelf" checked> 暂不上架</label>
+      <label>交付与售后</label>
+      <div class="form-grid" style="grid-template-columns:1fr 1fr">
+        <div class="field"><label>交付方式</label>
+          <select class="input">
+            <option>支付后自动开通（线上内容）</option>
+            <option>支付后开通服务额度（学员预约）</option>
+            <option>人工开通（对公转账场景）</option>
+          </select>
+        </div>
+        <div class="field"><label>退款规则</label>
+          <select class="input">
+            <option>未使用可退（服务未核销）</option>
+            <option>按已使用比例退款</option>
+            <option>不支持退款</option>
+          </select>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:flex-start;gap:6px;margin-top:10px">
+        <label class="cm-check"><input type="checkbox" checked> 支持 7 天内未使用申请退款（虚拟商品不适用无理由退货）</label>
+        <label class="cm-check"><input type="checkbox"> 退款后可选择保留权益（客诉安抚场景）</label>
+        <label class="cm-check"><input type="checkbox" checked> 退款成功后自动回收课程权益 / 服务额度</label>
+      </div>
+    </div>
+    <div class="field">
+      <label>上架设置</label>
+      <div class="cm-choice col">
+        <label><input type="radio" name="shelf" checked> 立即上架（保存后提交内容审核队列）</label>
+        <label><input type="radio" name="shelf"> 定时上架 <input type="datetime-local" class="input" style="width:200px;margin-left:8px" /></label>
+        <label><input type="radio" name="shelf"> 暂存草稿</label>
       </div>
     </div>
     <div class="field">

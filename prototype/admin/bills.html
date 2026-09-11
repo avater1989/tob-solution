@@ -16,8 +16,8 @@
   <!-- 顶部统计 -->
   <div class="grid-4" style="margin-bottom:16px">
     <div class="stat"><div class="label">本期收入</div><div class="value">¥24,650.00</div><div class="hint">近 30 天</div></div>
-    <div class="stat"><div class="label">本期支出</div><div class="value">¥2,252.70</div><div class="hint">退款 + 手续费 + 分成</div></div>
-    <div class="stat"><div class="label">净收入</div><div class="value">¥22,397.30</div><div class="hint">按支付时间口径</div></div>
+    <div class="stat"><div class="label">本期支出</div><div class="value">¥2,080.15</div><div class="hint">退款 + 入金手续费 + 分成</div></div>
+    <div class="stat"><div class="label">净收入</div><div class="value">¥22,569.85</div><div class="hint">按支付时间口径</div></div>
     <div class="stat"><div class="label">待核对差异</div><div class="value">2</div><div class="hint"><a href="recon.html" style="color:inherit">去对账 →</a></div></div>
   </div>
 
@@ -35,7 +35,7 @@
         <option value="">收款账户</option><option>通联支付</option><option>通联分账会员</option>
       </select>
       <select id="f-type">
-        <option value="">收支类型</option><option>订单收入</option><option>退款</option><option>支付手续费</option><option>分销分成</option><option>提现</option>
+        <option value="">收支类型</option><option>订单收入</option><option>退款</option><option>入金手续费</option><option>分销分成</option><option>提现</option>
       </select>
       <input id="f-no" placeholder="交易单号 / 关联订单号" />
       <input id="f-time1" type="datetime-local" />
@@ -55,11 +55,11 @@
       </thead>
       <tbody>
         <tr><td>2026-09-07 16:22</td><td class="mono">TXN0920210233</td><td class="mono">YB20260907000331</td><td>订单收入</td><td><b class="success">+¥78.00</b></td><td>—</td><td>通联支付</td><td>春启 03 期家长必修课</td></tr>
-        <tr><td>2026-09-07 16:22</td><td class="mono">TXN0920210234</td><td class="mono">YB20260907000331</td><td>支付手续费</td><td>—</td><td class="danger">-¥0.78</td><td>通联支付</td><td>费率 1%</td></tr>
+        <tr><td>2026-09-07 16:22</td><td class="mono">TXN0920210234</td><td class="mono">YB20260907000331</td><td>入金手续费</td><td>—</td><td class="danger">-¥0.23</td><td>通联支付</td><td>入金手续费 0.3%</td></tr>
         <tr><td>2026-09-07 14:22</td><td class="mono">TXN0920209871</td><td class="mono">YB20260907000215</td><td>订单收入</td><td><b class="success">+¥299.00</b></td><td>—</td><td>通联支付</td><td>线上课</td></tr>
-        <tr><td>2026-09-07 14:22</td><td class="mono">TXN0920209872</td><td class="mono">YB20260907000215</td><td>支付手续费</td><td>—</td><td class="danger">-¥2.99</td><td>通联支付</td><td>费率 1%</td></tr>
+        <tr><td>2026-09-07 14:22</td><td class="mono">TXN0920209872</td><td class="mono">YB20260907000215</td><td>入金手续费</td><td>—</td><td class="danger">-¥0.90</td><td>通联支付</td><td>入金手续费 0.3%</td></tr>
         <tr><td>2026-09-06 20:19</td><td class="mono">TXN0920188666</td><td class="mono">YB20260906000892</td><td>退款</td><td>—</td><td class="danger">-¥9.90</td><td>通联支付</td><td>售后 AS202609070005</td></tr>
-        <tr><td>2026-09-06 20:19</td><td class="mono">TXN0920188667</td><td class="mono">YB20260906000892</td><td>手续费返还</td><td><b class="success">+¥0.10</b></td><td>—</td><td>通联支付</td><td>退款返还手续费</td></tr>
+        <tr><td>2026-09-06 20:19</td><td class="mono">TXN0920188667</td><td class="mono">YB20260906000892</td><td>手续费返还</td><td><b class="success">+¥0.03</b></td><td>—</td><td>通联支付</td><td>退款返还入金手续费</td></tr>
       </tbody>
     </table>
   </div></div>
@@ -71,9 +71,9 @@
         <tr><th>账期日</th><th>收入</th><th>支出</th><th>手续费</th><th>净额</th><th>状态</th><th style="width:120px">操作</th></tr>
       </thead>
       <tbody>
-        <tr><td>2026-09-07</td><td>¥1,028.90</td><td>-¥63.40</td><td>-¥15.00</td><td><b>¥950.50</b></td><td><span class="badge badge-success">已对账</span></td><td><a href="#" data-toast="下载当日账单（原型）">下载</a></td></tr>
-        <tr><td>2026-09-06</td><td>¥842.00</td><td>-¥28.60</td><td>-¥12.20</td><td><b>¥801.20</b></td><td><span class="badge badge-warn">待核对</span></td><td><a href="#" data-toast="下载当日账单（原型）">下载</a></td></tr>
-        <tr><td>2026-09-05</td><td>¥996.30</td><td>—</td><td>-¥9.96</td><td><b>¥986.34</b></td><td><span class="badge badge-success">已对账</span></td><td><a href="#" data-toast="下载当日账单（原型）">下载</a></td></tr>
+        <tr><td>2026-09-07</td><td>¥1,028.90</td><td>-¥63.40</td><td>-¥3.09</td><td><b>¥962.41</b></td><td><span class="badge badge-success">已对账</span></td><td><a href="#" data-toast="下载当日账单（原型）">下载</a></td></tr>
+        <tr><td>2026-09-06</td><td>¥842.00</td><td>-¥28.60</td><td>-¥2.53</td><td><b>¥810.87</b></td><td><span class="badge badge-warn">待核对</span></td><td><a href="#" data-toast="下载当日账单（原型）">下载</a></td></tr>
+        <tr><td>2026-09-05</td><td>¥996.30</td><td>—</td><td>-¥2.99</td><td><b>¥993.31</b></td><td><span class="badge badge-success">已对账</span></td><td><a href="#" data-toast="下载当日账单（原型）">下载</a></td></tr>
       </tbody>
     </table>
   </div></div>
@@ -84,12 +84,12 @@
       <div class="kv">
         <div class="kv-row"><span>订单收入合计</span><b>¥24,650.00</b></div>
         <div class="kv-row"><span>退款冲减</span><b>-¥486.20</b></div>
-        <div class="kv-row"><span>支付手续费</span><b>-¥246.50</b></div>
+        <div class="kv-row"><span>入金手续费（0.3%）</span><b>-¥73.95</b></div>
         <div class="kv-row"><span>分账支出</span><b>-¥1,520.00</b></div>
-        <div class="kv-row"><span>净收入</span><b style="color:#cb2634">¥22,397.30</b></div>
+        <div class="kv-row"><span>净收入</span><b style="color:#cb2634">¥22,569.85</b></div>
       </div>
       <p class="muted" style="font-size:12px;line-height:1.9">交易明细按订单「支付时间」逐笔记录收入 / 支出；交易账单按天聚合，支持与<b>通联支付「资金账单」</b>跨平台对账。
-        分账明细见「结算单」与「分账规则配置」；数据同步可能存在约 3 秒误差，属正常现象。</p>
+        分账明细见「结算单」；分账与结算规则由平台统一配置（运营后台 · 结算规则配置）；数据同步可能存在约 3 秒误差，属正常现象。</p>
     </div>
   </div></div>
 
