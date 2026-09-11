@@ -7,9 +7,6 @@
 <link rel="stylesheet" href="../assets/css/proto.css?v=13" />
 </head>
 <body class="admin-body" data-module="scrm" data-nav="videos" data-title="视频号" data-crumb="SCRM / 全域获客 / 视频号">
-<div id="header-actions">
-  <button class="btn" id="btn-guide">授权 / 绑定橱窗指引</button>
-</div>
 <div id="page-content" style="display:none">
 
   <!-- 店铺授权列表 -->
@@ -67,18 +64,6 @@
           <li>绑定成功后，课程审核通过可自动上架橱窗；未绑定则需手动上架。</li>
         </ol>
       </div>
-    </div>
-  </div>
-
-  <!-- 关联课程说明 -->
-  <div class="card">
-    <div class="card-hd"><h2>视频号卖课说明</h2></div>
-    <div class="card-bd">
-      <p class="muted" style="font-size:13px;line-height:1.9;margin:0">
-        1. 授权微信小店并绑定橱窗后，即可在直播间/视频号挂载课程商品售卖；<br />
-        2. 视频号小店产生的订单统一在「交易 → 订单管理 → 订单列表」按渠道来源查看并处理；<br />
-        3. 学员购课后用购课手机号登录艺博学员小程序学习，商家可在「用户 → 用户列表」中检索跟进。
-      </p>
     </div>
   </div>
 
@@ -156,13 +141,6 @@
     var show = body.style.display === "none";
     body.style.display = show ? "block" : "none";
     this.textContent = show ? "收起指引 ▴" : "查看授权 / 绑定橱窗指引 ▾";
-  });
-  document.getElementById("btn-guide").addEventListener("click", function (e) {
-    e.preventDefault();
-    var body = document.getElementById("wx-guide-body");
-    body.style.display = "block";
-    var t = document.getElementById("wx-guide-toggle");
-    t.textContent = "收起指引 ▴";
   });
 
   // 店铺行操作（绑定橱窗需取店铺名）

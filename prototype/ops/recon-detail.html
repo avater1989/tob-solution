@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>对账单详情 · 运营后台</title>
+<link rel="stylesheet" href="../assets/css/proto.css?v=4" />
+</head>
+<body class="admin-body" data-module="trade" data-nav="recon" data-title="对账单详情" data-crumb="运营后台 / 交易与结算 / 对账管理 / 对账单详情">
+<div id="header-actions">
+  <a class="btn" href="recon.html" style="text-decoration:none">返回列表</a>
+  <button class="btn" id="btn-export">导出明细</button>
+  <button class="btn" id="btn-notice">重发确认通知</button>
+</div>
+<div id="page-content" style="display:none">
+
+  <div class="alert alert-warning" style="margin-bottom:12px">
+    <span>本对账单存在 <b>2</b> 笔未平差异，处理完成后将重新汇总；差异未结清前不进入结算流程。</span>
+  </div>
+
+  <!-- 对账单信息 -->
+  <div class="card" style="margin-bottom:12px">
+    <div class="card-hd"><h2>对账单信息</h2><span class="badge badge-warn">有差异</span></div>
+    <div class="card-bd">
+      <div class="form-grid readonly" style="grid-template-columns:repeat(3,minmax(0,1fr))">
+        <div class="field"><label>对账单号</label><div class="mono">PRC20260910001</div></div>
+        <div class="field"><label>租户</label><div>星启家庭教育</div></div>
+        <div class="field"><label>账期</label><div>2026-09-04 ~ 2026-09-10</div></div>
+        <div class="field"><label>账单渠道</label><div>通联支付</div></div>
+        <div class="field"><label>平台订单数 / 渠道笔数</label><div>86 / 86</div></div>
+        <div class="field"><label>生成时间</label><div>2026-09-11 02:00</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 金额构成 -->
+  <div class="card" style="margin-bottom:12px">
+    <div class="card-hd"><h2>金额构成</h2><span class="muted" style="font-size:12px">应结算 = 交易额 − 退款额 − 服务费 − 其他分账方分成</span></div>
+    <div class="card-bd">
+      <div class="calc">
+        <div class="calc-row"><span>交易额（已核对）</span><b>¥8,432.20</b></div>
+        <div class="calc-row"><span>退款额</span><b class="danger">-¥308.80</b></div>
+        <div class="calc-row"><span>平台服务费（10%）</span><b class="danger">-¥843.22</b></div>
+        <div class="calc-row"><span>其他分账方分成</span><b class="danger">-¥0.00</b></div>
+        <div class="calc-row total"><span>应结算金额</span><b>¥7,280.18</b></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 订单明细 -->
+  <div class="card" style="margin-bottom:12px">
+    <div class="card-hd"><h2>订单级明细</h2><span class="muted" style="font-size:12px">差异行已高亮</span></div>
+    <div class="card-bd" style="padding:0">
+      <table class="data">
+        <thead>
+          <tr>
+            <th>平台订单号</th><th>渠道交易单号</th><th>买家</th><th>商品</th>
+            <th>支付金额</th><th>退款</th><th>服务费</th><th>分账方</th><th>对账结果</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="mono">YB20260903100112</td><td class="mono">4200002388202604031…</td><td>周***</td>
+            <td>青春期沟通训练营</td><td>¥299.00</td><td class="muted">—</td><td>¥29.90</td><td>星启 90% / 平台 10%</td>
+            <td><span class="badge badge-warn">金额不一致</span></td>
+          </tr>
+          <tr>
+            <td class="muted mono">未找到对应订单</td><td class="mono">4200002388202604029…</td><td>—</td>
+            <td>—</td><td>—</td><td class="muted">—</td><td class="muted">—</td><td class="muted">—</td>
+            <td><span class="badge badge-danger">渠道单边账</span></td>
+          </tr>
+          <tr>
+            <td class="mono">YB20260903100108</td><td class="mono">4200002388202604030…</td><td>李***</td>
+            <td>家庭教育入门系列</td><td>¥399.00</td><td class="muted">—</td><td>¥39.90</td><td>星启 90% / 平台 10%</td>
+            <td><span class="badge badge-success">一致</span></td>
+          </tr>
+          <tr>
+            <td class="mono">YB20260902100088</td><td class="mono">4200002388202604022…</td><td>陈***</td>
+            <td>家长公开课 03 期</td><td>¥0.00</td><td class="muted">—</td><td class="muted">—</td><td class="muted">—</td>
+            <td><span class="badge badge-success">一致</span></td>
+          </tr>
+          <tr>
+            <td class="mono">YB20260902100076</td><td class="mono">4200002388202604021…</td><td>吴***</td>
+            <td>少儿专注力启蒙课</td><td>¥99.00</td><td><span class="badge badge-warn">已退款</span></td><td class="muted">¥0.00（退款冲减）</td><td>星启 90% / 平台 10%</td>
+            <td><span class="badge badge-success">一致</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="toolbar" style="padding:10px 16px">
+      <span class="muted">共 <b>86</b> 笔（仅展示前 5 笔）</span>
+      <div class="spacer"></div>
+      <button class="btn btn-sm" disabled>上一页</button>
+      <button class="btn btn-sm">下一页</button>
+    </div>
+  </div>
+
+  <!-- 确认与申诉记录 -->
+  <div class="card">
+    <div class="card-hd"><h2>确认与申诉记录</h2></div>
+    <div class="card-bd">
+      <div class="timeline">
+        <div class="tl-item"><div class="tl-dot"></div><div class="tl-bd"><b>对账单生成</b><span class="muted">系统自动 · 2026-09-11 02:00</span><p class="muted">T+1 自动对账完成，发现 2 笔差异，进入差异处理。</p></div></div>
+        <div class="tl-item"><div class="tl-dot warn"></div><div class="tl-bd"><b>差异工单创建</b><span class="muted">系统自动 · 2026-09-11 02:01</span><p class="muted">DIF20260910001（金额不一致）、DIF20260910002（渠道单边账）。</p></div></div>
+        <div class="tl-item"><div class="tl-dot info"></div><div class="tl-bd"><b>待处理中</b><span class="muted">风控组 · 陈审核 · 处理中</span><p class="muted">差异未结清，对账单暂不可进入结算。</p></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+.mono { font-family:ui-monospace,Consolas,monospace; font-size:12px; }
+.link-mono { font-family:ui-monospace,Consolas,monospace; font-size:12px; color:var(--color-primary); text-decoration:none; }
+.danger { color:#cb2634; }
+.calc { border:1px solid var(--color-border); border-radius:8px; padding:4px 14px; }
+.calc-row { display:flex; justify-content:space-between; padding:9px 0; font-size:13px; border-bottom:1px dashed var(--color-border); }
+.calc-row:last-child { border-bottom:none; }
+.calc-row span { color:var(--color-text-secondary); }
+.calc-row.total { font-size:15px; }
+.calc-row.total b { color:var(--color-primary); }
+.timeline { position:relative; padding-left:18px; }
+.tl-item { position:relative; padding:0 0 16px 16px; border-left:1px solid var(--color-border); }
+.tl-item:last-child { padding-bottom:0; border-left-color:transparent; }
+.tl-dot { position:absolute; left:-5px; top:2px; width:9px; height:9px; border-radius:50%; background:#00b42a; }
+.tl-dot.warn { background:#d25f00; }
+.tl-dot.info { background:#165dff; }
+.tl-bd b { font-size:13px; }
+.tl-bd span { font-size:12px; margin-left:8px; }
+.tl-bd p { margin:4px 0 0; font-size:12px; }
+</style>
+
+<script src="../assets/js/proto.js"></script>
+<script src="../assets/js/ops-shell.js?v=6"></script>
+<script>
+(function () {
+  document.getElementById("btn-export").addEventListener("click", function () { Proto.toast("已导出对账单明细（原型）"); });
+  document.getElementById("btn-notice").addEventListener("click", function () { Proto.toast("已向商家重发确认通知（原型）"); });
+})();
+</script>
+</body>
+</html>

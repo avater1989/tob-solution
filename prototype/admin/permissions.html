@@ -13,41 +13,32 @@
 <div id="page-content" style="display:none">
 
   <!-- 角色切换 -->
-  <div class="card perm-role-card">
-    <div class="card-bd">
-      <div class="role-chips" id="role-chips">
-        <span class="role-chips-label">选择角色</span>
-        <button class="role-chip active" data-role="销售顾问">销售顾问</button>
-        <button class="role-chip" data-role="内容运营">内容运营</button>
-        <button class="role-chip" data-role="财务">财务</button>
-        <button class="role-chip" data-role="主播">主播</button>
-        <button class="role-chip" data-role="商户管理员">商户管理员</button>
-      </div>
+  <div class="card" style="margin-bottom:8px"><div class="card-bd">
+    <div class="role-chips" id="role-chips">
+      <span class="muted" style="margin-right:8px;font-size:13px">选择角色：</span>
+      <button class="role-chip active" data-role="销售顾问">销售顾问</button>
+      <button class="role-chip" data-role="内容运营">内容运营</button>
+      <button class="role-chip" data-role="财务">财务</button>
+      <button class="role-chip" data-role="主播">主播</button>
+      <button class="role-chip" data-role="商户管理员">商户管理员</button>
     </div>
-  </div>
+  </div></div>
 
   <!-- 功能权限矩阵 -->
-  <div class="card perm-matrix-card">
+  <div class="card" style="margin-bottom:8px">
     <div class="card-hd">
       <h2>功能权限 · <span id="cur-role">销售顾问</span></h2>
       <span class="muted" style="font-size:12px">勾选后该角色可执行对应操作，保存后即时生效</span>
     </div>
-    <div class="card-bd perm-matrix-wrap">
-      <table class="data perm-matrix">
-        <colgroup>
-          <col class="perm-col-feat" />
-          <col class="perm-col-ck" />
-          <col class="perm-col-ck" />
-          <col class="perm-col-ck" />
-          <col class="perm-col-ck" />
-        </colgroup>
+    <div class="card-bd" style="padding:0">
+      <table class="data">
         <thead>
           <tr>
-            <th>功能</th>
-            <th class="perm-ck">查看</th>
-            <th class="perm-ck">编辑</th>
-            <th class="perm-ck">审核/操作</th>
-            <th class="perm-ck">导出</th>
+            <th style="width:220px">模块 / 功能</th>
+            <th style="width:90px">查看</th>
+            <th style="width:90px">编辑</th>
+            <th style="width:90px">审核/操作</th>
+            <th style="width:90px">导出</th>
           </tr>
         </thead>
         <tbody id="perm-tbody"></tbody>
@@ -56,7 +47,7 @@
   </div>
 
   <!-- 数据范围 -->
-  <div class="card perm-section-card">
+  <div class="card" style="margin-bottom:8px">
     <div class="card-hd"><h2>数据范围权限</h2></div>
     <div class="card-bd">
       <div class="scope-options" id="scope-options">
@@ -65,22 +56,22 @@
         <label class="tp-item"><input type="radio" name="scope" value="dept" /> 本部门数据</label>
         <label class="tp-item"><input type="radio" name="scope" value="all" /> 全部数据</label>
       </div>
-      <p class="muted perm-hint">数据范围作用于线索、客户、订单、看板等模块的默认筛选；敏感字段（手机号解密）单独受「查看」权限控制。</p>
+      <p class="muted" style="margin-top:10px;font-size:12px">数据范围作用于线索、客户、订单、看板等模块的默认筛选；敏感字段（手机号解密）单独受「查看」权限控制。</p>
     </div>
   </div>
 
   <!-- 敏感操作 -->
   <div class="card">
     <div class="card-hd"><h2>敏感操作权限</h2></div>
-    <div class="card-bd" style="padding:0">
-      <table class="data perm-sensitive">
-        <thead><tr><th>敏感操作</th><th class="perm-ck">是否允许</th><th>说明</th></tr></thead>
+    <div class="card-bd">
+      <table class="data">
+        <thead><tr><th>敏感操作</th><th style="width:120px">是否允许</th><th>说明</th></tr></thead>
         <tbody>
-          <tr><td>手机号解密</td><td class="perm-ck"><input type="checkbox" class="sens" /></td><td class="muted">解密需二次确认并记录审计日志</td></tr>
-          <tr><td>退款审核</td><td class="perm-ck"><input type="checkbox" class="sens" /></td><td class="muted">退款单审核通过与驳回</td></tr>
-          <tr><td>结算确认</td><td class="perm-ck"><input type="checkbox" class="sens" /></td><td class="muted">结算单确认后触发打款流程</td></tr>
-          <tr><td>客户导出</td><td class="perm-ck"><input type="checkbox" class="sens" /></td><td class="muted">导出含手机号的客户明细</td></tr>
-          <tr><td>成员与角色管理</td><td class="perm-ck"><input type="checkbox" class="sens" /></td><td class="muted">邀请成员、分配角色、配置权限</td></tr>
+          <tr><td>手机号解密</td><td><input type="checkbox" class="sens" /></td><td class="muted">解密需二次确认并记录审计日志</td></tr>
+          <tr><td>退款审核</td><td><input type="checkbox" class="sens" /></td><td class="muted">退款单审核通过与驳回</td></tr>
+          <tr><td>结算确认</td><td><input type="checkbox" class="sens" /></td><td class="muted">结算单确认后触发打款流程</td></tr>
+          <tr><td>客户导出</td><td><input type="checkbox" class="sens" /></td><td class="muted">导出含手机号的客户明细</td></tr>
+          <tr><td>成员与角色管理</td><td><input type="checkbox" class="sens" /></td><td class="muted">邀请成员、分配角色、配置权限</td></tr>
         </tbody>
       </table>
     </div>
@@ -88,113 +79,21 @@
 </div>
 
 <style>
-.perm-role-card,
-.perm-matrix-card,
-.perm-section-card { margin-bottom: 16px; }
-
-.role-chips { display: flex; align-items: center; flex-wrap: wrap; gap: 10px; }
-.role-chips-label {
-  margin-right: 4px;
-  font-size: 13px;
-  color: var(--color-text-muted);
-  flex-shrink: 0;
-}
+.role-chips { display:flex; align-items:center; flex-wrap:wrap; gap:8px; }
 .role-chip {
-  padding: 7px 18px;
-  border: 1px solid var(--color-border);
-  border-radius: 16px;
-  background: #fff;
-  font-size: 13px;
-  cursor: pointer;
-  font-family: inherit;
-  color: var(--color-text);
-  line-height: 1.3;
+  padding:6px 16px; border:1px solid var(--color-border); border-radius:16px;
+  background:#fff; font-size:13px; cursor:pointer; font-family:inherit; color:var(--color-text);
 }
-.role-chip:hover { border-color: var(--color-primary); color: var(--color-primary); }
-.role-chip.active { background: var(--color-primary); border-color: var(--color-primary); color: #fff; }
-
+.role-chip:hover { border-color:var(--color-primary); color:var(--color-primary); }
+.role-chip.active { background:var(--color-primary); border-color:var(--color-primary); color:#fff; }
 .tp-item {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 8px 14px;
-  margin: 0 10px 10px 0;
-  border: 1px solid var(--color-border);
-  border-radius: 8px;
-  font-size: 13px;
-  cursor: pointer;
+  display:inline-flex; align-items:center; gap:6px; padding:6px 12px; margin-right:8px;
+  border:1px solid var(--color-border); border-radius:6px; font-size:13px; cursor:pointer;
 }
-.tp-item:has(input:checked) {
-  border-color: var(--color-primary);
-  color: var(--color-primary);
-  background: #f0f5ff;
-}
-.scope-options { display: flex; flex-wrap: wrap; }
-.perm-hint { margin: 4px 0 0; font-size: 12px; line-height: 1.6; }
-
-/* 权限矩阵：限制整体宽度，勾选列紧贴功能名，不再被拉满整屏 */
-.perm-matrix-wrap { padding: 4px 20px 12px; overflow-x: auto; }
-table.data.perm-matrix {
-  width: auto;
-  min-width: 640px;
-  max-width: 100%;
-  table-layout: fixed;
-}
-.perm-matrix col.perm-col-feat { width: 300px; }
-.perm-matrix col.perm-col-ck { width: 92px; }
-.perm-matrix thead th {
-  padding: 12px 14px;
-  white-space: nowrap;
-}
-.perm-matrix thead th:first-child { padding-left: 28px; }
-.perm-matrix td {
-  padding: 12px 14px;
-  vertical-align: middle;
-}
-.perm-matrix .perm-ck,
-.perm-sensitive .perm-ck {
-  text-align: center;
-  width: 92px;
-}
-.perm-matrix .perm-feat {
-  font-size: 14px;
-  line-height: 1.45;
-  padding-left: 28px;
-  white-space: nowrap;
-}
-.perm-matrix .perm-feat-sub {
-  display: inline;
-  margin-left: 8px;
-  font-size: 12px;
-  color: var(--color-text-muted);
-  font-weight: 400;
-}
-
-/* 模块分组行：替代窄列 rowspan，减少纵向拥挤感 */
-.perm-matrix tr.perm-group td {
-  padding: 10px 14px 10px 16px;
-  background: #f5f7fb;
-  border-bottom: 1px solid var(--color-border);
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--color-text);
-  letter-spacing: 0.02em;
-}
-.perm-matrix tr.perm-group + tr td { border-top: none; }
-.perm-matrix tbody tr:not(.perm-group):hover td { background: #fafbfd; }
-.perm-matrix input[type="checkbox"],
-.perm-sensitive input[type="checkbox"] {
-  width: 16px;
-  height: 16px;
-  cursor: pointer;
-  vertical-align: middle;
-}
-
-.perm-sensitive { width: 100%; table-layout: fixed; }
-.perm-sensitive th:first-child,
-.perm-sensitive td:first-child { width: 180px; }
-.perm-sensitive td { padding: 14px 16px; }
-.perm-sensitive th { padding: 12px 16px; }
+.tp-item:has(input:checked) { border-color:var(--color-primary); color:var(--color-primary); background:#f0f5ff; }
+.scope-options { display:flex; flex-wrap:wrap; }
+.perm-mod-label { font-weight:600; }
+.perm-mod-label .muted { font-weight:400; }
 </style>
 
 <script src="../assets/js/proto.js"></script>
@@ -202,65 +101,49 @@ table.data.perm-matrix {
 <script>
 (function () {
   // 权限点定义：[模块, 功能, 查看, 编辑, 审核/操作, 导出]
-  // 功能名尽量单行；过长说明拆到副标题，避免表格被撑挤
   var perms = [
     ["工作台", "工作台概览", 1, 0, 0, 0],
     ["SCRM", "线索池", 1, 1, 0, 0],
-    ["SCRM", "跟进管理", 1, 1, 0, 0, "企微群跟进"],
-    ["SCRM", "客户群发", 1, 1, 0, 0, "朋友圈"],
-    ["SCRM", "手机号解密", 1, 0, 0, 0, "敏感"],
-    ["直播", "直播列表", 1, 0, 0, 0, "创建直播"],
+    ["SCRM", "跟进管理 / 企微群跟进", 1, 1, 0, 0],
+    ["SCRM", "客户群发 / 朋友圈", 1, 1, 0, 0],
+    ["SCRM", "手机号解密（敏感）", 1, 0, 0, 0],
+    ["直播", "直播列表 / 创建直播", 1, 0, 0, 0],
     ["直播", "中控台 / 开播", 0, 0, 1, 0],
     ["直播", "直播审核", 0, 0, 1, 0],
     ["直播", "直播数据", 1, 0, 0, 1],
-    ["内容", "课程列表", 1, 0, 0, 0, "创建课程"],
+    ["内容", "课程列表 / 创建课程", 1, 0, 0, 0],
     ["内容", "课程上下架", 0, 1, 0, 0],
-    ["交易", "订单列表", 1, 0, 0, 0, "详情"],
+    ["交易", "订单列表 / 详情", 1, 0, 0, 0],
     ["交易", "退款 / 售后审核", 0, 0, 1, 0],
     ["交易", "对账单", 0, 0, 0, 0],
     ["交易", "结算单确认", 0, 0, 1, 0],
-    ["用户", "用户列表", 1, 0, 0, 0, "详情"],
+    ["用户", "用户列表 / 详情", 1, 0, 0, 0],
     ["用户", "用户打标", 0, 1, 0, 0],
     ["用户", "成员与角色管理", 0, 0, 0, 0],
     ["数据", "获客 / 直播 / 转化看板", 1, 0, 0, 1],
   ];
 
+  // 各角色配置（布尔矩阵，与 perms 行对齐）
   var roleConf = {
-    "销售顾问": perms.map(function () { return [1, 1, 0, 0]; }),
-    "内容运营": perms.map(function (p) {
-      return p[0] === "交易" || p[1].indexOf("成员与角色") > -1
-        ? [0, 0, 0, 0]
-        : [1, 1, p[2] || 0, p[1].indexOf("数据") > -1 ? 1 : 0];
+    "销售顾问": perms.map(function (p, i) { return [1, 1, 0, 0]; }),
+    "内容运营": perms.map(function (p, i) {
+      return p[0] === "交易" || p[1].indexOf("成员与角色") > -1 ? [0, 0, 0, 0] : [1, 1, p[2] || 0, p[1].indexOf("数据") > -1 ? 1 : 0];
     }),
-    "财务": perms.map(function (p) {
-      if (p[0] === "交易") {
-        return [1, 0, p[1].indexOf("审核") > -1 || p[1].indexOf("确认") > -1 ? 1 : 0, 1];
-      }
-      return [p[0] === "用户" ? 1 : 0, 0, 0, 0];
+    "财务": perms.map(function (p, i) {
+      if (p[0] === "交易") return [1, 0, p[1].indexOf("审核") > -1 || p[1].indexOf("确认") > -1 ? 1 : 0, 1];
+      return [p[0] === "用户" ? 1 : 0, 0, 0, p[0] === "交易" ? 1 : 0];
     }),
-    "主播": perms.map(function (p) {
-      if (p[0] === "直播") {
-        return [
-          1,
-          p[1].indexOf("列表") > -1 ? 1 : 0,
-          p[1].indexOf("中控") > -1 || p[1].indexOf("开播") > -1 ? 1 : 0,
-          0,
-        ];
-      }
+    "主播": perms.map(function (p, i) {
+      if (p[0] === "直播") return [1, p[1].indexOf("创建") > -1 ? 1 : 0, p[1].indexOf("中控") > -1 || p[1].indexOf("开播") > -1 ? 1 : 0, 0];
       if (p[0] === "内容") return [1, 0, 0, 0];
       return [0, 0, 0, 0];
     }),
-    "商户管理员": perms.map(function () { return [1, 1, 1, 1]; }),
+    "商户管理员": perms.map(function (p, i) { return [1, 1, 1, 1]; }),
   };
 
   var tbody = document.getElementById("perm-tbody");
   var curRole = "销售顾问";
   var dirty = false;
-
-  function featCell(p) {
-    var sub = p[6] ? '<span class="perm-feat-sub">' + p[6] + "</span>" : "";
-    return '<td class="perm-feat">' + p[1] + sub + "</td>";
-  }
 
   function render() {
     document.getElementById("cur-role").textContent = curRole;
@@ -268,37 +151,19 @@ table.data.perm-matrix {
     var html = "";
     var lastMod = "";
     perms.forEach(function (p, i) {
-      if (p[0] !== lastMod) {
-        html +=
-          '<tr class="perm-group"><td colspan="5">' +
-          p[0] +
-          "</td></tr>";
-        lastMod = p[0];
-      }
-      html +=
-        "<tr>" +
-        featCell(p) +
-        [0, 1, 2, 3]
-          .map(function (c) {
-            return (
-              '<td class="perm-ck"><input type="checkbox" data-r="' +
-              i +
-              '" data-c="' +
-              c +
-              '"' +
-              (conf[i][c] ? " checked" : "") +
-              " /></td>"
-            );
-          })
-          .join("") +
-        "</tr>";
+      var modCell = p[0] !== lastMod
+        ? '<td class="perm-mod-label">' + p[0] + '</td>'
+        : '<td class="muted" style="font-weight:400">"</td>';
+      lastMod = p[0];
+      html += "<tr>" + modCell + "<td>" + p[1] + "</td>" +
+        [0, 1, 2, 3].map(function (c) {
+          return '<td><input type="checkbox" data-r="' + i + '" data-c="' + c + '"' + (conf[i][c] ? " checked" : "") + " /></td>";
+        }).join("") + "</tr>";
     });
     tbody.innerHTML = html;
     tbody.querySelectorAll('input[type="checkbox"]').forEach(function (ck) {
       ck.addEventListener("change", function () {
-        roleConf[curRole][ck.getAttribute("data-r")][ck.getAttribute("data-c")] = ck.checked
-          ? 1
-          : 0;
+        roleConf[curRole][ck.getAttribute("data-r")][ck.getAttribute("data-c")] = ck.checked ? 1 : 0;
         dirty = true;
       });
     });
@@ -307,9 +172,7 @@ table.data.perm-matrix {
   document.querySelectorAll(".role-chip").forEach(function (chip) {
     chip.addEventListener("click", function () {
       if (dirty && !confirm("当前角色配置已修改未保存，切换角色将丢失修改，确认切换？")) return;
-      document.querySelectorAll(".role-chip").forEach(function (n) {
-        n.classList.remove("active");
-      });
+      document.querySelectorAll(".role-chip").forEach(function (n) { n.classList.remove("active"); });
       chip.classList.add("active");
       curRole = chip.getAttribute("data-role");
       dirty = false;

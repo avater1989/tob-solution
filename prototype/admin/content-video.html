@@ -66,6 +66,20 @@
 .cv-upload:hover { border-color: #165dff; background: #f0f5ff; color: #165dff; }
 .cv-upload-icon { font-size: 36px; margin-bottom: 6px; }
 .cv-upload-hint { font-size: 11px; margin-top: 4px; }
+
+/* ===== 分享弹窗 ===== */
+.share-qr {
+  width: 168px; height: 168px; margin: 0 auto;
+  padding: 10px; border: 1px solid #e8e8e8; border-radius: 8px;
+  background: #fff; display: flex; align-items: center; justify-content: center;
+}
+.share-tip { text-align: center; font-size: 12px; color: #8c8c8c; margin: 10px 0 16px; }
+.share-field-label { font-size: 12px; color: #8c8c8c; margin-bottom: 6px; }
+.share-url {
+  font-family: monospace; font-size: 12px; background: #f7f8fa;
+  border: 1px solid #e8e8e8; border-radius: 6px; padding: 8px 10px;
+  word-break: break-all;
+}
 </style>
 </head>
 <body class="admin-body" data-module="content" data-nav="content-video" data-title="视频" data-crumb="内容 / 内容管理 / 视频">
@@ -107,12 +121,22 @@
 
 </div><!-- /#page-content -->
 
+<!-- 弹窗遮罩 -->
+<div class="proto-mask" id="mask"></div>
+
 <div class="proto-modal" id="modal-share">
   <div style="background:#fff;border-radius:10px;width:420px;max-width:92vw;overflow:hidden">
-    <div class="proto-modal-hd"><h3 style="margin:0;font-size:16px">分享视频</h3><button class="ctrl-icon-btn" data-close>×</button></div>
+    <div class="proto-modal-hd"><h3 style="margin:0;font-size:16px" id="share-title">分享视频</h3><button class="ctrl-icon-btn" data-close>×</button></div>
     <div class="proto-modal-bd">
-      <div id="share-url" style="font-family:monospace;font-size:12px;background:#f7f8fa;border:1px solid #e8e8e8;border-radius:6px;padding:8px 10px;word-break:break-all"></div>
-      <div style="margin-top:12px"><button class="btn btn-primary" id="btn-copy-link">复制链接</button></div>
+      <div class="share-qr" id="share-qr"></div>
+      <p class="share-tip">学员微信扫一扫，或复制链接在微信中打开</p>
+      <div class="share-field-label">商品链接</div>
+      <div id="share-url" class="share-url"></div>
+      <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
+        <button class="btn btn-primary" id="btn-copy-link">复制链接</button>
+        <button class="btn" id="btn-download-qr">下载二维码</button>
+        <button class="btn" id="btn-preview-poster">预览海报</button>
+      </div>
     </div>
   </div>
 </div>
@@ -189,12 +213,30 @@ function closeAll() {
   mask.classList.remove("open");
   document.querySelectorAll(".proto-modal, .proto-drawer").forEach(function(n) { n.classList.remove("open"); });
 }
+function openShare(id) {
+  var url = "https://yibo.app/v/" + id;
+  document.getElementById("share-url").textContent = url;
+  document.getElementById("share-qr").innerHTML = Proto.qrSvg(url, 148);
+  mask.classList.add("open");
+  document.getElementById("modal-share").classList.add("open");
+}
+function downloadQr() {
+  var svg = document.querySelector("#share-qr svg");
+  if (!svg) { Proto.toast("二维码尚未生成"); return; }
+  var blob = new Blob([svg.outerHTML], { type: "image/svg+xml;charset=utf-8" });
+  var a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "分享二维码.svg";
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  setTimeout(function() { URL.revokeObjectURL(a.href); }, 1000);
+  Proto.toast("二维码已下载");
+}
 document.addEventListener("click", function(e) {
   var share = e.target.closest("[data-share]");
   if (share && !share.disabled) {
-    document.getElementById("share-url").textContent = "https://yibo.app/v/" + share.getAttribute("data-share");
-    mask.classList.add("open");
-    document.getElementById("modal-share").classList.add("open");
+    openShare(share.getAttribute("data-share"));
     return;
   }
   var off = e.target.closest("[data-shelf-off]");
@@ -205,7 +247,16 @@ document.addEventListener("click", function(e) {
   }
   if (e.target.closest("[data-copy]")) Proto.toast("已复制视频（演示）");
 });
-document.getElementById("btn-copy-link").addEventListener("click", function(){ Proto.toast("链接已复制"); });
+document.getElementById("btn-copy-link").addEventListener("click", function(){
+  var text = document.getElementById("share-url").textContent;
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(function(){ Proto.toast("链接已复制"); }, function(){ Proto.toast("链接已复制"); });
+  } else {
+    Proto.toast("链接已复制");
+  }
+});
+document.getElementById("btn-download-qr").addEventListener("click", downloadQr);
+document.getElementById("btn-preview-poster").addEventListener("click", function(){ Proto.toast("海报已生成（演示）"); });
 mask && mask.addEventListener("click", closeAll);
 document.querySelectorAll("[data-close]").forEach(function(b) { b.addEventListener("click", closeAll); });
 

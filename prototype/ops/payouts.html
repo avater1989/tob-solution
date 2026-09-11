@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>提现审核 · 运营后台</title>
+<link rel="stylesheet" href="../assets/css/proto.css?v=4" />
+</head>
+<body class="admin-body" data-module="trade" data-nav="payouts" data-title="提现审核" data-crumb="运营后台 / 交易与结算 / 提现审核">
+<div id="header-actions">
+  <button class="btn" id="btn-export">导出提现记录</button>
+  <button class="btn" id="btn-rule">审核规则说明</button>
+  <button class="btn btn-primary" id="btn-batch">批量通过</button>
+</div>
+<div id="page-content" style="display:none">
+
+  <div class="alert alert-warning" style="margin-bottom:12px">
+    <span>风控命中或存在未结差异的提现将强制转人工审核，不自动放行；结算卡须与进件主体一致。</span>
+  </div>
+
+  <!-- 统计 -->
+  <div class="grid-4" style="margin-bottom:16px">
+    <div class="stat"><div class="label">待审核</div><div class="value">2</div><div class="hint">合计 ¥8,600.00</div></div>
+    <div class="stat"><div class="label">今日已到账</div><div class="value">¥12,400.00</div><div class="hint">4 笔</div></div>
+    <div class="stat"><div class="label">风控拦截</div><div class="value">2</div><div class="hint">退款率超标 / 卡不一致</div></div>
+    <div class="stat"><div class="label">平均审核时长</div><div class="value">3.4h</div><div class="hint">目标 ≤ 4h</div></div>
+  </div>
+
+  <!-- 筛选 -->
+  <div class="card" style="margin-bottom:8px"><div class="card-bd">
+    <div class="form-grid" style="grid-template-columns:repeat(5,minmax(0,1fr))">
+      <input id="f-no" placeholder="提现单号" />
+      <select id="f-tenant">
+        <option value="">全部租户</option>
+        <option>星启家庭教育</option><option>晨光少儿成长</option><option>慧心教育</option><option>乐学伴家庭</option><option>青藤家长学堂</option>
+      </select>
+      <select id="f-type"><option value="">提现方式</option><option>自动提现</option><option>手动提现</option></select>
+      <select id="f-status"><option value="">状态</option><option>待审核</option><option>审核通过</option><option>打款中</option><option>已到账</option><option>已驳回</option><option>打款失败</option></select>
+      <button class="btn btn-primary" id="btn-query">筛选</button>
+    </div>
+  </div></div>
+
+  <!-- 列表 -->
+  <div class="card"><div class="card-bd" style="padding:0">
+    <table class="data">
+      <thead>
+        <tr>
+          <th>提现单号</th>
+          <th>租户</th>
+          <th>提现方式</th>
+          <th>提现金额</th>
+          <th>可提现余额</th>
+          <th>到账账户</th>
+          <th>风控标记</th>
+          <th>状态</th>
+          <th>申请时间</th>
+          <th style="width:160px">操作</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><a href="#" class="link-mono" data-row-act="detail">PWD20260910001</a></td>
+          <td>星启家庭教育</td>
+          <td>手动提现</td>
+          <td><b>¥6,000.00</b></td>
+          <td>¥6,000.00</td>
+          <td>招商银行 ****8842</td>
+          <td class="muted">—</td>
+          <td><span class="badge badge-warn">待审核</span></td>
+          <td>2026-09-10 09:20</td>
+          <td class="row-actions"><a href="#" data-row-act="approve">通过</a><a href="#" data-row-act="reject">驳回</a><a href="#" data-row-act="detail">详情</a></td>
+        </tr>
+        <tr>
+          <td><a href="#" class="link-mono" data-row-act="detail">PWD20260910002</a></td>
+          <td>慧心教育</td>
+          <td>手动提现</td>
+          <td><b>¥2,600.00</b></td>
+          <td>¥2,600.00</td>
+          <td>工商银行 ****3321</td>
+          <td><span class="badge badge-danger">退款率超标</span></td>
+          <td><span class="badge badge-warn">待审核</span></td>
+          <td>2026-09-10 11:05</td>
+          <td class="row-actions"><a href="#" data-row-act="approve">通过</a><a href="#" data-row-act="reject">驳回</a><a href="#" data-row-act="detail">详情</a></td>
+        </tr>
+        <tr>
+          <td><a href="#" class="link-mono" data-row-act="detail">PWD20260909001</a></td>
+          <td>晨光少儿成长</td>
+          <td>自动提现</td>
+          <td><b>¥5,200.00</b></td>
+          <td>¥5,200.00</td>
+          <td>招商银行 ****8888</td>
+          <td class="muted">—</td>
+          <td><span class="badge badge-success">已到账</span></td>
+          <td>2026-09-09 08:00</td>
+          <td class="row-actions"><a href="#" data-row-act="detail">详情</a></td>
+        </tr>
+        <tr>
+          <td><a href="#" class="link-mono" data-row-act="detail">PWD20260908002</a></td>
+          <td>乐学伴家庭</td>
+          <td>手动提现</td>
+          <td><b>¥2,000.00</b></td>
+          <td>¥2,400.00</td>
+          <td>建设银行 ****7710</td>
+          <td><span class="badge badge-danger">结算卡不一致</span></td>
+          <td><span class="badge badge-danger">已驳回</span></td>
+          <td>2026-09-08 14:20</td>
+          <td class="row-actions"><a href="#" data-row-act="detail">详情</a></td>
+        </tr>
+        <tr>
+          <td><a href="#" class="link-mono" data-row-act="detail">PWD20260908001</a></td>
+          <td>青藤家长学堂</td>
+          <td>自动提现</td>
+          <td><b>¥4,100.00</b></td>
+          <td>¥4,100.00</td>
+          <td>招商银行 ****5512</td>
+          <td class="muted">—</td>
+          <td><span class="badge badge-warn">打款失败</span></td>
+          <td>2026-09-08 08:00</td>
+          <td class="row-actions"><a href="#" data-row-act="retry">重试</a><a href="#" data-row-act="detail">详情</a></td>
+        </tr>
+      </tbody>
+    </table>
+  </div></div>
+
+  <div class="toolbar" style="margin-top:8px">
+    <span class="muted">共 <b>36</b> 条</span>
+    <div class="spacer"></div>
+    <select><option>10条/页</option><option>20条/页</option></select>
+    <button class="btn btn-sm" disabled>上一页</button>
+    <button class="btn btn-sm">下一页</button>
+  </div>
+</div>
+
+<!-- 弹窗 -->
+<div class="proto-mask" id="mask"></div>
+
+<!-- 审核规则说明 -->
+<div class="proto-modal" id="modal-rule" style="width:560px">
+  <div class="proto-modal-hd"><h3 style="font-size:16px;font-weight:600">提现审核规则</h3><button class="btn btn-sm btn-ghost" data-close>×</button></div>
+  <div class="proto-modal-bd">
+    <ul class="muted" style="font-size:13px;line-height:1.9;padding-left:18px;margin:0">
+      <li>提现金额 ≤ 可提现余额（已扣除冻结与最低留存）；</li>
+      <li>结算卡须为已完成通联进件的同主体账户，不一致直接驳回；</li>
+      <li>存在未结差异、进行中纠纷或风控限制的租户强制人工审核；</li>
+      <li>单笔 / 单日额度超限转人工；</li>
+      <li>打款中冻结对应金额，避免重复提现；打款失败保留原单可重试。</li>
+    </ul>
+  </div>
+  <div class="proto-modal-ft"><button class="btn btn-primary" data-close>我知道了</button></div>
+</div>
+
+<!-- 审核弹窗 -->
+<div class="proto-modal" id="modal-audit" style="width:520px">
+  <div class="proto-modal-hd"><h3 id="ad-title" style="font-size:16px;font-weight:600">提现审核</h3><button class="btn btn-sm btn-ghost" data-close>×</button></div>
+  <div class="proto-modal-bd">
+    <div class="form-grid" style="grid-template-columns:1fr 1fr">
+      <div class="field"><label>提现单号</label><div class="mono" id="ad-no">—</div></div>
+      <div class="field"><label>提现金额</label><div id="ad-amount">—</div></div>
+      <div class="field"><label>可提现余额</label><div id="ad-balance">—</div></div>
+      <div class="field"><label>到账账户</label><div id="ad-account">—</div></div>
+    </div>
+    <div class="field" style="margin-top:10px"><label id="ad-remark-label">审核备注</label>
+      <textarea rows="2" placeholder="驳回时必填原因" style="width:100%"></textarea>
+    </div>
+    <p class="muted" style="font-size:12px;margin-top:8px">通过后进入打款中，预计 T+1 到账；驳回需说明原因并通知商家。</p>
+  </div>
+  <div class="proto-modal-ft">
+    <button class="btn" data-close>取消</button>
+    <button class="btn btn-primary" id="ad-submit">确认</button>
+  </div>
+</div>
+
+<!-- 提现详情抽屉 -->
+<div class="proto-drawer" id="drawer-detail">
+  <div class="proto-drawer-hd">
+    <h3 id="pd-title">提现详情</h3>
+    <button class="btn btn-sm btn-ghost" data-close>×</button>
+  </div>
+  <div class="proto-drawer-bd">
+    <h4 style="margin:0 0 8px;font-size:14px">申请信息</h4>
+    <div class="form-grid readonly" style="grid-template-columns:1fr 1fr">
+      <div class="field"><label>提现单号</label><div class="mono" id="pd-no">—</div></div>
+      <div class="field"><label>租户</label><div id="pd-tenant">—</div></div>
+      <div class="field"><label>提现方式</label><div id="pd-type">—</div></div>
+      <div class="field"><label>状态</label><div id="pd-status">—</div></div>
+      <div class="field"><label>到账账户</label><div id="pd-account">—</div></div>
+      <div class="field"><label>申请时间</label><div id="pd-time">—</div></div>
+    </div>
+
+    <h4 style="margin:16px 0 8px;font-size:14px">余额构成</h4>
+    <div class="calc">
+      <div class="calc-row"><span>已分账到账</span><b id="pd-settled">—</b></div>
+      <div class="calc-row"><span>已提现成功</span><b class="danger" id="pd-withdrawn">—</b></div>
+      <div class="calc-row"><span>提现中</span><b class="danger" id="pd-inflight">—</b></div>
+      <div class="calc-row"><span>冻结金额</span><b class="danger" id="pd-frozen">—</b></div>
+      <div class="calc-row total"><span>可提现余额</span><b id="pd-available">—</b></div>
+    </div>
+
+    <h4 style="margin:16px 0 8px;font-size:14px">审核与打款记录</h4>
+    <div class="timeline">
+      <div class="tl-item"><div class="tl-dot info"></div><div class="tl-bd"><b>提交申请</b><span class="muted" id="pd-t1">—</span><p class="muted">商家发起提现申请。</p></div></div>
+      <div class="tl-item"><div class="tl-dot"></div><div class="tl-bd"><b>平台审核</b><span class="muted" id="pd-t2">—</span><p class="muted" id="pd-t2d">—</p></div></div>
+      <div class="tl-item"><div class="tl-dot"></div><div class="tl-bd"><b>打款</b><span class="muted" id="pd-t3">—</span><p class="muted" id="pd-t3d">—</p></div></div>
+    </div>
+
+    <h4 style="margin:16px 0 8px;font-size:14px">打款凭证</h4>
+    <p class="muted" style="font-size:13px" id="pd-voucher">—</p>
+  </div>
+  <div class="proto-drawer-ft">
+    <button class="btn" data-close>关闭</button>
+    <button class="btn" id="pd-export">导出</button>
+  </div>
+</div>
+
+<style>
+.mono { font-family:ui-monospace,Consolas,monospace; font-size:12px; }
+.link-mono { font-family:ui-monospace,Consolas,monospace; font-size:12px; color:var(--color-primary); text-decoration:none; }
+.calc { border:1px solid var(--color-border); border-radius:8px; padding:4px 14px; }
+.calc-row { display:flex; justify-content:space-between; padding:9px 0; font-size:13px; border-bottom:1px dashed var(--color-border); }
+.calc-row:last-child { border-bottom:none; }
+.calc-row span { color:var(--color-text-secondary); }
+.calc-row.total { font-size:15px; }
+.calc-row.total b { color:var(--color-primary); }
+.danger { color:#cb2634; }
+.timeline { position:relative; padding-left:18px; }
+.tl-item { position:relative; padding:0 0 14px 16px; border-left:1px solid var(--color-border); }
+.tl-item:last-child { padding-bottom:0; border-left-color:transparent; }
+.tl-dot { position:absolute; left:-5px; top:2px; width:9px; height:9px; border-radius:50%; background:#00b42a; }
+.tl-dot.info { background:#165dff; }
+.tl-bd b { font-size:13px; }
+.tl-bd span { font-size:12px; margin-left:8px; }
+.tl-bd p { margin:4px 0 0; font-size:12px; }
+</style>
+
+<script src="../assets/js/proto.js"></script>
+<script src="../assets/js/ops-shell.js?v=6"></script>
+<script>
+(function () {
+  var mask = document.getElementById("mask");
+  function closeAll(){ mask.classList.remove("open"); document.querySelectorAll(".proto-modal, .proto-drawer").forEach(function(n){n.classList.remove("open");}); }
+  function open(n){ mask.classList.add("open"); n.classList.add("open"); }
+  mask.addEventListener("click", closeAll);
+  document.querySelectorAll("[data-close]").forEach(function(n){ n.addEventListener("click", closeAll); });
+
+  var data = {
+    PWD20260910001: { tenant:"星启家庭教育", type:"手动提现", status:"待审核", account:"招商银行 ****8842", time:"2026-09-10 09:20", amount:"¥6,000.00", balance:"¥6,000.00", settled:"¥18,600.00", withdrawn:"¥12,600.00", inflight:"¥0.00", frozen:"¥0.00" },
+    PWD20260910002: { tenant:"慧心教育", type:"手动提现", status:"待审核", account:"工商银行 ****3321", time:"2026-09-10 11:05", amount:"¥2,600.00", balance:"¥2,600.00", settled:"¥9,400.00", withdrawn:"¥6,800.00", inflight:"¥0.00", frozen:"¥0.00" },
+    PWD20260909001: { tenant:"晨光少儿成长", type:"自动提现", status:"已到账", account:"招商银行 ****8888", time:"2026-09-09 08:00", amount:"¥5,200.00", balance:"¥0.00", settled:"¥20,400.00", withdrawn:"¥15,200.00", inflight:"¥0.00", frozen:"¥0.00" },
+    PWD20260908002: { tenant:"乐学伴家庭", type:"手动提现", status:"已驳回", account:"建设银行 ****7710", time:"2026-09-08 14:20", amount:"¥2,000.00", balance:"¥2,400.00", settled:"¥8,200.00", withdrawn:"¥5,800.00", inflight:"¥0.00", frozen:"¥0.00" },
+    PWD20260908001: { tenant:"青藤家长学堂", type:"自动提现", status:"打款失败", account:"招商银行 ****5512", time:"2026-09-08 08:00", amount:"¥4,100.00", balance:"¥4,100.00", settled:"¥14,300.00", withdrawn:"¥10,200.00", inflight:"¥4,100.00", frozen:"¥0.00" }
+  };
+
+  function setText(id, v){ var el = document.getElementById(id); if (el) el.textContent = v; }
+
+  function fillDetail(no) {
+    var d = data[no]; if (!d) { Proto.toast("演示数据缺失"); return; }
+    setText("pd-title", "提现详情 · " + no);
+    setText("pd-no", no); setText("pd-tenant", d.tenant); setText("pd-type", d.type);
+    setText("pd-status", d.status); setText("pd-account", d.account); setText("pd-time", d.time);
+    setText("pd-settled", d.settled); setText("pd-withdrawn", "-" + d.withdrawn);
+    setText("pd-inflight", "-" + d.inflight); setText("pd-frozen", "-" + d.frozen);
+    setText("pd-available", d.balance);
+    setText("pd-t1", d.time);
+    setText("pd-t2", d.status === "待审核" ? "待处理" : "已审核");
+    setText("pd-t2d", d.status === "待审核" ? "等待平台审核。" : "平台审核通过（原型）。");
+    setText("pd-t3", d.status === "已到账" ? "已完成" : "—");
+    setText("pd-t3d", d.status === "已到账" ? "已打款至结算卡。" : "—");
+    setText("pd-voucher", d.status === "已到账" ? "电子回单可下载" : "—");
+    open(document.getElementById("drawer-detail"));
+  }
+
+  var pendingNo = "";
+  function openAudit(no, mode) {
+    var d = data[no] || {};
+    pendingNo = no;
+    document.getElementById("ad-title").textContent = mode === "reject" ? "驳回提现" : "提现审核";
+    setText("ad-no", no);
+    setText("ad-amount", d.amount || "—");
+    setText("ad-balance", d.balance || "—");
+    setText("ad-account", d.account || "—");
+    document.getElementById("ad-remark-label").textContent = mode === "reject" ? "驳回原因 *" : "审核备注";
+    document.getElementById("ad-submit").setAttribute("data-mode", mode);
+    open(document.getElementById("modal-audit"));
+  }
+
+  document.querySelectorAll("[data-row-act]").forEach(function (a) {
+    a.addEventListener("click", function (e) {
+      e.preventDefault();
+      var act = a.getAttribute("data-row-act");
+      var no = a.closest("tr").querySelector("td").textContent.trim();
+      if (act === "detail") fillDetail(no);
+      else if (act === "approve") openAudit(no, "approve");
+      else if (act === "reject") openAudit(no, "reject");
+      else if (act === "retry") Proto.toast("已原单重试打款（原型）");
+    });
+  });
+
+  document.getElementById("ad-submit").addEventListener("click", function () {
+    var mode = this.getAttribute("data-mode");
+    closeAll();
+    Proto.toast(mode === "reject"
+      ? "已驳回提现 " + pendingNo + "，已通知商家（原型）"
+      : "审核通过，提现 " + pendingNo + " 进入打款中（原型）");
+  });
+
+  document.getElementById("btn-rule").addEventListener("click", function () { open(document.getElementById("modal-rule")); });
+  document.getElementById("btn-batch").addEventListener("click", function () { Proto.toast("已批量通过无风控标记的提现（原型）"); });
+  document.getElementById("btn-export").addEventListener("click", function () { Proto.toast("已导出提现记录（原型）"); });
+  document.getElementById("btn-query").addEventListener("click", function () { Proto.toast("已筛选（原型）"); });
+  document.getElementById("pd-export").addEventListener("click", function () { Proto.toast("已导出提现详情（原型）"); });
+})();
+</script>
+</body>
+</html>

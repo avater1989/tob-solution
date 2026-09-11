@@ -5,8 +5,8 @@
  * - 兼容旧参数：liveId / spring03 / live-spring-03 等
  */
 (function (global) {
-  var STORE_KEY = "proto_biz_store_v8";
-  var VERSION = 8;
+  var STORE_KEY = "proto_biz_store_v6";
+  var VERSION = 6;
   var DEMO_NOW = "2026-09-09 16:00:00";
 
   var LIVE_ALIASES = {
@@ -235,54 +235,7 @@
             { id: "ST3", name: "开播前提醒", timing: "关联预约管理", audience: "已预约", channels: ["系统提醒"], goal: "到课", auto: true, status: "linked_booking", target: 0, reached: 0, converted: 0, linkBooking: true },
             { id: "ST4", name: "开播中未到场召回", timing: "开播后 10 分钟", audience: "已预约未进入", channels: ["企微"], goal: "到课", auto: true, status: "draft", target: 0, reached: 0, converted: 0 }
           ]
-        },
-        {
-          id: "SOP004",
-          sopName: "春启03开播中召回SOP",
-          name: "春启03开播中召回SOP",
-          liveId: "L001",
-          owner: "赵老师",
-          status: "failed",
-          failReason: "企微群发接口超时",
-          failStep: "开播中未到场召回",
-          failChannel: "企微",
-          lastExecAt: "2026-09-09 15:40",
-          retryCount: 1,
-          targetAudience: "已预约未进入",
-          excludeRules: ["已购买"],
-          targetCount: 200,
-          targetUsers: 200,
-          reachedCount: 42,
-          reachedUsers: 42,
-          bookedCount: 0,
-          newBookings: 0,
-          attendedCount: 0,
-          attendedUsers: 0,
-          orderedCount: 0,
-          orderUsers: 0,
-          gmv: 0,
-          period: "春启 03 期",
-          channel: "企微",
-          category: "scrm_campaign",
-          createdAt: "2026-09-08 16:00",
-          updatedAt: "2026-09-09 15:40",
-          startedAt: "2026-09-09 15:30",
-          executionLogs: [
-            { at: "2026-09-09 15:30", action: "启动", by: "系统" },
-            { at: "2026-09-09 15:40", action: "失败", by: "系统", detail: "企微群发接口超时" }
-          ],
-          steps: [
-            { id: "ST1", name: "开播中未到场召回", timing: "开播后 10 分钟", audience: "已预约未进入", channels: ["企微"], goal: "到课", auto: true, status: "failed", target: 200, reached: 42, converted: 0 }
-          ]
         }
-      ],
-      leads: [
-        { id: "LD001", name: "王女士", phone: "186****2290", source: "视频号", enteredAt: "2026-09-09 10:12", intent: "高", owner: "", ownerId: "", period: "春启 03 期" },
-        { id: "LD002", name: "周爸爸", phone: "150****7781", source: "视频号", enteredAt: "2026-09-09 09:40", intent: "中", owner: "", ownerId: "", period: "春启 03 期" },
-        { id: "LD003", name: "赵同学", phone: "137****4412", source: "直播预约", enteredAt: "2026-09-09 08:55", intent: "高", owner: "", ownerId: "", period: "春启 03 期" },
-        { id: "LD004", name: "钱女士", phone: "133****9900", source: "视频号", enteredAt: "2026-09-08 21:10", intent: "低", owner: "", ownerId: "", period: "春启 03 期" },
-        { id: "LD005", name: "孙妈妈", phone: "139****2201", source: "企微裂变", enteredAt: "2026-09-08 19:30", intent: "中", owner: "", ownerId: "", period: "春启 03 期" },
-        { id: "LD006", name: "李先生", phone: "158****6610", source: "视频号", enteredAt: "2026-09-08 18:05", intent: "高", owner: "赵老师", ownerId: "U001", period: "春启 03 期" }
       ],
       aftersales: [
         {
@@ -296,8 +249,6 @@
           status: "pending_merchant",
           statusLabel: "待商家处理",
           createdAt: "2026-09-08 10:12:36",
-          deadlineAt: "2026-09-15 10:12",
-          waitFor: "商家处理",
           product: "边界感训练营",
           logs: [
             { at: "2026-09-08 10:12:36", text: "系统生成售后单，进入「待商家处理」", by: "系统" }
@@ -319,17 +270,11 @@
         }
       ],
       channelOrders: [
-        { id: "CO001", title: "视频号体验课券", buyer: "王女士", phone: "186****2290", amount: 1, smsStatus: "failed", smsStatusLabel: "发送失败", msgType: "领课短信", channel: "短信", content: "您已购买体验课，点击领取课程…", failReason: "运营商网关超时", retryCount: 1, lastSendAt: "2026-09-09 11:21", paidAt: "2026-09-09 11:20", claimStatus: "未领课", orderId: "YB20260909001" },
-        { id: "CO002", title: "视频号体验课券", buyer: "周爸爸", phone: "150****7781", amount: 1, smsStatus: "failed", smsStatusLabel: "发送失败", msgType: "领课短信", channel: "短信", content: "您已购买体验课，点击领取课程…", failReason: "空号/停机", retryCount: 2, lastSendAt: "2026-09-09 10:08", paidAt: "2026-09-09 10:05", claimStatus: "未领课", orderId: "YB20260909002" },
-        { id: "CO003", title: "视频号体验课券", buyer: "赵同学", phone: "137****4412", amount: 1, smsStatus: "failed", smsStatusLabel: "发送失败", msgType: "领课短信", channel: "短信", content: "您已购买体验课，点击领取课程…", failReason: "频控拦截", retryCount: 0, lastSendAt: "2026-09-09 09:41", paidAt: "2026-09-09 09:40", claimStatus: "未领课", orderId: "YB20260909003" },
-        { id: "CO004", title: "视频号体验课券", buyer: "陈妈妈", phone: "138****6521", amount: 1, smsStatus: "success", smsStatusLabel: "发送成功", msgType: "领课短信", channel: "短信", content: "您已购买体验课，点击领取课程…", failReason: "", retryCount: 0, lastSendAt: "2026-09-08 20:10", paidAt: "2026-09-08 20:10", claimStatus: "已领课", orderId: "YB20260908011" },
-        { id: "CO005", title: "春启公开课直播券", buyer: "钱女士", phone: "133****9900", amount: 1, smsStatus: "pending", smsStatusLabel: "待发送", msgType: "领课短信", channel: "短信", content: "直播券领取提醒…", failReason: "", retryCount: 0, lastSendAt: "", paidAt: "2026-09-09 14:00", claimStatus: "未领课", orderId: "YB20260909014" }
-      ],
-      owners: [
-        { id: "U001", name: "赵老师", role: "销售顾问" },
-        { id: "U002", name: "王助教", role: "助教" },
-        { id: "U003", name: "周销售", role: "销售顾问" },
-        { id: "U004", name: "阮荣均", role: "内容运营" }
+        { id: "CO001", title: "视频号体验课券", buyer: "王女士", phone: "186****2290", amount: 1, smsStatus: "failed", smsStatusLabel: "发送失败", paidAt: "2026-09-09 11:20", claimStatus: "未领课" },
+        { id: "CO002", title: "视频号体验课券", buyer: "周爸爸", phone: "150****7781", amount: 1, smsStatus: "failed", smsStatusLabel: "发送失败", paidAt: "2026-09-09 10:05", claimStatus: "未领课" },
+        { id: "CO003", title: "视频号体验课券", buyer: "赵同学", phone: "137****4412", amount: 1, smsStatus: "failed", smsStatusLabel: "发送失败", paidAt: "2026-09-09 09:40", claimStatus: "未领课" },
+        { id: "CO004", title: "视频号体验课券", buyer: "陈妈妈", phone: "138****6521", amount: 1, smsStatus: "success", smsStatusLabel: "发送成功", paidAt: "2026-09-08 20:10", claimStatus: "已领课" },
+        { id: "CO005", title: "春启公开课直播券", buyer: "钱女士", phone: "133****9900", amount: 1, smsStatus: "pending", smsStatusLabel: "待发送", paidAt: "2026-09-09 14:00", claimStatus: "未领课" }
       ],
       reviewLogs: [],
       manualTodos: [
@@ -340,44 +285,16 @@
           completeMode: "manual",
           kind: "suggestion",
           title: "企微流失提醒 6 人 · 建议挽回",
-          reason: "近 7 日未互动且曾高意向",
           owner: "赵老师",
           mine: true,
           dueLabel: "明天 12:00",
           dueSort: 5,
-          urgency: "ok",
-          urgencyLabel: "正常",
           sla: "ok",
           slaLabel: "正常",
           status: "pending",
-          statusLabel: "待处理",
-          action: "view",
-          actionLabel: "去查看",
-          href: "wecom-churn.html?focus=today&from=dashboard",
+          statusLabel: "建议",
+          href: "wecom-churn.html?focus=today",
           roles: ["admin", "sales"]
-        },
-        {
-          id: "TODO_SUGGEST_CONTENT",
-          type: "content",
-          typeLabel: "建议",
-          completeMode: "manual",
-          kind: "suggestion",
-          title: "系列课《边界感训练营》草稿未上架",
-          reason: "内容检查建议 · 草稿超过 3 天",
-          owner: "内容小周",
-          mine: false,
-          dueLabel: "周五 18:00",
-          dueSort: 6,
-          urgency: "ok",
-          urgencyLabel: "正常",
-          sla: "ok",
-          slaLabel: "正常",
-          status: "pending",
-          statusLabel: "待处理",
-          action: "view",
-          actionLabel: "去查看",
-          href: "content-series-edit.html?id=boundary&from=dashboard",
-          roles: ["admin", "content"]
         }
       ],
       todoDone: {},
@@ -538,37 +455,8 @@
     sop.executionLogs = sop.executionLogs || [];
     sop.executionLogs.push({ at: DEMO_NOW, action: status, by: by || "赵老师" });
     if (status === "running") sop.startedAt = DEMO_NOW;
-    if (status === "scheduled" || status === "running") sop.failReason = "";
     saveSop(sop);
     return sop;
-  }
-
-  /** 重试异常 SOP；opts.forceFail 可模拟失败 */
-  function retrySop(id, by, opts) {
-    opts = opts || {};
-    var sop = getSop(id);
-    if (!sop) return { ok: false, error: "missing" };
-    sop.retryCount = (sop.retryCount || 0) + 1;
-    sop.lastRetryAt = DEMO_NOW;
-    sop.lastExecAt = DEMO_NOW;
-    sop.executionLogs = sop.executionLogs || [];
-    if (opts.forceFail) {
-      sop.status = "failed";
-      sop.failReason = opts.failReason || "重试失败：通道繁忙，请稍后再试";
-      sop.executionLogs.push({ at: DEMO_NOW, action: "重试失败", by: by || "赵老师", detail: sop.failReason });
-      saveSop(sop);
-      return { ok: false, sop: sop };
-    }
-    sop.status = "scheduled";
-    sop.failReason = "";
-    sop.executionLogs.push({ at: DEMO_NOW, action: "重试成功并恢复排期", by: by || "赵老师" });
-    if (sop.steps && sop.steps.length) {
-      sop.steps.forEach(function (st) {
-        if (st.status === "failed") st.status = "pending";
-      });
-    }
-    saveSop(sop);
-    return { ok: true, sop: sop };
   }
 
   var AUDIT_LABEL = {
@@ -681,115 +569,17 @@
     return getChannelOrders("failed").length;
   }
 
-  function resendSms(ids, opts) {
-    opts = opts || {};
+  function resendSms(ids) {
     var data = load();
     var set = {};
     (ids || []).forEach(function (id) { set[id] = true; });
-    var results = [];
     data.channelOrders.forEach(function (o) {
-      if (!set[o.id] || o.smsStatus !== "failed") return;
-      o.retryCount = (o.retryCount || 0) + 1;
-      o.lastSendAt = DEMO_NOW;
-      if (opts.forceFail || (opts.simulateFailId && opts.simulateFailId === o.id)) {
-        o.smsStatus = "failed";
-        o.smsStatusLabel = "发送失败";
-        o.failReason = opts.failReason || "通道繁忙，请稍后重试";
-        results.push({ id: o.id, ok: false, reason: o.failReason });
-      } else {
+      if (set[o.id] && o.smsStatus === "failed") {
         o.smsStatus = "success";
         o.smsStatusLabel = "发送成功";
-        o.failReason = "";
-        results.push({ id: o.id, ok: true });
       }
-      if (opts.channel) o.channel = opts.channel;
     });
     save(data);
-    return results;
-  }
-
-  function getLeads(filter) {
-    var list = load().leads || [];
-    if (filter === "unassigned") return list.filter(function (l) { return !l.owner; });
-    return list;
-  }
-
-  function getLead(id) {
-    return (load().leads || []).find(function (l) { return l.id === id; }) || null;
-  }
-
-  function assignLead(leadId, ownerName, opts) {
-    opts = opts || {};
-    var data = load();
-    var lead = (data.leads || []).find(function (l) { return l.id === leadId; });
-    if (!lead) return { ok: false, error: "not_found" };
-    if (lead.owner && !opts.force) {
-      return { ok: false, error: "taken", owner: lead.owner };
-    }
-    lead.owner = ownerName;
-    lead.ownerId = opts.ownerId || "";
-    lead.assignedAt = DEMO_NOW;
-    if (opts.createFollowTodo !== false) {
-      data.manualTodos = data.manualTodos || [];
-      var fid = "TODO_FOLLOW_LEAD_" + lead.id;
-      if (!data.manualTodos.some(function (t) { return t.id === fid; }) && !data.todoDone[fid]) {
-        data.manualTodos.push({
-          id: fid,
-          type: "follow",
-          typeLabel: "建议",
-          completeMode: "manual",
-          kind: "suggestion",
-          title: "首次跟进 · " + lead.name,
-          reason: "分配后建议 24 小时内完成首次触达",
-          owner: ownerName,
-          mine: ownerName === "赵老师",
-          dueLabel: "今天 20:00",
-          dueSort: 4,
-          urgency: "near",
-          urgencyLabel: "即将超时",
-          sla: "near",
-          slaLabel: "即将超时",
-          status: "pending",
-          statusLabel: "待处理",
-          action: "view",
-          actionLabel: "去查看",
-          href: "leads.html?focus=" + encodeURIComponent(lead.id) + "&from=dashboard",
-          roles: ["admin", "sales"]
-        });
-      }
-    }
-    save(data);
-    return { ok: true, lead: lead };
-  }
-
-  function isAbnormalSop(s) {
-    if (!s) return false;
-    return s.status === "failed" || s.status === "paused" || s.status === "empty_audience";
-  }
-
-  function sopActionMeta(s) {
-    if (s.status === "failed") {
-      return {
-        action: "retry",
-        actionLabel: "立即重试",
-        reason: s.failReason || "执行失败",
-        statusLabel: "执行失败"
-      };
-    }
-    if (s.status === "paused") {
-      return { action: "resume", actionLabel: "恢复执行", reason: "SOP 已暂停", statusLabel: "已暂停" };
-    }
-    if (s.status === "empty_audience") {
-      return { action: "audience", actionLabel: "配置目标人群", reason: "目标人群为空", statusLabel: "待处理" };
-    }
-    return { action: "retry", actionLabel: "立即重试", reason: s.failReason || "执行异常", statusLabel: "执行失败" };
-  }
-
-  function liveIncomplete(l) {
-    if (!l) return true;
-    var name = (l.name || "").trim();
-    var start = (l.startAt || "").trim();
-    return !name || !start || name.indexOf("草稿") >= 0;
   }
 
   /* ---------- todos derived ---------- */
@@ -797,225 +587,166 @@
     var data = load();
     var todos = [];
 
-    var unassigned = (data.leads || []).filter(function (l) { return !l.owner; });
-    if (unassigned.length) {
-      var oldest = unassigned.slice().sort(function (a, b) {
-        return String(a.enteredAt || "").localeCompare(String(b.enteredAt || ""));
-      })[0];
-      var waitH = waitHours(oldest && oldest.enteredAt);
-      var srcMap = {};
-      unassigned.forEach(function (l) { srcMap[l.source || "其他"] = (srcMap[l.source || "其他"] || 0) + 1; });
-      var topSrc = Object.keys(srcMap).sort(function (a, b) { return srcMap[b] - srcMap[a]; })[0] || "视频号";
-      todos.push({
-        id: "TODO_LEAD_UNASSIGNED",
-        type: "lead",
-        typeLabel: "线索",
-        filterKey: "lead",
-        kind: "system",
-        completeMode: "business",
-        title: "有" + unassigned.length + "条未分配线索",
-        reason: "最长等待 " + waitH + " 小时 · 主要来源 " + topSrc,
-        owner: "待分配",
-        mine: true,
-        dueLabel: "今天 18:00",
-        dueSort: 1,
-        urgency: waitH >= 6 ? "overdue" : "near",
-        urgencyLabel: waitH >= 6 ? "已超时" : "即将超时",
-        sla: waitH >= 6 ? "over" : "near",
-        slaLabel: waitH >= 6 ? "已超时" : "即将超时",
-        status: "pending",
-        statusLabel: "待处理",
-        action: "goto_leads",
-        actionLabel: "去分配",
-        actionSales: "claim",
-        actionLabelSales: "立即认领",
-        href: "leads.html?focus=unassigned&from=dashboard&todo_id=TODO_LEAD_UNASSIGNED",
-        roles: ["admin", "sales"],
-        meta: { leadIds: unassigned.map(function (l) { return l.id; }), count: unassigned.length, topSource: topSrc, waitHours: waitH }
-      });
-    }
-
     data.lives.forEach(function (l) {
       var needsPlatform =
         l.auditStatus === "draft" ||
         l.auditStatus === "pending_platform_submit" ||
         l.auditStatus === "pending_internal_review";
       var needsFix = l.auditStatus === "platform_rejected" || l.auditStatus === "internal_rejected";
-      var waitingPlatform = l.auditStatus === "pending_platform_review";
-      if (waitingPlatform) return;
       if (!needsPlatform && !needsFix) return;
       if (l.execStatus === "ended" || l.liveStatus === "ended" || l.execStatus === "cancelled") return;
-      var incomplete = needsPlatform && liveIncomplete(l);
-      var action = needsFix ? "fix_reject" : (incomplete ? "complete_draft" : "submit_platform");
-      var actionLabel = needsFix ? "查看原因并修改" : (incomplete ? "继续完善" : "提交平台审核");
       var platformHref = needsFix
-        ? ("live-edit.html?live_id=" + l.id + "&from=platform_rejected&focus=cover&todo_id=TODO_PLATFORM_" + l.id + "&return_url=" + encodeURIComponent("dashboard.html?restore=1"))
-        : ("live-edit.html?live_id=" + l.id + "&from=dashboard&todo_id=TODO_PLATFORM_" + l.id + "&focus=" + (incomplete ? "title" : "submit") + "&return_url=" + encodeURIComponent("dashboard.html?restore=1"));
-      var viewHref = "live-edit.html?live_id=" + l.id + "&mode=view&from=dashboard&todo_id=TODO_PLATFORM_" + l.id + "&return_url=" + encodeURIComponent("dashboard.html?restore=1");
+        ? ("live-edit.html?live_id=" + l.id + "&from=platform_rejected&focus=cover&todo_id=TODO_PLATFORM_" + l.id)
+        : ("live-edit.html?live_id=" + l.id + "&from=dashboard&todo_id=TODO_PLATFORM_" + l.id);
       todos.push({
         id: "TODO_PLATFORM_" + l.id,
         type: "audit",
-        typeLabel: "直播审核",
-        filterKey: "audit",
-        kind: "system",
+        typeLabel: needsFix ? "平台驳回待改" : "提交平台审核",
         completeMode: "business",
         title: needsFix
           ? (l.name + " · 平台驳回待修改")
-          : (l.name + (incomplete ? " · 草稿信息不完整" : " · 待提交平台审核")),
-        reason: needsFix
-          ? (l.rejectReason || "封面不符合平台规范，请更换后重新提交")
-          : (incomplete ? "缺少必填信息，需继续完善" : "草稿已满足提交条件，待提交平台审核"),
+          : (l.name + " · 待提交平台审核"),
         owner: l.owner || l.creator || "阮荣均",
         mine: true,
         dueLabel: l.startAt,
         dueSort: 1,
-        urgency: "near",
-        urgencyLabel: "即将超时",
+        urgency: "near_start",
         sla: "near",
-        slaLabel: "即将超时",
+        slaLabel: "临近开播",
         status: "pending",
         statusLabel: "待处理",
-        action: action,
-        actionLabel: actionLabel,
-        actionAuditor: needsFix ? "view_reject" : "remind_owner",
-        actionLabelAuditor: needsFix ? "查看驳回原因" : "提醒负责人",
         href: platformHref,
-        hrefAuditor: viewHref,
-        roles: ["admin", "content", "auditor"],
-        liveId: l.id,
-        meta: { incomplete: incomplete, rejected: needsFix, liveName: l.name, startAt: l.startAt, owner: l.owner || l.creator || "阮荣均" }
+        roles: ["admin", "content"],
+        liveId: l.id
       });
     });
 
-    /* 正常「直播中」不进待办；仅异常时生成「直播异常」 */
     data.lives.forEach(function (l) {
       var living = l.execStatus === "live" || l.liveStatus === "live" || l.runtimeStatus === "living";
-      var anomalies = l.anomalies || [];
-      if (!living || !anomalies.length) return;
+      if (!living) return;
       todos.push({
-        id: "TODO_LIVE_EX_" + l.id,
-        type: "live_exception",
-        typeLabel: "直播异常",
-        filterKey: "live_exception",
-        kind: "system",
-        completeMode: "business",
-        title: l.name + " · " + anomalies[0],
-        reason: anomalies.join("、"),
+        id: "TODO_LIVING_" + l.id,
+        type: "live",
+        typeLabel: "直播中",
+        completeMode: "manual",
+        kind: "ops",
+        title: l.name + " · 正在直播，进入中控台",
         owner: l.owner || l.teacher || "赵老师",
         mine: true,
         dueLabel: "进行中",
         dueSort: 0,
-        urgency: "overdue",
-        urgencyLabel: "已超时",
+        urgency: "living",
         sla: "over",
-        slaLabel: "已超时",
-        status: "pending",
-        statusLabel: "待处理",
-        action: "control",
-        actionLabel: "进入中控台处理",
-        href: "live-control.html?live_id=" + l.id + "&from=dashboard&todo_id=TODO_LIVE_EX_" + l.id + "&return_url=" + encodeURIComponent("dashboard.html?restore=1"),
+        slaLabel: "直播中",
+        status: "processing",
+        statusLabel: "进行中",
+        href: "live-control.html?live_id=" + l.id + "&from=dashboard&todo_id=TODO_LIVING_" + l.id,
         roles: ["admin", "content", "sales"],
-        liveId: l.id,
-        meta: { anomalies: anomalies, teacher: l.teacher || l.owner || "赵老师" }
+        liveId: l.id
       });
     });
 
+    /* 已排期的直播促到SOP / 预约提醒：由系统调度执行，不进入待办中心。
+       仅在「未配置」时生成人工待办（草稿 SOP、未配置提醒）。 */
     data.sops.forEach(function (s) {
-      if (!isAbnormalSop(s)) return;
+      if (s.status !== "draft") return;
       var live = getLive(s.liveId);
-      if (!live) return;
+      if (!live || live.auditStatus !== "approved") return;
       if (live.execStatus === "ended" || live.liveStatus === "ended") return;
-      var am = sopActionMeta(s);
       todos.push({
-        id: "TODO_SOP_" + s.id,
+        id: "TODO_SOP_CFG_" + s.id,
         type: "urge",
-        typeLabel: "直播促到SOP异常",
-        filterKey: "urge",
-        kind: "system",
+        typeLabel: "直播促到SOP",
         completeMode: "business",
-        title: (live.name || s.liveId) + " · " + (s.sopName || s.name || "SOP"),
-        reason: am.reason,
+        title: (live.name || s.liveId) + " · 直播促到SOP未配置完成",
         owner: s.owner || "赵老师",
-        mine: s.owner === "赵老师" || !s.owner,
+        mine: true,
         dueLabel: live.startAt || "待定",
         dueSort: 2,
-        urgency: s.status === "failed" ? "overdue" : "near",
-        urgencyLabel: s.status === "failed" ? "已超时" : "即将超时",
-        sla: s.status === "failed" ? "over" : "near",
-        slaLabel: s.status === "failed" ? "已超时" : "即将超时",
-        status: s.status === "failed" ? "failed" : "pending",
-        statusLabel: am.statusLabel || "待处理",
-        action: am.action,
-        actionLabel: am.actionLabel,
-        href: "live-invite.html?live_id=" + s.liveId + "&sop_id=" + s.id + "&focus=pending&from=dashboard&todo_id=TODO_SOP_" + s.id + "&return_url=" + encodeURIComponent("dashboard.html?restore=1"),
+        sla: "near",
+        slaLabel: "临近开播",
+        status: "pending",
+        statusLabel: "待处理",
+        href: "live-invite.html?live_id=" + s.liveId + "&focus=pending&from=dashboard&todo_id=TODO_SOP_CFG_" + s.id,
         roles: ["admin", "sales"],
         liveId: s.liveId,
         sopId: s.id,
-        meta: {
-          failStep: s.failStep || ((s.steps || []).filter(function (x) { return x.status === "failed"; })[0] || {}).name || "—",
-          failChannel: s.failChannel || s.channel || "企微",
-          lastExecAt: s.lastExecAt || s.updatedAt || "—",
-          failReason: s.failReason || am.reason,
-          retryCount: s.retryCount || 0
-        }
+        urgency: "near_start"
+      });
+    });
+
+    data.lives.forEach(function (l) {
+      if (l.remindStatus !== "none") return;
+      if (l.auditStatus !== "approved") return;
+      if (l.execStatus === "ended" || l.liveStatus === "ended") return;
+      todos.push({
+        id: "TODO_REMIND_CFG_" + l.id,
+        type: "remind",
+        typeLabel: "预约提醒",
+        completeMode: "business",
+        title: l.name + " · 预约提醒未配置",
+        owner: "赵老师",
+        mine: true,
+        dueLabel: l.startAt || "待定",
+        dueSort: 2,
+        urgency: "near_start",
+        sla: "near",
+        slaLabel: "临近开播",
+        status: "pending",
+        statusLabel: "待处理",
+        href: "live-booking.html?live_id=" + l.id + "&tab=reminders&from=dashboard&todo_id=TODO_REMIND_CFG_" + l.id,
+        roles: ["admin", "sales"],
+        liveId: l.id
       });
     });
 
     var failed = getChannelOrders("failed");
-    /* 领课短信失败暂不进入待办中心（逻辑较复杂，后续再接） */
-
-    data.aftersales.forEach(function (a) {
-      if (a.status !== "pending_merchant") return;
-      var remain = a.deadlineAt ? ("截止 " + a.deadlineAt) : "剩余处理时间不足";
+    if (failed.length) {
       todos.push({
-        id: "TODO_REFUND_" + a.id,
-        type: "aftersale",
-        typeLabel: "售后",
-        filterKey: "aftersale",
-        kind: "system",
+        id: "TODO_SMS_001",
+        type: "sms",
+        typeLabel: "短信",
         completeMode: "business",
-        title: a.type + " · " + a.id,
-        reason: "订单 " + a.orderId + " · ¥" + Number(a.amount || 0).toFixed(0) + " · " + (a.reason || "") + " · 等待" + (a.waitFor || "商家处理") + " · " + remain,
-        owner: "财务小陈",
-        mine: false,
-        dueLabel: a.deadlineAt || "昨天 15:00",
-        dueSort: 0,
-        urgency: "overdue",
-        urgencyLabel: "已超时",
-        sla: "over",
-        slaLabel: "已超时",
+        title: "领课短信失败 " + failed.length + " 条 · 需重发",
+        owner: "赵老师",
+        mine: true,
+        dueLabel: "今天 19:00",
+        dueSort: 3,
+        urgency: "near_timeout",
+        sla: "near",
+        slaLabel: "临近超时",
         status: "pending",
         statusLabel: "待处理",
-        action: "aftersale",
-        actionLabel: "处理售后",
-        href: "aftersale-detail.html?id=" + a.id + "&todo_id=TODO_REFUND_" + a.id + "&from=dashboard&return_url=" + encodeURIComponent("dashboard.html?restore=1"),
-        roles: ["admin"],
-        aftersaleId: a.id,
-        meta: {
-          aftersaleId: a.id,
-          orderId: a.orderId,
-          type: a.type,
-          amount: a.amount,
-          reason: a.reason,
-          waitFor: a.waitFor || "商家处理",
-          deadlineAt: a.deadlineAt
-        }
+        href: "orders.html?focus=sms_failed&from=dashboard&todo_id=TODO_SMS_001",
+        roles: ["admin", "sales"]
       });
+    }
+
+    data.aftersales.forEach(function (a) {
+      if (a.status === "pending_merchant") {
+        todos.push({
+          id: "TODO_REFUND_" + a.id,
+          type: "aftersale",
+          typeLabel: "售后",
+          completeMode: "business",
+          title: "退款单 " + a.id + " 待处理",
+          owner: "财务小陈",
+          mine: false,
+          dueLabel: "昨天 15:00",
+          dueSort: 0,
+          urgency: "overdue",
+          sla: "over",
+          slaLabel: "已超时",
+          status: "pending",
+          statusLabel: "待处理",
+          href: "aftersale-detail.html?id=" + a.id + "&todo_id=TODO_REFUND_" + a.id + "&from=dashboard",
+          roles: ["admin"]
+        });
+      }
     });
 
     (data.manualTodos || []).forEach(function (t) {
-      if (data.todoDone[t.id]) return;
-      var copy = Object.assign({}, t);
-      if (!copy.filterKey) copy.filterKey = copy.type;
-      if (!copy.kind) copy.kind = copy.completeMode === "manual" ? "suggestion" : "system";
-      if (!copy.urgencyLabel) {
-        copy.urgencyLabel = copy.urgency === "overdue" || copy.sla === "over" ? "已超时"
-          : (copy.urgency === "near" || copy.sla === "near" ? "即将超时" : "正常");
-      }
-      if (!copy.actionLabel) copy.actionLabel = copy.kind === "suggestion" ? "去查看" : "去查看";
-      if (!copy.action) copy.action = "view";
-      if (!copy.reason) copy.reason = "建议事项";
-      todos.push(copy);
+      if (!data.todoDone[t.id]) todos.push(t);
     });
 
     return todos.filter(function (t) {
@@ -1024,43 +755,33 @@
   }
 
   function realtimeCounts() {
-    var data = load();
     var todos = buildTodos();
-    var countBy = function (key) {
-      return todos.filter(function (t) {
-        return (t.filterKey === key || t.type === key) && t.kind !== "suggestion";
-      }).length;
-    };
-    var unassigned = (data.leads || []).filter(function (l) { return !l.owner; });
-    var oldest = unassigned.slice().sort(function (a, b) {
-      return String(a.enteredAt || "").localeCompare(String(b.enteredAt || ""));
-    })[0];
-    var srcMap = {};
-    unassigned.forEach(function (l) { srcMap[l.source || "其他"] = (srcMap[l.source || "其他"] || 0) + 1; });
-    var topSrc = Object.keys(srcMap).sort(function (a, b) { return srcMap[b] - srcMap[a]; })[0] || "视频号";
-    var urgeN = countBy("urge");
-    var auditN = countBy("audit");
-    var afterN = countBy("aftersale");
-    var leadN = countBy("lead");
-    var failed = getChannelOrders("failed");
-
+    function count(type) {
+      return todos.filter(function (t) { return t.type === type; }).length;
+    }
+    var failed = getChannelOrders("failed").length;
+    var pendingAs = load().aftersales.filter(function (a) { return a.status === "pending_merchant"; }).length;
+    var pendingAudit = load().lives.filter(function (l) {
+      if (l.execStatus === "ended" || l.liveStatus === "ended" || l.execStatus === "cancelled") return false;
+      return l.auditStatus === "draft" ||
+        l.auditStatus === "pending_platform_submit" ||
+        l.auditStatus === "pending_internal_review" ||
+        l.auditStatus === "platform_rejected" ||
+        l.auditStatus === "internal_rejected";
+    }).length;
+    var pendingSop = load().sops.filter(function (s) { return s.status === "scheduled"; }).length;
+    var sopTarget = 0;
+    load().sops.forEach(function (s) {
+      if (s.status === "scheduled") sopTarget += (s.targetCount || s.targetUsers || 0);
+    });
     return {
-      unassigned: leadN,
-      unassignedHint: unassigned.length
-        ? ("最长等待 " + waitHours(oldest && oldest.enteredAt) + " 小时 · " + topSrc)
-        : "暂无未分配线索",
-      audit: auditN,
-      auditHint: auditN > 0 ? ("含 " + auditN + " 场待提交/待改") : "暂无待提交场次",
-      urgeTasks: urgeN,
-      urgeHint: urgeN ? ("异常 " + urgeN + " 条") : "暂无SOP异常",
-      urgePeople: 0,
-      aftersale: afterN,
-      aftersaleHint: afterN
-        ? ("剩余处理至 " + ((data.aftersales.filter(function (a) { return a.status === "pending_merchant"; })[0] || {}).deadlineAt || "—"))
-        : "暂无待处理售后",
-      smsFailed: failed.length,
-      smsHint: failed.length ? ("最近失败：" + (failed[0].failReason || "发送失败")) : "暂无发送失败",
-      todos: todos.filter(function (t) { return t.kind !== "suggestion"; }).length
+      unassigned: 36,
+      audit: pendingAudit,
+      urgeTasks: pendingSop,
+      urgePeople: sopTarget || 1284,
+      aftersale: pendingAs,
+      smsFailed: failed,
+      todos: todos.length
     };
   }
 
@@ -1068,14 +789,6 @@
     var data = load();
     data.todoDone[id] = true;
     save(data);
-  }
-
-  function ignoreSuggestion(id) {
-    markTodoDone(id);
-  }
-
-  function snoozeSuggestion(id) {
-    markTodoDone(id);
   }
 
   function waitHours(fromAt) {
@@ -1110,8 +823,6 @@
     getSop: getSop,
     saveSop: saveSop,
     setSopStatus: setSopStatus,
-    retrySop: retrySop,
-    isAbnormalSop: isAbnormalSop,
     setAuditStatus: setAuditStatus,
     getAftersale: getAftersale,
     saveAftersale: saveAftersale,
@@ -1119,15 +830,9 @@
     getChannelOrders: getChannelOrders,
     smsFailedPending: smsFailedPending,
     resendSms: resendSms,
-    getLeads: getLeads,
-    getLead: getLead,
-    assignLead: assignLead,
-    getOwners: function () { return load().owners || []; },
     buildTodos: buildTodos,
     realtimeCounts: realtimeCounts,
     markTodoDone: markTodoDone,
-    ignoreSuggestion: ignoreSuggestion,
-    snoozeSuggestion: snoozeSuggestion,
     waitHours: waitHours,
     getReviewLogs: function (liveId) {
       return (load().reviewLogs || []).filter(function (r) { return !liveId || r.liveId === liveId; });

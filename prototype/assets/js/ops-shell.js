@@ -41,6 +41,7 @@
   var modules = [
     { id: "workbench", label: "工作台", href: "dashboard.html" },
     { id: "content", label: "内容", href: "content-series.html" },
+    { id: "trade", label: "交易与结算", href: "settlements.html" },
     { id: "sys", label: "系统管理", href: "sys-users.html" },
     { id: "data", label: "全局数据", href: "data.html" },
   ];
@@ -78,6 +79,30 @@
         links: [
           { id: "audit", href: "audit.html", label: "平台审核工作台", badge: 0 },
           { id: "audit-records", href: "audit-records.html", label: "平台审核记录" },
+        ],
+      },
+    ],
+    trade: [
+      {
+        group: "资金",
+        links: [
+          { id: "recon", href: "recon.html", label: "对账管理", badge: 3 },
+          { id: "settlements", href: "settlements.html", label: "结算管理", badge: 5 },
+          { id: "payouts", href: "payouts.html", label: "提现审核", badge: 2 },
+        ],
+      },
+      {
+        group: "财务",
+        links: [
+          { id: "invoices", href: "invoices.html", label: "发票管理" },
+          { id: "fee-ledger", href: "fee-ledger.html", label: "服务费台账" },
+        ],
+      },
+      {
+        group: "风控与规则",
+        links: [
+          { id: "fund-risk", href: "fund-risk.html", label: "资金风控", badge: 2 },
+          { id: "settle-rules", href: "settle-rules.html", label: "结算规则配置" },
         ],
       },
     ],
@@ -169,6 +194,16 @@
       "<div class='assist-block'><h3>审核规则</h3><ul>" +
       "<li>审核通过后内容才会发布到 C 端小程序</li>" +
       "<li>驳回需填写原因，商家可在后台查看并修改重提</li></ul></div>",
+    trade:
+      "<div class='assist-block'><h3>资金闭环</h3><ol>" +
+      "<li>结算规则：费率 / 账期 / 门槛，按租户合同覆盖</li>" +
+      "<li>对账：T+1 与渠道账单逐笔核对，差异进工单</li>" +
+      "<li>结算：对账对平 → 商家确认 → 财务复核 → 打款</li>" +
+      "<li>提现：额度 / 风控 / 留存审核后打款</li></ol></div>" +
+      "<div class='assist-block'><h3>注意事项</h3><ul>" +
+      "<li>服务费口径 1% 与 10% 待统一（见详细设计）</li>" +
+      "<li>打款为敏感操作，需双人复核并留痕</li>" +
+      "<li>风控预警统一汇入运营工作台待办</li></ul></div>",
     data:
       "<div class='assist-block'><h3>数据口径</h3><ul>" +
       "<li>数据来自各租户商家后台上报</li>" +
@@ -221,8 +256,9 @@
     "<strong>评审路径</strong>" +
     '<a href="tenants.html">①租户开通</a><span class="sep">·</span>' +
     '<a href="content-series.html">②内容</a><span class="sep">·</span>' +
-    '<a href="data.html">③全局数据</a><span class="sep">·</span>' +
-    '<a href="orders.html">④全局订单</a><span class="sep">|</span>' +
+    '<a href="settlements.html">③对账结算</a><span class="sep">·</span>' +
+    '<a href="data.html">④全局数据</a><span class="sep">·</span>' +
+    '<a href="orders.html">⑤全局订单</a><span class="sep">|</span>' +
     '<a href="../admin/dashboard.html">切商家后台</a><span class="sep">·</span>' +
     '<a href="../miniprogram/home.html">切 C 端</a><span class="sep">·</span>' +
     '<a href="../index.html">导航</a>' +
@@ -230,7 +266,7 @@
 
   var notice = showNotice
     ? '<div class="notice-bar" id="notice-bar">' +
-      "<span>运营后台 · 平台侧演示原型（v1.1）· 租户开通、内容中台（管理+审核）与全局数据</span>" +
+      "<span>运营后台 · 平台侧演示原型（v1.2）· 租户开通、内容中台（管理+审核）、交易与结算（对账 / 结算 / 提现 / 发票 / 风控）与全局数据</span>" +
       '<button type="button" class="close-notice" id="close-notice" aria-label="关闭">×</button>' +
       "</div>"
     : "";

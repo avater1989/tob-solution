@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>对账管理 · 运营后台</title>
+<link rel="stylesheet" href="../assets/css/proto.css?v=4" />
+</head>
+<body class="admin-body" data-module="trade" data-nav="recon" data-title="对账管理" data-crumb="运营后台 / 交易与结算 / 对账管理">
+<div id="header-actions">
+  <button class="btn" id="btn-export">导出对账单</button>
+  <button class="btn" id="btn-notice">重发确认通知</button>
+  <button class="btn btn-primary" id="btn-run">发起本期对账</button>
+</div>
+<div id="page-content" style="display:none">
+
+  <!-- 统计 -->
+  <div class="grid-4" style="margin-bottom:16px">
+    <div class="stat"><div class="label">本期账期</div><div class="value" style="font-size:18px">09-04 ~ 09-10</div><div class="hint">T+1 自动对账</div></div>
+    <div class="stat"><div class="label">待商家确认</div><div class="value">5</div><div class="hint">跨 5 个租户</div></div>
+    <div class="stat"><div class="label">未平差异</div><div class="value">3</div><div class="hint">金额差 2 / 单边账 1</div></div>
+    <div class="stat"><div class="label">本期平台交易额</div><div class="value">¥286,430.20</div><div class="hint">2,146 笔合计</div></div>
+  </div>
+
+  <!-- Tab -->
+  <div class="tabs" id="rc-tabs">
+    <a class="active" href="#" data-tab="bills">对账单</a>
+    <a href="#" data-tab="diffs">差异处理</a>
+  </div>
+
+  <!-- 对账单 -->
+  <div id="panel-bills">
+    <div class="card" style="margin-bottom:8px"><div class="card-bd">
+      <div class="form-grid" style="grid-template-columns:repeat(5,minmax(0,1fr))">
+        <input id="f-bill-no" placeholder="对账单号" />
+        <select id="f-tenant">
+          <option value="">全部租户</option>
+          <option>星启家庭教育</option><option>晨光少儿成长</option><option>青藤家长学堂</option><option>慧心教育</option><option>乐学伴家庭</option>
+        </select>
+        <select id="f-channel"><option value="">账单渠道</option><option>通联支付</option><option>视频号小店</option></select>
+        <select id="f-status"><option value="">对账状态</option><option>待对账</option><option>已对平</option><option>有差异</option><option>待商家确认</option><option>已确认</option><option>商家已申诉</option></select>
+        <button class="btn btn-primary" id="btn-query">筛选</button>
+      </div>
+    </div></div>
+
+    <div class="card"><div class="card-bd" style="padding:0">
+      <table class="data">
+        <thead>
+          <tr>
+            <th>对账单号</th>
+            <th>租户</th>
+            <th>账期</th>
+            <th>渠道</th>
+            <th>平台订单数</th>
+            <th>渠道笔数</th>
+            <th>交易额</th>
+            <th>退款额</th>
+            <th>服务费</th>
+            <th>应结金额</th>
+            <th>差异</th>
+            <th>状态</th>
+            <th style="width:150px">操作</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><a href="recon-detail.html" class="link-mono">PRC20260910001</a></td>
+            <td><a href="tenant-detail.html">星启家庭教育</a></td>
+            <td>09-04 ~ 09-10</td>
+            <td>通联支付</td>
+            <td>86</td><td>86</td>
+            <td><b>¥8,432.20</b></td><td>¥308.80</td><td>¥843.22</td><td><b>¥7,280.18</b></td>
+            <td><span class="badge badge-warn">2</span></td>
+            <td><span class="badge badge-warn">有差异</span></td>
+            <td class="row-actions"><a href="#" data-tab-jump="diffs">差异处理</a><a href="recon-detail.html">明细</a></td>
+          </tr>
+          <tr>
+            <td><a href="recon-detail.html" class="link-mono">PRC20260910002</a></td>
+            <td><a href="tenant-detail.html">晨光少儿成长</a></td>
+            <td>09-04 ~ 09-10</td>
+            <td>通联支付</td>
+            <td>128</td><td>128</td>
+            <td><b>¥12,648.50</b></td><td>¥238.60</td><td>¥1,264.85</td><td><b>¥11,145.05</b></td>
+            <td><span class="badge badge-success">0</span></td>
+            <td><span class="badge badge-warn">待商家确认</span></td>
+            <td class="row-actions"><a href="recon-detail.html">明细</a><a href="#" data-row-act="notice">催确认</a></td>
+          </tr>
+          <tr>
+            <td><a href="recon-detail.html" class="link-mono">PRC20260910003</a></td>
+            <td><a href="tenant-detail.html">青藤家长学堂</a></td>
+            <td>09-04 ~ 09-10</td>
+            <td>视频号小店</td>
+            <td>31</td><td>31</td>
+            <td><b>¥3,069.00</b></td><td>¥0.00</td><td>¥306.90</td><td><b>¥2,762.10</b></td>
+            <td><span class="badge badge-success">0</span></td>
+            <td><span class="badge badge-success">已确认</span></td>
+            <td class="row-actions"><a href="recon-detail.html">明细</a></td>
+          </tr>
+          <tr>
+            <td><a href="recon-detail.html" class="link-mono">PRC20260910004</a></td>
+            <td><a href="tenant-detail.html">慧心教育</a></td>
+            <td>09-04 ~ 09-10</td>
+            <td>通联支付</td>
+            <td>42</td><td>42</td>
+            <td><b>¥4,135.30</b></td><td>¥9.90</td><td>¥24.81</td><td><b>¥4,100.59</b></td>
+            <td><span class="badge badge-success">0</span></td>
+            <td><span class="badge badge-warn">待商家确认</span></td>
+            <td class="row-actions"><a href="recon-detail.html">明细</a><a href="#" data-row-act="notice">催确认</a></td>
+          </tr>
+          <tr>
+            <td><a href="recon-detail.html" class="link-mono">PRC20260910005</a></td>
+            <td><a href="tenant-detail.html">乐学伴家庭</a></td>
+            <td>09-04 ~ 09-10</td>
+            <td>通联支付</td>
+            <td>18</td><td>18</td>
+            <td><b>¥1,782.00</b></td><td>¥0.00</td><td>¥178.20</td><td><b>¥1,603.80</b></td>
+            <td><span class="badge badge-success">0</span></td>
+            <td><span class="badge badge-danger">商家已申诉</span></td>
+            <td class="row-actions"><a href="recon-detail.html">明细</a><a href="#" data-row-act="review">复核申诉</a></td>
+          </tr>
+          <tr>
+            <td><span class="link-mono muted">PRC20260911001</span></td>
+            <td>星启家庭教育</td>
+            <td>09-11</td>
+            <td>通联支付</td>
+            <td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td>
+            <td><span class="badge">待对账</span></td>
+            <td class="row-actions"><span class="muted" style="font-size:12px">次日 02:00 生成</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div></div>
+
+    <div class="toolbar" style="margin-top:8px">
+      <span class="muted">共 <b>18</b> 条</span>
+      <div class="spacer"></div>
+      <select><option>10条/页</option><option>20条/页</option></select>
+      <button class="btn btn-sm" disabled>上一页</button>
+      <button class="btn btn-sm">下一页</button>
+    </div>
+  </div>
+
+  <!-- 差异处理 -->
+  <div id="panel-diffs" style="display:none">
+    <div class="card" style="margin-bottom:8px"><div class="card-hd">
+      <h2>差异工单</h2>
+      <span class="muted" style="font-size:12px">超 SLA 未处理将自动升级；结案后对账单重算</span>
+    </div>
+      <div class="card-bd" style="padding:0">
+        <table class="data">
+          <thead>
+            <tr>
+              <th>工单号</th>
+              <th>来源对账单</th>
+              <th>差异类型</th>
+              <th>租户</th>
+              <th>差值</th>
+              <th>责任人</th>
+              <th>SLA 剩余</th>
+              <th>状态</th>
+              <th style="width:130px">操作</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><a href="recon-diff-detail.html" class="link-mono">DIF20260910001</a></td>
+              <td><a href="recon-detail.html" class="link-mono">PRC20260910001</a></td>
+              <td><span class="badge badge-warn">金额不一致</span></td>
+              <td>星启家庭教育</td>
+              <td class="danger">-¥29.90</td>
+              <td>风控组 · 陈审核</td>
+              <td><span class="badge badge-warn">6h</span></td>
+              <td><span class="badge badge-warn">处理中</span></td>
+              <td class="row-actions"><a href="recon-diff-detail.html">处理</a></td>
+            </tr>
+            <tr>
+              <td><a href="recon-diff-detail.html" class="link-mono">DIF20260910002</a></td>
+              <td><a href="recon-detail.html" class="link-mono">PRC20260910001</a></td>
+              <td><span class="badge badge-danger">渠道单边账</span></td>
+              <td>星启家庭教育</td>
+              <td class="danger">+¥9.90</td>
+              <td>结算组 · 周财务</td>
+              <td><span class="badge badge-danger">超时</span></td>
+              <td><span class="badge badge-warn">待处理</span></td>
+              <td class="row-actions"><a href="recon-diff-detail.html">处理</a></td>
+            </tr>
+            <tr>
+              <td><a href="recon-diff-detail.html" class="link-mono">DIF20260909003</a></td>
+              <td><a href="recon-detail.html" class="link-mono">PRC20260909002</a></td>
+              <td><span class="badge badge-info">退款状态不一致</span></td>
+              <td>晨光少儿成长</td>
+              <td>¥0.00</td>
+              <td>系统自动</td>
+              <td class="muted">—</td>
+              <td><span class="badge badge-success">已平账</span></td>
+              <td class="row-actions"><a href="recon-diff-detail.html">查看</a></td>
+            </tr>
+            <tr>
+              <td><a href="recon-diff-detail.html" class="link-mono">DIF20260909004</a></td>
+              <td><a href="recon-detail.html" class="link-mono">PRC20260909003</a></td>
+              <td><span class="badge badge-warn">重复支付</span></td>
+              <td>青藤家长学堂</td>
+              <td class="danger">+¥99.00</td>
+              <td>结算组 · 周财务</td>
+              <td class="muted">已挂账</td>
+              <td><span class="badge">已挂账</span></td>
+              <td class="row-actions"><a href="recon-diff-detail.html">查看</a></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- 规则说明 -->
+  <div class="card" style="margin-top:8px"><div class="card-hd"><h2>对账规则说明</h2></div>
+    <div class="card-bd">
+      <ul class="muted" style="font-size:13px;line-height:1.9;padding-left:16px;margin:0">
+        <li>每日 T+1 02:00 自动拉取通联支付 / 视频号小店账单，与平台订单按渠道交易单号逐笔核对；</li>
+        <li>差异类型：金额不一致、平台/渠道单边账、退款状态不一致、重复支付、跨期差异；</li>
+        <li>金额与笔数全部一致 → 「已对平」并进入待商家确认；存在差异 → 处理完差异后重算；</li>
+        <li>商家确认后对账单进入结算池；商家申诉将暂停该账期结算，待平台复核。</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<style>
+.link-mono { font-family:ui-monospace,Consolas,monospace; font-size:12px; color:var(--color-primary); text-decoration:none; }
+.link-mono:hover { text-decoration:underline; }
+.muted.link-mono { color:var(--color-text-muted); pointer-events:none; }
+.danger { color:#cb2634; font-weight:600; }
+</style>
+
+<script src="../assets/js/proto.js"></script>
+<script src="../assets/js/ops-shell.js?v=6"></script>
+<script>
+(function () {
+  var tabs = document.querySelectorAll("#rc-tabs a");
+  function switchTab(key) {
+    tabs.forEach(function (n) { n.classList.remove("active"); });
+    var target = document.querySelector('#rc-tabs a[data-tab="' + key + '"]');
+    if (target) target.classList.add("active");
+    document.getElementById("panel-bills").style.display = key === "bills" ? "block" : "none";
+    document.getElementById("panel-diffs").style.display = key === "diffs" ? "block" : "none";
+  }
+  tabs.forEach(function (a) {
+    a.addEventListener("click", function (e) { e.preventDefault(); switchTab(a.getAttribute("data-tab")); });
+  });
+  document.querySelectorAll("[data-tab-jump]").forEach(function (a) {
+    a.addEventListener("click", function (e) { e.preventDefault(); switchTab(a.getAttribute("data-tab-jump")); });
+  });
+
+  document.querySelectorAll("[data-row-act]").forEach(function (a) {
+    a.addEventListener("click", function (e) {
+      e.preventDefault();
+      var act = a.getAttribute("data-row-act");
+      var msg = {
+        notice: "已向商家重发对账单确认通知（原型）",
+        review: "已进入商家申诉复核（原型）"
+      }[act] || "（原型）";
+      Proto.toast(msg);
+    });
+  });
+
+  document.getElementById("btn-run").addEventListener("click", function () { Proto.toast("已发起本期对账（原型）"); });
+  document.getElementById("btn-export").addEventListener("click", function () { Proto.toast("已导出对账单（原型）"); });
+  document.getElementById("btn-notice").addEventListener("click", function () { Proto.toast("已批量重发确认通知（原型）"); });
+  document.getElementById("btn-query").addEventListener("click", function () { Proto.toast("已筛选（原型）"); });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>差异工单详情 · 运营后台</title>
+<link rel="stylesheet" href="../assets/css/proto.css?v=4" />
+</head>
+<body class="admin-body" data-module="trade" data-nav="recon" data-title="差异工单详情" data-crumb="运营后台 / 交易与结算 / 对账管理 / 差异工单详情">
+<div id="header-actions">
+  <a class="btn" href="recon.html" style="text-decoration:none">返回列表</a>
+  <button class="btn" id="btn-suspend">挂起</button>
+  <button class="btn btn-primary" id="btn-close">结案</button>
+</div>
+<div id="page-content" style="display:none">
+
+  <div class="alert alert-warning" style="margin-bottom:12px">
+    <span>该工单已 <b>超 SLA</b>（默认 24h），已升级为高优先级并通知责任人。</span>
+  </div>
+
+  <!-- 工单信息 -->
+  <div class="card" style="margin-bottom:12px">
+    <div class="card-hd"><h2>工单信息</h2><span class="badge badge-warn">待处理</span></div>
+    <div class="card-bd">
+      <div class="form-grid readonly" style="grid-template-columns:repeat(3,minmax(0,1fr))">
+        <div class="field"><label>工单号</label><div class="mono">DIF20260910002</div></div>
+        <div class="field"><label>来源对账单</label><div><a href="recon-detail.html" class="link">PRC20260910001</a></div></div>
+        <div class="field"><label>差异类型</label><div>渠道单边账</div></div>
+        <div class="field"><label>租户</label><div>星启家庭教育</div></div>
+        <div class="field"><label>责任人</label><div>结算组 · 周财务</div></div>
+        <div class="field"><label>发现时间</label><div>2026-09-11 02:01</div></div>
+        <div class="field"><label>SLA</label><div><span class="badge badge-danger">已超时</span></div></div>
+        <div class="field"><label>差值</label><div class="danger">+¥9.90</div></div>
+        <div class="field"><label>处理动作</label><div id="act-text">—</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 记录对比 -->
+  <div class="card" style="margin-bottom:12px">
+    <div class="card-hd"><h2>记录对比</h2><span class="muted" style="font-size:12px">平台记录 / 渠道记录 / 差值</span></div>
+    <div class="card-bd">
+      <table class="data">
+        <thead><tr><th>平台记录</th><th>渠道记录</th><th>差值</th></tr></thead>
+        <tbody>
+          <tr>
+            <td>未找到对应订单<br><span class="muted">疑似掉单</span></td>
+            <td>交易单 4200002388202604029…<br><b>¥9.90</b>（04-02 23:59）</td>
+            <td class="danger">+¥9.90</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="actions" style="margin-top:12px">
+        <button class="btn btn-sm" data-act="recheck">重取渠道账单</button>
+        <button class="btn btn-sm" data-act="confirm">人工确认</button>
+        <button class="btn btn-sm" data-act="repair">补单修复</button>
+        <button class="btn btn-sm" data-act="offset">补差调账</button>
+        <button class="btn btn-sm" data-act="suspend">挂起（下期跟踪）</button>
+      </div>
+      <p class="muted" style="margin-top:10px;font-size:12px">补单修复将生成缺失订单并纳入本期对账；补差调账将差异金额调整至指定账期。</p>
+    </div>
+  </div>
+
+  <!-- 时间轴 -->
+  <div class="card" style="margin-bottom:12px">
+    <div class="card-hd"><h2>处理记录</h2></div>
+    <div class="card-bd">
+      <div class="timeline">
+        <div class="tl-item"><div class="tl-dot warn"></div><div class="tl-bd"><b>差异发现</b><span class="muted">系统自动 · 2026-09-11 02:01</span><p class="muted">平台无对应订单，渠道存在交易单 4200002388202604029…。</p></div></div>
+        <div class="tl-item"><div class="tl-dot info"></div><div class="tl-bd"><b>自动分派</b><span class="muted">系统 · 2026-09-11 02:01</span><p class="muted">按差异类型「渠道单边账」指派结算组，SLA 24h。</p></div></div>
+        <div class="tl-item"><div class="tl-dot danger"></div><div class="tl-bd"><b>SLA 超时升级</b><span class="muted">系统 · 2026-09-12 02:01</span><p class="muted">升级为高优先级，通知平台运营负责人。</p></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 举证附件 -->
+  <div class="card">
+    <div class="card-hd"><h2>举证与附件</h2></div>
+    <div class="card-bd" style="padding:0">
+      <table class="data">
+        <thead><tr><th>文件名</th><th>类型</th><th>上传人</th><th>上传时间</th><th style="width:90px">操作</th></tr></thead>
+        <tbody>
+          <tr><td>通联渠道账单_0904-0910.xlsx</td><td>渠道账单</td><td>系统自动</td><td>2026-09-11 02:00</td><td class="row-actions"><a href="#" data-toast-dl="1">下载</a></td></tr>
+          <tr><td>微信支付回调日志.txt</td><td>系统日志</td><td>结算组 · 周财务</td><td>2026-09-11 09:20</td><td class="row-actions"><a href="#" data-toast-dl="1">下载</a></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<style>
+.mono { font-family:ui-monospace,Consolas,monospace; font-size:12px; }
+.link { color:var(--color-primary); text-decoration:none; font-size:13px; }
+.danger { color:#cb2634; font-weight:600; }
+.actions { display:flex; gap:8px; flex-wrap:wrap; }
+.timeline { position:relative; padding-left:18px; }
+.tl-item { position:relative; padding:0 0 16px 16px; border-left:1px solid var(--color-border); }
+.tl-item:last-child { padding-bottom:0; border-left-color:transparent; }
+.tl-dot { position:absolute; left:-5px; top:2px; width:9px; height:9px; border-radius:50%; background:#00b42a; }
+.tl-dot.warn { background:#d25f00; }
+.tl-dot.info { background:#165dff; }
+.tl-dot.danger { background:#cb2634; }
+.tl-bd b { font-size:13px; }
+.tl-bd span { font-size:12px; margin-left:8px; }
+.tl-bd p { margin:4px 0 0; font-size:12px; }
+</style>
+
+<script src="../assets/js/proto.js"></script>
+<script src="../assets/js/ops-shell.js?v=6"></script>
+<script>
+(function () {
+  var actText = document.getElementById("act-text");
+  document.querySelectorAll("[data-act]").forEach(function (b) {
+    b.addEventListener("click", function () {
+      var act = b.getAttribute("data-act");
+      var label = { recheck:"重取渠道账单", confirm:"人工确认", repair:"补单修复", offset:"补差调账", suspend:"挂起" }[act];
+      actText.textContent = label;
+      var msg = {
+        recheck: "已重新拉取渠道账单，稍后自动重试对账（原型）",
+        confirm: "已人工确认差异，按渠道金额并入本期（原型）",
+        repair: "已发起补单修复，订单稍后生成（原型）",
+        offset: "已生成补差调账，调整至指定账期（原型）",
+        suspend: "差异已挂起，下期账单继续跟踪（原型）"
+      }[act];
+      Proto.toast(msg);
+    });
+  });
+  document.getElementById("btn-suspend").addEventListener("click", function () { Proto.toast("工单已挂起（原型）"); });
+  document.getElementById("btn-close").addEventListener("click", function () { Proto.toast("工单已结案，对账单将重新汇总（原型）"); });
+  document.querySelectorAll("[data-toast-dl]").forEach(function (a) {
+    a.addEventListener("click", function (e) { e.preventDefault(); Proto.toast("已开始下载（原型）"); });
+  });
+})();
+</script>
+</body>
+</html>

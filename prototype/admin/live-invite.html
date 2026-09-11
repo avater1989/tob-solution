@@ -380,30 +380,6 @@
     var p = qs();
     return p.get("live_id") || p.get("liveId") || "";
   }
-  function dashBackHref() {
-    var p = qs();
-    var ru = p.get("return_url") || "";
-    if (ru) {
-      try { return decodeURIComponent(ru); } catch (e) { return ru; }
-    }
-    return "dashboard.html?restore=1";
-  }
-  function ensureDashBack() {
-    var p = qs();
-    var from = p.get("from") || "";
-    var ru = p.get("return_url") || "";
-    var fromDash = from === "dashboard" || /dashboard\.html/i.test(ru) || /dashboard\.html/i.test(document.referrer || "");
-    if (!fromDash) return;
-    var ha = document.getElementById("page-header-actions") || document.getElementById("header-actions");
-    if (!ha || ha.querySelector("[data-back-dashboard]")) return;
-    var a = document.createElement("a");
-    a.className = "btn";
-    a.href = dashBackHref();
-    a.setAttribute("data-back-dashboard", "1");
-    a.textContent = "返回工作台";
-    ha.insertBefore(a, ha.firstChild);
-  }
-  ensureDashBack();
   /* context banner */
   setTimeout(function () {
     if (!window.LiveOps) return;
@@ -692,12 +668,7 @@
       Proto.toast(res.error);
       return;
     }
-    var msg = {
-      running: "已启动促到SOP",
-      scheduled: "已设为待启动",
-      paused: "已暂停",
-      cancelled: "已取消"
-    }[status] || "状态已更新";
+    var msg = { running: "已启动", paused: "已暂停", cancelled: "已取消" }[status] || "状态已更新";
     Proto.toast(msg);
     renderList();
     if (currentSopId === id && document.getElementById("drawer-detail").classList.contains("open")) {

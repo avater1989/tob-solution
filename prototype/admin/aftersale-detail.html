@@ -3,19 +3,19 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>售后单详情 · 商家管理后台</title>
+<title>退款单详情 · 商家管理后台</title>
 <link rel="stylesheet" href="../assets/css/proto.css?v=9" />
 </head>
-<body class="admin-body" data-module="trade" data-nav="aftersales" data-title="售后单详情" data-crumb="交易 / 售后管理 / 售后维权 / 售后单详情">
+<body class="admin-body" data-module="trade" data-nav="aftersales" data-title="退款单详情" data-crumb="交易 / 售后管理 / 退款与权益回收 / 退款单详情">
 <div id="header-actions">
-  <button class="btn" id="btn-back-list" onclick="location.href='aftersales.html'">返回售后列表</button>
+  <button class="btn" onclick="location.href='aftersales.html'">返回退款列表</button>
   <button class="btn" id="btn-contact">联系买家</button>
 </div>
 <div id="page-content" style="display:none">
 
   <div id="as-empty" style="display:none" class="card"><div class="card-bd" style="padding:48px;text-align:center">
-    <p style="font-size:15px;margin:0 0 16px">未找到对应售后单，请返回列表重新选择。</p>
-    <a class="btn btn-primary" id="btn-back-empty" href="aftersales.html">返回售后列表</a>
+    <p style="font-size:15px;margin:0 0 16px">未找到对应退款单，请返回列表重新选择。</p>
+    <a class="btn btn-primary" href="aftersales.html">返回退款列表</a>
   </div></div>
 
   <div id="as-found" style="display:none">
@@ -31,23 +31,23 @@
       <div class="os-flow" id="as-flow">
         <div class="os-step done"><i>1</i>买家申请</div>
         <div class="os-step cur"><i>2</i>商家审核</div>
-        <div class="os-step"><i>3</i>买家退货</div>
-        <div class="os-step"><i>4</i>收货退款</div>
+        <div class="os-step"><i>3</i>退款处理</div>
+        <div class="os-step"><i>4</i>权益回收</div>
       </div>
     </div>
     <div class="alert alert-warning" style="margin-top:12px;font-size:13px">
-      买家提交申请后 <b>7 天</b>未处理将自动同意并发送默认退货地址；含售后中商品的订单，需先完成售后才可发起主动退款。
+      买家提交申请后 <b>7 天</b>未处理将自动同意并退款；退款成功后按规则<b>回收课程权益 / 服务额度</b>，已分账订单同步触发通联支付分账资金回退。
     </div>
   </div></div>
 
   <div class="detail-cols">
-    <div class="card"><div class="card-hd"><h2>售后申请信息</h2></div>
+    <div class="card"><div class="card-hd"><h2>退款申请信息</h2></div>
       <div class="card-bd">
         <div class="kv">
-          <div class="kv-row"><span>售后类型</span><b id="kv-type">—</b></div>
-          <div class="kv-row"><span>申请件数</span><b>1 件</b></div>
+          <div class="kv-row"><span>退款类型</span><b id="kv-type">—</b></div>
+          <div class="kv-row"><span>权益处理</span><b>退款成功后回收</b></div>
           <div class="kv-row"><span>退款金额</span><b class="price" id="kv-amount">—</b></div>
-          <div class="kv-row"><span>是否退运费</span><b>不退运费（默认）</b></div>
+          <div class="kv-row"><span>分账回退</span><b>按「同步退回分账资金」处理</b></div>
           <div class="kv-row"><span>申请原因</span><b id="kv-reason">—</b></div>
           <div class="kv-row"><span>问题描述</span><b id="kv-desc">—</b></div>
           <div class="kv-row"><span>申请凭证</span><b><a href="#" class="link" data-toast="预览凭证图片（原型）">图片凭证 1 张</a></b></div>
@@ -60,7 +60,7 @@
       <div class="card-bd">
         <div class="kv">
           <div class="kv-row"><span>订单号</span><b><a href="order-detail.html" class="link mono" id="kv-order">—</a></b></div>
-          <div class="kv-row"><span>支付方式</span><b>微信小程序支付</b></div>
+          <div class="kv-row"><span>支付方式</span><b>通联支付（小程序）</b></div>
           <div class="kv-row"><span>下单时间</span><b>—</b></div>
         </div>
         <div class="prod-line" style="margin-top:10px">
@@ -80,7 +80,7 @@
         <div class="kv">
           <div class="kv-row"><span>买家</span><b id="kv-buyer">—</b></div>
           <div class="kv-row"><span>手机号</span><b id="kv-phone">—</b></div>
-          <div class="kv-row"><span>退货收货地址（待发送）</span><b id="kv-addr">商家待同意后提供</b></div>
+          <div class="kv-row"><span>权益回收状态</span><b id="kv-addr">退款成功后自动回收</b></div>
         </div>
       </div>
     </div>
@@ -106,39 +106,39 @@
   <div class="card" id="as-actions"><div class="card-bd" style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
     <span style="font-weight:600">商家处理：</span>
     <button class="btn" id="btn-reject">拒绝申请</button>
-    <button class="btn btn-primary" id="btn-agree">同意并发退货地址</button>
+    <button class="btn btn-primary" id="btn-agree">同意退款</button>
     <button class="btn" data-toast="查看商品原下单记录（原型）">查看原订单</button>
   </div></div>
 
   <div class="toolbar" style="margin-top:8px">
-    <button class="btn" id="btn-back-bottom" onclick="location.href='aftersales.html'">← 返回售后列表</button>
+    <button class="btn" onclick="location.href='aftersales.html'">← 返回退款列表</button>
   </div>
   </div>
 </div>
 
 <div class="proto-mask" id="mask"></div>
 <div class="proto-modal" id="modal-agree" style="width:520px">
-  <div class="proto-modal-hd"><h3 style="font-size:16px;font-weight:600">同意退货退款</h3><button class="btn btn-sm btn-ghost" data-close>×</button></div>
+  <div class="proto-modal-hd"><h3 style="font-size:16px;font-weight:600">同意退款</h3><button class="btn btn-sm btn-ghost" data-close>×</button></div>
   <div class="proto-modal-bd">
     <div class="form-grid" style="grid-template-columns:1fr 1fr">
-      <div class="field" style="grid-column:1/-1"><label>退款金额 *</label><input id="agree-amount" value="" /><span class="muted" style="font-size:12px">确认收货时按此金额原路退款</span></div>
-      <div class="field"><label>是否退运费</label>
-        <select style="width:100%;padding:7px 8px;border:1px solid var(--color-border);border-radius:6px"><option>不退运费</option><option>退运费 ¥6.00</option></select>
+      <div class="field" style="grid-column:1/-1"><label>退款金额 *</label><input id="agree-amount" value="" /><span class="muted" style="font-size:12px">通过通联支付原路退回买家</span></div>
+      <div class="field"><label>权益处理</label>
+        <select style="width:100%;padding:7px 8px;border:1px solid var(--color-border);border-radius:6px"><option>回收课程权益 / 服务额度</option><option>保留权益（客诉安抚）</option></select>
       </div>
-      <div class="field"><label>退货地址</label>
-        <select style="width:100%;padding:7px 8px;border:1px solid var(--color-border);border-radius:6px"><option>默认退货地址（深圳仓）</option><option>北京仓</option></select>
+      <div class="field"><label>分账资金回退</label>
+        <select style="width:100%;padding:7px 8px;border:1px solid var(--color-border);border-radius:6px"><option>同步退回分账资金</option><option>仅退回买家金额</option></select>
       </div>
     </div>
-    <p class="muted" style="margin-top:8px">同意后系统向买家发送退货地址，买家寄回并登记物流单号，商家确认收货后自动退款。</p>
+    <p class="muted" style="margin-top:8px">同意后系统通过通联支付原路退款，并按所选方式处理课程权益与分账资金回退。</p>
   </div>
   <div class="proto-drawer-ft" style="border-top:1px solid var(--color-border);padding:12px 20px;display:flex;gap:8px;justify-content:flex-end">
     <button class="btn" data-close>取消</button>
-    <button class="btn btn-primary" id="agree-submit">同意并发送退货地址</button>
+    <button class="btn btn-primary" id="agree-submit">同意并退款</button>
   </div>
 </div>
 
 <div class="proto-modal" id="modal-reject" style="width:480px">
-  <div class="proto-modal-hd"><h3 style="font-size:16px;font-weight:600">拒绝售后申请</h3><button class="btn btn-sm btn-ghost" data-close>×</button></div>
+  <div class="proto-modal-hd"><h3 style="font-size:16px;font-weight:600">拒绝退款申请</h3><button class="btn btn-sm btn-ghost" data-close>×</button></div>
   <div class="proto-modal-bd">
     <div class="field"><label>拒绝原因 *</label>
       <textarea id="reject-reason" rows="4" style="width:100%;padding:8px;border:1px solid var(--color-border);border-radius:6px" placeholder="请填写拒绝原因，将通知买家"></textarea>
@@ -189,52 +189,11 @@
 (function () {
   var Biz = window.ProtoBiz;
   var rawId = "";
-  var fromDash = false;
-  var returnUrl = "";
-  var dashHref = "dashboard.html?restore=1";
   try {
     var q = new URLSearchParams(location.search);
     rawId = q.get("id") || q.get("as_id") || q.get("aftersale_id") || "";
-    fromDash = q.get("from") === "dashboard";
-    returnUrl = q.get("return_url") || "";
-    if (returnUrl) {
-      try { dashHref = decodeURIComponent(returnUrl); } catch (e) { dashHref = returnUrl; }
-      fromDash = fromDash || /dashboard\.html/i.test(dashHref);
-    }
   } catch (e) {}
   var row = rawId ? Biz.getAftersale(rawId) : null;
-
-  function applyDashBack() {
-    if (!fromDash) return;
-    var href = dashHref || "dashboard.html?restore=1";
-    ["btn-back-list", "btn-back-empty", "btn-back-bottom"].forEach(function (id) {
-      var n = document.getElementById(id);
-      if (!n) return;
-      if (n.tagName === "A") {
-        n.setAttribute("href", href);
-        n.textContent = "返回工作台";
-      } else {
-        n.onclick = function () { location.href = href; };
-        n.textContent = id === "btn-back-bottom" ? "← 返回工作台" : "返回工作台";
-      }
-    });
-  }
-  applyDashBack();
-
-  function offerDashContinue(msg) {
-    if (!fromDash) return;
-    Proto.toast((msg || "处理完成") + " · 可返回工作台继续处理");
-    var bar = document.getElementById("as-actions") || document.querySelector(".toolbar");
-    if (bar && !document.getElementById("btn-dash-continue")) {
-      var a = document.createElement("a");
-      a.id = "btn-dash-continue";
-      a.className = "btn btn-primary";
-      a.href = dashHref || "dashboard.html?restore=1";
-      a.textContent = "返回工作台继续处理";
-      a.style.marginLeft = "8px";
-      bar.appendChild(a);
-    }
-  }
 
   var mask = document.getElementById("mask");
   function closeAll() {
@@ -290,12 +249,12 @@
     document.getElementById("agree-amount").value = Number(row.amount || 0).toFixed(2);
 
     if (row.status === "returning") {
-      document.getElementById("kv-addr").textContent = "默认退货地址（深圳仓）已发送";
+      document.getElementById("kv-addr").textContent = "待退款完成后回收";
       document.getElementById("as-flow").innerHTML =
         '<div class="os-step done"><i>1</i>买家申请</div>' +
         '<div class="os-step done"><i>2</i>商家审核</div>' +
-        '<div class="os-step cur"><i>3</i>买家退货</div>' +
-        '<div class="os-step"><i>4</i>收货退款</div>';
+        '<div class="os-step cur"><i>3</i>退款处理</div>' +
+        '<div class="os-step"><i>4</i>权益回收</div>';
     } else if (row.status === "rejected" || row.status === "done") {
       document.getElementById("as-flow").innerHTML =
         '<div class="os-step done"><i>1</i>买家申请</div>' +
@@ -335,9 +294,8 @@
     if (!row) return;
     row = Biz.resolveAftersale(row, "agree");
     closeAll();
-    Proto.toast("已同意，退货地址已发送买家");
+    Proto.toast("已同意退款，通联支付原路退回中");
     render(row);
-    offerDashContinue("已同意售后");
   });
 
   var btnReject = document.getElementById("btn-reject");
@@ -354,9 +312,8 @@
     if (!row) return;
     row = Biz.resolveAftersale(row, "reject", reason);
     closeAll();
-    Proto.toast("已拒绝售后申请");
+    Proto.toast("已拒绝退款申请");
     render(row);
-    offerDashContinue("已拒绝售后");
   });
 })();
 </script>

@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>结算单详情 · 运营后台</title>
+<link rel="stylesheet" href="../assets/css/proto.css?v=4" />
+</head>
+<body class="admin-body" data-module="trade" data-nav="settlements" data-title="结算单详情" data-crumb="运营后台 / 交易与结算 / 结算管理 / 结算单详情">
+<div id="header-actions">
+  <a class="btn" href="settlements.html" style="text-decoration:none">返回列表</a>
+  <button class="btn" id="btn-export">导出结算单</button>
+  <button class="btn" id="btn-reject">复核驳回</button>
+  <button class="btn btn-primary" id="btn-pay">复核通过并打款</button>
+</div>
+<div id="page-content" style="display:none">
+
+  <div class="alert alert-info" style="margin-bottom:12px">
+    <span>当前处于「待财务复核」：需第二人复核后方可打款；本操作将记录复核人、时间与凭证。</span>
+  </div>
+
+  <!-- 结算信息 -->
+  <div class="card" style="margin-bottom:12px">
+    <div class="card-hd"><h2>结算信息</h2><span class="badge badge-info">待财务复核</span></div>
+    <div class="card-bd">
+      <div class="form-grid readonly" style="grid-template-columns:repeat(3,minmax(0,1fr))">
+        <div class="field"><label>结算单号</label><div class="mono">ST20260910002</div></div>
+        <div class="field"><label>租户</label><div>晨光少儿成长</div></div>
+        <div class="field"><label>账期</label><div>2026-09-04 ~ 2026-09-10</div></div>
+        <div class="field"><label>关联对账单</label><div><a href="recon-detail.html" class="link">PRC20260910002</a></div></div>
+        <div class="field"><label>订单数</label><div>128 笔</div></div>
+        <div class="field"><label>生成时间</label><div>2026-09-11 03:00</div></div>
+        <div class="field"><label>商家确认人 / 时间</label><div>孙校长 · 2026-09-11 09:12</div></div>
+        <div class="field"><label>结算规则</label><div>家长课堂类目默认规则（T+1）</div></div>
+        <div class="field"><label>是否需先开票</label><div>否</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 金额构成 -->
+  <div class="card" style="margin-bottom:12px">
+    <div class="card-hd"><h2>结算金额构成</h2></div>
+    <div class="card-bd">
+      <div class="calc">
+        <div class="calc-row"><span>交易额（已对平）</span><b>¥12,648.50</b></div>
+        <div class="calc-row"><span>退款冲抵</span><b class="danger">-¥238.60</b></div>
+        <div class="calc-row"><span>平台服务费（10%）</span><b class="danger">-¥1,264.85</b></div>
+        <div class="calc-row"><span>其他分账方分成</span><b class="danger">-¥0.00</b></div>
+        <div class="calc-row total"><span>应结算金额</span><b>¥11,145.05</b></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 分账明细 -->
+  <div class="card" style="margin-bottom:12px">
+    <div class="card-hd"><h2>分账明细</h2><span class="muted" style="font-size:12px">以通联支付回盘为准</span></div>
+    <div class="card-bd" style="padding:0">
+      <table class="data">
+        <thead><tr><th>分账方</th><th>通联会员号</th><th>比例</th><th>金额</th><th>状态</th></tr></thead>
+        <tbody>
+          <tr><td><b>晨光少儿成长（商户）</b></td><td class="mono">MEM-1002XX</td><td>90%</td><td>¥11,145.05</td><td><span class="badge badge-warn">待分账</span></td></tr>
+          <tr><td>艺博平台（平台抽佣）</td><td class="mono">TL-MCH-8801XXXX</td><td>10%</td><td>¥1,264.85</td><td><span class="badge badge-warn">待分账</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- 打款信息 -->
+  <div class="card" style="margin-bottom:12px">
+    <div class="card-hd"><h2>打款信息</h2></div>
+    <div class="card-bd">
+      <div class="form-grid readonly" style="grid-template-columns:repeat(2,minmax(0,1fr))">
+        <div class="field"><label>收款账户</label><div>招商银行 ****8842</div></div>
+        <div class="field"><label>账户名称</label><div>晨光少儿成长咨询有限公司</div></div>
+        <div class="field"><label>预计打款时间</label><div>复核通过后 T+1</div></div>
+        <div class="field"><label>打款凭证</label><div class="muted">待打款后生成</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 复核与打款记录 -->
+  <div class="card">
+    <div class="card-hd"><h2>复核与打款记录</h2></div>
+    <div class="card-bd">
+      <div class="timeline">
+        <div class="tl-item"><div class="tl-dot"></div><div class="tl-bd"><b>结算单生成</b><span class="muted">系统自动 · 2026-09-11 03:00</span><p class="muted">对账单 PRC20260910002 已对平，生成结算单。</p></div></div>
+        <div class="tl-item"><div class="tl-dot"></div><div class="tl-bd"><b>商家确认</b><span class="muted">孙校长 · 2026-09-11 09:12</span><p class="muted">商家在线确认结算金额，进入财务复核。</p></div></div>
+        <div class="tl-item"><div class="tl-dot info"></div><div class="tl-bd"><b>待财务复核</b><span class="muted">结算组 · 周财务 · 已提交</span><p class="muted">等待第二人复核后打款（双人复核）。</p></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+.mono { font-family:ui-monospace,Consolas,monospace; font-size:12px; }
+.link { color:var(--color-primary); text-decoration:none; font-size:13px; }
+.danger { color:#cb2634; }
+.calc { border:1px solid var(--color-border); border-radius:8px; padding:4px 14px; }
+.calc-row { display:flex; justify-content:space-between; padding:9px 0; font-size:13px; border-bottom:1px dashed var(--color-border); }
+.calc-row:last-child { border-bottom:none; }
+.calc-row span { color:var(--color-text-secondary); }
+.calc-row.total { font-size:15px; }
+.calc-row.total b { color:var(--color-primary); }
+.timeline { position:relative; padding-left:18px; }
+.tl-item { position:relative; padding:0 0 16px 16px; border-left:1px solid var(--color-border); }
+.tl-item:last-child { padding-bottom:0; border-left-color:transparent; }
+.tl-dot { position:absolute; left:-5px; top:2px; width:9px; height:9px; border-radius:50%; background:#00b42a; }
+.tl-dot.info { background:#165dff; }
+.tl-bd b { font-size:13px; }
+.tl-bd span { font-size:12px; margin-left:8px; }
+.tl-bd p { margin:4px 0 0; font-size:12px; }
+</style>
+
+<script src="../assets/js/proto.js"></script>
+<script src="../assets/js/ops-shell.js?v=6"></script>
+<script>
+(function () {
+  document.getElementById("btn-export").addEventListener("click", function () { Proto.toast("已导出结算单（原型）"); });
+  document.getElementById("btn-reject").addEventListener("click", function () { Proto.toast("已驳回，结算单退回商家确认（原型）"); });
+  document.getElementById("btn-pay").addEventListener("click", function () {
+    Proto.toast("复核通过，已发起打款；打款回执生成后状态更新为已打款（原型）");
+  });
+})();
+</script>
+</body>
+</html>

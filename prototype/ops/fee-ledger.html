@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>服务费台账 · 运营后台</title>
+<link rel="stylesheet" href="../assets/css/proto.css?v=4" />
+</head>
+<body class="admin-body" data-module="trade" data-nav="fee-ledger" data-title="服务费台账" data-crumb="运营后台 / 交易与结算 / 服务费台账">
+<div id="header-actions">
+  <select id="f-range" style="height:32px;padding:0 8px;border:1px solid var(--color-border);border-radius:6px">
+    <option>近 7 期</option><option>近 30 天</option><option>本季度</option>
+  </select>
+  <button class="btn" id="btn-export">导出报表</button>
+</div>
+<div id="page-content" style="display:none">
+
+  <div class="alert alert-info" style="margin-bottom:12px">
+    <span>口径：平台服务费收入 = 分账抽佣 + SaaS 订阅服务费（如保留）；退款按账期冲减。台账与对账单、结算单、发票同源，可相互追溯。</span>
+  </div>
+
+  <!-- 统计 -->
+  <div class="grid-4" style="margin-bottom:16px">
+    <div class="stat"><div class="label">本期服务费收入</div><div class="value">¥86,420.00</div><div class="hint">环比 +12.4%</div></div>
+    <div class="stat"><div class="label">累计服务费收入</div><div class="value">¥486,830.55</div><div class="hint">近 7 期</div></div>
+    <div class="stat"><div class="label">退款冲减</div><div class="value">¥6,930.20</div><div class="hint">占收入 8.0%</div></div>
+    <div class="stat"><div class="label">到账率</div><div class="value">96.2%</div><div class="hint">含在途分账</div></div>
+  </div>
+
+  <!-- 趋势 -->
+  <div class="card" style="margin-bottom:12px">
+    <div class="card-hd"><h2>服务费收入趋势（近 7 期）</h2><span class="muted" style="font-size:12px">单位：元</span></div>
+    <div class="card-bd">
+      <div class="fee-chart">
+        <div class="fee-col"><div class="fee-bar" style="height:42%"><span>6.1k</span></div><div class="fee-x">08-22</div></div>
+        <div class="fee-col"><div class="fee-bar" style="height:55%"><span>7.9k</span></div><div class="fee-x">08-29</div></div>
+        <div class="fee-col"><div class="fee-bar" style="height:48%"><span>6.9k</span></div><div class="fee-x">09-03</div></div>
+        <div class="fee-col"><div class="fee-bar" style="height:72%"><span>10.4k</span></div><div class="fee-x">09-04</div></div>
+        <div class="fee-col"><div class="fee-bar" style="height:66%"><span>9.5k</span></div><div class="fee-x">09-05</div></div>
+        <div class="fee-col"><div class="fee-bar" style="height:81%"><span>11.7k</span></div><div class="fee-x">09-06</div></div>
+        <div class="fee-col"><div class="fee-bar" style="height:100%"><span>14.3k</span></div><div class="fee-x">09-07</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 租户排行 + 渠道结构 -->
+  <div class="two-col" style="margin-bottom:12px">
+    <div class="card"><div class="card-hd"><h2>租户服务费贡献 Top 5</h2></div>
+      <div class="card-bd" style="padding:0">
+        <table class="data">
+          <thead><tr><th>排名</th><th>租户</th><th>服务费收入</th><th>占比</th></tr></thead>
+          <tbody>
+            <tr><td>1</td><td>星启家庭教育</td><td><b>¥28,640.20</b></td><td>33.1%</td></tr>
+            <tr><td>2</td><td>晨光少儿成长</td><td><b>¥21,480.60</b></td><td>24.9%</td></tr>
+            <tr><td>3</td><td>青藤家长学堂</td><td><b>¥14,205.30</b></td><td>16.4%</td></tr>
+            <tr><td>4</td><td>慧心教育</td><td><b>¥8,690.10</b></td><td>10.1%</td></tr>
+            <tr><td>5</td><td>乐学伴家庭</td><td><b>¥6,420.00</b></td><td>7.4%</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="card"><div class="card-hd"><h2>渠道结构</h2></div>
+      <div class="card-bd">
+        <div class="ch-row"><span>小程序</span><div class="ch-bar"><i style="width:62%"></i></div><b>62%</b></div>
+        <div class="ch-row"><span>视频号</span><div class="ch-bar"><i style="width:28%"></i></div><b>28%</b></div>
+        <div class="ch-row"><span>直播间</span><div class="ch-bar"><i style="width:10%"></i></div><b>10%</b></div>
+        <p class="muted" style="font-size:12px;margin-top:12px">直播成交占比提升 3.2pt，主要来自晨光少儿成长 09-07 公开课。</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 明细 -->
+  <div class="card">
+    <div class="card-hd"><h2>服务费明细</h2><span class="muted" style="font-size:12px">按账期 × 租户 × 商品分组 × 渠道</span></div>
+    <div class="card-bd" style="padding:0">
+      <table class="data">
+        <thead>
+          <tr>
+            <th>账期</th><th>租户</th><th>商品分组</th><th>渠道</th>
+            <th>交易额</th><th>抽佣比例</th><th>服务费</th><th>退款冲减</th><th>开票状态</th><th>到账状态</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>09-04 ~ 09-10</td><td>星启家庭教育</td><td>家长课堂</td><td>小程序</td><td>¥8,432.20</td><td>10%</td><td><b>¥843.22</b></td><td class="danger">-¥30.88</td><td><span class="badge badge-info">是</span></td><td><span class="badge badge-success">已到账</span></td></tr>
+          <tr><td>09-04 ~ 09-10</td><td>晨光少儿成长</td><td>家长课堂</td><td>小程序</td><td>¥12,648.50</td><td>10%</td><td><b>¥1,264.85</b></td><td class="danger">-¥23.86</td><td><span class="badge badge-info">是</span></td><td><span class="badge badge-success">已到账</span></td></tr>
+          <tr><td>09-04 ~ 09-10</td><td>青藤家长学堂</td><td>少儿专注力</td><td>视频号</td><td>¥3,069.00</td><td>10%</td><td><b>¥306.90</b></td><td class="danger">-¥0.00</td><td><span class="badge badge-info">是</span></td><td><span class="badge badge-warn">在途</span></td></tr>
+          <tr><td>09-04 ~ 09-10</td><td>慧心教育</td><td>亲子训练营</td><td>小程序</td><td>¥4,135.30</td><td>0.6%</td><td><b>¥24.81</b></td><td class="danger">-¥0.06</td><td><span class="badge">否</span></td><td><span class="badge badge-warn">在途</span></td></tr>
+          <tr><td>09-04 ~ 09-10</td><td>乐学伴家庭</td><td>全部商品</td><td>直播间</td><td>¥1,782.00</td><td>10%</td><td><b>¥178.20</b></td><td class="danger">-¥0.00</td><td><span class="badge">否</span></td><td><span class="badge badge-warn">在途</span></td></tr>
+          <tr><td>08-28 ~ 09-03</td><td>星启家庭教育</td><td>家长课堂</td><td>小程序</td><td>¥9,876.40</td><td>10%</td><td><b>¥987.64</b></td><td class="danger">-¥9.90</td><td><span class="badge badge-info">是</span></td><td><span class="badge badge-success">已到账</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="toolbar" style="padding:10px 16px">
+      <span class="muted">共 <b>126</b> 条</span>
+      <div class="spacer"></div>
+      <button class="btn btn-sm" disabled>上一页</button>
+      <button class="btn btn-sm">下一页</button>
+    </div>
+  </div>
+</div>
+
+<style>
+.danger { color:#cb2634; }
+.two-col { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+.fee-chart { display:flex; align-items:flex-end; gap:16px; height:170px; padding-top:8px; }
+.fee-col { flex:1; display:flex; flex-direction:column; justify-content:flex-end; align-items:center; height:100%; }
+.fee-bar { width:100%; max-width:44px; background:linear-gradient(180deg,#4080ff,#165dff); border-radius:6px 6px 0 0; position:relative; min-height:8px; }
+.fee-bar span { position:absolute; top:-18px; left:50%; transform:translateX(-50%); font-size:11px; color:var(--color-text-secondary); white-space:nowrap; }
+.fee-x { margin-top:6px; font-size:11px; color:var(--color-text-muted); }
+.ch-row { display:flex; align-items:center; gap:10px; padding:8px 0; font-size:13px; }
+.ch-row span { width:56px; color:var(--color-text-secondary); }
+.ch-bar { flex:1; height:10px; background:#f2f3f5; border-radius:5px; overflow:hidden; }
+.ch-bar i { display:block; height:100%; background:#165dff; border-radius:5px; }
+.ch-row b { width:42px; text-align:right; }
+@media (max-width:900px){ .two-col { grid-template-columns:1fr; } }
+</style>
+
+<script src="../assets/js/proto.js"></script>
+<script src="../assets/js/ops-shell.js?v=6"></script>
+<script>
+(function () {
+  document.getElementById("btn-export").addEventListener("click", function () { Proto.toast("已导出服务费台账报表（原型）"); });
+  document.getElementById("f-range").addEventListener("change", function () { Proto.toast("已切换统计范围（原型）"); });
+})();
+</script>
+</body>
+</html>

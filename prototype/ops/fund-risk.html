@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>资金风控 · 运营后台</title>
+<link rel="stylesheet" href="../assets/css/proto.css?v=4" />
+</head>
+<body class="admin-body" data-module="trade" data-nav="fund-risk" data-title="资金风控" data-crumb="运营后台 / 交易与结算 / 资金风控">
+<div id="header-actions">
+  <button class="btn" id="btn-export">导出风控记录</button>
+  <button class="btn btn-primary" id="btn-new-rule">新增风控规则</button>
+</div>
+<div id="page-content" style="display:none">
+
+  <div class="alert alert-warning" style="margin-bottom:12px">
+    <span>风控预警统一汇入 <b>运营工作台 · 平台待办</b>；自动拦截仅限制提现与结算，不直接影响 C 端交易。</span>
+  </div>
+
+  <!-- 监控指标 -->
+  <div class="grid-4" style="margin-bottom:16px">
+    <div class="stat"><div class="label">备付金余额</div><div class="value">¥1,286,430.20</div><div class="hint">安全水位 ≥ ¥500,000</div></div>
+    <div class="stat"><div class="label">账期占用（未结算）</div><div class="value">¥186,420.60</div><div class="hint">超 7 日未结 2 单</div></div>
+    <div class="stat"><div class="label">冻结 / 保证金</div><div class="value">¥32,000.00</div><div class="hint">跨 3 个租户</div></div>
+    <div class="stat"><div class="label">今日拦截</div><div class="value">2</div><div class="hint">提现 2 / 结算 0</div></div>
+  </div>
+
+  <!-- 监控项 -->
+  <div class="card" style="margin-bottom:12px">
+    <div class="card-hd"><h2>监控项与水位</h2><span class="muted" style="font-size:12px">命中阈值即触发动作</span></div>
+    <div class="card-bd">
+      <div class="risk-grid">
+        <div class="risk-item"><div class="ri-hd"><span>备付金水位</span><span class="badge badge-success">正常</span></div><div class="ri-track"><i class="ok" style="width:78%"></i></div><p class="muted">¥1,286,430 / 安全水位 ¥500,000</p></div>
+        <div class="risk-item"><div class="ri-hd"><span>退款率（7 日）</span><span class="badge badge-danger">超标</span></div><div class="ri-track"><i class="bad" style="width:88%"></i></div><p class="muted">慧心教育 21% / 阈值 15%</p></div>
+        <div class="risk-item"><div class="ri-hd"><span>分账失败率</span><span class="badge badge-warn">关注</span></div><div class="ri-track"><i class="warn" style="width:46%"></i></div><p class="muted">近 24h 失败 2 笔（结算卡异常）</p></div>
+        <div class="risk-item"><div class="ri-hd"><span>异常提现频次</span><span class="badge badge-danger">超标</span></div><div class="ri-track"><i class="bad" style="width:82%"></i></div><p class="muted">乐学伴家庭 24h 内 3 次 / 阈值 2 次</p></div>
+        <div class="risk-item"><div class="ri-hd"><span>未结对账差异</span><span class="badge badge-warn">关注</span></div><div class="ri-track"><i class="warn" style="width:40%"></i></div><p class="muted">3 笔 / 阈值 5 笔</p></div>
+        <div class="risk-item"><div class="ri-hd"><span>账期占用</span><span class="badge badge-warn">关注</span></div><div class="ri-track"><i class="warn" style="width:52%"></i></div><p class="muted">¥186,420 / 阈值 ¥300,000</p></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 风控规则 -->
+  <div class="card" style="margin-bottom:12px">
+    <div class="card-hd"><h2>风控规则</h2><span class="muted" style="font-size:12px">规则变更仅对之后产生的行为生效</span></div>
+    <div class="card-bd" style="padding:0">
+      <table class="data">
+        <thead>
+          <tr><th>规则名称</th><th>监控项</th><th>阈值</th><th>动作</th><th>状态</th><th>更新时间</th><th style="width:120px">操作</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><b>退款率超标限提</b></td><td>退款率（7 日滚动）</td><td>&gt; 15%</td><td>限制提现 + 生成待办</td><td><span class="badge badge-success">生效中</span></td><td>2026-08-20 10:00</td><td class="row-actions"><a href="#" data-row-act="edit">编辑</a><a href="#" data-row-act="off">停用</a></td></tr>
+          <tr><td><b>异常提现拦截</b></td><td>24h 提现次数</td><td>&gt; 2 次</td><td>自动拦截转人工</td><td><span class="badge badge-success">生效中</span></td><td>2026-08-20 10:00</td><td class="row-actions"><a href="#" data-row-act="edit">编辑</a><a href="#" data-row-act="off">停用</a></td></tr>
+          <tr><td><b>分账失败熔断</b></td><td>分账连续失败次数</td><td>≥ 3 次</td><td>暂停分账并通知运营</td><td><span class="badge badge-success">生效中</span></td><td>2026-08-28 14:30</td><td class="row-actions"><a href="#" data-row-act="edit">编辑</a><a href="#" data-row-act="off">停用</a></td></tr>
+          <tr><td><b>备付金水位告警</b></td><td>备付金余额</td><td>&lt; ¥500,000</td><td>告警（不拦截）</td><td><span class="badge badge-success">生效中</span></td><td>2026-09-01 09:00</td><td class="row-actions"><a href="#" data-row-act="edit">编辑</a><a href="#" data-row-act="off">停用</a></td></tr>
+          <tr><td><b>差异挂账超期告警</b></td><td>未结差异笔数</td><td>&gt; 5 笔</td><td>告警 + 升级负责组</td><td><span class="badge">已停用</span></td><td>2026-07-10 16:20</td><td class="row-actions"><a href="#" data-row-act="edit">编辑</a><a href="#" data-row-act="on">启用</a></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- 拦截与预警记录 -->
+  <div class="card">
+    <div class="card-hd"><h2>拦截与预警记录</h2></div>
+    <div class="card-bd" style="padding:0">
+      <table class="data">
+        <thead>
+          <tr><th>时间</th><th>租户</th><th>触发规则</th><th>实际值</th><th>动作</th><th>处理状态</th><th style="width:110px">操作</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>2026-09-10 11:05</td><td>慧心教育</td><td>退款率超标限提</td><td class="danger">21%</td><td>提现转人工</td><td><span class="badge badge-warn">待处理</span></td><td class="row-actions"><a href="payouts.html">去审核</a></td></tr>
+          <tr><td>2026-09-08 14:20</td><td>乐学伴家庭</td><td>异常提现拦截</td><td class="danger">3 次 / 24h</td><td>提现驳回</td><td><span class="badge badge-success">已处理</span></td><td class="row-actions"><a href="payouts.html">查看</a></td></tr>
+          <tr><td>2026-09-08 08:05</td><td>青藤家长学堂</td><td>分账失败熔断</td><td class="danger">结算卡异常</td><td>打款失败待重试</td><td><span class="badge badge-warn">待处理</span></td><td class="row-actions"><a href="payouts.html">处理</a></td></tr>
+          <tr><td>2026-09-06 02:01</td><td>星启家庭教育</td><td>差异挂账超期告警</td><td>2 笔</td><td>告警</td><td><span class="badge">已忽略（低于阈值）</span></td><td class="row-actions"><a href="recon.html">查看</a></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="toolbar" style="padding:10px 16px">
+      <span class="muted">共 <b>18</b> 条</span>
+      <div class="spacer"></div>
+      <button class="btn btn-sm" disabled>上一页</button>
+      <button class="btn btn-sm">下一页</button>
+    </div>
+  </div>
+</div>
+
+<!-- 弹窗 -->
+<div class="proto-mask" id="mask"></div>
+<div class="proto-modal" id="modal-rule" style="width:600px">
+  <div class="proto-modal-hd"><h3 id="rk-title" style="font-size:16px;font-weight:600">新增风控规则</h3><button class="btn btn-sm btn-ghost" data-close>×</button></div>
+  <div class="proto-modal-bd">
+    <div class="form-grid" style="grid-template-columns:1fr 1fr">
+      <div class="field"><label>规则名称 *</label><input id="rk-name" placeholder="如：退款率超标限提" /></div>
+      <div class="field"><label>监控项 *</label>
+        <select><option>退款率（7 日滚动）</option><option>24h 提现次数</option><option>分账连续失败次数</option><option>备付金余额</option><option>未结差异笔数</option><option>账期占用金额</option></select>
+      </div>
+      <div class="field"><label>阈值 *</label><input placeholder="如 15" /></div>
+      <div class="field"><label>单位</label><select><option>%</option><option>次</option><option>元</option><option>笔</option></select></div>
+      <div class="field" style="grid-column:1/-1"><label>触发动作 *</label>
+        <select><option>仅告警</option><option>限制提现</option><option>提现转人工</option><option>暂停结算</option><option>暂停分账</option></select>
+      </div>
+    </div>
+    <p class="muted" style="font-size:12px;margin-top:8px">规则保存后仅对之后产生的行为生效；告警将汇入运营工作台待办。</p>
+  </div>
+  <div class="proto-modal-ft">
+    <button class="btn" data-close>取消</button>
+    <button class="btn btn-primary" id="rk-submit">保存规则</button>
+  </div>
+</div>
+
+<style>
+.risk-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; }
+.risk-item { border:1px solid var(--color-border); border-radius:8px; padding:12px 14px; }
+.ri-hd { display:flex; justify-content:space-between; align-items:center; font-size:13px; margin-bottom:8px; }
+.ri-track { height:8px; background:#f2f3f5; border-radius:4px; overflow:hidden; }
+.ri-track i { display:block; height:100%; border-radius:4px; }
+.ri-track i.ok { background:#00b42a; }
+.ri-track i.warn { background:#d25f00; }
+.ri-track i.bad { background:#cb2634; }
+.risk-item p { margin:8px 0 0; font-size:12px; }
+.danger { color:#cb2634; font-weight:600; }
+@media (max-width:900px){ .risk-grid { grid-template-columns:1fr; } }
+</style>
+
+<script src="../assets/js/proto.js"></script>
+<script src="../assets/js/ops-shell.js?v=6"></script>
+<script>
+(function () {
+  var mask = document.getElementById("mask");
+  function closeAll(){ mask.classList.remove("open"); document.querySelectorAll(".proto-modal").forEach(function(n){n.classList.remove("open");}); }
+  function open(n){ mask.classList.add("open"); n.classList.add("open"); }
+  mask.addEventListener("click", closeAll);
+  document.querySelectorAll("[data-close]").forEach(function(n){ n.addEventListener("click", closeAll); });
+
+  document.querySelectorAll("[data-row-act]").forEach(function (a) {
+    a.addEventListener("click", function (e) {
+      e.preventDefault();
+      var act = a.getAttribute("data-row-act");
+      if (act === "edit") { document.getElementById("rk-title").textContent = "编辑风控规则"; open(document.getElementById("modal-rule")); }
+      else if (act === "off") { Proto.toast("规则已停用（原型）"); }
+      else if (act === "on") { Proto.toast("规则已启用（原型）"); }
+    });
+  });
+
+  document.getElementById("btn-new-rule").addEventListener("click", function () {
+    document.getElementById("rk-title").textContent = "新增风控规则";
+    document.getElementById("rk-name").value = "";
+    open(document.getElementById("modal-rule"));
+  });
+  document.getElementById("rk-submit").addEventListener("click", function () {
+    if (!document.getElementById("rk-name").value.trim()) { Proto.toast("请填写规则名称"); return; }
+    closeAll(); Proto.toast("风控规则已保存，仅对之后的行为生效（原型）");
+  });
+  document.getElementById("btn-export").addEventListener("click", function () { Proto.toast("已导出风控记录（原型）"); });
+})();
+</script>
+</body>
+</html>
