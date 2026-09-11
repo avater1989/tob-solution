@@ -91,7 +91,7 @@
     <div class="card"><div class="card-hd"><h2>买家信息</h2></div>
       <div class="card-bd">
         <div class="kv">
-          <div class="kv-row"><span>买家</span><b>李女士 <a href="user-detail.html" class="link">查看用户 →</a></b></div>
+          <div class="kv-row"><span>买家</span><b id="od-buyer">李女士 <a href="user-detail.html" class="link" id="od-user-link">查看用户 →</a></b></div>
           <div class="kv-row"><span>手机号</span><b>138****2610 <button type="button" class="link-btn" data-toast="已解密（原型）">解密</button></b></div>
           <div class="kv-row"><span>是否企微好友</span><b>是（赵老师好友）</b></div>
           <div class="kv-row"><span>归属销售</span><b>赵老师</b></div>
@@ -122,6 +122,7 @@
         <div class="toolbar" style="margin-top:12px">
           <button class="btn btn-sm" data-toast="打开发起退款（原型）">发起退款</button>
           <button class="btn btn-sm" onclick="location.href='refunds.html'">查看退款单</button>
+          <a class="btn btn-sm" id="od-rights-link" href="user-detail.html?tab=rights">查看用户课程与权益</a>
         </div>
       </div>
     </div>
@@ -195,9 +196,29 @@
 </style>
 
 <script src="../assets/js/proto.js"></script>
+<script src="../assets/js/user-store.js"></script>
 <script src="../assets/js/admin-shell.js?v=13"></script>
 <script>
 (function () {
+  var q = new URLSearchParams(location.search);
+  var oid = q.get("id") || "";
+  var uid = q.get("user") || "";
+  if (!uid && oid && window.UserStore) {
+    var hit = UserStore.listBrief().filter(function (u) {
+      return (u.orderIds || []).indexOf(oid) >= 0;
+    })[0];
+    if (hit) uid = hit.id;
+  }
+  if (uid) {
+    var u = UserStore.byId(uid);
+    var link = document.getElementById("od-user-link");
+    var rights = document.getElementById("od-rights-link");
+    if (link) {
+      link.href = "user-detail.html?id=" + encodeURIComponent(uid);
+      if (u) link.parentNode.childNodes[0].textContent = u.name + " ";
+    }
+    if (rights) rights.href = "user-detail.html?id=" + encodeURIComponent(uid) + "&tab=rights";
+  }
   document.getElementById("btn-copy").addEventListener("click", function () { Proto.toast("订单号已复制（原型）"); });
   document.getElementById("btn-refund").addEventListener("click", function () { Proto.toast("打开发起退款（原型）"); });
 })();

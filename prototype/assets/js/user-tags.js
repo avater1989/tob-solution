@@ -1,6 +1,7 @@
 /* 用户标签目录 — 与用户列表批量打标共用（localStorage） */
 (function (global) {
   var KEY = "merchant_user_tags_v1";
+  var GROUP_KEY = "merchant_user_tag_groups_v1";
 
   var DEFAULTS = [
     { id: "t_high", name: "高意向", group: "意向", color: "blue", enabled: true, users: 128, desc: "销售标记的高转化意向" },
@@ -11,6 +12,8 @@
     { id: "t_vip", name: "老客复购", group: "成交", color: "purple", enabled: true, users: 31, desc: "二次及以上付费" },
     { id: "t_sms", name: "短信可达", group: "触达", color: "teal", enabled: false, users: 0, desc: "已停用示例标签" }
   ];
+
+  var DEFAULT_GROUPS = ["意向", "成交", "行为", "风险", "触达", "未分组"];
 
   function uid() {
     return "t_" + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
@@ -32,6 +35,45 @@
     localStorage.setItem(KEY, JSON.stringify(list));
   }
 
+  function loadGroupNames() {
+    try {
+      var raw = localStorage.getItem(GROUP_KEY);
+      if (raw) {
+        var list = JSON.parse(raw);
+        if (Array.isArray(list) && list.length) {
+          return list.map(function (n) { return String(n || "").trim(); }).filter(Boolean);
+        }
+      }
+    } catch (e) {}
+    var seed = DEFAULT_GROUPS.slice();
+    load().forEach(function (t) {
+      var g = String(t.group || "").trim() || "未分组";
+      if (seed.indexOf(g) < 0) seed.push(g);
+    });
+    saveGroupNames(seed);
+    return seed;
+  }
+
+  function saveGroupNames(names) {
+    var uniq = [];
+    names.forEach(function (n) {
+      var s = String(n || "").trim();
+      if (s && uniq.indexOf(s) < 0) uniq.push(s);
+    });
+    localStorage.setItem(GROUP_KEY, JSON.stringify(uniq));
+    return uniq;
+  }
+
+  function ensureGroup(name) {
+    var n = String(name || "").trim() || "未分组";
+    var names = loadGroupNames();
+    if (names.indexOf(n) < 0) {
+      names.push(n);
+      saveGroupNames(names);
+    }
+    return n;
+  }
+
   function all() {
     return load();
   }
@@ -46,6 +88,7 @@
 
   function upsert(tag) {
     var list = load();
+    tag.group = ensureGroup(tag.group);
     if (!tag.id) {
       tag.id = uid();
       tag.users = tag.users || 0;
@@ -74,12 +117,69 @@
   }
 
   function groups() {
+    var names = loadGroupNames();
     var map = {};
-    load().forEach(function (t) {
-      var g = t.group || "未分组";
-      map[g] = (map[g] || 0) + 1;
+    names.forEach(function (n) {
+      map[n] = { name: n, count: 0, users: 0 };
     });
-    return Object.keys(map).map(function (k) { return { name: k, count: map[k] }; });
+    load().forEach(function (t) {
+      var g = String(t.group || "").trim() || "未分组";
+      if (!map[g]) map[g] = { name: g, count: 0, users: 0 };
+      map[g].count += 1;
+      map[g].users += (t.users || 0);
+    });
+    return Object.keys(map).map(function (k) { return map[k]; });
+  }
+
+  function addGroup(name) {
+    var n = String(name || "").trim();
+    if (!n) return { ok: false, error: "empty" };
+    var names = loadGroupNames();
+    if (names.indexOf(n) >= 0) return { ok: false, error: "duplicate" };
+    names.push(n);
+    saveGroupNames(names);
+    return { ok: true };
+  }
+
+  function renameGroup(oldName, newName) {
+    var o = String(oldName || "").trim();
+    var n = String(newName || "").trim();
+    if (!o || !n) return { ok: false, error: "empty" };
+    if (o === n) return { ok: true, touched: 0 };
+    var names = loadGroupNames();
+    if (names.indexOf(o) < 0) return { ok: false, error: "missing" };
+    if (names.indexOf(n) >= 0) return { ok: false, error: "duplicate" };
+    names = names.map(function (x) { return x === o ? n : x; });
+    saveGroupNames(names);
+    var list = load();
+    var touched = 0;
+    list.forEach(function (t) {
+      if ((t.group || "未分组") === o) {
+        t.group = n;
+        touched++;
+      }
+    });
+    save(list);
+    return { ok: true, touched: touched };
+  }
+
+  function deleteGroup(name) {
+    var n = String(name || "").trim();
+    if (!n) return { ok: false, error: "empty" };
+    if (n === "未分组") return { ok: false, error: "protected" };
+    var names = loadGroupNames().filter(function (x) { return x !== n; });
+    if (names.indexOf("未分组") < 0) names.push("未分组");
+    saveGroupNames(names);
+    var list = load();
+    var touched = 0;
+    list.forEach(function (t) {
+      if ((t.group || "未分组") === n) {
+        t.group = "未分组";
+        touched++;
+      }
+    });
+    save(list);
+    return { ok: true, touched: touched };
   }
 
   function colorClass(c) {
@@ -127,9 +227,15 @@
     setEnabled: setEnabled,
     remove: remove,
     groups: groups,
+    addGroup: addGroup,
+    renameGroup: renameGroup,
+    deleteGroup: deleteGroup,
     colorClass: colorClass,
     renderPick: renderPick,
     selectedFromPick: selectedFromPick,
-    resetDefaults: function () { save(DEFAULTS.map(function (t) { return Object.assign({}, t); })); }
+    resetDefaults: function () {
+      save(DEFAULTS.map(function (t) { return Object.assign({}, t); }));
+      saveGroupNames(DEFAULT_GROUPS.slice());
+    }
   };
 })(window);

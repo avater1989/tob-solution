@@ -37,7 +37,7 @@
             <td><b>286</b></td>
             <td>例行更新（每日）</td>
             <td><span class="badge badge-success">已激活</span></td>
-            <td class="row-actions"><a href="#" data-row-act="view">查看用户</a><a href="ops-plans.html">发起运营</a></td>
+            <td class="row-actions"><a href="users.html?segment=new_guest">查看用户</a><a href="ops-plans.html?new=1&segment=new_guest&segName=%E6%96%B0%E5%AE%A2%EF%BC%88%E7%B3%BB%E7%BB%9F%E4%BA%BA%E7%BE%A4%EF%BC%89">发起运营</a></td>
           </tr>
           <tr>
             <td><b>高价值用户</b><br><span class="muted" style="font-size:12px">复购潜力</span></td>
@@ -45,7 +45,7 @@
             <td><b>142</b></td>
             <td>例行更新（每日）</td>
             <td><span class="badge badge-success">已激活</span></td>
-            <td class="row-actions"><a href="#" data-row-act="view">查看用户</a><a href="ops-plans.html">发起运营</a></td>
+            <td class="row-actions"><a href="users.html?segment=high_value">查看用户</a><a href="ops-plans.html?new=1&segment=high_value&segName=%E9%AB%98%E4%BB%B7%E5%80%BC%E7%94%A8%E6%88%B7%EF%BC%88%E7%B3%BB%E7%BB%9F%E4%BA%BA%E7%BE%A4%EF%BC%89">发起运营</a></td>
           </tr>
           <tr>
             <td><b>沉默用户</b><br><span class="muted" style="font-size:12px">待唤醒</span></td>
@@ -155,13 +155,14 @@
 
   function render(){
     document.getElementById("seg-tbody").innerHTML = SEGS.map(function(s){
+      var opsUrl = "ops-plans.html?new=1&segment=" + encodeURIComponent(s.id) + "&segName=" + encodeURIComponent(s.name);
       return '<tr data-id="'+s.id+'">' +
         "<td><b>"+esc(s.name)+"</b></td>" +
         "<td>"+esc(s.cond)+"</td>" +
         "<td><b>"+s.count+"</b></td>" +
         "<td>"+esc(s.update)+"</td>" +
         "<td>"+esc(s.at)+"</td>" +
-        '<td class="row-actions"><a href="#" data-row-act="view">查看用户</a><a href="ops-plans.html">发起运营</a><a href="#" data-row-act="edit">编辑</a><a href="#" data-row-act="del-seg" class="row-more">删除</a></td>' +
+        '<td class="row-actions"><a href="users.html?segment=' + encodeURIComponent(s.id) + '">查看用户</a><a href="' + opsUrl + '">发起运营</a><a href="#" data-row-act="edit">编辑</a><a href="#" data-row-act="del-seg" class="row-more">删除</a></td>' +
         "</tr>";
     }).join("");
     document.getElementById("st-total").textContent = String(SEGS.length + 3);
@@ -174,7 +175,6 @@
     var act = el.getAttribute("data-row-act");
     if (act === "del") { e.preventDefault(); el.closest("tr").remove(); return; }
     e.preventDefault();
-    if (act === "view") { Proto.toast("打开人群用户列表（原型）"); return; }
     if (act === "activate") { Proto.toast("人群已激活，开始计算人数（原型）"); return; }
     if (act === "edit") { openNew("编辑人群"); return; }
     if (act === "del-seg") {

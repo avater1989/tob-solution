@@ -9,17 +9,15 @@
 <body class="admin-body" data-module="user" data-nav="users" data-title="用户列表" data-crumb="用户 / 用户管理 / 用户列表">
 <div id="header-actions">
   <a class="btn" href="user-tags.html">标签管理</a>
-  <button class="btn" id="btn-export">选择导出</button>
-  <button class="btn btn-primary" id="btn-batch-tag">批量打标</button>
+  <button class="btn" id="btn-export">导出用户</button>
+  <button class="btn btn-primary" id="btn-batch-tag" disabled>批量打标</button>
 </div>
 <div id="page-content" style="display:none">
 
-  <!-- 快捷分组 -->
-  <div class="ua-tabs" id="ua-tabs">
-    <a class="active" href="#" data-group="all">全部用户 <span class="ua-tab-num">5,316</span></a>
-    <a href="#" data-group="value">近 30 日高价值 <span class="ua-tab-num">86</span></a>
-    <a href="#" data-group="dormant">30 天未活跃 <span class="ua-tab-num">1,240</span></a>
-    <a href="#" data-group="disabled">已注销 <span class="ua-tab-num">14</span></a>
+  <!-- 分群入口横幅 -->
+  <div id="segment-banner" class="ua-seg-banner" style="display:none">
+    <span>当前分群：<b id="segment-name">—</b></span>
+    <a href="user-segments.html">返回用户分群</a>
   </div>
 
   <!-- 搜索区 -->
@@ -28,15 +26,57 @@
       <div class="ua-search-row">
         <div class="ua-field"><label>姓名：</label><input id="f-name" placeholder="请输入姓名" /></div>
         <div class="ua-field"><label>手机号码：</label><input id="f-phone" placeholder="请输入用户手机号" /></div>
+        <div class="ua-field"><label>订单号：</label><input id="f-order" placeholder="请输入订单编号" /></div>
         <div class="ua-field"><label>来源渠道：</label>
           <select id="f-source">
             <option value="">全部来源</option>
-            <option value="video">视频号</option>
-            <option value="live">直播预约</option>
-            <option value="wecom">企微裂变</option>
-            <option value="ad">投放</option>
-            <option value="manual">手动导入</option>
-            <option value="other">其他</option>
+            <option value="视频号">视频号</option>
+            <option value="直播预约">直播预约</option>
+            <option value="企微裂变">企微裂变</option>
+            <option value="投放">投放</option>
+            <option value="手动导入">手动导入</option>
+            <option value="其他">其他</option>
+          </select>
+        </div>
+      </div>
+      <div class="ua-search-row ua-more" id="search-more" style="display:none">
+        <div class="ua-field"><label>课程权益状态：</label>
+          <select id="f-right-st">
+            <option value="">全部</option>
+            <option value="有效">有效</option>
+            <option value="存在异常">存在异常</option>
+            <option value="开通失败">开通失败</option>
+            <option value="已到期">已到期</option>
+            <option value="已退款回收">已退款回收</option>
+            <option value="暂无权益">暂无权益</option>
+          </select>
+        </div>
+        <div class="ua-field"><label>已购课程：</label>
+          <select id="f-course">
+            <option value="">全部</option>
+            <option value="训练营主课">训练营主课</option>
+            <option value="引流体验课">引流体验课</option>
+          </select>
+        </div>
+        <div class="ua-field"><label>是否添加企微：</label>
+          <select id="f-wecom">
+            <option value="">全部</option>
+            <option value="1">是</option>
+            <option value="0">否</option>
+          </select>
+        </div>
+        <div class="ua-field"><label>营销触达状态：</label>
+          <select id="f-mkt">
+            <option value="">全部</option>
+            <option value="normal">正常触达</option>
+            <option value="stopped">已停止主动营销</option>
+          </select>
+        </div>
+        <div class="ua-field"><label>是否已分配负责人：</label>
+          <select id="f-assigned">
+            <option value="">全部</option>
+            <option value="1">已分配</option>
+            <option value="0">未分配</option>
           </select>
         </div>
         <div class="ua-field"><label>归属部门：</label>
@@ -48,9 +88,10 @@
             <option>客服部</option>
           </select>
         </div>
-      </div>
-      <div class="ua-search-row ua-more" id="search-more" style="display:none">
-        <div class="ua-field"><label>归属人：</label><input id="f-owner" placeholder="姓名 / 工号" /></div>
+        <div class="ua-field"><label>助教：</label><input id="f-owner" placeholder="姓名 / 工号" /></div>
+        <div class="ua-field"><label>用户标签：</label>
+          <select id="f-tag"><option value="">全部标签</option></select>
+        </div>
         <div class="ua-field"><label>最近活跃：</label>
           <select id="f-active">
             <option value="">不限</option>
@@ -60,16 +101,6 @@
             <option value="over30">30 天以上</option>
           </select>
         </div>
-        <div class="ua-field"><label>是否下过单：</label>
-          <select id="f-ordered">
-            <option value="">不限</option>
-            <option value="1">是</option>
-            <option value="0">否</option>
-          </select>
-        </div>
-        <div class="ua-field"><label>用户标签：</label>
-          <select id="f-tag"><option value="">全部标签</option></select>
-        </div>
       </div>
       <div class="ua-search-btns">
         <button class="btn btn-primary" id="btn-query">搜索</button>
@@ -77,15 +108,25 @@
         <button class="btn btn-ghost" id="btn-toggle">展开</button>
       </div>
     </div>
+    <div id="filter-chips" class="ua-chips" style="display:none"></div>
   </div></div>
 
   <!-- 操作条 -->
   <div class="toolbar" style="margin-bottom:12px">
     <button class="btn btn-primary" id="btn-add">+ 新增</button>
     <button class="btn" id="btn-import">手动导入</button>
-    <button class="btn" id="btn-batch-assign">批量分配</button>
+    <button class="btn" id="btn-batch-assign" disabled>批量分配</button>
     <div class="spacer"></div>
     <span class="muted" style="font-size:12px">默认按最近活跃排序；标签在 <a href="user-tags.html">标签管理</a> 维护</span>
+  </div>
+
+  <!-- 粘性批量操作条 -->
+  <div id="batch-bar" class="ua-batch-bar" style="display:none">
+    <span>已选 <b id="batch-bar-n">0</b> 人（本页选择）</span>
+    <button class="btn btn-sm" id="batch-clear">取消选择</button>
+    <button class="btn btn-sm btn-primary" id="batch-bar-tag">批量打标</button>
+    <button class="btn btn-sm" id="batch-bar-assign">批量分配</button>
+    <button class="btn btn-sm" id="batch-bar-export">导出已勾选</button>
   </div>
 
   <!-- 表格 -->
@@ -95,131 +136,22 @@
         <tr>
           <th style="width:32px"><input type="checkbox" id="ck-all" /></th>
           <th style="min-width:160px">姓名 / 手机</th>
-          <th style="width:120px">来源渠道</th>
-          <th style="width:140px">归属</th>
-          <th style="width:120px">最近活跃</th>
-          <th style="width:160px">订单概况</th>
+          <th style="width:100px">来源</th>
+          <th style="width:140px">负责人</th>
+          <th style="width:110px">最近活跃</th>
+          <th style="width:120px">消费摘要</th>
+          <th style="width:130px">课程权益</th>
           <th>标签</th>
-          <th style="width:140px">注册时间</th>
-          <th style="width:80px">状态</th>
+          <th style="width:70px">企微</th>
           <th style="width:140px">操作</th>
         </tr>
       </thead>
-      <tbody id="users-tbody">
-        <tr data-uid="U001">
-          <td><input type="checkbox" class="ck-row" /></td>
-          <td>
-            <a href="user-detail.html?id=U001"><b>学员7576</b></a>
-            <div class="ua-muted ua-nick">昵称：学员7576</div>
-            <div class="ua-muted">18919167576</div>
-          </td>
-          <td><span class="badge badge-info">视频号</span></td>
-          <td>销售部 · 赵老师</td>
-          <td>今天 09:12</td>
-          <td>2 笔 · 实付 ¥<b>320</b></td>
-          <td>
-            <span class="tag tag-blue">高意向</span>
-            <span class="tag tag-green">已购引流课</span>
-            <span class="ua-tag-more">+1</span>
-          </td>
-          <td class="ua-muted">2026-08-21</td>
-          <td><span class="badge badge-success">正常</span></td>
-          <td class="row-actions">
-            <a href="user-detail.html?id=U001">详情</a>
-            <a href="#" data-row-act="tag">打标</a>
-            <a href="#" data-row-act="more" class="ua-more-btn">更多 ▾</a>
-          </td>
-        </tr>
-        <tr data-uid="U002">
-          <td><input type="checkbox" class="ck-row" /></td>
-          <td>
-            <a href="user-detail.html?id=U002"><b>卂十七</b></a>
-            <div class="ua-muted">13600550017</div>
-          </td>
-          <td><span class="badge badge-info">直播预约</span></td>
-          <td>销售部 · 周销售</td>
-          <td>昨天 18:32</td>
-          <td>0 笔 · 未成交</td>
-          <td>
-            <span class="tag tag-orange">直播高活跃</span>
-            <span class="tag tag-red">流失预警</span>
-          </td>
-          <td class="ua-muted">2026-09-02</td>
-          <td><span class="badge badge-success">正常</span></td>
-          <td class="row-actions">
-            <a href="user-detail.html?id=U002">详情</a>
-            <a href="#" data-row-act="tag">打标</a>
-            <a href="#" data-row-act="more" class="ua-more-btn">更多 ▾</a>
-          </td>
-        </tr>
-        <tr data-uid="U003">
-          <td><input type="checkbox" class="ck-row" /></td>
-          <td>
-            <a href="user-detail.html?id=U003"><b>学员1485</b></a>
-            <div class="ua-muted">18042691485</div>
-          </td>
-          <td><span class="badge">手动导入</span></td>
-          <td>— · 未分配</td>
-          <td>15 天前</td>
-          <td>0 笔 · 未成交</td>
-          <td><span class="ua-tag-empty">—</span></td>
-          <td class="ua-muted">2026-05-12</td>
-          <td><span class="badge badge-warn">未触达</span></td>
-          <td class="row-actions">
-            <a href="user-detail.html?id=U003">详情</a>
-            <a href="#" data-row-act="tag">打标</a>
-            <a href="#" data-row-act="more" class="ua-more-btn">更多 ▾</a>
-          </td>
-        </tr>
-        <tr data-uid="U004">
-          <td><input type="checkbox" class="ck-row" /></td>
-          <td>
-            <a href="user-detail.html?id=U004"><b>学员7553</b></a>
-            <div class="ua-muted ua-nick">昵称：学员7553</div>
-            <div class="ua-muted">18919167553</div>
-          </td>
-          <td><span class="badge badge-info">企微裂变</span></td>
-          <td>运营部 · 王助教</td>
-          <td>3 天前</td>
-          <td>5 笔 · 实付 ¥<b>1,980</b></td>
-          <td>
-            <span class="tag tag-purple">老客复购</span>
-            <span class="tag tag-green">训练营学员</span>
-            <span class="ua-tag-more">+2</span>
-          </td>
-          <td class="ua-muted">2026-04-08</td>
-          <td><span class="badge badge-success">正常</span></td>
-          <td class="row-actions">
-            <a href="user-detail.html?id=U004">详情</a>
-            <a href="#" data-row-act="tag">打标</a>
-            <a href="#" data-row-act="more" class="ua-more-btn">更多 ▾</a>
-          </td>
-        </tr>
-        <tr data-uid="U005">
-          <td><input type="checkbox" class="ck-row" /></td>
-          <td>
-            <a href="user-detail.html?id=U005"><b>学员0017</b></a>
-            <div class="ua-muted">13700550017</div>
-          </td>
-          <td><span class="badge badge-info">视频号</span></td>
-          <td>运营部 · 王助教</td>
-          <td>今天 11:04</td>
-          <td>1 笔 · 实付 ¥<b>9.9</b></td>
-          <td><span class="ua-tag-empty">—</span></td>
-          <td class="ua-muted">2026-09-09</td>
-          <td><span class="badge badge-success">正常</span></td>
-          <td class="row-actions">
-            <a href="user-detail.html?id=U005">详情</a>
-            <a href="#" data-row-act="tag">打标</a>
-            <a href="#" data-row-act="more" class="ua-more-btn">更多 ▾</a>
-          </td>
-        </tr>
-      </tbody>
+      <tbody id="users-tbody"></tbody>
     </table>
 
     <!-- 分页 -->
     <div class="ua-pagination">
-      <span class="muted">已选 <b id="ck-count">0</b> 项 · 共 <b id="ck-total">5,316</b> 条</span>
+      <span class="muted">已选 <b id="ck-count">0</b> 项 · 共 <b id="ck-total">0</b> 条</span>
       <div class="spacer"></div>
       <select class="ua-size">
         <option>10条/页</option><option>20条/页</option><option>50条/页</option>
@@ -229,7 +161,6 @@
       <button class="ua-page">2</button>
       <button class="ua-page">3</button>
       <span class="muted">…</span>
-      <button class="ua-page">532</button>
       <button class="ua-page">›</button>
     </div>
   </div></div>
@@ -239,54 +170,57 @@
 <div class="proto-mask" id="mask"></div>
 
 <!-- 手动导入弹窗 -->
-<div class="proto-modal" id="modal-import" style="width:520px">
+<div class="proto-modal" id="modal-import" style="width:560px">
   <div class="proto-modal-hd">
     <h3 style="font-size:16px;font-weight:600">手动导入用户</h3>
     <button class="btn btn-sm btn-ghost" data-close>×</button>
   </div>
   <div class="proto-modal-bd">
-    <p class="muted" style="margin:0 0 8px;font-size:12px">按模版填写用户信息后上传，平台将按手机号去重并写入。</p>
+    <ol class="ua-import-steps muted">
+      <li>下载模版并按字段填写</li>
+      <li>上传 Excel 文件</li>
+      <li>预检结果示意：成功 / 失败 / 重复</li>
+      <li>下载失败明细后修正再导入</li>
+    </ol>
     <div class="ua-upload" id="upload-area">
       <div class="ua-upload-icon">⇪</div>
       <p style="margin:8px 0 4px">将文件拖到此处或<span class="ua-upload-link">点击上传</span></p>
       <p class="muted" style="margin:0;font-size:12px">单个文件不能超过 5M，仅支持 .xlsx / .xls</p>
       <input type="file" id="upload-input" style="display:none" />
     </div>
+    <div id="import-preview" class="ua-import-preview" style="display:none">
+      <div class="ua-ip-item ok">成功 <b>128</b></div>
+      <div class="ua-ip-item fail">失败 <b>3</b></div>
+      <div class="ua-ip-item dup">重复 <b>5</b></div>
+      <button class="btn btn-sm" id="btn-fail-detail" type="button">下载失败明细</button>
+    </div>
     <p style="margin:12px 0 0;font-size:13px;text-align:center">
       <a href="#" id="download-tpl" style="color:var(--color-primary)">下载导入模版</a>
     </p>
-    <p class="muted" style="margin:10px 0 0;font-size:12px">模版字段：姓名、手机号、来源渠道、归属人（可选）。其它信息可在用户详情中补充。</p>
+    <p class="muted" style="margin:10px 0 0;font-size:12px">模版字段：姓名*、手机号*、来源渠道、归属部门、助教、备注（可选）。手机号唯一；重复行将进入失败明细。</p>
   </div>
   <div class="proto-modal-ft" style="border-top:1px solid var(--color-border);padding:12px 20px;display:flex;gap:8px;justify-content:flex-end">
     <button class="btn" data-close>取消</button>
-    <button class="btn btn-primary" id="import-submit" data-close data-toast="导入任务已提交，完成后通知（原型）">确认导入</button>
+    <button class="btn btn-primary" id="import-submit">确认导入</button>
   </div>
 </div>
 
-<!-- 选择导出弹窗 -->
+<!-- 导出用户弹窗 -->
 <div class="proto-modal" id="modal-export" style="width:480px">
   <div class="proto-modal-hd">
-    <h3 style="font-size:16px;font-weight:600">选择导出字段</h3>
+    <h3 style="font-size:16px;font-weight:600">导出用户</h3>
     <button class="btn btn-sm btn-ghost" data-close>×</button>
   </div>
   <div class="proto-modal-bd">
-    <div class="tag-pick" id="export-pick">
-      <label class="tp-item"><input type="checkbox" checked /> 姓名</label>
-      <label class="tp-item"><input type="checkbox" checked /> 手机号码</label>
-      <label class="tp-item"><input type="checkbox" /> 昵称</label>
-      <label class="tp-item"><input type="checkbox" checked /> 来源渠道</label>
-      <label class="tp-item"><input type="checkbox" checked /> 归属人</label>
-      <label class="tp-item"><input type="checkbox" checked /> 归属部门</label>
-      <label class="tp-item"><input type="checkbox" checked /> 最近活跃</label>
-      <label class="tp-item"><input type="checkbox" checked /> 订单数 / 实付金额</label>
-      <label class="tp-item"><input type="checkbox" checked /> 标签</label>
-      <label class="tp-item"><input type="checkbox" checked /> 注册时间</label>
-      <label class="tp-item"><input type="checkbox" checked /> 状态</label>
+    <div class="ua-export-radios">
+      <label class="ua-radio"><input type="radio" name="export-mode" value="filter" checked /> 导出当前筛选结果</label>
+      <label class="ua-radio"><input type="radio" name="export-mode" value="checked" /> 导出已勾选用户</label>
     </div>
+    <p class="muted" style="margin:12px 0 0;font-size:12px">导出字段含姓名、手机号、来源、负责人、消费摘要、课程权益、标签、企微等（原型）。</p>
   </div>
   <div class="proto-modal-ft" style="border-top:1px solid var(--color-border);padding:12px 20px;display:flex;gap:8px;justify-content:flex-end">
     <button class="btn" data-close>取消</button>
-    <button class="btn btn-primary" data-close data-toast="导出任务已生成，下载链接将发送到站内信（原型）">确认导出</button>
+    <button class="btn btn-primary" id="export-confirm">确认导出</button>
   </div>
 </div>
 
@@ -297,18 +231,19 @@
     <button class="btn btn-sm btn-ghost" data-close>×</button>
   </div>
   <div class="proto-modal-bd">
+    <input type="hidden" id="ed-mode" value="edit" />
     <div class="form-grid">
       <div class="field"><label>姓名 *</label><input id="ed-name" /></div>
-      <div class="field"><label>手机号码 *</label><input id="ed-phone" /></div>
+      <div class="field"><label>手机号码 *</label><input id="ed-phone" placeholder="11 位手机号" /></div>
       <div class="field"><label>昵称</label><input id="ed-nick" placeholder="可选" /></div>
       <div class="field"><label>来源渠道</label>
         <select id="ed-source" style="width:100%;padding:6px 8px;border:1px solid var(--color-border);border-radius:6px">
-          <option value="manual">手动导入</option>
-          <option value="video">视频号</option>
-          <option value="live">直播预约</option>
-          <option value="wecom">企微裂变</option>
-          <option value="ad">投放</option>
-          <option value="other">其他</option>
+          <option value="手动导入">手动导入</option>
+          <option value="视频号">视频号</option>
+          <option value="直播预约">直播预约</option>
+          <option value="企微裂变">企微裂变</option>
+          <option value="投放">投放</option>
+          <option value="其他">其他</option>
         </select>
       </div>
       <div class="field"><label>归属部门</label>
@@ -320,7 +255,7 @@
           <option>客服部</option>
         </select>
       </div>
-      <div class="field"><label>归属人</label>
+      <div class="field"><label>助教</label>
         <select id="ed-owner" style="width:100%;padding:6px 8px;border:1px solid var(--color-border);border-radius:6px">
           <option value="">未分配</option>
           <option>赵老师</option>
@@ -329,14 +264,15 @@
         </select>
       </div>
       <div class="field" style="grid-column:1/-1"><label>备注</label>
-        <textarea rows="2" style="width:100%;padding:8px;border:1px solid var(--color-border);border-radius:6px"></textarea>
+        <textarea id="ed-remark" rows="2" style="width:100%;padding:8px;border:1px solid var(--color-border);border-radius:6px"></textarea>
       </div>
     </div>
-    <p class="muted" style="margin:10px 0 0;font-size:12px">手机号作为平台唯一标识；权益、订单、跟进等详情请进入「查看详情」维护。</p>
+    <p id="ed-dup-tip" class="muted" style="margin:10px 0 0;font-size:12px;display:none"></p>
+    <p class="muted" style="margin:10px 0 0;font-size:12px">手机号作为平台唯一标识；权益、订单、跟进等详情请进入用户详情维护。</p>
   </div>
   <div class="proto-modal-ft" style="border-top:1px solid var(--color-border);padding:12px 20px;display:flex;gap:8px;justify-content:flex-end">
     <button class="btn" data-close>取消</button>
-    <button class="btn btn-primary" data-close data-toast="用户信息已保存（原型）">保存</button>
+    <button class="btn btn-primary" id="edit-save">保存</button>
   </div>
 </div>
 
@@ -378,7 +314,7 @@
           <option>客服部</option>
         </select>
       </div>
-      <div class="field"><label>归属人</label>
+      <div class="field"><label>助教</label>
         <select id="ba-owner" style="width:100%;padding:6px 8px;border:1px solid var(--color-border);border-radius:6px">
           <option>赵老师</option>
           <option>周销售</option>
@@ -389,36 +325,78 @@
   </div>
   <div class="proto-modal-ft" style="border-top:1px solid var(--color-border);padding:12px 20px;display:flex;gap:8px;justify-content:flex-end">
     <button class="btn" data-close>取消</button>
-    <button class="btn btn-primary" data-close data-toast="已批量分配归属（原型）">确认分配</button>
+    <button class="btn btn-primary" id="ba-confirm">确认分配</button>
   </div>
 </div>
 
 <!-- 行内更多菜单 -->
 <div class="ua-menu" id="ua-row-menu" style="display:none">
   <a href="#" data-menu-act="edit">编辑用户</a>
-  <a href="#" data-menu-act="tag">打标</a>
-  <a href="#" data-menu-act="rights">查看权益</a>
-  <a href="#" data-menu-act="order">查看订单</a>
-  <a href="#" data-menu-act="disable" class="danger">注销账号</a>
+  <a href="#" data-menu-act="assign">调整归属</a>
+  <a href="#" data-menu-act="toggle-mkt" id="menu-mkt">停止营销触达</a>
+</div>
+
+<!-- 停止营销触达 -->
+<div class="proto-modal" id="modal-stop-mkt" style="width:480px">
+  <div class="proto-modal-hd">
+    <h3 style="font-size:16px;font-weight:600">停止营销触达</h3>
+    <button class="btn btn-sm btn-ghost" data-close>×</button>
+  </div>
+  <div class="proto-modal-bd">
+    <p style="margin:0 0 10px;font-size:13px">确认为「<b id="sm-name">—</b>」停止本商户主动营销？</p>
+    <ul class="muted" style="margin:0;padding-left:18px;font-size:12px;line-height:1.8">
+      <li>仅停止本商户的主动营销触达</li>
+      <li>不删除订单、不删除课程权益</li>
+      <li>不影响用户的平台账号</li>
+      <li>之后可重新启用</li>
+    </ul>
+  </div>
+  <div class="proto-modal-ft" style="border-top:1px solid var(--color-border);padding:12px 20px;display:flex;gap:8px;justify-content:flex-end">
+    <button class="btn" data-close>取消</button>
+    <button class="btn btn-primary" id="sm-confirm">确认停止</button>
+  </div>
+</div>
+
+<!-- 列表页调整归属 -->
+<div class="proto-modal" id="modal-row-assign" style="width:480px">
+  <div class="proto-modal-hd">
+    <h3 style="font-size:16px;font-weight:600">调整归属</h3>
+    <button class="btn btn-sm btn-ghost" data-close>×</button>
+  </div>
+  <div class="proto-modal-bd">
+    <input type="hidden" id="ra-uid" />
+    <p class="muted" style="margin:0 0 10px;font-size:12px">当前：<span id="ra-current">—</span></p>
+    <div class="form-grid">
+      <div class="field"><label>新部门</label>
+        <select id="ra-dept" style="width:100%;padding:6px 8px;border:1px solid var(--color-border);border-radius:6px">
+          <option>销售部</option><option>运营部</option><option>内容部</option><option>客服部</option>
+        </select>
+      </div>
+      <div class="field"><label>新助教</label>
+        <select id="ra-owner" style="width:100%;padding:6px 8px;border:1px solid var(--color-border);border-radius:6px">
+          <option>赵老师</option><option>周销售</option><option>王助教</option>
+        </select>
+      </div>
+      <div class="field" style="grid-column:1/-1"><label>调整原因 *</label>
+        <input id="ra-reason" placeholder="请填写调整原因" />
+      </div>
+    </div>
+  </div>
+  <div class="proto-modal-ft" style="border-top:1px solid var(--color-border);padding:12px 20px;display:flex;gap:8px;justify-content:flex-end">
+    <button class="btn" data-close>取消</button>
+    <button class="btn btn-primary" id="ra-save">保存</button>
+  </div>
 </div>
 
 <style>
-/* ===== 快捷分组 ===== */
-.ua-tabs {
-  display: flex; gap: 4px; padding: 0 0 10px;
-  overflow-x: auto; white-space: nowrap; font-size: 13px;
+.ua-seg-banner {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  margin-bottom: 12px; padding: 10px 14px; background: #f0f5ff;
+  border: 1px solid #d6e4ff; border-radius: 8px; font-size: 13px;
 }
-.ua-tabs a {
-  padding: 6px 12px; border-radius: 6px; color: var(--color-text-secondary);
-  text-decoration: none; background: #f7f8fa; border: 1px solid transparent;
-  display: inline-flex; align-items: center; gap: 6px;
-}
-.ua-tabs a:hover { color: var(--color-primary); border-color: #d6e4ff; }
-.ua-tabs a.active { background: #fff; border-color: var(--color-primary); color: var(--color-primary); font-weight: 600; }
-.ua-tab-num { color: var(--color-text-muted); font-size: 12px; }
-.ua-tabs a.active .ua-tab-num { color: var(--color-primary); }
+.ua-seg-banner a { color: var(--color-primary); text-decoration: none; white-space: nowrap; }
+.ua-seg-banner a:hover { text-decoration: underline; }
 
-/* ===== 搜索区 ===== */
 .ua-search-row { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 12px 24px; }
 .ua-field { display: flex; align-items: center; gap: 0; font-size: 13px; }
 .ua-field label { white-space: nowrap; color: var(--color-text-secondary); flex-shrink: 0; }
@@ -428,27 +406,54 @@
 }
 .ua-search-btns { display: flex; gap: 8px; margin-top: 14px; }
 
-/* ===== 表格 ===== */
+.ua-chips {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 8px;
+  margin-top: 12px; padding-top: 12px; border-top: 1px dashed var(--color-border);
+  font-size: 12px;
+}
+.ua-chip {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 4px 8px; background: #f7f8fa; border: 1px solid var(--color-border);
+  border-radius: 4px; color: var(--color-text-secondary);
+}
+.ua-chip button {
+  border: 0; background: transparent; cursor: pointer; color: var(--color-text-muted);
+  padding: 0; line-height: 1; font-size: 14px;
+}
+.ua-chip button:hover { color: #cb2634; }
+.ua-chips-count { color: var(--color-text-muted); margin-left: 4px; }
+.ua-chips-clear { color: var(--color-primary); cursor: pointer; text-decoration: none; margin-left: auto; }
+.ua-chips-clear:hover { text-decoration: underline; }
+
+.ua-batch-bar {
+  position: sticky; top: 0; z-index: 20;
+  display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+  margin-bottom: 12px; padding: 10px 14px;
+  background: #fff7e8; border: 1px solid #ffe4ba; border-radius: 8px;
+  font-size: 13px; box-shadow: 0 2px 8px rgba(0,0,0,.04);
+}
+
 .ua-table td { vertical-align: middle; }
 .ua-table td .ua-muted { font-size: 12px; color: var(--color-text-muted); margin-top: 2px; }
 .ua-table td .ua-nick { color: var(--color-text-secondary); }
+.ua-mkt-badge { display: inline-block; margin-top: 2px; font-size: 11px; color: var(--color-text-muted); }
 .ua-tag-more { display: inline-block; font-size: 12px; color: var(--color-text-muted); }
 .ua-tag-empty { color: var(--color-text-muted); font-size: 12px; }
 .ua-more-btn { cursor: pointer; user-select: none; color: var(--color-text-secondary); }
 .ua-more-btn:hover { color: var(--color-primary); }
+.ua-owner-line { font-size: 13px; }
+.ua-owner-sub { font-size: 12px; color: var(--color-text-muted); margin-top: 2px; }
 
-/* ===== 行内菜单 ===== */
 .ua-menu {
   position: fixed; background: #fff; border: 1px solid var(--color-border);
   border-radius: 6px; box-shadow: 0 6px 18px rgba(0,0,0,.08);
-  padding: 4px 0; font-size: 13px; min-width: 120px; z-index: 200;
+  padding: 4px 0; font-size: 13px; min-width: 140px; z-index: 200;
 }
 .ua-menu a { display: block; padding: 8px 14px; color: var(--color-text); text-decoration: none; }
 .ua-menu a:hover { background: #f0f5ff; color: var(--color-primary); }
 .ua-menu a.danger { color: #cb2634; }
 .ua-menu a.danger:hover { background: #fff1f0; }
 
-/* ===== 分页 ===== */
 .ua-pagination {
   display: flex; align-items: center; gap: 12px; padding: 12px 14px;
   border-top: 1px solid var(--color-border); font-size: 13px; flex-wrap: wrap;
@@ -463,7 +468,6 @@
 .ua-page:disabled { color: var(--color-text-muted); cursor: not-allowed; }
 .ua-size { padding: 5px 8px; border: 1px solid var(--color-border); border-radius: 6px; font-family: inherit; font-size: 13px; }
 
-/* ===== 上传 ===== */
 .ua-upload {
   border: 1px dashed var(--color-border); border-radius: 8px; padding: 28px 16px;
   text-align: center; font-size: 13px; background: #fafafa; cursor: pointer;
@@ -471,18 +475,31 @@
 .ua-upload:hover { border-color: var(--color-primary); }
 .ua-upload-icon { width: 40px; height: 40px; margin: 0 auto; border-radius: 50%; background: #e8f3ff; color: #165dff; font-size: 20px; display: flex; align-items: center; justify-content: center; }
 .ua-upload-link { color: var(--color-primary); cursor: pointer; }
+.ua-import-steps { margin: 0 0 14px; padding-left: 18px; font-size: 12px; line-height: 1.8; }
+.ua-import-preview {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 12px;
+  margin-top: 12px; padding: 10px 12px; background: #fafafa; border-radius: 6px; font-size: 13px;
+}
+.ua-ip-item.ok b { color: #00b42a; }
+.ua-ip-item.fail b { color: #f53f3f; }
+.ua-ip-item.dup b { color: #ff7d00; }
 
-/* ===== 标签选择 ===== */
+.ua-export-radios { display: flex; flex-direction: column; gap: 10px; }
+.ua-radio { display: flex; align-items: center; gap: 8px; font-size: 13px; cursor: pointer; }
+
 .tag-pick { display: flex; flex-wrap: wrap; gap: 8px; }
 .tp-item {
   display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px;
   border: 1px solid var(--color-border); border-radius: 6px; font-size: 13px; cursor: pointer;
 }
 .tp-item:has(input:checked) { border-color: var(--color-primary); color: var(--color-primary); background: #f0f5ff; }
+
+button:disabled { opacity: .45; cursor: not-allowed; }
 </style>
 
 <script src="../assets/js/proto.js"></script>
 <script src="../assets/js/user-tags.js"></script>
+<script src="../assets/js/user-store.js"></script>
 <script src="../assets/js/admin-shell.js?v=14"></script>
 <script>
 (function () {
@@ -495,7 +512,299 @@
   mask.addEventListener("click", closeAll);
   document.querySelectorAll("[data-close]").forEach(function (n) { n.addEventListener("click", closeAll); });
 
-  /* ===== 标签筛选填充 ===== */
+  function esc(s) {
+    return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) {
+      return ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c];
+    });
+  }
+
+  var urlParams = new URLSearchParams(location.search);
+  var activeSegment = (urlParams.get("segment") || "").trim();
+  if (activeSegment) {
+    var meta = UserStore.segmentMeta(activeSegment);
+    document.getElementById("segment-banner").style.display = "flex";
+    document.getElementById("segment-name").textContent = meta.name || activeSegment;
+  }
+
+  var FILTER_DEFS = [
+    { id: "f-name", label: "姓名", type: "text" },
+    { id: "f-phone", label: "手机", type: "text" },
+    { id: "f-order", label: "订单号", type: "text" },
+    { id: "f-source", label: "来源", type: "select" },
+    { id: "f-right-st", label: "课程权益", type: "select" },
+    { id: "f-course", label: "已购课程", type: "select" },
+    { id: "f-wecom", label: "企微", type: "select", map: { "1": "是", "0": "否" } },
+    { id: "f-mkt", label: "营销触达", type: "select", map: { normal: "正常触达", stopped: "已停止主动营销" } },
+    { id: "f-assigned", label: "负责人", type: "select", map: { "1": "已分配", "0": "未分配" } },
+    { id: "f-dept", label: "部门", type: "select" },
+    { id: "f-owner", label: "助教", type: "text" },
+    { id: "f-tag", label: "标签", type: "select", tag: true },
+    { id: "f-active", label: "最近活跃", type: "select", map: { "7": "7天内", "30": "30天内", "90": "90天内", over30: "30天以上" } }
+  ];
+
+  function isAssigned(u) {
+    return !!(u.owner && u.owner !== "未分配");
+  }
+
+  function matchActive(u, val) {
+    if (!val) return true;
+    var t = String(u.activeAt || "");
+    if (val === "7") return /今天|昨天|刚刚|\d\s*小时|[1-7]\s*天前/.test(t);
+    if (val === "30") return !/15\s*天前|3\s*天前|90|月前|年以上/.test(t) || /今天|昨天|刚刚|小时|[1-9]\s*天前|1[0-9]\s*天前|2[0-9]\s*天前|30\s*天前|3\s*天前/.test(t);
+    if (val === "90") return true;
+    if (val === "over30") return /1[5-9]\s*天前|[2-9]\d\s*天前|月前|年以上/.test(t) || t.indexOf("15") >= 0;
+    return true;
+  }
+
+  function filtered() {
+    var name = (document.getElementById("f-name").value || "").trim();
+    var phone = (document.getElementById("f-phone").value || "").trim();
+    var order = (document.getElementById("f-order").value || "").trim();
+    var source = document.getElementById("f-source").value;
+    var rightSt = document.getElementById("f-right-st").value;
+    var course = document.getElementById("f-course").value;
+    var wecom = document.getElementById("f-wecom").value;
+    var mkt = document.getElementById("f-mkt").value;
+    var assigned = document.getElementById("f-assigned").value;
+    var dept = document.getElementById("f-dept").value;
+    var owner = (document.getElementById("f-owner").value || "").trim();
+    var tag = document.getElementById("f-tag").value;
+    var active = document.getElementById("f-active").value;
+
+    var list;
+    if (activeSegment) list = UserStore.findBySegment(activeSegment);
+    else if (order) list = UserStore.findByOrder(order);
+    else list = UserStore.listBrief();
+
+    if (activeSegment && order) {
+      list = list.filter(function (u) {
+        return (u.orderIds || []).some(function (id) { return id.indexOf(order) >= 0; });
+      });
+    }
+
+    return list.filter(function (u) {
+      if (name && (u.name || "").indexOf(name) < 0 && (u.nick || "").indexOf(name) < 0) return false;
+      if (phone && (u.phone || "").indexOf(phone) < 0) return false;
+      if (source && u.source !== source) return false;
+
+      if (rightSt === "暂无权益") {
+        if ((u.rightsStatuses || []).length || u.rightsValid || u.rightsAbnormal) return false;
+        if (u.rightsText && u.rightsText !== "暂无权益") return false;
+      } else if (rightSt === "存在异常") {
+        if (!(u.rightsAbnormal > 0)) return false;
+      } else if (rightSt === "有效") {
+        if (!(u.rightsValid > 0) && (u.rightsStatuses || []).indexOf("有效") < 0) return false;
+      } else if (rightSt) {
+        if ((u.rightsStatuses || []).indexOf(rightSt) < 0) return false;
+      }
+
+      if (course && (u.courses || []).indexOf(course) < 0) return false;
+      if (wecom === "1" && !u.wecom) return false;
+      if (wecom === "0" && u.wecom) return false;
+      if (mkt === "normal" && u.marketingStopped) return false;
+      if (mkt === "stopped" && !u.marketingStopped) return false;
+      if (assigned === "1" && !isAssigned(u)) return false;
+      if (assigned === "0" && isAssigned(u)) return false;
+      if (dept && u.dept !== dept) return false;
+      if (owner && (u.owner || "").indexOf(owner) < 0) return false;
+      if (tag) {
+        var tg = UserTags.byId(tag);
+        var tname = tg ? tg.name : tag;
+        if (!(u.tags || []).some(function (t) { return t.name === tname || t.name === tag; })) return false;
+      }
+      if (active && !matchActive(u, active)) return false;
+      return true;
+    });
+  }
+
+  function chipValueLabel(def, val) {
+    if (def.map && def.map[val]) return def.map[val];
+    if (def.tag) {
+      var tg = UserTags.byId(val);
+      return tg ? tg.name : val;
+    }
+    var el = document.getElementById(def.id);
+    if (el && el.tagName === "SELECT") {
+      var opt = el.options[el.selectedIndex];
+      if (opt) return opt.textContent;
+    }
+    return val;
+  }
+
+  function renderChips(rowsLen) {
+    var box = document.getElementById("filter-chips");
+    var chips = [];
+    if (activeSegment) {
+      var sm = UserStore.segmentMeta(activeSegment);
+      chips.push({ id: "__segment", label: "分群", value: sm.name || activeSegment });
+    }
+    FILTER_DEFS.forEach(function (def) {
+      var el = document.getElementById(def.id);
+      if (!el) return;
+      var val = (el.value || "").trim();
+      if (!val) return;
+      chips.push({ id: def.id, label: def.label, value: chipValueLabel(def, val) });
+    });
+    if (!chips.length && !rowsLen && rowsLen !== 0) {
+      box.style.display = "none";
+      box.innerHTML = "";
+      return;
+    }
+    if (!chips.length) {
+      box.style.display = "flex";
+      box.innerHTML = '<span class="ua-chips-count">共 ' + rowsLen + " 条结果</span>";
+      return;
+    }
+    box.style.display = "flex";
+    box.innerHTML = chips.map(function (c) {
+      return '<span class="ua-chip" data-chip="' + esc(c.id) + '">' +
+        esc(c.label) + "：" + esc(c.value) +
+        '<button type="button" aria-label="移除" data-chip-remove="' + esc(c.id) + '">×</button></span>';
+    }).join("") +
+      '<span class="ua-chips-count">共 ' + rowsLen + " 条结果</span>" +
+      '<a href="#" class="ua-chips-clear" id="chips-clear">清空筛选</a>';
+
+    box.querySelectorAll("[data-chip-remove]").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        var id = btn.getAttribute("data-chip-remove");
+        if (id === "__segment") {
+          activeSegment = "";
+          document.getElementById("segment-banner").style.display = "none";
+          try {
+            var u = new URL(location.href);
+            u.searchParams.delete("segment");
+            history.replaceState(null, "", u.pathname + u.search + u.hash);
+          } catch (e) {}
+        } else {
+          var el = document.getElementById(id);
+          if (el) el.value = "";
+        }
+        render();
+      });
+    });
+    var clr = document.getElementById("chips-clear");
+    if (clr) clr.addEventListener("click", function (e) { e.preventDefault(); resetFilters(true); });
+  }
+
+  function tagHtml(tags) {
+    tags = tags || [];
+    if (!tags.length) return '<span class="ua-tag-empty">—</span>';
+    var show = tags.slice(0, 2);
+    var more = tags.length - show.length;
+    return show.map(function (t) {
+      return '<span class="tag tag-' + esc(t.color || "blue") + '">' + esc(t.name) + "</span>";
+    }).join(" ") + (more > 0 ? ' <span class="ua-tag-more">+' + more + "</span>" : "");
+  }
+
+  function rightsHtml(u) {
+    var href = "user-detail.html?id=" + encodeURIComponent(u.id) + "&tab=rights";
+    if (u.rightsAbnormal > 0) href += "&focus=abn";
+    if (!u.rightsText || u.rightsText === "暂无权益") {
+      return '<a href="' + href + '" class="ua-tag-empty">暂无权益</a>';
+    }
+    var cls = u.rightsAbnormal ? ' style="color:#f53f3f;font-weight:600"' : "";
+    return '<a href="' + href + '"' + cls + ">" + esc(u.rightsText) + "</a>";
+  }
+
+  function consumeHtml(u) {
+    var n = Number(u.orders30 || 0);
+    var gmv = Number(u.gmv30 || 0);
+    if (!n && !gmv) return '<span class="ua-tag-empty">—</span>';
+    var gmvText = gmv >= 1000 ? ("¥" + gmv.toLocaleString("zh-CN")) : ("¥" + gmv);
+    return esc(n + "笔 / " + gmvText);
+  }
+
+  function ownerHtml(u) {
+    if ((!u.dept || u.dept === "") && (!u.owner || u.owner === "未分配")) {
+      return '<span class="ua-tag-empty">未分配</span>';
+    }
+    var dept = u.dept || "—";
+    var owner = u.owner || "未分配";
+    return '<div class="ua-owner-line">' + esc(dept) + " · " + esc(owner) + "</div>";
+  }
+
+  function updateCount() {
+    var n = document.querySelectorAll(".ck-row:checked").length;
+    document.getElementById("ck-count").textContent = String(n);
+    document.getElementById("batch-bar-n").textContent = String(n);
+    document.getElementById("btn-batch-tag").disabled = n === 0;
+    document.getElementById("btn-batch-assign").disabled = n === 0;
+    document.getElementById("batch-bar").style.display = n > 0 ? "flex" : "none";
+    var all = document.querySelectorAll(".ck-row");
+    var ckAll = document.getElementById("ck-all");
+    if (ckAll) {
+      ckAll.checked = all.length > 0 && n === all.length;
+      ckAll.indeterminate = n > 0 && n < all.length;
+    }
+  }
+
+  function clearSelection() {
+    document.querySelectorAll(".ck-row").forEach(function (c) { c.checked = false; });
+    var ckAll = document.getElementById("ck-all");
+    if (ckAll) { ckAll.checked = false; ckAll.indeterminate = false; }
+    updateCount();
+  }
+
+  function render() {
+    var rows = filtered();
+    var tb = document.getElementById("users-tbody");
+    document.getElementById("ck-total").textContent = String(rows.length);
+    renderChips(rows.length);
+    if (!rows.length) {
+      tb.innerHTML = '<tr><td colspan="10" style="text-align:center;padding:36px">' +
+        '<div class="muted" style="margin-bottom:12px">未找到匹配用户</div>' +
+        '<button class="btn" type="button" id="empty-clear">清空筛选</button></td></tr>';
+      var emptyBtn = document.getElementById("empty-clear");
+      if (emptyBtn) emptyBtn.addEventListener("click", function () { resetFilters(true); });
+      updateCount();
+      return;
+    }
+    tb.innerHTML = rows.map(function (u) {
+      var mktBadge = u.marketingStopped
+        ? '<div class="ua-mkt-badge">已停止主动营销</div>' : "";
+      return '<tr data-uid="' + esc(u.id) + '" data-mkt="' + (u.marketingStopped ? "1" : "0") + '">' +
+        '<td><input type="checkbox" class="ck-row" /></td>' +
+        "<td><a href=\"user-detail.html?id=" + encodeURIComponent(u.id) + "\"><b>" + esc(u.name) + "</b></a>" +
+        mktBadge +
+        (u.nick ? '<div class="ua-muted ua-nick">昵称：' + esc(u.nick) + "</div>" : "") +
+        '<div class="ua-muted">' + esc(UserStore.maskPhone(u.phone)) + "</div></td>" +
+        "<td><span class=\"badge badge-info\">" + esc(u.source || "—") + "</span></td>" +
+        "<td>" + ownerHtml(u) + "</td>" +
+        "<td>" + esc(u.activeAt || "—") + "</td>" +
+        "<td>" + consumeHtml(u) + "</td>" +
+        "<td>" + rightsHtml(u) + "</td>" +
+        "<td>" + tagHtml(u.tags) + "</td>" +
+        "<td>" + (u.wecom ? "是" : "否") + "</td>" +
+        '<td class="row-actions">' +
+        '<a href="user-detail.html?id=' + encodeURIComponent(u.id) + '">详情</a>' +
+        '<a href="#" data-row-act="tag">打标</a>' +
+        '<a href="#" data-row-act="more" class="ua-more-btn">更多 ▾</a>' +
+        "</td></tr>";
+    }).join("");
+    bindRowEvents();
+    updateCount();
+  }
+
+  function resetFilters(doRender) {
+    ["f-name", "f-phone", "f-order", "f-owner"].forEach(function (id) {
+      var el = document.getElementById(id); if (el) el.value = "";
+    });
+    ["f-source", "f-right-st", "f-course", "f-wecom", "f-mkt", "f-assigned", "f-dept", "f-tag", "f-active"].forEach(function (id) {
+      var el = document.getElementById(id); if (el) el.value = "";
+    });
+    activeSegment = "";
+    document.getElementById("segment-banner").style.display = "none";
+    try {
+      var u = new URL(location.href);
+      u.searchParams.delete("segment");
+      u.searchParams.delete("tag");
+      history.replaceState(null, "", u.pathname + (u.search || "") + u.hash);
+    } catch (e) {}
+    document.getElementById("search-more").style.display = "none";
+    document.getElementById("btn-toggle").textContent = "展开";
+    if (doRender) render();
+  }
+
   (function fillTagFilter() {
     var sel = document.getElementById("f-tag");
     if (!sel || !window.UserTags) return;
@@ -506,14 +815,13 @@
       sel.appendChild(opt);
     });
     try {
-      var q = new URLSearchParams(location.search);
-      var tag = q.get("tag");
+      var tag = urlParams.get("tag");
       if (tag) {
         sel.value = tag;
         document.getElementById("search-more").style.display = "grid";
         document.getElementById("btn-toggle").textContent = "收起";
       }
-      if (q.get("batchTag") === "1") Proto.toast("请勾选用户后点击「批量打标」");
+      if (urlParams.get("batchTag") === "1") Proto.toast("请勾选用户后点击「批量打标」");
     } catch (e) {}
   })();
 
@@ -523,18 +831,34 @@
     open(document.getElementById("modal-tag"));
   }
 
-  /* ===== 快捷分组 ===== */
-  document.querySelectorAll("#ua-tabs a").forEach(function (a) {
-    a.addEventListener("click", function (e) {
-      e.preventDefault();
-      document.querySelectorAll("#ua-tabs a").forEach(function (n) { n.classList.remove("active"); });
-      a.classList.add("active");
-      var g = a.getAttribute("data-group");
-      Proto.toast(g === "all" ? "已切换到「全部用户」（原型）" : "已按「" + a.textContent.replace(/\s+/g, " ").trim() + "」筛选（原型）");
-    });
-  });
+  function openAddModal() {
+    document.getElementById("edit-title").textContent = "新增用户";
+    document.getElementById("ed-mode").value = "add";
+    document.getElementById("ed-name").value = "";
+    document.getElementById("ed-phone").value = "";
+    document.getElementById("ed-nick").value = "";
+    document.getElementById("ed-source").value = "手动导入";
+    document.getElementById("ed-dept").value = "";
+    document.getElementById("ed-owner").value = "";
+    document.getElementById("ed-remark").value = "";
+    document.getElementById("ed-dup-tip").style.display = "none";
+    open(document.getElementById("modal-edit"));
+  }
 
-  /* ===== 展开收起 ===== */
+  function openEditModal(u) {
+    document.getElementById("edit-title").textContent = "编辑用户 · " + (u.name || "");
+    document.getElementById("ed-mode").value = "edit";
+    document.getElementById("ed-name").value = u.name || "";
+    document.getElementById("ed-phone").value = u.phone || "";
+    document.getElementById("ed-nick").value = u.nick || "";
+    document.getElementById("ed-source").value = u.source || "手动导入";
+    document.getElementById("ed-dept").value = u.dept || "";
+    document.getElementById("ed-owner").value = (u.owner && u.owner !== "未分配") ? u.owner : "";
+    document.getElementById("ed-remark").value = "";
+    document.getElementById("ed-dup-tip").style.display = "none";
+    open(document.getElementById("modal-edit"));
+  }
+
   var more = document.getElementById("search-more");
   var toggle = document.getElementById("btn-toggle");
   toggle.addEventListener("click", function () {
@@ -544,102 +868,204 @@
   });
 
   document.getElementById("btn-query").addEventListener("click", function () {
-    var tag = document.getElementById("f-tag").value;
-    Proto.toast(tag ? "已按标签筛选（原型）" : "已按条件查询（原型）");
+    render();
+    Proto.toast("已按条件查询");
   });
   document.getElementById("btn-reset").addEventListener("click", function () {
-    ["f-name", "f-phone", "f-owner"].forEach(function (id) {
-      var el = document.getElementById(id); if (el) el.value = "";
-    });
-    ["f-source", "f-dept", "f-tag", "f-active", "f-ordered"].forEach(function (id) {
-      var el = document.getElementById(id); if (el) el.value = "";
-    });
-    more.style.display = "none"; toggle.textContent = "展开";
+    resetFilters(true);
     Proto.toast("已重置");
   });
 
-  /* ===== 复选 / 计数 ===== */
   var ckAll = document.getElementById("ck-all");
   ckAll.addEventListener("change", function () {
     document.querySelectorAll(".ck-row").forEach(function (c) { c.checked = ckAll.checked; });
     updateCount();
   });
-  document.querySelectorAll(".ck-row").forEach(function (c) { c.addEventListener("change", updateCount); });
-  function updateCount() {
-    document.getElementById("ck-count").textContent = document.querySelectorAll(".ck-row:checked").length;
-  }
 
-  /* ===== 行操作：详情 / 打标 / 更多菜单 ===== */
   var menu = document.getElementById("ua-row-menu");
   var currentRow = null;
+  var stopUid = "";
   function hideMenu() { menu.style.display = "none"; currentRow = null; }
   document.addEventListener("click", function (e) {
     if (!e.target.closest(".ua-more-btn") && !e.target.closest("#ua-row-menu")) hideMenu();
   });
 
-  document.querySelectorAll("#users-tbody tr").forEach(function (tr) {
-    var nameEl = tr.querySelector("td a b");
-    var name = nameEl ? nameEl.textContent.trim() : "用户";
-
-    tr.querySelectorAll("[data-row-act]").forEach(function (a) {
-      a.addEventListener("click", function (e) {
-        e.preventDefault();
-        var act = a.getAttribute("data-row-act");
-        if (act === "more") {
-          currentRow = tr;
-          var r = a.getBoundingClientRect();
-          menu.style.top = (r.bottom + 4) + "px";
-          menu.style.left = Math.min(window.innerWidth - 140, r.right - 120) + "px";
-          menu.style.display = "block";
-          return;
-        }
-        if (act === "tag") {
-          openTagModal(name, ["t_high"]);
-        }
+  function bindRowEvents() {
+    document.querySelectorAll("#users-tbody tr[data-uid]").forEach(function (tr) {
+      var nameEl = tr.querySelector("td a b");
+      var name = nameEl ? nameEl.textContent.trim() : "用户";
+      tr.querySelectorAll("[data-row-act]").forEach(function (a) {
+        a.addEventListener("click", function (e) {
+          e.preventDefault();
+          var act = a.getAttribute("data-row-act");
+          if (act === "more") {
+            currentRow = tr;
+            var stopped = tr.getAttribute("data-mkt") === "1";
+            var mktEl = document.getElementById("menu-mkt");
+            mktEl.textContent = stopped ? "重新启用营销触达" : "停止营销触达";
+            mktEl.className = stopped ? "" : "danger";
+            var r = a.getBoundingClientRect();
+            menu.style.top = (r.bottom + 4) + "px";
+            menu.style.left = Math.min(window.innerWidth - 160, r.right - 140) + "px";
+            menu.style.display = "block";
+            return;
+          }
+          if (act === "tag") openTagModal(name, []);
+        });
       });
     });
-  });
+    document.querySelectorAll(".ck-row").forEach(function (c) {
+      c.addEventListener("change", updateCount);
+    });
+  }
 
   menu.querySelectorAll("[data-menu-act]").forEach(function (a) {
     a.addEventListener("click", function (e) {
       e.preventDefault();
       if (!currentRow) return;
       var name = currentRow.querySelector("td a b").textContent.trim();
-      var uid = currentRow.getAttribute("data-uid") || "";
+      var uid = currentRow.getAttribute("data-uid");
       var act = a.getAttribute("data-menu-act");
+      var stopped = currentRow.getAttribute("data-mkt") === "1";
       hideMenu();
       if (act === "edit") {
-        document.getElementById("edit-title").textContent = "编辑用户 · " + name;
-        open(document.getElementById("modal-edit"));
-      } else if (act === "tag") {
-        openTagModal(name, ["t_high"]);
-      } else if (act === "rights") {
-        Proto.toast("「" + name + "」查看权益（原型）");
-      } else if (act === "order") {
-        Proto.toast("「" + name + "」查看订单（原型）");
-      } else if (act === "disable") {
-        if (confirm("确定注销「" + name + "」账号？该操作不可恢复。")) Proto.toast("账号已注销（原型）");
+        openEditModal(UserStore.byId(uid) || { name: name, id: uid });
+      } else if (act === "assign") {
+        var u = UserStore.byId(uid) || {};
+        document.getElementById("ra-uid").value = uid;
+        document.getElementById("ra-current").textContent = (u.dept || "—") + " · " + (u.owner || "未分配");
+        if (u.dept) document.getElementById("ra-dept").value = u.dept;
+        if (u.owner && u.owner !== "未分配") document.getElementById("ra-owner").value = u.owner;
+        document.getElementById("ra-reason").value = "";
+        open(document.getElementById("modal-row-assign"));
+      } else if (act === "toggle-mkt") {
+        if (stopped) {
+          UserStore.setMarketing(uid, false);
+          Proto.toast("已重新启用主动营销");
+          render();
+        } else {
+          stopUid = uid;
+          document.getElementById("sm-name").textContent = name;
+          open(document.getElementById("modal-stop-mkt"));
+        }
       }
     });
   });
 
-  /* ===== 顶部按钮 ===== */
-  document.getElementById("btn-add").addEventListener("click", function () {
-    document.getElementById("edit-title").textContent = "新增用户";
-    open(document.getElementById("modal-edit"));
+  document.getElementById("ra-save").onclick = function () {
+    var uid = document.getElementById("ra-uid").value;
+    var reason = (document.getElementById("ra-reason").value || "").trim();
+    if (!reason) { Proto.toast("请填写调整原因"); return; }
+    UserStore.assignOwner(uid, document.getElementById("ra-dept").value, document.getElementById("ra-owner").value, reason, false, false);
+    closeAll();
+    Proto.toast("归属已更新");
+    render();
+  };
+
+  document.getElementById("sm-confirm").onclick = function () {
+    if (!stopUid) return;
+    UserStore.setMarketing(stopUid, true);
+    closeAll();
+    Proto.toast("已停止该用户的营销触达");
+    render();
+  };
+
+  document.getElementById("edit-save").onclick = function () {
+    var mode = document.getElementById("ed-mode").value;
+    var name = (document.getElementById("ed-name").value || "").trim();
+    var phone = (document.getElementById("ed-phone").value || "").trim();
+    var tip = document.getElementById("ed-dup-tip");
+    tip.style.display = "none";
+    if (!name) { Proto.toast("请填写姓名"); return; }
+    if (!/^1\d{10}$/.test(phone)) { Proto.toast("请填写正确的 11 位手机号"); return; }
+
+    if (mode === "add") {
+      var res = UserStore.createUser({
+        name: name,
+        phone: phone,
+        nick: (document.getElementById("ed-nick").value || "").trim(),
+        source: document.getElementById("ed-source").value || "手动导入",
+        dept: document.getElementById("ed-dept").value || "",
+        owner: document.getElementById("ed-owner").value || "未分配"
+      });
+      if (!res.ok) {
+        if (res.error === "duplicate" && res.user) {
+          tip.style.display = "block";
+          tip.innerHTML = '手机号已存在：<a href="user-detail.html?id=' + encodeURIComponent(res.user.id) + '">查看「' + esc(res.user.name) + "」详情</a>";
+          Proto.toast("手机号已存在");
+          return;
+        }
+        Proto.toast(res.error === "phone" ? "手机号格式不正确" : "请检查必填项");
+        return;
+      }
+      closeAll();
+      location.href = "user-detail.html?id=" + encodeURIComponent(res.user.id);
+      return;
+    }
+    closeAll();
+    Proto.toast("用户信息已保存（原型）");
+  };
+
+  document.getElementById("btn-add").addEventListener("click", openAddModal);
+  document.getElementById("btn-import").addEventListener("click", function () {
+    document.getElementById("import-preview").style.display = "none";
+    open(document.getElementById("modal-import"));
   });
-  document.getElementById("btn-import").addEventListener("click", function () { open(document.getElementById("modal-import")); });
-  document.getElementById("btn-export").addEventListener("click", function () { open(document.getElementById("modal-export")); });
-  document.getElementById("btn-batch-tag").addEventListener("click", function () {
+
+  function openExport(preferChecked) {
+    var radios = document.querySelectorAll('input[name="export-mode"]');
     var n = document.querySelectorAll(".ck-row:checked").length;
-    if (!n) { Proto.toast("请先勾选用户"); return; }
-    openTagModal("已选 " + n + " 位用户（批量打标）", []);
+    radios.forEach(function (r) {
+      if (preferChecked && n > 0) r.checked = r.value === "checked";
+      else r.checked = r.value === "filter";
+    });
+    open(document.getElementById("modal-export"));
+  }
+  document.getElementById("btn-export").addEventListener("click", function () { openExport(false); });
+  document.getElementById("export-confirm").addEventListener("click", function () {
+    var mode = (document.querySelector('input[name="export-mode"]:checked') || {}).value || "filter";
+    if (mode === "checked") {
+      var n = document.querySelectorAll(".ck-row:checked").length;
+      if (!n) { Proto.toast("请先勾选用户"); return; }
+      closeAll();
+      Proto.toast("已导出勾选的 " + n + " 位用户（原型）");
+      return;
+    }
+    closeAll();
+    Proto.toast("已导出当前筛选结果共 " + filtered().length + " 条（原型）");
   });
-  document.getElementById("btn-batch-assign").addEventListener("click", function () {
+
+  function openBatchAssign() {
     var n = document.querySelectorAll(".ck-row:checked").length;
     if (!n) { Proto.toast("请先勾选用户"); return; }
     document.getElementById("batch-assign-count").textContent = n;
     open(document.getElementById("modal-batch-assign"));
+  }
+  function openBatchTag() {
+    var n = document.querySelectorAll(".ck-row:checked").length;
+    if (!n) { Proto.toast("请先勾选用户"); return; }
+    openTagModal("已选 " + n + " 位用户（批量打标）", []);
+  }
+  document.getElementById("btn-batch-tag").addEventListener("click", openBatchTag);
+  document.getElementById("btn-batch-assign").addEventListener("click", openBatchAssign);
+  document.getElementById("batch-bar-tag").addEventListener("click", openBatchTag);
+  document.getElementById("batch-bar-assign").addEventListener("click", openBatchAssign);
+  document.getElementById("batch-bar-export").addEventListener("click", function () { openExport(true); });
+  document.getElementById("batch-clear").addEventListener("click", clearSelection);
+
+  document.getElementById("ba-confirm").addEventListener("click", function () {
+    var checked = document.querySelectorAll(".ck-row:checked");
+    var dept = document.getElementById("ba-dept").value;
+    var owner = document.getElementById("ba-owner").value;
+    checked.forEach(function (c) {
+      var tr = c.closest("tr");
+      if (!tr) return;
+      var uid = tr.getAttribute("data-uid");
+      if (uid) UserStore.assignOwner(uid, dept, owner, "批量分配", false, false);
+    });
+    closeAll();
+    Proto.toast("已批量分配归属");
+    render();
   });
 
   document.getElementById("tag-save").addEventListener("click", function () {
@@ -658,22 +1084,24 @@
   if (upload && uploadInput) {
     upload.addEventListener("click", function () { uploadInput.click(); });
     uploadInput.addEventListener("change", function () {
-      if (uploadInput.files.length) Proto.toast("已选择文件：" + uploadInput.files[0].name);
+      if (uploadInput.files.length) {
+        Proto.toast("已选择文件：" + uploadInput.files[0].name);
+        document.getElementById("import-preview").style.display = "flex";
+      }
     });
   }
   var dl = document.getElementById("download-tpl");
   if (dl) dl.addEventListener("click", function (e) { e.preventDefault(); Proto.toast("导入模版下载中（原型）"); });
-
-  document.querySelectorAll(".ua-page").forEach(function (b) {
-    if (b.disabled) return;
-    b.addEventListener("click", function () {
-      document.querySelectorAll(".ua-page").forEach(function (n) { n.classList.remove("active"); });
-      b.classList.add("active");
-      Proto.toast("已切换到第 " + b.textContent + " 页（原型）");
-    });
+  document.getElementById("btn-fail-detail").addEventListener("click", function () {
+    Proto.toast("失败明细已开始下载（原型）");
   });
+  document.getElementById("import-submit").addEventListener("click", function () {
+    closeAll();
+    Proto.toast("导入任务已提交，完成后通知（原型）");
+  });
+
+  render();
 })();
 </script>
-
 </body>
 </html>

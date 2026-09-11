@@ -763,6 +763,10 @@
         ha.insertBefore(a, ha.firstChild);
       }
     }
+    var userId = q.get("user");
+    if (userId) {
+      Proto.toast("已定位用户 " + userId + " 的线索/客户（原型）");
+    }
   })();
 })();
 </script>

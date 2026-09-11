@@ -72,13 +72,14 @@
       </div>
       <div class="field"><label>发放内容 *</label>
         <select id="pl-gift" style="width:100%;padding:7px 8px;border:1px solid var(--color-border);border-radius:6px">
-          <option>学习资料包（电子版）</option>
-          <option>课程试听权益（7 天）</option>
-          <option>企微老师 1v1 引导</option>
-          <option>开课 / 直播提醒</option>
-          <option>老学员回馈通知</option>
+          <option value="pack">学习资料包（电子版）</option>
+          <option value="trial">课程试听权益（7 天）</option>
+          <option value="scrm">为对应负责人创建 SCRM 跟进任务</option>
+          <option value="live">关联直播促到 SOP 提醒</option>
+          <option value="notice">老学员回馈通知（站内信/短信）</option>
         </select>
       </div>
+      <p class="muted" id="pl-gift-hint" style="grid-column:1/-1;margin:0;font-size:12px">站内信、短信、资料与试听权益在本计划内发放；企微跟进将创建 SCRM 任务；直播提醒跳转直播促到 SOP，不在此维护第二套规则。</p>
       <div class="field"><label>通知渠道 *</label>
         <select id="pl-ch" style="width:100%;padding:7px 8px;border:1px solid var(--color-border);border-radius:6px">
           <option>站内信</option><option>短信</option><option>站内信 + 短信</option>
@@ -184,10 +185,45 @@
   document.getElementById("btn-new").addEventListener("click", function(){ openNew("新建运营计划"); });
   document.getElementById("pl-save").addEventListener("click", function(){
     if (!document.getElementById("pl-name").value.trim()) { Proto.toast("请填写计划名称"); return; }
+    var gift = document.getElementById("pl-gift").value;
     closeAll();
-    Proto.toast("运营计划已保存并启动（原型）");
+    if (gift === "scrm") Proto.toast("已保存：将为对应负责人创建 SCRM 跟进任务（原型）");
+    else if (gift === "live") {
+      Proto.toast("已保存；直播提醒请在直播促到 SOP 中配置");
+      setTimeout(function(){ location.href = "live-invite.html"; }, 600);
+    } else Proto.toast("运营计划已保存并启动（原型）");
   });
   document.getElementById("btn-export").addEventListener("click", function(){ Proto.toast("运营效果报表导出任务已创建（原型）"); });
+
+  // 从分群「发起运营」带入人群并打开新建弹窗
+  (function bootFromSegment(){
+    try {
+      var q = new URLSearchParams(location.search);
+      if (q.get("new") !== "1") return;
+      var segName = q.get("segName") || "";
+      var segId = q.get("segment") || "";
+      openNew("新建运营计划");
+      var sel = document.getElementById("pl-seg");
+      if (segName) {
+        var matched = false;
+        [].forEach.call(sel.options, function(opt){
+          if (opt.textContent.indexOf(segName) >= 0 || opt.value === segName) {
+            sel.value = opt.value; matched = true;
+          }
+        });
+        if (!matched) {
+          var opt = document.createElement("option");
+          opt.value = segId || segName;
+          opt.textContent = segName;
+          opt.selected = true;
+          sel.insertBefore(opt, sel.firstChild);
+        }
+        document.getElementById("pl-name").value = segName + "运营计划";
+        Proto.toast("已带入目标人群：" + segName);
+      }
+      history.replaceState(null, "", location.pathname);
+    } catch (e) {}
+  })();
 
   render();
 })();
