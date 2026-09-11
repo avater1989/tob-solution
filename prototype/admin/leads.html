@@ -721,6 +721,49 @@
       cols: { owner: 8, stage: 5 }
     });
   }
+
+  // URL boot (dashboard closed-loop)
+  (function bootFromUrl() {
+    var q;
+    try { q = new URLSearchParams(location.search); } catch (e) { return; }
+    if (q.get("action") === "create") {
+      open(document.getElementById("modal-create"));
+    }
+    if (q.get("focus") === "unassigned") {
+      Proto.toast("已筛选未分配线索");
+      var stageSel = document.getElementById("f-stage");
+      if (stageSel) {
+        /* 若有「待分配」选项则选中，否则仅按负责人空筛选勾选 */
+        for (var i = 0; i < stageSel.options.length; i++) {
+          var t = stageSel.options[i].textContent || "";
+          if (t.indexOf("待分配") >= 0 || t.indexOf("未分配") >= 0) {
+            stageSel.value = stageSel.options[i].value;
+            break;
+          }
+        }
+      }
+      document.querySelectorAll("#lead-tbody tr").forEach(function (tr) {
+        var ownerTd = tr.children[8];
+        var owner = ownerTd ? ownerTd.textContent.trim() : "";
+        var unassigned = !owner || owner === "—" || owner === "-" || owner.indexOf("未分配") >= 0;
+        tr.style.display = unassigned ? "" : "none";
+        var cb = tr.querySelector(".row-check");
+        if (cb) cb.checked = !!unassigned;
+      });
+      syncBatch();
+    }
+    if (q.get("from") === "dashboard") {
+      var ha = document.getElementById("header-actions");
+      if (ha && !ha.querySelector("[data-back-dashboard]")) {
+        var a = document.createElement("a");
+        a.className = "btn";
+        a.href = "dashboard.html?restore=1";
+        a.setAttribute("data-back-dashboard", "1");
+        a.textContent = "返回工作台";
+        ha.insertBefore(a, ha.firstChild);
+      }
+    }
+  })();
 })();
 </script>
 </body>
