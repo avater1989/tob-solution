@@ -745,8 +745,21 @@
   }
 
   function listBack() {
-    if (returnUrl) return decodeURIComponent(returnUrl);
+    if (returnUrl) {
+      try { return decodeURIComponent(returnUrl); } catch (e) { return returnUrl; }
+    }
     return LiveOps.listReturnUrl ? LiveOps.listReturnUrl() : "lives.html";
+  }
+  function fromDashboard() {
+    if (from === "dashboard") return true;
+    var back = listBack();
+    return /dashboard\.html/i.test(back || "");
+  }
+  function dashBackHref() {
+    if (returnUrl) {
+      try { return decodeURIComponent(returnUrl); } catch (e) { return returnUrl; }
+    }
+    return "dashboard.html?restore=1";
   }
   function viewHref(id) { return LiveOps.viewLiveUrl(id); }
   function editHref(id, extra) { return LiveOps.editLiveUrl(id, extra); }
@@ -982,7 +995,9 @@
     var ha = headerSlot();
     if (!ha) return;
     var pack = LiveOps.buildActions(v);
-    var html = '<a class="btn" href="' + listBack() + '">返回列表</a>';
+    var html = fromDashboard()
+      ? '<a class="btn" href="' + dashBackHref() + '">返回工作台</a>'
+      : '<a class="btn" href="' + listBack() + '">返回列表</a>';
     if (canGoEdit(v)) {
       html += '<a class="btn btn-primary" href="' + editHref(v.liveId) + '">编辑直播</a>';
     }
@@ -1027,7 +1042,11 @@
         if (act === "submit_platform") {
           LiveOps.openSubmitPlatformModal(v.liveId, {
             reload: false,
-            onSuccess: function () { location.reload(); }
+            onSuccess: function () {
+              toast("已提交平台审核");
+              if (fromDashboard()) location.href = dashBackHref();
+              else location.reload();
+            }
           });
           return;
         }
@@ -1070,7 +1089,11 @@
   function renderEditHeader() {
     var ha = headerSlot();
     if (!ha) return;
-    var html = '<button type="button" class="btn" id="btn-cancel">取消</button>';
+    var html = "";
+    if (fromDashboard()) {
+      html += '<a class="btn" href="' + dashBackHref() + '">返回工作台</a>';
+    }
+    html += '<button type="button" class="btn" id="btn-cancel">取消</button>';
     html += '<button type="button" class="btn" id="btn-save-draft">保存草稿</button>';
     if (isRejectedFlow) {
       html += '<button type="button" class="btn btn-primary" id="btn-save-resubmit">保存并重新提交</button>';
@@ -1283,6 +1306,11 @@
       reload: false,
       onSuccess: function () {
         dirty = false;
+        toast("已提交平台审核");
+        if (fromDashboard()) {
+          location.href = dashBackHref();
+          return;
+        }
         location.href = LiveOps.viewLiveUrl(liveId, { focus: "platform" });
       }
     });
