@@ -1,0 +1,142 @@
+{
+  "v": 1,
+  "updated": "2026-09-13T13:57:08",
+  "items": [
+    {
+      "id": "rmtzedw4tvbm4",
+      "page": "admin/content-series.html",
+      "anchor": {
+        "selector": "#cs-list > div:nth-of-type(2) > div:nth-of-type(3) > a:nth-of-type(1)",
+        "selectorIn": "#cs-list > div:nth-of-type(2) > div:nth-of-type(3) > a:nth-of-type(1)",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "a.btn.btn-primary",
+        "text": "编辑",
+        "html": "<a class=\"btn btn-primary\" href=\"content-series-edit.html?id=S002\">编辑</a>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "编辑系列课",
+      "status": "open",
+      "createdAt": "2026-09-13T05:52:56.813Z",
+      "_stale": false
+    },
+    {
+      "id": "rmtzeebfqozu0",
+      "page": "admin/content-series.html",
+      "anchor": {
+        "selector": "#page-header-actions > button",
+        "selectorIn": "button",
+        "root": "#page-header-actions",
+        "region": "header-actions",
+        "shell": "",
+        "label": "button.btn",
+        "text": "导出",
+        "html": "<button class=\"btn\">导出</button>"
+      },
+      "type": "remove",
+      "priority": "P1",
+      "comment": "去掉",
+      "status": "open",
+      "createdAt": "2026-09-13T05:53:16.646Z"
+    },
+    {
+      "id": "rmtzefrmhijai",
+      "page": "admin/content-video-edit.html",
+      "anchor": {
+        "selector": "#sec-status > div:nth-of-type(2) > div > label:nth-of-type(2)",
+        "selectorIn": "#sec-status > div:nth-of-type(2) > div > label:nth-of-type(2)",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "label",
+        "text": "定时上架",
+        "html": "<label><input type=\"radio\" name=\"shelf\"> 定时上架 <input type=\"datetime-local\" class=\"input\" style=\"width:200px;margin-left:8px\"></label>"
+      },
+      "type": "layout",
+      "priority": "P1",
+      "comment": "左对齐",
+      "status": "open",
+      "createdAt": "2026-09-13T05:54:24.281Z",
+      "_stale": false
+    },
+    {
+      "id": "rmtzefw1ublel",
+      "page": "admin/content-video-edit.html",
+      "anchor": {
+        "selector": "#sec-status > div:nth-of-type(2) > div > label:nth-of-type(1)",
+        "selectorIn": "#sec-status > div:nth-of-type(2) > div > label:nth-of-type(1)",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "label",
+        "text": "立即上架（保存后提交内容审核队列）",
+        "html": "<label><input type=\"radio\" name=\"shelf\" checked=\"\"> 立即上架（保存后提交内容审核队列）</label>"
+      },
+      "type": "layout",
+      "priority": "P1",
+      "comment": "左对齐",
+      "status": "open",
+      "createdAt": "2026-09-13T05:54:30.018Z",
+      "_stale": false
+    },
+    {
+      "id": "rmtzeg0hi0fmd",
+      "page": "admin/content-video-edit.html",
+      "anchor": {
+        "selector": "#sec-status > div:nth-of-type(2) > div > label:nth-of-type(3)",
+        "selectorIn": "#sec-status > div:nth-of-type(2) > div > label:nth-of-type(3)",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "label",
+        "text": "暂存草稿",
+        "html": "<label><input type=\"radio\" name=\"shelf\"> 暂存草稿</label>"
+      },
+      "type": "layout",
+      "priority": "P1",
+      "comment": "左对齐",
+      "status": "open",
+      "createdAt": "2026-09-13T05:54:35.766Z"
+    },
+    {
+      "id": "rmtzehk325n5s",
+      "page": "admin/content-article.html",
+      "anchor": {
+        "selector": "#ca-list > div:nth-of-type(3) > div:nth-of-type(3) > button:nth-of-type(3)",
+        "selectorIn": "#ca-list > div:nth-of-type(3) > div:nth-of-type(3) > button:nth-of-type(3)",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "button.btn",
+        "text": "复制",
+        "html": "<button class=\"btn\" data-copy=\"A003\">复制</button>"
+      },
+      "type": "add",
+      "priority": "P1",
+      "comment": "左侧增加「删除」按钮，需要二次确认",
+      "status": "open",
+      "createdAt": "2026-09-13T05:55:47.822Z"
+    },
+    {
+      "id": "rmtzejal0z8kw",
+      "page": "admin/content-category.html",
+      "anchor": {
+        "selector": "#cc-body > tr:nth-of-type(1) > td:nth-of-type(5) > div > button:nth-of-type(5)",
+        "selectorIn": "#cc-body > tr:nth-of-type(1) > td:nth-of-type(5) > div > button:nth-of-type(5)",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "button.btn",
+        "text": "删除",
+        "html": "<button class=\"btn\" style=\"color:#f53f3f;border-color:#ffa39e\" data-del=\"C1\">删除</button>"
+      },
+      "type": "remove",
+      "priority": "P1",
+      "comment": "有关联内容，不能删除分类",
+      "status": "open",
+      "createdAt": "2026-09-13T05:57:08.820Z"
+    }
+  ]
+}

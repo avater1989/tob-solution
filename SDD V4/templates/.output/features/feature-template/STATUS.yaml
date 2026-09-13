@@ -1,0 +1,22 @@
+schema_version: 1
+sdd_version: 4.0.0
+feature: feature-template
+stage: planned
+dependencies: []
+gates:
+  reasoning_ready: true
+  specification_ready: false
+  low_fi_ready: true
+  high_fi_ready: true
+  contract_ready: false
+  plan_ready: false
+  frontend_accepted: true
+  implementation_started: false
+  mock_replaced: false
+  verified: false
+  handed_off: false
+evidence_file: EVIDENCE.md
+handoff_file: HANDOFF.md
+invalidations: []
+operations:
+  user_guide: not_offered

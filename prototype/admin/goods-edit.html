@@ -28,7 +28,7 @@
   <div class="cm-section">
     <div class="cm-section-hd"><h3>基本信息</h3></div>
     <div class="form-grid" style="grid-template-columns:1fr 1fr;gap:12px 16px">
-      <div class="field" style="grid-column:1/-1"><label>商品名称 *</label><input placeholder="请输入商品名称，建议不超过 40 字" value="家庭咨询 60 分钟服务卡" /></div>
+      <div class="field" style="grid-column:1/-1"><label>商品名称 *</label><input id="f-gname" placeholder="请输入商品名称，建议不超过 40 字" value="家庭咨询 60 分钟服务卡" /></div>
       <div class="field"><label>商品类目 *</label>
         <select style="width:100%;padding:7px 8px;border:1px solid var(--color-border);border-radius:6px">
           <option>教育服务 / 线上咨询</option><option>教育服务 / 1v1 辅导</option><option>教育服务 / 直播互动</option><option>教育服务 / 学习陪伴</option>
@@ -45,7 +45,7 @@
     <div class="field" style="margin-top:12px"><label>商品主图（封面图）*</label>
       <div class="gd-uploader"><span class="gd-upload-add">＋<br><em>上传图片</em></span><span class="muted" style="font-size:12px">建议 1:1，≤ 5MB，支持 JPG/PNG/WebP</span></div>
     </div>
-    <div class="field" style="margin-top:12px"><label>商品详情</label><textarea rows="4" style="width:100%;padding:8px;border:1px solid var(--color-border);border-radius:6px">此处为富文本详情编辑区（原型示意）：可插入图文、服务说明、预约流程等。</textarea></div>
+    <div class="field" style="margin-top:12px"><label>商品详情</label><textarea id="f-gdetail" rows="4" style="width:100%;padding:8px;border:1px solid var(--color-border);border-radius:6px">此处为富文本详情编辑区（原型示意）：可插入图文、服务说明、预约流程等。</textarea></div>
   </div>
 
   <!-- 规格与价格 -->
@@ -139,9 +139,24 @@
 </style>
 
 <script src="../assets/js/proto.js"></script>
-<script src="../assets/js/admin-shell.js?v=13"></script>
+<script src="../assets/js/admin-shell.js?v=14"></script>
 <script>
 (function () {
+  // ===== 从「内容」模块带入（系列课 / 定制化计划 的「创建商品」入口）=====
+  // 支持 ?from=series|plan&id=xxx&title=商品名称&desc=简介
+  try {
+    var q = new URLSearchParams(location.search);
+    var from = q.get("from") || "";
+    var title = q.get("title") || "";
+    var desc = q.get("desc") || "";
+    if (title) {
+      document.getElementById("f-gname").value = title;
+      if (desc) document.getElementById("f-gdetail").value = desc;
+      var srcName = from === "plan" ? "定制化计划" : "系列课";
+      Proto.toast("已带入" + srcName + "「" + title + "」的内容，请继续完善商品信息与价格（原型）");
+    }
+  } catch (ePre) {}
+
   // 商品类型单选高亮
   document.querySelectorAll("#gd-type input[name=gtype]").forEach(function(r){
     r.addEventListener("change", function(){

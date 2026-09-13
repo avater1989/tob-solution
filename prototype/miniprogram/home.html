@@ -1,156 +1,85 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>首页 · 星启家庭教育</title>
+  <title>首页 · To-B 小程序</title>
   <link rel="stylesheet" href="../assets/css/proto.css" />
-  <link rel="stylesheet" href="../assets/css/mp.css?v=taste2" />
+  <link rel="stylesheet" href="../assets/css/mp.css?v=5" />
 </head>
 <body class="mp-page" data-tab="home">
   <div class="mp-frame">
-    <div class="mp-status">
-      <span>9:41</span>
-      <span class="mp-notch" aria-hidden="true"></span>
-      <span>100%</span>
-    </div>
-    <div class="mp-nav">
-      <span class="brand-mark" aria-hidden="true"></span>
-      星启家庭教育
-    </div>
+    <div class="mp-top"></div>
+    <div class="mp-status"><span>9:41</span><span>To-B 小程序</span><span>100%</span></div>
+    <div class="mp-nav">星启家庭教育</div>
     <div class="mp-body">
-      <div class="mp-search">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
-        搜索课程、老师、专题
+
+      <!-- Banner -->
+      <div class="mp-banner">
+        <span class="mp-banner-pill">今晚 20:00 公开课 · 预约即可</span>
+        <h3>亲子沟通，从听懂开始</h3>
+        <p>8 节体系课 · 陪学营老师全程答疑</p>
       </div>
 
-      <a class="mp-hero" href="lives.html" style="background-image:url('../assets/img/covers/hero.jpg')">
-        <span class="mp-hero-tag">今晚公开课</span>
-        <h3>亲子沟通，从听懂开始</h3>
-        <p>20:00 开播 · 林老师 · 186 人已预约</p>
-        <span class="mp-hero-cta">立即预约</span>
+      <!-- 定制化计划入口（特定条件下出现，?plan=0 隐藏） -->
+      <a class="mp-strip" id="plan-strip" href="assess.html" style="display:none">
+        <span class="mp-strip-dot">测</span>
+        <span class="mp-strip-txt" id="plan-strip-txt">老师为你定制了计划</span>
+        <span class="mp-strip-go">去测评 ›</span>
       </a>
 
-      <div class="mp-quick">
-        <a href="lives.html">
-          <div class="q-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="6" width="13" height="12" rx="2"/><path d="m16 10 5-3v10l-5-3V10z"/></svg></div>
-          <span>直播课</span>
-        </a>
-        <a href="course.html">
-          <div class="q-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></div>
-          <span>精品课</span>
-        </a>
-        <a href="claim.html">
-          <div class="q-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 12v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-8"/><path d="M12 2v14"/><path d="m8 12 4 4 4-4"/></svg></div>
-          <span>领课</span>
-        </a>
-        <a href="mine.html">
-          <div class="q-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="3.2"/><path d="M5.5 19.2c1.2-3.2 3.5-4.8 6.5-4.8s5.3 1.6 6.5 4.8"/></svg></div>
-          <span>我的</span>
-        </a>
-      </div>
-
-      <div class="mp-chips">
-        <a class="mp-chip on" href="#">精选</a>
-        <a class="mp-chip" href="#">亲子沟通</a>
-        <a class="mp-chip" href="#">情绪管理</a>
-        <a class="mp-chip" href="#">家庭边界</a>
-        <a class="mp-chip" href="#">体验课</a>
-      </div>
-
-      <div class="mp-section" style="padding-bottom:6px">
-        <div class="mp-section-hd">
-          <div class="mp-section-title">本周必看</div>
-          <a class="mp-section-more" href="lives.html">直播日历</a>
-        </div>
-      </div>
-      <div class="mp-rail">
-        <a class="mp-rail-card" href="live-room.html">
-          <div class="pic">
-            <img src="../assets/img/covers/live.jpg" alt="" />
-          </div>
-          <div class="bd">
-            <h4>亲子沟通 90 分钟</h4>
-            <div class="price"><small>¥</small>19.9</div>
-          </div>
-        </a>
-        <a class="mp-rail-card" href="course.html">
-          <div class="pic"><img src="../assets/img/covers/comm.jpg" alt="" /></div>
-          <div class="bd">
-            <h4>亲子沟通基础</h4>
-            <div class="price"><small>¥</small>199</div>
-          </div>
-        </a>
-        <a class="mp-rail-card" href="course.html">
-          <div class="pic"><img src="../assets/img/covers/trial.jpg" alt="" /></div>
-          <div class="bd">
-            <h4>9.9 体验课</h4>
-            <div class="price"><small>¥</small>9.9</div>
-          </div>
-        </a>
-      </div>
-
-      <div class="mp-section">
-        <div class="mp-section-hd">
+      <!-- 精选课程 -->
+      <div class="mp-section" style="padding-top:16px">
+        <div class="mp-section-head">
           <div class="mp-section-title">精选课程</div>
-          <a class="mp-section-more" href="#">全部</a>
+          <a class="mp-section-more" href="lives.html">更多 ›</a>
         </div>
 
-        <a class="mp-card" href="course.html">
-          <div class="mp-cover"><img src="../assets/img/covers/comm.jpg" alt="" /></div>
-          <div class="mp-card-bd">
+        <a class="course-card" href="course.html">
+          <div class="course-cover">沟通<br />基础</div>
+          <div class="course-info">
             <h4>亲子沟通基础</h4>
-            <div class="mp-card-meta">8 节 · 3-12 岁家庭 · 312 人在学</div>
-            <div class="mp-card-foot">
-              <div class="mp-price"><small>¥</small>199 <s>¥299</s></div>
-              <span class="mp-tag hot">热销</span>
-            </div>
+            <p>8 节 · 适合 3–12 岁家庭</p>
+            <div class="price">¥199 <s>¥299</s></div>
           </div>
         </a>
 
-        <a class="mp-card" href="course.html">
-          <div class="mp-cover"><img src="../assets/img/covers/series.jpg" alt="" /></div>
-          <div class="mp-card-bd">
+        <a class="course-card" href="course.html">
+          <div class="course-cover">系列<br />入门</div>
+          <div class="course-info">
             <h4>家庭教育入门系列</h4>
-            <div class="mp-card-meta">3 门组合 · 系统学习路径</div>
-            <div class="mp-card-foot">
-              <div class="mp-price"><small>¥</small>399</div>
-              <span class="mp-tag">组合课</span>
-            </div>
+            <p>3 门组合 · 系统学习</p>
+            <div class="price">¥399</div>
           </div>
         </a>
 
-        <a class="mp-card" href="course.html">
-          <div class="mp-cover"><img src="../assets/img/covers/trial.jpg" alt="" /></div>
-          <div class="mp-card-bd">
+        <a class="course-card" href="claim.html">
+          <div class="course-cover">体验<br />9.9</div>
+          <div class="course-info">
             <h4>9.9 引流体验课</h4>
-            <div class="mp-card-meta">视频号同款 · 领课后即学</div>
-            <div class="mp-card-foot">
-              <div class="mp-price"><small>¥</small>9.9</div>
-              <span class="mp-tag ok">低价体验</span>
-            </div>
-          </div>
-        </a>
-
-        <a class="mp-card" href="live-room.html">
-          <div class="mp-cover">
-            <img src="../assets/img/covers/live.jpg" alt="" />
-            <span class="mp-live-badge"><i></i>LIVE</span>
-          </div>
-          <div class="mp-card-bd">
-            <h4>亲子沟通 90 分钟公开课</h4>
-            <div class="mp-card-meta">林老师 · 今晚 20:00</div>
-            <div class="mp-card-foot">
-              <div class="mp-price"><small>¥</small>19.9</div>
-              <span class="mp-tag hot">直播中</span>
-            </div>
+            <p>视频号同款 · 可领课后学习</p>
+            <div class="price">¥9.9</div>
           </div>
         </a>
       </div>
+
     </div>
   </div>
-  <p class="mp-hint">学员首页 · <a href="../admin/content-series.html">管理端课程</a></p>
+  <p class="mp-hint">首页 = Banner + 定制化计划入口 + 精选课程 · <a href="../admin/content-series.html">管理端内容</a></p>
+
   <script src="../assets/js/proto.js"></script>
+  <script src="../assets/js/mp-plan.js?v=1"></script>
   <script src="../assets/js/mp-shell.js"></script>
+  <script>
+    // 细长条：仅当存在定制化计划时展示
+    (function () {
+      var strip = document.getElementById("plan-strip");
+      if (!strip || !window.MpPlan || !window.MpPlan.active) return;
+      var plan = window.MpPlan.plan;
+      document.getElementById("plan-strip-txt").innerHTML =
+        "定制化计划 · <b>" + plan.name + "</b>";
+      strip.style.display = "flex";
+    })();
+  </script>
 </body>
 </html>

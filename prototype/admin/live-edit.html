@@ -135,35 +135,7 @@
     </p>
   </div></div>
 
-  <h2 class="page-section-title">直播暖场</h2>
-  <div class="card"><div class="card-bd">
-    <div class="warmup-row">
-      <label class="warmup-radio"><input type="radio" name="warmup" value="image" checked /> 暖场图</label>
-      <label class="warmup-radio"><input type="radio" name="warmup" value="video" /> 暖场视频</label>
-    </div>
-    <div class="cover-row" style="margin-top:12px">
-      <div class="cover-preview warmup-img">
-        <img src="../assets/img/covers/emotion.jpg" alt="暖场图" style="width:100%;height:100%;object-fit:cover;display:block;border-radius:inherit" />
-      </div>
-      <div class="cover-side">
-        <a href="#" data-act="design" class="link-blue">在线设计 ⓘ</a>
-        <p class="muted cover-tip">建议尺寸 750*1334px 或 9:16，小于 5M 的 JPG、PNG 格式图片 <a href="#" class="link-blue">查看示例</a></p>
-      </div>
-    </div>
-  </div></div>
 
-  <h2 class="page-section-title" id="sec-preset">场景预设</h2>
-  <div class="card"><div class="card-bd">
-    <p class="muted" style="margin:0 0 12px;font-size:13px;line-height:1.6">
-      一键套用常见默认值，套用后仍可逐项修改。不替代下方三项业务配置。
-    </p>
-    <div class="preset-row" id="le-presets">
-      <button type="button" class="btn preset-btn" data-preset="open">免费招生公开课</button>
-      <button type="button" class="btn preset-btn" data-preset="enrolled">已购学员授课</button>
-      <button type="button" class="btn preset-btn" data-preset="paid">付费单场直播</button>
-    </div>
-    <p class="muted" id="le-preset-hint" style="margin:10px 0 0;font-size:12px">未套用预设</p>
-  </div></div>
 
   <h2 class="page-section-title" id="sec-access">观看资格</h2>
   <div class="card"><div class="card-bd">
@@ -209,13 +181,6 @@
         </div>
       </div>
 
-      <div class="goods-line" style="margin-top:16px">
-        <label class="goods-checkbox">
-          <input type="checkbox" id="le-solo-sell" checked />
-          <b>店铺单独售卖本场资格</b>
-          <span class="muted">用户可通过店铺或链接购买/领取本场观看资格；不表示挂载了带货商品</span>
-        </label>
-      </div>
 
       <div class="goods-line goods-validity">
         <span class="pro-badge">专业版</span>
@@ -235,34 +200,6 @@
     </div>
   </div></div>
 
-  <h2 class="page-section-title" id="sec-catalog">内容归属</h2>
-  <div class="card"><div class="card-bd">
-    <p class="sec-help">
-      决定本场<strong>直播 + 回放</strong>是否作为某课程/专栏/训练营的<strong>目录内容</strong>出现。
-      已与原先「关联课程」「所属课程」合并，避免两处配置含义不清。
-    </p>
-    <div class="goods-line" style="margin-bottom:12px">
-      <label><input type="radio" name="catalog" id="le-catalog-none" value="none" checked /><span>不加入课程目录（独立直播）</span></label>
-      <label style="margin-left:16px"><input type="radio" name="catalog" id="le-catalog-join" value="join" /><span>加入课程目录</span></label>
-    </div>
-    <div class="form-grid" id="le-catalog-fields" style="grid-template-columns:1fr 1fr;display:none">
-      <div class="field" style="grid-column:1/-1">
-        <label>所属课程 / 专栏 / 训练营 *</label>
-        <select id="le-course">
-          <option value="">请选择</option>
-          <option>春启 03 期家长必修课</option>
-          <option>春启 04 期家长必修课</option>
-          <option>9.9 引流课 · 亲子沟通</option>
-          <option>家长训练营</option>
-          <option>试听公开课</option>
-        </select>
-        <p class="field-help">学员在课程目录中可看到本场直播与回放入口；不授予额外观看资格（仍由「观看资格」控制）。</p>
-      </div>
-      <div class="field" style="grid-column:1/-1">
-        <button type="button" class="btn" id="btn-pick-course">+ 从内容库选择课程/专栏/训练营/会员</button>
-      </div>
-    </div>
-  </div></div>
 
   <h2 class="page-section-title" id="sec-goods">直播间商品</h2>
   <div class="card"><div class="card-bd">
@@ -372,10 +309,6 @@
     <span class="muted" style="margin-left:12px;font-size:12px">添加用户成为主播、助理或嘉宾</span>
   </div></div>
 
-  <h2 class="page-section-title">归属人 ⓘ</h2>
-  <div class="card"><div class="card-bd">
-    <button class="btn btn-sm" id="btn-pick-owner">+ 选择员工</button>
-  </div></div>
 
   <h2 class="page-section-title">预约提醒</h2>
   <div class="card"><div class="card-bd">
@@ -1042,46 +975,6 @@
     inp.disabled = !on;
     if (!on) inp.value = "";
   }
-  function applyPreset(key) {
-    var labels = {
-      open: "免费招生公开课",
-      enrolled: "已购学员授课",
-      paid: "付费单场直播"
-    };
-    if (key === "open") {
-      setAccessMode("free");
-      if ($("le-solo-sell")) $("le-solo-sell").checked = true;
-      setCatalogJoin(false);
-      setGoodsRows([
-        { name: "9.9 引流课 · 亲子沟通", price: 9.9 },
-        { name: "春启 03 期家长必修课", price: 1999 }
-      ]);
-    } else if (key === "enrolled") {
-      setAccessMode("named");
-      if ($("le-solo-sell")) $("le-solo-sell").checked = false;
-      setCatalogJoin(true);
-      setCourseName("春启 03 期家长必修课");
-      setGoodsRows([]);
-      if (typeof window.__leSetViewers === "function") {
-        window.__leSetViewers({ courses: ["春启 03 期家长必修课"], users: [] });
-      }
-    } else if (key === "paid") {
-      setAccessMode("paid");
-      if ($("le-access-price")) $("le-access-price").value = "49";
-      if ($("le-solo-sell")) $("le-solo-sell").checked = true;
-      setCatalogJoin(false);
-      setGoodsRows([{ name: "课后答疑加餐包", price: 99 }]);
-    } else {
-      return;
-    }
-    document.querySelectorAll(".preset-btn").forEach(function (b) {
-      b.classList.toggle("is-active", b.getAttribute("data-preset") === key);
-    });
-    if ($("le-preset-hint")) $("le-preset-hint").textContent = "已套用「" + labels[key] + "」，可继续修改";
-    dirty = true;
-    toast("已套用预设：" + labels[key]);
-  }
-
   function fillForm(v) {
     if (!v) return;
     if ($("le-name")) $("le-name").value = v.liveName || v.name || "";
@@ -1480,9 +1373,6 @@
     on(r, "change", syncCatalogFields);
   });
   on($("le-host-pwd-mode"), "change", syncHostPwd);
-  document.querySelectorAll(".preset-btn").forEach(function (btn) {
-    on(btn, "click", function () { applyPreset(btn.getAttribute("data-preset")); });
-  });
   window.addEventListener("beforeunload", function (e) {
     if (!dirty || isView) return;
     e.preventDefault();
@@ -1649,7 +1539,7 @@
       toast(SAVE_GATE_TIP);
     }
   });
-  ["btn-add-role", "btn-pick-owner", "btn-pick-course", "btn-add-goods", "btn-import-crm", "btn-more-config"].forEach(function (id) {
+  ["btn-add-role", "btn-add-goods", "btn-import-crm", "btn-more-config"].forEach(function (id) {
     on($(id), "click", function () { toast("原型操作"); dirty = true; });
   });
 

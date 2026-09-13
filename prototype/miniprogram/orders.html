@@ -3,181 +3,116 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>我的订单 · 星启家庭教育</title>
+  <title>我的订单 · To-B 小程序</title>
   <link rel="stylesheet" href="../assets/css/proto.css" />
-  <link rel="stylesheet" href="../assets/css/mp.css?v=taste2" />
-  <style>
-    .mp-order-card {
-      display: block;
-      background: #fff;
-      border-radius: var(--mp-radius);
-      box-shadow: var(--mp-shadow);
-      padding: 14px 14px 12px;
-      margin-bottom: 12px;
-      text-decoration: none;
-      color: inherit;
-    }
-    .mp-order-card:hover { text-decoration: none; }
-    .mp-order-hd {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 8px;
-      margin-bottom: 12px;
-      font-size: 12px;
-      color: var(--mp-muted);
-    }
-    .mp-order-hd .ch {
-      font-weight: 650;
-      color: #5c6575;
-    }
-    .mp-order-bd {
-      display: flex;
-      gap: 12px;
-      align-items: flex-start;
-    }
-    .mp-order-bd .mp-cover {
-      width: 72px;
-      height: 54px;
-      border-radius: 10px;
-      flex-shrink: 0;
-    }
-    .mp-order-bd h4 {
-      font-size: 14px;
-      font-weight: 700;
-      margin: 0 0 6px;
-      color: var(--mp-ink);
-      letter-spacing: -0.02em;
-    }
-    .mp-order-meta {
-      font-size: 12px;
-      color: var(--mp-muted);
-      line-height: 1.55;
-    }
-    .mp-order-ft {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 8px;
-      margin-top: 12px;
-      padding-top: 10px;
-      border-top: 1px solid #f3f4f6;
-    }
-    .mp-order-ft .amt {
-      font-size: 15px;
-      font-weight: 750;
-      color: var(--mp-ink);
-    }
-    .mp-order-ft .amt small { font-size: 12px; font-weight: 650; }
-    .mp-order-ft .acts { display: flex; gap: 8px; }
-    .mp-mini-btn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      height: 30px;
-      padding: 0 12px;
-      border-radius: 999px;
-      font-size: 12px;
-      font-weight: 650;
-      text-decoration: none;
-      border: 1px solid #c7d7ff;
-      color: var(--mp-primary);
-      background: #fff;
-    }
-    .mp-mini-btn.primary {
-      background: linear-gradient(135deg, #3b82f6, var(--mp-primary-deep));
-      color: #fff;
-      border-color: transparent;
-    }
-    .mp-mini-btn:hover { text-decoration: none; }
-  </style>
+  <link rel="stylesheet" href="../assets/css/mp.css?v=5" />
 </head>
 <body class="mp-page" data-tabbar="0">
   <div class="mp-frame">
-    <div class="mp-status">
-      <span>9:41</span>
-      <span class="mp-notch" aria-hidden="true"></span>
-      <span>100%</span>
-    </div>
-    <div class="mp-nav"><a class="back" href="mine.html" aria-label="返回">‹</a>我的订单</div>
-    <div class="mp-body">
-      <div style="padding:14px 16px 28px" id="order-list"></div>
+    <div class="mp-top" style="height:170px"></div>
+    <div class="mp-status"><span>9:41</span><span>订单</span><span>100%</span></div>
+    <div class="mp-nav"><a class="back" href="mine.html">←</a>我的订单</div>
+    <div class="mp-body" style="padding:0 14px">
+
+      <!-- 状态筛选 -->
+      <div class="mp-tabs" id="order-tabs">
+        <a class="mp-tab active" href="#" data-state="">全部</a>
+        <a class="mp-tab" href="#" data-state="待付款">待付款</a>
+        <a class="mp-tab" href="#" data-state="已完成">已完成</a>
+        <a class="mp-tab" href="#" data-state="已退款">已退款</a>
+      </div>
+
+      <div id="order-list"></div>
+
     </div>
   </div>
-  <p class="mp-hint"><span style="opacity:.75">原型切换</span> · <a href="../admin/orders.html">管理端订单</a></p>
+  <p class="mp-hint">订单与权益、支付结果联动 · <a href="../admin/orders.html">管理端订单</a></p>
+
   <script src="../assets/js/proto.js"></script>
   <script src="../assets/js/mp-shell.js"></script>
   <script>
-    var AS_KEY = "mp_aftersale_demo_v1";
+    (function () {
+      var ORDERS = [
+        {
+          no: "VX202603291001", time: "2026-09-13 09:12", state: "待付款",
+          title: "亲子沟通基础", spec: "8 节视频课 · 长期有效", price: 199,
+          cover: "沟通<br>基础", coverBg: "linear-gradient(160deg,#ffe0d8,#ffb3a0)",
+          acts: [{ txt: "取消订单", cls: "" }, { txt: "去支付", cls: "primary", act: "pay" }]
+        },
+        {
+          no: "VX202603291088", time: "2026-09-12 20:40", state: "已完成",
+          title: "9.9 引流体验课", spec: "视频号订单兑换 · 已开通权益", price: 9.9,
+          cover: "体验<br>9.9", coverBg: "linear-gradient(160deg,#ffe7c2,#ffc978)",
+          acts: [{ txt: "去学习", cls: "primary", act: "learn" }, { txt: "再次购买", cls: "" }]
+        },
+        {
+          no: "VX202603291075", time: "2026-09-11 21:05", state: "已完成",
+          title: "亲子沟通 90 分钟（直播门票）", spec: "单场观看资格 · 已观看", price: 19.9,
+          cover: "直播<br>门票", coverBg: "linear-gradient(160deg,#ffd0c9,#ff8b7a)",
+          acts: [{ txt: "看回放", cls: "primary", act: "replay" }]
+        },
+        {
+          no: "VX202603291003", time: "2026-09-08 14:22", state: "已退款",
+          title: "情绪觉察公开课（回看）", spec: "已退款 ¥39 · 权益已回收", price: 39,
+          cover: "回看", coverBg: "linear-gradient(160deg,#d7dee8,#8fa0b8)",
+          acts: [{ txt: "再次购买", cls: "" }]
+        }
+      ];
 
-    function loadAftersales() {
-      try {
-        return JSON.parse(localStorage.getItem(AS_KEY) || "{}") || {};
-      } catch (e) {
-        return {};
+      var stateMap = { "待付款": "wait", "已完成": "done", "已退款": "refund" };
+      var filter = "";
+
+      function render() {
+        var list = ORDERS.filter(function (o) { return !filter || o.state === filter; });
+        document.getElementById("order-list").innerHTML = list.length
+          ? list.map(function (o, i) {
+              return '<div class="mp-order">' +
+                '<div class="mp-order-hd">' +
+                  '<span>订单号 ' + o.no + '</span>' +
+                  '<span class="mp-order-state ' + (stateMap[o.state] || "") + '">' + o.state + '</span>' +
+                '</div>' +
+                '<div class="mp-order-bd">' +
+                  '<div class="mp-order-img" style="background:' + o.coverBg + '">' + o.cover + '</div>' +
+                  '<div class="mp-order-info">' +
+                    '<div class="mp-order-title">' + o.title + '</div>' +
+                    '<div class="mp-order-spec">' + o.spec + '</div>' +
+                    '<div class="mp-order-price">¥' + o.price + '<span>共 1 件</span></div>' +
+                  '</div>' +
+                '</div>' +
+                '<div class="mp-order-ft">' +
+                  '<span class="mp-order-time">' + o.time + '</span>' +
+                  o.acts.map(function (a) {
+                    return '<a class="mp-btn-sm ' + a.cls + '" href="#" data-act="' + (a.act || "toast") + '" data-idx="' + i + '">' + a.txt + '</a>';
+                  }).join("") +
+                '</div>' +
+              '</div>';
+            }).join("")
+          : '<div class="mp-empty"><div class="mp-empty-ico">🗂</div>暂无该状态的订单</div>';
       }
-    }
 
-    var ORDERS = [
-      {
-        id: "MP202609080199",
-        channel: "miniprogram",
-        channelLabel: "小程序购买",
-        product: "亲子沟通基础",
-        cover: "../assets/img/covers/comm.jpg",
-        payStatus: "已支付",
-        amount: 199,
-        time: "2026-09-08 20:41",
-        learnHref: "learn.html"
-      },
-      {
-        id: "VX202603291088",
-        channel: "video",
-        channelLabel: "视频号购买",
-        product: "家庭教育入门 9.9",
-        cover: "../assets/img/covers/trial.jpg",
-        payStatus: "已支付",
-        amount: 9.9,
-        time: "2026-03-29 14:18",
-        learnHref: "claim.html"
-      }
-    ];
+      document.getElementById("order-tabs").addEventListener("click", function (e) {
+        var t = e.target.closest(".mp-tab");
+        if (!t) return;
+        e.preventDefault();
+        document.querySelectorAll("#order-tabs .mp-tab").forEach(function (x) { x.classList.remove("active"); });
+        t.classList.add("active");
+        filter = t.getAttribute("data-state") || "";
+        render();
+      });
 
-    var asMap = loadAftersales();
-    var list = document.getElementById("order-list");
+      document.getElementById("order-list").addEventListener("click", function (e) {
+        var a = e.target.closest("[data-act]");
+        if (!a) return;
+        e.preventDefault();
+        var act = a.getAttribute("data-act");
+        if (act === "pay") { location.href = "pay-result.html?from=course"; return; }
+        if (act === "learn") { location.href = "learn.html"; return; }
+        if (act === "replay") { location.href = "live-room.html"; return; }
+        Proto.toast(a.textContent.trim() + "（原型）");
+      });
 
-    list.innerHTML = ORDERS.map(function (o) {
-      var as = asMap[o.id];
-      var asTip = as
-        ? '<span class="mp-tag" style="margin-left:6px">' + (as.statusLabel || "售后中") + "</span>"
-        : "";
-      var learnLabel = o.channel === "video" ? "去领课 / 学习" : "去学习";
-      var detailHref = "order-detail.html?id=" + encodeURIComponent(o.id);
-      return (
-        '<div class="mp-order-card">' +
-          '<a href="' + detailHref + '" style="display:block;color:inherit;text-decoration:none">' +
-            '<div class="mp-order-hd">' +
-              '<span class="ch">' + o.channelLabel + "</span>" +
-              '<span>' + o.payStatus + asTip + "</span>" +
-            "</div>" +
-            '<div class="mp-order-bd">' +
-              '<div class="mp-cover"><img src="' + o.cover + '" alt="" /></div>' +
-              "<div>" +
-                "<h4>" + o.product + "</h4>" +
-                '<div class="mp-order-meta">订单号 ' + o.id + "<br />" + o.time + "</div>" +
-              "</div>" +
-            "</div>" +
-          "</a>" +
-          '<div class="mp-order-ft">' +
-            '<div class="amt"><small>¥</small>' + o.amount + "</div>" +
-            '<div class="acts">' +
-              '<a class="mp-mini-btn" href="' + detailHref + '">详情</a>' +
-              '<a class="mp-mini-btn primary" href="' + o.learnHref + '">' + learnLabel + "</a>" +
-            "</div>" +
-          "</div>" +
-        "</div>"
-      );
-    }).join("");
+      render();
+    })();
   </script>
 </body>
 </html>

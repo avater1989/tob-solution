@@ -1,246 +1,39 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>学习 · 星启家庭教育</title>
+  <title>学习 · To-B 小程序</title>
   <link rel="stylesheet" href="../assets/css/proto.css" />
-  <link rel="stylesheet" href="../assets/css/mp.css?v=taste3" />
+  <link rel="stylesheet" href="../assets/css/mp.css?v=5" />
 </head>
 <body class="mp-page" data-tabbar="0">
   <div class="mp-frame">
-    <div class="mp-status">
-      <span>9:41</span>
-      <span class="mp-notch" aria-hidden="true"></span>
-      <span>100%</span>
-    </div>
-    <div class="mp-nav"><a class="back" id="nav-back" href="course.html" aria-label="返回">‹</a><span id="nav-title">亲子沟通基础</span></div>
+    <div class="mp-top" style="height:190px"></div>
+    <div class="mp-status"><span>9:41</span><span>学习</span><span>100%</span></div>
+    <div class="mp-nav"><a class="back" href="mine.html">←</a>亲子沟通基础</div>
     <div class="mp-body">
-      <div id="trial-banner" class="mp-trial-banner" style="display:none">
-        <span>试看模式 · 第 <span id="trial-lesson-label">1</span> 节整节可看</span>
-        <span class="mp-tag trial">试看</span>
+      <div style="height:200px;background:#111827;color:#fff;display:grid;place-items:center;font-size:13px">
+        视频播放器占位<br /><span style="opacity:.5;font-size:11px">第 2 节 · 情绪先于道理</span>
       </div>
-
-      <div class="live-player" id="player" style="height:220px;background-image:linear-gradient(180deg,rgba(12,18,32,.35),rgba(12,18,32,.78)),url('../assets/img/covers/classroom.jpg')">
-        <div style="width:60px;height:60px;border-radius:50%;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.28);display:grid;place-items:center;margin-bottom:12px;backdrop-filter:blur(6px)">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="#fff"><path d="M8 5.5v13l11-6.5L8 5.5z"/></svg>
-        </div>
-        <div style="font-size:15px;font-weight:700" id="player-title">第 1 节</div>
-        <div style="font-size:11px;opacity:.6;margin-top:6px" id="player-meta">演示页状态 · 无真实视频</div>
-        <div class="mp-demo-state" id="player-state">播放中（示意）</div>
-        <div style="position:absolute;left:0;right:0;bottom:0;height:3px;background:rgba(255,255,255,.15)">
-          <i id="player-bar" style="display:block;height:100%;width:12%;background:#165dff"></i>
+      <div style="background:#fff;padding:14px 16px">
+        <div style="font-size:15px;font-weight:650">目录</div>
+        <div style="margin-top:10px;font-size:13px;line-height:2">
+          <div>1. 为什么孩子不听你说话 ✅</div>
+          <div style="color:#0f766e;font-weight:600">2. 情绪先于道理 ◉ 学习中</div>
+          <div>3. 边界与规则</div>
+          <div>4. 家庭会议怎么开</div>
+          <div style="color:#999">…</div>
         </div>
       </div>
-
-      <div class="mp-panel">
-        <div style="display:flex;justify-content:space-between;align-items:center">
-          <div style="font-size:15px;font-weight:750;letter-spacing:-0.02em">课程目录</div>
-          <span style="font-size:12px;color:var(--mp-muted)" id="progress-label">试看 1 节</span>
-        </div>
-        <div class="mp-progress" style="margin-top:12px;height:6px"><i id="progress-bar" style="width:12%"></i></div>
+      <div style="padding:16px">
+        <button class="mp-btn" data-toast="进度已记录，下次继续（原型）">标记本节完成</button>
+        <a class="mp-btn mp-btn-outline" href="mine.html" style="margin-top:10px">返回我的</a>
       </div>
-
-      <div class="mp-outline" id="outline"></div>
-
-      <div style="padding:18px 16px 28px" id="actions"></div>
     </div>
   </div>
-  <p class="mp-hint" id="page-hint">试看 / 已购学习路径演示</p>
+  <p class="mp-hint">已购权益用户学习路径</p>
   <script src="../assets/js/proto.js"></script>
   <script src="../assets/js/mp-shell.js"></script>
-  <script src="../assets/js/mp-commerce.js"></script>
-  <script>
-    (function () {
-      var params = MpCommerce.qs();
-      var courseId = params.get("course") || "comm";
-      var item = MpCommerce.CATALOG[courseId] || MpCommerce.CATALOG.comm;
-      var owned = MpCommerce.hasRights(courseId);
-      var wantTrial = params.get("trial") === "1";
-      var lessonNo = Number(
-        params.get("lesson") || (wantTrial || !owned ? item.trialLesson : 1)
-      );
-      if (!owned && lessonNo !== item.trialLesson) {
-        location.replace(
-          "course.html?course=" +
-            encodeURIComponent(courseId) +
-            "&needBuy=1&lesson=" +
-            lessonNo
-        );
-        return;
-      }
-      var trial = !owned;
-
-      var current = item.outline.find(function (x) {
-        return x.n === lessonNo;
-      }) || item.outline[0];
-      var backHref = trial
-        ? "course.html?course=" + encodeURIComponent(courseId)
-        : "mine.html";
-      document.getElementById("nav-back").setAttribute("href", backHref);
-      document.getElementById("nav-title").textContent = item.title;
-      document.getElementById("player-title").textContent =
-        "第 " + current.n + " 节 · " + current.title;
-      document.getElementById("player-meta").textContent = trial
-        ? "试看演示 · " + item.trialRule + " · 无真实视频"
-        : current.duration + " · 进度已同步（示意）";
-      document.getElementById("player-bar").style.width = trial ? "35%" : "65%";
-      document.getElementById("player-state").textContent = trial
-        ? "试看播放中（示意）"
-        : "正式学习中（示意）";
-
-      document.getElementById("trial-banner").style.display = trial ? "flex" : "none";
-      document.getElementById("trial-lesson-label").textContent = String(item.trialLesson);
-      document.getElementById("progress-label").textContent = owned
-        ? "已完成 1/" + item.lessons
-        : "试看第 " + item.trialLesson + " 节";
-      document.getElementById("progress-bar").style.width = owned ? "25%" : "12%";
-      document.getElementById("page-hint").textContent = trial
-        ? "试看路径 · 结束后可购买解锁"
-        : "已购权益用户学习路径";
-
-      var outline = document.getElementById("outline");
-      outline.innerHTML = item.outline
-        .slice(0, 5)
-        .map(function (lesson) {
-          var isCurrent = lesson.n === current.n;
-          if (owned) {
-            var right =
-              lesson.n < current.n
-                ? "已学完"
-                : isCurrent
-                ? '<span style="color:var(--mp-primary);font-weight:650">学习中</span>'
-                : lesson.duration;
-            var n = lesson.n < current.n ? "✓" : lesson.n;
-            return (
-              '<a class="mp-outline-item is-link' +
-              (isCurrent ? " on" : "") +
-              '" href="learn.html?course=' +
-              encodeURIComponent(courseId) +
-              "&lesson=" +
-              lesson.n +
-              '"><span class="n"' +
-              (lesson.n < current.n
-                ? ' style="background:#e8f8ec;color:#2f9e44"'
-                : "") +
-              ">" +
-              n +
-              "</span><span>" +
-              lesson.title +
-              '</span><span class="right">' +
-              right +
-              "</span></a>"
-            );
-          }
-          if (lesson.trial) {
-            return (
-              '<a class="mp-outline-item is-link trial' +
-              (isCurrent ? " on" : "") +
-              '" href="learn.html?trial=1&course=' +
-              encodeURIComponent(courseId) +
-              "&lesson=" +
-              lesson.n +
-              '"><span class="n">' +
-              lesson.n +
-              "</span><span>" +
-              lesson.title +
-              '</span><span class="right"><span class="mp-tag trial">可试看</span></span></a>'
-            );
-          }
-          return (
-            '<button type="button" class="mp-outline-item lock" data-lock="' +
-            lesson.n +
-            '" style="width:100%;border:0;background:#fff;text-align:left">' +
-            '<span class="n">' +
-            lesson.n +
-            "</span><span>" +
-            lesson.title +
-            '</span><span class="right"><span class="mp-tag lock">未购买</span></span></button>'
-          );
-        })
-        .join("");
-
-      var actions = document.getElementById("actions");
-      if (trial) {
-        actions.innerHTML =
-          '<button type="button" class="mp-btn" id="btn-end-trial">试看结束 · 了解完整课程</button>' +
-          '<button type="button" class="mp-btn mp-btn-outline" id="btn-buy-now" style="margin-top:10px">立即购买 ¥' +
-          item.price +
-          "</button>" +
-          '<a class="mp-btn mp-btn-outline" href="course.html?course=' +
-          encodeURIComponent(courseId) +
-          '" style="margin-top:10px">返回课程详情</a>';
-      } else {
-        actions.innerHTML =
-          '<button class="mp-btn" data-toast="进度已记录，下次继续（原型）">标记本节完成</button>' +
-          '<a class="mp-btn mp-btn-outline" href="mine.html" style="margin-top:10px">返回我的</a>' +
-          '<a class="mp-btn mp-btn-outline" href="course.html?course=' +
-          encodeURIComponent(courseId) +
-          '" style="margin-top:10px">课程详情</a>';
-      }
-
-      function openBuy(fromLesson) {
-        MpCommerce.openBuyNotice({
-          catalogId: courseId,
-          from: "course",
-          course: courseId,
-          lesson: fromLesson || current.n,
-          returnUrl:
-            "learn.html?course=" + encodeURIComponent(courseId) + "&lesson=" + (fromLesson && Number(fromLesson) > 1 ? fromLesson : 2),
-          onCancel: function () {
-            Proto.toast("已取消，仍停留在试看位置");
-          }
-        });
-      }
-
-      if (trial) {
-        document.getElementById("btn-end-trial").addEventListener("click", function () {
-          MpCommerce.openTrialEndPrompt({
-            course: courseId,
-            lesson: current.n,
-            nextLesson: 2,
-            returnUrl: "learn.html?course=" + encodeURIComponent(courseId) + "&lesson=2",
-            onBuyCancel: function () {
-              Proto.toast("已取消购买，可继续试看");
-            }
-          });
-        });
-        document.getElementById("btn-buy-now").addEventListener("click", function () {
-          openBuy(2);
-        });
-      }
-
-      outline.querySelectorAll("[data-lock]").forEach(function (el) {
-        el.addEventListener("click", function () {
-          Proto.toast("未购买章节不可学习");
-          if (trial) {
-            MpCommerce.openTrialEndPrompt({
-              course: courseId,
-              lesson: current.n,
-              nextLesson: el.getAttribute("data-lock"),
-              returnUrl:
-                "learn.html?course=" +
-                encodeURIComponent(courseId) +
-                "&lesson=" +
-                el.getAttribute("data-lock")
-            });
-          } else {
-            openBuy(el.getAttribute("data-lock"));
-          }
-        });
-      });
-
-      // auto-prompt when arriving with ended=1
-      if (trial && params.get("ended") === "1") {
-        setTimeout(function () {
-          MpCommerce.openTrialEndPrompt({
-            course: courseId,
-            lesson: current.n,
-            nextLesson: 2
-          });
-        }, 300);
-      }
-    })();
-  </script>
 </body>
 </html>

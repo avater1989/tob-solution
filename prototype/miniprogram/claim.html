@@ -1,72 +1,42 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>领课 · 星启家庭教育</title>
+  <title>领课 · To-B 小程序</title>
   <link rel="stylesheet" href="../assets/css/proto.css" />
-  <link rel="stylesheet" href="../assets/css/mp.css?v=taste3" />
+  <link rel="stylesheet" href="../assets/css/mp.css?v=5" />
 </head>
 <body class="mp-page" data-tabbar="0">
   <div class="mp-frame">
-    <div class="mp-status">
-      <span>9:41</span>
-      <span class="mp-notch" aria-hidden="true"></span>
-      <span>100%</span>
-    </div>
-    <div class="mp-nav"><a class="back" href="mine.html" aria-label="返回">‹</a>领取课程</div>
+    <div class="mp-top" style="height:190px"></div>
+    <div class="mp-status"><span>9:41</span><span>领课</span><span>100%</span></div>
+    <div class="mp-nav"><a class="back" href="mine.html">←</a>领取课程</div>
     <div class="mp-body">
-      <div style="padding:20px 16px 28px">
-        <div class="mp-claim-card">
-          <div class="mp-cover" style="width:100%;height:132px;margin:0 0 16px;border-radius:14px">
-            <img src="../assets/img/covers/trial.jpg" alt="" />
-          </div>
-          <h3 style="font-size:18px;font-weight:750;margin:0;letter-spacing:-0.02em;color:var(--mp-ink)">家庭教育入门 9.9</h3>
-          <p style="font-size:12px;color:var(--mp-muted);margin:10px 0 0;line-height:1.55">
-            订单 VX202603291088<br />点击短信链接进入本页完成领课
-          </p>
-          <div style="margin-top:18px;text-align:left;background:#f7f8fa;border-radius:14px;padding:13px 14px;font-size:12px;color:#5c6575;line-height:1.75" id="claim-notice">
-            <div style="font-weight:700;color:var(--mp-ink);margin-bottom:6px">领取须知 · 试听权益</div>
-            · 包含内容：引流体验课试听内容（非整套正式课）<br />
-            · 开课方式：领取成功后立即开通，可前往学习<br />
-            · 有效期：领取后 30 天（领取成功即日起算）<br />
-            · 客服 / 售后：领课异常可在「我的 → 账号与帮助」联系商家
-          </div>
-          <a class="mp-btn" href="#" id="btn-claim" style="margin-top:18px">立即领课</a>
+      <div style="padding:24px 16px">
+        <div style="background:#fff;border-radius:12px;padding:20px;text-align:center">
+          <div class="course-cover" style="width:100%;height:100px;margin:0 auto 14px;font-size:14px">视频号订单兑换</div>
+          <h3 style="font-size:17px">家庭教育入门 9.9</h3>
+          <p style="font-size:12px;color:#888;margin:8px 0 16px">订单 VX202603291088 · 点击短信进入本页</p>
+          <a class="mp-btn" href="#" id="btn-claim">立即领课</a>
           <a class="mp-btn mp-btn-outline" href="#" id="btn-wecom" style="margin-top:10px">添加企微老师</a>
+          <p class="muted" style="margin-top:14px;text-align:left">领课后将开通对应线上课权益，并可引导添加企微完成私域承接。</p>
         </div>
-
-        <div id="claim-ok" class="mp-success-box" style="display:none">
-          <strong style="display:block;margin-bottom:6px">领课成功 · 已获得试听权益</strong>
-          下一步：开始学习试听内容，或进入直播间继续了解。<br /><br />
-          <a href="learn.html?course=comm&amp;lesson=1" style="color:#237804;font-weight:650">去学习</a>
-          ·
-          <a href="lives.html" style="color:#237804;font-weight:650">看直播</a>
-          ·
-          <a href="mine.html" style="color:#237804;font-weight:650">我的</a>
+        <div id="claim-ok" style="display:none;margin-top:16px;background:#ecfdf5;border-radius:10px;padding:14px;font-size:13px;color:#065f46">
+          ✅ 领课成功。可前往学习或进入直播。<br /><br />
+          <a href="learn.html">去学习</a> · <a href="lives.html">看直播</a> · <a href="mine.html">我的</a>
         </div>
       </div>
     </div>
   </div>
-  <p class="mp-hint">视频号短信承接 · <a href="../admin/orders.html">管理端订单</a></p>
+  <p class="mp-hint">承接视频号短信链路 · <a href="../admin/orders.html">管理端订单</a></p>
   <script src="../assets/js/proto.js"></script>
   <script src="../assets/js/mp-shell.js"></script>
-  <script src="../assets/js/mp-commerce.js"></script>
   <script>
     document.getElementById("btn-claim").addEventListener("click", function (e) {
       e.preventDefault();
-      MpCommerce.openBuyNotice({
-        catalogId: "trialClaim",
-        from: "claim",
-        onConfirm: function () {
-          MpCommerce.grantRights("trialClaim", { source: "claim" });
-          document.getElementById("claim-ok").style.display = "block";
-          Proto.toast("试听权益已开通（原型）");
-        },
-        onCancel: function () {
-          Proto.toast("已取消领取");
-        }
-      });
+      document.getElementById("claim-ok").style.display = "block";
+      Proto.toast("权益已开通（原型）");
     });
     document.getElementById("btn-wecom").addEventListener("click", function (e) {
       e.preventDefault();

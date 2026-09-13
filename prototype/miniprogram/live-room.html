@@ -1,354 +1,55 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>直播间 · 星启家庭教育</title>
+  <title>直播间 · To-B 小程序</title>
   <link rel="stylesheet" href="../assets/css/proto.css" />
-  <link rel="stylesheet" href="../assets/css/mp.css?v=taste3" />
-  <style>
-    .lr-panel {
-      background: #fff;
-      border-radius: 16px 16px 0 0;
-      padding: 18px 16px 24px;
-      margin-top: -12px;
-      position: relative;
-      z-index: 2;
-      min-height: 280px;
-    }
-    .lr-title { font-size: 18px; font-weight: 750; letter-spacing: -0.02em; }
-    .lr-meta { font-size: 13px; color: var(--mp-muted); margin-top: 8px; line-height: 1.5; }
-    .lr-tip {
-      margin-top: 14px; padding: 12px 14px; border-radius: 10px;
-      background: #f5f6f8; font-size: 13px; line-height: 1.55; color: #4e5969;
-    }
-    .lr-tip.warn { background: #fff7e8; color: #ad6800; }
-    .lr-tip.ok { background: #e8f8ef; color: #237804; }
-    .lr-tip.err { background: #fff1f0; color: #cf1322; }
-    .lr-actions { display: flex; flex-direction: column; gap: 10px; margin-top: 18px; }
-    .lr-actions .mp-btn { width: 100%; }
-    .lr-cover {
-      position: relative; height: 210px;
-      background-size: cover; background-position: center;
-    }
-    .lr-cover-mask {
-      position: absolute; inset: 0;
-      background: linear-gradient(180deg, rgba(12,18,32,.15), rgba(12,18,32,.72));
-      display: flex; flex-direction: column; align-items: center; justify-content: flex-end;
-      padding: 20px 16px; color: #fff; text-align: center;
-    }
-    .lr-badge {
-      position: absolute; top: 12px; left: 12px; z-index: 2;
-      background: rgba(0,0,0,.55); color: #fff; font-size: 10px; font-weight: 700;
-      padding: 4px 8px; border-radius: 6px;
-    }
-    .lr-close {
-      position: absolute; top: 12px; right: 12px; z-index: 2;
-      color: #fff; font-size: 12px; font-weight: 600;
-      background: rgba(0,0,0,.45); padding: 6px 12px; border-radius: 999px;
-      text-decoration: none; backdrop-filter: blur(6px);
-    }
-    .rp-controls {
-      margin-top: 14px; background: #0f172a; border-radius: 12px; padding: 14px;
-      color: #fff;
-    }
-    .rp-bar { height: 4px; background: rgba(255,255,255,.25); border-radius: 2px; margin: 12px 0 8px; }
-    .rp-bar > i { display: block; width: 32%; height: 100%; background: #3b82f6; border-radius: 2px; }
-    .rp-row { display: flex; justify-content: space-between; font-size: 12px; opacity: .8; font-family: ui-monospace, monospace; }
-  </style>
+  <link rel="stylesheet" href="../assets/css/mp.css?v=5" />
 </head>
 <body class="mp-page" data-tabbar="0">
-  <div class="mp-frame" style="background:#0f172a" id="lr-root">
-    <div class="mp-status" style="background:#0f172a;color:#fff">
-      <span>9:41</span>
-      <span class="mp-notch" aria-hidden="true"></span>
-      <span>100%</span>
+  <div class="mp-frame">
+    <div class="mp-status" style="background:#0f172a;color:#fff"><span>9:41</span><span>直播中</span><span>100%</span></div>
+    <div class="live-player">
+      <span class="live-tag">LIVE 1,286</span>
+      <div style="font-size:14px;opacity:.9">亲子沟通 90 分钟</div>
+      <div style="font-size:12px;opacity:.55;margin-top:6px">主讲画面占位（小程序直播方案）</div>
+      <div style="position:absolute;top:10px;right:10px">
+        <a href="lives.html" style="color:#fff;font-size:12px;background:rgba(0,0,0,.4);padding:4px 8px;border-radius:4px">关闭</a>
+      </div>
     </div>
-    <!-- 由脚本按状态渲染 -->
+    <div class="live-chat">
+      <div class="msg"><b>系统</b> 欢迎进入直播间</div>
+      <div class="msg"><b>李女士</b> 老师讲得太实用了</div>
+      <div class="msg"><b>助教小王</b> 今晚下单课程有优惠哦</div>
+      <div class="msg"><b>张妈妈</b> 求挂课链接</div>
+    </div>
+    <div class="goods-sheet">
+      <div style="font-size:12px;color:#888;margin-bottom:6px">本场商品</div>
+      <div class="goods-row">
+        <div class="course-cover" style="width:56px;height:42px;font-size:10px">沟通课</div>
+        <div style="flex:1">
+          <div style="font-size:13px;font-weight:600">亲子沟通基础</div>
+          <div style="color:#dc2626;font-size:13px">¥199</div>
+        </div>
+        <a class="btn btn-primary btn-sm" href="pay-result.html?from=live">购买</a>
+      </div>
+      <div class="goods-row" style="border:0">
+        <div class="course-cover live" style="width:56px;height:42px;font-size:10px">本场</div>
+        <div style="flex:1">
+          <div style="font-size:13px;font-weight:600">本场直播门票</div>
+          <div style="color:#dc2626;font-size:13px">¥19.9 · 未购可买</div>
+        </div>
+        <a class="btn btn-sm" href="pay-result.html?from=ticket">购买入场</a>
+      </div>
+      <div style="display:flex;gap:8px;margin-top:8px">
+        <input placeholder="说点什么…" style="flex:1" />
+        <button class="btn btn-sm" data-toast="评论已发送（原型）">发送</button>
+      </div>
+    </div>
   </div>
-  <p class="mp-hint"><a href="lives.html">返回直播列表</a> · <a href="../admin/live-edit.html">管理端配置</a></p>
+  <p class="mp-hint">未购用户可买直播或挂载课 · <a href="../admin/live-edit.html">管理端配置</a></p>
   <script src="../assets/js/proto.js"></script>
   <script src="../assets/js/mp-shell.js"></script>
-  <script src="../assets/js/mp-commerce.js"></script>
-  <script>
-(function () {
-  var qs = new URLSearchParams(location.search);
-  var status = qs.get("status") || "live";
-  var access = qs.get("access") || "1";
-  var remind = qs.get("remind") || "0";
-  var title = qs.get("title") || "亲子沟通 90 分钟";
-  var host = qs.get("host") || "林老师";
-  var startAt = qs.get("time") || "今天 20:00";
-  var newTime = qs.get("newTime") || "周六 20:00";
-  var cover = "../assets/img/covers/live.jpg";
-  var root = document.getElementById("lr-root");
-
-  function toast(msg) {
-    if (window.Proto && Proto.toast) Proto.toast(msg);
-    else alert(msg);
-  }
-
-  function setUrl(patch) {
-    Object.keys(patch).forEach(function (k) {
-      if (patch[k] === null || patch[k] === undefined) qs.delete(k);
-      else qs.set(k, patch[k]);
-    });
-    var next = location.pathname + "?" + qs.toString();
-    history.replaceState(null, "", next);
-    status = qs.get("status") || status;
-    access = qs.get("access") || access;
-    remind = qs.get("remind") || remind;
-    render();
-  }
-
-  function coverBlock(badgeText) {
-    return (
-      '<div class="lr-cover" style="background-image:url(\'' + cover + '\')">' +
-        (badgeText ? '<span class="lr-badge">' + badgeText + "</span>" : "") +
-        '<a class="lr-close" href="lives.html">关闭</a>' +
-        '<div class="lr-cover-mask">' +
-          '<div style="font-size:16px;font-weight:750">' + title + "</div>" +
-          '<div style="font-size:12px;opacity:.7;margin-top:6px">' + host + "主讲</div>" +
-        "</div>" +
-      "</div>"
-    );
-  }
-
-  function panel(inner) {
-    return '<div class="lr-panel">' + inner + "</div>";
-  }
-
-  function renderUpcoming() {
-    root.innerHTML =
-      '<div class="mp-status" style="background:#0f172a;color:#fff"><span>9:41</span><span class="mp-notch" aria-hidden="true"></span><span>100%</span></div>' +
-      coverBlock("未开播") +
-      panel(
-        '<div class="lr-title">' + title + "</div>" +
-        '<div class="lr-meta">开播时间：' + startAt + "<br/>主讲：" + host + " · 预计 90 分钟</div>" +
-        '<div class="lr-tip">本场介绍：从「情绪命名」到「边界表达」，带你走通亲子沟通的关键话术。</div>' +
-        '<div class="lr-actions">' +
-          '<button type="button" class="mp-btn" id="btn-book">预约本场</button>' +
-          '<button type="button" class="mp-btn mp-btn-outline" id="btn-remind-off" style="display:none">开启开播提醒</button>' +
-        "</div>"
-      );
-    document.getElementById("btn-book").onclick = function () {
-      setUrl({ status: "booked", remind: "0" });
-      toast("预约成功（原型）");
-    };
-  }
-
-  function renderBooked() {
-    var remindOn = remind === "1";
-    root.innerHTML =
-      '<div class="mp-status" style="background:#0f172a;color:#fff"><span>9:41</span><span class="mp-notch" aria-hidden="true"></span><span>100%</span></div>' +
-      coverBlock("已预约") +
-      panel(
-        '<div class="lr-title">' + title + "</div>" +
-        '<div class="lr-meta">开播时间：' + startAt + "</div>" +
-        '<div class="lr-tip ok">预约成功。开播后可从直播列表进入。</div>' +
-        '<div class="lr-tip">' +
-          (remindOn
-            ? "开播提醒：已开启（原型模拟，不真实订阅消息）"
-            : "开播提醒：未开启。开启后可在开播前收到提醒（原型）。") +
-        "</div>" +
-        '<div class="lr-actions">' +
-          (remindOn
-            ? ""
-            : '<button type="button" class="mp-btn" id="btn-remind">开启开播提醒</button>') +
-          '<button type="button" class="mp-btn mp-btn-outline" id="btn-cancel-book">取消预约</button>' +
-        "</div>"
-      );
-    var btnRemind = document.getElementById("btn-remind");
-    if (btnRemind) {
-      btnRemind.onclick = function () {
-        setUrl({ remind: "1" });
-        toast("已开启提醒（原型）");
-      };
-    }
-    document.getElementById("btn-cancel-book").onclick = function () {
-      setUrl({ status: "upcoming", remind: null });
-      toast("已取消预约");
-    };
-  }
-
-  function renderLiveGate() {
-    root.innerHTML =
-      '<div class="mp-status" style="background:#0f172a;color:#fff"><span>9:41</span><span class="mp-notch" aria-hidden="true"></span><span>100%</span></div>' +
-      coverBlock("LIVE") +
-      panel(
-        '<div class="lr-title">' + title + "</div>" +
-        '<div class="lr-meta">正在直播中 · ' + host + "</div>" +
-        '<div class="lr-tip warn">暂无观看资格。可通过购买本场资格或持有关联课程有效权益后进入。</div>' +
-        '<div class="lr-actions">' +
-          '<button type="button" class="mp-btn" id="btn-get-access">获取观看资格</button>' +
-          '<button type="button" class="mp-btn mp-btn-outline" id="btn-enter-demo">我已有资格，进入直播</button>' +
-        "</div>"
-      );
-    document.getElementById("btn-get-access").onclick = function () {
-      if (window.MpCommerce) {
-        MpCommerce.openBuyNotice({
-          catalogId: "ticket",
-          from: "ticket",
-          returnUrl: "live-room.html?status=live&access=1&title=" + encodeURIComponent(title)
-        });
-      } else {
-        toast("获取资格（原型）");
-      }
-    };
-    document.getElementById("btn-enter-demo").onclick = function () {
-      setUrl({ status: "live", access: "1" });
-    };
-  }
-
-  function renderLiveOnAir() {
-    root.style.background = "#0f172a";
-    root.innerHTML =
-      '<div class="mp-status" style="background:#0f172a;color:#fff"><span>9:41</span><span class="mp-notch" aria-hidden="true"></span><span>100%</span></div>' +
-      '<div class="live-player" style="background-image:linear-gradient(180deg,rgba(12,18,32,.2),rgba(12,18,32,.7)),url(\'' + cover + '\')">' +
-        '<span class="live-tag"><i style="display:inline-block;width:6px;height:6px;border-radius:50%;background:#fff"></i>LIVE 1,286</span>' +
-        '<a href="lives.html" style="position:absolute;top:12px;right:12px;color:#fff;font-size:12px;font-weight:600;background:rgba(0,0,0,.45);padding:6px 12px;border-radius:999px;text-decoration:none;backdrop-filter:blur(6px)">关闭</a>' +
-        '<div style="width:68px;height:68px;border-radius:50%;border:2px solid rgba(255,255,255,.4);overflow:hidden;margin-bottom:12px;box-shadow:0 8px 24px rgba(0,0,0,.35)">' +
-          '<img src="../assets/img/covers/live-host.jpg" alt="" style="width:100%;height:100%;object-fit:cover" />' +
-        "</div>" +
-        '<div style="font-size:16px;font-weight:750;letter-spacing:-0.02em">' + title + "</div>" +
-        '<div style="font-size:12px;opacity:.6;margin-top:6px">' + host + "主讲 · 小程序直播示意</div>" +
-      "</div>" +
-      '<div class="live-chat">' +
-        '<div class="msg"><b>系统</b>欢迎进入直播间，文明互动</div>' +
-        '<div class="msg"><b>李女士</b>老师讲得太实用了</div>' +
-        '<div class="msg"><b>助教小王</b>今晚下单课程有优惠哦</div>' +
-      "</div>" +
-      '<div class="goods-sheet">' +
-        '<div style="font-size:12px;color:var(--mp-muted);margin-bottom:6px;font-weight:650">本场商品</div>' +
-        '<div class="goods-row">' +
-          '<div class="mp-cover" style="width:58px;height:44px;border-radius:8px"><img src="../assets/img/covers/comm.jpg" alt="" /></div>' +
-          '<div style="flex:1;min-width:0"><div style="font-size:13px;font-weight:650">亲子沟通基础</div><div class="mp-price" style="font-size:14px"><small>¥</small>199</div></div>' +
-          '<button type="button" class="mp-btn" id="buy-series" style="width:auto;padding:8px 16px;font-size:12px;box-shadow:none">购买</button>' +
-        "</div>" +
-        '<div style="display:flex;gap:8px;margin-top:12px;align-items:center">' +
-          '<input placeholder="说点什么…" style="flex:1;margin:0;border-radius:999px;background:#f2f3f5;border:0;padding:11px 16px;font-size:13px;font-family:inherit" />' +
-          '<button class="mp-btn" style="width:auto;padding:10px 18px;font-size:13px;box-shadow:none" data-toast="评论已发送（原型）">发送</button>' +
-        "</div>" +
-      "</div>";
-    var buy = document.getElementById("buy-series");
-    if (buy) {
-      buy.onclick = function () {
-        MpCommerce.openBuyNotice({
-          catalogId: "liveGoods",
-          from: "live",
-          course: "comm",
-          lesson: 2,
-          returnUrl: "learn.html?course=comm&lesson=2"
-        });
-      };
-    }
-  }
-
-  function renderEndedPending() {
-    root.innerHTML =
-      '<div class="mp-status" style="background:#0f172a;color:#fff"><span>9:41</span><span class="mp-notch" aria-hidden="true"></span><span>100%</span></div>' +
-      coverBlock("已结束") +
-      panel(
-        '<div class="lr-title">' + title + "</div>" +
-        '<div class="lr-meta">直播已结束</div>' +
-        '<div class="lr-tip warn">回放准备中，生成完成后将在列表中开放观看。</div>'
-      );
-  }
-
-  function renderEndedNone() {
-    root.innerHTML =
-      '<div class="mp-status" style="background:#0f172a;color:#fff"><span>9:41</span><span class="mp-notch" aria-hidden="true"></span><span>100%</span></div>' +
-      coverBlock("已结束") +
-      panel(
-        '<div class="lr-title">' + title + "</div>" +
-        '<div class="lr-meta">直播已结束</div>' +
-        '<div class="lr-tip">本场不提供回放。</div>'
-      );
-  }
-
-  function renderReplay() {
-    cover = "../assets/img/covers/replay.jpg";
-    root.innerHTML =
-      '<div class="mp-status" style="background:#0f172a;color:#fff"><span>9:41</span><span class="mp-notch" aria-hidden="true"></span><span>100%</span></div>' +
-      coverBlock("回放") +
-      panel(
-        '<div class="lr-title">' + title + "（回放）</div>" +
-        '<div class="lr-meta">有效期至：2026-09-20 23:59 · 非实时互动</div>' +
-        '<div class="rp-controls">' +
-          '<button type="button" class="mp-btn" id="btn-play" style="width:auto;padding:8px 18px">▶ 播放</button>' +
-          '<div class="rp-bar"><i></i></div>' +
-          '<div class="rp-row"><span>12:40</span><span>72:00</span></div>' +
-        "</div>" +
-        '<div class="lr-tip" style="margin-top:14px">回放页不展示实时聊天与在线人数，仅支持进度播放（原型）。</div>'
-      );
-    document.getElementById("btn-play").onclick = function () {
-      toast("开始播放回放（原型，无真实播放器）");
-    };
-  }
-
-  function renderReplayBlocked(kind) {
-    cover = "../assets/img/covers/replay.jpg";
-    var tip =
-      kind === "expired"
-        ? "回放已过有效期，无法继续观看。"
-        : kind === "off"
-          ? "回放尚未上架，暂不可观看。"
-          : "回放暂不可用。";
-    root.innerHTML =
-      '<div class="mp-status" style="background:#0f172a;color:#fff"><span>9:41</span><span class="mp-notch" aria-hidden="true"></span><span>100%</span></div>' +
-      coverBlock("回放") +
-      panel(
-        '<div class="lr-title">' + title + "</div>" +
-        '<div class="lr-tip warn">' + tip + "</div>"
-      );
-  }
-
-  function renderRescheduled() {
-    root.innerHTML =
-      '<div class="mp-status" style="background:#0f172a;color:#fff"><span>9:41</span><span class="mp-notch" aria-hidden="true"></span><span>100%</span></div>' +
-      coverBlock("已改期") +
-      panel(
-        '<div class="lr-title">' + title + "</div>" +
-        '<div class="lr-tip warn">本场已改期。<br/>原定：' + startAt + "<br/>新时间：<b>" + newTime + "</b></div>" +
-        '<div class="lr-actions">' +
-          '<button type="button" class="mp-btn" id="btn-book-new">按新时间预约</button>' +
-        "</div>"
-      );
-    document.getElementById("btn-book-new").onclick = function () {
-      setUrl({ status: "booked", time: newTime, remind: "0" });
-      toast("已按新时间预约（原型）");
-    };
-  }
-
-  function renderCancelled() {
-    root.innerHTML =
-      '<div class="mp-status" style="background:#0f172a;color:#fff"><span>9:41</span><span class="mp-notch" aria-hidden="true"></span><span>100%</span></div>' +
-      coverBlock("已取消") +
-      panel(
-        '<div class="lr-title">' + title + "</div>" +
-        '<div class="lr-tip err">本场直播已取消，不再提供预约与入场。</div>'
-      );
-  }
-
-  function render() {
-    if (status === "upcoming") return renderUpcoming();
-    if (status === "booked") return renderBooked();
-    if (status === "live") {
-      if (access === "0") return renderLiveGate();
-      return renderLiveOnAir();
-    }
-    if (status === "ended_pending") return renderEndedPending();
-    if (status === "ended_none") return renderEndedNone();
-    if (status === "replay") return renderReplay();
-    if (status === "replay_off") return renderReplayBlocked("off");
-    if (status === "replay_expired") return renderReplayBlocked("expired");
-    if (status === "rescheduled") return renderRescheduled();
-    if (status === "cancelled") return renderCancelled();
-    return renderLiveOnAir();
-  }
-
-  render();
-})();
-  </script>
 </body>
 </html>

@@ -30,7 +30,6 @@
     <div class="cm-hero-bd">
       <div class="cm-hero-title">
         <span id="o-name2">小学语文阅读启蒙系列</span>
-        <span id="o-source" style="display:none;font-size:11px;padding:1px 6px;border-radius:3px;background:#f4f0ff;color:#722ed1;font-weight:500">平台</span>
         <span class="cm-pill" id="o-shelf">已上架</span>
       </div>
       <div class="cm-hero-desc" id="o-desc">针对 6-12 岁儿童阅读兴趣培养，从绘本到章节书的进阶路径。</div>
@@ -81,12 +80,12 @@
 </div>
 
 <script src="../assets/js/proto.js"></script>
-<script src="../assets/js/admin-shell.js?v=13"></script>
+<script src="../assets/js/admin-shell.js?v=14"></script>
 <script>
 var COURSES = {
   S001: {
     name:"小学语文阅读启蒙系列", cat:"K12 教育", desc:"针对 6-12 岁儿童阅读兴趣培养，从绘本到章节书的进阶路径。",
-    shelf:"已上架", color:"", editable:false, source:"platform",
+    shelf:"已上架", color:"", editable:true,
     chapters:[
       { title:"第一章 认识绘本", status:"已配置视频", lessons:[
         { title:"如何让孩子爱上阅读", req:true, meta:"如何让孩子爱上阅读.mp4 · 观看完成 · 8分钟", type:"视频" },
@@ -102,7 +101,7 @@ var COURSES = {
   },
   S002: {
     name:"家长情绪管理训练营", cat:"家庭教育", desc:"8 周系统训练，帮助家长识别情绪、管理情绪、与孩子正向沟通。",
-    shelf:"已下架", color:"green", editable:true, source:"self",
+    shelf:"已下架", color:"green", editable:true,
     chapters:[
       { title:"第一章 制定学习目标", status:"已配置视频", lessons:[
         { title:"目标拆解方法", req:true, meta:"课程图文内容 · 观看完成 · 8分钟", type:"视频" }
@@ -111,7 +110,7 @@ var COURSES = {
   },
   S003: {
     name:"AI 学习规划入门", cat:"学习能力", desc:"AI 助力学习规划，10 节实操课让孩子学会用 AI 工具提升学习效率。",
-    shelf:"已上架", color:"orange", editable:false, source:"self",
+    shelf:"已上架", color:"orange", editable:true,
     chapters:[
       { title:"第一章 AI 工具入门", status:"已配置视频", lessons:[
         { title:"认识常用 AI 工具", req:true, meta:"AI入门.mp4 · 观看完成 · 18分钟", type:"视频" }
@@ -124,14 +123,13 @@ var params = new URLSearchParams(location.search);
 var id = params.get("id") || "S001";
 var course = COURSES[id] || COURSES.S001;
 var editingIdx = -1;
-// 平台内容恒为只读；?readonly=1 可强制只读；自建内容已上架时也锁定（在 render 中按当前状态计算）
-var isPlatform = course.source === "platform";
+// ?readonly=1 可强制只读；已上架/不可编辑的内容锁定（在 render 中按当前状态计算）
 var forceReadonly = params.get("readonly") === "1";
 
 function esc(s){ return String(s).replace(/[&<>"']/g,function(c){return({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"})[c];}); }
 
 function render() {
-  var readonly = isPlatform || forceReadonly || !course.editable;
+  var readonly = forceReadonly || !course.editable;
   document.getElementById("o-name").textContent = course.name;
   document.getElementById("o-name2").textContent = course.name;
   document.getElementById("o-sub").textContent = course.cat + " · 系列视频课程";
@@ -140,12 +138,9 @@ function render() {
   document.getElementById("o-avatar").className = "cm-avatar " + (course.color||"");
   document.getElementById("o-shelf").textContent = course.shelf;
   document.getElementById("o-shelf").className = "cm-pill" + (course.shelf === "已上架" ? "" : " off");
-  document.getElementById("o-source").style.display = isPlatform ? "" : "none";
 
   var alertEl = document.getElementById("o-readonly");
-  alertEl.textContent = isPlatform
-    ? "平台内容由运营后台同步下发，目录仅支持查看：不可新增 / 编辑 / 删除章节，也不能调整顺序。如需调整请联系平台运营。"
-    : "课程已上架，目录处于只读状态。如需调整内容，请先返回课程列表下架课程。";
+  alertEl.textContent = "内容已上架，目录处于只读状态。如需调整内容，请先返回列表下架内容。";
   alertEl.style.display = readonly ? "block" : "none";
   document.getElementById("btn-new-ch").style.display = readonly ? "none" : "";
   document.getElementById("btn-publish").style.display = readonly ? "none" : "";

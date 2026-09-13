@@ -212,6 +212,13 @@
   align-items: flex-start;
   gap: 10px;
 }
+/* 评审结论：单选项需左对齐。
+   proto.css 的 `.field > div:has(> label > input[type="radio"])` 优先级 (0,2,3) 高于
+   上面的 .cm-choice.col (0,2,0)，会把 align-items 覆盖成 center，
+   而 flex-direction 仍为 column，于是选项在列方向被水平居中。此处提高优先级压回左对齐。 */
+.cm-section .field > .cm-choice.col {
+  align-items: flex-start;
+}
 .cm-check {
   display: inline-flex !important;
   align-items: center;

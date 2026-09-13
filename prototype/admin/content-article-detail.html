@@ -19,7 +19,7 @@
   <div class="cm-page-hd">
     <div>
       <h1 id="d-name">9 月新学期家长指南</h1>
-      <p class="sub">图文商品详情</p>
+      <p class="sub">图文详情</p>
     </div>
   </div>
 
@@ -39,7 +39,7 @@
     <div class="cm-section-hd"><h2>内容信息</h2></div>
     <div class="cm-dl">
       <div class="item"><span class="k">内容类型</span><span class="v">图文</span></div>
-      <div class="item"><span class="k">分类</span><span class="v" id="d-cat">K12 教育</span></div>
+      <div class="item"><span class="k">内容分类</span><span class="v" id="d-cat">K12 教育</span></div>
       <div class="item"><span class="k">内容摘要</span><span class="v" id="d-summary">9 月新学期家长指南 · 5分钟</span></div>
       <div class="item"><span class="k">更新时间</span><span class="v" id="d-updated">2026-08-25</span></div>
       <div class="item"><span class="k">作者</span><span class="v" id="d-author">编辑部</span></div>
@@ -48,15 +48,9 @@
   </div>
 
   <div class="cm-section">
-    <div class="cm-section-hd"><h2>商品信息</h2></div>
+    <div class="cm-section-hd"><h2>状态信息</h2></div>
     <div class="cm-dl">
-      <div class="item"><span class="k">获取方式</span><span class="v" id="d-access">免费</span></div>
-      <div class="item"><span class="k">商品分组</span><span class="v" id="d-group">K12 教育</span></div>
-      <div class="item"><span class="k">有效期</span><span class="v">长期有效</span></div>
       <div class="item"><span class="k">店铺显示</span><span class="v">显示</span></div>
-      <div class="item"><span class="k">交付方式</span><span class="v">支付后自动开通（线上内容）</span></div>
-      <div class="item"><span class="k">退款规则</span><span class="v">未使用可退 · 支持 7 天内未使用申请退款</span></div>
-      <div class="item"><span class="k">权益回收</span><span class="v">退款成功后自动回收图文阅读权益</span></div>
       <div class="item"><span class="k">上架设置</span><span class="v" id="d-shelfmode">立即上架（保存后提交内容审核队列）</span></div>
     </div>
   </div>
@@ -73,23 +67,14 @@
 <!-- 弹窗遮罩 -->
 <div class="proto-mask" id="mask"></div>
 
-<div class="proto-modal" id="modal-share">
-  <div style="background:#fff;border-radius:10px;width:440px;max-width:92vw;overflow:hidden">
-    <div class="proto-modal-hd"><h3 style="margin:0;font-size:16px">分享图文</h3><button class="ctrl-icon-btn" data-close>×</button></div>
-    <div class="proto-modal-bd">
-      <div class="cm-share-link" id="share-url">https://yibo.app/a/A001</div>
-      <div style="margin-top:12px"><button class="btn btn-primary" id="btn-copy-link">复制链接</button></div>
-    </div>
-  </div>
-</div>
-
 <script src="../assets/js/proto.js"></script>
-<script src="../assets/js/admin-shell.js?v=13"></script>
+<script src="../assets/js/share-modal.js?v=1"></script>
+<script src="../assets/js/admin-shell.js?v=14"></script>
 <script>
 var DATA = {
-  A001: { name:"9 月新学期家长指南", cat:"K12 教育", author:"编辑部", desc:"用一篇图文快速了解新学期家长准备事项。", summary:"9 月新学期家长指南 · 5分钟", words:"1,280", access:"免费", group:"K12 教育", shelf:"已上架", updated:"2026-08-25", color:"purple" },
-  A002: { name:"孩子注意力训练方法论", cat:"学习能力", author:"张老师", desc:"可操作的注意力训练方法合集。", summary:"孩子注意力训练方法论 · 8分钟", words:"980", access:"免费", group:"学习能力", shelf:"已上架", updated:"2026-08-30", color:"" },
-  A003: { name:"家庭情绪急救指南", cat:"家庭教育", author:"李老师", desc:"冲突场景下的情绪急救步骤。", summary:"家庭情绪急救指南 · 3分钟", words:"320", access:"免费", group:"家庭教育", shelf:"草稿", updated:"—", color:"green", pub:"草稿" }
+  A001: { name:"9 月新学期家长指南", cat:"K12 教育", author:"编辑部", desc:"用一篇图文快速了解新学期家长准备事项。", summary:"9 月新学期家长指南 · 5分钟", words:"1,280", shelf:"已上架", updated:"2026-08-25", color:"purple" },
+  A002: { name:"孩子注意力训练方法论", cat:"学习能力", author:"张老师", desc:"可操作的注意力训练方法合集。", summary:"孩子注意力训练方法论 · 8分钟", words:"980", shelf:"已上架", updated:"2026-08-30", color:"" },
+  A003: { name:"家庭情绪急救指南", cat:"家庭教育", author:"李老师", desc:"冲突场景下的情绪急救步骤。", summary:"家庭情绪急救指南 · 3分钟", words:"320", shelf:"草稿", updated:"—", color:"green", pub:"草稿" }
 };
 var id = new URLSearchParams(location.search).get("id") || "A001";
 var d = DATA[id] || DATA.A001;
@@ -102,19 +87,18 @@ document.getElementById("d-summary").textContent = d.summary;
 document.getElementById("d-updated").textContent = d.updated;
 document.getElementById("d-author").textContent = d.author;
 document.getElementById("d-words").textContent = d.words;
-document.getElementById("d-access").textContent = d.access;
-document.getElementById("d-group").textContent = d.group;
 document.getElementById("d-shelf").textContent = d.shelf;
 document.getElementById("d-shelf").className = "cm-pill" + (d.shelf === "已上架" ? "" : " off");
 var shelfmode = document.getElementById("d-shelfmode");
 if (shelfmode) shelfmode.textContent = d.shelf === "草稿" ? "暂存草稿" : "立即上架（保存后提交内容审核队列）";
 document.getElementById("d-pub").textContent = d.pub || "已发布";
 document.getElementById("btn-edit").href = "content-article-edit.html?id=" + id;
-document.getElementById("share-url").textContent = "https://yibo.app/a/" + id;
 var mask = document.getElementById("mask");
-function closeAll(){ mask.classList.remove("open"); document.getElementById("modal-share").classList.remove("open"); }
-document.getElementById("btn-share").onclick = function(){ mask.classList.add("open"); document.getElementById("modal-share").classList.add("open"); };
-document.getElementById("btn-copy-link").onclick = function(){ Proto.toast("链接已复制"); };
+function closeAll(){ mask.classList.remove("open"); document.querySelectorAll(".proto-modal,.proto-drawer").forEach(function(n){ n.classList.remove("open"); }); }
+document.getElementById("btn-share").onclick = function(){
+  var cover = "../assets/img/covers/" + (id === "A002" ? "focus" : id === "A003" ? "emotion" : "term") + ".jpg";
+  XiboShare.open({ type: "图文", url: "https://yibo.app/a/" + id, cover: cover, name: d.name, desc: d.desc });
+};
 mask && mask.addEventListener("click", closeAll);
 document.querySelectorAll("[data-close]").forEach(function(b){ b.addEventListener("click", closeAll); });
 </script>

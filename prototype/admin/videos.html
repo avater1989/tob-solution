@@ -7,247 +7,23 @@
 <link rel="stylesheet" href="../assets/css/proto.css?v=13" />
 </head>
 <body class="admin-body" data-module="scrm" data-nav="videos" data-title="视频号" data-crumb="SCRM / 全域获客 / 视频号">
-<div id="header-actions">
-  <button class="btn" id="btn-sync" style="display:none">同步订单</button>
-  <button class="btn btn-primary" id="btn-link-goods">+ 关联商品</button>
-</div>
+<div id="header-actions"></div>
 <div id="page-content" style="display:none">
 
   <div class="alert alert-info" style="margin-bottom:8px;align-items:flex-start">
     <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" style="flex-shrink:0;margin-top:2px"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
     <div>
       <div style="font-weight:600">路径③ 视频号获客承接</div>
-      <div style="margin-top:2px;opacity:.9">P0 验收看「商品与领课」「订单」两 Tab；「店铺授权」为一期部署同步能力，页面不阻断验收（E3）。</div>
+      <div style="margin-top:2px;opacity:.9">本页仅保留「店铺授权」能力，为一期部署同步能力，页面不阻断验收（E3）。</div>
     </div>
   </div>
 
-  <div class="tabs" id="video-tabs">
-    <a class="active" href="#goods" data-tab="goods">商品与领课</a>
-    <a href="#orders" data-tab="orders">订单</a>
-    <a href="#auth" data-tab="auth">店铺授权 <span class="muted" style="font-size:11px;font-weight:400">· 部署配置</span></a>
-  </div>
-
-  <!-- ===== Tab A: 商品与领课 ===== -->
-  <div id="panel-goods">
-    <div class="card" style="margin-bottom:8px"><div class="card-bd">
-      <div class="form-grid" style="grid-template-columns:repeat(5,minmax(0,1fr));gap:8px 12px">
-        <input id="g-keyword" placeholder="视频号商品 / 平台课名" />
-        <select id="g-type">
-          <option value="">关联类型</option>
-          <option>平台课程</option>
-          <option>直播商品</option>
-        </select>
-        <select id="g-sms">
-          <option value="">自动发短信</option>
-          <option>是</option>
-          <option>否</option>
-        </select>
-        <select id="g-wecom">
-          <option value="">引导加微</option>
-          <option>是</option>
-          <option>否</option>
-        </select>
-        <select id="g-status">
-          <option value="">状态</option>
-          <option>已启用</option>
-          <option>已停用</option>
-        </select>
-      </div>
-      <div class="toolbar" style="margin-top:8px">
-        <button class="btn btn-primary" id="btn-g-query">查询</button>
-        <button class="btn" id="btn-g-reset">重置</button>
-        <div class="spacer"></div>
-        <span class="muted" style="font-size:12px">未关联平台商品或未配领课模板时，订单仍可同步，但不会自动发短信</span>
-      </div>
-    </div></div>
-
-    <div class="card"><div class="card-bd" style="padding:0">
-      <table class="data">
-        <thead>
-          <tr>
-            <th>视频号商品</th>
-            <th>外部商品 ID</th>
-            <th>关联平台课/直播</th>
-            <th>领课短信模板</th>
-            <th>自动发短信</th>
-            <th>引导加微</th>
-            <th>状态</th>
-            <th>更新时间</th>
-            <th style="width:180px">操作</th>
-          </tr>
-        </thead>
-        <tbody id="goods-tbody">
-          <tr>
-            <td><b>春季体验课 · 亲子沟通</b></td>
-            <td>vx_sku_10021</td>
-            <td>系列课 · 春季体验营 Day1–3</td>
-            <td>体验课领课短信 V2</td>
-            <td><span class="badge badge-success">是</span></td>
-            <td><span class="badge badge-success">是</span></td>
-            <td><span class="badge badge-success">已启用</span></td>
-            <td>2026-09-08 14:20</td>
-            <td class="row-actions">
-              <a href="#" data-goods-act="edit">编辑配置</a>
-              <a href="#" data-goods-act="disable">停用</a>
-            </td>
-          </tr>
-          <tr>
-            <td><b>直播专场 · 升学规划</b></td>
-            <td>vx_sku_10088</td>
-            <td>直播 · 9/15 升学规划专场</td>
-            <td>直播领课短信 V1</td>
-            <td><span class="badge badge-success">是</span></td>
-            <td><span class="badge badge-warn">否</span></td>
-            <td><span class="badge badge-success">已启用</span></td>
-            <td>2026-09-10 09:05</td>
-            <td class="row-actions">
-              <a href="#" data-goods-act="edit">编辑配置</a>
-              <a href="#" data-goods-act="disable">停用</a>
-            </td>
-          </tr>
-          <tr>
-            <td><b>精品课 · 阅读力提升</b></td>
-            <td>vx_sku_10102</td>
-            <td><span class="muted">未关联</span></td>
-            <td><span class="muted">—</span></td>
-            <td><span class="badge badge-warn">否</span></td>
-            <td><span class="badge badge-warn">否</span></td>
-            <td><span class="badge badge-warn">待配置</span></td>
-            <td>2026-09-11 08:12</td>
-            <td class="row-actions">
-              <a href="#" data-goods-act="link">关联</a>
-              <a href="#" data-goods-act="edit">编辑配置</a>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div></div>
-  </div>
-
-  <!-- ===== Tab B: 订单 ===== -->
-  <div id="panel-orders" style="display:none">
-    <div class="card" style="margin-bottom:8px"><div class="card-bd">
-      <div class="form-grid" style="grid-template-columns:repeat(6,minmax(0,1fr));gap:8px 12px">
-        <input id="o-order" placeholder="订单号" />
-        <input id="o-phone" placeholder="手机号" />
-        <select id="o-pay">
-          <option value="">支付状态</option>
-          <option>已支付</option>
-          <option>已退款</option>
-        </select>
-        <select id="o-sms">
-          <option value="">短信状态</option>
-          <option>已发送</option>
-          <option>发送失败</option>
-          <option>未发送</option>
-        </select>
-        <select id="o-lesson">
-          <option value="">领课状态</option>
-          <option>已领</option>
-          <option>未领</option>
-        </select>
-        <select id="o-wecom">
-          <option value="">加微状态</option>
-          <option>已添加</option>
-          <option>未添加</option>
-          <option>已流失</option>
-        </select>
-      </div>
-      <div class="toolbar" style="margin-top:8px">
-        <button class="btn btn-primary" id="btn-o-query">查询</button>
-        <button class="btn" id="btn-o-reset">重置</button>
-        <div class="spacer"></div>
-        <button class="btn" id="btn-o-sync">同步指定订单号</button>
-      </div>
-    </div></div>
-
-    <div class="card"><div class="card-bd" style="padding:0">
-      <table class="data">
-        <thead>
-          <tr>
-            <th>订单号</th>
-            <th>手机号</th>
-            <th>商品</th>
-            <th>支付</th>
-            <th>短信状态</th>
-            <th>领课</th>
-            <th>加微</th>
-            <th>下单时间</th>
-            <th style="width:220px">操作</th>
-          </tr>
-        </thead>
-        <tbody id="orders-tbody">
-          <tr>
-            <td>VX202609101001</td>
-            <td><button type="button" class="link-btn" data-act="unmask">点击查看完整手机号</button></td>
-            <td>春季体验课 · 亲子沟通</td>
-            <td><span class="badge badge-success">已支付</span></td>
-            <td><span class="badge badge-success">已发送</span></td>
-            <td><span class="badge badge-success">已领</span></td>
-            <td><span class="badge badge-success">已添加</span></td>
-            <td>2026-09-10 11:22</td>
-            <td class="row-actions">
-              <a href="#" data-order-act="resend">重发短信</a>
-              <a href="#" data-order-act="copy">复制领课链接</a>
-              <a href="leads.html" data-order-act="lead">线索</a>
-            </td>
-          </tr>
-          <tr>
-            <td>VX202609101002</td>
-            <td><button type="button" class="link-btn" data-act="unmask">点击查看完整手机号</button></td>
-            <td>直播专场 · 升学规划</td>
-            <td><span class="badge badge-success">已支付</span></td>
-            <td><span class="badge badge-danger">发送失败</span></td>
-            <td><span class="badge badge-warn">未领</span></td>
-            <td><span class="badge badge-warn">未添加</span></td>
-            <td>2026-09-10 15:48</td>
-            <td class="row-actions">
-              <a href="#" data-order-act="resend">重发短信</a>
-              <a href="#" data-order-act="copy">复制领课链接</a>
-              <a href="leads.html" data-order-act="lead">线索</a>
-            </td>
-          </tr>
-          <tr>
-            <td>VX202609110003</td>
-            <td><button type="button" class="link-btn" data-act="unmask">点击查看完整手机号</button></td>
-            <td>精品课 · 阅读力提升</td>
-            <td><span class="badge badge-success">已支付</span></td>
-            <td><span class="badge badge-warn">未发送</span></td>
-            <td><span class="badge badge-warn">未领</span></td>
-            <td><span class="badge badge-warn">未添加</span></td>
-            <td>2026-09-11 09:01</td>
-            <td class="row-actions">
-              <a href="#" data-order-act="resend">重发短信</a>
-              <a href="#" data-order-act="copy">复制领课链接</a>
-              <a href="leads.html" data-order-act="lead">线索</a>
-            </td>
-          </tr>
-          <tr>
-            <td>VX202609090088</td>
-            <td><button type="button" class="link-btn" data-act="unmask">点击查看完整手机号</button></td>
-            <td>春季体验课 · 亲子沟通</td>
-            <td><span class="badge badge-info">已退款</span></td>
-            <td><span class="badge badge-success">已发送</span></td>
-            <td><span class="badge badge-success">已领</span></td>
-            <td><span class="badge badge-info">已流失</span></td>
-            <td>2026-09-09 20:10</td>
-            <td class="row-actions">
-              <a href="#" data-order-act="resend">重发短信</a>
-              <a href="#" data-order-act="copy">复制领课链接</a>
-              <a href="leads.html" data-order-act="lead">线索</a>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div></div>
-  </div>
-
-  <!-- ===== Tab C: 店铺授权（部署配置 · 非路径阻断） ===== -->
-  <div id="panel-auth" style="display:none">
+  <!-- ===== 店铺授权（部署配置 · 非路径阻断） ===== -->
+  <div id="panel-auth">
     <div class="alert" style="margin-bottom:8px;background:#fff7e6;border:1px solid #ffd591;color:#ad6800;align-items:flex-start;display:flex;gap:8px;padding:10px 12px;border-radius:6px">
       <div>
         <div style="font-weight:600">部署配置 · 非路径阻断</div>
-        <div style="margin-top:2px;font-size:13px">一期可走部署同步（E3），本 Tab <b>不作为路径③验收阻断项</b>。商品关联与订单承接不依赖本页完成授权操作。</div>
+        <div style="margin-top:2px;font-size:13px">一期可走部署同步（E3），本页 <b>不作为路径③验收阻断项</b>。</div>
       </div>
     </div>
 
@@ -314,52 +90,6 @@
 <!-- ============ 弹窗 ============ -->
 <div class="proto-mask" id="mask"></div>
 
-<!-- 关联 / 编辑领课配置 -->
-<div class="proto-modal" id="modal-goods" style="width:640px">
-  <div class="proto-modal-hd">
-    <h3 style="font-size:16px;font-weight:600" id="goods-modal-title">关联商品 / 领课配置</h3>
-    <button class="btn btn-sm btn-ghost" data-close>×</button>
-  </div>
-  <div class="proto-modal-bd">
-    <div class="form-grid" style="grid-template-columns:1fr 1fr">
-      <div class="field"><label>视频号商品 *</label>
-        <select id="m-vx-goods">
-          <option>春季体验课 · 亲子沟通</option>
-          <option>直播专场 · 升学规划</option>
-          <option>精品课 · 阅读力提升</option>
-        </select>
-      </div>
-      <div class="field"><label>关联类型 *</label>
-        <select id="m-link-type">
-          <option>平台课程</option>
-          <option>直播商品</option>
-        </select>
-      </div>
-      <div class="field" style="grid-column:1/-1"><label>平台课 / 直播商品 *</label>
-        <select id="m-platform">
-          <option>系列课 · 春季体验营 Day1–3</option>
-          <option>直播 · 9/15 升学规划专场</option>
-          <option>系列课 · 阅读力提升完整版</option>
-        </select>
-      </div>
-      <div class="field" style="grid-column:1/-1"><label>领课短信模板 *</label>
-        <textarea id="m-sms" rows="3" placeholder="请填写短信模板，须含领课链接占位符，如 {{claim_link}}">【艺博】您已购买体验课，点击 {{claim_link}} 领取课程。如需帮助请回复。</textarea>
-      </div>
-      <div class="field"><label>自动发短信</label>
-        <select id="m-auto-sms"><option>是</option><option>否</option></select>
-      </div>
-      <div class="field"><label>引导加微</label>
-        <select id="m-guide-wecom"><option>是</option><option>否</option></select>
-      </div>
-    </div>
-    <p class="muted" style="margin:10px 0 0;font-size:12px">未配置领课模板时订单可同步，但不会自动发短信（R-SCRM-007）。</p>
-  </div>
-  <div class="proto-modal-ft" style="border-top:1px solid var(--color-border);padding:12px 20px;display:flex;gap:8px;justify-content:flex-end">
-    <button class="btn" data-close>取消</button>
-    <button class="btn btn-primary" id="goods-submit">保存配置</button>
-  </div>
-</div>
-
 <!-- 授权微信小店弹窗 -->
 <div class="proto-modal" id="modal-wxauth" style="width:560px">
   <div class="proto-modal-hd">
@@ -409,7 +139,7 @@
 </style>
 
 <script src="../assets/js/proto.js"></script>
-<script src="../assets/js/admin-shell.js?v=13"></script>
+<script src="../assets/js/admin-shell.js?v=14"></script>
 <script>
 (function () {
   var mask = document.getElementById("mask");
@@ -426,96 +156,6 @@
       if (toast && window.Proto) Proto.toast(toast);
     });
   });
-
-  // Tabs
-  var panels = { goods: "panel-goods", orders: "panel-orders", auth: "panel-auth" };
-  var headerBtnGoods = document.getElementById("btn-link-goods");
-  var headerBtnSync = document.getElementById("btn-sync");
-  function show(tab) {
-    Object.keys(panels).forEach(function (k) {
-      var el = document.getElementById(panels[k]);
-      if (el) el.style.display = k === tab ? "" : "none";
-    });
-    document.querySelectorAll("#video-tabs a[data-tab]").forEach(function (a) {
-      a.classList.toggle("active", a.getAttribute("data-tab") === tab);
-    });
-    if (headerBtnGoods) headerBtnGoods.style.display = tab === "goods" ? "" : "none";
-    if (headerBtnSync) headerBtnSync.style.display = tab === "orders" ? "" : "none";
-  }
-  document.querySelectorAll("#video-tabs a[data-tab]").forEach(function (a) {
-    a.addEventListener("click", function (e) {
-      e.preventDefault();
-      show(a.getAttribute("data-tab"));
-    });
-  });
-  show("goods");
-
-  // Goods actions
-  function openGoodsModal(title) {
-    document.getElementById("goods-modal-title").textContent = title || "关联商品 / 领课配置";
-    open(document.getElementById("modal-goods"));
-  }
-  document.getElementById("btn-link-goods").addEventListener("click", function () {
-    openGoodsModal("+ 关联商品");
-  });
-  document.querySelectorAll("[data-goods-act]").forEach(function (a) {
-    a.addEventListener("click", function (e) {
-      e.preventDefault();
-      var act = a.getAttribute("data-goods-act");
-      if (act === "edit" || act === "link") {
-        openGoodsModal(act === "link" ? "关联商品" : "编辑领课配置");
-      } else if (act === "disable") {
-        if (confirm("确定停用该商品关联？停用后新订单不会自动发领课短信。")) {
-          Proto.toast("已停用（原型）");
-        }
-      }
-    });
-  });
-  document.getElementById("goods-submit").addEventListener("click", function () {
-    closeAll();
-    Proto.toast("配置已保存（原型）");
-  });
-  document.getElementById("btn-g-query").addEventListener("click", function () { Proto.toast("已查询（原型）"); });
-  document.getElementById("btn-g-reset").addEventListener("click", function () {
-    ["g-keyword","g-type","g-sms","g-wecom","g-status"].forEach(function (id) {
-      var el = document.getElementById(id);
-      if (el) el.value = "";
-    });
-    Proto.toast("已重置");
-  });
-
-  // Orders actions
-  document.querySelectorAll("[data-order-act]").forEach(function (a) {
-    a.addEventListener("click", function (e) {
-      var act = a.getAttribute("data-order-act");
-      if (act === "lead") return; // allow navigation
-      e.preventDefault();
-      var tr = a.closest("tr");
-      var orderNo = tr ? tr.querySelector("td").textContent.trim() : "";
-      if (act === "resend") {
-        Proto.toast("已触发重发领课短信 · " + orderNo + "（原型）");
-      } else if (act === "copy") {
-        Proto.toast("领课链接已复制 · " + orderNo + "（原型）");
-      }
-    });
-  });
-  document.getElementById("btn-o-query").addEventListener("click", function () { Proto.toast("已查询（原型）"); });
-  document.getElementById("btn-o-reset").addEventListener("click", function () {
-    ["o-order","o-phone","o-pay","o-sms","o-lesson","o-wecom"].forEach(function (id) {
-      var el = document.getElementById(id);
-      if (el) el.value = "";
-    });
-    Proto.toast("已重置");
-  });
-  document.getElementById("btn-o-sync").addEventListener("click", function () {
-    var no = prompt("请输入要同步的视频号订单号");
-    if (no) Proto.toast("已请求同步 " + no + "（原型）");
-  });
-  if (headerBtnSync) {
-    headerBtnSync.addEventListener("click", function () {
-      Proto.toast("正在同步最近订单（原型）");
-    });
-  }
 
   // Unmask
   document.querySelectorAll("[data-act=unmask]").forEach(function (btn) {

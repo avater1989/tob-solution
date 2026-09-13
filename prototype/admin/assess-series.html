@@ -14,15 +14,12 @@
 </div>
 
 <div id="page-content" style="display:none">
-  <div class="as-banner">组合多个测评项目为系列。「平台同步」的系列由运营后台下发，仅可查看与使用，不可编辑或删除。</div>
+  <div class="as-banner">组合多个测评项目为系列，支持排序、启停、报告配置与关联规则。</div>
   <div class="card" style="margin-bottom:14px"><div class="card-bd" style="padding:12px 16px">
     <div class="toolbar" style="border:none;padding:0;background:transparent">
       <input class="input" id="f-q" placeholder="搜索系列名称或描述..." style="width:240px" />
       <select class="input" id="f-shelf" style="width:130px">
         <option value="">全部上下架</option><option>已上架</option><option>已下架</option>
-      </select>
-      <select class="input" id="f-src" style="width:130px">
-        <option value="">全部来源</option><option value="self">商家自建</option><option value="platform">平台同步</option>
       </select>
       <button class="btn btn-primary" id="btn-query">查询</button>
     </div>
@@ -33,7 +30,6 @@
       <tr>
         <th style="width:56px">序号</th>
         <th>系列名称</th>
-        <th style="width:100px">来源</th>
         <th style="width:90px">项目数</th>
         <th style="width:90px">状态</th>
         <th style="width:90px">上下架</th>
@@ -113,57 +109,40 @@
 <div class="proto-mask" id="mask"></div>
 
 <script src="../assets/js/proto.js"></script>
-<script src="../assets/js/admin-shell.js?v=13"></script>
+<script src="../assets/js/admin-shell.js?v=14"></script>
 <script>
-var POOL = ["亲子沟通能力测评","家庭教育风格测评","心理健康测评（平台同步）","情绪调节问卷（平台同步）"];
+var POOL = ["亲子沟通能力测评","家庭教育风格测评","心理健康测评","情绪调节问卷"];
 var SERIES = [
-  { id:"MS1", name:"家庭教育入门测评包", desc:"沟通模式 + 教养风格双测", source:"self", items:["亲子沟通能力测评","家庭教育风格测评"], enabled:true, shelf:"已上架", rules:1 },
-  { id:"MS2", name:"青春期亲子关系测评系列", desc:"面向 12-16 岁家庭的组合测评", source:"self", items:["亲子沟通能力测评"], enabled:true, shelf:"已下架", rules:0 },
-  { id:"PS1", name:"新生入学心理系列", desc:"入学适应 + 心理健康双测（运营后台下发）", source:"platform", items:["心理健康测评（平台同步）","情绪调节问卷（平台同步）"], enabled:true, shelf:"已上架", rules:1 }
+  { id:"MS1", name:"家庭教育入门测评包", desc:"沟通模式 + 教养风格双测", items:["亲子沟通能力测评","家庭教育风格测评"], enabled:true, shelf:"已上架", rules:1 },
+  { id:"MS2", name:"青春期亲子关系测评系列", desc:"面向 12-16 岁家庭的组合测评", items:["亲子沟通能力测评"], enabled:true, shelf:"已下架", rules:0 },
+  { id:"PS1", name:"新生入学心理系列", desc:"入学适应 + 心理健康双测", items:["心理健康测评","情绪调节问卷"], enabled:true, shelf:"已上架", rules:1 }
 ];
 var editing = null;
 
 function esc(s){ return String(s).replace(/[&<>"']/g,function(c){return({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"})[c];}); }
-function srcTag(src){
-  return src === "platform"
-    ? '<span class="as-tag purple">平台同步</span>'
-    : '<span class="as-tag green">商家自建</span>';
-}
-function isPlatform(s){ return s.source === "platform"; }
-
 function render(){
   var q = (document.getElementById("f-q").value||"").trim();
   var shelf = document.getElementById("f-shelf").value;
-  var src = document.getElementById("f-src").value;
   var list = SERIES.filter(function(s){
     if (shelf && s.shelf !== shelf) return false;
-    if (src === "self" && isPlatform(s)) return false;
-    if (src === "platform" && !isPlatform(s)) return false;
     if (q && (s.name+s.desc).indexOf(q)<0) return false;
     return true;
   });
   document.getElementById("cnt").textContent = list.length;
   document.getElementById("tbody").innerHTML = list.map(function(s,i){
-    var acts = "";
-    if (isPlatform(s)) {
-      acts = '<button class="btn" data-view="'+s.id+'">查看系列</button>' +
-        '<span class="as-tag gray" style="align-self:center">平台同步 · 只读</span>';
-    } else {
-      acts = '<button class="btn" data-move="'+s.id+'" data-dir="-1"'+(i===0?' disabled':'')+'>上移</button>' +
-        '<button class="btn" data-move="'+s.id+'" data-dir="1"'+(i===list.length-1?' disabled':'')+'>下移</button>' +
-        '<button class="btn" data-view="'+s.id+'">查看系列</button>' +
-        '<button class="btn" data-edit="'+s.id+'">编辑系列</button>' +
-        '<button class="btn" data-report="'+s.id+'">报告配置</button>' +
-        '<a class="btn" href="assess-relations.html?from=series&id='+s.id+'">关联规则'+(s.rules?' ('+s.rules+')':'')+'</a>' +
-        (s.shelf==='已上架'
-          ? '<button class="btn" data-shelf="'+s.id+'">下架</button>'
-          : '<button class="btn btn-primary" data-shelf="'+s.id+'">上架</button>') +
-        '<button class="btn" style="color:#f53f3f;border-color:#ffa39e" data-del="'+s.id+'">删除</button>';
-    }
+    var acts = '<button class="btn" data-move="'+s.id+'" data-dir="-1"'+(i===0?' disabled':'')+'>上移</button>' +
+      '<button class="btn" data-move="'+s.id+'" data-dir="1"'+(i===list.length-1?' disabled':'')+'>下移</button>' +
+      '<button class="btn" data-view="'+s.id+'">查看系列</button>' +
+      '<button class="btn" data-edit="'+s.id+'">编辑系列</button>' +
+      '<button class="btn" data-report="'+s.id+'">报告配置</button>' +
+      '<a class="btn" href="assess-relations.html?from=series&id='+s.id+'">关联规则'+(s.rules?' ('+s.rules+')':'')+'</a>' +
+      (s.shelf==='已上架'
+        ? '<button class="btn" data-shelf="'+s.id+'">下架</button>'
+        : '<button class="btn btn-primary" data-shelf="'+s.id+'">上架</button>') +
+      '<button class="btn" style="color:#f53f3f;border-color:#ffa39e" data-del="'+s.id+'">删除</button>';
     return '<tr>' +
       '<td style="color:#8c8c8c">'+(i+1)+'</td>' +
       '<td><div class="as-name">'+esc(s.name)+'</div><div class="as-desc">'+esc(s.desc)+'</div></td>' +
-      '<td>'+srcTag(s.source)+'</td>' +
       '<td>'+s.items.length+'</td>' +
       '<td><button class="btn" data-enable="'+s.id+'"><span class="as-tag '+(s.enabled?'green':'gray')+'">'+(s.enabled?'已启用':'已停用')+'</span></button></td>' +
       '<td><span class="as-tag '+(s.shelf==='已上架'?'green':'orange')+'">'+esc(s.shelf)+'</span></td>' +
@@ -210,7 +189,6 @@ document.getElementById("btn-save").onclick = function(){
     Object.assign(s, payload, { shelf:s.shelf, rules:s.rules||0 });
   } else {
     payload.id = "MS"+Date.now().toString().slice(-4);
-    payload.source = "self";
     SERIES.unshift(payload);
   }
   closeAll(); render(); Proto.toast("系列已保存");
@@ -220,52 +198,36 @@ document.addEventListener("click", function(e){
   var view = e.target.closest("[data-view]");
   if (view) {
     var s = SERIES.find(function(x){return x.id===view.getAttribute("data-view");});
-    var head = isPlatform(s)
-      ? '<div class="as-banner" style="background:#f9f0ff;border-color:#d3adf7;color:#531dab">该系列由运营后台同步下发，仅可查看，不可编辑或删除。</div>'
-      : '';
-    document.getElementById("view-bd").innerHTML = head +
+    document.getElementById("view-bd").innerHTML =
       '<div class="as-name" style="font-size:16px;margin-bottom:6px">'+esc(s.name)+'</div>' +
       '<div class="as-desc" style="margin-bottom:12px">'+esc(s.desc)+'</div>' +
       '<div style="font-size:13px;margin-bottom:4px">状态：'+(s.enabled?"已启用":"已停用")+' · '+esc(s.shelf)+'</div>' +
       '<div style="font-size:13px;margin:12px 0 8px">答题顺序：</div>' +
       s.items.map(function(n,i){ return '<div class="as-preview-item">'+(i+1)+'. '+esc(n)+'</div>'; }).join("");
-    document.getElementById("view-rules").href = isPlatform(s)
-      ? "#" 
-      : "assess-relations.html?from=series&id="+s.id;
-    if (isPlatform(s)) {
-      document.getElementById("view-rules").setAttribute("data-toast", "平台同步系列的关联规则由平台维护");
-      document.getElementById("view-rules").style.opacity = ".55";
-    } else {
-      document.getElementById("view-rules").removeAttribute("data-toast");
-      document.getElementById("view-rules").style.opacity = "";
-    }
+    document.getElementById("view-rules").href = "assess-relations.html?from=series&id="+s.id;
     openM("modal-view"); return;
   }
   var ed = e.target.closest("[data-edit]"); if (ed) { openEdit(ed.getAttribute("data-edit")); return; }
   var report = e.target.closest("[data-report]");
   if (report) {
     var s3 = SERIES.find(function(x){return x.id===report.getAttribute("data-report");});
-    if (isPlatform(s3)) { Proto.toast("平台同步系列不可修改报告配置"); return; }
     document.getElementById("sr-sub").textContent = s3.name;
     openM("modal-report"); return;
   }
   var en = e.target.closest("[data-enable]");
   if (en) {
     var s4 = SERIES.find(function(x){return x.id===en.getAttribute("data-enable");});
-    if (isPlatform(s4)) { Proto.toast("平台同步系列不可停用"); return; }
     s4.enabled = !s4.enabled; render(); Proto.toast(s4.enabled?"已启用":"已停用"); return;
   }
   var shelf = e.target.closest("[data-shelf]");
   if (shelf) {
     var s2 = SERIES.find(function(x){return x.id===shelf.getAttribute("data-shelf");});
-    if (isPlatform(s2)) { Proto.toast("平台同步系列的上下架由平台维护"); return; }
     s2.shelf = s2.shelf==="已上架"?"已下架":"已上架";
     Proto.toast(s2.shelf); render(); return;
   }
   var del = e.target.closest("[data-del]");
   if (del) {
     var sd = SERIES.find(function(x){return x.id===del.getAttribute("data-del");});
-    if (isPlatform(sd)) { Proto.toast("平台同步系列不可删除"); return; }
     SERIES = SERIES.filter(function(x){return x.id!==sd.id;}); render(); Proto.toast("已删除"); return;
   }
   var mv = e.target.closest("[data-move]");

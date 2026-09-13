@@ -72,3 +72,29 @@
     }
   });
 })();
+
+/* 评审标注层：自动加载 annotate.css / annotate.js，全站页面按 Alt+A 即可标注。
+   隐藏方式：localStorage.setItem('proto:review', 'off') */
+(function () {
+  try {
+    if (localStorage.getItem("proto:review") === "off") return;
+  } catch (e) {}
+  var self = document.currentScript;
+  var base = "";
+  if (self && self.src) {
+    base = self.src.replace(/\/js\/proto\.js.*$/, "/");
+  } else {
+    base = /\/(admin|ops|miniprogram)\//.test(location.pathname) ? "../assets/" : "assets/";
+  }
+  if (document.getElementById("__ann_css")) return;
+  var l = document.createElement("link");
+  l.id = "__ann_css";
+  l.rel = "stylesheet";
+  l.href = base + "css/annotate.css?v=1";
+  document.head.appendChild(l);
+  var s = document.createElement("script");
+  s.id = "__ann_js";
+  s.src = base + "js/annotate.js?v=1";
+  s.defer = true;
+  document.head.appendChild(s);
+})();

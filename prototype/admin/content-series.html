@@ -6,17 +6,16 @@
 <title>系列课 · 艺博 To-B</title>
 <link rel="stylesheet" href="../assets/css/proto.css?v=9" />
 <style>
-.cs-card {
+/* ===== 列表行（样式对齐「视频」「图文」：左侧内容 + 右侧操作按钮） ===== */
+.cs-row {
   background: #fff; border: 1px solid #e8e8e8; border-radius: 8px;
-  margin-bottom: 14px; padding: 16px; display: flex; gap: 16px;
+  margin-bottom: 12px; padding: 14px 16px; display: flex; align-items: center; gap: 14px;
   transition: all .15s;
 }
-.cs-card:hover { border-color: #165dff; box-shadow: 0 4px 14px rgba(22,93,255,.1); }
+.cs-row:hover { border-color: #165dff; box-shadow: 0 4px 14px rgba(22,93,255,.1); }
 .cs-cover {
-  width: 160px; height: 100px; border-radius: 6px;
-  background: #f2f3f5;
-  overflow: hidden;
-  flex-shrink: 0;
+  width: 128px; height: 80px; border-radius: 6px;
+  background: #f2f3f5; overflow: hidden; flex-shrink: 0;
 }
 .cs-cover img { width: 100%; height: 100%; object-fit: cover; display: block; }
 .cs-info { flex: 1; min-width: 0; }
@@ -25,82 +24,21 @@
   display: flex; align-items: center; gap: 10px; margin-bottom: 6px;
 }
 .cs-desc { font-size: 12px; color: #8c8c8c; line-height: 1.6; margin-bottom: 8px; }
-.cs-stats {
-  display: flex; gap: 16px; font-size: 12px; color: #595959;
-  margin-bottom: 10px;
-}
+.cs-stats { display: flex; gap: 16px; font-size: 12px; color: #595959; flex-wrap: wrap; }
 .cs-stats b { color: #165dff; font-weight: 600; font-family: monospace; }
-.cs-actions { display: flex; gap: 8px; }
+.cs-cat { font-size: 11px; padding: 1px 6px; border-radius: 3px; background: #e8f3ff; color: #165dff; font-weight: 500; flex-shrink: 0; }
+.cs-actions { display: flex; gap: 6px; flex-wrap: wrap; justify-content: flex-end; max-width: 320px; }
 
-/* ===== 抽屉：子内容编排 ===== */
-.cs-subitems {
-  border: 1px solid #e8e8e8; border-radius: 6px;
-  padding: 10px; max-height: 280px; overflow-y: auto;
-  background: #fafafa;
-}
-.cs-sub-block { margin-bottom: 12px; }
-.cs-sub-block:last-child { margin-bottom: 0; }
-.cs-sub-title {
-  font-size: 12px; font-weight: 500; color: #595959;
-  display: flex; align-items: center; justify-content: space-between;
-  margin-bottom: 6px;
-}
-.cs-sub-title .cs-add { color: #165dff; cursor: pointer; font-size: 12px; }
-.cs-sub-pill {
-  display: flex; align-items: center; gap: 6px;
-  background: #fff; border: 1px solid #e8e8e8;
-  padding: 6px 10px; border-radius: 4px; margin-bottom: 4px;
-  font-size: 12px; color: #1d2129;
-}
-.cs-sub-pill .cs-pill-x {
-  margin-left: auto; color: #8c8c8c; cursor: pointer; font-size: 14px;
-}
-.cs-sub-pill .cs-pill-x:hover { color: #f53f3f; }
-.cs-pill-type {
-  font-size: 11px; padding: 1px 6px; border-radius: 3px;
-  font-weight: 500;
-}
-.cs-pill-type.video   { background: #e6f4ff; color: #165dff; }
-.cs-pill-type.article { background: #f9f0ff; color: #722ed1; }
-.cs-pill-type.goods   { background: #fff7e6; color: #fa8c16; }
-.cs-empty-sub {
+/* ===== 空列表 ===== */
+.cs-empty {
   font-size: 12px; color: #bfbfbf; text-align: center;
-  padding: 16px; border: 1px dashed #e8e8e8; border-radius: 4px;
-}
-
-/* ===== 内容来源标识 ===== */
-.src-badge {
-  font-size: 11px; padding: 1px 6px; border-radius: 3px;
-  font-weight: 500; flex-shrink: 0;
-}
-.src-platform { background: #f4f0ff; color: #722ed1; }
-.src-self { background: #e8ffea; color: #009a29; }
-.cs-hint {
-  font-size: 12px; color: #8c8c8c; line-height: 1.7;
-  margin: 0 0 12px; padding: 8px 12px;
-  background: #f7f8fa; border: 1px solid #e8e8e8; border-radius: 6px;
-}
-.cs-hint b { color: #722ed1; font-weight: 500; }
-
-/* ===== 分享弹窗 ===== */
-.share-qr {
-  width: 168px; height: 168px; margin: 0 auto;
-  padding: 10px; border: 1px solid #e8e8e8; border-radius: 8px;
-  background: #fff; display: flex; align-items: center; justify-content: center;
-}
-.share-tip { text-align: center; font-size: 12px; color: #8c8c8c; margin: 10px 0 16px; }
-.share-field-label { font-size: 12px; color: #8c8c8c; margin-bottom: 6px; }
-.share-url {
-  font-family: monospace; font-size: 12px; background: #f7f8fa;
-  border: 1px solid #e8e8e8; border-radius: 6px; padding: 8px 10px;
-  word-break: break-all;
+  padding: 32px; border: 1px dashed #e8e8e8; border-radius: 8px; background: #fafafa;
 }
 </style>
 </head>
 <body class="admin-body" data-module="content" data-nav="content-series" data-title="系列课" data-crumb="内容 / 内容管理 / 系列课">
 
 <div id="header-actions">
-  <button class="btn">导出</button>
   <a class="btn btn-primary" href="content-series-edit.html">+ 新建系列课</a>
 </div>
 
@@ -110,26 +48,18 @@
   <div class="card" style="margin-bottom:14px"><div class="card-bd" style="padding:12px 16px">
     <div class="toolbar" style="border:none;padding:0;background:transparent">
       <input class="input" type="text" id="cs-keyword" placeholder="搜索系列课名称 / 讲师" style="width:240px" />
-      <select class="input" id="cs-source" style="width:140px">
-        <option value="">全部类型</option>
-        <option value="platform">平台</option>
-        <option value="self">自建</option>
+      <select class="input" id="cs-cat" style="width:160px">
+        <option value="">全部内容分类</option>
       </select>
-      <select class="input" style="width:140px">
-        <option>全部状态</option><option>已上架</option><option>草稿</option><option>已下架</option>
+      <select class="input" id="cs-status" style="width:140px">
+        <option value="">全部状态</option><option>已上架</option><option>已下架</option>
       </select>
-      <select class="input" style="width:160px">
-        <option>全部分组</option><option>K12 教育</option><option>家庭教育</option>
-      </select>
+      <button class="btn btn-primary" id="cs-query">查询</button>
       <button class="btn" id="cs-reset">重置</button>
     </div>
   </div></div>
 
-  <p class="cs-hint">
-    <b>平台</b>内容由运营后台同步下发，不支持编辑、目录管理、删除，仅可查看目录与上下架；<b>自建</b>内容可在本页编辑、编排目录、上下架与删除。
-  </p>
-
-  <!-- 系列课卡片列表 -->
+  <!-- 系列课列表 -->
   <div id="cs-list"></div>
 
   <!-- 分页 -->
@@ -147,36 +77,17 @@
 <!-- 弹窗遮罩 -->
 <div class="proto-mask" id="mask"></div>
 
-<!-- 分享弹窗 -->
-<div class="proto-modal" id="modal-share">
-  <div style="background:#fff;border-radius:10px;width:420px;max-width:92vw;overflow:hidden">
-    <div class="proto-modal-hd">
-      <h3 style="margin:0;font-size:16px" id="share-title">分享系列课</h3>
-      <button class="ctrl-icon-btn" data-close>×</button>
-    </div>
-    <div class="proto-modal-bd">
-      <div class="share-qr" id="share-qr"></div>
-      <p class="share-tip">学员微信扫一扫，或复制链接在微信中打开</p>
-      <div class="share-field-label">商品链接</div>
-      <div id="share-url" class="share-url">https://yibo.app/s/S001</div>
-      <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
-        <button class="btn btn-primary" id="btn-copy-link">复制链接</button>
-        <button class="btn" id="btn-download-qr">下载二维码</button>
-        <button class="btn" id="btn-preview-poster">预览海报</button>
-      </div>
-    </div>
-  </div>
-</div>
-
 <script src="../assets/js/proto.js"></script>
-<script src="../assets/js/admin-shell.js?v=13"></script>
+<script src="../assets/js/content-cats.js?v=1"></script>
+<script src="../assets/js/share-modal.js?v=1"></script>
+<script src="../assets/js/admin-shell.js?v=14"></script>
 <script>
 // ===== 兜底 =====
 setTimeout(function() {
   if (document.documentElement.getAttribute('data-shell-ready') === '1') return;
   if (document.querySelector('aside.sidebar')) return;
   var err = document.createElement('div');
-  err.style.cssText = 'position:fixed;top:0;left:0;right:0;background:#fff1f0;color:#f53f3f;padding:12px 20px;border-bottom:1px solid #ffa39e;z-index:99999;font-size:13px;font-family:system-ui;';
+  err.style.cssText = 'position:fixed;top:0;left:0;right:0;background:#fff1f0;color:#f53f3f;padding:12px 20px;border-bottom:1px solid #ffa39e;z-index:99999;font-family:system-ui;';
   err.innerHTML = '<b>⚠ 页面初始化失败</b>：浏览器可能缓存了旧版本。请按 <kbd style="background:#fff;padding:2px 6px;border-radius:3px;border:1px solid #ffa39e;font-family:monospace;">Ctrl+Shift+R</kbd> 强制刷新，或 <button onclick="location.reload();" style="background:#165dff;color:#fff;border:none;padding:4px 12px;border-radius:4px;cursor:pointer;margin-left:8px;">点击重试</button>';
   document.body.appendChild(err);
 }, 1500);
@@ -185,21 +96,21 @@ setTimeout(function() {
 var SERIES = [
   { id: "S001", name: "小学语文阅读启蒙系列", cover: "../assets/img/covers/reading.jpg",
     teacher: "张老师", desc: "针对 6-12 岁儿童阅读兴趣培养，从绘本到章节书的进阶路径。",
-    videos: 6, articles: 3, goods: 1, students: 1287, duration: "2.5h",
-    status: "已上架", statusType: "pass", onShelf: true, source: "platform" },
+    cat: "K12 教育", videos: 6, articles: 3, students: 1287, duration: "2.5h",
+    status: "已上架", statusType: "pass", onShelf: true },
   { id: "S002", name: "家长情绪管理训练营", cover: "../assets/img/covers/emotion.jpg",
     teacher: "李老师", desc: "8 周系统训练，帮助家长识别情绪、管理情绪、与孩子正向沟通。",
-    videos: 4, articles: 2, goods: 2, students: 0, duration: "1.8h",
-    status: "已下架", statusType: "review", onShelf: false, source: "self" },
+    cat: "家庭教育", videos: 4, articles: 2, students: 0, duration: "1.8h",
+    status: "已下架", statusType: "review", onShelf: false },
   { id: "S003", name: "AI 学习规划入门", cover: "../assets/img/covers/ai.jpg",
     teacher: "王博士", desc: "AI 助力学习规划，10 节实操课让孩子学会用 AI 工具提升学习效率。",
-    videos: 5, articles: 1, goods: 1, students: 856, duration: "3.2h",
-    status: "已上架", statusType: "pass", onShelf: true, source: "self" }
+    cat: "K12 教育", videos: 5, articles: 1, students: 856, duration: "3.2h",
+    status: "已上架", statusType: "pass", onShelf: true }
 ];
 
-var SOURCE_LABEL = { platform: "平台", self: "自建" };
-var filterSource = "";
+var filterCat = "";
 var filterKeyword = "";
+var filterStatus = "";
 
 function esc(s) {
   return String(s).replace(/[&<>"']/g, function(c) {
@@ -209,7 +120,8 @@ function esc(s) {
 
 function filteredSeries() {
   return SERIES.filter(function(s) {
-    if (filterSource && s.source !== filterSource) return false;
+    if (filterCat && s.cat !== filterCat) return false;
+    if (filterStatus && s.status !== filterStatus) return false;
     if (filterKeyword) {
       var kw = filterKeyword.toLowerCase();
       var hit = (s.name + " " + s.teacher + " " + s.id).toLowerCase().indexOf(kw) !== -1;
@@ -220,35 +132,34 @@ function filteredSeries() {
 }
 
 function actionsOf(s) {
-  var share = '<button class="btn" data-share="' + s.id + '"' + (s.onShelf ? '' : ' disabled') + '>分享</button>';
-  var view = '<a class="btn" href="content-series-detail.html?id=' + s.id + '">查看系列课</a>';
-  if (s.source === "platform") {
-    // 平台内容：仅可查看目录与上下架，不可编辑 / 目录管理 / 删除
-    return share + view +
-      '<a class="btn" href="content-series-outline.html?id=' + s.id + '&readonly=1">查看目录</a>' +
-      (s.onShelf
-        ? '<button class="btn" data-shelf-off="' + s.id + '">下架</button>'
-        : '<button class="btn btn-primary" data-shelf-on="' + s.id + '">上架</button>');
+  var html = '<button class="btn" data-share="' + s.id + '"' + (s.onShelf ? '' : ' disabled') + '>分享</button>';
+  // 评审结论：已下架的 S002 行去掉「查看系列课」入口
+  if (s.id !== "S002") {
+    html += '<a class="btn" href="content-series-detail.html?id=' + s.id + '">查看系列课</a>';
   }
-  return share + view +
-    '<a class="btn" href="content-series-outline.html?id=' + s.id + '">目录管理</a>' +
-    (s.onShelf
-      ? '<button class="btn" data-shelf-off="' + s.id + '">下架</button>'
-      : '<a class="btn btn-primary" href="content-series-edit.html?id=' + s.id + '">编辑系列课</a>' +
-        '<button class="btn" data-shelf-on="' + s.id + '">上架</button>' +
-        '<button class="btn" style="color:#f53f3f;border-color:#ffa39e" data-del="' + s.id + '">删除</button>') +
-    '<button class="btn" data-copy="' + s.id + '">复制</button>';
+  if (s.onShelf) {
+    html += '<button class="btn" data-shelf-off="' + s.id + '">下架</button>';
+  } else {
+    html += '<a class="btn btn-primary" href="content-series-edit.html?id=' + s.id + '">编辑系列课</a>';
+    html += '<button class="btn" data-shelf-on="' + s.id + '">上架</button>';
+    html += '<button class="btn" style="color:#f53f3f;border-color:#ffa39e" data-del="' + s.id + '">删除</button>';
+  }
+  // 创建商品：将本系列课内容带入「新建商品」
+  html += '<a class="btn" href="goods-edit.html?from=series&id=' + encodeURIComponent(s.id) +
+          '&title=' + encodeURIComponent(s.name) + '&desc=' + encodeURIComponent(s.desc) + '">创建商品</a>';
+  html += '<button class="btn" data-copy="' + s.id + '">复制</button>';
+  return html;
 }
 
 function renderList() {
   var list = filteredSeries();
   var html = list.map(function(s) {
     return '' +
-      '<div class="cs-card">' +
+      '<div class="cs-row">' +
         '<div class="cs-cover"><img src="' + s.cover + '" alt="" /></div>' +
         '<div class="cs-info">' +
           '<div class="cs-title">' + esc(s.name) +
-            '<span class="src-badge ' + (s.source === "platform" ? "src-platform" : "src-self") + '">' + SOURCE_LABEL[s.source] + '</span>' +
+            '<span class="cs-cat">' + esc(s.cat) + '</span>' +
             '<span class="audit-badge ' + s.statusType + '">' + esc(s.status) + '</span>' +
             '<span style="color:#8c8c8c;font-size:11px;font-weight:400">ID: ' + esc(s.id) + '</span>' +
           '</div>' +
@@ -258,52 +169,38 @@ function renderList() {
             '<span>总时长：<b>' + esc(s.duration) + '</b></span>' +
             '<span>📹 <b>' + s.videos + '</b> 视频</span>' +
             '<span>📝 <b>' + s.articles + '</b> 图文</span>' +
-            '<span>🛒 <b>' + s.goods + '</b> 商品</span>' +
             '<span>学员：<b>' + s.students.toLocaleString() + '</b></span>' +
           '</div>' +
-          '<div class="cs-actions">' + actionsOf(s) + '</div>' +
         '</div>' +
+        '<div class="cs-actions">' + actionsOf(s) + '</div>' +
       '</div>';
   }).join("");
   document.getElementById("cs-list").innerHTML = html ||
-    '<div class="cs-empty-sub">没有匹配的系列课</div>';
+    '<div class="cs-empty">没有匹配的系列课</div>';
   document.getElementById("cs-count").textContent = list.length;
 }
 
 // ===== Mask & 弹窗 =====
 var mask = document.getElementById("mask");
-var shareUrl = "";
 function closeAll() {
   mask.classList.remove("open");
   document.querySelectorAll(".proto-modal, .proto-drawer").forEach(function(n) { n.classList.remove("open"); });
 }
 
-function openShare(id) {
-  shareUrl = "https://yibo.app/s/" + id;
-  document.getElementById("share-url").textContent = shareUrl;
-  document.getElementById("share-qr").innerHTML = Proto.qrSvg(shareUrl, 148);
-  mask.classList.add("open");
-  document.getElementById("modal-share").classList.add("open");
-}
-
-function downloadQr() {
-  var svg = document.querySelector("#share-qr svg");
-  if (!svg) { Proto.toast("二维码尚未生成"); return; }
-  var blob = new Blob([svg.outerHTML], { type: "image/svg+xml;charset=utf-8" });
-  var a = document.createElement("a");
-  a.href = URL.createObjectURL(blob);
-  a.download = "分享二维码.svg";
-  document.body.appendChild(a);
-  a.click();
-  a.remove();
-  setTimeout(function() { URL.revokeObjectURL(a.href); }, 1000);
-  Proto.toast("二维码已下载");
+function openShare(s) {
+  XiboShare.open({
+    type: "系列课",
+    url: "https://yibo.app/s/" + s.id,
+    cover: s.cover,
+    name: s.name,
+    desc: s.desc
+  });
 }
 
 document.addEventListener("click", function(e) {
   var share = e.target.closest("[data-share]");
   if (share && !share.disabled) {
-    openShare(share.getAttribute("data-share"));
+    openShare(SERIES.find(function(x){ return x.id === share.getAttribute("data-share"); }));
     return;
   }
   var off = e.target.closest("[data-shelf-off]");
@@ -322,38 +219,36 @@ document.addEventListener("click", function(e) {
   if (e.target.closest("[data-del]")) { Proto.toast("已删除（演示）"); return; }
 });
 
-document.getElementById("btn-copy-link").addEventListener("click", function () {
-  var text = document.getElementById("share-url").textContent;
-  if (navigator.clipboard && navigator.clipboard.writeText) {
-    navigator.clipboard.writeText(text).then(function () { Proto.toast("链接已复制"); }, function () { Proto.toast("链接已复制"); });
-  } else {
-    Proto.toast("链接已复制");
-  }
-});
-document.getElementById("btn-download-qr").addEventListener("click", downloadQr);
-document.getElementById("btn-preview-poster").addEventListener("click", function () { Proto.toast("海报已生成（演示）"); });
-
 // ===== 筛选 =====
-document.getElementById("cs-source").addEventListener("change", function () {
-  filterSource = this.value;
+// 内容分类下拉取值于「内容分类」页面列表
+document.getElementById("cs-cat").insertAdjacentHTML("beforeend", window.ContentCats.optionsHtml());
+document.getElementById("cs-cat").addEventListener("change", function () {
+  filterCat = this.value;
+  renderList();
+});
+document.getElementById("cs-status").addEventListener("change", function () {
+  filterStatus = this.value;
   renderList();
 });
 document.getElementById("cs-keyword").addEventListener("input", function () {
   filterKeyword = this.value.trim();
   renderList();
 });
+document.getElementById("cs-query").addEventListener("click", function () {
+  filterCat = document.getElementById("cs-cat").value;
+  filterStatus = document.getElementById("cs-status").value;
+  filterKeyword = document.getElementById("cs-keyword").value.trim();
+  renderList();
+});
 document.getElementById("cs-reset").addEventListener("click", function () {
-  filterSource = "";
-  filterKeyword = "";
-  document.getElementById("cs-source").value = "";
+  filterCat = ""; filterKeyword = ""; filterStatus = "";
+  document.getElementById("cs-cat").value = "";
+  document.getElementById("cs-status").value = "";
   document.getElementById("cs-keyword").value = "";
   renderList();
 });
 
 mask && mask.addEventListener("click", closeAll);
-document.querySelectorAll("[data-close]").forEach(function(b) {
-  b.addEventListener("click", closeAll);
-});
 
 // 渲染
 function tryRender() {

@@ -1,33 +1,26 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>支付结果 · 星启家庭教育</title>
+  <title>支付结果 · To-B 小程序</title>
   <link rel="stylesheet" href="../assets/css/proto.css" />
-  <link rel="stylesheet" href="../assets/css/mp.css?v=taste3" />
+  <link rel="stylesheet" href="../assets/css/mp.css?v=5" />
 </head>
 <body class="mp-page" data-tabbar="0">
   <div class="mp-frame">
-    <div class="mp-status">
-      <span>9:41</span>
-      <span class="mp-notch" aria-hidden="true"></span>
-      <span>100%</span>
-    </div>
+    <div class="mp-top" style="height:190px"></div>
+    <div class="mp-status"><span>9:41</span><span>支付</span><span>100%</span></div>
     <div class="mp-nav">支付结果</div>
     <div class="mp-body">
-      <div class="mp-result">
-        <div class="mp-result-ico ok" id="pay-ico">✓</div>
-        <h3 style="margin-top:18px;font-size:22px;font-weight:750;letter-spacing:-0.03em;color:var(--mp-ink)" id="pay-title">支付成功</h3>
-        <p style="font-size:13px;color:var(--mp-muted);margin-top:10px;line-height:1.6" id="pay-desc"></p>
-        <div style="margin-top:16px;background:#f7f8fa;border-radius:14px;padding:14px 16px;text-align:left;font-size:12px;color:#5c6575;line-height:1.8" id="pay-meta"></div>
-        <div style="margin-top:28px" id="pay-actions"></div>
-        <div style="margin-top:18px;font-size:11px;color:#94a3b8;line-height:1.6" id="demo-switch">
-          演示分支：
-          <a href="#" data-status="success">成功</a> ·
-          <a href="#" data-status="cancel">取消</a> ·
-          <a href="#" data-status="fail">失败</a> ·
-          <a href="#" data-status="pending">待确认</a>
+      <div style="padding:48px 24px;text-align:center">
+        <div style="width:64px;height:64px;border-radius:50%;background:#d1fae5;color:#059669;display:grid;place-items:center;margin:0 auto;font-size:28px">✓</div>
+        <h3 style="margin-top:16px;font-size:20px">支付成功</h3>
+        <p style="font-size:13px;color:#888;margin-top:8px" id="pay-desc">权益已开通 · 资金进入艺博备付金待分账（示意）</p>
+        <div style="margin-top:28px">
+          <a class="mp-btn" href="learn.html" id="go-learn">去学习</a>
+          <a class="mp-btn mp-btn-outline" href="mine.html" style="margin-top:10px">返回我的</a>
+          <a class="mp-btn mp-btn-outline" href="live-room.html" style="margin-top:10px" id="go-live">返回直播间</a>
         </div>
       </div>
     </div>
@@ -35,187 +28,18 @@
   <p class="mp-hint"><a href="../admin/orders.html">管理端订单</a></p>
   <script src="../assets/js/proto.js"></script>
   <script src="../assets/js/mp-shell.js"></script>
-  <script src="../assets/js/mp-commerce.js"></script>
   <script>
-    (function () {
-      var params = MpCommerce.qs();
-      var status = params.get("status") || "success";
-      var from = params.get("from") || "course";
-      var catalogId = params.get("catalog") || (from === "ticket" ? "ticket" : from === "live" ? "liveGoods" : from === "claim" || from === "trial" ? "trialClaim" : "comm");
-      var item = MpCommerce.CATALOG[catalogId] || MpCommerce.CATALOG.comm;
-      var course = params.get("course") || (item.type === "series" ? "comm" : item.id);
-      var lesson = params.get("lesson") || "2";
-      var returnUrl = params.get("return") || "";
-
-      function withStatus(s) {
-        var q = new URLSearchParams(location.search);
-        q.set("status", s);
-        return "pay-result.html?" + q.toString();
-      }
-
-      document.querySelectorAll("#demo-switch [data-status]").forEach(function (a) {
-        a.addEventListener("click", function (e) {
-          e.preventDefault();
-          location.href = withStatus(a.getAttribute("data-status"));
-        });
-      });
-
-      var ico = document.getElementById("pay-ico");
-      var title = document.getElementById("pay-title");
-      var desc = document.getElementById("pay-desc");
-      var meta = document.getElementById("pay-meta");
-      var actions = document.getElementById("pay-actions");
-
-      var learnUrl =
-        returnUrl ||
-        ("learn.html?course=" + encodeURIComponent(course) + "&lesson=" + encodeURIComponent(lesson));
-      var courseUrl = "course.html?course=comm";
-      var courseGuestUrl = "course.html?course=comm&guest=1";
-      var trialUrl = "learn.html?trial=1&course=comm&lesson=1";
-      var liveUrl = "live-room.html";
-      var retryNotice =
-        from === "ticket"
-          ? liveUrl
-          : from === "live"
-          ? liveUrl
-          : from === "claim"
-          ? "claim.html"
-          : courseGuestUrl;
-      var backOnAbort =
-        returnUrl ||
-        (from === "ticket" || from === "live"
-          ? liveUrl
-          : from === "claim"
-          ? "claim.html"
-          : trialUrl);
-      var retryUrl = withStatus("success");
-
-      if (status === "success") {
-        if (item.type === "series" || from === "course" || from === "live") {
-          MpCommerce.grantRights("comm", { source: from, catalog: catalogId });
-        }
-        if (item.type === "live" || from === "ticket") {
-          MpCommerce.grantRights("ticket", { source: "ticket" });
-        }
-        if (item.type === "trial" || from === "claim") {
-          MpCommerce.grantRights("trialClaim", { source: "claim" });
-        }
-
-        ico.className = "mp-result-ico ok";
-        ico.textContent = "✓";
-        title.textContent = item.type === "trial" ? "领取成功" : "支付成功";
-        var nextStep =
-          item.type === "live"
-            ? "下一步：进入直播间观看"
-            : item.type === "trial"
-            ? "下一步：开始学习试听内容"
-            : "下一步：继续学习未解锁章节";
-        desc.textContent =
-          "已获得「" + item.typeLabel + "」权益：" + item.include + "。" + nextStep + "。";
-        meta.innerHTML =
-          '<div style="display:flex;justify-content:space-between"><span>权益类型</span><span style="font-weight:650">' +
-          item.typeLabel +
-          "</span></div>" +
-          '<div style="display:flex;justify-content:space-between"><span>有效期</span><span>' +
-          item.validity +
-          "</span></div>" +
-          '<div style="display:flex;justify-content:space-between"><span>开课方式</span><span>' +
-          (item.type === "live" ? "可立即进入直播间" : "已开通，可立即学习") +
-          "</span></div>" +
-          '<div style="display:flex;justify-content:space-between"><span>到账说明</span><span>备付金待分账（示意）</span></div>';
-
-        if (item.type === "live" || from === "ticket") {
-          actions.innerHTML =
-            '<a class="mp-btn" href="' +
-            liveUrl +
-            '">进入直播间</a>' +
-            '<a class="mp-btn mp-btn-outline" href="mine.html" style="margin-top:10px">返回我的</a>';
-        } else if (from === "live") {
-          actions.innerHTML =
-            '<a class="mp-btn" href="' +
-            learnUrl +
-            '">去学习</a>' +
-            '<a class="mp-btn mp-btn-outline" href="' +
-            liveUrl +
-            '" style="margin-top:10px">返回直播间</a>' +
-            '<a class="mp-btn mp-btn-outline" href="mine.html" style="margin-top:10px">返回我的</a>';
-        } else {
-          actions.innerHTML =
-            '<a class="mp-btn" href="' +
-            learnUrl +
-            '">继续学习</a>' +
-            '<a class="mp-btn mp-btn-outline" href="' +
-            courseUrl +
-            '" style="margin-top:10px">返回课程</a>' +
-            '<a class="mp-btn mp-btn-outline" href="mine.html" style="margin-top:10px">返回我的</a>';
-        }
-        return;
-      }
-
-      if (status === "cancel") {
-        ico.className = "mp-result-ico warn";
-        ico.textContent = "!";
-        title.textContent = "已取消支付";
-        desc.textContent = "订单未支付，权益未开通。可返回原位置继续，或重新发起购买。";
-        meta.innerHTML =
-          '<div style="display:flex;justify-content:space-between"><span>订单状态</span><span>已取消</span></div>' +
-          '<div style="display:flex;justify-content:space-between"><span>商品</span><span>' +
-          item.title +
-          "</span></div>";
-        actions.innerHTML =
-          '<a class="mp-btn" href="' +
-          backOnAbort +
-          '">返回原位置</a>' +
-          '<a class="mp-btn mp-btn-outline" href="' +
-          retryUrl +
-          '" style="margin-top:10px">重新购买</a>' +
-          '<a class="mp-btn mp-btn-outline" href="' +
-          retryNotice +
-          '" style="margin-top:10px">返回购买入口</a>';
-        return;
-      }
-
-      if (status === "fail") {
-        ico.className = "mp-result-ico fail";
-        ico.textContent = "×";
-        title.textContent = "支付失败";
-        desc.textContent = "支付未完成，权益未开通。可重试支付，或返回原试看 / 购买入口。";
-        meta.innerHTML =
-          '<div style="display:flex;justify-content:space-between"><span>订单状态</span><span style="color:#e5484d;font-weight:650">失败</span></div>' +
-          '<div style="display:flex;justify-content:space-between"><span>建议</span><span>检查网络后重试</span></div>';
-        actions.innerHTML =
-          '<a class="mp-btn" href="' +
-          retryUrl +
-          '">重试支付</a>' +
-          '<a class="mp-btn mp-btn-outline" href="' +
-          backOnAbort +
-          '" style="margin-top:10px">返回原位置</a>' +
-          '<a class="mp-btn mp-btn-outline" href="' +
-          retryNotice +
-          '" style="margin-top:10px">返回购买入口</a>';
-        return;
-      }
-
-      // pending
-      ico.className = "mp-result-ico warn";
-      ico.textContent = "…";
-      title.textContent = "支付结果确认中";
-      desc.textContent =
-        "已发起支付，结果待确认。可稍后查询订单；确认成功后权益将自动开通。";
-      meta.innerHTML =
-        '<div style="display:flex;justify-content:space-between"><span>订单状态</span><span style="color:#d97706;font-weight:650">待确认</span></div>' +
-        '<div style="display:flex;justify-content:space-between"><span>商品</span><span>' +
-        item.title +
-        "</span></div>";
-      actions.innerHTML =
-        '<a class="mp-btn" href="' +
-        withStatus("success") +
-        '">查询结果（示意成功）</a>' +
-        '<a class="mp-btn mp-btn-outline" href="' +
-        backOnAbort +
-        '" style="margin-top:10px">先返回原位置</a>' +
-        '<a class="mp-btn mp-btn-outline" href="mine.html" style="margin-top:10px">我的订单入口</a>';
-    })();
+    var params = new URLSearchParams(location.search);
+    var from = params.get("from") || "course";
+    var desc = document.getElementById("pay-desc");
+    var goLive = document.getElementById("go-live");
+    var goLearn = document.getElementById("go-learn");
+    if (from === "live" || from === "ticket") {
+      desc.textContent = "直播/课程权益已开通 · 可返回直播间继续观看";
+      goLearn.style.display = from === "live" ? "block" : "none";
+    } else {
+      goLive.style.display = "none";
+    }
   </script>
 </body>
 </html>

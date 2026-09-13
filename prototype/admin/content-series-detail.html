@@ -32,7 +32,7 @@
   <div class="cm-page-hd">
     <div>
       <h1 id="d-name">小学语文阅读启蒙系列</h1>
-      <p class="sub">系列课商品详情</p>
+      <p class="sub">系列课详情</p>
     </div>
   </div>
 
@@ -52,7 +52,7 @@
     <div class="cm-section-hd"><h2>内容信息</h2></div>
     <div class="cm-dl">
       <div class="item"><span class="k">内容类型</span><span class="v">系列课</span></div>
-      <div class="item"><span class="k">分类</span><span class="v" id="d-cat">K12 教育</span></div>
+      <div class="item"><span class="k">内容分类</span><span class="v" id="d-cat">K12 教育</span></div>
       <div class="item"><span class="k">内容摘要</span><span class="v" id="d-summary">3 章 · 6 视频</span></div>
       <div class="item"><span class="k">更新时间</span><span class="v" id="d-updated">2026-09-01</span></div>
       <div class="item"><span class="k">讲师</span><span class="v" id="d-teacher">张老师</span></div>
@@ -61,16 +61,10 @@
   </div>
 
   <div class="cm-section">
-    <div class="cm-section-hd"><h2>商品信息</h2></div>
+    <div class="cm-section-hd"><h2>状态信息</h2></div>
     <div class="cm-dl">
-      <div class="item"><span class="k">获取方式</span><span class="v" id="d-access">付费 · ¥99</span></div>
-      <div class="item"><span class="k">商品分组</span><span class="v" id="d-group">K12 教育</span></div>
-      <div class="item"><span class="k">有效期</span><span class="v">长期有效</span></div>
-      <div class="item"><span class="k">店铺显示</span><span class="v">显示</span></div>
-      <div class="item"><span class="k">交付方式</span><span class="v">支付后自动开通（线上内容）</span></div>
-      <div class="item"><span class="k">退款规则</span><span class="v">未使用可退 · 支持 7 天内未使用申请退款</span></div>
-      <div class="item"><span class="k">权益回收</span><span class="v">退款成功后自动回收课程权益</span></div>
       <div class="item"><span class="k">上架设置</span><span class="v" id="d-shelfmode">立即上架（保存后提交内容审核队列）</span></div>
+      <div class="item"><span class="k">店铺显示</span><span class="v">显示</span></div>
     </div>
   </div>
 
@@ -87,39 +81,14 @@
 <!-- 弹窗遮罩 -->
 <div class="proto-mask" id="mask"></div>
 
-<!-- 分享弹窗 -->
-<div class="proto-modal" id="modal-share">
-  <div style="background:#fff;border-radius:10px;width:440px;max-width:92vw;overflow:hidden">
-    <div class="proto-modal-hd">
-      <h3 style="margin:0;font-size:16px">分享系列课</h3>
-      <button class="ctrl-icon-btn" data-close>×</button>
-    </div>
-    <div class="proto-modal-bd">
-      <div class="cm-share-grid">
-        <div>
-          <div class="cm-qr"></div>
-          <div style="text-align:center;font-size:11px;color:#8c8c8c;margin-top:6px">扫码预览</div>
-        </div>
-        <div>
-          <div style="font-size:12px;color:#8c8c8c;margin-bottom:6px">短链</div>
-          <div class="cm-share-link" id="share-url">https://yibo.app/s/S001</div>
-          <div style="margin-top:12px;display:flex;gap:8px">
-            <button class="btn btn-primary" id="btn-copy-link">复制链接</button>
-            <button class="btn" data-toast="海报已生成（演示）">预览海报</button>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
 <script src="../assets/js/proto.js"></script>
-<script src="../assets/js/admin-shell.js?v=13"></script>
+<script src="../assets/js/share-modal.js?v=1"></script>
+<script src="../assets/js/admin-shell.js?v=14"></script>
 <script>
 var DATA = {
-  S001: { name:"小学语文阅读启蒙系列", cat:"K12 教育", teacher:"张老师", desc:"针对 6-12 岁儿童阅读兴趣培养，从绘本到章节书的进阶路径。", summary:"3 章 · 6 视频", duration:"2.5h", access:"付费 · ¥99", group:"K12 教育", shelf:"已上架", updated:"2026-09-01", color:"" },
-  S002: { name:"家长情绪管理训练营", cat:"家庭教育", teacher:"李老师", desc:"8 周系统训练，帮助家长识别情绪、管理情绪、与孩子正向沟通。", summary:"2 章 · 4 视频", duration:"1.8h", access:"付费 · ¥199", group:"家庭教育", shelf:"草稿", pub:"草稿", updated:"2026-08-20", color:"green" },
-  S003: { name:"AI 学习规划入门", cat:"学习能力", teacher:"王博士", desc:"AI 助力学习规划，10 节实操课让孩子学会用 AI 工具提升学习效率。", summary:"4 章 · 5 视频", duration:"3.2h", access:"免费", group:"学习能力", shelf:"已上架", updated:"2026-09-04", color:"orange" }
+  S001: { name:"小学语文阅读启蒙系列", cat:"K12 教育", teacher:"张老师", desc:"针对 6-12 岁儿童阅读兴趣培养，从绘本到章节书的进阶路径。", summary:"3 章 · 6 视频", duration:"2.5h", shelf:"已上架", updated:"2026-09-01", color:"" },
+  S002: { name:"家长情绪管理训练营", cat:"家庭教育", teacher:"李老师", desc:"8 周系统训练，帮助家长识别情绪、管理情绪、与孩子正向沟通。", summary:"2 章 · 4 视频", duration:"1.8h", shelf:"草稿", pub:"草稿", updated:"2026-08-20", color:"green" },
+  S003: { name:"AI 学习规划入门", cat:"学习能力", teacher:"王博士", desc:"AI 助力学习规划，10 节实操课让孩子学会用 AI 工具提升学习效率。", summary:"4 章 · 5 视频", duration:"3.2h", shelf:"已上架", updated:"2026-09-04", color:"orange" }
 };
 /* Aliases: rights courseId / legacy ids → catalog entry (+ optional display name) */
 var ALIASES = {
@@ -178,8 +147,6 @@ function apply() {
   document.getElementById("d-updated").textContent = d.updated;
   document.getElementById("d-teacher").textContent = d.teacher;
   document.getElementById("d-duration").textContent = d.duration;
-  document.getElementById("d-access").textContent = d.access;
-  document.getElementById("d-group").textContent = d.group;
   document.getElementById("d-shelf").textContent = d.shelf;
   document.getElementById("d-shelf").className = "cm-pill" + (d.shelf === "已上架" ? "" : " off");
   var shelfmode = document.getElementById("d-shelfmode");
@@ -192,7 +159,6 @@ function apply() {
     document.querySelector('#page-header-actions a[href*="edit"]');
   if (outlineA) outlineA.href = "content-series-outline.html?id=" + encodeURIComponent(id);
   if (editA) editA.href = "content-series-edit.html?id=" + encodeURIComponent(id);
-  document.getElementById("share-url").textContent = "https://yibo.app/s/" + id;
 }
 
 var emptyEl = document.getElementById("cs-empty");
@@ -218,11 +184,7 @@ function closeAll() {
 }
 document.getElementById("btn-share").addEventListener("click", function(){
   if (!d) return;
-  if (mask) mask.classList.add("open");
-  document.getElementById("modal-share").classList.add("open");
-});
-document.getElementById("btn-copy-link").addEventListener("click", function(){
-  Proto.toast("链接已复制");
+  XiboShare.open({ type: "系列课", url: "https://yibo.app/s/" + id, cover: "../assets/img/covers/" + (id === "S002" ? "emotion" : id === "S003" ? "ai" : "reading") + ".jpg", name: d.name, desc: d.desc });
 });
 mask && mask.addEventListener("click", closeAll);
 document.querySelectorAll("[data-close]").forEach(function(b){ b.addEventListener("click", closeAll); });

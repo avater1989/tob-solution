@@ -1,0 +1,11 @@
+schema_version: 1
+sdd_version: 4.0.0
+router: sdd-router
+skills:
+  - name: sdd-router
+    triggers: [sdd]
+    stages: [S0]
+    requires: []
+    outputs: [route_decision]
+    next: [missing-skill]
+    optional: false

@@ -1,172 +1,94 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>直播 · 星启家庭教育</title>
+  <title>直播 · To-B 小程序</title>
   <link rel="stylesheet" href="../assets/css/proto.css" />
-  <link rel="stylesheet" href="../assets/css/mp.css?v=taste2" />
+  <link rel="stylesheet" href="../assets/css/mp.css?v=5" />
 </head>
 <body class="mp-page" data-tab="live">
   <div class="mp-frame">
-    <div class="mp-status">
-      <span>9:41</span>
-      <span class="mp-notch" aria-hidden="true"></span>
-      <span>100%</span>
-    </div>
-    <div class="mp-nav">直播课堂</div>
-    <div class="mp-tabs">
-      <a class="active" href="#">进行中</a>
-      <a href="#">预告</a>
-      <a href="#">回放</a>
-    </div>
-    <div class="mp-body">
-      <div class="mp-section" style="padding-top:14px">
-        <!-- 直播中 · 有资格 -->
-        <a class="mp-card" href="live-room.html?status=live&access=1&title=%E4%BA%B2%E5%AD%90%E6%B2%9F%E9%80%9A%2090%20%E5%88%86%E9%92%9F" style="padding:0;overflow:hidden;display:block">
-          <div style="position:relative;height:160px">
-            <img src="../assets/img/covers/live.jpg" alt="" style="width:100%;height:100%;object-fit:cover;display:block" />
-            <span class="mp-live-badge" style="position:absolute;top:12px;left:12px;z-index:2;background:rgba(0,0,0,.55);color:#fff;font-size:10px;font-weight:700;padding:4px 8px;border-radius:6px;display:inline-flex;align-items:center;gap:5px"><i style="width:5px;height:5px;border-radius:50%;background:#ff5a5f;box-shadow:0 0 0 3px rgba(255,90,95,.35)"></i>LIVE · 1,286</span>
-            <div style="position:absolute;left:0;right:0;bottom:0;padding:14px 14px 12px;background:linear-gradient(180deg,transparent,rgba(0,0,0,.72));color:#fff">
-              <div style="font-size:16px;font-weight:750;letter-spacing:-0.02em">亲子沟通 90 分钟</div>
-              <div style="font-size:11px;opacity:.85;margin-top:4px">今天 20:00 · 林老师 · 有资格</div>
-            </div>
-          </div>
-          <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 14px">
-            <div class="mp-price"><small>¥</small>19.9</div>
-            <span style="font-size:12px;font-weight:650;color:var(--mp-primary)">进入直播间 ›</span>
-          </div>
-        </a>
+    <div class="mp-top" style="height:170px"></div>
+    <div class="mp-status"><span>9:41</span><span>直播</span><span>100%</span></div>
+    <div class="mp-nav">直播</div>
+    <div class="mp-body" style="padding:0 14px">
 
-        <!-- 直播中 · 无资格 -->
-        <a class="mp-card" href="live-room.html?status=live&access=0&title=%E6%83%85%E7%BB%AA%E8%A7%89%E5%AF%9F%E5%85%AC%E5%BC%80%E8%AF%BE">
-          <div class="mp-cover"><img src="../assets/img/covers/emotion.jpg" alt="" /></div>
-          <div class="mp-card-bd">
-            <h4>情绪觉察公开课</h4>
-            <div class="mp-card-meta">直播中 · 需观看资格</div>
-            <div class="mp-card-foot">
-              <div class="mp-price free">免费预约场</div>
-              <span class="mp-tag">获取资格</span>
+      <!-- 直播中 -->
+      <div style="margin-top:8px">
+        <div class="mp-live-card">
+          <a href="live-room.html" style="color:inherit">
+            <div class="mp-live-cover">
+              <span class="mp-live-badge"><i></i>直播中 · 1,286 人</span>
+              <h3>亲子沟通 90 分钟</h3>
+              <p>林老师 · 正在讲解情绪先于道理</p>
             </div>
+          </a>
+          <div class="mp-live-ft">
+            <div class="mp-live-ft-l">门票 <b>¥19.9</b> · 购课 ¥199 可免费看</div>
+            <a class="mp-live-ft-btn" href="live-room.html">进入直播间</a>
           </div>
-        </a>
-
-        <!-- 未开播 / 预约 -->
-        <a class="mp-card" href="live-room.html?status=upcoming&title=%E9%9D%92%E6%98%A5%E6%9C%9F%E4%BA%B2%E5%AD%90%E5%85%B3%E7%B3%BB%E5%B7%A5%E4%BD%9C%E5%9D%8A&time=%E4%B8%8B%E5%91%A8%E4%B8%89%2019:30&host=%E7%8E%8B%E8%80%81%E5%B8%88">
-          <div class="mp-cover"><img src="../assets/img/covers/boundary.jpg" alt="" /></div>
-          <div class="mp-card-bd">
-            <h4>青春期亲子关系工作坊</h4>
-            <div class="mp-card-meta">下周三 19:30 · 王老师</div>
-            <div class="mp-card-foot">
-              <div class="mp-price"><small>¥</small>29.9</div>
-              <span class="mp-tag ok">预约</span>
-            </div>
-          </div>
-        </a>
-
-        <!-- 已预约 -->
-        <a class="mp-card" href="live-room.html?status=booked&remind=0&title=%E6%97%A9%E9%97%B4%E5%AE%B6%E9%95%BF%E8%AF%BE&time=%E6%98%8E%E5%A4%A9%2008:00&host=%E8%B5%B5%E8%80%81%E5%B8%88">
-          <div class="mp-cover"><img src="../assets/img/covers/emotion.jpg" alt="" /></div>
-          <div class="mp-card-bd">
-            <h4>早间家长课</h4>
-            <div class="mp-card-meta">明天 08:00 · 已预约 · 提醒未开</div>
-            <div class="mp-card-foot">
-              <div class="mp-price free">免费</div>
-              <span class="mp-tag ok">已预约</span>
-            </div>
-          </div>
-        </a>
-
-        <!-- 回放可看 -->
-        <a class="mp-card" href="live-room.html?status=replay&title=%E5%AE%B6%E5%BA%AD%E8%BE%B9%E7%95%8C%E4%B8%93%E9%A2%98">
-          <div class="mp-cover"><img src="../assets/img/covers/replay.jpg" alt="" /></div>
-          <div class="mp-card-bd">
-            <h4>家庭边界专题</h4>
-            <div class="mp-card-meta">已结束 · 回放可看 · 至 09-20</div>
-            <div class="mp-card-foot">
-              <div class="mp-price"><small>¥</small>39</div>
-              <span class="mp-tag">回放</span>
-            </div>
-          </div>
-        </a>
-
-        <!-- 回放准备中 -->
-        <a class="mp-card" href="live-room.html?status=ended_pending&title=%E6%98%A5%E5%90%AF%2003%20%E6%9C%9F%E5%AE%B6%E9%95%BF%E5%85%AC%E5%BC%80%E8%AF%BE">
-          <div class="mp-cover"><img src="../assets/img/covers/live.jpg" alt="" /></div>
-          <div class="mp-card-bd">
-            <h4>春启 03 期家长公开课</h4>
-            <div class="mp-card-meta">已结束 · 回放准备中</div>
-            <div class="mp-card-foot">
-              <div class="mp-price free">已结束</div>
-              <span class="mp-tag">准备中</span>
-            </div>
-          </div>
-        </a>
-
-        <!-- 不提供回放 -->
-        <a class="mp-card" href="live-room.html?status=ended_none&title=%E9%99%84%E4%BB%B7%E5%86%85%E9%83%A8%E8%A7%86%E9%A2%91%E4%BC%9A">
-          <div class="mp-cover"><img src="../assets/img/covers/boundary.jpg" alt="" /></div>
-          <div class="mp-card-bd">
-            <h4>附件内部视频会</h4>
-            <div class="mp-card-meta">已结束 · 本场不提供回放</div>
-            <div class="mp-card-foot">
-              <div class="mp-price free">内部</div>
-              <span class="mp-tag">无回放</span>
-            </div>
-          </div>
-        </a>
-
-        <!-- 回放未上架 / 过期 -->
-        <a class="mp-card" href="live-room.html?status=replay_off&title=%E6%B5%8B%E8%AF%95%E5%9B%9E%E6%94%BE%C2%B7%E6%9C%AA%E4%B8%8A%E6%9E%B6">
-          <div class="mp-cover"><img src="../assets/img/covers/replay.jpg" alt="" /></div>
-          <div class="mp-card-bd">
-            <h4>测试回放 · 未上架</h4>
-            <div class="mp-card-meta">回放已生成 · 学员端不可看</div>
-            <div class="mp-card-foot">
-              <div class="mp-price free">—</div>
-              <span class="mp-tag">未开放</span>
-            </div>
-          </div>
-        </a>
-        <a class="mp-card" href="live-room.html?status=replay_expired&title=%E6%97%A9%E6%9C%9F%E5%9B%9E%E6%94%BE%C2%B7%E5%B7%B2%E8%BF%87%E6%9C%9F">
-          <div class="mp-cover"><img src="../assets/img/covers/replay.jpg" alt="" /></div>
-          <div class="mp-card-bd">
-            <h4>早期回放 · 已过期</h4>
-            <div class="mp-card-meta">曾上架 · 有效期已过</div>
-            <div class="mp-card-foot">
-              <div class="mp-price free">—</div>
-              <span class="mp-tag">已过期</span>
-            </div>
-          </div>
-        </a>
-
-        <!-- 改期 / 取消 -->
-        <a class="mp-card" href="live-room.html?status=rescheduled&title=%E5%91%A8%E6%9C%AB%E5%AE%B6%E9%95%BF%E8%AF%BE&time=%E5%91%A8%E4%BA%94%2020:00&newTime=%E5%91%A8%E5%85%AD%2020:00&host=%E6%9E%97%E8%80%81%E5%B8%88">
-          <div class="mp-cover"><img src="../assets/img/covers/emotion.jpg" alt="" /></div>
-          <div class="mp-card-bd">
-            <h4>周末家长课</h4>
-            <div class="mp-card-meta">已改期 → 周六 20:00</div>
-            <div class="mp-card-foot">
-              <div class="mp-price free">免费</div>
-              <span class="mp-tag">改期</span>
-            </div>
-          </div>
-        </a>
-        <a class="mp-card" href="live-room.html?status=cancelled&title=%E4%B8%B4%E6%97%B6%E5%8A%A0%E5%9C%BA%C2%B7%E5%B7%B2%E5%8F%96%E6%B6%88">
-          <div class="mp-cover"><img src="../assets/img/covers/live.jpg" alt="" /></div>
-          <div class="mp-card-bd">
-            <h4>临时加场 · 已取消</h4>
-            <div class="mp-card-meta">本场已取消 · 不可预约/入场</div>
-            <div class="mp-card-foot">
-              <div class="mp-price free">—</div>
-              <span class="mp-tag">已取消</span>
-            </div>
-          </div>
-        </a>
+        </div>
       </div>
+
+      <!-- 预告 -->
+      <div class="mp-section-head" style="margin:6px 0 10px">
+        <div class="mp-section-title">直播预告</div>
+        <a class="mp-section-more" href="#">全部 ›</a>
+      </div>
+
+      <div class="mp-live-card">
+        <a href="live-room.html" style="color:inherit">
+          <div class="mp-live-cover soon">
+            <span class="mp-live-badge">明天 20:00</span>
+            <h3>情绪觉察公开课</h3>
+            <p>王博士 · 免费 · 186 人已预约</p>
+          </div>
+        </a>
+        <div class="mp-live-ft">
+          <div class="mp-live-ft-l">免费预约 · 开播前 1 小时提醒</div>
+          <a class="mp-live-ft-btn ghost" href="#" data-toast="已预约，开播前将提醒你（原型）">预约提醒</a>
+        </div>
+      </div>
+
+      <!-- 回放 -->
+      <div class="mp-section-head" style="margin:14px 0 10px">
+        <div class="mp-section-title">直播回放</div>
+        <a class="mp-section-more" href="#">全部 ›</a>
+      </div>
+
+      <div class="mp-live-card">
+        <a href="live-room.html" style="color:inherit">
+          <div class="mp-live-cover replay">
+            <span class="mp-live-badge">已结束 · 可回看</span>
+            <h3>家庭边界专题</h3>
+            <p>张老师 · 时长 86 分钟</p>
+          </div>
+        </a>
+        <div class="mp-live-ft">
+          <div class="mp-live-ft-l">回看价 <b>¥39</b> · 永久有效</div>
+          <a class="mp-live-ft-btn ghost" href="pay-result.html?from=ticket">购买回看</a>
+        </div>
+      </div>
+
+      <div class="mp-live-card">
+        <a href="live-room.html" style="color:inherit">
+          <div class="mp-live-cover replay">
+            <span class="mp-live-badge">已结束 · 可回看</span>
+            <h3>青春期家长必修</h3>
+            <p>李老师 · 时长 102 分钟</p>
+          </div>
+        </a>
+        <div class="mp-live-ft">
+          <div class="mp-live-ft-l">回看价 <b>¥39</b> · 永久有效</div>
+          <a class="mp-live-ft-btn ghost" href="pay-result.html?from=ticket">购买回看</a>
+        </div>
+      </div>
+
     </div>
   </div>
-  <p class="mp-hint"><a href="../admin/lives.html">管理端直播</a></p>
+  <p class="mp-hint">直播列表：进行中 / 预告 / 回放 · <a href="../admin/lives.html">管理端直播列表</a></p>
+
   <script src="../assets/js/proto.js"></script>
   <script src="../assets/js/mp-shell.js"></script>
 </body>

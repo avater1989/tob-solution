@@ -14,7 +14,7 @@
 </div>
 
 <div id="page-content" style="display:none">
-  <div class="as-banner">创建和管理面向本店铺学员的定制化执行计划。「平台同步」的计划由运营后台下发，仅可查看与执行，不可修改。</div>
+  <div class="as-banner">创建和管理面向本店铺学员的定制化执行计划。计划发布后，可将计划内容一键「创建商品」进行售卖。</div>
 
   <div class="card" style="margin-bottom:14px"><div class="card-bd" style="padding:12px 16px">
     <div class="toolbar" style="border:none;padding:0;background:transparent">
@@ -22,9 +22,6 @@
       <select class="input" id="f-status" style="width:130px">
         <option value="">全部状态</option>
         <option>草稿</option><option>已发布</option><option>进行中</option><option>已完成</option><option>已终止</option>
-      </select>
-      <select class="input" id="f-src" style="width:130px">
-        <option value="">全部来源</option><option value="self">商家自建</option><option value="platform">平台同步</option>
       </select>
       <button class="btn btn-primary" id="btn-query">查询</button>
     </div>
@@ -35,7 +32,6 @@
       <tr>
         <th>计划名称</th>
         <th>计划描述</th>
-        <th style="width:100px">来源</th>
         <th style="width:120px">创建方式</th>
         <th style="width:90px">状态</th>
         <th style="width:320px">操作</th>
@@ -60,7 +56,7 @@
         </div>
       </div>
       <div class="field" id="wrap-assess">
-        <label>关联测评（可多选，含平台同步测评）</label>
+        <label>关联测评（可多选）</label>
         <div id="m-assess" style="border:1px solid #e8e8e8;border-radius:6px;padding:10px;max-height:160px;overflow:auto"></div>
       </div>
       <div class="field" id="wrap-tasks" style="display:none">
@@ -89,23 +85,23 @@
 <div class="proto-mask" id="mask"></div>
 
 <script src="../assets/js/proto.js"></script>
-<script src="../assets/js/admin-shell.js?v=13"></script>
+<script src="../assets/js/admin-shell.js?v=14"></script>
 <script>
-var ASSESS_POOL = ["亲子沟通能力测评","家庭教育风格测评","心理健康测评（平台同步）","情绪调节问卷（平台同步）","新生入学心理系列（平台同步）"];
-var TASK_POOL = ["AI 助手自我介绍","亲子沟通基础 · 第1章","心理健康测评（平台同步）","三分钟呼吸放松","家庭会议练习","学习习惯打卡"];
+var ASSESS_POOL = ["亲子沟通能力测评","家庭教育风格测评","心理健康测评","情绪调节问卷","新生入学心理系列"];
+var TASK_POOL = ["AI 助手自我介绍","亲子沟通基础 · 第1章","心理健康测评","三分钟呼吸放松","家庭会议练习","学习习惯打卡"];
 var STAGES = {
   MPL1:[{ name:"认知觉察", tasks:["亲子沟通能力测评"] }],
   MPL2:[{ name:"学习基础", tasks:["亲子沟通基础 · 第1章"] },{ name:"实践应用", tasks:["家庭会议练习"] }],
-  PPL1:[{ name:"关卡 1", tasks:["心理健康测评（平台同步）"] }],
+  PPL1:[{ name:"关卡 1", tasks:["心理健康测评"] }],
   MPL3:[],
   MPL4:[]
 };
 var PLANS = [
-  { id:"MPL1", name:"亲子沟通 21 天训练营计划", desc:"测评切入 + 课程学习的组合训练计划", source:"self", mode:"关联测评", status:"进行中", links:["亲子沟通能力测评"] },
-  { id:"MPL2", name:"家庭教育风格改进计划", desc:"基于教养风格测评结果安排学习任务", source:"self", mode:"直接选择任务", status:"草稿", links:["亲子沟通基础 · 第1章","家庭会议练习","三分钟呼吸放松"] },
-  { id:"PPL1", name:"2025春季心理健康定制化计划", desc:"面向全体学员的春季心理健康评估（运营后台下发）", source:"platform", mode:"关联测评", status:"进行中", links:["心理健康测评（平台同步）"] },
-  { id:"MPL3", name:"青春期沟通能力提升计划", desc:"针对 12-16 岁家庭的沟通训练", source:"self", mode:"关联测评", status:"草稿", links:["亲子沟通能力测评","家庭教育风格测评"] },
-  { id:"MPL4", name:"新手家长引导计划（草稿）", desc:"通过体验课与测评完成新手家长转化", source:"self", mode:"直接选择任务", status:"草稿", links:["AI 助手自我介绍","学习习惯打卡"] }
+  { id:"MPL1", name:"亲子沟通 21 天训练营计划", desc:"测评切入 + 课程学习的组合训练计划", mode:"关联测评", status:"进行中", links:["亲子沟通能力测评"] },
+  { id:"MPL2", name:"家庭教育风格改进计划", desc:"基于教养风格测评结果安排学习任务", mode:"直接选择任务", status:"草稿", links:["亲子沟通基础 · 第1章","家庭会议练习","三分钟呼吸放松"] },
+  { id:"PPL1", name:"2025春季心理健康定制化计划", desc:"面向全体学员的春季心理健康评估", mode:"关联测评", status:"进行中", links:["心理健康测评"] },
+  { id:"MPL3", name:"青春期沟通能力提升计划", desc:"针对 12-16 岁家庭的沟通训练", mode:"关联测评", status:"草稿", links:["亲子沟通能力测评","家庭教育风格测评"] },
+  { id:"MPL4", name:"新手家长引导计划（草稿）", desc:"通过体验课与测评完成新手家长转化", mode:"直接选择任务", status:"草稿", links:["AI 助手自我介绍","学习习惯打卡"] }
 ];
 var editing = null;
 
@@ -114,43 +110,33 @@ function stTag(s){
   var map={草稿:"gray",已发布:"blue",进行中:"green",已完成:"purple",已终止:"orange"};
   return '<span class="as-tag '+(map[s]||"gray")+'">'+esc(s)+'</span>';
 }
-function srcTag(src){
-  return src === "platform"
-    ? '<span class="as-tag purple">平台同步</span>'
-    : '<span class="as-tag green">商家自建</span>';
-}
-function isPlatform(p){ return p.source === "platform"; }
 function isDraft(s){ return s==="草稿"; }
 function canTerminate(s){ return s==="已发布"||s==="进行中"; }
 
 function render(){
   var q=(document.getElementById("f-q").value||"").trim();
   var st=document.getElementById("f-status").value;
-  var src=document.getElementById("f-src").value;
   var list=PLANS.filter(function(p){
     if (st && p.status!==st) return false;
-    if (src === "self" && isPlatform(p)) return false;
-    if (src === "platform" && !isPlatform(p)) return false;
     if (q && (p.name+p.desc).indexOf(q)<0) return false;
     return true;
   });
   document.getElementById("cnt").textContent=list.length;
   document.getElementById("tbody").innerHTML = list.map(function(p){
     var acts = '<button class="btn" data-view="'+p.id+'">查看计划</button>';
-    if (isPlatform(p)) {
-      acts += '<span class="as-tag gray" style="align-self:center">平台同步 · 只读</span>';
-    } else if (isDraft(p.status)) {
+    if (isDraft(p.status)) {
       acts += '<a class="btn" href="assess-plan-stages.html?id='+p.id+'">配置关卡</a>' +
         '<button class="btn" data-edit="'+p.id+'">编辑计划</button>' +
         '<button class="btn btn-primary" data-pub="'+p.id+'">发布计划</button>' +
         '<button class="btn" style="color:#f53f3f;border-color:#ffa39e" data-del="'+p.id+'">删除计划</button>';
     } else if (canTerminate(p.status)) {
-      acts += '<button class="btn" style="color:#f53f3f;border-color:#ffa39e" data-stop="'+p.id+'">终止计划</button>';
+      // 创建商品：计划发布后才可将其内容带入「新建商品」
+      acts += '<a class="btn" href="goods-edit.html?from=plan&id='+encodeURIComponent(p.id)+'&title='+encodeURIComponent(p.name)+'&desc='+encodeURIComponent(p.desc)+'">创建商品</a>' +
+        '<button class="btn" style="color:#f53f3f;border-color:#ffa39e" data-stop="'+p.id+'">终止计划</button>';
     }
     return '<tr>' +
       '<td><div class="as-name">'+esc(p.name)+'</div></td>' +
       '<td><div class="as-desc" style="white-space:normal">'+esc(p.desc)+'</div></td>' +
-      '<td>'+srcTag(p.source)+'</td>' +
       '<td><span class="as-tag '+(p.mode==="关联测评"?"blue":"purple")+'">'+esc(p.mode)+'</span></td>' +
       '<td>'+stTag(p.status)+'</td>' +
       '<td><div class="as-acts">'+acts+'</div></td></tr>';
@@ -171,15 +157,13 @@ function fillChecks(elId, pool, selected){
   selected = selected || [];
   document.getElementById(elId).innerHTML = pool.map(function(n){
     var ck = selected.indexOf(n)>=0 ? " checked" : "";
-    var plat = n.indexOf("平台同步")>=0 ? ' <span class="as-tag purple" style="margin-left:4px">平台</span>' : "";
-    return '<label style="display:flex;align-items:center;gap:8px;padding:5px 0;font-size:13px"><input type="checkbox" value="'+esc(n)+'"'+ck+'> '+esc(n)+plat+'</label>';
+    return '<label style="display:flex;align-items:center;gap:8px;padding:5px 0;font-size:13px"><input type="checkbox" value="'+esc(n)+'"'+ck+'> '+esc(n)+'</label>';
   }).join("");
 }
 
 function openEdit(pid){
   editing = pid;
   var p = pid ? PLANS.find(function(x){return x.id===pid;}) : null;
-  if (p && isPlatform(p)) { Proto.toast("平台同步计划不可编辑"); return; }
   document.getElementById("m-title").textContent = p ? "编辑计划" : "新建计划";
   document.getElementById("m-name").value = p ? p.name : "";
   document.getElementById("m-desc").value = p ? p.desc : "";
@@ -207,7 +191,7 @@ document.getElementById("btn-save").onclick = function(){
     p.name=name; p.desc=desc; p.mode=mode; p.links=links;
   } else {
     var nid="MPL"+Date.now().toString().slice(-4);
-    PLANS.unshift({ id:nid, name:name, desc:desc, source:"self", mode:mode, status:"草稿", links:links });
+    PLANS.unshift({ id:nid, name:name, desc:desc, mode:mode, status:"草稿", links:links });
     STAGES[nid]=[];
   }
   closeAll(); render(); Proto.toast("草稿已保存");
@@ -218,13 +202,9 @@ document.addEventListener("click", function(e){
   if (view) {
     var p=PLANS.find(function(x){return x.id===view.getAttribute("data-view");});
     var stages = STAGES[p.id] || [];
-    var head = isPlatform(p)
-      ? '<div class="as-banner" style="background:#f9f0ff;border-color:#d3adf7;color:#531dab">该计划由运营后台同步下发，仅可查看与执行，不可修改。</div>'
-      : '';
-    document.getElementById("view-bd").innerHTML = head +
+    document.getElementById("view-bd").innerHTML =
       '<div class="as-name" style="font-size:16px;margin-bottom:6px">'+esc(p.name)+'</div>' +
       '<div style="font-size:13px;line-height:1.9;margin-bottom:12px">' +
-        '<div>来源：'+srcTag(p.source)+' '+(isPlatform(p)?'<span class="muted" style="font-size:12px">同步时间 2026-09-05 10:00</span>':'')+'</div>' +
         '<div>当前状态：'+stTag(p.status)+'</div>' +
         '<div>创建方式：'+esc(p.mode)+'</div>' +
       '</div>' +
@@ -235,9 +215,9 @@ document.addEventListener("click", function(e){
       '<div class="muted" style="font-size:12px;margin:14px 0 6px">关卡配置</div>' +
       (stages.length
         ? stages.map(function(s,i){ return '<div class="as-preview-item"><b>'+esc(s.name)+'</b> · '+(s.tasks||[]).length+' 个任务'+(i===0?' · 默认解锁':'')+'</div>'; }).join("")
-        : '<div class="as-banner" style="margin:0">尚未配置关卡'+(isDraft(p.status)&&!isPlatform(p)?'，可在草稿态进入「配置关卡」':'')+'</div>');
+        : '<div class="as-banner" style="margin:0">尚未配置关卡'+(isDraft(p.status)?'，可在草稿态进入「配置关卡」':'')+'</div>');
     var btn = document.getElementById("view-stages");
-    if (isDraft(p.status) && !isPlatform(p)) {
+    if (isDraft(p.status)) {
       btn.style.display = "";
       btn.href = "assess-plan-stages.html?id="+p.id;
     } else {
@@ -256,13 +236,11 @@ document.addEventListener("click", function(e){
   var stop=e.target.closest("[data-stop]");
   if (stop) {
     var p3=PLANS.find(function(x){return x.id===stop.getAttribute("data-stop");});
-    if (isPlatform(p3)) { Proto.toast("平台同步计划的终止由平台维护"); return; }
     p3.status="已终止"; render(); Proto.toast("计划已终止"); return;
   }
   var del=e.target.closest("[data-del]");
   if (del) {
     var pd=PLANS.find(function(x){return x.id===del.getAttribute("data-del");});
-    if (isPlatform(pd)) { Proto.toast("平台同步计划不可删除"); return; }
     PLANS=PLANS.filter(function(x){return x.id!==pd.id;}); render(); Proto.toast("已删除"); return;
   }
 });

@@ -1,121 +1,106 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>我的 · 星启家庭教育</title>
+  <title>我的 · To-B 小程序</title>
   <link rel="stylesheet" href="../assets/css/proto.css" />
-  <link rel="stylesheet" href="../assets/css/mp.css?v=taste2" />
+  <link rel="stylesheet" href="../assets/css/mp.css?v=5" />
 </head>
 <body class="mp-page" data-tab="mine">
   <div class="mp-frame">
-    <div class="mp-body" style="background:var(--mp-bg)">
-      <div class="mp-profile">
-        <div class="mp-status" style="background:transparent;color:#fff;padding-left:6px;padding-right:6px;height:28px">
-          <span>9:41</span>
-          <span>100%</span>
-        </div>
-        <div class="mp-profile-row" style="margin-top:10px">
-          <div class="mp-avatar">李</div>
-          <div>
-            <h3>李女士</h3>
-            <div class="sub">138****2610 · 已学 12 天</div>
+    <div class="mp-top" style="height:210px"></div>
+    <div class="mp-status"><span>9:41</span><span>我的</span><span>100%</span></div>
+    <div class="mp-nav">我的</div>
+    <div class="mp-body">
+
+      <!-- 用户卡 -->
+      <div class="mp-user">
+        <div class="mp-user-row">
+          <div class="mp-user-avatar">李</div>
+          <div style="min-width:0">
+            <div class="mp-user-name">李女士</div>
+            <div class="mp-user-phone">138****2610</div>
           </div>
+          <span class="mp-user-vip">普通会员</span>
         </div>
-        <div class="mp-stats">
-          <div><b>2</b><span>课程</span></div>
-          <div><b>1</b><span>预约直播</span></div>
-          <div><b>25%</b><span>学习进度</span></div>
-        </div>
+        <div class="mp-user-greet">已加入 12 天 · 累计学习 3 节课</div>
       </div>
 
-      <div class="mp-menu">
-        <a href="learn.html?course=comm&amp;lesson=2">
-          <span class="ico-box"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13l11-6.5L8 5.5z"/></svg></span>
-          继续学习 · 亲子沟通基础
-          <span class="arrow">›</span>
-        </a>
-        <a href="orders.html">
-          <span class="ico-box" style="background:#eef2ff;color:#4338ca"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 3h12l1 5H5L6 3z"/><path d="M5 8h14v11a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V8z"/><path d="M9 12h6"/></svg></span>
-          我的订单
-          <span class="arrow">›</span>
-        </a>
-        <a href="claim.html">
-          <span class="ico-box" style="background:#fff4e6;color:#d97706"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 12v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-8"/><path d="M12 2v14"/><path d="m8 12 4 4 4-4"/></svg></span>
-          领课兑换
-          <span class="arrow">›</span>
-        </a>
-        <a href="lives.html">
-          <span class="ico-box" style="background:#fff1f0;color:#e5484d"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="6" width="13" height="12" rx="2"/><path d="m16 10 5-3v10l-5-3V10z"/></svg></span>
-          我的直播预约
-          <span class="arrow">›</span>
-        </a>
-        <a href="help.html">
-          <span class="ico-box" style="background:#f3f4f6;color:#64748b"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 0 1 4.7 1c0 1.5-2.2 2-2.2 3.5"/><circle cx="12" cy="16.5" r=".8" fill="currentColor" stroke="none"/></svg></span>
-          账号与帮助
-          <span class="arrow">›</span>
-        </a>
-      </div>
-
-      <div class="mp-section">
-        <div class="mp-section-hd">
+      <!-- 我的课程 -->
+      <div class="mp-section" style="padding-top:16px">
+        <div class="mp-section-head">
           <div class="mp-section-title">我的课程</div>
+          <a class="mp-section-more" href="#">全部 ›</a>
         </div>
-        <a class="mp-card" href="learn.html?course=comm&amp;lesson=2">
-          <div class="mp-cover"><img src="../assets/img/covers/comm.jpg" alt="" /></div>
-          <div class="mp-card-bd">
+        <a class="course-card" href="learn.html">
+          <div class="course-cover">沟通<br />基础</div>
+          <div class="course-info">
             <h4>亲子沟通基础</h4>
-            <div class="mp-card-meta">已学至第 2 节</div>
-            <div class="mp-progress"><i style="width:25%"></i></div>
-            <div class="mp-card-foot">
-              <div class="mp-price free">继续学习</div>
-              <span class="mp-tag">25%</span>
-            </div>
+            <p>已学至第 2 节 · 进度 25%</p>
+            <div class="price" style="color:#f04438;font-size:13px">继续学习 →</div>
           </div>
         </a>
-        <a class="mp-card" href="learn.html?course=comm&amp;lesson=1">
-          <div class="mp-cover"><img src="../assets/img/covers/trial.jpg" alt="" /></div>
-          <div class="mp-card-bd">
+        <a class="course-card" href="learn.html">
+          <div class="course-cover">体验<br />9.9</div>
+          <div class="course-info">
             <h4>9.9 引流体验课</h4>
-            <div class="mp-card-meta">视频号兑换 · 未开始</div>
-            <div class="mp-progress"><i style="width:0%"></i></div>
-            <div class="mp-card-foot">
-              <div class="mp-price free">开始学习</div>
-              <span class="mp-tag ok">待开课</span>
-            </div>
+            <p>视频号兑换 · 未开始</p>
+            <div class="price" style="color:#f04438;font-size:13px">开始学习 →</div>
           </div>
         </a>
       </div>
 
-      <div class="mp-section" style="padding-top:0">
-        <div class="mp-section-hd">
+      <!-- 我的直播 -->
+      <div class="mp-section">
+        <div class="mp-section-head">
           <div class="mp-section-title">我的直播</div>
+          <a class="mp-section-more" href="lives.html">去直播 ›</a>
         </div>
-        <a class="mp-card" href="live-room.html">
-          <div class="mp-cover">
-            <img src="../assets/img/covers/live.jpg" alt="" />
-            <span class="mp-live-badge"><i></i>预约</span>
-          </div>
-          <div class="mp-card-bd">
+        <a class="course-card" href="live-room.html">
+          <div class="course-cover live">今晚</div>
+          <div class="course-info">
             <h4>亲子沟通 90 分钟</h4>
-            <div class="mp-card-meta">今天 20:00 · 已预约提醒</div>
-            <div class="mp-card-foot">
-              <div class="mp-price free">进入直播间</div>
-            </div>
+            <p>已预约 · 今天 20:00</p>
+            <div class="price" style="color:#f04438;font-size:13px">进入直播间 →</div>
           </div>
         </a>
       </div>
+
+      <!-- 更多服务 -->
+      <div class="mp-section" style="padding-bottom:16px">
+        <div class="mp-section-head">
+          <div class="mp-section-title">更多服务</div>
+        </div>
+        <div class="mp-cells">
+          <a class="mp-cell" href="assess.html">
+            <span class="mp-cell-ico" style="background:linear-gradient(135deg,#ffb020,#ff7a45)">测</span>
+            我的定制化计划
+            <span class="mp-cell-arrow">›</span>
+          </a>
+          <a class="mp-cell" href="claim.html">
+            <span class="mp-cell-ico" style="background:linear-gradient(135deg,#ff8a7a,#f04438)">课</span>
+            领课兑换（短信落地）
+            <span class="mp-cell-arrow">›</span>
+          </a>
+          <a class="mp-cell" href="orders.html">
+            <span class="mp-cell-ico" style="background:linear-gradient(135deg,#ffc46b,#f59e0b)">单</span>
+            我的订单
+            <span class="mp-cell-arrow">›</span>
+          </a>
+          <a class="mp-cell" href="#" data-toast="已复制老师企业微信（原型）">
+            <span class="mp-cell-ico" style="background:linear-gradient(135deg,#7dd3a0,#00b42a)">微</span>
+            添加老师企业微信
+            <span class="mp-cell-arrow">›</span>
+          </a>
+        </div>
+      </div>
+
     </div>
   </div>
-  <p class="mp-hint"><span style="opacity:.75">原型切换</span> · <a href="../admin/user-detail.html">管理端用户</a></p>
+  <p class="mp-hint"><a href="../admin/user-detail.html">管理端用户详情</a></p>
+
   <script src="../assets/js/proto.js"></script>
   <script src="../assets/js/mp-shell.js"></script>
-  <script src="../assets/js/mp-commerce.js"></script>
-  <script>
-    // 「我的」演示账号默认已购，避免继续学习掉进试看态
-    if (window.MpCommerce && !MpCommerce.hasRights("comm")) {
-      MpCommerce.grantRights("comm", { source: "mine-demo" });
-    }
-  </script>
 </body>
 </html>

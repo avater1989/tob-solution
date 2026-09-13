@@ -38,7 +38,7 @@
   var modules = [
     { id: "workbench", label: "工作台", href: "dashboard.html" },
     { id: "scrm", label: "SCRM", href: "leads.html" },
-    { id: "live", label: "直播", href: "lives.html" },
+    { id: "live", label: "直播", href: "lives.html", unread: true },
     { id: "content", label: "内容", href: "content-series.html" },
     { id: "mp", label: "小程序", href: "mp-home.html" },
     { id: "trade", label: "交易", href: "orders.html" },
@@ -100,7 +100,7 @@
       {
         group: "业务设置",
         links: [
-          { id: "channel-mgmt", href: "channel-mgmt.html", label: "渠道管理" },
+          { id: "lead-rule", href: "lead-rule.html", label: "分配规则" },
           { id: "term-mgmt", href: "term-mgmt.html", label: "期次管理" },
           { id: "sidebar-mgmt", href: "sidebar-mgmt.html", label: "侧边栏管理" },
         ],
@@ -123,7 +123,7 @@
           { id: "content-series",   href: "content-series.html",   label: "系列课" },
           { id: "content-video",    href: "content-video.html",    label: "视频" },
           { id: "content-article",  href: "content-article.html",  label: "图文" },
-          { id: "content-category", href: "content-category.html", label: "商品分组" },
+          { id: "content-category", href: "content-category.html", label: "内容分类" },
         ],
       },
       {
@@ -316,7 +316,8 @@
   function modulesHtml() {
     return modules
       .map(function (m) {
-        return '<a class="' + (m.id === moduleId ? "active" : "") + '" href="' + m.href + '">' + m.label + "</a>";
+        var dot = m.unread ? '<span class="module-dot" title="有未读"></span>' : "";
+        return '<a class="' + (m.id === moduleId ? "active" : "") + '" href="' + m.href + '">' + m.label + dot + "</a>";
       })
       .join("");
   }

@@ -31,20 +31,7 @@
 }
 .ca-meta b { color: #595959; font-weight: 500; }
 .ca-actions { display: flex; gap: 6px; flex-wrap: wrap; }
-
-/* ===== 分享弹窗 ===== */
-.share-qr {
-  width: 168px; height: 168px; margin: 0 auto;
-  padding: 10px; border: 1px solid #e8e8e8; border-radius: 8px;
-  background: #fff; display: flex; align-items: center; justify-content: center;
-}
-.share-tip { text-align: center; font-size: 12px; color: #8c8c8c; margin: 10px 0 16px; }
-.share-field-label { font-size: 12px; color: #8c8c8c; margin-bottom: 6px; }
-.share-url {
-  font-family: monospace; font-size: 12px; background: #f7f8fa;
-  border: 1px solid #e8e8e8; border-radius: 6px; padding: 8px 10px;
-  word-break: break-all;
-}
+.ca-cat { font-size: 11px; padding: 1px 6px; border-radius: 3px; background: #e8f3ff; color: #165dff; font-weight: 500; flex-shrink: 0; }
 </style>
 </head>
 <body class="admin-body" data-module="content" data-nav="content-article" data-title="图文" data-crumb="内容 / 内容管理 / 图文">
@@ -57,12 +44,12 @@
 <div id="page-content" style="display:none">
   <div class="card" style="margin-bottom:14px"><div class="card-bd" style="padding:12px 16px">
     <div class="toolbar" style="border:none;padding:0;background:transparent">
-      <input class="input" type="text" placeholder="搜索图文名称或简介..." style="width:240px" />
-      <select class="input" style="width:140px">
-        <option>全部分类</option><option>K12 教育</option><option>家庭教育</option>
+      <input class="input" type="text" id="ca-keyword" placeholder="搜索图文名称或简介..." style="width:240px" />
+      <select class="input" id="ca-cat" style="width:160px">
+        <option value="">全部内容分类</option>
       </select>
-      <select class="input" style="width:140px">
-        <option>全部上下架</option><option>已上架</option><option>已下架</option>
+      <select class="input" id="ca-status" style="width:140px">
+        <option value="">全部上下架</option><option>已上架</option><option>已下架</option>
       </select>
       <button class="btn btn-primary">查询</button>
       <button class="btn">重置</button>
@@ -84,25 +71,22 @@
 <!-- 弹窗遮罩 -->
 <div class="proto-mask" id="mask"></div>
 
-<div class="proto-modal" id="modal-share">
-  <div style="background:#fff;border-radius:10px;width:420px;max-width:92vw;overflow:hidden">
-    <div class="proto-modal-hd"><h3 style="margin:0;font-size:16px" id="share-title">分享图文</h3><button class="ctrl-icon-btn" data-close>×</button></div>
-    <div class="proto-modal-bd">
-      <div class="share-qr" id="share-qr"></div>
-      <p class="share-tip">学员微信扫一扫，或复制链接在微信中打开</p>
-      <div class="share-field-label">商品链接</div>
-      <div id="share-url" class="share-url"></div>
-      <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
-        <button class="btn btn-primary" id="btn-copy-link">复制链接</button>
-        <button class="btn" id="btn-download-qr">下载二维码</button>
-        <button class="btn" id="btn-preview-poster">预览海报</button>
-      </div>
-    </div>
+<!-- 删除图文二次确认 -->
+<div class="proto-modal" id="modal-del" style="width:440px">
+  <div class="proto-modal-hd"><h3 style="font-size:16px;font-weight:600">删除图文</h3><button class="btn btn-sm btn-ghost" data-close>×</button></div>
+  <div class="proto-modal-bd">
+    <p>确定删除《<b id="del-name"></b>》？删除后学员端将不再展示，且无法恢复。</p>
+  </div>
+  <div class="proto-drawer-ft" style="border-top:1px solid var(--color-border);padding:12px 20px;display:flex;gap:8px;justify-content:flex-end">
+    <button class="btn" data-close>取消</button>
+    <button class="btn btn-primary" id="del-confirm" style="background:#f53f3f;border-color:#f53f3f">确认删除</button>
   </div>
 </div>
 
 <script src="../assets/js/proto.js"></script>
-<script src="../assets/js/admin-shell.js?v=13"></script>
+<script src="../assets/js/content-cats.js?v=1"></script>
+<script src="../assets/js/share-modal.js?v=1"></script>
+<script src="../assets/js/admin-shell.js?v=14"></script>
 <script>
 setTimeout(function() {
   if (document.documentElement.getAttribute('data-shell-ready') === '1') return;
@@ -115,15 +99,19 @@ setTimeout(function() {
 
 var ARTICLES = [
   { id: "A001", title: "9 月新学期家长指南", cover: "../assets/img/covers/term.jpg",
-    author: "编辑部", date: "2026-08-25", reads: 2340, words: 1280,
+    author: "编辑部", cat: "K12 教育", date: "2026-08-25", reads: 2340, words: 1280,
     status: "已上架", statusType: "pass", onShelf: true },
   { id: "A002", title: "孩子注意力训练方法论", cover: "../assets/img/covers/focus.jpg",
-    author: "张老师", date: "2026-08-30", reads: 1560, words: 980,
+    author: "张老师", cat: "K12 教育", date: "2026-08-30", reads: 1560, words: 980,
     status: "已上架", statusType: "pass", onShelf: true },
   { id: "A003", title: "家庭情绪急救指南", cover: "../assets/img/covers/emotion.jpg",
-    author: "李老师", date: "—", reads: 0, words: 320,
+    author: "李老师", cat: "家庭教育", date: "—", reads: 0, words: 320,
     status: "已下架", statusType: "review", onShelf: false }
 ];
+
+var filterCat = "";
+var filterStatus = "";
+var filterKeyword = "";
 
 function esc(s) {
   return String(s).replace(/[&<>"']/g, function(c) {
@@ -131,13 +119,23 @@ function esc(s) {
   });
 }
 
+function filteredArticles() {
+  return ARTICLES.filter(function(a) {
+    if (filterCat && a.cat !== filterCat) return false;
+    if (filterStatus && a.status !== filterStatus) return false;
+    if (filterKeyword && a.title.toLowerCase().indexOf(filterKeyword.toLowerCase()) === -1) return false;
+    return true;
+  });
+}
+
 function renderList() {
-  var html = ARTICLES.map(function(a) {
+  var html = filteredArticles().map(function(a) {
     return '' +
       '<div class="ca-row">' +
         '<div class="ca-cover"><img src="' + a.cover + '" alt="" /></div>' +
         '<div class="ca-info">' +
           '<div class="ca-title">' + esc(a.title) +
+            '<span class="ca-cat">' + esc(a.cat) + '</span>' +
             '<span class="audit-badge ' + a.statusType + '">' + esc(a.status) + '</span>' +
           '</div>' +
           '<div class="ca-meta">' +
@@ -155,12 +153,13 @@ function renderList() {
             ? '<button class="btn" data-shelf-off="' + a.id + '">下架</button>'
             : '<a class="btn btn-primary" href="content-article-edit.html?id=' + a.id + '">编辑</a>' +
               '<button class="btn" data-shelf-on="' + a.id + '">上架</button>') +
+          '<button class="btn" style="color:#f53f3f;border-color:#ffa39e" data-del="' + a.id + '">删除</button>' +
           '<button class="btn" data-copy="' + a.id + '">复制</button>' +
         '</div>' +
       '</div>';
   }).join("");
   document.getElementById("ca-list").innerHTML = html;
-  document.getElementById("ca-count").textContent = ARTICLES.length;
+  document.getElementById("ca-count").textContent = filteredArticles().length;
 }
 
 var mask = document.getElementById("mask");
@@ -168,25 +167,23 @@ function closeAll() {
   mask.classList.remove("open");
   document.querySelectorAll(".proto-modal").forEach(function(n) { n.classList.remove("open"); });
 }
-function openShare(id) {
-  var url = "https://yibo.app/a/" + id;
-  document.getElementById("share-url").textContent = url;
-  document.getElementById("share-qr").innerHTML = Proto.qrSvg(url, 148);
+function openModal(el) {
+  if (!el) return;
   mask.classList.add("open");
-  document.getElementById("modal-share").classList.add("open");
+  el.classList.add("open");
 }
-function downloadQr() {
-  var svg = document.querySelector("#share-qr svg");
-  if (!svg) { Proto.toast("二维码尚未生成"); return; }
-  var blob = new Blob([svg.outerHTML], { type: "image/svg+xml;charset=utf-8" });
-  var a = document.createElement("a");
-  a.href = URL.createObjectURL(blob);
-  a.download = "分享二维码.svg";
-  document.body.appendChild(a);
-  a.click();
-  a.remove();
-  setTimeout(function() { URL.revokeObjectURL(a.href); }, 1000);
-  Proto.toast("二维码已下载");
+var pendingDelId = null;
+document.getElementById("del-confirm").addEventListener("click", function () {
+  if (!pendingDelId) return;
+  ARTICLES = ARTICLES.filter(function (x) { return x.id !== pendingDelId; });
+  pendingDelId = null;
+  closeAll();
+  renderList();
+  Proto.toast("已删除");
+});
+function openShare(id) {
+  var a = ARTICLES.find(function(x){ return x.id === id; });
+  XiboShare.open({ type: "图文", url: "https://yibo.app/a/" + id, cover: a ? a.cover : "", name: a ? a.title : "", desc: "" });
 }
 document.addEventListener("click", function(e) {
   var share = e.target.closest("[data-share]");
@@ -206,20 +203,24 @@ document.addEventListener("click", function(e) {
     if (a2) { a2.onShelf = true; a2.status = "已上架"; a2.statusType = "pass"; renderList(); Proto.toast("已上架"); }
     return;
   }
+  var del = e.target.closest("[data-del]");
+  if (del) {
+    pendingDelId = del.getAttribute("data-del");
+    var da = ARTICLES.find(function (x) { return x.id === pendingDelId; });
+    document.getElementById("del-name").textContent = da ? da.title : pendingDelId;
+    openModal(document.getElementById("modal-del"));
+    return;
+  }
   if (e.target.closest("[data-copy]")) Proto.toast("已复制图文（演示）");
 });
-document.getElementById("btn-copy-link").addEventListener("click", function(){
-  var text = document.getElementById("share-url").textContent;
-  if (navigator.clipboard && navigator.clipboard.writeText) {
-    navigator.clipboard.writeText(text).then(function(){ Proto.toast("链接已复制"); }, function(){ Proto.toast("链接已复制"); });
-  } else {
-    Proto.toast("链接已复制");
-  }
-});
-document.getElementById("btn-download-qr").addEventListener("click", downloadQr);
-document.getElementById("btn-preview-poster").addEventListener("click", function(){ Proto.toast("海报已生成（演示）"); });
 mask && mask.addEventListener("click", closeAll);
 document.querySelectorAll("[data-close]").forEach(function(b) { b.addEventListener("click", closeAll); });
+
+// 内容分类下拉取值于「内容分类」页面列表
+document.getElementById("ca-cat").insertAdjacentHTML("beforeend", window.ContentCats.optionsHtml());
+document.getElementById("ca-cat").addEventListener("change", function(){ filterCat = this.value; renderList(); });
+document.getElementById("ca-status").addEventListener("change", function(){ filterStatus = this.value; renderList(); });
+document.getElementById("ca-keyword").addEventListener("input", function(){ filterKeyword = this.value.trim(); renderList(); });
 
 function tryRender() {
   if (document.getElementById("page-content").style.display !== "none") renderList();

@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>商品分组 · 艺博 To-B</title>
+<title>内容分类 · 艺博 To-B</title>
 <link rel="stylesheet" href="../assets/css/proto.css?v=9" />
 <style>
 .cc-table { width:100%; border-collapse:collapse; background:#fff; border:1px solid #e8e8e8; border-radius:8px; overflow:hidden; }
@@ -14,27 +14,29 @@
 .cc-name { font-weight:500; color:#1d2129; }
 .cc-acts { display:flex; gap:6px; align-items:center; }
 .cc-acts .btn { padding:2px 8px; font-size:12px; }
+/* 禁用态：原型里 .btn 无全局 disabled 样式，不补则禁用按钮看起来和可点一样 */
+.cc-acts .btn:disabled { opacity:.45; cursor:not-allowed; }
 .cc-status { display:inline-flex; padding:1px 8px; border-radius:999px; font-size:11px; border:1px solid #b7eb8f; color:#389e0d; background:#f6ffed; }
 .cc-status.off { border-color:#d9d9d9; color:#8c8c8c; background:#fafafa; }
 </style>
 </head>
-<body class="admin-body" data-module="content" data-nav="content-category" data-title="商品分组" data-crumb="内容 / 内容管理 / 商品分组">
+<body class="admin-body" data-module="content" data-nav="content-category" data-title="内容分类" data-crumb="内容 / 内容管理 / 内容分类">
 
 <div id="header-actions">
-  <button class="btn btn-primary" id="btn-new-cat">+ 新建分组</button>
+  <button class="btn btn-primary" id="btn-new-cat">+ 新建分类</button>
 </div>
 
 <div id="page-content" style="display:none">
   <div style="margin-bottom:12px">
-    <div style="font-size:13px;color:#8c8c8c">维护店铺商品的运营分组与展示顺序</div>
+    <div style="font-size:13px;color:#8c8c8c">维护内容的分类体系与展示顺序，系列课 / 视频 / 图文等内容的「内容分类」取值均来源于此</div>
   </div>
 
   <table class="cc-table">
     <thead>
       <tr>
         <th style="width:72px">序号</th>
-        <th>分组名称</th>
-        <th style="width:120px">使用商品</th>
+        <th>分类名称</th>
+        <th style="width:120px">关联内容</th>
         <th style="width:100px">状态</th>
         <th style="width:280px">操作</th>
       </tr>
@@ -55,28 +57,29 @@
 <div class="proto-modal" id="modal-cat">
   <div style="background:#fff;border-radius:10px;width:440px;max-width:92vw;overflow:hidden">
     <div class="proto-modal-hd">
-      <h3 style="margin:0;font-size:16px" id="cat-modal-title">新建商品分组</h3>
+      <h3 style="margin:0;font-size:16px" id="cat-modal-title">新建内容分类</h3>
       <button class="ctrl-icon-btn" data-close>×</button>
     </div>
     <div class="proto-modal-bd">
-      <p style="margin:0 0 12px;font-size:12px;color:#8c8c8c">用于店铺内组织商品</p>
+      <p style="margin:0 0 12px;font-size:12px;color:#8c8c8c">用于组织系列课 / 视频 / 图文等内容</p>
       <div class="field">
-        <label>分组名称 *</label>
-        <input class="input" id="cat-name" placeholder="请输入分组名称" />
+        <label>分类名称 *</label>
+        <input class="input" id="cat-name" placeholder="请输入分类名称" />
       </div>
       <div class="field">
-        <label class="cm-check"><input type="checkbox" id="cat-enabled" checked> 启用该分组</label>
+        <label class="cm-check"><input type="checkbox" id="cat-enabled" checked> 启用该分类</label>
       </div>
     </div>
     <div class="proto-modal-ft" style="justify-content:flex-end;gap:8px">
       <button class="btn" data-close>取消</button>
-      <button class="btn btn-primary" id="btn-save-cat">保存分组</button>
+      <button class="btn btn-primary" id="btn-save-cat">保存分类</button>
     </div>
   </div>
 </div>
 
 <script src="../assets/js/proto.js"></script>
-<script src="../assets/js/admin-shell.js?v=13"></script>
+<script src="../assets/js/content-cats.js?v=1"></script>
+<script src="../assets/js/admin-shell.js?v=14"></script>
 <script>
 setTimeout(function() {
   if (document.documentElement.getAttribute('data-shell-ready') === '1') return;
@@ -87,12 +90,7 @@ setTimeout(function() {
   document.body.appendChild(err);
 }, 1500);
 
-var GROUPS = [
-  { id: "G1", name: "默认分组", count: 2, enabled: true },
-  { id: "G2", name: "K12 教育", count: 2, enabled: true },
-  { id: "G3", name: "家庭教育", count: 0, enabled: true },
-  { id: "G4", name: "学习能力", count: 0, enabled: true }
-];
+var GROUPS = window.ContentCats.list();
 var editingId = null;
 
 function esc(s) {
@@ -113,7 +111,9 @@ function render() {
         '<button class="btn" data-move="' + i + '" data-dir="1"' + (i === GROUPS.length - 1 ? ' disabled' : '') + '>下移</button>' +
         '<button class="btn" data-edit="' + g.id + '">编辑</button>' +
         '<button class="btn" data-toggle="' + g.id + '">' + (g.enabled ? '停用' : '启用') + '</button>' +
-        '<button class="btn" style="color:#f53f3f;border-color:#ffa39e" data-del="' + g.id + '">删除</button>' +
+        '<button class="btn" style="color:#f53f3f;border-color:#ffa39e" data-del="' + g.id + '"' +
+          (g.count > 0 ? ' disabled title="该分类下还有 ' + g.count + ' 个关联内容，需先移除后才能删除"' : '') +
+          '>删除</button>' +
       '</div></td></tr>';
   }).join("");
   document.getElementById("cc-body").innerHTML = html;
@@ -128,7 +128,7 @@ function closeAll() {
 function openModal(id) {
   editingId = id;
   var g = id ? GROUPS.find(function(x){ return x.id === id; }) : null;
-  document.getElementById("cat-modal-title").textContent = g ? "编辑商品分组" : "新建商品分组";
+  document.getElementById("cat-modal-title").textContent = g ? "编辑内容分类" : "新建内容分类";
   document.getElementById("cat-name").value = g ? g.name : "";
   document.getElementById("cat-enabled").checked = g ? g.enabled : true;
   mask.classList.add("open");
@@ -138,7 +138,7 @@ function openModal(id) {
 document.getElementById("btn-new-cat").addEventListener("click", function(){ openModal(null); });
 document.getElementById("btn-save-cat").addEventListener("click", function(){
   var name = document.getElementById("cat-name").value.trim();
-  if (!name) { Proto.toast("请填写分组名称"); return; }
+  if (!name) { Proto.toast("请填写分类名称"); return; }
   var enabled = document.getElementById("cat-enabled").checked;
   if (editingId) {
     var g = GROUPS.find(function(x){ return x.id === editingId; });

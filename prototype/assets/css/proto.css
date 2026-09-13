@@ -227,6 +227,16 @@ body { overflow: hidden; }
   font-weight: 600;
   border-bottom-color: var(--color-primary);
 }
+.module-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #f53f3f;
+  margin-left: 5px;
+  flex-shrink: 0;
+  align-self: center;
+  transform: translateY(-6px);
+}
 .admin-top-actions {
   display: flex;
   align-items: center;

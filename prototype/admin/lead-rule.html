@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>分配规则 · 商家管理后台</title>
+<link rel="stylesheet" href="../assets/css/proto.css?v=9" />
+</head>
+<body class="admin-body" data-module="scrm" data-nav="lead-rule" data-title="分配规则" data-crumb="SCRM / 业务设置 / 分配规则">
+<div id="header-actions">
+  <button class="btn btn-primary" id="btn-rule-create">新建分配规则</button>
+</div>
+<div id="page-content" style="display:none">
+
+  <p class="muted" style="margin-bottom:12px">视频号订单优先按商品对应分配规则；无规则时由分配规则进行自动分配。</p>
+
+  <div class="card"><div class="card-bd" style="padding:0">
+    <table class="data">
+      <thead><tr><th>规则名称</th><th>状态</th><th>更新人</th><th>更新时间</th><th>操作</th></tr></thead>
+      <tbody>
+        <tr><td>暂无分配规则，点击右上角按钮创建</td><td colspan="4" class="muted" style="text-align:center;padding:24px">—</td></tr>
+      </tbody>
+    </table>
+  </div></div>
+</div>
+
+<!-- ============ 弹窗 ============ -->
+<div class="proto-mask" id="mask"></div>
+
+<!-- 新建分配规则弹窗 -->
+<div class="proto-modal" id="modal-rule" style="width:560px">
+  <div class="proto-modal-hd">
+    <h3 style="font-size:16px;font-weight:600">新建分配规则</h3>
+    <button class="btn btn-sm btn-ghost" data-close>×</button>
+  </div>
+  <div class="proto-modal-bd">
+    <div class="form-grid">
+      <div class="field" style="grid-column:1/-1"><label>规则名称 *</label><input placeholder="如：体验课自动分配" /></div>
+      <div class="field"><label>分配方式 *</label>
+        <select>
+          <option>轮询分配</option>
+          <option>指定部门</option>
+          <option>指定归属人</option>
+        </select>
+      </div>
+      <div class="field"><label>状态</label>
+        <select>
+          <option>启用</option>
+          <option>停用</option>
+        </select>
+      </div>
+    </div>
+  </div>
+  <div class="proto-modal-ft">
+    <button class="btn" data-close>取消</button>
+    <button class="btn btn-primary" id="rule-submit">保存</button>
+  </div>
+</div>
+
+<script src="../assets/js/proto.js"></script>
+<script src="../assets/js/admin-shell.js?v=14"></script>
+<script>
+(function () {
+  var mask = document.getElementById("mask");
+  function closeAll() {
+    mask.classList.remove("open");
+    document.querySelectorAll(".proto-modal").forEach(function (n) { n.classList.remove("open"); });
+  }
+  mask.addEventListener("click", closeAll);
+  document.querySelectorAll("[data-close]").forEach(function (n) { n.addEventListener("click", closeAll); });
+
+  document.getElementById("btn-rule-create").addEventListener("click", function () {
+    mask.classList.add("open");
+    document.getElementById("modal-rule").classList.add("open");
+  });
+  document.getElementById("rule-submit").addEventListener("click", function () {
+    closeAll();
+    Proto.toast("已保存（原型）");
+  });
+})();
+</script>
+</body>
+</html>

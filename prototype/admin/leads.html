@@ -22,11 +22,7 @@
   <!-- 筛选 -->
   <div class="tabs" id="lead-tabs">
     <a class="active" href="#pool" data-tab="pool">待分配线索</a>
-    <a href="#rule" data-tab="rule">分配规则</a>
     <a href="#import" data-tab="import">导入历史</a>
-    <a href="#channel" data-tab="channel">渠道对接</a>
-    <a href="#migrate" data-tab="migrate">数据迁移</a>
-    <a href="#debug" data-tab="debug">三方调试</a>
   </div>
 
   <!-- ===== 待分配线索 ===== -->
@@ -178,22 +174,6 @@
     </div>
   </div>
 
-  <!-- ===== 分配规则 ===== -->
-  <div id="panel-rule" style="display:none">
-    <p class="muted" style="margin-bottom:12px">视频号订单优先按商品对应分配规则；无规则时由分配规则进行自动分配。</p>
-    <div class="card"><div class="card-bd" style="padding:0">
-      <table class="data">
-        <thead><tr><th>规则名称</th><th>状态</th><th>更新人</th><th>更新时间</th><th>操作</th></tr></thead>
-        <tbody>
-          <tr><td>暂无分配规则，点击右下角按钮创建</td><td colspan="4" class="muted" style="text-align:center;padding:24px">—</td></tr>
-        </tbody>
-      </table>
-    </div></div>
-    <div class="toolbar" style="margin-top:8px;justify-content:flex-end">
-      <button class="btn btn-primary" id="btn-rule-create">新建分配规则</button>
-    </div>
-  </div>
-
   <!-- ===== 导入历史 ===== -->
   <div id="panel-import" style="display:none">
     <p class="muted" style="margin-bottom:12px">线索批量导入 · 来自手工导入的线索导入记录，通过明细查看导入结果。</p>
@@ -213,65 +193,6 @@
     </div></div>
   </div>
 
-  <!-- ===== 渠道对接 ===== -->
-  <div id="panel-channel" style="display:none">
-    <p class="muted" style="margin-bottom:12px">学员 / 三方订单同步写入渠道订单表并流入线索池。点击「对接配置」可新增 / 编辑 / 启停 / 删除 / 手工运行；需先完成「权益阶段映射」。工具栏可查看「流入统计」与「对接运行记录」。</p>
-    <div class="toolbar">
-      <button class="btn btn-primary" id="btn-ch-cfg">对接配置</button>
-      <button class="btn" data-ch-act="stat">流入统计</button>
-      <button class="btn" data-ch-act="runlog">运行记录</button>
-    </div>
-    <div class="card"><div class="card-bd" style="padding:0">
-      <table class="data">
-        <thead><tr><th>订单号</th><th>姓名</th><th>手机号</th><th>号码归属</th><th>同步渠道</th><th>渠道</th>
-          <th>金额</th><th>购买内容</th><th>商品类型</th><th>权益类型</th><th>服务老师</th>
-          <th>达人</th><th>处理状态</th><th>是否退单</th><th>留资时间</th><th>操作</th></tr></thead>
-        <tbody>
-          <tr><td>VX202603291001</td><td>李女士</td><td>138****2610</td><td>北京市</td><td>视频号</td><td>视频号</td>
-            <td>9.9</td><td>9.9 引流课</td><td>课程</td><td>视频</td><td>王助教</td>
-            <td>—</td><td><span class="badge badge-success">成功</span></td>
-            <td>否</td><td>2026-03-29 09:12</td><td><a href="orders.html">详情</a></td></tr>
-          <tr><td>VX202603291088</td><td>张妈妈</td><td>159****8832</td><td>上海市</td><td>视频号</td><td>视频号</td>
-            <td>9.9</td><td>9.9 引流课</td><td>课程</td><td>视频</td><td>—</td>
-            <td>—</td><td><span class="badge badge-warn">待处理</span></td>
-            <td>否</td><td>2026-03-29 09:40</td><td><a href="orders.html">详情</a></td></tr>
-        </tbody>
-      </table>
-    </div></div>
-  </div>
-
-  <!-- ===== 数据迁移 ===== -->
-  <div id="panel-migrate" style="display:none">
-    <p class="muted" style="margin-bottom:12px">学员订单对接 selectStudentOrderBy18or2980，三方订单对接 selectThirdAssetBy18or2980；可配置多条规则（同来源游标独立）。启用后由 XXL-JOB 每 5 分钟拉取已启用规则（默认每次 1000 条），直写入正式线索，不进渠道订单表。点击「迁移配置」可新增 / 编辑 / 启停 / 删除 / 手工运行。</p>
-    <div class="toolbar">
-      <button class="btn btn-primary" id="btn-mig-cfg">迁移配置</button>
-      <select><option>来源</option><option>学员订单</option><option>第三方订单</option></select>
-      <select><option>状态</option><option>运行中</option><option>成功</option><option>失败</option></select>
-      <select><option>方式</option><option>定时</option><option>手工</option></select>
-    </div>
-    <div class="card"><div class="card-bd" style="padding:0">
-      <table class="data">
-        <thead><tr><th>运行时间</th><th>来源</th><th>方式</th><th>状态</th><th>拉取/成功/失败/跳过</th><th>失败原因</th><th>运行前游标</th><th>运行后游标</th><th>整次错误</th><th>操作</th></tr></thead>
-        <tbody>
-          <tr><td>03-29 08:05</td><td>学员订单</td><td>定时</td><td><span class="badge badge-success">成功</span></td>
-            <td>1000/980/5/15</td><td>—</td><td>2026-03-28 23:59</td><td>2026-03-29 08:05</td><td>—</td>
-            <td><a href="#" data-act="mig-detail">查看</a></td></tr>
-        </tbody>
-      </table>
-    </div></div>
-  </div>
-
-  <!-- ===== 三方调试 ===== -->
-  <div id="panel-debug" style="display:none">
-    <p class="muted" style="margin-bottom:12px">GET /scrm/msk/pksg/my/userNodes；填写 userId 查指定用户，留空则查当前登录用户。</p>
-    <div class="card"><div class="card-bd">
-      <div class="form-grid" style="grid-template-columns:1fr auto">
-        <div class="field"><label>userId</label><input id="debug-uid" placeholder="留空 = 当前登录用户" /></div>
-        <div class="field" style="display:flex;align-items:flex-end"><button class="btn btn-primary" id="btn-debug-go">查询</button></div>
-      </div>
-      <pre class="muted" id="debug-out" style="margin-top:16px;background:#f7f8fa;padding:12px;border-radius:8px;font-size:12px">{ "code": 0, "data": { "nodes": [] } }</pre>
-    </div></div>
-  </div>
 </div>
 
 <!-- ============ 抽屉 / 弹窗 ============ -->
@@ -511,11 +432,11 @@
 <script src="../assets/js/board-metrics.js?v=11"></script>
 <script src="../assets/js/board-insights.js?v=4"></script>
 <script src="../assets/js/user-store.js"></script>
-<script src="../assets/js/admin-shell.js?v=13"></script>
+<script src="../assets/js/admin-shell.js?v=14"></script>
 <script>
 (function () {
   // ===== Tabs =====
-  var panels = { pool: "panel-pool", rule: "panel-rule", import: "panel-import", channel: "panel-channel", migrate: "panel-migrate", debug: "panel-debug" };
+  var panels = { pool: "panel-pool", import: "panel-import" };
   function show(tab) {
     Object.keys(panels).forEach(function (k) {
       document.getElementById(panels[k]).style.display = k === tab ? "block" : "none";
@@ -774,16 +695,8 @@
     Proto.toast("列展示已应用（原型）");
   });
 
-  // Channel / migrate / debug tab actions
-  ["btn-ch-cfg", "btn-mig-cfg", "btn-rule-create", "btn-debug-go"].forEach(function (id) {
-    var n = document.getElementById(id);
-    if (!n) return;
-    n.addEventListener("click", function () { Proto.toast(id + "（原型）"); });
-  });
-  document.querySelectorAll('[data-ch-act]').forEach(function (n) {
-    n.addEventListener("click", function () { Proto.toast(n.getAttribute("data-ch-act") + "（原型）"); });
-  });
-  document.querySelectorAll('[data-act="import-detail"], [data-act="mig-detail"]').forEach(function (a) {
+  // Import detail actions
+  document.querySelectorAll('[data-act="import-detail"]').forEach(function (a) {
     a.addEventListener("click", function (e) { e.preventDefault(); Proto.toast("查看明细（原型）"); });
   });
 

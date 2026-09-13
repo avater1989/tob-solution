@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>定制化计划 · To-B 小程序</title>
+  <link rel="stylesheet" href="../assets/css/proto.css" />
+  <link rel="stylesheet" href="../assets/css/mp.css?v=5" />
+</head>
+<body class="mp-page" data-tab="assess">
+  <div class="mp-frame">
+    <div class="mp-top" style="height:190px"></div>
+    <div class="mp-status"><span>9:41</span><span>测评</span><span>100%</span></div>
+    <div class="mp-nav"><a class="back" href="home.html">←</a>定制化计划</div>
+    <div class="mp-body" style="padding:0 14px">
+
+      <!-- 计划卡 -->
+      <div class="mp-plan" id="plan-card" style="margin-top:8px">
+        <div class="mp-plan-hd">
+          <div class="mp-plan-badge">测</div>
+          <div style="flex:1;min-width:0">
+            <div class="mp-plan-name" id="plan-name">亲子沟通 21 天训练营计划</div>
+            <div class="mp-plan-desc" id="plan-desc">由老师为你定制的测评 + 学习计划</div>
+          </div>
+        </div>
+
+        <div class="mp-plan-progress">
+          <div class="mp-plan-progress-top">
+            <span>完成进度 <b id="plan-progress-txt">50%</b></span>
+            <span id="plan-deadline">9 月 20 日前完成</span>
+          </div>
+          <div class="mp-bar-track"><i id="plan-progress-bar" style="width:50%"></i></div>
+        </div>
+
+        <div class="mp-steps" id="plan-steps"></div>
+
+        <a class="mp-btn" href="#" id="btn-next" style="margin-top:14px">继续测评</a>
+        <a class="mp-btn mp-btn-outline" href="mine.html" style="margin-top:10px">查看我的计划</a>
+      </div>
+
+      <!-- 无计划兜底（?plan=0 时展示） -->
+      <div class="mp-plan" id="plan-empty" style="display:none;margin-top:8px;text-align:center;padding:28px 14px">
+        <div style="font-size:15px;font-weight:800">暂无定制化计划</div>
+        <div style="font-size:12px;color:#86909c;margin-top:8px">老师为你定制计划后，会在这里出现并可随时作答</div>
+        <a class="mp-btn mp-btn-outline" href="home.html" style="margin-top:16px">去看看课程</a>
+      </div>
+
+      <!-- 可自助作答的测评 -->
+      <div class="mp-section" style="padding:0 0 14px">
+        <div class="mp-section-head">
+          <div class="mp-section-title">自助测评</div>
+          <a class="mp-section-more" href="#">全部 ›</a>
+        </div>
+
+        <a class="mp-item" href="#" data-toast="已开始作答（原型）">
+          <div class="mp-item-img" style="background:linear-gradient(160deg,#ffd9cf,#ff9f8a)">测评</div>
+          <div class="mp-item-bd">
+            <div class="mp-item-title">亲子沟通能力测评</div>
+            <div style="font-size:11px;color:#86909c;margin-top:4px">12 题 · 约 6 分钟</div>
+            <span class="mp-item-tag">可自助作答</span>
+          </div>
+        </a>
+
+        <a class="mp-item" href="#" data-toast="已开始作答（原型）">
+          <div class="mp-item-img" style="background:linear-gradient(160deg,#ffe7c2,#ffc46b)">测评</div>
+          <div class="mp-item-bd">
+            <div class="mp-item-title">家庭教育风格测评</div>
+            <div style="font-size:11px;color:#86909c;margin-top:4px">8 题 · 约 5 分钟</div>
+            <span class="mp-item-tag">可自助作答</span>
+          </div>
+        </a>
+      </div>
+
+    </div>
+  </div>
+  <p class="mp-hint">计划由管理端「定制化计划」下发 · <a href="../admin/assess-plans.html">管理端计划</a></p>
+
+  <script src="../assets/js/proto.js"></script>
+  <script src="../assets/js/mp-plan.js?v=1"></script>
+  <script src="../assets/js/mp-shell.js"></script>
+  <script>
+    (function () {
+      var plan = window.MpPlan && window.MpPlan.plan;
+      var active = window.MpPlan && window.MpPlan.active;
+      if (!active || !plan) {
+        document.getElementById("plan-card").style.display = "none";
+        document.getElementById("plan-empty").style.display = "";
+        return;
+      }
+      document.getElementById("plan-name").textContent = plan.name;
+      document.getElementById("plan-desc").textContent = plan.desc;
+      document.getElementById("plan-deadline").textContent = plan.deadline;
+      var pct = Math.round((plan.current / plan.total) * 100);
+      document.getElementById("plan-progress-txt").textContent = pct + "%";
+      document.getElementById("plan-progress-bar").style.width = pct + "%";
+
+      var stateTxt = { done: "已完成", cur: "进行中", todo: "待开始" };
+      document.getElementById("plan-steps").innerHTML = plan.steps.map(function (s, i) {
+        return '<div class="mp-step ' + s.state + '">' +
+          '<span class="mp-step-no">' + (s.state === "done" ? "✓" : (i + 1)) + '</span>' +
+          '<div class="mp-step-bd">' +
+            '<div class="mp-step-name">' + s.name + '</div>' +
+            '<div class="mp-step-meta">' + s.meta + '</div>' +
+          '</div>' +
+          '<span class="mp-step-state">' + stateTxt[s.state] + '</span>' +
+        '</div>';
+      }).join("");
+
+      var cur = plan.steps.filter(function (s) { return s.state === "cur"; })[0];
+      document.getElementById("btn-next").textContent = cur ? "继续测评 · " + cur.name : "查看测评结果";
+      document.getElementById("btn-next").addEventListener("click", function (e) {
+        e.preventDefault();
+        Proto.toast("进入测评作答（原型）");
+      });
+    })();
+  </script>
+</body>
+</html>

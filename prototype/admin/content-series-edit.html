@@ -22,13 +22,13 @@
   <div class="cm-page-hd">
     <div>
       <h1 id="e-title">新建系列课</h1>
-      <p class="sub">配置系列课展示与商品规则，保存后继续维护章节目录</p>
+      <p class="sub">配置系列课展示与状态规则，保存后继续维护章节目录；如需售卖，可在列表页「创建商品」将内容带入商品模块</p>
     </div>
   </div>
 
   <div class="cm-anchor" id="anchors">
     <button class="btn active" data-goto="sec-content">内容信息</button>
-    <button class="btn" data-goto="sec-product">商品信息</button>
+    <button class="btn" data-goto="sec-status">状态设置</button>
     <button class="btn" data-goto="sec-share">分享设置</button>
   </div>
 
@@ -42,10 +42,8 @@
         <input class="input" id="f-name" maxlength="45" placeholder="建议14字内" />
       </div>
       <div class="field">
-        <label>课程分类</label>
-        <select class="input" id="f-cat">
-          <option>未分类</option><option>K12 教育</option><option>家庭教育</option><option>学习能力</option>
-        </select>
+        <label>内容分类 <span style="float:right;color:#8c8c8c;font-weight:400">取值于「内容分类」</span></label>
+        <select class="input" id="f-cat"></select>
       </div>
       <div class="field">
         <label>封面</label>
@@ -78,61 +76,9 @@
     </div>
   </div>
 
-  <div class="cm-section" id="sec-product">
+  <div class="cm-section" id="sec-status">
     <div class="cm-section-hd">
-      <h2>商品信息 <span class="hint">配置课程获取方式、有效期与店铺展示状态</span></h2>
-    </div>
-    <div class="field">
-      <label class="cm-check"><input type="checkbox" checked> 允许在店铺或链接中独立获取</label>
-    </div>
-    <div class="field">
-      <label>获取方式</label>
-      <div class="cm-choice">
-        <label><input type="radio" name="access" value="free"> 免费获取</label>
-        <label><input type="radio" name="access" value="pay" checked> 付费购买</label>
-        <label><input type="radio" name="access" value="vip"> 仅限指定用户</label>
-      </div>
-    </div>
-    <div class="form-grid" style="grid-template-columns:1fr 1fr">
-      <div class="field"><label>销售价格（元）</label><input class="input" id="f-price" type="number" value="99" /></div>
-      <div class="field">
-        <label>商品分组</label>
-        <select class="input"><option>默认分组</option><option selected>K12 教育</option><option>家庭教育</option><option>学习能力</option></select>
-      </div>
-    </div>
-    <div class="field">
-      <label class="cm-check"><input type="checkbox"> 启用访问密码</label>
-    </div>
-    <div class="field">
-      <label>有效期</label>
-      <div class="cm-choice">
-        <label><input type="radio" name="valid" checked> 长期有效</label>
-        <label><input type="radio" name="valid"> 自定义</label>
-      </div>
-    </div>
-    <div class="field">
-      <label>交付与售后</label>
-      <div class="form-grid" style="grid-template-columns:1fr 1fr">
-        <div class="field"><label>交付方式</label>
-          <select class="input">
-            <option>支付后自动开通（线上内容）</option>
-            <option>支付后开通服务额度（学员预约）</option>
-            <option>人工开通（对公转账场景）</option>
-          </select>
-        </div>
-        <div class="field"><label>退款规则</label>
-          <select class="input">
-            <option>未使用可退（服务未核销）</option>
-            <option>按已使用比例退款</option>
-            <option>不支持退款</option>
-          </select>
-        </div>
-      </div>
-      <div style="display:flex;flex-direction:column;align-items:flex-start;gap:6px;margin-top:10px">
-        <label class="cm-check"><input type="checkbox" checked> 支持 7 天内未使用申请退款（虚拟商品不适用无理由退货）</label>
-        <label class="cm-check"><input type="checkbox"> 退款后可选择保留权益（客诉安抚场景）</label>
-        <label class="cm-check"><input type="checkbox" checked> 退款成功后自动回收课程权益 / 服务额度</label>
-      </div>
+      <h2>状态设置 <span class="hint">配置内容在店铺内的展示状态</span></h2>
     </div>
     <div class="field">
       <label>上架设置</label>
@@ -146,29 +92,34 @@
       <label>店铺显示</label>
       <div class="cm-choice">
         <label><input type="radio" name="store" checked> 显示</label>
-        <label><input type="radio" name="store"> 隐藏</label>
+        <label><input type="radio" name="store"> 隐藏（仅可通过链接访问）</label>
       </div>
     </div>
   </div>
 
   <div class="cm-section" id="sec-share">
     <div class="cm-section-hd">
-      <h2>分享设置 <span class="hint">配置小程序分享卡片和海报使用的商品级素材</span></h2>
+      <h2>分享设置 <span class="hint">自定义学员端分享卡片的标题、描述与封面；列表页「分享」弹窗（链接 / 二维码 / 海报）默认使用以上内容</span></h2>
     </div>
-    <div class="field">
-      <label class="cm-check"><input type="checkbox" checked> 允许用户在小程序内分享</label>
+    <div class="form-grid" style="grid-template-columns:1fr 1fr">
+      <div class="field">
+        <label>分享标题 <span style="float:right;color:#8c8c8c;font-weight:400" id="share-title-cnt">0/30</span></label>
+        <input class="input" id="f-share-title" maxlength="30" placeholder="默认使用系列课名称" />
+      </div>
+      <div class="field">
+        <label>分享封面</label>
+        <div class="cm-choice">
+          <label><input type="radio" name="share-cover" checked> 使用课程封面</label>
+          <label><input type="radio" name="share-cover"> 自定义上传</label>
+        </div>
+      </div>
+      <div class="field" style="grid-column:1/-1">
+        <label>分享描述 <span style="float:right;color:#8c8c8c;font-weight:400" id="share-desc-cnt">0/60</span></label>
+        <textarea class="input" id="f-share-desc" rows="2" maxlength="60" placeholder="默认使用系列课简介，建议60字内"></textarea>
+      </div>
     </div>
-    <div class="field">
-      <label class="cm-check"><input type="checkbox"> 自定义分享标题</label>
-    </div>
-    <div class="field">
-      <label class="cm-check"><input type="checkbox"> 自定义分享描述</label>
-    </div>
-    <div class="field">
-      <label class="cm-check"><input type="checkbox"> 使用独立分享图片</label>
-    </div>
-    <p style="font-size:12px;color:#8c8c8c;margin:8px 0 0">草稿阶段可预览素材；课程正式上架后生成可用短链和二维码。</p>
-    <button class="btn" style="margin-top:10px" data-toast="海报预览（演示）">预览海报</button>
+    <p style="font-size:12px;color:#8c8c8c;margin:8px 0 0">草稿阶段可预览分享卡片；内容正式上架后生成可用短链和二维码。</p>
+    <button class="btn" style="margin-top:10px" id="btn-share-preview">预览分享卡片</button>
   </div>
 
   <div class="cm-sticky-ft">
@@ -180,13 +131,20 @@
 </div>
 
 <script src="../assets/js/proto.js"></script>
-<script src="../assets/js/admin-shell.js?v=13"></script>
+<script src="../assets/js/content-cats.js?v=1"></script>
+<script src="../assets/js/share-modal.js?v=1"></script>
+<script src="../assets/js/admin-shell.js?v=14"></script>
 <script>
 var PRESET = {
-  S001: { name:"小学语文阅读启蒙系列", cat:"K12 教育", intro:"针对 6-12 岁儿童阅读兴趣培养，从绘本到章节书的进阶路径。", price:99 },
-  S002: { name:"家长情绪管理训练营", cat:"家庭教育", intro:"8 周系统训练，帮助家长识别情绪、管理情绪、与孩子正向沟通。", price:199 },
-  S003: { name:"AI 学习规划入门", cat:"学习能力", intro:"AI 助力学习规划，10 节实操课让孩子学会用 AI 工具提升学习效率。", price:0 }
+  S001: { name:"小学语文阅读启蒙系列", cat:"K12 教育", intro:"针对 6-12 岁儿童阅读兴趣培养，从绘本到章节书的进阶路径。", cover:"../assets/img/covers/reading.jpg" },
+  S002: { name:"家长情绪管理训练营", cat:"家庭教育", intro:"8 周系统训练，帮助家长识别情绪、管理情绪、与孩子正向沟通。", cover:"../assets/img/covers/emotion.jpg" },
+  S003: { name:"AI 学习规划入门", cat:"学习能力", intro:"AI 助力学习规划，10 节实操课让孩子学会用 AI 工具提升学习效率。", cover:"../assets/img/covers/ai.jpg" }
 };
+
+// 内容分类下拉：取值于「内容分类」页面列表
+var catSel = document.getElementById("f-cat");
+catSel.insertAdjacentHTML("beforeend", window.ContentCats.optionsHtml({ emptyLabel: "未分类" }));
+
 var id = new URLSearchParams(location.search).get("id") || "";
 var isNew = !id || !PRESET[id];
 document.getElementById("e-title").textContent = isNew ? "新建系列课" : "编辑系列课";
@@ -194,10 +152,10 @@ if (!isNew) {
   var p = PRESET[id];
   document.getElementById("f-name").value = p.name;
   document.getElementById("f-intro").value = p.intro;
-  document.getElementById("f-price").value = p.price;
-  var cat = document.getElementById("f-cat");
-  for (var i=0;i<cat.options.length;i++) if (cat.options[i].text === p.cat) cat.selectedIndex = i;
+  catSel.value = p.cat;
+  if (catSel.selectedIndex < 0) catSel.selectedIndex = 0;
 }
+
 function updCnt(){
   document.getElementById("name-cnt").textContent = (document.getElementById("f-name").value||"").length + "/45";
   document.getElementById("intro-cnt").textContent = (document.getElementById("f-intro").value||"").length + "/256";
@@ -205,6 +163,34 @@ function updCnt(){
 document.getElementById("f-name").addEventListener("input", updCnt);
 document.getElementById("f-intro").addEventListener("input", updCnt);
 updCnt();
+
+// 分享设置字数
+var fShareTitle = document.getElementById("f-share-title");
+var fShareDesc = document.getElementById("f-share-desc");
+function updShareCnt(){
+  document.getElementById("share-title-cnt").textContent = (fShareTitle.value||"").length + "/30";
+  document.getElementById("share-desc-cnt").textContent = (fShareDesc.value||"").length + "/60";
+}
+fShareTitle.addEventListener("input", updShareCnt);
+fShareDesc.addEventListener("input", updShareCnt);
+if (!isNew) {
+  // 默认分享语 = 内容名称 / 简介
+  fShareTitle.placeholder = PRESET[id].name;
+  fShareDesc.placeholder = PRESET[id].intro;
+}
+updShareCnt();
+
+// 预览分享卡片（链接 / 二维码 / 海报 / 分享设置，与列表页「分享」弹窗一致）
+document.getElementById("btn-share-preview").addEventListener("click", function(){
+  var p = !isNew ? PRESET[id] : null;
+  XiboShare.open({
+    type: "系列课",
+    url: "https://yibo.app/s/" + (id || "NEW"),
+    cover: p ? p.cover : "../assets/img/covers/reading.jpg",
+    name: fShareTitle.value || (p ? p.name : document.getElementById("f-name").value) || "未命名系列课",
+    desc: fShareDesc.value || (p ? p.intro : "") || ""
+  });
+});
 
 document.getElementById("anchors").addEventListener("click", function(e){
   var b = e.target.closest("[data-goto]"); if (!b) return;
