@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>商品分组 · 运营后台</title>
+<title>内容分类 · 运营后台</title>
 <link rel="stylesheet" href="../assets/css/proto.css?v=4" />
 <style>
 .cc-table { width:100%; border-collapse:collapse; background:#fff; border:1px solid #e8e8e8; border-radius:8px; overflow:hidden; }
@@ -18,7 +18,7 @@
 .cc-status.off { border-color:#d9d9d9; color:#8c8c8c; background:#fafafa; }
 </style>
 </head>
-<body class="admin-body" data-module="content" data-nav="content-category" data-title="商品分组" data-crumb="运营后台 / 内容 / 内容管理 / 商品分组">
+<body class="admin-body" data-module="content" data-nav="content-category" data-title="内容分类" data-crumb="运营后台 / 内容 / 内容管理 / 内容分类">
 
 <div id="header-actions">
   <button class="btn btn-primary" id="btn-new-cat">+ 新建分组</button>
@@ -58,7 +58,7 @@
 <div class="proto-modal" id="modal-cat">
   <div style="background:#fff;border-radius:10px;width:440px;max-width:92vw;overflow:hidden">
     <div class="proto-modal-hd">
-      <h3 style="margin:0;font-size:16px" id="cat-modal-title">新建商品分组</h3>
+      <h3 style="margin:0;font-size:16px" id="cat-modal-title">新建内容分类</h3>
       <button class="ctrl-icon-btn" data-close>×</button>
     </div>
     <div class="proto-modal-bd">
@@ -77,6 +77,9 @@
     </div>
   </div>
 </div>
+
+<!-- 弹窗遮罩：页面脚本通过 #mask 控制弹窗开关，缺失会导致点击弹窗时报错 -->
+<div class="proto-mask" id="mask"></div>
 
 <script src="../assets/js/proto.js"></script>
 <script src="../assets/js/ops-shell.js?v=7"></script>
@@ -131,7 +134,7 @@ function closeAll() {
 function openModal(id) {
   editingId = id;
   var g = id ? GROUPS.find(function(x){ return x.id === id; }) : null;
-  document.getElementById("cat-modal-title").textContent = g ? "编辑商品分组" : "新建商品分组";
+  document.getElementById("cat-modal-title").textContent = g ? "编辑内容分类" : "新建内容分类";
   document.getElementById("cat-name").value = g ? g.name : "";
   document.getElementById("cat-enabled").checked = g ? g.enabled : true;
   mask.classList.add("open");

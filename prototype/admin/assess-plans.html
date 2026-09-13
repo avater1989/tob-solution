@@ -33,6 +33,7 @@
         <th>计划名称</th>
         <th>计划描述</th>
         <th style="width:120px">创建方式</th>
+        <th style="width:110px">关联商品数</th>
         <th style="width:90px">状态</th>
         <th style="width:320px">操作</th>
       </tr>
@@ -97,11 +98,11 @@ var STAGES = {
   MPL4:[]
 };
 var PLANS = [
-  { id:"MPL1", name:"亲子沟通 21 天训练营计划", desc:"测评切入 + 课程学习的组合训练计划", mode:"关联测评", status:"进行中", links:["亲子沟通能力测评"] },
-  { id:"MPL2", name:"家庭教育风格改进计划", desc:"基于教养风格测评结果安排学习任务", mode:"直接选择任务", status:"草稿", links:["亲子沟通基础 · 第1章","家庭会议练习","三分钟呼吸放松"] },
-  { id:"PPL1", name:"2025春季心理健康定制化计划", desc:"面向全体学员的春季心理健康评估", mode:"关联测评", status:"进行中", links:["心理健康测评"] },
-  { id:"MPL3", name:"青春期沟通能力提升计划", desc:"针对 12-16 岁家庭的沟通训练", mode:"关联测评", status:"草稿", links:["亲子沟通能力测评","家庭教育风格测评"] },
-  { id:"MPL4", name:"新手家长引导计划（草稿）", desc:"通过体验课与测评完成新手家长转化", mode:"直接选择任务", status:"草稿", links:["AI 助手自我介绍","学习习惯打卡"] }
+  { id:"MPL1", name:"亲子沟通 21 天训练营计划", desc:"测评切入 + 课程学习的组合训练计划", mode:"关联测评", status:"进行中", goods:3, links:["亲子沟通能力测评"] },
+  { id:"MPL2", name:"家庭教育风格改进计划", desc:"基于教养风格测评结果安排学习任务", mode:"直接选择任务", status:"草稿", goods:0, links:["亲子沟通基础 · 第1章","家庭会议练习","三分钟呼吸放松"] },
+  { id:"PPL1", name:"2025春季心理健康定制化计划", desc:"面向全体学员的春季心理健康评估", mode:"关联测评", status:"进行中", goods:1, links:["心理健康测评"] },
+  { id:"MPL3", name:"青春期沟通能力提升计划", desc:"针对 12-16 岁家庭的沟通训练", mode:"关联测评", status:"草稿", goods:0, links:["亲子沟通能力测评","家庭教育风格测评"] },
+  { id:"MPL4", name:"新手家长引导计划（草稿）", desc:"通过体验课与测评完成新手家长转化", mode:"直接选择任务", status:"草稿", goods:0, links:["AI 助手自我介绍","学习习惯打卡"] }
 ];
 var editing = null;
 
@@ -138,6 +139,7 @@ function render(){
       '<td><div class="as-name">'+esc(p.name)+'</div></td>' +
       '<td><div class="as-desc" style="white-space:normal">'+esc(p.desc)+'</div></td>' +
       '<td><span class="as-tag '+(p.mode==="关联测评"?"blue":"purple")+'">'+esc(p.mode)+'</span></td>' +
+      '<td>'+(p.goods ? '<b>'+p.goods+'</b> 个' : '<span class="muted">0 个</span>')+'</td>' +
       '<td>'+stTag(p.status)+'</td>' +
       '<td><div class="as-acts">'+acts+'</div></td></tr>';
   }).join("");
@@ -191,7 +193,7 @@ document.getElementById("btn-save").onclick = function(){
     p.name=name; p.desc=desc; p.mode=mode; p.links=links;
   } else {
     var nid="MPL"+Date.now().toString().slice(-4);
-    PLANS.unshift({ id:nid, name:name, desc:desc, mode:mode, status:"草稿", links:links });
+    PLANS.unshift({ id:nid, name:name, desc:desc, mode:mode, status:"草稿", goods:0, links:links });
     STAGES[nid]=[];
   }
   closeAll(); render(); Proto.toast("草稿已保存");

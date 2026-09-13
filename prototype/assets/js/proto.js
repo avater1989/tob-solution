@@ -73,7 +73,7 @@
   });
 })();
 
-/* 评审标注层：自动加载 annotate.css / annotate.js，全站页面按 Alt+A 即可标注。
+/* 评审标注层：自动加载 annotate.css / annotate.js，全站页面按 Alt+E 即可标注。
    隐藏方式：localStorage.setItem('proto:review', 'off') */
 (function () {
   try {

@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>订单页 · 商家管理后台</title>
+<link rel="stylesheet" href="../assets/css/proto.css?v=9" />
+<link rel="stylesheet" href="../assets/css/assess.css?v=3" />
+<style>
+  /* C 端订单页效果预览（仅本页使用） */
+  .mo-tabs { display: flex; gap: 18px; border-bottom: 1px solid var(--color-border); padding-bottom: 8px; max-width: 460px; }
+  .mo-tabs span { font-size: 13px; color: #4e5969; cursor: pointer; }
+  .mo-tabs span.active { color: #165dff; font-weight: 600; }
+  .mo-tabs .none { color: #bfbfbf; cursor: default; }
+  .mo-pv { max-width: 460px; border: 1px solid var(--color-border); border-radius: 12px; background: #fff; padding: 12px; margin-top: 12px; }
+  .mo-pv-hd { display: flex; justify-content: space-between; align-items: center; font-size: 12px; color: #86909c; }
+  .mo-pv-state { font-size: 11px; padding: 1px 8px; border-radius: 10px; }
+  .mo-pv-state.wait { background: #fff7e6; color: #d46b08; }
+  .mo-pv-state.done { background: #f6ffed; color: #389e0d; }
+  .mo-pv-state.refund { background: #f5f5f5; color: #595959; }
+  .mo-pv-bd { display: flex; gap: 10px; margin-top: 10px; }
+  .mo-pv-img { width: 56px; height: 56px; border-radius: 8px; color: #fff; font-size: 11px; display: grid; place-items: center; text-align: center; line-height: 1.3; flex-shrink: 0; }
+  .mo-pv-title { font-size: 13px; font-weight: 600; color: #1d2129; }
+  .mo-pv-line { font-size: 11px; color: #86909c; margin-top: 4px; }
+  .mo-pv-price { font-size: 14px; font-weight: 700; color: #f04438; margin-top: 4px; }
+  .mo-pv-price em { font-size: 11px; font-weight: 400; color: #86909c; font-style: normal; margin-left: 6px; }
+  .mo-pv-ft { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 10px; padding-top: 10px; border-top: 1px solid #f2f3f5; }
+  .mo-pv-time { font-size: 11px; color: #86909c; }
+  .mo-pv-acts { display: flex; gap: 6px; flex-wrap: wrap; justify-content: flex-end; }
+  .mo-pv-btn { font-size: 11px; border: 1px solid var(--color-border); border-radius: 12px; padding: 2px 10px; color: #4e5969; }
+  .mo-pv-btn.primary { background: #165dff; border-color: #165dff; color: #fff; }
+  .mo-empty { max-width: 460px; margin-top: 12px; padding: 26px 14px; border: 1px solid var(--color-border); border-radius: 12px; background: #fff; text-align: center; font-size: 12px; color: #86909c; }
+  .mo-empty-ico { width: 34px; height: 34px; margin: 0 auto 8px; border: 1px dashed #d9d9d9; border-radius: 8px; background: #fafafa; }
+</style>
+</head>
+<body class="admin-body" data-module="mp" data-nav="mp-order" data-title="订单页" data-crumb="商家管理后台 / 小程序 / 页面配置 / 订单页">
+
+<div id="header-actions">
+  <button class="btn" id="btn-preview">预览 C 端订单页</button>
+  <button class="btn btn-primary" id="btn-save">保存配置</button>
+</div>
+
+<div id="page-content" style="display:none">
+  <div class="as-banner">按 C 端订单页的真实结构配置展示。C 端订单页固定为三部分：<b>状态筛选</b>（全部 / 待付款 / 已完成 / 已退款）→ <b>订单卡</b>（订单号 + 状态标签 + 封面 + 标题 + 规格 + 价格 + 下单时间 + 按钮组）→ <b>空态</b>。此处只配置端上真实存在的文案与展示项，订单数据与退款处理在交易模块，配置后 C 端即时生效。</div>
+
+  <!-- 状态筛选 -->
+  <div class="card" style="margin-bottom:14px">
+    <div class="card-hd"><h2>状态筛选</h2><span class="muted" style="margin-left:10px">对应 C 端订单页顶部的状态 tab，端上固定为这 4 项</span></div>
+    <div class="card-bd">
+      <table class="as-table">
+        <thead>
+          <tr>
+            <th style="width:130px">端上状态</th>
+            <th style="width:210px">端上显示名称</th>
+            <th style="width:150px">是否展示</th>
+            <th style="width:100px">状态</th>
+            <th style="width:100px">操作</th>
+          </tr>
+        </thead>
+        <tbody id="state-tbody"></tbody>
+      </table>
+      <div class="muted" style="margin-top:12px">端上固定这 4 个状态，状态由订单实际流转决定，此处只改展示名、不能新增状态；「全部」为端上固定项，不可删除。</div>
+    </div>
+  </div>
+
+  <!-- 订单卡展示字段 -->
+  <div class="card" style="margin-bottom:14px">
+    <div class="card-hd"><h2>订单卡展示字段</h2><span class="muted" style="margin-left:10px">对应 C 端订单卡的各个展示项，逐个开关</span></div>
+    <div class="card-bd">
+      <div class="form-grid" style="max-width:720px" id="field-grid"></div>
+      <div class="muted" style="margin-top:12px">关闭某项后，C 端订单卡不再渲染该字段；商品标题与封面为订单卡必需项，不可关闭。</div>
+    </div>
+  </div>
+
+  <!-- 按钮文案 -->
+  <div class="card" style="margin-bottom:14px">
+    <div class="card-hd"><h2>按钮文案</h2><span class="muted" style="margin-left:10px">对应 C 端订单卡右下角的按钮组，按订单状态分组</span></div>
+    <div class="card-bd">
+      <table class="as-table">
+        <thead>
+          <tr>
+            <th style="width:130px">所属状态</th>
+            <th>按钮文案</th>
+            <th style="width:150px">是否展示</th>
+            <th style="width:100px">状态</th>
+            <th style="width:110px">操作</th>
+          </tr>
+        </thead>
+        <tbody id="btn-tbody"></tbody>
+      </table>
+      <div class="muted" style="margin-top:12px">按钮的实际可用性由订单状态决定（如「去支付」仅在待付款订单出现、「看回放」仅在已完成的直播订单出现），此处只配置端上展示的文案与开关。</div>
+    </div>
+  </div>
+
+  <!-- 空态文案 -->
+  <div class="card" style="margin-bottom:14px">
+    <div class="card-hd"><h2>空态文案</h2><span class="muted" style="margin-left:10px">切到某个状态没有订单时，C 端展示的提示文案</span></div>
+    <div class="card-bd">
+      <div class="form-grid" style="max-width:640px">
+        <div class="field"><label>空态文案</label>
+          <input class="input" id="empty-txt" value="暂无该状态的订单" maxlength="20" />
+          <div class="muted">最多 20 个字，「全部」筛选下有订单时不会出现</div>
+        </div>
+      </div>
+      <div style="margin-top:14px">
+        <div class="muted" style="margin-bottom:8px">C 端效果预览</div>
+        <div class="mo-empty"><div class="mo-empty-ico"></div><span id="pv-empty">暂无该状态的订单</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- C 端效果预览 -->
+  <div class="card" style="margin-bottom:14px">
+    <div class="card-hd"><h2>C 端效果预览</h2><span class="muted" style="margin-left:10px">切换状态标签，实时查看订单卡与按钮的展示效果（订单数据为演示数据）</span></div>
+    <div class="card-bd">
+      <div class="mo-tabs" id="pv-tabs"></div>
+      <div id="pv-list"></div>
+      <div class="muted" style="margin-top:12px">订单数据与退款处理在 <a href="orders.html">交易 · 订单管理</a> 中维护，此处只配置端上展示。</div>
+    </div>
+  </div>
+</div>
+
+<div class="proto-mask" id="mask"></div>
+
+<script src="../assets/js/proto.js"></script>
+<script src="../assets/js/admin-shell.js?v=14"></script>
+<script>
+function esc(s){ return String(s).replace(/[&<>"']/g,function(c){return({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"})[c];}); }
+function stTag(on){ return on ? '<span class="as-tag green">展示中</span>' : '<span class="as-tag gray">已隐藏</span>'; }
+
+/* 端上固定的 4 个状态：key 为空表示不筛选 */
+var STATES = [
+  { id:"all",    key:"",     name:"全部",   label:"全部",   on:true, fixed:true,  note:"不筛选，展示全部订单" },
+  { id:"wait",   key:"待付款", name:"待付款", label:"待付款", on:true, fixed:false, note:"标签值：待付款" },
+  { id:"done",   key:"已完成", name:"已完成", label:"已完成", on:true, fixed:false, note:"标签值：已完成" },
+  { id:"refund", key:"已退款", name:"已退款", label:"已退款", on:true, fixed:false, note:"标签值：已退款" }
+];
+var STATE_CLS = { "待付款":"wait", "已完成":"done", "已退款":"refund" };
+
+/* 订单卡展示字段 */
+var FIELDS = [
+  { id:"no",    label:"订单编号",       desc:"订单卡顶部「订单号 VX…」", on:true },
+  { id:"spec",  label:"商品规格",       desc:"如「8 节视频课 · 长期有效」", on:true },
+  { id:"price", label:"单价",           desc:"如「¥199」", on:true },
+  { id:"count", label:"件数「共 N 件」", desc:"单价右侧的件数说明", on:true },
+  { id:"time",  label:"下单时间",       desc:"订单卡底部左侧时间", on:true },
+  { id:"state", label:"状态标签",       desc:"订单卡右上角「待付款 / 已完成 / 已退款」", on:true }
+];
+
+/* 按钮组：state 对应订单状态（端上状态名，不可改） */
+var BTNS = [
+  { id:"B1", state:"待付款", txt:"取消订单", on:true, def:"取消订单", primary:false },
+  { id:"B2", state:"待付款", txt:"去支付",   on:true, def:"去支付",   primary:true  },
+  { id:"B3", state:"已完成", txt:"去学习",   on:true, def:"去学习",   primary:true  },
+  { id:"B4", state:"已完成", txt:"再次购买", on:true, def:"再次购买", primary:false },
+  { id:"B5", state:"已完成", txt:"看回放",   on:true, def:"看回放",   primary:false },
+  { id:"B6", state:"已退款", txt:"再次购买", on:true, def:"再次购买", primary:false }
+];
+
+var DEMO_ORDERS = [
+  { no:"VX202603291001", time:"2026-09-13 09:12", state:"待付款", title:"亲子沟通基础", spec:"8 节视频课 · 长期有效", price:"¥199", cover:"沟通<br>基础", bg:"linear-gradient(160deg,#ffe0d8,#ffb3a0)" },
+  { no:"VX202603291088", time:"2026-09-12 20:40", state:"已完成", title:"9.9 引流体验课", spec:"视频号订单兑换 · 已开通权益", price:"¥9.9", cover:"体验<br>9.9", bg:"linear-gradient(160deg,#ffe7c2,#ffc978)" },
+  { no:"VX202603291075", time:"2026-09-11 21:05", state:"已完成", title:"亲子沟通 90 分钟（直播门票）", spec:"单场观看资格 · 已观看", price:"¥19.9", cover:"直播<br>门票", bg:"linear-gradient(160deg,#ffd0c9,#ff8b7a)" },
+  { no:"VX202603291003", time:"2026-09-08 14:22", state:"已退款", title:"情绪觉察公开课（回看）", spec:"已退款 ¥39 · 权益已回收", price:"¥39", cover:"回看", bg:"linear-gradient(160deg,#d7dee8,#8fa0b8)" }
+];
+
+var curState = "";
+
+function stateOf(key){ return STATES.filter(function(s){ return s.key === key; })[0]; }
+function onSel(id, val){ return '<select class="input" ' + id + '><option value="1"' + (val ? ' selected' : '') + '>展示</option><option value="0"' + (val ? '' : ' selected') + '>隐藏</option></select>'; }
+function fieldOn(id){ var f = FIELDS.filter(function(x){ return x.id === id; })[0]; return f ? f.on : false; }
+
+function renderStates(){
+  document.getElementById("state-tbody").innerHTML = STATES.map(function(s){
+    return '<tr>' +
+      '<td><div class="as-name">'+esc(s.name)+'</div><div class="as-desc">'+esc(s.note)+'</div></td>' +
+      '<td><div class="field"><input class="input" data-st-label="'+s.id+'" value="'+esc(s.label)+'" maxlength="6" placeholder="端上显示名称" /></div></td>' +
+      '<td><div class="field">'+onSel('data-st-on="'+s.id+'"', s.on)+'</div></td>' +
+      '<td>'+stTag(s.on)+'</td>' +
+      '<td class="row-actions">' +
+        (s.fixed ? '<span class="muted">—</span>' : '<a href="javascript:;" class="row-more" data-st-del="'+s.id+'">删除</a>') +
+      '</td></tr>';
+  }).join("");
+}
+
+function renderFields(){
+  document.getElementById("field-grid").innerHTML = FIELDS.map(function(f){
+    return '<div class="field"><label>'+esc(f.label)+'</label>' +
+      onSel('data-fd-on="'+f.id+'"', f.on) +
+      '<div class="muted">'+esc(f.desc)+'</div></div>';
+  }).join("");
+}
+
+function renderBtns(){
+  var groups = [];
+  BTNS.forEach(function(b){
+    var g = groups.filter(function(x){ return x.state === b.state; })[0];
+    if (!g) { g = { state:b.state, items:[] }; groups.push(g); }
+    g.items.push(b);
+  });
+  document.getElementById("btn-tbody").innerHTML = groups.map(function(g){
+    return g.items.map(function(b, i){
+      return '<tr>' +
+        (i === 0 ? '<td rowspan="'+g.items.length+'" style="vertical-align:top"><div class="as-name">'+esc(g.state)+'</div><div class="as-desc">'+g.items.length+' 个按钮</div></td>' : '') +
+        '<td><div class="field"><input class="input" data-bt-txt="'+b.id+'" value="'+esc(b.txt)+'" maxlength="6" placeholder="按钮文案" /></div></td>' +
+        '<td><div class="field">'+onSel('data-bt-on="'+b.id+'"', b.on)+'</div></td>' +
+        '<td>'+stTag(b.on)+'</td>' +
+        '<td class="row-actions"><a href="javascript:;" data-bt-reset="'+b.id+'">恢复默认</a></td>' +
+      '</tr>';
+    }).join("");
+  }).join("");
+}
+
+function orderCard(o){
+  var s = stateOf(o.state) || { label:o.state };
+  var hd = '<div class="mo-pv-hd">' +
+    (fieldOn("no") ? '<span>订单号 '+esc(o.no)+'</span>' : '<span>订单编号已隐藏</span>') +
+    (fieldOn("state") ? '<span class="mo-pv-state '+(STATE_CLS[o.state]||"")+'">'+esc(s.label)+'</span>' : '') +
+  '</div>';
+  var line = fieldOn("spec") ? '<div class="mo-pv-line">'+esc(o.spec)+'</div>' : '';
+  var price = fieldOn("price") ? '<div class="mo-pv-price">'+esc(o.price) +
+      (fieldOn("count") ? '<em>共 1 件</em>' : '') + '</div>' : '';
+  var acts = BTNS.filter(function(b){ return b.state === o.state && b.on; });
+  var ft = '<div class="mo-pv-ft">' +
+    '<span class="mo-pv-time">'+(fieldOn("time") ? esc(o.time) : "下单时间已隐藏")+'</span>' +
+    '<span class="mo-pv-acts">' + (acts.length
+      ? acts.map(function(b){ return '<span class="mo-pv-btn'+(b.primary?" primary":"")+'">'+esc(b.txt)+'</span>'; }).join("")
+      : '<span class="muted">该状态无展示按钮</span>') + '</span>' +
+  '</div>';
+  return '<div class="mo-pv">' + hd +
+    '<div class="mo-pv-bd">' +
+      '<div class="mo-pv-img" style="background:'+o.bg+'">'+o.cover+'</div>' +
+      '<div style="flex:1;min-width:0"><div class="mo-pv-title">'+esc(o.title)+'</div>'+line+price+'</div>' +
+    '</div>' + ft + '</div>';
+}
+
+function emptyText(){ return document.getElementById("empty-txt").value.trim() || "暂无该状态的订单"; }
+function renderEmptyPv(){ document.getElementById("pv-empty").textContent = emptyText(); }
+
+function renderPreview(){
+  var tabs = STATES.filter(function(s){ return s.on; });
+  if (!tabs.some(function(s){ return s.key === curState; })) curState = tabs.length ? tabs[0].key : "";
+  document.getElementById("pv-tabs").innerHTML = tabs.length ? tabs.map(function(s){
+    return '<span class="'+(s.key === curState ? "active" : "")+'" data-pv-tab="'+esc(s.key)+'">'+esc(s.label || s.name)+'</span>';
+  }).join("") : '<span class="none">全部状态标签已隐藏</span>';
+
+  var list = DEMO_ORDERS.filter(function(o){ return !curState || o.state === curState; });
+  document.getElementById("pv-list").innerHTML = list.length
+    ? list.map(orderCard).join("")
+    : '<div class="mo-empty"><div class="mo-empty-ico"></div><span>'+esc(emptyText())+'</span></div>';
+}
+
+function renderAll(){ renderStates(); renderFields(); renderBtns(); renderEmptyPv(); renderPreview(); }
+
+document.addEventListener("input", function(e){
+  var el;
+  if ((el = e.target.closest("[data-st-label]"))) {
+    var s = STATES.filter(function(x){ return x.id === el.getAttribute("data-st-label"); })[0];
+    s.label = el.value; renderPreview(); return;
+  }
+  if ((el = e.target.closest("[data-bt-txt]"))) {
+    var b = BTNS.filter(function(x){ return x.id === el.getAttribute("data-bt-txt"); })[0];
+    b.txt = el.value; renderPreview(); return;
+  }
+  if (e.target.id === "empty-txt") { renderEmptyPv(); renderPreview(); return; }
+});
+
+document.addEventListener("change", function(e){
+  var el;
+  if ((el = e.target.closest("[data-st-on]"))) {
+    var s = STATES.filter(function(x){ return x.id === el.getAttribute("data-st-on"); })[0];
+    s.on = el.value === "1"; renderStates(); renderPreview(); Proto.toast(s.on ? "状态已展示" : "状态已隐藏"); return;
+  }
+  if ((el = e.target.closest("[data-fd-on]"))) {
+    var f = FIELDS.filter(function(x){ return x.id === el.getAttribute("data-fd-on"); })[0];
+    f.on = el.value === "1"; renderPreview(); Proto.toast(f.on ? "已展示「"+f.label+"」" : "已隐藏「"+f.label+"」"); return;
+  }
+  if ((el = e.target.closest("[data-bt-on]"))) {
+    var b = BTNS.filter(function(x){ return x.id === el.getAttribute("data-bt-on"); })[0];
+    b.on = el.value === "1"; renderBtns(); renderPreview(); Proto.toast(b.on ? "按钮已展示" : "按钮已隐藏"); return;
+  }
+});
+
+document.addEventListener("click", function(e){
+  var el;
+  if ((el = e.target.closest("[data-pv-tab]"))) {
+    curState = el.getAttribute("data-pv-tab"); renderPreview(); return;
+  }
+  if ((el = e.target.closest("[data-st-del]"))) {
+    var id = el.getAttribute("data-st-del");
+    var s = STATES.filter(function(x){ return x.id === id; })[0];
+    if (confirm("确认删除「"+s.label+"」状态标签？删除后 C 端订单页不再展示该筛选项。")) {
+      STATES = STATES.filter(function(x){ return x.id !== id; });
+      renderStates(); renderPreview();
+      Proto.toast("状态标签已删除（演示）");
+    }
+    return;
+  }
+  if ((el = e.target.closest("[data-bt-reset]"))) {
+    var b = BTNS.filter(function(x){ return x.id === el.getAttribute("data-bt-reset"); })[0];
+    b.txt = b.def; renderBtns(); renderPreview();
+    Proto.toast("已恢复默认文案「"+b.def+"」（演示）");
+    return;
+  }
+});
+
+document.getElementById("btn-preview").onclick = function(){ window.open("../miniprogram/orders.html","_blank"); };
+document.getElementById("btn-save").onclick = function(){
+  var noName = STATES.filter(function(s){ return !String(s.label || "").trim(); })[0];
+  if (noName) { Proto.toast("请填写「"+noName.name+"」的端上显示名称"); return; }
+  if (!STATES.filter(function(s){ return s.on; }).length) { Proto.toast("请至少展示一个状态标签"); return; }
+  var noBtn = BTNS.filter(function(b){ return b.on && !String(b.txt || "").trim(); })[0];
+  if (noBtn) { Proto.toast("请填写「"+noBtn.state+"」的按钮文案"); return; }
+  if (!document.getElementById("empty-txt").value.trim()) { Proto.toast("请填写空态文案"); return; }
+  Proto.toast("订单页配置已保存，C 端即时生效（演示）");
+};
+
+document.getElementById("mask").addEventListener("click", function(){ this.classList.remove("open"); });
+renderAll();
+</script>
+</body>
+</html>

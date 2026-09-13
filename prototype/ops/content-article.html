@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>图文管理 · 运营后台</title>
+<title>图文 · 运营后台</title>
 <link rel="stylesheet" href="../assets/css/proto.css?v=4" />
 <style>
 .ca-list { background: #fff; border: 1px solid #e8e8e8; border-radius: 8px; overflow: hidden; }
@@ -33,7 +33,7 @@
 .ca-actions { display: flex; gap: 6px; flex-wrap: wrap; }
 </style>
 </head>
-<body class="admin-body" data-module="content" data-nav="content-article" data-title="图文管理" data-crumb="运营后台 / 内容 / 内容管理 / 图文">
+<body class="admin-body" data-module="content" data-nav="content-article" data-title="图文" data-crumb="运营后台 / 内容 / 内容管理 / 图文">
 
 <div id="header-actions">
   <button class="btn">批量删除</button>
@@ -79,6 +79,9 @@
     </div>
   </div>
 </div>
+
+<!-- 弹窗遮罩：页面脚本通过 #mask 控制弹窗开关，缺失会导致点击弹窗时报错 -->
+<div class="proto-mask" id="mask"></div>
 
 <script src="../assets/js/proto.js"></script>
 <script src="../assets/js/ops-shell.js?v=7"></script>

@@ -120,38 +120,6 @@
     <button class="btn btn-sm" disabled>上一页</button>
     <button class="btn btn-sm">下一页</button>
   </div>
-
-  <!-- 分账规则说明 -->
-  <div class="card" style="margin-top:8px"><div class="card-hd"><h2>分账规则（示意）</h2><span class="muted" style="font-size:12px">本页为「商家自建内容 · 链路 B」结算</span></div>
-    <div class="card-bd">
-      <div class="split-flow">
-        <div class="split-node">
-          <div class="sn-title">买家支付</div>
-          <div class="sn-amount">¥12,648.50</div>
-          <div class="muted" style="font-size:12px">微信小程序支付</div>
-        </div>
-        <div class="split-arrow">→</div>
-        <div class="split-node">
-          <div class="sn-title">艺博入金收款主体（通联 · 弱存管）</div>
-          <div class="sn-amount">¥12,648.50</div>
-          <div class="muted" style="font-size:12px">按账期 T+1 汇总结算至存管账户</div>
-        </div>
-        <div class="split-arrow">→</div>
-        <div class="split-node node-fee">
-          <div class="sn-title">平台服务费 0.6%</div>
-          <div class="sn-amount">¥74.46</div>
-          <div class="muted" style="font-size:12px">（交易额 − 退款额）× 0.6%</div>
-        </div>
-        <div class="split-arrow">＋</div>
-        <div class="split-node node-merchant">
-          <div class="sn-title">商户分账 99.4%</div>
-          <div class="sn-amount">¥12,335.44</div>
-          <div class="muted" style="font-size:12px">打款至商户对公账户</div>
-        </div>
-      </div>
-      <p class="muted" style="margin-top:12px;font-size:12px"><b>链路 B（商家自建内容）</b>：商家拿课程金额，平台按套餐服务费率收服务费（默认 0.6%）。应结算 =（交易额 − 退款额 − 平台服务费）；退款在账期内冲抵。<b>链路 A（平台内容）</b>：课程金额留存艺博账户，商家按佣金率（默认 20%）分账，详见运营后台「结算规则配置」。</p>
-    </div>
-  </div>
 </div>
 
 <!-- ============ 弹窗 / 抽屉 ============ -->
@@ -212,18 +180,6 @@
 .mono { font-family:ui-monospace,Consolas,monospace; font-size:12px; }
 .link { color:var(--color-primary); font-size:12px; text-decoration:none; }
 .danger { color:#cb2634; }
-.split-flow { display:flex; align-items:stretch; gap:8px; flex-wrap:wrap; }
-.split-node {
-  flex:1; min-width:130px; border:1px solid var(--color-border); border-radius:8px;
-  padding:12px; text-align:center; background:#fafbfc;
-}
-.split-node .sn-title { font-size:12px; color:var(--color-text-secondary); }
-.split-node .sn-amount { font-size:18px; font-weight:650; margin-top:4px; }
-.split-node.node-fee { background:#fff7e8; border-color:#ffd6a0; }
-.split-node.node-fee .sn-amount { color:#d25f00; }
-.split-node.node-merchant { background:#e8ffea; border-color:#9ff0b3; }
-.split-node.node-merchant .sn-amount { color:#009a29; }
-.split-arrow { align-self:center; color:var(--color-text-muted); font-size:16px; }
 .settle-calc { border:1px solid var(--color-border); border-radius:8px; padding:4px 14px; }
 .calc-row { display:flex; justify-content:space-between; padding:9px 0; font-size:13px; border-bottom:1px dashed var(--color-border); }
 .calc-row:last-child { border-bottom:none; }

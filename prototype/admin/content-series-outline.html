@@ -64,8 +64,12 @@
       <div class="field"><label>预计学习时长</label><input class="input" id="ch-dur" placeholder="如：15分钟" /></div>
       <div class="field">
         <label>视频来源 *</label>
-        <input class="input" id="ch-src" placeholder="填写视频素材名称或播放地址" />
-        <div style="font-size:11px;color:#8c8c8c;margin-top:4px">当前版本记录视频引用，不上传或复制实际文件</div>
+        <select class="input" id="ch-src">
+          <option>如何让孩子爱上阅读</option>
+          <option>亲子沟通的5 个关键</option>
+          <option>AI 助力学习规划</option>
+        </select>
+        <div style="font-size:11px;color:#8c8c8c;margin-top:4px">从「视频」模块已上传的视频中选择，当前版本仅记录视频引用，不上传或复制实际文件</div>
       </div>
       <div class="field">
         <label style="display:flex;align-items:center;gap:8px;font-weight:400"><input type="checkbox" id="ch-req" checked> 设为必修视频</label>
@@ -186,6 +190,18 @@ function closeAll(){
   mask && mask.classList.remove("open");
   document.querySelectorAll(".proto-modal").forEach(function(n){ n.classList.remove("open"); });
 }
+// 视频来源下拉：把已有的素材名回填到候选项中，匹配不到则退回第一项（避免下拉空白）
+function setVideoSrc(raw){
+  var sel = document.getElementById("ch-src");
+  var target = String(raw || "").replace(/\.mp4$/i, "").trim();
+  var hit = false;
+  Array.prototype.forEach.call(sel.options, function(op){
+    op.selected = (op.value === target);
+    if (op.selected) hit = true;
+  });
+  if (!hit) sel.selectedIndex = 0;
+}
+
 function openChapterModal(idx){
   editingIdx = idx;
   var isNew = idx < 0;
@@ -195,7 +211,7 @@ function openChapterModal(idx){
     document.getElementById("ch-name").value = "";
     document.getElementById("ch-video").value = "";
     document.getElementById("ch-dur").value = "";
-    document.getElementById("ch-src").value = "";
+    setVideoSrc("");
     document.getElementById("ch-req").checked = true;
     document.getElementById("ch-trial").checked = false;
   } else {
@@ -204,7 +220,7 @@ function openChapterModal(idx){
     document.getElementById("ch-name").value = ch.title;
     document.getElementById("ch-video").value = les.title;
     document.getElementById("ch-dur").value = (les.meta.match(/·\s*([^·]+)$/) || [])[1] || "";
-    document.getElementById("ch-src").value = (les.meta.split(" · ")[0] || "");
+    setVideoSrc(les.meta.split(" · ")[0] || "");
     document.getElementById("ch-req").checked = !!les.req;
   }
   mask.classList.add("open");

@@ -40,9 +40,7 @@
     { id: "scrm", label: "SCRM", href: "leads.html" },
     { id: "live", label: "直播", href: "lives.html", unread: true },
     { id: "content", label: "内容", href: "content-series.html" },
-    { id: "mp", label: "小程序", href: "mp-home.html" },
     { id: "trade", label: "交易", href: "orders.html" },
-    { id: "user", label: "用户", href: "users.html" },
     { id: "data", label: "经营分析", href: "board-overview.html" },
     { id: "sys", label: "系统管理", href: "sys-users.html" },
   ];
@@ -69,6 +67,10 @@
           { id: "wecom-inherit", href: "wecom-inherit.html", label: "客户继承" },
           { id: "wecom-churn", href: "wecom-churn.html", label: "流失提醒" },
           { id: "leads-dup", href: "leads-dup.html", label: "重复线索" },
+          { id: "users", href: "users.html", label: "用户列表" },
+          { id: "user-tags", href: "user-tags.html", label: "标签管理" },
+          { id: "user-segments", href: "user-segments.html", label: "用户分群" },
+          { id: "ops-plans", href: "ops-plans.html", label: "定向运营计划" },
         ],
       },
       {
@@ -145,15 +147,20 @@
       {
         group: "店铺装修",
         links: [
-          { id: "mp-home",     href: "mp-home.html",     label: "店铺首页" },
+          { id: "mp-home",     href: "mp-home.html",     label: "首页装修" },
+          { id: "mp-mine",     href: "mp-mine.html",     label: "我的页装修" },
           { id: "mp-settings", href: "mp-settings.html", label: "店铺设置" },
         ],
       },
       {
-        group: "功能配置",
+        group: "页面配置",
         links: [
-          { id: "mp-claim", href: "mp-claim.html", label: "领课兑换" },
-          { id: "mp-live",  href: "mp-live.html",  label: "直播展示" },
+          { id: "mp-course", href: "mp-course.html", label: "课程与学习页" },
+          { id: "mp-order",  href: "mp-order.html",  label: "订单页" },
+          { id: "mp-pay",    href: "mp-pay.html",    label: "支付结果页" },
+          { id: "mp-assess", href: "mp-assess.html", label: "测评与计划页" },
+          { id: "mp-claim",  href: "mp-claim.html",  label: "领课页" },
+          { id: "mp-live",   href: "mp-live.html",   label: "直播页" },
         ],
       },
       {
@@ -165,18 +172,10 @@
     ],
     trade: [
       {
-        group: "收款开通",
-        links: [
-          { id: "onboard", href: "onboard.html", label: "进件与收款开通" },
-          { id: "onboard-sign", href: "onboard-sign.html", label: "提现协议签约" },
-        ],
-      },
-      {
         group: "订单管理",
         links: [
           { id: "orders", href: "orders.html", label: "订单列表" },
           { id: "entitlement", href: "entitlement.html", label: "权益开通记录", badge: 2 },
-          { id: "refunds", href: "refunds.html", label: "订单退款" },
         ],
       },
       {
@@ -200,22 +199,6 @@
           { id: "withdraw", href: "withdraw.html", label: "提现管理" },
           { id: "recon", href: "recon.html", label: "对账管理", badge: 2 },
           { id: "settlement", href: "settlement.html", label: "结算单", badge: 2 },
-        ],
-      },
-    ],
-    user: [
-      {
-        group: "用户管理",
-        links: [
-          { id: "users", href: "users.html", label: "用户列表" },
-          { id: "user-tags", href: "user-tags.html", label: "标签管理" },
-        ],
-      },
-      {
-        group: "用户运营",
-        links: [
-          { id: "user-segments", href: "user-segments.html", label: "用户分群" },
-          { id: "ops-plans", href: "ops-plans.html", label: "定向运营计划" },
         ],
       },
     ],
@@ -271,9 +254,16 @@
       "<li>客户中心 / 营销管理 / 内容中心</li>" +
       "<li>业务设置</li>" +
       "<li>页面归属与字段对照真路径</li></ol></div>" +
+      "<div class='assist-block'><h3>用户资料</h3><ul>" +
+      "<li>MVP 支持手动打标与标签管理</li>" +
+      "<li>批量打标读取「标签管理」中启用的标签</li>" +
+      "<li>公域订单用户进入同一视图</li></ul></div>" +
       "<div class='assist-block'><h3>评审路径</h3><ul>" +
       "<li><a href='leads.html'>线索池</a></li>" +
       "<li><a href='follow-ups.html'>跟进管理</a></li>" +
+      "<li><a href='users.html'>用户列表</a></li>" +
+      "<li><a href='user-tags.html'>标签管理</a></li>" +
+      "<li><a href='user-segments.html'>用户分群</a></li>" +
       "<li><a href='quick-tasks.html'>快捷任务</a></li></ul></div>",
     live:
       "<div class='assist-block'><h3>直播提示</h3><ul>" +
@@ -283,8 +273,19 @@
     content:
       "<div class='assist-block'><h3>内容提示</h3><ul>" +
       "<li>本期仅线上课</li>" +
-      "<li>固定 C 端模板：首页/直播/我的</li>" +
-      "<li>不做店铺装修与艺博士</li></ul></div>",
+      "<li>C 端页面展示形态由「小程序」模块统一配置</li>" +
+      "<li>不做艺博士</li></ul></div>",
+    mp:
+      "<div class='assist-block'><h3>小程序提示</h3><ul>" +
+      "<li>本模块只配置 C 端展示形态，不做业务处理</li>" +
+      "<li>C 端共 10 页：首页 / 我的 / 课程详情 / 学习 / 我的订单 / 支付结果 / 测评与计划 / 领课 / 直播 / 数据</li>" +
+      "<li>每个后台页面右上角可一键预览对应 C 端页面</li></ul></div>" +
+      "<div class='assist-block'><h3>评审路径</h3><ul>" +
+      "<li><a href='mp-home.html'>首页装修</a></li>" +
+      "<li><a href='mp-mine.html'>我的页装修</a></li>" +
+      "<li><a href='mp-course.html'>课程与学习页</a></li>" +
+      "<li><a href='mp-order.html'>订单页</a></li>" +
+      "<li><a href='mp-pay.html'>支付结果页</a></li></ul></div>",
     trade:
       "<div class='assist-block'><h3>交易提示</h3><ul>" +
       "<li>支付成功开通权益，退款成功回收权益</li>" +
@@ -296,16 +297,6 @@
       "<li><a href='aftersales.html'>③ 售后维权</a></li>" +
       "<li><a href='assets.html'>④ 资产管理</a></li>" +
       "<li><a href='trade-settings.html'>⑤ 交易设置</a></li></ul></div>",
-    user:
-      "<div class='assist-block'><h3>用户提示</h3><ul>" +
-      "<li>MVP 支持手动打标与标签管理</li>" +
-      "<li>批量打标读取「标签管理」中启用的标签</li>" +
-      "<li>公域订单用户进入同一视图</li></ul></div>" +
-      "<div class='assist-block'><h3>用户路径</h3><ul>" +
-      "<li><a href='users.html'>① 用户列表</a></li>" +
-      "<li><a href='user-tags.html'>② 标签管理</a></li>" +
-      "<li><a href='user-roles.html'>③ 用户角色</a></li>" +
-      "<li><a href='permissions.html'>④ 权限配置</a></li></ul></div>",
     data:
       "<div class='assist-block'><h3>链路看板</h3><ul>" +
       "<li>业务主链：获客→承接→跟进→直播→转化</li>" +

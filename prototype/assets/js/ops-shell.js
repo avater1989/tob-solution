@@ -41,7 +41,8 @@
   var modules = [
     { id: "workbench", label: "工作台", href: "dashboard.html" },
     { id: "content", label: "内容", href: "content-series.html" },
-    { id: "trade", label: "交易与结算", href: "settlements.html" },
+    { id: "biz", label: "交易", href: "trade-orders.html" },
+    { id: "trade", label: "财务", href: "settlements.html" },
     { id: "sys", label: "系统管理", href: "sys-users.html" },
     { id: "data", label: "全局数据", href: "data.html" },
   ];
@@ -54,17 +55,17 @@
       {
         group: "内容管理",
         links: [
-          { id: "content-series", href: "content-series.html", label: "系列课管理" },
-          { id: "content-video", href: "content-video.html", label: "视频管理" },
-          { id: "content-article", href: "content-article.html", label: "图文管理" },
-          { id: "content-category", href: "content-category.html", label: "商品分组" },
+          { id: "content-series", href: "content-series.html", label: "系列课" },
+          { id: "content-video", href: "content-video.html", label: "视频" },
+          { id: "content-article", href: "content-article.html", label: "图文" },
+          { id: "content-category", href: "content-category.html", label: "内容分类" },
         ],
       },
       {
         group: "测评管理",
         links: [
-          { id: "assess-projects", href: "assess-projects.html", label: "测试项目管理" },
-          { id: "assess-series", href: "assess-series.html", label: "系列测评管理" },
+          { id: "assess-projects", href: "assess-projects.html", label: "测评项目" },
+          { id: "assess-series", href: "assess-series.html", label: "系列测评" },
           { id: "assess-results", href: "assess-results.html", label: "测评结果" },
         ],
       },
@@ -102,17 +103,23 @@
       {
         group: "财务",
         links: [
-          { id: "invoices", href: "invoices.html", label: "发票管理" },
-          { id: "invoice-settings", href: "invoice-settings.html", label: "开票设置" },
           { id: "fee-ledger", href: "fee-ledger.html", label: "服务费台账" },
         ],
       },
       {
         group: "风控与规则",
         links: [
-          { id: "fund-risk", href: "fund-risk.html", label: "资金风控", badge: 2 },
           { id: "settle-rules", href: "settle-rules.html", label: "结算规则配置" },
           { id: "trade-settings", href: "trade-settings.html", label: "交易选项" },
+        ],
+      },
+    ],
+    biz: [
+      {
+        group: "交易",
+        links: [
+          { id: "trade-orders", href: "trade-orders.html", label: "订单列表" },
+          { id: "trade-goods", href: "trade-goods.html", label: "商品管理" },
         ],
       },
     ],
@@ -148,21 +155,15 @@
         links: [
           { id: "tenants", href: "tenants.html", label: "租户列表" },
           { id: "users", href: "users.html", label: "租户用户" },
-          { id: "tenant-depts", href: "tenant-depts.html", label: "租户部门" },
           { id: "tenant-roles", href: "tenant-roles.html", label: "租户角色" },
+          { id: "template-roles", href: "template-roles.html", label: "租户模板角色" },
         ],
       },
       {
-        group: "角色与权限",
+        group: "租户应用与资源",
         links: [
-          { id: "template-roles", href: "template-roles.html", label: "模板角色" },
-        ],
-      },
-      {
-        group: "应用与资源",
-        links: [
-          { id: "apps", href: "apps.html", label: "应用管理" },
-          { id: "resources", href: "resources.html", label: "功能资源配置" },
+          { id: "apps", href: "apps.html", label: "租户应用管理" },
+          { id: "resources", href: "resources.html", label: "租户资源管理" },
         ],
       },
       {
@@ -198,8 +199,8 @@
       "<li>应用按套餐授权，可对租户单独覆盖</li></ul></div>",
     content:
       "<div class='assist-block'><h3>内容中台</h3><ul>" +
-      "<li>内容管理：平台标准系列课 / 视频 / 图文 / 商品分组</li>" +
-      "<li>测评与计划：测试项目、系列测评、结果与定制化计划（后续迭代）</li>" +
+      "<li>内容管理：平台标准系列课 / 视频 / 图文 / 内容分类</li>" +
+      "<li>测评与计划：测评项目、系列测评、结果与定制化计划（后续迭代）</li>" +
       "<li>内容审核：商家提交上架的内容进入审核队列</li>" +
       "<li>与商家后台「内容」双轨：此处为平台侧，商家侧为租户售卖</li></ul></div>" +
       "<div class='assist-block'><h3>审核规则</h3><ul>" +

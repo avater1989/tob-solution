@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>商品管理 · 运营后台</title>
+<link rel="stylesheet" href="../assets/css/proto.css?v=9" />
+</head>
+<body class="admin-body" data-module="biz" data-nav="trade-goods" data-title="商品管理" data-crumb="运营后台 / 交易 / 商品管理">
+<div id="header-actions">
+  <button class="btn" id="btn-batch">批量操作</button>
+  <button class="btn" id="btn-groups">内容分类</button>
+  <button class="btn btn-primary" id="btn-create">新建商品</button>
+</div>
+<div id="page-content" style="display:none">
+
+  <!-- 顶部统计 -->
+  <div class="grid-4" style="margin-bottom:16px">
+    <div class="stat"><div class="label">在售商品</div><div class="value">36</div><div class="hint">知识 24 · 服务 12</div></div>
+    <div class="stat"><div class="label">待上架</div><div class="value">3</div><div class="hint">草稿 2 · 定时上架 1</div></div>
+    <div class="stat"><div class="label">本月上新</div><div class="value">7</div><div class="hint">上架中 5 · 草稿 2</div></div>
+    <div class="stat"><div class="label">商品总销量</div><div class="value">1,284</div><div class="hint">近 30 天 +126</div></div>
+  </div>
+
+  <!-- 类型/状态 Tab -->
+  <div class="tabs" id="gd-tabs">
+    <a class="active" href="#" data-tab="all">全部</a>
+    <a href="#" data-tab="knowledge">知识商品</a>
+    <a href="#" data-tab="service">服务商品</a>
+    <a href="#" data-tab="combo">组合商品</a>
+    <span class="spacer"></span>
+    <a href="#" data-tab="onsale">上架中</a>
+    <a href="#" data-tab="off">已下架</a>
+    <a href="#" data-tab="draft">草稿</a>
+  </div>
+
+  <!-- 筛选 -->
+  <div class="card" style="margin-bottom:8px"><div class="card-bd">
+    <div class="form-grid" style="grid-template-columns:repeat(6,minmax(0,1fr));gap:8px 12px">
+      <input id="f-name" placeholder="商品名称 / ID" />
+      <select id="f-type">
+        <option value="">商品类型</option>
+        <option>知识商品</option><option>服务商品</option><option>组合商品</option>
+      </select>
+      <select id="f-cat">
+        <option value="">商品分组</option>
+        <option>学科提分</option><option>家长课堂</option><option>教辅周边</option><option>未分组</option>
+      </select>
+      <select id="f-status">
+        <option value="">状态</option>
+        <option>上架中</option><option>已下架</option><option>草稿</option>
+      </select>
+      <input id="f-time1" type="datetime-local" />
+      <input id="f-time2" type="datetime-local" />
+      <button class="btn btn-primary" id="btn-query">筛选</button>
+      <button class="btn" id="btn-reset">重置</button>
+    </div>
+  </div></div>
+
+  <!-- 表格 -->
+  <div class="card"><div class="card-bd" style="padding:0">
+    <table class="data">
+      <thead>
+        <tr>
+          <th style="width:36px"><input type="checkbox" id="ck-all" /></th>
+          <th>商品</th>
+          <th>类型</th>
+          <th>分组</th>
+          <th>价格</th>
+          <th>总销量</th>
+          <th>访问数据</th>
+          <th>状态</th>
+          <th>更新时间</th>
+          <th style="width:190px">操作</th>
+        </tr>
+      </thead>
+      <tbody id="gd-tbody">
+        <tr>
+          <td><input type="checkbox" /></td>
+          <td><div class="gd-cell"><span class="thumb t-blue">课</span><div><a href="#" data-toast="商品编辑（原型示意）" class="gd-name">春启 03 期家长必修课</a><br><span class="muted" style="font-size:12px">ID P2026030101</span></div></div></td>
+          <td><span class="tag tag-blue">知识商品</span></td>
+          <td>家长课堂</td>
+          <td><b>¥9.90</b></td>
+          <td>1,020</td>
+          <td>UV 8,431<br><span class="muted">PV 12,866</span></td>
+          <td><span class="badge badge-success">上架中</span></td>
+          <td>2026-09-07 16:20</td>
+          <td class="row-actions">
+            <a href="#" data-toast="商品编辑（原型示意）">编辑</a>
+            <a href="#" data-row-act="off">下架</a>
+            <a href="#" data-row-act="share">分享</a>
+          </td>
+        </tr>
+        <tr>
+          <td><input type="checkbox" /></td>
+          <td><div class="gd-cell"><span class="thumb t-green">册</span><div><b>家庭教育指导手册（电子版）</b><br><span class="muted" style="font-size:12px">ID P2026090102 · 图文</span></div></div></td>
+          <td><span class="tag tag-blue">知识商品</span></td>
+          <td>家长课堂</td>
+          <td><b>¥39.00</b></td>
+          <td>126</td>
+          <td>UV 1,203<br><span class="muted">PV 1,986</span></td>
+          <td><span class="badge badge-success">上架中</span></td>
+          <td>2026-09-06 11:03</td>
+          <td class="row-actions">
+            <a href="#" data-toast="商品编辑（原型示意）">编辑</a>
+            <a href="#" data-row-act="off">下架</a>
+            <a href="#" data-row-act="share">分享</a>
+          </td>
+        </tr>
+        <tr>
+          <td><input type="checkbox" /></td>
+          <td><div class="gd-cell"><span class="thumb t-orange">卡</span><div><b>家庭咨询 60 分钟服务卡</b><br><span class="muted" style="font-size:12px">ID P2026080198</span></div></div></td>
+          <td><span class="tag tag-orange">服务商品</span></td>
+          <td>家长课堂</td>
+          <td><b>¥199.00</b></td>
+          <td>58</td>
+          <td>UV 342<br><span class="muted">PV 501</span></td>
+          <td><span class="badge badge-success">上架中</span></td>
+          <td>2026-08-30 09:44</td>
+          <td class="row-actions">
+            <a href="#" data-toast="商品编辑（原型示意）">编辑</a>
+            <a href="#" data-row-act="off">下架</a>
+            <a href="#" data-row-act="share">分享</a>
+          </td>
+        </tr>
+        <tr>
+          <td><input type="checkbox" /></td>
+          <td><div class="gd-cell"><span class="thumb t-purple">组</span><div><b>亲子沟通全套课 + 1v1 咨询</b><br><span class="muted" style="font-size:12px">ID P2026070120 · 组合价</span></div></div></td>
+          <td><span class="tag tag-purple">组合商品</span></td>
+          <td>家长课堂</td>
+          <td><b>¥199.00</b><br><span class="muted" style="font-size:12px">合 ¥249.00</span></td>
+          <td>32</td>
+          <td>UV 208<br><span class="muted">PV 299</span></td>
+          <td><span class="badge badge-warn">已下架</span></td>
+          <td>2026-08-12 18:07</td>
+          <td class="row-actions">
+            <a href="#" data-toast="商品编辑（原型示意）">编辑</a>
+            <a href="#" data-row-act="on">上架</a>
+            <a href="#" data-row-act="share">分享</a>
+          </td>
+        </tr>
+        <tr>
+          <td><input type="checkbox" /></td>
+          <td><div class="gd-cell"><span class="thumb t-gray">草</span><div><b>青春期沟通专题课（草稿）</b><br><span class="muted" style="font-size:12px">ID P2026090105</span></div></div></td>
+          <td><span class="tag">知识商品</span></td>
+          <td>未分组</td>
+          <td><b>¥129.00</b></td>
+          <td>—</td>
+          <td>—</td>
+          <td><span class="badge">草稿</span></td>
+          <td>2026-09-05 22:11</td>
+          <td class="row-actions">
+            <a href="#" data-toast="商品编辑（原型示意）">编辑</a>
+            <a href="#" data-row-act="publish">发布</a>
+          </td>
+        </tr>
+        <tr>
+          <td><input type="checkbox" /></td>
+          <td><div class="gd-cell"><span class="thumb t-cyan">引</span><div><b>9.9 引流课·亲子沟通</b><br><span class="muted" style="font-size:12px">ID P2026040220 · 引流品</span></div></div></td>
+          <td><span class="tag tag-blue">知识商品</span></td>
+          <td>学科提分</td>
+          <td><b>¥9.90</b></td>
+          <td>486</td>
+          <td>UV 5,120<br><span class="muted">PV 7,030</span></td>
+          <td><span class="badge badge-success">上架中</span></td>
+          <td>2026-09-03 14:52</td>
+          <td class="row-actions">
+            <a href="#" data-toast="商品编辑（原型示意）">编辑</a>
+            <a href="#" data-row-act="off">下架</a>
+            <a href="#" data-row-act="share">分享</a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div></div>
+
+  <!-- 分页 -->
+  <div class="toolbar" style="margin-top:8px">
+    <span class="muted">共 <b>36</b> 个商品</span>
+    <div class="spacer"></div>
+    <select><option>10条/页</option><option>20条/页</option><option>50条/页</option></select>
+    <button class="btn btn-sm" disabled>上一页</button>
+    <button class="btn btn-sm">下一页</button>
+  </div>
+
+  <div class="card" style="margin-top:16px"><div class="card-bd">
+    <p class="muted" style="font-size:12px;line-height:1.8">
+      <b>说明：</b>知识商品在「内容」模块创建后自动进入商品池，可在本页统一管理上架/分组；服务商品（咨询、1v1 辅导等）支付后开通服务额度，由学员在 C 端预约使用；
+      组合商品由 2 个及以上在售商品组成，组合价不高于各商品单价之和。<b>本平台不售卖实物商品，无库存与物流环节。</b>
+    </p>
+  </div></div>
+</div>
+
+<!-- ===== 弹窗 ===== -->
+<div class="proto-mask" id="mask"></div>
+
+<!-- 批量操作弹窗 -->
+<div class="proto-modal" id="modal-batch" style="width:520px">
+  <div class="proto-modal-hd">
+    <h3 style="font-size:16px;font-weight:600">批量操作</h3>
+    <button class="btn btn-sm btn-ghost" data-close>×</button>
+  </div>
+  <div class="proto-modal-bd">
+    <div class="field" style="margin-bottom:10px"><label>选择操作</label>
+      <select style="width:100%;padding:7px 8px;border:1px solid var(--color-border);border-radius:6px">
+        <option>批量上架</option><option>批量下架</option><option>批量加入分组</option><option>批量删除（谨慎）</option>
+      </select>
+    </div>
+    <div class="field"><label>目标分组（加入分组时）</label>
+      <select style="width:100%;padding:7px 8px;border:1px solid var(--color-border);border-radius:6px">
+        <option>请选择分组</option><option>学科提分</option><option>家长课堂</option><option>亲子沟通</option>
+      </select>
+    </div>
+    <p class="muted" style="margin-top:8px">已选 <b id="batch-n">0</b> 个商品</p>
+  </div>
+  <div class="proto-drawer-ft" style="border-top:1px solid var(--color-border);padding:12px 20px;display:flex;gap:8px;justify-content:flex-end">
+    <button class="btn" data-close>取消</button>
+    <button class="btn btn-primary" id="batch-submit">确认执行</button>
+  </div>
+</div>
+
+<!-- 下架确认弹窗 -->
+<div class="proto-modal" id="modal-off" style="width:440px">
+  <div class="proto-modal-hd">
+    <h3 style="font-size:16px;font-weight:600">下架确认</h3>
+    <button class="btn btn-sm btn-ghost" data-close>×</button>
+  </div>
+  <div class="proto-modal-bd">
+    <p style="font-size:14px">下架后 C 端将不可购买该商品，已有订单与权益不受影响。是否继续？</p>
+  </div>
+  <div class="proto-drawer-ft" style="border-top:1px solid var(--color-border);padding:12px 20px;display:flex;gap:8px;justify-content:flex-end">
+    <button class="btn" data-close>取消</button>
+    <button class="btn btn-primary" id="off-submit">确认下架</button>
+  </div>
+</div>
+
+<style>
+.gd-cell { display:flex; align-items:center; gap:10px; }
+.thumb { width:40px; height:40px; border-radius:6px; flex:none; display:flex; align-items:center; justify-content:center; color:#fff; font-size:14px; }
+.t-blue{background:linear-gradient(135deg,#165dff,#4080ff)} .t-green{background:linear-gradient(135deg,#00b42a,#4ed679)}
+.t-orange{background:linear-gradient(135deg,#fa8c16,#ffc53d)} .t-purple{background:linear-gradient(135deg,#722ed1,#b577ff)}
+.t-gray{background:#c9cdd4} .t-cyan{background:linear-gradient(135deg,#13c2c2,#5cdbd3)}
+.gd-name { color:var(--color-primary); text-decoration:none; font-size:14px; }
+.gd-name:hover { text-decoration:underline; }
+.tag { display:inline-block; padding:2px 8px; border-radius:4px; font-size:12px; background:#f2f3f5; color:#4e5969; }
+.tag-blue{background:#e8f3ff;color:#165dff} .tag-green{background:#e8ffea;color:#009a29}
+.tag-orange{background:#fff3e0;color:#ad6800} .tag-purple{background:#f4f0ff;color:#722ed1}
+</style>
+
+<script src="../assets/js/proto.js"></script>
+<script src="../assets/js/ops-shell.js?v=7"></script>
+<script>
+(function () {
+  var mask = document.getElementById("mask");
+  function closeAll(){ mask.classList.remove("open"); document.querySelectorAll(".proto-modal,.proto-drawer").forEach(function(n){n.classList.remove("open");}); }
+  function open(node){ mask.classList.add("open"); node.classList.add("open"); }
+  mask.addEventListener("click", closeAll);
+  document.querySelectorAll("[data-close]").forEach(function(n){ n.addEventListener("click", closeAll); });
+
+  document.querySelectorAll("#gd-tabs a").forEach(function(a){
+    a.addEventListener("click", function(e){
+      e.preventDefault();
+      document.querySelectorAll("#gd-tabs a").forEach(function(n){n.classList.remove("active");});
+      a.classList.add("active");
+      Proto.toast("已切换到「"+a.textContent+"」（原型）");
+    });
+  });
+
+  var checked = 0;
+  function countChecked(){ checked = document.querySelectorAll("#gd-tbody input[type=checkbox]:checked").length; document.getElementById("batch-n").textContent = checked; }
+  document.querySelectorAll("#gd-tbody input[type=checkbox]").forEach(function(c){ c.addEventListener("change", countChecked); });
+  document.getElementById("ck-all").addEventListener("change", function(e){
+    document.querySelectorAll("#gd-tbody input[type=checkbox]").forEach(function(c){ c.checked = e.target.checked; });
+    countChecked();
+  });
+
+  document.querySelectorAll("#gd-tbody tr").forEach(function(tr){
+    tr.querySelectorAll("[data-row-act]").forEach(function(a){
+      a.addEventListener("click", function(e){
+        e.preventDefault();
+        var act = a.getAttribute("data-row-act");
+        if(act==="off") open(document.getElementById("modal-off"));
+        else if(act==="on") Proto.toast("已上架（原型）");
+        else if(act==="publish") Proto.toast("草稿已发布上架（原型）");
+        else if(act==="share") Proto.toast("已生成商品分享链接（原型）");
+      });
+    });
+  });
+
+  document.getElementById("btn-create").addEventListener("click", function(){ Proto.toast("新建商品（原型示意）"); });
+  document.getElementById("btn-groups").addEventListener("click", function(){ location.href="content-category.html"; });
+  document.getElementById("btn-batch").addEventListener("click", function(){ countChecked(); open(document.getElementById("modal-batch")); });
+  document.getElementById("batch-submit").addEventListener("click", function(){ closeAll(); Proto.toast("批量操作执行成功（原型）"); });
+  document.getElementById("off-submit").addEventListener("click", function(){ closeAll(); Proto.toast("商品已下架（原型）"); });
+  document.getElementById("btn-query").addEventListener("click", function(){ Proto.toast("已筛选（原型）"); });
+  document.getElementById("btn-reset").addEventListener("click", function(){
+    ["f-name"].forEach(function(id){document.getElementById(id).value="";});
+    ["f-type","f-cat","f-status"].forEach(function(id){document.getElementById(id).value="";});
+    document.getElementById("f-time1").value=""; document.getElementById("f-time2").value="";
+    Proto.toast("已重置");
+  });
+})();
+</script>
+</body>
+</html>

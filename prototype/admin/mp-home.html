@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>店铺首页 · 商家管理后台</title>
+<title>首页装修 · 商家管理后台</title>
 <link rel="stylesheet" href="../assets/css/proto.css?v=9" />
 <link rel="stylesheet" href="../assets/css/assess.css?v=3" />
 <style>
@@ -12,31 +12,33 @@
   .deco-cover { height: 64px; border-radius: 6px; background: linear-gradient(135deg, #4d7cfe, #7db3ff); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 12px; text-align: center; padding: 0 8px; }
   .deco-cover.c2 { background: linear-gradient(135deg, #ff8a3d, #ffb37a); }
   .deco-cover.c3 { background: linear-gradient(135deg, #2fbf71, #6fdcad); }
-  .king-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
-  .king-item { border: 1px dashed var(--color-border); border-radius: 8px; padding: 12px 10px; text-align: center; background: #fafbfc; }
-  .king-item .ki-ico { width: 36px; height: 36px; margin: 0 auto 6px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px; color: #fff; }
+  .mp-strip-pv { display: flex; align-items: center; gap: 8px; border: 1px solid var(--color-border); border-radius: 10px; background: #fff; padding: 10px 12px; max-width: 420px; }
+  .mp-strip-pv .dot { width: 26px; height: 26px; border-radius: 50%; background: linear-gradient(135deg, #ffb020, #ff7a45); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 12px; flex-shrink: 0; }
+  .mp-strip-pv .txt { flex: 1; min-width: 0; font-size: 13px; color: #1d2129; }
+  .mp-strip-pv .go { font-size: 12px; color: #165dff; flex-shrink: 0; }
 </style>
 </head>
-<body class="admin-body" data-module="mp" data-nav="mp-home" data-title="店铺首页" data-crumb="商家管理后台 / 小程序 / 店铺装修 / 店铺首页">
+<body class="admin-body" data-module="mp" data-nav="mp-home" data-title="首页装修" data-crumb="商家管理后台 / 小程序 / 店铺装修 / 首页装修">
 
 <div id="header-actions">
-  <button class="btn" id="btn-preview" onclick="window.open('../miniprogram/home.html','_blank')">预览 C 端首页</button>
+  <button class="btn" id="btn-preview">预览 C 端首页</button>
   <button class="btn btn-primary" id="btn-save">保存装修</button>
 </div>
 
 <div id="page-content" style="display:none">
-  <div class="as-banner">装修您的小程序店铺首页。C 端首页结构为固定模板：主推 Banner → 金刚位（领课 / 直播 / 课程 / 我的）→ 分类标签 → 本周必看 → 精选课程，商家可在此配置各楼层内容。</div>
+  <div class="as-banner">按 C 端首页的真实结构配置装修。C 端首页固定为三段：<b>主推 Banner</b> → <b>定制化计划入口</b>（仅学员存在计划时展示）→ <b>精选课程</b>。此处只配置端上真实存在的模块，配置后 C 端即时生效。</div>
 
   <!-- 主推 Banner -->
   <div class="card" style="margin-bottom:14px">
-    <div class="card-hd"><h2>主推 Banner</h2><span class="muted" style="margin-left:10px">最多 3 条，C 端自动轮播，第一条为默认主推</span></div>
+    <div class="card-hd"><h2>主推 Banner</h2><span class="muted" style="margin-left:10px">对应 C 端首页顶部大卡，最多 3 条轮播，第一条为默认展示</span></div>
     <div class="card-bd">
       <table class="as-table">
         <thead>
           <tr>
             <th>预览</th>
             <th>标题 / 副标题</th>
-            <th style="width:150px">跳转链接</th>
+            <th style="width:180px">左上角胶囊</th>
+            <th style="width:150px">点击跳转</th>
             <th style="width:90px">状态</th>
             <th style="width:170px">操作</th>
           </tr>
@@ -47,44 +49,57 @@
     </div>
   </div>
 
-  <!-- 金刚位 -->
+  <!-- 定制化计划入口 -->
   <div class="card" style="margin-bottom:14px">
-    <div class="card-hd"><h2>金刚位（固定）</h2></div>
+    <div class="card-hd"><h2>定制化计划入口</h2><span class="muted" style="margin-left:10px">C 端首页的细长条，仅当学员已拿到定制化计划时出现</span></div>
     <div class="card-bd">
-      <div class="king-grid">
-        <div class="king-item"><div class="ki-ico" style="background:#4d7cfe">🎁</div><b>领课</b><div class="muted">跳转领课兑换页</div><span class="as-tag gray">固定</span></div>
-        <div class="king-item"><div class="ki-ico" style="background:#f5222d">📺</div><b>直播</b><div class="muted">跳转直播 tab</div><span class="as-tag gray">固定</span></div>
-        <div class="king-item"><div class="ki-ico" style="background:#2fbf71">📚</div><b>课程</b><div class="muted">跳转课程列表</div><span class="as-tag gray">固定</span></div>
-        <div class="king-item"><div class="ki-ico" style="background:#fa8c16">👤</div><b>我的</b><div class="muted">跳转我的页面</div><span class="as-tag gray">固定</span></div>
+      <div class="form-grid" style="max-width:640px">
+        <div class="field"><label>入口开关</label>
+          <select class="input" id="plan-on">
+            <option value="1" selected>展示（学员有计划时出现）</option>
+            <option value="0">不展示</option>
+          </select>
+          <div class="muted">关闭后，即使学员有定制化计划，首页也不再显示该入口</div>
+        </div>
+        <div class="field"><label>入口文案</label>
+          <input class="input" id="plan-txt" value="去测评" maxlength="8" />
+          <div class="muted">细长条右侧引导文案，实际展示为「去测评 ›」</div>
+        </div>
       </div>
-      <div class="muted" style="margin-top:10px">金刚位为平台固定模板，暂不支持自定义；「领课」入口是否展示由 <a href="mp-claim.html">领课兑换</a> 功能开关控制。</div>
+      <div style="margin-top:14px">
+        <div class="muted" style="margin-bottom:8px">C 端效果预览</div>
+        <div class="mp-strip-pv">
+          <span class="dot">测</span>
+          <span class="txt" id="pv-plan-txt">定制化计划 · <b>亲子沟通 21 天训练营计划</b></span>
+          <span class="go" id="pv-plan-go">去测评 ›</span>
+        </div>
+      </div>
+      <div class="muted" style="margin-top:12px">计划本身（名称、步骤、截止时间）在 <a href="assess-plans.html">计划管理 · 定制化计划</a> 中下发，此处只控制首页入口的展示。</div>
     </div>
   </div>
 
-  <!-- 分类标签 -->
+  <!-- 精选课程 -->
   <div class="card" style="margin-bottom:14px">
-    <div class="card-hd"><h2>分类标签</h2><span class="muted" style="margin-left:10px">展示在 C 端首页课程列表上方，最多 6 个</span></div>
+    <div class="card-hd"><h2>精选课程</h2><span class="muted" style="margin-left:10px">C 端首页课程列表区，最多 6 门</span></div>
     <div class="card-bd">
+      <div class="form-grid" style="max-width:640px;margin-bottom:12px">
+        <div class="field"><label>区块标题</label><input class="input" id="sec-title" value="精选课程" maxlength="10" /></div>
+        <div class="field"><label>右上角「更多」跳转</label>
+          <select class="input" id="sec-more">
+            <option value="lives" selected>直播列表页</option>
+            <option value="none">不展示「更多」</option>
+          </select>
+        </div>
+      </div>
       <table class="as-table">
         <thead>
-          <tr><th style="width:60px">排序</th><th>标签名称</th><th style="width:200px">筛选内容</th><th style="width:90px">状态</th><th style="width:140px">操作</th></tr>
+          <tr><th style="width:60px">排序</th><th>课程</th><th style="width:210px">卡片副标题</th><th style="width:140px">价格</th><th style="width:140px">操作</th></tr>
         </thead>
-        <tbody id="cat-tbody"></tbody>
+        <tbody id="course-tbody"></tbody>
       </table>
-      <div style="margin-top:10px"><button class="btn btn-sm" id="btn-cat-add">+ 新增标签</button></div>
-    </div>
-  </div>
-
-  <!-- 楼层管理 -->
-  <div class="card" style="margin-bottom:14px">
-    <div class="card-hd"><h2>楼层管理</h2><span class="muted" style="margin-left:10px">拖拽或用按钮调整楼层顺序与内容</span></div>
-    <div class="card-bd">
-      <table class="as-table">
-        <thead>
-          <tr><th>楼层</th><th>标题（C 端展示）</th><th style="width:220px">内容</th><th style="width:90px">状态</th><th style="width:170px">操作</th></tr>
-        </thead>
-        <tbody id="floor-tbody"></tbody>
-      </table>
+      <div style="margin-top:10px;display:flex;gap:8px">
+        <button class="btn btn-sm" id="btn-course-add">+ 添加课程</button>
+      </div>
     </div>
   </div>
 </div>
@@ -94,21 +109,21 @@
   <div class="proto-modal-hd"><h3 id="banner-modal-title" style="margin:0;font-size:16px">新增 Banner</h3><button class="ctrl-icon-btn" data-close>×</button></div>
   <div class="proto-modal-bd">
     <div class="form-grid">
-      <div class="field"><label>标题 *</label><input class="input" id="b-title" placeholder="如：开学季亲子沟通特训营" /></div>
-      <div class="field"><label>副标题</label><input class="input" id="b-sub" placeholder="如：限时 5 折，扫码领课" /></div>
-      <div class="field"><label>跳转链接 *</label>
+      <div class="field"><label>标题 *</label><input class="input" id="b-title" placeholder="如：亲子沟通，从听懂开始" maxlength="16" /></div>
+      <div class="field"><label>副标题</label><input class="input" id="b-sub" placeholder="如：8 节体系课 · 陪学营老师全程答疑" maxlength="24" /></div>
+      <div class="field"><label>左上角胶囊文案</label><input class="input" id="b-pill" placeholder="如：今晚 20:00 公开课 · 预约即可" maxlength="20" /></div>
+      <div class="field"><label>点击跳转 *</label>
         <div style="display:grid;grid-template-columns:150px 1fr;gap:8px">
           <select class="input" id="b-link-type">
-            <option value="series">系列课</option>
-            <option value="video">视频</option>
-            <option value="article">图文</option>
-            <option value="assess">测评项目</option>
-            <option value="plan">定制化计划</option>
-            <option value="page">固定页面</option>
+            <option value="course">课程详情</option>
+            <option value="live">直播间</option>
+            <option value="claim">领课页</option>
+            <option value="assess">测评与计划页</option>
+            <option value="lives">直播列表页</option>
           </select>
           <select class="input" id="b-link"></select>
         </div>
-        <div class="muted" style="margin-top:4px">可选择「内容」板块的系列课 / 视频 / 图文 / 测评项目 / 定制化计划，点击后跳转到对应详情页</div>
+        <div class="muted" style="margin-top:4px">可选 C 端真实存在的页面或内容，点击后在端上跳转</div>
       </div>
       <div class="field"><label>主图</label><input type="file" accept="image/*" /><div class="muted">建议 750×300px，JPG/PNG，≤500KB</div></div>
     </div>
@@ -119,39 +134,16 @@
   </div>
 </div>
 
-<!-- 分类标签编辑弹窗 -->
-<div class="proto-modal" id="modal-cat" style="width:480px">
-  <div class="proto-modal-hd"><h3 id="cat-modal-title" style="margin:0;font-size:16px">新增分类标签</h3><button class="ctrl-icon-btn" data-close>×</button></div>
+<!-- 选课弹窗 -->
+<div class="proto-modal" id="modal-course" style="width:560px">
+  <div class="proto-modal-hd"><h3 id="course-modal-title" style="margin:0;font-size:16px">添加课程</h3><button class="ctrl-icon-btn" data-close>×</button></div>
   <div class="proto-modal-bd">
-    <div class="form-grid">
-      <div class="field"><label>标签名称 *</label><input class="input" id="c-name" placeholder="如：家长必修" maxlength="6" /></div>
-      <div class="field"><label>筛选内容 *</label>
-        <select class="input" id="c-scope">
-          <option>全部在售课程</option>
-          <option>商品分组 · 家长必修</option>
-          <option>商品分组 · 亲子训练营</option>
-          <option>商品分组 · 音频课</option>
-          <option>仅直播回放课程</option>
-        </select>
-      </div>
-    </div>
+    <div class="muted" style="margin-bottom:10px">勾选要展示在首页的课程，最多 6 门；保存后按勾选顺序在 C 端依次展示。</div>
+    <div id="course-pool-list"></div>
   </div>
   <div class="proto-modal-ft" style="justify-content:flex-end;gap:8px">
     <button class="btn" data-close>取消</button>
-    <button class="btn btn-primary" id="cat-ok">确定</button>
-  </div>
-</div>
-
-<!-- 楼层选课弹窗 -->
-<div class="proto-modal" id="modal-floor" style="width:560px">
-  <div class="proto-modal-hd"><h3 id="floor-modal-title" style="margin:0;font-size:16px">配置楼层内容</h3><button class="ctrl-icon-btn" data-close>×</button></div>
-  <div class="proto-modal-bd">
-    <div class="muted" style="margin-bottom:10px">勾选要在该楼层展示的课程，最多 6 个；保存后按勾选顺序在 C 端横滑展示。</div>
-    <div id="floor-course-list"></div>
-  </div>
-  <div class="proto-modal-ft" style="justify-content:flex-end;gap:8px">
-    <button class="btn" data-close>取消</button>
-    <button class="btn btn-primary" id="floor-ok">确定</button>
+    <button class="btn btn-primary" id="course-ok">确定</button>
   </div>
 </div>
 
@@ -163,24 +155,33 @@
 function esc(s){ return String(s).replace(/[&<>"']/g,function(c){return({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"})[c];}); }
 function stTag(on){ return on ? '<span class="as-tag green">展示中</span>' : '<span class="as-tag gray">已隐藏</span>'; }
 
-var BANNERS = [
-  { id:"B1", title:"开学季亲子沟通特训营", sub:"限时 5 折 · 前 100 名赠 1v1 咨询", linkType:"series", link:"家长情绪管理训练营", on:true, cls:"" },
-  { id:"B2", title:"家庭教育风格测评免费测", sub:"3 分钟了解你的教养风格", linkType:"assess", link:"家庭教育风格测评", on:true, cls:"c2" },
-  { id:"B3", title:"开学第一课 · 家长专场直播", sub:"9 月 12 日 20:00 开播", linkType:"page", link:"直播预告 · 开学第一课家长专场", on:false, cls:"c3" }
-];
-/* Banner 跳转链接：按「内容」板块的内容类型分组 */
-var LINK_TYPE_LABEL = { series:"系列课", video:"视频", article:"图文", assess:"测评项目", plan:"定制化计划", page:"固定页面" };
+/* Banner 跳转：只保留 C 端真实存在的落地页 */
+var LINK_TYPE_LABEL = { course:"课程详情", live:"直播间", claim:"领课页", assess:"测评与计划页", lives:"直播列表页" };
 var LINK_OPTIONS = {
-  series:  ["小学语文阅读启蒙系列", "家长情绪管理训练营", "AI 学习规划入门"],
-  video:   ["如何让孩子爱上阅读", "亲子沟通的 5 个关键", "AI 助力学习规划"],
-  article: ["9 月新学期家长指南", "孩子注意力训练方法论", "家庭情绪急救指南"],
-  assess:  ["家庭教育风格测评", "亲子沟通能力测评", "孩子注意力测评"],
-  plan:    ["21 天阅读习惯养成计划", "亲子沟通训练营计划", "新学期学习规划计划"],
-  page:    ["领课兑换页", "课程列表页", "直播预告 · 开学第一课家长专场", "我的页面"]
+  course: ["亲子沟通基础", "家庭教育入门系列", "9.9 引流体验课"],
+  live:   ["亲子沟通 90 分钟", "开学第一课 · 家长专场"],
+  claim:  ["领课页"],
+  assess: ["测评与计划页"],
+  lives:  ["直播列表页"]
 };
+
+var BANNERS = [
+  { id:"B1", title:"亲子沟通，从听懂开始", sub:"8 节体系课 · 陪学营老师全程答疑", pill:"今晚 20:00 公开课 · 预约即可", linkType:"course", link:"亲子沟通基础", on:true, cls:"" },
+  { id:"B2", title:"家庭教育风格测评免费测", sub:"3 分钟了解你的教养风格", pill:"限时免费", linkType:"assess", link:"测评与计划页", on:true, cls:"c2" },
+  { id:"B3", title:"开学第一课 · 家长专场直播", sub:"9 月 12 日 20:00 开播", pill:"预约即可", linkType:"live", link:"开学第一课 · 家长专场", on:false, cls:"c3" }
+];
+
+/* 精选课程：顺序即 C 端展示顺序 */
+var SELECTED = [
+  { id:"S1", title:"亲子沟通基础", sub:"8 节 · 适合 3–12 岁家庭", price:"¥199", origin:"¥299" },
+  { id:"S2", title:"家庭教育入门系列", sub:"3 门组合 · 系统学习", price:"¥399", origin:"" },
+  { id:"S3", title:"9.9 引流体验课", sub:"视频号同款 · 可领课后学习", price:"¥9.9", origin:"" }
+];
+var COURSE_POOL = ["亲子沟通基础","家庭教育入门系列","9.9 引流体验课","青春期沟通 21 天营","亲子情绪管理音频课","非暴力沟通父母工作坊","家庭会议实践指南","写作业不吼不叫"];
+
 function linkLabel(b){
   var t = LINK_TYPE_LABEL[b.linkType] || "";
-  return (b.linkType && b.linkType !== "page") ? (t + " · " + b.link) : b.link;
+  return t ? (t + " · " + b.link) : b.link;
 }
 function fillLinkOptions(type, selected){
   var list = LINK_OPTIONS[type] || [];
@@ -189,20 +190,9 @@ function fillLinkOptions(type, selected){
     return '<option' + (o === selected ? ' selected' : '') + '>' + esc(o) + '</option>';
   }).join("");
 }
-var CATS = [
-  { id:"T1", name:"全部", scope:"全部在售课程", on:true },
-  { id:"T2", name:"家长必修", scope:"商品分组 · 家长必修", on:true },
-  { id:"T3", name:"训练营", scope:"商品分组 · 亲子训练营", on:true },
-  { id:"T4", name:"音频课", scope:"商品分组 · 音频课", on:false }
-];
-var FLOORS = [
-  { id:"F1", name:"本周必看", title:"本周必看", type:"课程横滑位（最多 6 个）", courses:["亲子沟通基础课","非暴力沟通父母工作坊","家庭会议实践指南"], on:true },
-  { id:"F2", name:"精选课程", title:"精选好课", type:"课程卡片位（最多 6 个）", courses:["家庭教育风格训练营","青春期沟通 21 天营","亲子情绪管理音频课","写作业不吼不叫"], on:true }
-];
-var COURSE_POOL = ["亲子沟通基础课","非暴力沟通父母工作坊","家庭会议实践指南","家庭教育风格训练营","青春期沟通 21 天营","亲子情绪管理音频课","写作业不吼不叫","二孩家庭平衡课"];
 
 var mask = document.getElementById("mask");
-var modals = ["modal-banner","modal-cat","modal-floor"];
+var modals = ["modal-banner","modal-course"];
 function closeAll(){ mask.classList.remove("open"); modals.forEach(function(id){ document.getElementById(id).classList.remove("open"); }); }
 var editCtx = {};
 
@@ -211,6 +201,7 @@ function renderBanners(){
     return '<tr>' +
       '<td><div class="deco-cover '+b.cls+'" style="width:120px;height:44px;font-size:11px">'+esc(b.title)+'</div></td>' +
       '<td><div class="as-name">'+esc(b.title)+'</div><div class="as-desc">'+esc(b.sub)+'</div></td>' +
+      '<td style="font-size:12px">'+esc(b.pill || "—")+'</td>' +
       '<td style="font-size:12px">'+esc(linkLabel(b))+'</td>' +
       '<td>'+stTag(b.on)+'</td>' +
       '<td class="row-actions">' +
@@ -221,119 +212,82 @@ function renderBanners(){
       '</td></tr>';
   }).join("");
 }
-function renderCats(){
-  document.getElementById("cat-tbody").innerHTML = CATS.map(function(c,i){
+function renderCourses(){
+  document.getElementById("course-tbody").innerHTML = SELECTED.length ? SELECTED.map(function(c,i){
     return '<tr>' +
       '<td style="text-align:center">'+(i+1)+'</td>' +
-      '<td><b>'+esc(c.name)+'</b></td>' +
-      '<td style="font-size:12px">'+esc(c.scope)+'</td>' +
-      '<td>'+stTag(c.on)+'</td>' +
+      '<td><div class="as-name">'+esc(c.title)+'</div></td>' +
+      '<td style="font-size:12px">'+esc(c.sub)+'</td>' +
+      '<td style="font-size:12px"><b style="color:#f04438">'+esc(c.price)+'</b>' +
+        (c.origin ? ' <s style="color:#bbb">'+esc(c.origin)+'</s>' : '') + '</td>' +
       '<td class="row-actions">' +
-        '<a href="javascript:;" data-c-move="'+c.id+'">'+(i===0?"—" : "上移")+'</a>' +
-        '<a href="javascript:;" data-c-edit="'+c.id+'">编辑</a>' +
-        '<a href="javascript:;" data-c-toggle="'+c.id+'">'+(c.on?"隐藏":"展示")+'</a>' +
-        (c.name!=="全部" ? '<a href="javascript:;" class="row-more" data-c-del="'+c.id+'">删除</a>' : '') +
+        '<a href="javascript:;" data-s-move="'+c.id+'">'+(i===0?"—" : "上移")+'</a>' +
+        '<a href="javascript:;" class="row-more" data-s-del="'+c.id+'">移除</a>' +
       '</td></tr>';
-  }).join("");
+  }).join("") : '<tr><td colspan="5" style="text-align:center;color:#bfbfbf;padding:20px 0">还没有添加课程，点下方「添加课程」选择</td></tr>';
 }
-function renderFloors(){
-  document.getElementById("floor-tbody").innerHTML = FLOORS.map(function(f,i){
-    return '<tr>' +
-      '<td><b>'+esc(f.name)+'</b><div class="as-desc">'+esc(f.type)+'</div></td>' +
-      '<td><input class="input" value="'+esc(f.title)+'" style="width:180px" data-f-title="'+f.id+'" /></td>' +
-      '<td><div class="as-desc">已选 '+f.courses.length+' 个课程<br>'+esc(f.courses.join("、"))+'</div></td>' +
-      '<td>'+stTag(f.on)+'</td>' +
-      '<td class="row-actions">' +
-        '<a href="javascript:;" data-f-config="'+f.id+'">选课</a>' +
-        '<a href="javascript:;" data-f-toggle="'+f.id+'">'+(f.on?"隐藏":"展示")+'</a>' +
-      '</td></tr>';
-  }).join("");
-}
+function renderAll(){ renderBanners(); renderCourses(); }
 
-function move(arr, id, key){
+function move(arr, id){
   var i = arr.findIndex(function(x){return x.id===id;});
   if (i<=0) return;
   var t = arr[i-1]; arr[i-1]=arr[i]; arr[i]=t;
   renderAll();
 }
-function renderAll(){ renderBanners(); renderCats(); renderFloors(); }
 
-// Banner 弹窗
 function openBanner(b){
   editCtx.banner = b || null;
   document.getElementById("banner-modal-title").textContent = b ? "编辑 Banner" : "新增 Banner";
   document.getElementById("b-title").value = b ? b.title : "";
   document.getElementById("b-sub").value = b ? b.sub : "";
-  var type = b ? (b.linkType || "page") : "series";
+  document.getElementById("b-pill").value = b ? (b.pill || "") : "";
+  var type = b ? (b.linkType || "course") : "course";
   document.getElementById("b-link-type").value = type;
   fillLinkOptions(type, b ? b.link : "");
   mask.classList.add("open"); document.getElementById("modal-banner").classList.add("open");
 }
-// 分类标签弹窗
-function openCat(c){
-  editCtx.cat = c || null;
-  document.getElementById("cat-modal-title").textContent = c ? "编辑分类标签" : "新增分类标签";
-  document.getElementById("c-name").value = c ? c.name : "";
-  document.getElementById("c-scope").value = c ? c.scope : "全部在售课程";
-  mask.classList.add("open"); document.getElementById("modal-cat").classList.add("open");
-}
-// 楼层选课弹窗
-function openFloor(f){
-  editCtx.floor = f;
-  document.getElementById("floor-modal-title").textContent = "配置「" + f.name + "」课程";
-  document.getElementById("floor-course-list").innerHTML = COURSE_POOL.map(function(n){
-    var checked = f.courses.indexOf(n)>=0 ? "checked" : "";
+function openCourse(){
+  document.getElementById("course-pool-list").innerHTML = COURSE_POOL.map(function(n){
+    var checked = SELECTED.some(function(c){ return c.title===n; }) ? "checked" : "";
     return '<div class="as-task"><label style="display:flex;align-items:center;gap:8px;cursor:pointer">' +
-      '<input type="checkbox" data-fc="'+esc(n)+'" '+checked+' /> <span style="flex:1">'+esc(n)+'</span></label></div>';
+      '<input type="checkbox" data-cp="'+esc(n)+'" '+checked+' /> <span style="flex:1">'+esc(n)+'</span></label></div>';
   }).join("");
-  mask.classList.add("open"); document.getElementById("modal-floor").classList.add("open");
+  mask.classList.add("open"); document.getElementById("modal-course").classList.add("open");
 }
 
 document.addEventListener("click", function(e){
   var el;
   if ((el = e.target.closest("[data-b-move]"))) { move(BANNERS, el.getAttribute("data-b-move")); return; }
-  if ((el = e.target.closest("[data-c-move]"))) { move(CATS, el.getAttribute("data-c-move")); return; }
+  if ((el = e.target.closest("[data-s-move]"))) { move(SELECTED, el.getAttribute("data-s-move")); return; }
   if ((el = e.target.closest("[data-b-edit]"))) { openBanner(BANNERS.find(function(x){return x.id===el.getAttribute("data-b-edit");})); return; }
-  if ((el = e.target.closest("[data-b-add]"))) { openBanner(null); return; }
-  if ((el = e.target.closest("[data-c-edit]"))) { openCat(CATS.find(function(x){return x.id===el.getAttribute("data-c-edit");})); return; }
-  if ((el = e.target.closest("[data-c-add]"))) { openCat(null); return; }
-  if ((el = e.target.closest("[data-f-config]"))) { openFloor(FLOORS.find(function(x){return x.id===el.getAttribute("data-f-config");})); return; }
   if ((el = e.target.closest("[data-b-toggle]"))) { var b=BANNERS.find(function(x){return x.id===el.getAttribute("data-b-toggle");}); b.on=!b.on; renderAll(); Proto.toast(b.on?"Banner 已展示":"Banner 已隐藏"); return; }
-  if ((el = e.target.closest("[data-c-toggle]"))) { var c=CATS.find(function(x){return x.id===el.getAttribute("data-c-toggle");}); c.on=!c.on; renderAll(); Proto.toast(c.on?"标签已展示":"标签已隐藏"); return; }
-  if ((el = e.target.closest("[data-f-toggle]"))) { var f=FLOORS.find(function(x){return x.id===el.getAttribute("data-f-toggle");}); f.on=!f.on; renderAll(); Proto.toast(f.on?"楼层已展示":"楼层已隐藏"); return; }
+  if ((el = e.target.closest("[data-s-del]"))) {
+    var sid = el.getAttribute("data-s-del");
+    if (confirm("确认从首页移除该课程？")) { SELECTED = SELECTED.filter(function(x){return x.id!==sid;}); renderAll(); Proto.toast("已移除"); }
+    return;
+  }
   if ((el = e.target.closest("[data-b-del]"))) {
     var id = el.getAttribute("data-b-del");
     if (confirm("确认删除该 Banner？")) { BANNERS = BANNERS.filter(function(x){return x.id!==id;}); renderAll(); Proto.toast("已删除"); }
     return;
   }
-  if ((el = e.target.closest("[data-c-del]"))) {
-    var cid = el.getAttribute("data-c-del");
-    if (confirm("确认删除该分类标签？")) { CATS = CATS.filter(function(x){return x.id!==cid;}); renderAll(); Proto.toast("已删除"); }
-    return;
-  }
-});
-document.addEventListener("change", function(e){
-  var t = e.target;
-  if (t.getAttribute && t.getAttribute("data-f-title")) {
-    var f = FLOORS.find(function(x){return x.id===t.getAttribute("data-f-title");});
-    if (f) f.title = t.value;
-  }
 });
 
-document.getElementById("b-link-type").addEventListener("change", function(){
-  fillLinkOptions(this.value, "");
-});
+document.getElementById("b-link-type").addEventListener("change", function(){ fillLinkOptions(this.value, ""); });
+
+document.getElementById("btn-banner-add").onclick = function(){ openBanner(null); };
+document.getElementById("btn-course-add").onclick = openCourse;
 
 document.getElementById("banner-ok").onclick = function(){
   var title = document.getElementById("b-title").value.trim();
   if (!title) { Proto.toast("请填写 Banner 标题"); return; }
-  var typeSel = document.getElementById("b-link-type");
   var linkSel = document.getElementById("b-link");
-  if (!linkSel.value) { Proto.toast("请选择跳转的内容"); return; }
+  if (!linkSel.value) { Proto.toast("请选择跳转目标"); return; }
   var data = {
     title: title,
     sub: document.getElementById("b-sub").value.trim(),
-    linkType: typeSel.value,
+    pill: document.getElementById("b-pill").value.trim(),
+    linkType: document.getElementById("b-link-type").value,
     link: linkSel.value,
     cls: "c2"
   };
@@ -345,25 +299,27 @@ document.getElementById("banner-ok").onclick = function(){
   closeAll(); renderAll();
   Proto.toast("Banner 已保存，跳转至「" + linkLabel(data) + "」（演示）");
 };
-document.getElementById("cat-ok").onclick = function(){
-  var name = document.getElementById("c-name").value.trim();
-  if (!name) { Proto.toast("请填写标签名称"); return; }
-  var data = { name:name, scope:document.getElementById("c-scope").value };
-  if (editCtx.cat) { Object.assign(editCtx.cat, data); }
-  else {
-    if (CATS.length>=6) { Proto.toast("最多 6 个标签"); return; }
-    CATS.push(Object.assign({ id:"T"+Date.now(), on:true }, data));
-  }
-  closeAll(); renderAll(); Proto.toast("标签已保存（演示）");
-};
-document.getElementById("floor-ok").onclick = function(){
+document.getElementById("course-ok").onclick = function(){
   var picked = [];
-  document.querySelectorAll("[data-fc]").forEach(function(cb){ if (cb.checked) picked.push(cb.getAttribute("data-fc")); });
-  if (!picked.length) { Proto.toast("请至少选择 1 个课程"); return; }
-  if (picked.length>6) { Proto.toast("最多选择 6 个课程"); return; }
-  editCtx.floor.courses = picked;
-  closeAll(); renderAll(); Proto.toast("楼层内容已保存（演示）");
+  document.querySelectorAll("[data-cp]").forEach(function(cb){ if (cb.checked) picked.push(cb.getAttribute("data-cp")); });
+  if (picked.length > 6) { Proto.toast("最多选择 6 门课程"); return; }
+  SELECTED = picked.map(function(n, i){
+    var old = SELECTED.filter(function(c){ return c.title===n; })[0];
+    return old || { id:"S"+Date.now()+i, title:n, sub:"待补充副标题", price:"¥0", origin:"" };
+  });
+  closeAll(); renderAll();
+  Proto.toast(picked.length ? "已保存 "+picked.length+" 门课程（演示）" : "已清空精选课程");
 };
+
+/* 计划入口即时预览 */
+document.getElementById("plan-txt").addEventListener("input", function(){
+  document.getElementById("pv-plan-go").textContent = (this.value.trim() || "去测评") + " ›";
+});
+document.getElementById("plan-on").addEventListener("change", function(){
+  document.getElementById("pv-plan-txt").parentNode.style.opacity = this.value === "0" ? ".35" : "1";
+});
+
+document.getElementById("btn-preview").onclick = function(){ window.open("../miniprogram/home.html","_blank"); };
 document.getElementById("btn-save").onclick = function(){ Proto.toast("首页装修已保存，C 端即时生效（演示）"); };
 
 mask.addEventListener("click", closeAll);

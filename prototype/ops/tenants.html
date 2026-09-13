@@ -90,7 +90,9 @@
         </tr>
       </thead>
       <tbody id="tenant-tbody">
-        <tr>
+        <tr data-ob-tenant="星启家庭教育" data-ob-step="3" data-ob-step-note="驳回待补" data-ob-sign="未签约"
+            data-ob-member="MEM-1001XX" data-ob-subject="星启家庭教育（企业会员）" data-ob-contract="—"
+            data-ob-records="2026-09-10 17:05|发起签约|失败|—|页面提示：企业信息审核未通过，暂不可签约;;2026-09-11 09:20|企业信息审核|通过|—|已具备签约条件">
           <td><a href="tenant-detail.html"><b>星启家庭教育</b></a></td>
           <td>星启家庭教育（10001）</td>
           <td>赵老师</td>
@@ -103,11 +105,15 @@
           <td><span class="badge badge-success">正常</span></td>
           <td class="row-actions">
             <a href="tenant-detail.html">查看</a>
+            <a href="#" data-row-act="onboard">资料管理</a>
             <a href="#" data-row-act="edit">编辑</a>
             <a href="#" data-row-act="renew">续费</a>
+            <a class="btn-enter-admin" href="../admin/dashboard.html" target="_blank" rel="noopener">进入商家后台</a>
           </td>
         </tr>
-        <tr>
+        <tr data-ob-tenant="晨光少儿成长" data-ob-step="6" data-ob-step-note="可收款" data-ob-sign="已签约"
+            data-ob-member="MEM-1002AY" data-ob-subject="晨光少儿成长（企业会员）" data-ob-contract="CT2026081200031"
+            data-ob-records="2026-08-12 10:40|发起签约|成功|CT2026081200031|签约成功，提现限制已解除">
           <td><a href="tenant-detail.html"><b>晨光少儿成长</b></a></td>
           <td>晨光少儿成长（10002）</td>
           <td>阮荣均</td>
@@ -120,11 +126,15 @@
           <td><span class="badge badge-success">正常</span></td>
           <td class="row-actions">
             <a href="tenant-detail.html">查看</a>
+            <a href="#" data-row-act="onboard">资料管理</a>
             <a href="#" data-row-act="edit">编辑</a>
             <a href="#" data-row-act="renew">续费</a>
+            <a class="btn-enter-admin" href="../admin/dashboard.html" target="_blank" rel="noopener">进入商家后台</a>
           </td>
         </tr>
-        <tr>
+        <tr data-ob-tenant="慧心教育" data-ob-step="1" data-ob-step-note="未提交资料" data-ob-sign="未签约"
+            data-ob-member="—" data-ob-subject="慧心教育（试用中）" data-ob-contract="—"
+            data-ob-records="—">
           <td><a href="tenant-detail.html"><b>慧心教育</b></a></td>
           <td>慧心教育（10004）</td>
           <td>孙校长</td>
@@ -137,8 +147,10 @@
           <td><span class="badge badge-info">试用中</span></td>
           <td class="row-actions">
             <a href="tenant-detail.html">查看</a>
+            <a href="#" data-row-act="onboard">资料管理</a>
             <a href="#" data-row-act="edit">编辑</a>
             <a href="#" data-row-act="renew">续费</a>
+            <a class="btn-enter-admin" href="../admin/dashboard.html" target="_blank" rel="noopener">进入商家后台</a>
           </td>
         </tr>
         <tr>
@@ -157,7 +169,9 @@
             <a href="#" data-row-act="reject">拒绝</a>
           </td>
         </tr>
-        <tr>
+        <tr data-ob-tenant="青藤家长学堂" data-ob-step="6" data-ob-step-note="可收款" data-ob-sign="已签约"
+            data-ob-member="MEM-1005BZ" data-ob-subject="青藤家长学堂（企业会员）" data-ob-contract="CT2026082800117"
+            data-ob-records="2026-08-28 14:20|发起签约|成功|CT2026082800117|签约成功，提现限制已解除">
           <td><a href="tenant-detail.html"><b>青藤家长学堂</b></a></td>
           <td>青藤家长学堂（10005）</td>
           <td>周老师</td>
@@ -170,8 +184,10 @@
           <td><span class="badge badge-warn">已到期</span></td>
           <td class="row-actions">
             <a href="tenant-detail.html">查看</a>
+            <a href="#" data-row-act="onboard">资料管理</a>
             <a href="#" data-row-act="edit">编辑</a>
             <a href="#" data-row-act="renew">续费</a>
+            <a class="btn-enter-admin" href="../admin/dashboard.html" target="_blank" rel="noopener">进入商家后台</a>
           </td>
         </tr>
         <tr>
@@ -187,8 +203,10 @@
           <td><span class="badge badge-warn">已到期</span></td>
           <td class="row-actions">
             <a href="tenant-detail.html">查看</a>
+            <a href="#" data-row-act="onboard">资料管理</a>
             <a href="#" data-row-act="edit">编辑</a>
             <a href="#" data-row-act="renew">续费</a>
+            <a class="btn-enter-admin" href="../admin/dashboard.html" target="_blank" rel="noopener">进入商家后台</a>
           </td>
         </tr>
         <tr>
@@ -369,6 +387,9 @@
 <style>
 .tag { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 12px; }
 .tag-blue { background: #e8f3ff; color: #165dff; }
+/* 「进入商家后台」：跨端跳转，视觉上与其它行操作区分 */
+.btn-enter-admin { color: var(--color-primary); font-weight: 600; white-space: nowrap; }
+.btn-enter-admin::after { content: " ↗"; font-size: 11px; }
 /* ===== user-admin 风格搜索区 ===== */
 .ua-search-row { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 12px 24px; }
 .ua-field { display: flex; align-items: center; gap: 0; font-size: 13px; }
@@ -394,6 +415,7 @@
 .ua-page:disabled { color: var(--color-text-muted); cursor: not-allowed; }
 .ua-size { padding: 5px 8px; border: 1px solid var(--color-border); border-radius: 6px; font-family: inherit; font-size: 13px; }
 </style>
+
 
 <script src="../assets/js/proto.js"></script>
 <script src="../assets/js/ops-shell.js?v=7"></script>
@@ -447,6 +469,10 @@
         } else if (act === "renew") {
           document.getElementById("rn-name").textContent = name;
           open(document.getElementById("modal-renew"));
+        } else if (act === "onboard") {
+          /* 资料管理：跳转到该租户的资料录入页（通联云商通企业会员资料） */
+          location.href = "tenant-profile.html?id=" + encodeURIComponent(tr.getAttribute("data-ob-tenant") || "");
+          return;
         } else if (act === "disable") {
           document.getElementById("ds-name").textContent = name;
           open(document.getElementById("modal-disable"));

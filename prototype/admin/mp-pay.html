@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>支付结果页 · 商家管理后台</title>
+<link rel="stylesheet" href="../assets/css/proto.css?v=9" />
+<link rel="stylesheet" href="../assets/css/assess.css?v=3" />
+<style>
+  .pay-seg { display: inline-flex; border: 1px solid var(--color-border); border-radius: 8px; overflow: hidden; }
+  .pay-seg button { border: none; background: #fff; padding: 6px 16px; font-size: 13px; color: #4e5969; cursor: pointer; }
+  .pay-seg button.active { background: #165dff; color: #fff; }
+  .pay-phone { width: 280px; border: 1px solid var(--color-border); border-radius: 22px; background: #f7f8fa; padding: 14px 12px 18px; box-shadow: 0 6px 20px rgba(0,0,0,.06); }
+  .pay-phone-bar { height: 18px; display: flex; align-items: center; justify-content: center; font-size: 10px; color: #86909c; margin-bottom: 8px; }
+  .pay-phone-body { background: #fff; border-radius: 14px; padding: 34px 16px; text-align: center; min-height: 240px; }
+  .pay-ok { width: 54px; height: 54px; border-radius: 50%; background: #d1fae5; color: #059669; display: grid; place-items: center; margin: 0 auto; font-size: 24px; }
+  .pay-title { margin-top: 14px; font-size: 18px; font-weight: 600; color: #1d2129; }
+  .pay-desc { font-size: 12px; color: #86909c; margin-top: 8px; line-height: 1.6; }
+  .pay-btn { display: block; width: 100%; box-sizing: border-box; padding: 10px; border-radius: 22px; font-size: 14px; margin-top: 10px; text-align: center; background: #165dff; color: #fff; }
+  .pay-btn.outline { background: #fff; color: #165dff; border: 1px solid #165dff; }
+  .pay-btn.hidden { display: none; }
+</style>
+</head>
+<body class="admin-body" data-module="mp" data-nav="mp-pay" data-title="支付结果页" data-crumb="商家管理后台 / 小程序 / 页面配置 / 支付结果页">
+
+<div id="header-actions">
+  <button class="btn" id="btn-preview">预览 C 端支付结果页</button>
+  <button class="btn btn-primary" id="btn-save">保存配置</button>
+</div>
+
+<div id="page-content" style="display:none">
+  <div class="as-banner">配置 C 端支付结果页的文案与按钮。端上结构与文案为：成功图标 → 主标题「支付成功」→ 副文案（按订单来源分支）→ 主按钮「去学习」、次按钮「返回我的」、直播间按钮「返回直播间」（仅直播订单展示）。此处仅可配置端上真实存在的内容。</div>
+
+  <!-- 主标题 -->
+  <div class="card" style="margin-bottom:14px">
+    <div class="card-hd"><h2>主标题</h2><span class="muted" style="margin-left:10px">对应 C 端支付结果页成功图标下方的标题</span></div>
+    <div class="card-bd">
+      <div class="form-grid" style="max-width:640px">
+        <div class="field"><label>主标题</label>
+          <input class="input" id="pay-title" value="支付成功" maxlength="8" />
+          <div class="muted">最多 8 个字，端上居中展示在成功图标下方</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 副文案 -->
+  <div class="card" style="margin-bottom:14px">
+    <div class="card-hd"><h2>副文案</h2><span class="muted" style="margin-left:10px">对应 C 端支付结果页主标题下方的说明文字，按订单来源分支展示</span></div>
+    <div class="card-bd">
+      <div class="form-grid" style="max-width:640px">
+        <div class="field"><label>课程订单副文案</label>
+          <input class="input" id="desc-course" value="权益已开通 · 资金进入艺博备付金待分账（示意）" maxlength="40" />
+          <div class="muted">来源为课程订单时展示，最多 40 个字</div>
+        </div>
+        <div class="field"><label>直播 / 门票订单副文案</label>
+          <input class="input" id="desc-live" value="直播/课程权益已开通 · 可返回直播间继续观看" maxlength="40" />
+          <div class="muted">来源为直播或门票订单时展示，最多 40 个字</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 按钮配置 -->
+  <div class="card" style="margin-bottom:14px">
+    <div class="card-hd"><h2>按钮配置</h2><span class="muted" style="margin-left:10px">对应 C 端支付结果页的三个按钮，直播间按钮仅直播订单展示</span></div>
+    <div class="card-bd">
+      <div class="form-grid" style="max-width:720px">
+        <div class="field"><label>主按钮文案</label><input class="input" id="btn-main-txt" value="去学习" maxlength="8" /></div>
+        <div class="field"><label>主按钮跳转</label>
+          <select class="input" id="btn-main-link">
+            <option value="learn" selected>学习页 learn.html</option>
+            <option value="mine">我的页 mine.html</option>
+            <option value="live-room">直播间 live-room.html</option>
+          </select>
+        </div>
+        <div class="field"><label>次按钮文案</label><input class="input" id="btn-sub-txt" value="返回我的" maxlength="8" /></div>
+        <div class="field"><label>次按钮跳转</label>
+          <select class="input" id="btn-sub-link">
+            <option value="learn">学习页 learn.html</option>
+            <option value="mine" selected>我的页 mine.html</option>
+            <option value="live-room">直播间 live-room.html</option>
+          </select>
+        </div>
+        <div class="field"><label>直播间按钮文案</label><input class="input" id="btn-live-txt" value="返回直播间" maxlength="8" /></div>
+        <div class="field"><label>直播间按钮是否展示 <span id="live-btn-tag"></span></label>
+          <select class="input" id="btn-live-show">
+            <option value="live" selected>仅直播订单展示</option>
+            <option value="always">始终展示</option>
+            <option value="none">不展示</option>
+          </select>
+          <div class="muted">跳转固定为直播间 live-room.html</div>
+        </div>
+      </div>
+      <div class="muted" style="margin-top:12px">三个按钮均为 C 端真实存在的跳转目标；主按钮默认进入学习页，次按钮默认返回「我的」页。</div>
+    </div>
+  </div>
+
+  <!-- C 端效果预览 -->
+  <div class="card" style="margin-bottom:14px">
+    <div class="card-hd"><h2>C 端效果预览</h2><span class="muted" style="margin-left:10px">切换订单来源，实时查看副文案与按钮的展示效果</span></div>
+    <div class="card-bd">
+      <div class="pay-seg" id="pay-tabs" style="margin-bottom:14px">
+        <button type="button" class="active" data-tab="course">课程订单</button>
+        <button type="button" data-tab="live">直播订单</button>
+      </div>
+      <div class="pay-phone">
+        <div class="pay-phone-bar">9:41 &nbsp;·&nbsp; 支付 &nbsp;·&nbsp; 100%</div>
+        <div class="pay-phone-body">
+          <div class="pay-ok">✓</div>
+          <div class="pay-title" id="pv-title">支付成功</div>
+          <div class="pay-desc" id="pv-desc"></div>
+          <div style="margin-top:26px">
+            <span class="pay-btn" id="pv-btn-main">去学习</span>
+            <span class="pay-btn outline" id="pv-btn-sub">返回我的</span>
+            <span class="pay-btn outline" id="pv-btn-live">返回直播间</span>
+          </div>
+        </div>
+      </div>
+      <div class="muted" style="margin-top:12px" id="pv-jump"></div>
+      <div class="muted" style="margin-top:12px">支付结果页由订单支付后进入，订单数据在 <a href="orders.html">交易 · 订单管理</a> 维护，此处只配置结果页的文案与按钮。</div>
+    </div>
+  </div>
+</div>
+
+<div class="proto-mask" id="mask"></div>
+
+<script src="../assets/js/proto.js"></script>
+<script src="../assets/js/admin-shell.js?v=14"></script>
+<script>
+function esc(s){ return String(s).replace(/[&<>"']/g,function(c){return({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"})[c];}); }
+function stTag(on){ return on ? '<span class="as-tag green">展示中</span>' : '<span class="as-tag gray">已隐藏</span>'; }
+
+/* 跳转目标：只保留 C 端真实存在的落地页 */
+var LINKS = { learn:"学习页 learn.html", mine:"我的页 mine.html", "live-room":"直播间 live-room.html" };
+
+var curTab = "course";
+
+function val(id){ return document.getElementById(id).value; }
+function txt(id){ return document.getElementById(id).value.trim(); }
+
+function renderPreview(){
+  document.getElementById("pv-title").textContent = txt("pay-title") || "支付成功";
+  document.getElementById("pv-desc").textContent = curTab === "course" ? val("desc-course") : val("desc-live");
+
+  document.getElementById("pv-btn-main").textContent = txt("btn-main-txt") || "去学习";
+  document.getElementById("pv-btn-sub").textContent = txt("btn-sub-txt") || "返回我的";
+  document.getElementById("pv-btn-live").textContent = txt("btn-live-txt") || "返回直播间";
+
+  var mode = val("btn-live-show");
+  var showLive = mode === "always" || (mode === "live" && curTab === "live");
+  document.getElementById("pv-btn-live").className = "pay-btn outline" + (showLive ? "" : " hidden");
+  document.getElementById("live-btn-tag").innerHTML = stTag(mode !== "none");
+
+  document.getElementById("pv-jump").innerHTML =
+    "当前预览：" + esc(curTab === "course" ? "课程订单" : "直播订单") +
+    "　主按钮 → " + esc(LINKS[val("btn-main-link")]) +
+    "　次按钮 → " + esc(LINKS[val("btn-sub-link")]) +
+    (showLive ? "　直播间按钮 → " + esc(LINKS["live-room"]) : "　直播间按钮不展示");
+}
+
+document.getElementById("pay-tabs").addEventListener("click", function(e){
+  var b = e.target.closest("[data-tab]");
+  if (!b) return;
+  curTab = b.getAttribute("data-tab");
+  this.querySelectorAll("button").forEach(function(x){ x.classList.toggle("active", x === b); });
+  renderPreview();
+});
+
+["pay-title","desc-course","desc-live","btn-main-txt","btn-main-link","btn-sub-txt","btn-sub-link","btn-live-txt","btn-live-show"]
+  .forEach(function(id){
+    var el = document.getElementById(id);
+    el.addEventListener("input", renderPreview);
+    el.addEventListener("change", renderPreview);
+  });
+
+document.getElementById("btn-preview").onclick = function(){ window.open("../miniprogram/pay-result.html","_blank"); };
+document.getElementById("btn-save").onclick = function(){
+  if (!txt("pay-title")) { Proto.toast("请填写主标题"); return; }
+  if (!txt("desc-course")) { Proto.toast("请填写课程订单副文案"); return; }
+  if (!txt("desc-live")) { Proto.toast("请填写直播 / 门票订单副文案"); return; }
+  if (!txt("btn-main-txt")) { Proto.toast("请填写主按钮文案"); return; }
+  if (!txt("btn-sub-txt")) { Proto.toast("请填写次按钮文案"); return; }
+  if (val("btn-live-show") !== "none" && !txt("btn-live-txt")) { Proto.toast("请填写直播间按钮文案"); return; }
+  Proto.toast("支付结果页已保存，C 端即时生效（演示）");
+};
+
+document.getElementById("mask").addEventListener("click", function(){ this.classList.remove("open"); });
+renderPreview();
+</script>
+</body>
+</html>

@@ -8,8 +8,8 @@
 </head>
 <body class="admin-body" data-module="trade" data-nav="recon" data-title="对账管理" data-crumb="交易 / 资产管理 / 对账管理">
 <div id="header-actions">
+  <span class="muted" style="font-size:12px;margin-right:8px">对账由平台在运营后台统一发起</span>
   <button class="btn" id="btn-export">导出对账单</button>
-  <button class="btn btn-primary" id="btn-run">发起对账</button>
 </div>
 <div id="page-content" style="display:none">
 
@@ -263,7 +263,6 @@
     });
   });
 
-  document.getElementById("btn-run").addEventListener("click", function () { Proto.toast("已发起本期对账（原型）"); });
   document.getElementById("btn-export").addEventListener("click", function () { Proto.toast("已导出对账单（原型）"); });
   document.getElementById("btn-query").addEventListener("click", function () { Proto.toast("已筛选（原型）"); });
 })();

@@ -10,12 +10,12 @@
 <body class="admin-body" data-module="content" data-nav="assess-projects" data-title="关联规则" data-crumb="运营后台 / 内容 / 测评管理 / 关联规则">
 
 <div id="header-actions">
-  <a class="btn" id="btn-back" href="assess-projects.html">返回测试项目管理</a>
+  <a class="btn" id="btn-back" href="assess-projects.html">返回测评项目管理</a>
   <button class="btn btn-primary" id="btn-new">+ 新建关联规则</button>
 </div>
 
 <div id="page-content" style="display:none">
-  <a class="cm-back" id="link-back" href="assess-projects.html" style="display:inline-flex;color:#165dff;font-size:13px;margin-bottom:12px;text-decoration:none">← 返回测试项目管理</a>
+  <a class="cm-back" id="link-back" href="assess-projects.html" style="display:inline-flex;color:#165dff;font-size:13px;margin-bottom:12px;text-decoration:none">← 返回测评项目管理</a>
 
   <div style="margin-bottom:14px">
     <h1 style="margin:0 0 4px;font-size:22px"><span id="owner-name">心理健康测评</span> · 关联规则</h1>
@@ -147,9 +147,9 @@ document.body.setAttribute("data-crumb", from === "series"
   : "运营后台 / 内容 / 测评管理 / 关联规则");
 
 var backHref = from === "series" ? "assess-series.html" : "assess-projects.html";
-var backLabel = from === "series" ? "返回系列测评管理" : "返回测试项目管理";
+var backLabel = from === "series" ? "返回系列测评管理" : "返回测评项目管理";
 document.getElementById("btn-back").href = backHref;
-document.getElementById("btn-back").textContent = "返回" + (from === "series" ? "系列测评管理" : "测试项目管理");
+document.getElementById("btn-back").textContent = "返回" + (from === "series" ? "系列测评管理" : "测评项目管理");
 document.getElementById("link-back").href = backHref;
 document.getElementById("link-back").textContent = "← " + backLabel;
 

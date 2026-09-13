@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>测评与计划页 · 商家管理后台</title>
+<link rel="stylesheet" href="../assets/css/proto.css?v=9" />
+<link rel="stylesheet" href="../assets/css/assess.css?v=3" />
+<style>
+  /* C 端测评与计划页效果预览（仅本页使用） */
+  .ma-plan-pv { max-width: 460px; border: 1px solid var(--color-border); border-radius: 12px; background: #fff; padding: 14px; }
+  .ma-plan-hd { display: flex; align-items: center; gap: 10px; }
+  .ma-plan-badge { width: 34px; height: 34px; border-radius: 10px; background: linear-gradient(135deg, #ff8a3d, #f04438); color: #fff; display: grid; place-items: center; font-size: 14px; font-weight: 800; flex-shrink: 0; }
+  .ma-plan-name { font-size: 14px; font-weight: 800; color: #1d2129; }
+  .ma-plan-desc { font-size: 11.5px; color: #86909c; margin-top: 3px; }
+  .ma-progress { margin-top: 12px; }
+  .ma-progress-top { display: flex; justify-content: space-between; font-size: 11.5px; color: #86909c; min-height: 16px; }
+  .ma-progress-top b { color: #165dff; }
+  .ma-track { height: 6px; border-radius: 6px; background: #f2f3f5; overflow: hidden; margin-top: 6px; }
+  .ma-track i { display: block; height: 100%; background: #165dff; }
+  .ma-steps { margin-top: 12px; }
+  .ma-step { display: flex; align-items: center; gap: 8px; padding: 8px 0; border-bottom: 1px solid #f2f3f5; }
+  .ma-step:last-child { border-bottom: 0; }
+  .ma-step-no { width: 20px; height: 20px; border-radius: 50%; background: #f2f3f5; color: #86909c; display: grid; place-items: center; font-size: 11px; flex-shrink: 0; }
+  .ma-step.done .ma-step-no { background: #e8ffea; color: #389e0d; }
+  .ma-step.cur .ma-step-no { background: #165dff; color: #fff; }
+  .ma-step-bd { flex: 1; min-width: 0; }
+  .ma-step-name { font-size: 12.5px; font-weight: 600; color: #1d2129; }
+  .ma-step-meta { font-size: 10.5px; color: #86909c; margin-top: 2px; }
+  .ma-step-state { font-size: 11px; color: #86909c; }
+  .ma-step.done .ma-step-state { color: #389e0d; }
+  .ma-step.cur .ma-step-state { color: #165dff; font-weight: 600; }
+  .ma-btn { display: block; text-align: center; border-radius: 20px; padding: 8px; font-size: 13px; background: #165dff; color: #fff; margin-top: 14px; }
+  .ma-btn.outline { background: #fff; color: #165dff; border: 1px solid #165dff; margin-top: 8px; }
+  .ma-empty-pv { max-width: 460px; border: 1px solid var(--color-border); border-radius: 12px; background: #fff; padding: 26px 14px; text-align: center; }
+  .ma-sec-head { display: flex; align-items: center; justify-content: space-between; max-width: 460px; padding-bottom: 8px; border-bottom: 1px solid #f2f3f5; }
+  .ma-sec-title { font-size: 15px; font-weight: 800; color: #1d2129; }
+  .ma-sec-more { font-size: 12px; color: #165dff; }
+  .ma-item { display: flex; gap: 10px; align-items: center; max-width: 460px; border: 1px solid var(--color-border); border-radius: 10px; padding: 10px; margin-top: 10px; background: #fff; }
+  .ma-item-img { width: 48px; height: 48px; border-radius: 8px; color: #fff; font-size: 11px; display: grid; place-items: center; flex-shrink: 0; }
+  .ma-item-title { font-size: 13px; font-weight: 600; color: #1d2129; }
+  .ma-item-meta { font-size: 11px; color: #86909c; margin-top: 4px; }
+  .ma-item-tag { display: inline-block; font-size: 10px; color: #165dff; background: #e6f4ff; border-radius: 8px; padding: 1px 6px; margin-top: 5px; }
+</style>
+</head>
+<body class="admin-body" data-module="mp" data-nav="mp-assess" data-title="测评与计划页" data-crumb="商家管理后台 / 小程序 / 页面配置 / 测评与计划页">
+
+<div id="header-actions">
+  <button class="btn" id="btn-preview">预览 C 端测评与计划页</button>
+  <button class="btn btn-primary" id="btn-save">保存配置</button>
+</div>
+
+<div id="page-content" style="display:none">
+  <div class="as-banner">按 C 端测评与计划页的真实结构配置展示。C 端固定为两段：<b>定制化计划卡</b>（徽标、计划名、计划描述、完成进度、截止时间、步骤列表、按钮）→ <b>自助测评</b>（区块标题、右上角「全部」入口、测评项卡）。学员没有计划时展示<b>无计划兜底</b>。此处只配置端上真实存在的展示项，配置后 C 端即时生效。</div>
+
+  <!-- 计划卡展示元素 -->
+  <div class="card" style="margin-bottom:14px">
+    <div class="card-hd"><h2>计划卡展示元素</h2><span class="muted" style="margin-left:10px">对应 C 端定制化计划卡的各个展示项，逐个开关</span></div>
+    <div class="card-bd">
+      <div class="form-grid" style="max-width:860px" id="plan-field-grid"></div>
+      <div class="muted" style="margin-top:12px">计划卡底部两个按钮的文案固定（「继续测评 · 当前步骤名」「查看我的计划」），按钮文案随计划进度自动变化，不在此处配置。</div>
+      <div style="margin-top:14px">
+        <div class="muted" style="margin-bottom:8px">C 端效果预览（计划内容为演示数据）</div>
+        <div class="ma-plan-pv" id="pv-plan"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 无计划兜底 -->
+  <div class="card" style="margin-bottom:14px">
+    <div class="card-hd"><h2>无计划兜底</h2><span class="muted" style="margin-left:10px">学员没有任何定制化计划时，C 端展示的内容</span></div>
+    <div class="card-bd">
+      <div class="form-grid" style="max-width:640px">
+        <div class="field"><label>标题</label>
+          <input class="input" id="ep-title" value="暂无定制化计划" maxlength="16" />
+          <div class="muted">最多 16 个字，端上居中加粗展示</div>
+        </div>
+        <div class="field"><label>说明</label>
+          <input class="input" id="ep-desc" value="老师为你定制计划后，会在这里出现并可随时作答" maxlength="40" />
+          <div class="muted">最多 40 个字，展示在标题下方</div>
+        </div>
+        <div class="field"><label>按钮文案</label>
+          <input class="input" id="ep-btn" value="去看看课程" maxlength="8" />
+          <div class="muted">点击后跳转 C 端首页 home.html</div>
+        </div>
+      </div>
+      <div style="margin-top:14px">
+        <div class="muted" style="margin-bottom:8px">C 端效果预览</div>
+        <div class="ma-empty-pv">
+          <div style="font-size:15px;font-weight:800" id="pv-ep-title">暂无定制化计划</div>
+          <div style="font-size:12px;color:#86909c;margin-top:8px" id="pv-ep-desc">老师为你定制计划后，会在这里出现并可随时作答</div>
+          <span class="ma-btn outline" style="max-width:200px;margin:16px auto 0" id="pv-ep-btn">去看看课程</span>
+        </div>
+      </div>
+      <div class="muted" style="margin-top:12px">该状态在学员没有定制化计划时展示，与上方计划卡互斥：有计划展示计划卡，无计划展示本兜底内容。</div>
+    </div>
+  </div>
+
+  <!-- 自助测评区块 -->
+  <div class="card" style="margin-bottom:14px">
+    <div class="card-hd"><h2>自助测评区块</h2><span class="muted" style="margin-left:10px">对应 C 端测评与计划页下方的「自助测评」区，最多展示 6 个测评项目</span></div>
+    <div class="card-bd">
+      <div class="form-grid" style="max-width:640px;margin-bottom:12px">
+        <div class="field"><label>区块标题</label><input class="input" id="sec-title" value="自助测评" maxlength="10" /></div>
+        <div class="field"><label>右上角「全部」入口</label>
+          <select class="input" id="sec-more">
+            <option value="list" selected>跳转测评列表</option>
+            <option value="none">不展示</option>
+          </select>
+          <div class="muted">端上展示为「全部 ›」，点击进入测评列表</div>
+        </div>
+      </div>
+      <table class="as-table">
+        <thead>
+          <tr>
+            <th style="width:60px">排序</th>
+            <th>测评项目</th>
+            <th style="width:180px">题量与时长</th>
+            <th style="width:100px">状态</th>
+            <th style="width:190px">操作</th>
+          </tr>
+        </thead>
+        <tbody id="item-tbody"></tbody>
+      </table>
+      <div style="margin-top:10px"><button class="btn btn-sm" id="btn-item-add">+ 添加测评项目</button></div>
+      <div class="muted" style="margin-top:12px">按此处顺序在 C 端自上而下展示；端上只展示「可自助作答」的测评项目，题量与时长取自测评项目本身，此处不可改。</div>
+      <div style="margin-top:16px">
+        <div class="muted" style="margin-bottom:8px">C 端效果预览</div>
+        <div class="ma-sec-head">
+          <span class="ma-sec-title" id="pv-sec-title">自助测评</span>
+          <span class="ma-sec-more" id="pv-sec-more">全部 ›</span>
+        </div>
+        <div id="pv-items"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 入口联动说明 -->
+  <div class="card" style="margin-bottom:14px">
+    <div class="card-hd"><h2>入口联动说明</h2><span class="muted" style="margin-left:10px">本页只配置端上展示，入口与内容来源在其它模块</span></div>
+    <div class="card-bd">
+      <div class="muted">首页细长条入口在 <a href="mp-home.html">首页装修</a> 配置，我的页菜单入口在 <a href="mp-mine.html">我的页装修</a> 配置。</div>
+      <div class="muted" style="margin-top:8px">计划本身（名称、步骤、截止时间）由 <a href="assess-plans.html">计划管理 · 定制化计划</a> 下发，测评题目由 <a href="assess-projects.html">测评管理</a> 维护，此处只配置端上展示。</div>
+    </div>
+  </div>
+</div>
+
+<!-- 添加测评项目弹窗 -->
+<div class="proto-modal" id="modal-item" style="width:560px">
+  <div class="proto-modal-hd"><h3 style="margin:0;font-size:16px">添加测评项目</h3><button class="ctrl-icon-btn" data-close>×</button></div>
+  <div class="proto-modal-bd">
+    <div class="muted" style="margin-bottom:10px">勾选要展示在「自助测评」区的测评项目，最多 6 个；保存后按勾选顺序在 C 端依次展示。</div>
+    <div id="item-pool-list"></div>
+  </div>
+  <div class="proto-modal-ft" style="justify-content:flex-end;gap:8px">
+    <button class="btn" data-close>取消</button>
+    <button class="btn btn-primary" id="item-ok">确定</button>
+  </div>
+</div>
+
+<div class="proto-mask" id="mask"></div>
+
+<script src="../assets/js/proto.js"></script>
+<script src="../assets/js/admin-shell.js?v=14"></script>
+<script>
+function esc(s){ return String(s).replace(/[&<>"']/g,function(c){return({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"})[c];}); }
+function stTag(on){ return on ? '<span class="as-tag green">展示中</span>' : '<span class="as-tag gray">已隐藏</span>'; }
+
+/* 计划卡展示元素 */
+var PLAN_FIELDS = [
+  { id:"bar",      label:"进度条",         desc:"计划卡中部的进度条", on:true },
+  { id:"deadline", label:"截止时间",       desc:"如「9 月 20 日前完成」", on:true },
+  { id:"stepState",label:"步骤状态标签",   desc:"每一步右侧「已完成 / 进行中 / 待开始」", on:true },
+  { id:"pct",      label:"完成进度百分比", desc:"进度条上方的「50%」", on:true }
+];
+
+/* 演示计划：结构与 C 端一致，内容由「计划管理 · 定制化计划」下发 */
+var DEMO_PLAN = {
+  name:"亲子沟通 21 天训练营计划",
+  desc:"由老师为你定制的测评 + 学习计划",
+  deadline:"9 月 20 日前完成",
+  pct:50,
+  steps:[
+    { name:"亲子沟通能力测评", meta:"12 题 · 约 6 分钟", st:"done" },
+    { name:"家庭教育风格测评", meta:"8 题 · 约 5 分钟", st:"done" },
+    { name:"情绪调节问卷",     meta:"5 题 · 约 3 分钟", st:"cur"  },
+    { name:"学习效果复盘测评", meta:"10 题 · 约 5 分钟", st:"todo" }
+  ]
+};
+var STEP_TXT = { done:"已完成", cur:"进行中", todo:"待开始" };
+
+/* 可自助作答的测评项目池：与「测评管理」保持一致 */
+var POOL = [
+  { name:"亲子沟通能力测评", meta:"12 题 · 约 6 分钟" },
+  { name:"家庭教育风格测评", meta:"8 题 · 约 5 分钟" },
+  { name:"情绪调节问卷",     meta:"5 题 · 约 3 分钟" },
+  { name:"学习能力诊断",     meta:"12 题 · 约 6 分钟" },
+  { name:"心理健康测评",     meta:"1 题 · 约 2 分钟" },
+  { name:"学习效果复盘测评", meta:"10 题 · 约 5 分钟" }
+];
+var MAX_ITEMS = 6;
+var ITEM_BG = ["linear-gradient(160deg,#ffd9cf,#ff9f8a)","linear-gradient(160deg,#ffe7c2,#ffc46b)","linear-gradient(160deg,#d7e9ff,#8fb8ff)","linear-gradient(160deg,#d9f2e3,#7fd3a8)","linear-gradient(160deg,#e6dcff,#b39bf0)","linear-gradient(160deg,#ffe0ee,#ff9dc4)"];
+
+var ITEMS = [
+  { id:"A1", name:"亲子沟通能力测评", meta:"12 题 · 约 6 分钟", on:true },
+  { id:"A2", name:"家庭教育风格测评", meta:"8 题 · 约 5 分钟", on:true }
+];
+
+var mask = document.getElementById("mask");
+function closeAll(){ mask.classList.remove("open"); document.getElementById("modal-item").classList.remove("open"); }
+function val(id){ return document.getElementById(id).value; }
+function txt(id){ return document.getElementById(id).value.trim(); }
+function planFieldOn(id){ var f = PLAN_FIELDS.filter(function(x){ return x.id === id; })[0]; return f ? f.on : false; }
+function poolOf(name){ return POOL.filter(function(p){ return p.name === name; })[0] || { meta:"题量与时长待补充" }; }
+
+/* ===== 渲染配置区 ===== */
+function renderPlanFields(){
+  document.getElementById("plan-field-grid").innerHTML = PLAN_FIELDS.map(function(f){
+    return '<div class="field"><label>'+esc(f.label)+'</label>' +
+      '<select class="input" data-pf-on="'+f.id+'">' +
+        '<option value="1"'+(f.on?" selected":"")+'>展示</option>' +
+        '<option value="0"'+(f.on?"":" selected")+'>隐藏</option>' +
+      '</select>' +
+      '<div class="muted">'+esc(f.desc)+'</div></div>';
+  }).join("");
+}
+
+function renderItems(){
+  document.getElementById("item-tbody").innerHTML = ITEMS.length ? ITEMS.map(function(it, i){
+    return '<tr>' +
+      '<td style="text-align:center">'+(i+1)+'</td>' +
+      '<td><div class="as-name">'+esc(it.name)+'</div><div class="as-desc">可自助作答 · C 端第 '+(i+1)+' 个测评项</div></td>' +
+      '<td style="font-size:12px">'+esc(it.meta)+'</td>' +
+      '<td>'+stTag(it.on)+'</td>' +
+      '<td class="row-actions">' +
+        (i === 0 ? '<span class="muted">—</span>' : '<a href="javascript:;" data-i-up="'+it.id+'">上移</a>') +
+        '<a href="javascript:;" data-i-toggle="'+it.id+'">'+(it.on ? "隐藏" : "展示")+'</a>' +
+        '<a href="javascript:;" class="row-more" data-i-del="'+it.id+'">移除</a>' +
+      '</td></tr>';
+  }).join("") : '<tr><td colspan="5" style="text-align:center;color:#bfbfbf;padding:20px 0">还没有测评项目，点下方「添加测评项目」选择</td></tr>';
+}
+
+/* ===== 渲染 C 端效果预览 ===== */
+function renderPlanPv(){
+  var top = "", track = "";
+  if (planFieldOn("pct") || planFieldOn("deadline")) {
+    top = '<div class="ma-progress-top">' +
+      '<span>' + (planFieldOn("pct") ? '完成进度 <b>'+DEMO_PLAN.pct+'%</b>' : '') + '</span>' +
+      '<span>' + (planFieldOn("deadline") ? esc(DEMO_PLAN.deadline) : '') + '</span>' +
+    '</div>';
+  }
+  if (planFieldOn("bar")) track = '<div class="ma-track"><i style="width:'+DEMO_PLAN.pct+'%"></i></div>';
+
+  var steps = DEMO_PLAN.steps.map(function(s, i){
+    var no = s.st === "done" ? "✓" : (i + 1);
+    return '<div class="ma-step '+s.st+'">' +
+      '<span class="ma-step-no">'+no+'</span>' +
+      '<div class="ma-step-bd"><div class="ma-step-name">'+esc(s.name)+'</div>' +
+      (s.meta ? '<div class="ma-step-meta">'+esc(s.meta)+'</div>' : '') + '</div>' +
+      (planFieldOn("stepState") ? '<span class="ma-step-state">'+STEP_TXT[s.st]+'</span>' : '') +
+    '</div>';
+  }).join("");
+
+  var cur = DEMO_PLAN.steps.filter(function(s){ return s.st === "cur"; })[0];
+  document.getElementById("pv-plan").innerHTML =
+    '<div class="ma-plan-hd"><div class="ma-plan-badge">测</div>' +
+      '<div style="flex:1;min-width:0"><div class="ma-plan-name">'+esc(DEMO_PLAN.name)+'</div>' +
+      '<div class="ma-plan-desc">'+esc(DEMO_PLAN.desc)+'</div></div></div>' +
+    ((top || track) ? '<div class="ma-progress">'+top+track+'</div>' : '') +
+    '<div class="ma-steps">'+steps+'</div>' +
+    '<span class="ma-btn">继续测评 · '+esc(cur ? cur.name : "查看结果")+'</span>' +
+    '<span class="ma-btn outline">查看我的计划</span>';
+}
+
+function renderEmptyPv(){
+  document.getElementById("pv-ep-title").textContent = txt("ep-title") || "暂无定制化计划";
+  document.getElementById("pv-ep-desc").textContent = txt("ep-desc") || "老师为你定制计划后，会在这里出现并可随时作答";
+  document.getElementById("pv-ep-btn").textContent = txt("ep-btn") || "去看看课程";
+}
+
+function renderSectionPv(){
+  document.getElementById("pv-sec-title").textContent = txt("sec-title") || "自助测评";
+  var moreOn = val("sec-more") === "list";
+  document.getElementById("pv-sec-more").style.visibility = moreOn ? "visible" : "hidden";
+  var list = ITEMS.filter(function(x){ return x.on; });
+  document.getElementById("pv-items").innerHTML = list.length ? list.map(function(it, i){
+    return '<div class="ma-item">' +
+      '<div class="ma-item-img" style="background:'+ITEM_BG[i % ITEM_BG.length]+'">测评</div>' +
+      '<div style="flex:1;min-width:0"><div class="ma-item-title">'+esc(it.name)+'</div>' +
+      '<div class="ma-item-meta">'+esc(it.meta)+'</div>' +
+      '<span class="ma-item-tag">可自助作答</span></div>' +
+    '</div>';
+  }).join("") : '<div class="muted" style="margin-top:10px">自助测评区没有可展示的测评项目，C 端该区块不展示。</div>';
+}
+
+function renderAll(){ renderPlanFields(); renderItems(); renderPlanPv(); renderEmptyPv(); renderSectionPv(); }
+
+/* ===== 交互 ===== */
+function openItem(){
+  document.getElementById("item-pool-list").innerHTML = POOL.map(function(p){
+    var checked = ITEMS.some(function(x){ return x.name === p.name; }) ? "checked" : "";
+    return '<div class="as-task"><label style="display:flex;align-items:center;gap:8px;cursor:pointer">' +
+      '<input type="checkbox" data-ip="'+esc(p.name)+'" '+checked+' />' +
+      '<span style="flex:1">'+esc(p.name)+'</span>' +
+      '<span class="muted">'+esc(p.meta)+'</span></label></div>';
+  }).join("");
+  mask.classList.add("open"); document.getElementById("modal-item").classList.add("open");
+}
+
+function moveItem(id){
+  var i = ITEMS.findIndex(function(x){ return x.id === id; });
+  if (i <= 0) return;
+  var t = ITEMS[i-1]; ITEMS[i-1] = ITEMS[i]; ITEMS[i] = t;
+  renderItems(); renderSectionPv();
+}
+
+document.addEventListener("change", function(e){
+  var el;
+  if ((el = e.target.closest("[data-pf-on]"))) {
+    var f = PLAN_FIELDS.filter(function(x){ return x.id === el.getAttribute("data-pf-on"); })[0];
+    f.on = el.value === "1"; renderPlanPv();
+    Proto.toast(f.on ? "已展示「"+f.label+"」" : "已隐藏「"+f.label+"」");
+    return;
+  }
+  if (e.target.id === "sec-more") { renderSectionPv(); return; }
+});
+
+document.addEventListener("input", function(e){
+  if (e.target.id === "ep-title" || e.target.id === "ep-desc" || e.target.id === "ep-btn") { renderEmptyPv(); return; }
+  if (e.target.id === "sec-title") { renderSectionPv(); return; }
+});
+
+document.addEventListener("click", function(e){
+  var el;
+  if ((el = e.target.closest("[data-i-up]"))) { moveItem(el.getAttribute("data-i-up")); return; }
+  if ((el = e.target.closest("[data-i-toggle]"))) {
+    var id = el.getAttribute("data-i-toggle");
+    var it = ITEMS.filter(function(x){ return x.id === id; })[0];
+    it.on = !it.on; renderItems(); renderSectionPv();
+    Proto.toast(it.on ? "测评项目已展示" : "测评项目已隐藏");
+    return;
+  }
+  if ((el = e.target.closest("[data-i-del]"))) {
+    var did = el.getAttribute("data-i-del");
+    var d = ITEMS.filter(function(x){ return x.id === did; })[0];
+    if (confirm("确认移除《"+d.name+"》？移除后 C 端「自助测评」区不再展示该项目。")) {
+      ITEMS = ITEMS.filter(function(x){ return x.id !== did; });
+      renderItems(); renderSectionPv();
+      Proto.toast("测评项目已移除（演示）");
+    }
+    return;
+  }
+});
+
+document.getElementById("btn-item-add").onclick = function(){
+  if (ITEMS.length >= MAX_ITEMS) { Proto.toast("最多只能展示 "+MAX_ITEMS+" 个测评项目"); return; }
+  openItem();
+};
+
+document.getElementById("item-ok").onclick = function(){
+  var picked = [];
+  document.querySelectorAll("[data-ip]").forEach(function(cb){ if (cb.checked) picked.push(cb.getAttribute("data-ip")); });
+  if (picked.length > MAX_ITEMS) { Proto.toast("最多选择 "+MAX_ITEMS+" 个测评项目"); return; }
+  ITEMS = picked.map(function(n, i){
+    var old = ITEMS.filter(function(x){ return x.name === n; })[0];
+    return old || { id:"A"+Date.now()+i, name:n, meta:poolOf(n).meta, on:true };
+  });
+  closeAll(); renderItems(); renderSectionPv();
+  Proto.toast(picked.length ? "已保存 "+picked.length+" 个测评项目（演示）" : "已清空自助测评区的测评项目");
+};
+
+document.getElementById("btn-preview").onclick = function(){ window.open("../miniprogram/assess.html","_blank"); };
+document.getElementById("btn-save").onclick = function(){
+  if (!txt("ep-title")) { Proto.toast("请填写无计划兜底的标题"); return; }
+  if (!txt("ep-desc")) { Proto.toast("请填写无计划兜底的说明"); return; }
+  if (!txt("ep-btn")) { Proto.toast("请填写无计划兜底的按钮文案"); return; }
+  if (!txt("sec-title")) { Proto.toast("请填写自助测评的区块标题"); return; }
+  Proto.toast("测评与计划页配置已保存，C 端即时生效（演示）");
+};
+
+mask.addEventListener("click", closeAll);
+document.querySelectorAll("[data-close]").forEach(function(b){ b.addEventListener("click", closeAll); });
+renderAll();
+</script>
+</body>
+</html>

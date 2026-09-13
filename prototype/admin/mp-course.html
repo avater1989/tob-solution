@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>课程与学习页 · 商家管理后台</title>
+<link rel="stylesheet" href="../assets/css/proto.css?v=9" />
+<link rel="stylesheet" href="../assets/css/assess.css?v=3" />
+<style>
+  .cv-panel { border: 1px solid var(--color-border); border-radius: 10px; background: #fff; overflow: hidden; }
+  .cv-cover { height: 56px; border-radius: 8px; margin: 10px 10px 0; background: linear-gradient(135deg, #99f6e4, #0f766e); color: #fff; font-size: 12px; font-weight: 600; display: flex; align-items: center; justify-content: center; text-align: center; padding: 0 10px; }
+  .cv-dir-title { padding: 10px 12px 4px; font-size: 13px; font-weight: 600; }
+  .cv-dir-row { padding: 8px 12px; border-bottom: 1px solid #f3f4f6; font-size: 13px; }
+  .cv-dir-row:last-child { border-bottom: none; }
+  .cv-dir-row.locked { color: #999; }
+  .cv-dir-row.doing { color: #0f766e; font-weight: 600; }
+  .cv-dir-row .as-tag { margin-left: 4px; }
+  .cv-btn { display: block; text-align: center; padding: 9px; border-radius: 20px; background: #165dff; color: #fff; font-size: 13px; margin-top: 8px; }
+  .cv-btn.outline { background: #fff; color: #165dff; border: 1px solid #165dff; }
+  .cv-btn.hidden { display: none; }
+  .cv-buybar { margin: 0 12px 14px; padding: 10px; border-radius: 20px; background: #165dff; color: #fff; text-align: center; font-size: 13px; }
+</style>
+</head>
+<body class="admin-body" data-module="mp" data-nav="mp-course" data-title="课程与学习页" data-crumb="商家管理后台 / 小程序 / 页面配置 / 课程与学习页">
+
+<div id="header-actions">
+  <button class="btn" id="btn-pv-course">预览课程详情页</button>
+  <button class="btn" id="btn-pv-learn">预览学习页</button>
+  <button class="btn btn-primary" id="btn-save">保存</button>
+</div>
+
+<div id="page-content" style="display:none">
+  <div class="as-banner">按 C 端真实结构配置「课程详情页」与「学习页」。课程详情页为：<b>试看封面</b> → <b>课程标题 / 节数与学习人数 / 价格</b> → <b>目录（试看、未解锁、共 8 节）</b> → <b>底部立即购买</b>；学习页为：<b>播放器（当前节次）</b> → <b>目录（已完成 / 学习中 / 未开始）</b> → <b>标记本节完成、返回我的</b>。此处只配置端上真实存在的展示项。</div>
+
+  <!-- 试看策略 -->
+  <div class="card" style="margin-bottom:14px">
+    <div class="card-hd"><h2>试看策略</h2><span class="muted" style="margin-left:10px">对应 C 端课程详情页顶部试看封面与目录区，按课程类型分别配置</span></div>
+    <div class="card-bd">
+      <table class="as-table">
+        <thead>
+          <tr>
+            <th>课程类型</th>
+            <th style="width:200px">试看方式</th>
+            <th style="width:130px">试看节数</th>
+            <th style="width:150px">购买引导</th>
+            <th style="width:110px">状态</th>
+            <th style="width:110px">操作</th>
+          </tr>
+        </thead>
+        <tbody id="tp-tbody"></tbody>
+      </table>
+      <div class="muted" style="margin-top:10px">试看节数仅在「前 N 节免费试看」时生效，范围 1–8 节；「每节前 3 分钟试看」由播放器在试看片段结束时拦截。</div>
+      <div class="muted" style="margin-top:4px">直播为预约制：预告页始终公开可见，「不提供试看」表示直播内容不开放试看片段，直播预约引导在 <a href="mp-live.html">直播页</a> 配置。</div>
+    </div>
+  </div>
+
+  <!-- 试看封面与标记 -->
+  <div class="card" style="margin-bottom:14px">
+    <div class="card-hd"><h2>试看封面与标记</h2><span class="muted" style="margin-left:10px">对应 C 端课程详情页顶部试看封面上的文字与目录里的试看 / 未解锁标记</span></div>
+    <div class="card-bd">
+      <div class="form-grid" style="max-width:640px">
+        <div class="field"><label>试看封面提示文案 *</label>
+          <input class="input" id="cv-cover-txt" value="试看封面 · 第 1 节可试看" maxlength="24" />
+          <div class="muted">展示在课程详情页顶部封面图正中</div>
+        </div>
+        <div class="field"><label>目录试看标签文案 *</label>
+          <input class="input" id="cv-trial-txt" value="试看" maxlength="6" />
+          <div class="muted">展示在可试看节次标题后，如「1. 为什么孩子不听你说话 试看」</div>
+        </div>
+        <div class="field"><label>未解锁节次标记</label>
+          <select class="input" id="cv-lock">
+            <option value="lock" selected>锁图标 🔒</option>
+            <option value="text">「未解锁」文字</option>
+            <option value="none">不标记</option>
+          </select>
+          <div class="muted">展示在未购买时不可看的节次标题后</div>
+        </div>
+      </div>
+      <div style="margin-top:14px">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+          <span class="muted">C 端效果预览</span>
+          <button class="btn btn-sm" id="btn-pv-trial">预览配置效果</button>
+        </div>
+        <div class="cv-panel" style="max-width:420px">
+          <div class="cv-cover" id="pv-cover"></div>
+          <div class="cv-dir-title">目录</div>
+          <div style="padding-bottom:8px" id="pv-dir"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 课程信息展示 -->
+  <div class="card" style="margin-bottom:14px">
+    <div class="card-hd"><h2>课程信息展示</h2><span class="muted" style="margin-left:10px">对应 C 端课程详情页标题区与底部固定栏，控制各展示项的显隐</span></div>
+    <div class="card-bd">
+      <table class="as-table">
+        <thead>
+          <tr><th>展示项</th><th style="width:260px">端上实际内容</th><th style="width:160px">是否展示</th><th style="width:110px">状态</th></tr>
+        </thead>
+        <tbody id="ci-tbody"></tbody>
+      </table>
+      <div class="muted" style="margin-top:12px">支付成功后进入的支付结果页在 <a href="mp-pay.html">支付结果页</a> 配置；购买按钮跳转的订单展示在 <a href="mp-order.html">订单页</a> 配置。</div>
+    </div>
+  </div>
+
+  <!-- 学习页配置 -->
+  <div class="card" style="margin-bottom:14px">
+    <div class="card-hd"><h2>学习页配置</h2><span class="muted" style="margin-left:10px">对应 C 端学习页的目录状态文案、完成按钮与进度记录方式</span></div>
+    <div class="card-bd">
+      <div class="form-grid" style="max-width:720px">
+        <div class="field"><label>已完成状态文案 *</label><input class="input" id="lp-done" value="已完成" maxlength="6" /></div>
+        <div class="field"><label>学习中状态文案 *</label><input class="input" id="lp-doing" value="学习中" maxlength="6" /></div>
+        <div class="field"><label>未开始状态文案 *</label><input class="input" id="lp-todo" value="未开始" maxlength="6" /></div>
+        <div class="field"><label>完成按钮文案 *</label>
+          <input class="input" id="lp-done-btn" value="标记本节完成" maxlength="10" />
+          <div class="muted">学习页目录下方的第一个按钮</div>
+        </div>
+        <div class="field"><label>「返回我的」按钮</label>
+          <select class="input" id="lp-back"><option value="1" selected>展示</option><option value="0">不展示</option></select>
+          <div class="muted">展示时位于完成按钮下方，跳转「我的」页</div>
+        </div>
+        <div class="field"><label>学习进度记录方式</label>
+          <select class="input" id="lp-mode">
+            <option value="manual" selected>按节完成标记</option>
+            <option value="auto">自动记录播放进度</option>
+          </select>
+          <div class="muted">决定学习页目录状态何时从「未开始」变为「学习中」</div>
+        </div>
+      </div>
+      <div style="margin-top:14px">
+        <div class="muted" style="margin-bottom:8px">C 端效果预览</div>
+        <div class="cv-panel" style="max-width:360px">
+          <div style="height:80px;background:#111827;color:#fff;display:grid;place-items:center;font-size:12px;text-align:center">
+            视频播放器占位<br /><span style="opacity:.5;font-size:11px">第 2 节 · 情绪先于道理</span>
+          </div>
+          <div class="cv-dir-title">目录</div>
+          <div id="pv-learn-dir"></div>
+          <div style="padding:2px 12px 14px">
+            <div class="cv-btn" id="pv-learn-btn">标记本节完成</div>
+            <div class="cv-btn outline" id="pv-learn-back">返回我的</div>
+          </div>
+        </div>
+        <div class="muted" style="margin-top:8px" id="pv-learn-mode"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 内容来源说明 -->
+  <div class="card" style="margin-bottom:14px">
+    <div class="card-hd"><h2>内容来源说明</h2><span class="muted" style="margin-left:10px">本页只配置展示形态，不维护课程数据</span></div>
+    <div class="card-bd">
+      <div class="muted">课程内容（章节、上架）在 <a href="content-series.html">内容 · 系列课</a> 维护，商品与价格在 <a href="goods.html">交易 · 我的商品</a> 维护，此处只配置 C 端展示形态。</div>
+      <div class="muted" style="margin-top:8px">推荐顺序：先在 <a href="content-series.html">系列课</a> 建课、在 <a href="goods.html">我的商品</a> 定价上架 → 回到本页配置试看策略与展示项 → 购买后的订单在 <a href="orders.html">交易 · 订单列表</a> 查看。</div>
+    </div>
+  </div>
+</div>
+
+<!-- 配置效果预览弹窗 -->
+<div class="proto-modal" id="modal-trial" style="width:520px">
+  <div class="proto-modal-hd"><h3 style="margin:0;font-size:16px">课程详情页配置效果</h3><button class="ctrl-icon-btn" data-close>×</button></div>
+  <div class="proto-modal-bd">
+    <div class="muted" style="margin-bottom:10px">以「亲子沟通基础」为例，按当前保存前的配置实时渲染 C 端课程详情页。</div>
+    <div class="cv-panel">
+      <div class="cv-cover" id="md-cover"></div>
+      <div id="md-body"></div>
+      <div class="cv-buybar" id="md-buybar">立即购买</div>
+    </div>
+  </div>
+  <div class="proto-modal-ft" style="justify-content:flex-end;gap:8px">
+    <button class="btn" data-close>关闭</button>
+    <button class="btn btn-primary" id="trial-ok">按此配置保存</button>
+  </div>
+</div>
+
+<div class="proto-mask" id="mask"></div>
+
+<script src="../assets/js/proto.js"></script>
+<script src="../assets/js/admin-shell.js?v=14"></script>
+<script>
+function esc(s){ return String(s).replace(/[&<>"']/g,function(c){return({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"})[c];}); }
+function stTag(on){ return on ? '<span class="as-tag green">展示中</span>' : '<span class="as-tag gray">已隐藏</span>'; }
+
+function val(id){ return document.getElementById(id).value; }
+function txt(id){ return document.getElementById(id).value.trim(); }
+function find(arr,id){ return arr.filter(function(x){ return x.id===id; })[0]; }
+
+/* 试看策略：默认取值迁移自「店铺设置 · 课程试看策略」，按课程类型保留并细化 */
+var TRIAL_DEFAULT = [
+  { id:"video", name:"视频课", desc:"含训练营、体系课 · 试看内容：视频节内试看片段", mode:"min3",  count:1, guide:1 },
+  { id:"audio", name:"音频课", desc:"亲子情绪管理音频课等 · 试看内容：完整音频内容", mode:"first", count:1, guide:1 },
+  { id:"live",  name:"直播",   desc:"直播场次与回放 · 试看内容：直播预告信息",       mode:"none",  count:1, guide:1 }
+];
+var TRIAL = TRIAL_DEFAULT.map(function(t){ return Object.assign({}, t); });
+var TRIAL_MODE_LABEL  = { first:"前 N 节免费试看", min3:"每节前 3 分钟试看", none:"不提供试看" };
+var TRIAL_MODE_ORDER  = ["first","min3","none"];
+var TRIAL_GUIDE_LABEL = { "1":"已开启", "0":"不开启" };
+
+/* 课程信息展示项：对应 C 端课程详情页真实存在的元素 */
+var INFO_ITEMS = [
+  { id:"title",  name:"课程标题",      desc:"标题区主标题，如「亲子沟通基础」",        on:true },
+  { id:"meta",   name:"节数与学习人数", desc:"标题下方副信息，如「8 节视频 · 312 人已学」", on:true },
+  { id:"price",  name:"现价",          desc:"标题区现价，如「¥199」",                 on:true },
+  { id:"origin", name:"划线原价",       desc:"现价右侧划线价，如「¥299」",             on:true },
+  { id:"dir",    name:"目录区标题",     desc:"「目录」二字，隐藏后目录列表仍展示",       on:true },
+  { id:"buybar", name:"底部购买栏",     desc:"底部固定栏「立即购买」",                 on:true }
+];
+
+function renderTrial(){
+  document.getElementById("tp-tbody").innerHTML = TRIAL.map(function(t){
+    var useCount = t.mode === "first";
+    return '<tr>' +
+      '<td><div class="as-name">'+esc(t.name)+'</div><div class="as-desc">'+esc(t.desc)+'</div></td>' +
+      '<td><select class="input" data-tp-mode="'+t.id+'">' +
+        TRIAL_MODE_ORDER.map(function(m){
+          return '<option value="'+m+'"'+(t.mode===m?' selected':'')+'>'+esc(TRIAL_MODE_LABEL[m])+'</option>';
+        }).join("") +
+      '</select></td>' +
+      '<td><input type="number" class="input" min="1" max="8" data-tp-count="'+t.id+'" value="'+t.count+'"'+(useCount?"":" disabled")+' />' +
+        '<div class="as-desc">'+(useCount?"1–8 节":"当前方式不生效")+'</div></td>' +
+      '<td><select class="input" data-tp-guide="'+t.id+'">' +
+        ["1","0"].map(function(g){
+          return '<option value="'+g+'"'+(String(t.guide)===g?' selected':'')+'>'+esc(TRIAL_GUIDE_LABEL[g])+'</option>';
+        }).join("") +
+      '</select></td>' +
+      '<td>'+(t.guide ? '<span class="as-tag green">已开启</span>' : '<span class="as-tag gray">不开启</span>')+'</td>' +
+      '<td class="row-actions"><a href="javascript:;" data-tp-reset="'+t.id+'">恢复默认</a></td>' +
+    '</tr>';
+  }).join("");
+}
+
+function renderInfo(){
+  document.getElementById("ci-tbody").innerHTML = INFO_ITEMS.map(function(it){
+    return '<tr>' +
+      '<td><div class="as-name">'+esc(it.name)+'</div></td>' +
+      '<td><div class="as-desc" style="margin:0">'+esc(it.desc)+'</div></td>' +
+      '<td><select class="input" data-ci="'+it.id+'">' +
+        '<option value="1"'+(it.on?' selected':'')+'>展示</option>' +
+        '<option value="0"'+(!it.on?' selected':'')+'>隐藏</option>' +
+      '</select></td>' +
+      '<td>'+stTag(it.on)+'</td>' +
+    '</tr>';
+  }).join("");
+}
+
+/* 试看封面 + 目录：按当前配置生成端上结构 */
+function coverHTML(){ return esc(txt("cv-cover-txt") || "试看封面 · 第 1 节可试看"); }
+function lockMark(){
+  var m = val("cv-lock");
+  if (m === "lock") return "🔒";
+  if (m === "text") return '<span class="as-tag gray">未解锁</span>';
+  return "";
+}
+function dirHTML(){
+  var trial = '<span class="as-tag blue">' + esc(txt("cv-trial-txt") || "试看") + '</span>';
+  var mark = lockMark();
+  return '<div class="cv-dir-row">1. 为什么孩子不听你说话 ' + trial + '</div>' +
+    '<div class="cv-dir-row locked">2. 情绪先于道理' + (mark ? " " + mark : "") + '</div>' +
+    '<div class="cv-dir-row locked">3. 边界与规则' + (mark ? " " + mark : "") + '</div>' +
+    '<div class="cv-dir-row locked">… 共 8 节</div>';
+}
+
+function renderCoverPreview(){
+  document.getElementById("pv-cover").innerHTML = coverHTML();
+  document.getElementById("pv-dir").innerHTML = dirHTML();
+}
+
+function renderModalPreview(){
+  document.getElementById("md-cover").innerHTML = coverHTML();
+  var title = find(INFO_ITEMS,"title").on, meta = find(INFO_ITEMS,"meta").on,
+      price = find(INFO_ITEMS,"price").on, origin = find(INFO_ITEMS,"origin").on,
+      dir = find(INFO_ITEMS,"dir").on;
+  var html = '<div style="padding:12px 12px 0">';
+  if (!title && !meta && !price && !origin) {
+    html += '<div class="muted">标题区已全部隐藏</div>';
+  }
+  if (title) html += '<div style="font-size:16px;font-weight:650">亲子沟通基础</div>';
+  if (meta) html += '<div style="font-size:12px;color:#888;margin-top:4px">8 节视频 · 312 人已学</div>';
+  if (price || origin) {
+    html += '<div style="color:#dc2626;font-size:20px;font-weight:700;margin-top:6px">';
+    if (price) html += '¥199';
+    if (price && origin) html += ' ';
+    if (origin) html += '<s style="font-size:12px;color:#aaa;font-weight:400">¥299</s>';
+    html += '</div>';
+  }
+  html += '</div>';
+  if (dir) html += '<div class="cv-dir-title">目录</div>';
+  html += '<div style="padding-bottom:8px">' + dirHTML() + '</div>';
+  document.getElementById("md-body").innerHTML = html;
+  document.getElementById("md-buybar").style.display = find(INFO_ITEMS,"buybar").on ? "block" : "none";
+}
+
+function renderLearnPreview(){
+  var done  = esc(txt("lp-done")  || "已完成");
+  var doing = esc(txt("lp-doing") || "学习中");
+  var todo  = esc(txt("lp-todo")  || "未开始");
+  document.getElementById("pv-learn-dir").innerHTML =
+    '<div class="cv-dir-row">1. 为什么孩子不听你说话 ✅ <span class="muted">' + done + '</span></div>' +
+    '<div class="cv-dir-row doing">2. 情绪先于道理 ◉ ' + doing + '</div>' +
+    '<div class="cv-dir-row locked">3. 边界与规则 <span class="muted">' + todo + '</span></div>' +
+    '<div class="cv-dir-row locked">…</div>';
+  document.getElementById("pv-learn-btn").textContent = txt("lp-done-btn") || "标记本节完成";
+  document.getElementById("pv-learn-back").className = "cv-btn outline" + (val("lp-back") === "1" ? "" : " hidden");
+  document.getElementById("pv-learn-mode").textContent =
+    "进度记录方式：" + (val("lp-mode") === "manual" ? "按节完成标记（点击完成按钮后更新状态）" : "自动记录播放进度（播放位置自动同步到目录状态）");
+}
+
+function renderAll(){ renderTrial(); renderInfo(); renderCoverPreview(); renderModalPreview(); renderLearnPreview(); }
+
+var mask = document.getElementById("mask");
+function openTrial(){
+  renderModalPreview();
+  mask.classList.add("open");
+  document.getElementById("modal-trial").classList.add("open");
+}
+function closeAll(){
+  mask.classList.remove("open");
+  document.getElementById("modal-trial").classList.remove("open");
+}
+
+/* 表格内交互：试看策略 / 课程信息展示 */
+document.addEventListener("change", function(e){
+  var el;
+  if ((el = e.target.closest("[data-tp-mode]"))) {
+    var t = find(TRIAL, el.getAttribute("data-tp-mode"));
+    t.mode = el.value;
+    if (t.mode === "first" && !(t.count >= 1)) t.count = 1;
+    renderAll();
+    Proto.toast("「" + t.name + "」试看方式已改为「" + TRIAL_MODE_LABEL[t.mode] + "」（演示）");
+    return;
+  }
+  if ((el = e.target.closest("[data-tp-count]"))) {
+    var c = find(TRIAL, el.getAttribute("data-tp-count"));
+    var n = parseInt(el.value, 10);
+    if (isNaN(n) || n < 1 || n > 8) { Proto.toast("试看节数需为 1–8 的整数"); renderAll(); return; }
+    c.count = n; renderAll();
+    return;
+  }
+  if ((el = e.target.closest("[data-tp-guide]"))) {
+    var g = find(TRIAL, el.getAttribute("data-tp-guide"));
+    g.guide = parseInt(el.value, 10);
+    renderAll();
+    Proto.toast("「" + g.name + "」购买引导已" + (g.guide ? "开启" : "关闭") + "（演示）");
+    return;
+  }
+  if ((el = e.target.closest("[data-ci]"))) {
+    var it = find(INFO_ITEMS, el.getAttribute("data-ci"));
+    it.on = el.value === "1";
+    renderAll();
+    Proto.toast("「" + it.name + "」已" + (it.on ? "展示" : "隐藏") + "（演示）");
+    return;
+  }
+});
+
+/* 恢复单行默认值 */
+document.addEventListener("click", function(e){
+  var el = e.target.closest("[data-tp-reset]");
+  if (!el) return;
+  var id = el.getAttribute("data-tp-reset");
+  var t = find(TRIAL, id);
+  if (!confirm("确认将「" + t.name + "」的试看策略恢复为默认值？")) return;
+  Object.assign(t, find(TRIAL_DEFAULT, id));
+  renderAll();
+  Proto.toast("「" + t.name + "」已恢复默认（演示）");
+});
+
+/* 表单即时预览 */
+["cv-cover-txt","cv-trial-txt","cv-lock"].forEach(function(id){
+  var el = document.getElementById(id);
+  el.addEventListener("input", renderAll);
+  el.addEventListener("change", renderAll);
+});
+["lp-done","lp-doing","lp-todo","lp-done-btn","lp-back","lp-mode"].forEach(function(id){
+  var el = document.getElementById(id);
+  el.addEventListener("input", renderLearnPreview);
+  el.addEventListener("change", renderLearnPreview);
+});
+
+document.getElementById("btn-pv-trial").onclick = openTrial;
+document.getElementById("trial-ok").onclick = function(){ closeAll(); Proto.toast("已按当前预览配置应用（演示）"); };
+document.getElementById("btn-pv-course").onclick = function(){ window.open("../miniprogram/course.html","_blank"); };
+document.getElementById("btn-pv-learn").onclick  = function(){ window.open("../miniprogram/learn.html","_blank"); };
+
+document.getElementById("btn-save").onclick = function(){
+  if (!txt("cv-cover-txt")) { Proto.toast("请填写试看封面提示文案"); return; }
+  if (!txt("cv-trial-txt")) { Proto.toast("请填写目录试看标签文案"); return; }
+  if (!txt("lp-done") || !txt("lp-doing") || !txt("lp-todo")) { Proto.toast("请填写完整的三个学习状态文案"); return; }
+  if (!txt("lp-done-btn")) { Proto.toast("请填写完成按钮文案"); return; }
+  if (!find(INFO_ITEMS,"title").on && !find(INFO_ITEMS,"dir").on) { Proto.toast("课程标题与目录区标题不可同时隐藏"); return; }
+  if (!find(INFO_ITEMS,"buybar").on && !confirm("已隐藏底部购买栏，C 端课程详情页将无法直接下单，确认保存？")) return;
+  Proto.toast("课程与学习页配置已保存，C 端即时生效（演示）");
+};
+
+mask.addEventListener("click", closeAll);
+document.querySelectorAll("[data-close]").forEach(function(b){ b.addEventListener("click", closeAll); });
+renderAll();
+</script>
+</body>
+</html>

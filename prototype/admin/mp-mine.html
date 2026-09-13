@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>我的页装修 · 商家管理后台</title>
+<link rel="stylesheet" href="../assets/css/proto.css?v=9" />
+<link rel="stylesheet" href="../assets/css/assess.css?v=3" />
+<style>
+  .mine-pv { border: 1px solid var(--color-border); border-radius: 10px; background: #fff; padding: 12px 14px; max-width: 420px; }
+  .mine-pv-row { display: flex; align-items: center; gap: 10px; }
+  .mine-pv-avatar { width: 38px; height: 38px; border-radius: 50%; background: linear-gradient(135deg, #4d7cfe, #7db3ff); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 14px; flex-shrink: 0; }
+  .mine-pv-name { font-size: 14px; font-weight: 600; color: #1d2129; }
+  .mine-pv-sub { font-size: 12px; color: #86909c; margin-top: 2px; }
+  .mine-pv-greet { font-size: 12px; color: #86909c; margin-top: 10px; padding-top: 10px; border-top: 1px dashed var(--color-border); }
+  .mine-sec-pv { display: flex; align-items: center; justify-content: space-between; border: 1px solid var(--color-border); border-radius: 10px; background: #fff; padding: 10px 12px; max-width: 420px; }
+  .mine-sec-pv .t { font-size: 13px; font-weight: 600; color: #1d2129; }
+  .mine-sec-pv .m { font-size: 12px; color: #86909c; }
+  .mine-sec-pv .m.blue { color: #165dff; }
+  .mine-ico { width: 28px; height: 28px; border-radius: 8px; background: linear-gradient(135deg, #4d7cfe, #7db3ff); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 13px; }
+</style>
+</head>
+<body class="admin-body" data-module="mp" data-nav="mp-mine" data-title="我的页装修" data-crumb="商家管理后台 / 小程序 / 店铺装修 / 我的页装修">
+
+<div id="header-actions">
+  <button class="btn" id="btn-preview">预览 C 端我的页</button>
+  <button class="btn btn-primary" id="btn-save">保存装修</button>
+</div>
+
+<div id="page-content" style="display:none">
+  <div class="as-banner">按 C 端「我的」页的真实结构配置装修。C 端「我的」页固定为四段：<b>用户卡</b> → <b>我的课程</b> → <b>我的直播</b> → <b>更多服务</b>。此处只配置端上真实存在的模块与入口，保存后 C 端即时生效。</div>
+
+  <!-- 用户卡 -->
+  <div class="card" style="margin-bottom:14px">
+    <div class="card-hd"><h2>用户卡</h2><span class="muted" style="margin-left:10px">对应 C 端「我的」页的顶部用户卡区（头像、昵称）</span></div>
+    <div class="card-bd">
+      <div class="form-grid" style="max-width:640px">
+        <div class="field"><label>会员标识文案</label>
+          <select class="input" id="vip-txt">
+            <option value="普通会员" selected>普通会员</option>
+            <option value="会员等级由权益决定">会员等级由权益决定</option>
+          </select>
+          <div class="muted">展示在昵称右侧的标识，端上跟随学员权益自动变化</div>
+        </div>
+        <div class="field"><label>是否展示手机号</label>
+          <select class="input" id="phone-on">
+            <option value="1" selected>展示手机号</option>
+            <option value="0">不展示手机号</option>
+          </select>
+          <div class="muted">关闭后 C 端用户卡只保留头像与昵称</div>
+        </div>
+      </div>
+      <div class="field" style="max-width:640px;margin-top:12px">
+        <label>问候语模板</label>
+        <input class="input" id="greet-tpl" value="已加入 {加入天数} 天 · 累计学习 {累计学习节数} 节课" maxlength="40" />
+        <div class="muted">可用变量「{加入天数}」「{累计学习节数}」，端上会替换为学员的真实数据</div>
+      </div>
+      <div style="margin-top:14px">
+        <div class="muted" style="margin-bottom:8px">C 端效果预览（{加入天数} → 12，{累计学习节数} → 3）</div>
+        <div class="mine-pv">
+          <div class="mine-pv-row">
+            <span class="mine-pv-avatar">李</span>
+            <div style="min-width:0;flex:1">
+              <div class="mine-pv-row" style="gap:6px">
+                <span class="mine-pv-name">李女士</span>
+                <span class="as-tag purple" id="pv-vip">普通会员</span>
+              </div>
+              <div class="mine-pv-sub" id="pv-phone">138****2610</div>
+            </div>
+            <span id="pv-phone-tag"></span>
+          </div>
+          <div class="mine-pv-greet" id="pv-greet"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 我的课程 -->
+  <div class="card" style="margin-bottom:14px">
+    <div class="card-hd"><h2>我的课程</h2><span class="muted" style="margin-left:10px">对应 C 端「我的」页的「我的课程」区</span></div>
+    <div class="card-bd">
+      <div class="form-grid" style="max-width:640px">
+        <div class="field"><label>区块标题</label><input class="input" id="sec-course" value="我的课程" maxlength="10" /></div>
+        <div class="field"><label>右上角入口</label>
+          <select class="input" id="course-more">
+            <option value="list" selected>跳转我的课程列表</option>
+            <option value="none">不展示</option>
+          </select>
+          <div class="muted">端上展示为「全部 ›」，点击进入我的课程列表</div>
+        </div>
+        <div class="field"><label>空态文案</label>
+          <input class="input" id="course-empty" value="还没有课程，去首页逛逛吧" maxlength="20" />
+          <div class="muted">学员未购买任何课程时展示的提示文案</div>
+        </div>
+      </div>
+      <div style="margin-top:14px">
+        <div class="muted" style="margin-bottom:8px">区块头部效果预览</div>
+        <div class="mine-sec-pv">
+          <span class="t" id="pv-course-title">我的课程</span>
+          <span class="m blue" id="pv-course-more">全部 ›</span>
+        </div>
+        <div class="muted" style="margin-top:10px">课程卡（封面、进度描述、行动文案）由学员的学习数据自动生成，此处只配置区块标题与入口。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 我的直播 -->
+  <div class="card" style="margin-bottom:14px">
+    <div class="card-hd"><h2>我的直播</h2><span class="muted" style="margin-left:10px">对应 C 端「我的」页的「我的直播」区</span></div>
+    <div class="card-bd">
+      <div class="form-grid" style="max-width:640px">
+        <div class="field"><label>区块标题</label><input class="input" id="sec-live" value="我的直播" maxlength="10" /></div>
+        <div class="field"><label>右上角入口文案</label>
+          <input class="input" id="live-more" value="去直播" maxlength="8" />
+          <div class="muted">端上展示为「去直播 ›」，点击进入直播列表页 lives.html</div>
+        </div>
+      </div>
+      <div style="margin-top:14px">
+        <div class="muted" style="margin-bottom:8px">区块头部效果预览</div>
+        <div class="mine-sec-pv">
+          <span class="t" id="pv-live-title">我的直播</span>
+          <span class="m blue" id="pv-live-more">去直播 ›</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 更多服务 -->
+  <div class="card" style="margin-bottom:14px">
+    <div class="card-hd"><h2>更多服务</h2><span class="muted" style="margin-left:10px">对应 C 端「我的」页的「更多服务」区，按此处顺序逐条展示，最多 8 项</span></div>
+    <div class="card-bd">
+      <table class="as-table">
+        <thead>
+          <tr>
+            <th style="width:60px">排序</th>
+            <th style="width:80px">图标</th>
+            <th>名称</th>
+            <th style="width:240px">跳转目标</th>
+            <th style="width:170px">操作</th>
+          </tr>
+        </thead>
+        <tbody id="menu-tbody"></tbody>
+      </table>
+      <div style="margin-top:10px"><button class="btn btn-sm" id="btn-menu-add">+ 新增菜单项</button></div>
+      <div class="muted" style="margin-top:12px">跳转目标只能是 C 端真实存在的页面；选择「复制老师企业微信」时，端上点击即复制企微号并提示。</div>
+    </div>
+  </div>
+</div>
+
+<!-- 菜单项编辑弹窗 -->
+<div class="proto-modal" id="modal-menu" style="width:520px">
+  <div class="proto-modal-hd"><h3 id="menu-modal-title" style="margin:0;font-size:16px">新增菜单项</h3><button class="ctrl-icon-btn" data-close>×</button></div>
+  <div class="proto-modal-bd">
+    <div class="form-grid">
+      <div class="field"><label>图标 *</label><input class="input" id="m-icon" placeholder="如：测 / 📘，支持 emoji 或单字" maxlength="2" /></div>
+      <div class="field"><label>名称 *</label><input class="input" id="m-name" placeholder="如：我的定制化计划" maxlength="12" /></div>
+      <div class="field"><label>跳转目标 *</label>
+        <select class="input" id="m-target">
+          <option value="assess">测评与计划页 assess.html</option>
+          <option value="claim">领课页 claim.html</option>
+          <option value="orders">我的订单页 orders.html</option>
+          <option value="wecom">复制老师企业微信</option>
+        </select>
+        <div class="muted">仅可选 C 端「我的」页真实存在的跳转目标</div>
+      </div>
+    </div>
+  </div>
+  <div class="proto-modal-ft" style="justify-content:flex-end;gap:8px">
+    <button class="btn" data-close>取消</button>
+    <button class="btn btn-primary" id="menu-ok">确定</button>
+  </div>
+</div>
+
+<div class="proto-mask" id="mask"></div>
+
+<script src="../assets/js/proto.js"></script>
+<script src="../assets/js/admin-shell.js?v=14"></script>
+<script>
+function esc(s){ return String(s).replace(/[&<>"']/g,function(c){return({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"})[c];}); }
+function stTag(on){ return on ? '<span class="as-tag green">展示中</span>' : '<span class="as-tag gray">已隐藏</span>'; }
+
+/* 跳转目标：只保留 C 端真实存在的落地页 */
+var TARGETS = [
+  { v:"assess", label:"测评与计划页", file:"assess.html", note:"我的定制化计划" },
+  { v:"claim",  label:"领课页",       file:"claim.html",  note:"领课兑换（短信落地）" },
+  { v:"orders", label:"我的订单页",   file:"orders.html", note:"我的订单" },
+  { v:"wecom",  label:"复制老师企业微信", file:"", note:"端上复制企微号并提示" }
+];
+var MAX_MENU = 8;
+
+var MENUS = [
+  { id:"M1", icon:"测", name:"我的定制化计划", target:"assess" },
+  { id:"M2", icon:"课", name:"领课兑换（短信落地）", target:"claim" },
+  { id:"M3", icon:"单", name:"我的订单", target:"orders" },
+  { id:"M4", icon:"微", name:"添加老师企业微信", target:"wecom" }
+];
+
+function targetOf(v){ return TARGETS.filter(function(t){ return t.v === v; })[0]; }
+
+var GREET_VARS = { "{加入天数}":"12", "{累计学习节数}":"3" };
+function greetReplace(tpl){
+  var s = String(tpl);
+  Object.keys(GREET_VARS).forEach(function(k){ s = s.split(k).join(GREET_VARS[k]); });
+  return s;
+}
+
+var mask = document.getElementById("mask");
+function closeAll(){ mask.classList.remove("open"); document.getElementById("modal-menu").classList.remove("open"); }
+var editCtx = {};
+
+function renderMenus(){
+  document.getElementById("menu-tbody").innerHTML = MENUS.length ? MENUS.map(function(m,i){
+    var t = targetOf(m.target) || { label:"—", file:"", note:"" };
+    return '<tr>' +
+      '<td style="text-align:center">'+(i+1)+'</td>' +
+      '<td><div class="mine-ico">'+esc(m.icon)+'</div></td>' +
+      '<td><div class="as-name">'+esc(m.name)+'</div><div class="as-desc">C 端「更多服务」第 '+(i+1)+' 项</div></td>' +
+      '<td><span class="as-tag blue">'+esc(t.label)+'</span><div class="as-desc">'+esc(t.file ? t.file : t.note)+'</div></td>' +
+      '<td class="row-actions">' +
+        (i===0 ? '<span class="muted">—</span>' : '<a href="javascript:;" data-m-up="'+m.id+'">上移</a>') +
+        '<a href="javascript:;" data-m-edit="'+m.id+'">编辑</a>' +
+        '<a href="javascript:;" class="row-more" data-m-del="'+m.id+'">删除</a>' +
+      '</td></tr>';
+  }).join("") : '<tr><td colspan="5" style="text-align:center;color:#bfbfbf;padding:20px 0">还没有菜单项，点下方「新增菜单项」添加</td></tr>';
+}
+
+function renderUserCard(){
+  document.getElementById("pv-vip").textContent = document.getElementById("vip-txt").value;
+  var phoneOn = document.getElementById("phone-on").value === "1";
+  document.getElementById("pv-phone").style.display = phoneOn ? "" : "none";
+  document.getElementById("pv-phone-tag").innerHTML = stTag(phoneOn);
+  var tpl = document.getElementById("greet-tpl").value.trim();
+  document.getElementById("pv-greet").textContent = tpl ? greetReplace(tpl) : "（问候语模板为空）";
+}
+
+function renderSectionPv(){
+  document.getElementById("pv-course-title").textContent = document.getElementById("sec-course").value.trim() || "我的课程";
+  document.getElementById("pv-course-more").style.visibility = document.getElementById("course-more").value === "none" ? "hidden" : "visible";
+  document.getElementById("pv-live-title").textContent = document.getElementById("sec-live").value.trim() || "我的直播";
+  document.getElementById("pv-live-more").textContent = (document.getElementById("live-more").value.trim() || "去直播") + " ›";
+}
+
+function renderAll(){ renderMenus(); renderUserCard(); renderSectionPv(); }
+
+function moveMenu(id){
+  var i = MENUS.findIndex(function(x){ return x.id === id; });
+  if (i <= 0) return;
+  var t = MENUS[i-1]; MENUS[i-1] = MENUS[i]; MENUS[i] = t;
+  renderMenus();
+}
+
+function openMenu(m){
+  editCtx.menu = m || null;
+  document.getElementById("menu-modal-title").textContent = m ? "编辑菜单项" : "新增菜单项";
+  document.getElementById("m-icon").value = m ? m.icon : "";
+  document.getElementById("m-name").value = m ? m.name : "";
+  document.getElementById("m-target").value = m ? m.target : "assess";
+  mask.classList.add("open"); document.getElementById("modal-menu").classList.add("open");
+}
+
+document.addEventListener("click", function(e){
+  var el;
+  if ((el = e.target.closest("[data-m-up]"))) { moveMenu(el.getAttribute("data-m-up")); return; }
+  if ((el = e.target.closest("[data-m-edit]"))) {
+    openMenu(MENUS.filter(function(x){ return x.id === el.getAttribute("data-m-edit"); })[0]);
+    return;
+  }
+  if ((el = e.target.closest("[data-m-del]"))) {
+    var id = el.getAttribute("data-m-del");
+    if (confirm("确认删除该菜单项？删除后 C 端「更多服务」不再展示。")) {
+      MENUS = MENUS.filter(function(x){ return x.id !== id; });
+      renderMenus();
+      Proto.toast("菜单项已删除（演示）");
+    }
+    return;
+  }
+});
+
+document.getElementById("btn-menu-add").onclick = function(){
+  if (MENUS.length >= MAX_MENU) { Proto.toast("最多只能配置 " + MAX_MENU + " 个菜单项"); return; }
+  openMenu(null);
+};
+
+document.getElementById("menu-ok").onclick = function(){
+  var name = document.getElementById("m-name").value.trim();
+  if (!name) { Proto.toast("请填写菜单名称"); return; }
+  var icon = document.getElementById("m-icon").value.trim() || name.charAt(0);
+  var target = document.getElementById("m-target").value;
+  if (!targetOf(target)) { Proto.toast("请选择跳转目标"); return; }
+  var data = { icon: icon, name: name, target: target };
+  if (editCtx.menu) { Object.assign(editCtx.menu, data); }
+  else {
+    if (MENUS.length >= MAX_MENU) { Proto.toast("最多只能配置 " + MAX_MENU + " 个菜单项"); return; }
+    MENUS.push(Object.assign({ id:"M"+Date.now() }, data));
+  }
+  closeAll(); renderMenus();
+  Proto.toast("菜单项已保存，跳转至「" + targetOf(target).label + "」（演示）");
+};
+
+/* 配置项即时预览 */
+document.getElementById("greet-tpl").addEventListener("input", renderUserCard);
+document.getElementById("vip-txt").addEventListener("change", renderUserCard);
+document.getElementById("phone-on").addEventListener("change", renderUserCard);
+document.getElementById("sec-course").addEventListener("input", renderSectionPv);
+document.getElementById("course-more").addEventListener("change", renderSectionPv);
+document.getElementById("sec-live").addEventListener("input", renderSectionPv);
+document.getElementById("live-more").addEventListener("input", renderSectionPv);
+
+document.getElementById("btn-preview").onclick = function(){ window.open("../miniprogram/mine.html","_blank"); };
+document.getElementById("btn-save").onclick = function(){
+  if (!document.getElementById("sec-course").value.trim()) { Proto.toast("请填写「我的课程」区块标题"); return; }
+  if (!document.getElementById("sec-live").value.trim()) { Proto.toast("请填写「我的直播」区块标题"); return; }
+  if (!document.getElementById("live-more").value.trim()) { Proto.toast("请填写「我的直播」右上角入口文案"); return; }
+  if (!document.getElementById("greet-tpl").value.trim()) { Proto.toast("请填写问候语模板"); return; }
+  Proto.toast("我的页装修已保存，C 端即时生效（演示）");
+};
+
+mask.addEventListener("click", closeAll);
+document.querySelectorAll("[data-close]").forEach(function(b){ b.addEventListener("click", closeAll); });
+renderAll();
+</script>
+</body>
+</html>

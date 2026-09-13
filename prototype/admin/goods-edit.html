@@ -17,10 +17,11 @@
 
   <!-- 商品类型 -->
   <div class="cm-section">
-    <div class="cm-section-hd"><h3>商品类型</h3><span class="muted">知识商品在「内容」模块创建；此处创建服务 / 组合商品</span></div>
+    <div class="cm-section-hd"><h3>商品类型</h3><span class="muted">系列课与定制化计划商品可由「内容」模块一键创建，直播商品在此新建</span></div>
     <div class="cm-choice" id="gd-type">
-      <label class="cm-choice-item active"><input type="radio" name="gtype" value="service" checked /><b>服务商品</b><span>1v1 咨询、线上辅导等，支付后开通服务额度</span></label>
-      <label class="cm-choice-item"><input type="radio" name="gtype" value="combo" /><b>组合商品</b><span>将多个在售商品打包售卖</span></label>
+      <label class="cm-choice-item active"><input type="radio" name="gtype" value="series" checked /><b>系列课商品</b><span>由系列课创建，购买后按目录解锁学习</span></label>
+      <label class="cm-choice-item"><input type="radio" name="gtype" value="plan" /><b>定制化计划商品</b><span>由定制化计划创建，按关卡与任务推进</span></label>
+      <label class="cm-choice-item"><input type="radio" name="gtype" value="live" /><b>直播商品</b><span>直播课程 / 讲座，按场次售卖或预约</span></label>
     </div>
   </div>
 
@@ -52,14 +53,13 @@
   <div class="cm-section">
     <div class="cm-section-hd"><h3>规格与价格</h3><span class="muted">不设置规格即为单规格默认 SKU</span></div>
     <table class="data" style="margin-bottom:10px">
-      <thead><tr><th>规格项</th><th>SKU</th><th>价格</th><th>划线价</th><th>服务时长 / 次数</th><th style="width:60px"></th></tr></thead>
+      <thead><tr><th>规格项</th><th>SKU</th><th>价格</th><th>划线价</th><th style="width:60px"></th></tr></thead>
       <tbody>
         <tr>
           <td>默认规格（单规格）</td>
           <td><span class="mono">SKU-001</span></td>
           <td><input type="number" value="199.00" style="width:110px;padding:5px 8px;border:1px solid var(--color-border);border-radius:6px" /> 元</td>
           <td><input type="number" value="299.00" style="width:110px;padding:5px 8px;border:1px solid var(--color-border);border-radius:6px" /> 元</td>
-          <td><input type="number" value="60" style="width:90px;padding:5px 8px;border:1px solid var(--color-border);border-radius:6px" /> 分钟</td>
           <td><a href="#" data-toast="删除规格（原型）" style="color:#f53f3f">删除</a></td>
         </tr>
       </tbody>

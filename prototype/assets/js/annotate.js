@@ -1,5 +1,5 @@
 /* 原型评审标注层 · annotate.js
- * 用法：Alt+A 进入/退出标注模式 → 点击元素 → 写意见 → 保存。
+ * 用法：Alt+E 进入/退出标注模式 → 点击元素 → 写意见 → 保存。
  * 标注会记录三重锚点（页面路径 + CSS 选择器 + 元素文本/HTML 快照），
  * 供后续按标注精确改代码。数据落盘到 _review/annotations.json 与 .md。
  *
@@ -447,7 +447,7 @@
       if (state.mode) setMode(false);
       return;
     }
-    if ((e.altKey || e.metaKey) && (e.key === "a" || e.key === "A")) {
+    if ((e.altKey || e.metaKey) && (e.key === "e" || e.key === "E" || e.code === "KeyE")) {
       e.preventDefault();
       setMode(!state.mode);
       return;
@@ -787,7 +787,7 @@
             })
             .join("") +
           "</div>"
-        : '<div class="__ann_empty">本页暂无标注。按 Alt+A 进入标注模式，点击要改的元素。</div>') +
+        : '<div class="__ann_empty">本页暂无标注。按 Alt+E 进入标注模式，点击要改的元素。</div>') +
       '<div class="__ann_hint" id="__ann_hint"></div>' +
       "</div>" +
       '<div class="__ann_foot">' +
@@ -905,7 +905,7 @@
     var fab = document.createElement("div");
     fab.id = "__ann_fab";
     fab.setAttribute("data-ann-ui", "1");
-    fab.setAttribute("title", "Alt+A 进入标注模式 · Alt+L 查看本页标注");
+    fab.setAttribute("title", "Alt+E 进入标注模式 · Alt+L 查看本页标注");
     fab.innerHTML = '<span>标注</span><span class="__ann_fab_n" data-zero="1">0</span>';
     fab.addEventListener("click", function (e) {
       if (e.altKey) return;
