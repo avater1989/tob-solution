@@ -88,7 +88,6 @@
         group: "收款与进件",
         links: [
           { id: "pay-channels", href: "pay-channels.html", label: "收款与清分" },
-          { id: "pay-members", href: "pay-members.html", label: "会员管理" },
           { id: "onboard-audit", href: "onboard-audit.html", label: "进件审核", badge: 3 },
         ],
       },
@@ -116,10 +115,23 @@
     ],
     biz: [
       {
-        group: "交易",
+        group: "订单管理",
         links: [
           { id: "trade-orders", href: "trade-orders.html", label: "订单列表" },
-          { id: "trade-goods", href: "trade-goods.html", label: "商品管理" },
+          { id: "entitlement", href: "entitlement.html", label: "权益开通记录", badge: 2 },
+        ],
+      },
+      {
+        group: "商品管理",
+        links: [
+          { id: "platform-goods", href: "platform-goods.html", label: "平台商品" },
+          { id: "goods-edit", href: "goods-edit.html", label: "新建商品" },
+        ],
+      },
+      {
+        group: "售后管理",
+        links: [
+          { id: "aftersales", href: "aftersales.html", label: "退款与权益回收", badge: 4 },
         ],
       },
     ],

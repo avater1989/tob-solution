@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>精选课程 · 艺博 To-B</title>
+<link rel="stylesheet" href="../assets/css/proto.css?v=9" />
+<style>
+.fc-cover {
+  width: 128px; height: 72px; border-radius: 6px; object-fit: cover; display: block;
+  background: #f2f3f5;
+}
+.fc-title { font-size: 14px; font-weight: 600; color: #1d2129; }
+.fc-sub   { font-size: 12px; color: #8c8c8c; margin-top: 4px; }
+.fc-status-show   { font-size: 12px; color: #2f9e57; font-weight: 500; }
+.fc-status-hidden { font-size: 12px; color: #bfbfbf; }
+.fc-op { color: #165dff; cursor: pointer; margin-right: 10px; font-size: 13px; }
+.fc-op.off { color: #bfbfbf; cursor: default; }
+.fc-foot { display: flex; align-items: center; margin-top: 14px; }
+.fc-foot .hint-right { margin-left: auto; font-size: 12px; color: #8c8c8c; }
+</style>
+</head>
+<body class="admin-body" data-module="content" data-nav="mp-featured" data-title="精选课程" data-crumb="内容 / 小程序管理 / 精选课程">
+
+<div id="header-actions">
+  <button class="btn btn-primary" id="btn-add-top">+ 新增课程</button>
+</div>
+
+<div id="page-content" style="display:none">
+  <div class="card">
+    <div class="card-bd" style="padding:16px">
+      <table class="data" style="width:100%">
+        <thead>
+          <tr><th style="width:150px">预览</th><th>标题 / 简介</th><th style="width:220px">跳转链接</th><th style="width:90px">状态</th><th style="width:240px">操作</th></tr>
+        </thead>
+        <tbody id="fc-tbody"></tbody>
+      </table>
+      <div class="fc-foot">
+        <button class="btn" id="btn-add-bottom">+ 新增课程</button>
+        <span class="hint-right">最多 6 条，C 端按此顺序展示；仅已启用的内容可选中</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 弹窗遮罩 -->
+<div class="proto-mask" id="mask"></div>
+
+<!-- 编辑精选课程弹窗 -->
+<div class="proto-modal" id="fc-modal" style="width:560px;max-width:94vw">
+  <div style="background:#fff;border-radius:10px;overflow:hidden">
+    <div class="proto-modal-hd"><h3 style="margin:0;font-size:16px" id="fm-title">编辑精选课程</h3><button class="ctrl-icon-btn" data-fm-close>×</button></div>
+    <div class="proto-modal-bd">
+      <div class="form-grid" style="grid-template-columns:1fr 1fr">
+        <div class="field" style="grid-column:1/-1">
+          <label>选择课程商品 *</label>
+          <select class="input" id="fm-course"></select>
+          <div style="font-size:11px;color:#8c8c8c;margin-top:4px">取值于「我的商品」中的系列课商品；简介与主图自动从商品带出</div>
+        </div>
+        <div class="field" style="grid-column:1/-1">
+          <label>简介</label>
+          <input class="input" id="fm-sub" maxlength="24" placeholder="选择商品后自动带出，可修改" />
+        </div>
+        <div class="field" style="grid-column:1/-1">
+          <label>主图（取自商品）</label>
+          <div style="display:flex;align-items:center;gap:10px">
+            <img id="fm-cover" class="fc-cover" src="../assets/img/covers/comm.jpg" alt="" />
+            <span class="muted" style="font-size:12px">主图自动使用所选商品的商品主图</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="proto-modal-ft" style="display:flex;justify-content:flex-end;gap:8px;padding:12px 20px;border-top:1px solid #f0f0f0">
+      <button class="btn" data-fm-close>取消</button>
+      <button class="btn btn-primary" id="fm-ok">确定</button>
+    </div>
+  </div>
+</div>
+
+<script src="../assets/js/proto.js"></script>
+<script src="../assets/js/admin-shell.js?v=16"></script>
+<script>
+// ===== 课程商品来源：取值于「我的商品」中的系列课商品 =====
+var GOODS = [
+  { v: "g:P2026030101", name: "春启 03 期家长必修课",       sub: "资深讲师带练 · 6 周进阶",  cover: "../assets/img/covers/comm.jpg" },
+  { v: "g:P2026090106", name: "小学语文阅读启蒙系列",       sub: "从绘本到章节书的进阶路径", cover: "../assets/img/covers/reading.jpg" },
+  { v: "g:P2026090107", name: "AI 学习规划入门",           sub: "10 节实操课 · 学会用 AI 工具", cover: "../assets/img/covers/ai.jpg" },
+];
+
+var FEATURED = [
+  { goods: "g:P2026090106", sub: "从绘本到章节书的进阶路径", hidden: false },
+  { goods: "g:P2026030101", sub: "资深讲师带练 · 6 周进阶",  hidden: false },
+  { goods: "g:P2026090107", sub: "10 节实操课 · 学会用 AI 工具", hidden: true },
+];
+
+function esc(s) {
+  return String(s).replace(/[&<>"']/g, function(c) {
+    return ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c];
+  });
+}
+function goodsOf(v) {
+  return GOODS.find(function(x){ return x.v === v; }) || GOODS[0];
+}
+
+function render() {
+  document.getElementById("fc-tbody").innerHTML = FEATURED.map(function(f, i) {
+    var g = goodsOf(f.goods);
+    return '' +
+      '<tr>' +
+        '<td><img class="fc-cover" src="' + g.cover + '" alt="" /></td>' +
+        '<td><div class="fc-title">' + esc(g.name) + '</div><div class="fc-sub">' + esc(f.sub || "—") + '</div></td>' +
+        '<td style="font-size:13px;color:#4e5969">课程详情 · ' + esc(g.name) + '</td>' +
+        '<td><span class="' + (f.hidden ? "fc-status-hidden" : "fc-status-show") + '">' + (f.hidden ? "已隐藏" : "展示中") + '</span></td>' +
+        '<td>' +
+          (i === 0 ? '<span class="fc-op off">—</span>' : '<span class="fc-op" data-up="' + i + '">上移</span>') +
+          '<span class="fc-op" data-edit="' + i + '">编辑</span>' +
+          '<span class="fc-op" data-toggle="' + i + '">' + (f.hidden ? "展示" : "隐藏") + '</span>' +
+          '<span class="fc-op" data-del="' + i + '">删除</span>' +
+        '</td>' +
+      '</tr>';
+  }).join("") || '<tr><td colspan="5" style="text-align:center;color:#bfbfbf;padding:24px">暂无精选课程，点击下方「新增课程」添加</td></tr>';
+}
+
+// ===== 弹窗 =====
+var mask = document.getElementById("mask");
+var modal = document.getElementById("fc-modal");
+var editIdx = -1; // -1 = 新增
+
+function openModal(idx) {
+  editIdx = idx;
+  document.getElementById("fm-title").textContent = idx >= 0 ? "编辑精选课程" : "新增精选课程";
+  var f = idx >= 0 ? FEATURED[idx] : { goods: GOODS[0].v, sub: "" };
+  var sel = document.getElementById("fm-course");
+  sel.innerHTML = GOODS.map(function(g){ return '<option value="' + g.v + '">' + esc(g.name) + '</option>'; }).join("");
+  sel.value = f.goods;
+  syncGoodsInfo(sel.value, idx >= 0 ? f.sub : null);
+  mask.classList.add("open");
+  modal.classList.add("open");
+}
+
+// 选择商品后：简介、主图自动带出（简介仍可手改）
+function syncGoodsInfo(v, subOverride) {
+  var g = goodsOf(v);
+  document.getElementById("fm-sub").value = subOverride != null ? subOverride : g.sub;
+  document.getElementById("fm-cover").src = g.cover;
+}
+document.getElementById("fm-course").addEventListener("change", function(){
+  syncGoodsInfo(this.value, "");
+});
+
+function closeModal() {
+  mask.classList.remove("open");
+  modal.classList.remove("open");
+}
+
+document.getElementById("fm-ok").addEventListener("click", function() {
+  var data = {
+    goods: document.getElementById("fm-course").value,
+    sub: document.getElementById("fm-sub").value.trim(),
+    hidden: editIdx >= 0 ? FEATURED[editIdx].hidden : false,
+  };
+  if (editIdx >= 0) {
+    // 同一课程商品去重
+    var dup = FEATURED.some(function(f, i){ return i !== editIdx && f.goods === data.goods; });
+    if (dup) { Proto.toast("该课程商品已在精选列表中"); return; }
+    FEATURED[editIdx] = data;
+  } else {
+    if (FEATURED.length >= 6) { Proto.toast("最多 6 条精选课程，请先删除或隐藏"); return; }
+    if (FEATURED.some(function(f){ return f.goods === data.goods; })) { Proto.toast("该课程商品已在精选列表中"); return; }
+    FEATURED.push(data);
+  }
+  render();
+  closeModal();
+  Proto.toast(editIdx >= 0 ? "精选课程已保存" : "已添加到精选课程");
+});
+
+// ===== 事件 =====
+document.addEventListener("click", function(e) {
+  if (e.target.closest("#btn-add-top") || e.target.closest("#btn-add-bottom")) { openModal(-1); return; }
+  if (e.target.closest("[data-fm-close]") || e.target === mask) { closeModal(); return; }
+  var up = e.target.closest("[data-up]");
+  if (up) {
+    var i = +up.getAttribute("data-up");
+    var t = FEATURED[i - 1]; FEATURED[i - 1] = FEATURED[i]; FEATURED[i] = t;
+    render(); Proto.toast("已上移"); return;
+  }
+  var ed = e.target.closest("[data-edit]");
+  if (ed) { openModal(+ed.getAttribute("data-edit")); return; }
+  var tg = e.target.closest("[data-toggle]");
+  if (tg) {
+    var i2 = +tg.getAttribute("data-toggle");
+    FEATURED[i2].hidden = !FEATURED[i2].hidden;
+    render(); Proto.toast(FEATURED[i2].hidden ? "已在 C 端隐藏" : "已在 C 端展示"); return;
+  }
+  var del = e.target.closest("[data-del]");
+  if (del) {
+    FEATURED.splice(+del.getAttribute("data-del"), 1);
+    render(); Proto.toast("已删除（演示）"); return;
+  }
+});
+
+render();
+</script>
+</body>
+</html>

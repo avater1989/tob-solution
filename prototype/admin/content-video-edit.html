@@ -5,25 +5,18 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>编辑视频 · 艺博 To-B</title>
 <link rel="stylesheet" href="../assets/css/proto.css?v=9" />
-<link rel="stylesheet" href="../assets/css/content-mgmt.css?v=3" />
+<link rel="stylesheet" href="../assets/css/content-mgmt.css?v=4" />
 </head>
 <body class="admin-body" data-module="content" data-nav="content-video" data-title="编辑视频" data-crumb="内容 / 内容管理 / 视频 / 编辑">
 
 <div id="header-actions">
   <a class="btn" href="content-video.html">返回列表</a>
   <button class="btn" id="btn-draft">保存草稿</button>
-  <button class="btn" id="btn-preview">用户端预览</button>
-  <button class="btn btn-primary" id="btn-publish">保存并上架</button>
+  <button class="btn btn-primary" id="btn-publish">保存并启用</button>
 </div>
 
 <div id="page-content" style="display:none">
   <a class="cm-back" href="content-video.html">← 返回视频列表</a>
-  <div class="cm-page-hd">
-    <div>
-      <h1 id="e-title">新建视频</h1>
-      <p class="sub">在同一页面完成视频内容、状态与分享配置；如需售卖，可在列表页「创建商品」将内容带入商品模块</p>
-    </div>
-  </div>
 
   <div class="cm-anchor" id="anchors">
     <button class="btn active" data-goto="sec-content">内容信息</button>
@@ -85,10 +78,10 @@
   <div class="cm-section" id="sec-status">
     <div class="cm-section-hd"><h2>状态设置 <span class="hint">配置内容在店铺内的展示状态</span></h2></div>
     <div class="field">
-      <label>上架设置</label>
+      <label>启用设置</label>
       <div class="cm-choice col">
-        <label><input type="radio" name="shelf" checked> 立即上架（保存后提交内容审核队列）</label>
-        <label><input type="radio" name="shelf"> 定时上架 <input type="datetime-local" class="input" style="width:200px;margin-left:8px" /></label>
+        <label><input type="radio" name="shelf" checked> 立即启用（保存后提交内容审核队列）</label>
+        <label><input type="radio" name="shelf"> 定时启用 <input type="datetime-local" class="input" style="width:200px;margin-left:8px" /></label>
         <label><input type="radio" name="shelf"> 暂存草稿</label>
       </div>
     </div>
@@ -120,22 +113,21 @@
         <textarea class="input" id="f-share-desc" rows="2" maxlength="60" placeholder="默认使用视频简介，建议60字内"></textarea>
       </div>
     </div>
-    <p style="font-size:12px;color:#8c8c8c;margin:8px 0 0">草稿阶段可预览分享卡片；正式上架后生成可用短链和二维码。</p>
+    <p style="font-size:12px;color:#8c8c8c;margin:8px 0 0">草稿阶段可预览分享卡片；正式启用后生成可用短链和二维码。</p>
     <button class="btn" style="margin-top:10px" id="btn-share-preview">预览分享卡片</button>
   </div>
 
   <div class="cm-sticky-ft">
     <a class="btn" href="content-video.html">取消</a>
     <button class="btn" id="btn-draft2">保存草稿</button>
-    <button class="btn" id="btn-preview2">用户端预览</button>
-    <button class="btn btn-primary" id="btn-publish2">保存并上架</button>
+    <button class="btn btn-primary" id="btn-publish2">保存并启用</button>
   </div>
 </div>
 
 <script src="../assets/js/proto.js"></script>
 <script src="../assets/js/content-cats.js?v=1"></script>
 <script src="../assets/js/share-modal.js?v=1"></script>
-<script src="../assets/js/admin-shell.js?v=14"></script>
+<script src="../assets/js/admin-shell.js?v=15"></script>
 <script>
 var PRESET = {
   V001: { name:"如何让孩子爱上阅读", cat:"K12 教育", intro:"通过一个短视频掌握亲子阅读引导方法。", src:"reading.mp4", dur:"8分钟" },
@@ -148,7 +140,6 @@ catSel.insertAdjacentHTML("beforeend", window.ContentCats.optionsHtml({ emptyLab
 
 var id = new URLSearchParams(location.search).get("id") || "";
 var isNew = !id || !PRESET[id];
-document.getElementById("e-title").textContent = isNew ? "新建视频" : "编辑视频";
 if (!isNew) {
   var p = PRESET[id];
   document.getElementById("f-name").value = p.name;
@@ -202,10 +193,8 @@ document.getElementById("anchors").addEventListener("click", function(e){
 });
 
 function draft(){ Proto.toast("草稿已保存"); }
-function preview(){ Proto.toast("已打开用户端预览（演示）"); }
-function publish(){ Proto.toast("已保存并上架"); setTimeout(function(){ location.href = "content-video.html"; }, 500); }
+function publish(){ Proto.toast("已保存并启用"); setTimeout(function(){ location.href = "content-video.html"; }, 500); }
 ["btn-draft","btn-draft2"].forEach(function(id){ document.getElementById(id).onclick = draft; });
-["btn-preview","btn-preview2"].forEach(function(id){ document.getElementById(id).onclick = preview; });
 ["btn-publish","btn-publish2"].forEach(function(id){ document.getElementById(id).onclick = publish; });
 document.querySelector(".rt-body").addEventListener("focus", function(){ var ph=this.querySelector(".rt-placeholder"); if(ph) ph.remove(); });
 </script>

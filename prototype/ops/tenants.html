@@ -67,8 +67,9 @@
   <!-- 操作条 -->
   <div class="toolbar" style="margin-bottom:12px">
     <button class="btn btn-primary" id="btn-add">新增租户</button>
+    <button class="btn" id="btn-sync-member">同步通联会员</button>
     <div class="spacer"></div>
-    <span class="muted" style="font-size:12px">商家在注册页留资后自动进入「待开通」队列</span>
+    <span class="muted" style="font-size:12px">商家在注册页留资后自动进入「待开通」队列；收款会员（通联）信息已并入本列表，点击会员号查看详情</span>
   </div>
 
   <!-- 表格 -->
@@ -83,6 +84,7 @@
           <th>套餐版本</th>
           <th>商家账号数</th>
           <th>服务费率</th>
+          <th>收款会员（通联）</th>
           <th>到期时间</th>
           <th>开通来源</th>
           <th>状态</th>
@@ -100,6 +102,7 @@
           <td><span class="tag tag-blue">专业版</span></td>
           <td>6</td>
           <td>1%（默认）</td>
+          <td><a href="#" data-row-act="member" class="mono">MEM-1001XX</a><br><span class="badge badge-success">已通过</span> <span class="badge badge-success">已签约</span></td>
           <td>2027-03-12</td>
           <td>注册留资</td>
           <td><span class="badge badge-success">正常</span></td>
@@ -121,6 +124,7 @@
           <td><span class="tag tag-blue">标准版</span></td>
           <td>3</td>
           <td>1%（默认）</td>
+          <td><a href="#" data-row-act="member" class="mono">MEM-1002AY</a><br><span class="badge badge-success">已通过</span> <span class="badge badge-success">已签约</span></td>
           <td>2026-12-01</td>
           <td>注册留资</td>
           <td><span class="badge badge-success">正常</span></td>
@@ -142,6 +146,7 @@
           <td><span class="tag">试用版（14 天）</span></td>
           <td>2</td>
           <td>1%（默认）</td>
+          <td><a href="#" data-row-act="member" class="mono">MEM-1003XX</a><br><span class="badge badge-warn">审核中</span> <span class="badge badge">未签约</span></td>
           <td>2026-09-08</td>
           <td>注册留资</td>
           <td><span class="badge badge-info">试用中</span></td>
@@ -161,6 +166,7 @@
           <td><span class="muted">—</span></td>
           <td>—</td>
           <td>—</td>
+          <td><span class="muted">—</span></td>
           <td>—</td>
           <td>注册留资</td>
           <td><span class="badge badge-warn">待开通</span></td>
@@ -179,6 +185,7 @@
           <td><span class="tag tag-blue">标准版</span></td>
           <td>2</td>
           <td>1%（默认）</td>
+          <td><a href="#" data-row-act="member" class="mono">MEM-1005BZ</a><br><span class="badge badge-success">已通过</span> <span class="badge badge">未签约</span></td>
           <td>2026-09-25</td>
           <td>注册留资</td>
           <td><span class="badge badge-warn">已到期</span></td>
@@ -198,6 +205,7 @@
           <td><span class="tag tag-blue">标准版</span></td>
           <td>4</td>
           <td>1%（默认）</td>
+          <td><span class="muted">—</span></td>
           <td>2026-08-30</td>
           <td>注册留资</td>
           <td><span class="badge badge-warn">已到期</span></td>
@@ -217,6 +225,7 @@
           <td><span class="tag">标准版</span></td>
           <td>3</td>
           <td>0.6%（战略合作）</td>
+          <td><a href="#" data-row-act="member" class="mono">MEM-1007XX</a><br><span class="badge badge-danger">已驳回</span> <span class="badge badge">未签约</span></td>
           <td>2026-06-30</td>
           <td>系统录入</td>
           <td><span class="badge">停用</span></td>
@@ -234,6 +243,7 @@
           <td><span class="tag tag-blue">旗舰版</span></td>
           <td>5</td>
           <td>0.6%（战略合作）</td>
+          <td><a href="#" data-row-act="member" class="mono">MEM-1005XX</a><br><span class="badge badge-warn">审核中</span> <span class="badge badge">未签约</span></td>
           <td>2027-06-18</td>
           <td>系统录入</td>
           <td><span class="badge badge-success">正常</span></td>
@@ -267,8 +277,34 @@
   </div></div>
 </div>
 
-<!-- ============ 弹窗 ============ -->
+<!-- 会员详情抽屉（合并自原「会员管理」页） -->
 <div class="proto-mask" id="mask"></div>
+<div class="proto-drawer" id="drawer-member" style="width:640px">
+  <div class="proto-drawer-hd"><h3 id="md-title">会员详情</h3><button class="btn btn-sm btn-ghost" data-close>×</button></div>
+  <div class="proto-drawer-bd">
+    <h4 style="margin:0 0 8px;font-size:14px">会员信息</h4>
+    <div class="form-grid readonly" style="grid-template-columns:1fr 1fr">
+      <div class="field"><label>会员号</label><div class="mono" id="md-member">—</div></div>
+      <div class="field"><label>主体名称</label><div id="md-name">—</div></div>
+      <div class="field"><label>主体类型</label><div id="md-type">—</div></div>
+      <div class="field"><label>绑定手机</label><div id="md-phone">—</div></div>
+      <div class="field"><label>进件状态</label><div id="md-onboard">—</div></div>
+      <div class="field"><label>签约状态</label><div id="md-sign">—</div></div>
+      <div class="field"><label>协议编号 ContractNo</label><div class="mono" id="md-contract">—</div></div>
+      <div class="field"><label>结算卡</label><div id="md-card">—</div></div>
+    </div>
+    <h4 style="margin:16px 0 8px;font-size:14px">收款与提现约束</h4>
+    <div class="kv">
+      <div class="kv-row"><span>创建订单</span><b>需已完成绑定手机</b></div>
+      <div class="kv-row"><span>发起提现</span><b>需已完成提现协议签约</b></div>
+      <div class="kv-row"><span>提现时点</span><b>D1（T+1 日 14:00 触发代付）</b></div>
+      <div class="kv-row"><span>结算卡变更</span><b>需重新提交通联审核</b></div>
+    </div>
+  </div>
+  <div class="proto-drawer-ft"><button class="btn" data-close>关闭</button><button class="btn" id="md-export">导出</button></div>
+</div>
+
+<!-- ============ 弹窗 ============ -->
 
 <!-- 开通/新增租户弹窗 -->
 <div class="proto-modal" id="modal-open" style="width:560px">
@@ -385,6 +421,7 @@
 </div>
 
 <style>
+.mono { font-family:ui-monospace,Consolas,monospace; font-size:12px; }
 .tag { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 12px; }
 .tag-blue { background: #e8f3ff; color: #165dff; }
 /* 「进入商家后台」：跨端跳转，视觉上与其它行操作区分 */
@@ -480,6 +517,19 @@
           Proto.toast("租户「" + name + "」已恢复（原型）");
         } else if (act === "reject") {
           Proto.toast("已拒绝开通申请并通知联系人（原型）");
+        } else if (act === "member") {
+          var no = a.textContent.trim();
+          var d = MEMBER_DATA[no] || { name: "—", type: "—", phone: "—", onboard: "—", sign: "—", contract: "—", card: "—" };
+          document.getElementById("md-title").textContent = "会员详情 · " + no;
+          document.getElementById("md-member").textContent = no;
+          document.getElementById("md-name").textContent = d.name;
+          document.getElementById("md-type").textContent = d.type;
+          document.getElementById("md-phone").textContent = d.phone;
+          document.getElementById("md-onboard").textContent = d.onboard;
+          document.getElementById("md-sign").textContent = d.sign;
+          document.getElementById("md-contract").textContent = d.contract;
+          document.getElementById("md-card").textContent = d.card;
+          open(document.getElementById("drawer-member"));
         }
       });
     });
@@ -506,6 +556,18 @@
     document.getElementById("open-title").textContent = "新增租户";
     open(document.getElementById("modal-open"));
   });
+
+  // ===== 会员详情（合并自原「会员管理」页）=====
+  var MEMBER_DATA = {
+    "MEM-1001XX": { name: "星启家庭教育", type: "企业", phone: "138****2610", onboard: "已通过", sign: "已签约", contract: "TL-CTR-2026-0901-0088", card: "招商银行 ****8842（对公）" },
+    "MEM-1002AY": { name: "晨光少儿成长", type: "企业", phone: "139****5566", onboard: "已通过", sign: "已签约", contract: "CT2026081200031", card: "招商银行 ****3317（对公）" },
+    "MEM-1003XX": { name: "慧心教育", type: "企业", phone: "—", onboard: "审核中", sign: "未签约", contract: "—", card: "—" },
+    "MEM-1005BZ": { name: "青藤家长学堂", type: "企业", phone: "135****7788", onboard: "已通过", sign: "未签约", contract: "—", card: "—" },
+    "MEM-1007XX": { name: "某旧商户", type: "企业", phone: "—", onboard: "已驳回", sign: "未签约", contract: "—", card: "—" },
+    "MEM-1005XX": { name: "知行家研习社", type: "个人", phone: "137****0012", onboard: "审核中", sign: "未签约", contract: "—", card: "—" }
+  };
+  document.getElementById("btn-sync-member").addEventListener("click", function () { Proto.toast("已同步通联会员状态（原型）"); });
+  document.getElementById("md-export").addEventListener("click", function () { Proto.toast("已导出会员详情（原型）"); });
 
   document.getElementById("btn-query").addEventListener("click", function () { Proto.toast("已按条件查询（原型）"); });
   document.getElementById("btn-reset").addEventListener("click", function () {

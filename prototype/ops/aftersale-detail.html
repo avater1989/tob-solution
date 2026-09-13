@@ -3,10 +3,10 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>售后单详情 · 商家管理后台</title>
+<title>售后单详情 · 运营后台</title>
 <link rel="stylesheet" href="../assets/css/proto.css?v=9" />
 </head>
-<body class="admin-body" data-module="trade" data-nav="aftersales" data-title="售后单详情" data-crumb="交易 / 售后管理 / 售后维权 / 售后单详情">
+<body class="admin-body" data-module="biz" data-nav="aftersales" data-title="售后单详情" data-crumb="运营后台 / 交易 / 售后管理 / 退款与权益回收 / 售后单详情">
 <div id="header-actions">
   <button class="btn" id="btn-back-list" onclick="location.href='aftersales.html'">返回售后列表</button>
   <button class="btn" id="btn-contact">联系买家</button>
@@ -30,7 +30,7 @@
       </div>
       <div class="os-flow" id="as-flow">
         <div class="os-step done"><i>1</i>买家申请</div>
-        <div class="os-step cur"><i>2</i>商家审核</div>
+        <div class="os-step cur"><i>2</i>平台审核</div>
         <div class="os-step"><i>3</i>买家退货</div>
         <div class="os-step"><i>4</i>收货退款</div>
       </div>
@@ -59,7 +59,7 @@
     <div class="card"><div class="card-hd"><h2>关联订单与商品</h2></div>
       <div class="card-bd">
         <div class="kv">
-          <div class="kv-row"><span>订单号</span><b><a href="order-detail.html" class="link mono" id="kv-order">—</a></b></div>
+          <div class="kv-row"><span>订单号</span><b><a href="#" data-toast="订单详情（原型示意）" class="link mono" id="kv-order">—</a></b></div>
           <div class="kv-row"><span>支付方式</span><b>微信小程序支付</b></div>
           <div class="kv-row"><span>下单时间</span><b>—</b></div>
         </div>
@@ -89,9 +89,9 @@
     <div class="card"><div class="card-hd"><h2>处理时效</h2></div>
       <div class="card-bd">
         <div class="kv">
-          <div class="kv-row"><span>商家处理截止</span><b id="kv-deadline">2026-09-15 10:12</b></div>
+          <div class="kv-row"><span>平台处理截止</span><b id="kv-deadline">2026-09-15 10:12</b></div>
           <div class="kv-row"><span>超时规则</span><b id="kv-timeout-rule">自动同意并退款</b></div>
-          <div class="kv-row"><span>当前处理人</span><b>店长（主账号）</b></div>
+          <div class="kv-row"><span>当前处理人</span><b>平台运营（主账号）</b></div>
           <div class="kv-row"><span>客服备注</span><b class="muted" id="kv-note">—</b></div>
         </div>
       </div>
@@ -119,10 +119,10 @@
   </div>
 
   <div class="card" id="as-actions"><div class="card-bd" style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
-    <span style="font-weight:600">商家处理：</span>
+    <span style="font-weight:600">平台处理：</span>
     <button class="btn" id="btn-reject">拒绝申请</button>
     <button class="btn btn-primary" id="btn-agree">同意并发退货地址</button>
-    <a class="btn" id="btn-view-order" href="order-detail.html">查看原订单</a>
+    <a class="btn" id="btn-view-order" href="#" data-toast="订单详情（原型示意）">查看原订单</a>
   </div></div>
 
   <div class="toolbar" style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap">
@@ -202,7 +202,7 @@
 <script src="../assets/js/proto.js"></script>
 <script src="../assets/js/user-store.js"></script>
 <script src="../assets/js/prototype-business-store.js"></script>
-<script src="../assets/js/admin-shell.js?v=14"></script>
+<script src="../assets/js/ops-shell.js?v=7"></script>
 <script>
 (function () {
   var Biz = window.ProtoBiz;
@@ -391,7 +391,8 @@
 
     var orderEl = document.getElementById("kv-order");
     orderEl.textContent = row.orderId || "—";
-    orderEl.href = buildOrderHref(row.orderId, userId);
+    orderEl.href = "#";
+    orderEl.setAttribute("data-toast", "订单详情（原型示意）");
 
     document.getElementById("kv-product").textContent = row.product || "—";
     document.getElementById("kv-product-sub").textContent = "退款金额 ¥" + Number(row.amount || 0).toFixed(2);
@@ -406,7 +407,7 @@
     document.getElementById("agree-amount").value = Number(row.amount || 0).toFixed(2);
 
     var viewOrder = document.getElementById("btn-view-order");
-    if (viewOrder) viewOrder.href = buildOrderHref(row.orderId, userId);
+    if (viewOrder) { viewOrder.href = "#"; viewOrder.setAttribute("data-toast", "订单详情（原型示意）"); }
 
     var rightsCard = document.getElementById("as-rights-card");
     if (isKnowledgeRefund(row)) {
@@ -437,7 +438,7 @@
       document.getElementById("kv-addr").textContent = "默认退货地址（深圳仓）已发送";
       document.getElementById("as-flow").innerHTML =
         '<div class="os-step done"><i>1</i>买家申请</div>' +
-        '<div class="os-step done"><i>2</i>商家审核</div>' +
+        '<div class="os-step done"><i>2</i>平台审核</div>' +
         '<div class="os-step cur"><i>3</i>买家退货</div>' +
         '<div class="os-step"><i>4</i>收货退款</div>';
     } else if (row.status === "rejected" || row.status === "done") {
@@ -450,7 +451,7 @@
       } else {
         document.getElementById("as-flow").innerHTML =
           '<div class="os-step done"><i>1</i>买家申请</div>' +
-          '<div class="os-step done"><i>2</i>商家审核</div>' +
+          '<div class="os-step done"><i>2</i>平台审核</div>' +
           '<div class="os-step done"><i>3</i>已完结</div>';
       }
     }

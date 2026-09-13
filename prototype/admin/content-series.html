@@ -52,7 +52,7 @@
         <option value="">全部内容分类</option>
       </select>
       <select class="input" id="cs-status" style="width:140px">
-        <option value="">全部状态</option><option>已上架</option><option>已下架</option>
+        <option value="">全部状态</option><option>已启用</option><option>已停用</option>
       </select>
       <button class="btn btn-primary" id="cs-query">查询</button>
       <button class="btn" id="cs-reset">重置</button>
@@ -60,6 +60,7 @@
   </div></div>
 
   <!-- 系列课列表 -->
+  <p style="font-size:12px;color:#8c8c8c;margin:0 0 12px">说明：内容的「启用 / 停用」决定商品是否可选中该内容进行售卖。</p>
   <div id="cs-list"></div>
 
   <!-- 分页 -->
@@ -80,7 +81,7 @@
 <script src="../assets/js/proto.js"></script>
 <script src="../assets/js/content-cats.js?v=1"></script>
 <script src="../assets/js/share-modal.js?v=1"></script>
-<script src="../assets/js/admin-shell.js?v=14"></script>
+<script src="../assets/js/admin-shell.js?v=15"></script>
 <script>
 // ===== 兜底 =====
 setTimeout(function() {
@@ -97,15 +98,15 @@ var SERIES = [
   { id: "S001", name: "小学语文阅读启蒙系列", cover: "../assets/img/covers/reading.jpg",
     teacher: "张老师", desc: "针对 6-12 岁儿童阅读兴趣培养，从绘本到章节书的进阶路径。",
     cat: "K12 教育", videos: 6, articles: 3, students: 1287, duration: "2.5h",
-    status: "已上架", statusType: "pass", onShelf: true },
+    status: "已启用", statusType: "pass", onShelf: true },
   { id: "S002", name: "家长情绪管理训练营", cover: "../assets/img/covers/emotion.jpg",
     teacher: "李老师", desc: "8 周系统训练，帮助家长识别情绪、管理情绪、与孩子正向沟通。",
     cat: "家庭教育", videos: 4, articles: 2, students: 0, duration: "1.8h",
-    status: "已下架", statusType: "review", onShelf: false },
+    status: "已停用", statusType: "review", onShelf: false },
   { id: "S003", name: "AI 学习规划入门", cover: "../assets/img/covers/ai.jpg",
     teacher: "王博士", desc: "AI 助力学习规划，10 节实操课让孩子学会用 AI 工具提升学习效率。",
     cat: "K12 教育", videos: 5, articles: 1, students: 856, duration: "3.2h",
-    status: "已上架", statusType: "pass", onShelf: true }
+    status: "已启用", statusType: "pass", onShelf: true }
 ];
 
 var filterCat = "";
@@ -133,15 +134,13 @@ function filteredSeries() {
 
 function actionsOf(s) {
   var html = '<button class="btn" data-share="' + s.id + '"' + (s.onShelf ? '' : ' disabled') + '>分享</button>';
-  // 评审结论：已下架的 S002 行去掉「查看系列课」入口
-  if (s.id !== "S002") {
-    html += '<a class="btn" href="content-series-detail.html?id=' + s.id + '">查看系列课</a>';
-  }
+  html += '<a class="btn" href="content-series-detail.html?id=' + s.id + '">查看系列课</a>';
+  html += '<button class="btn" data-banner="' + s.id + '">发布到小程序</button>';
   if (s.onShelf) {
-    html += '<button class="btn" data-shelf-off="' + s.id + '">下架</button>';
+    html += '<button class="btn" data-shelf-off="' + s.id + '">停用</button>';
   } else {
     html += '<a class="btn btn-primary" href="content-series-edit.html?id=' + s.id + '">编辑系列课</a>';
-    html += '<button class="btn" data-shelf-on="' + s.id + '">上架</button>';
+    html += '<button class="btn" data-shelf-on="' + s.id + '">启用</button>';
     html += '<button class="btn" style="color:#f53f3f;border-color:#ffa39e" data-del="' + s.id + '">删除</button>';
   }
   // 创建商品：将本系列课内容带入「新建商品」
@@ -206,15 +205,16 @@ document.addEventListener("click", function(e) {
   var off = e.target.closest("[data-shelf-off]");
   if (off) {
     var s = SERIES.find(function(x){ return x.id === off.getAttribute("data-shelf-off"); });
-    if (s) { s.onShelf = false; s.status = "已下架"; s.statusType = "review"; renderList(); Proto.toast("已下架"); }
+    if (s) { s.onShelf = false; s.status = "已停用"; s.statusType = "review"; renderList(); Proto.toast("已停用，商品将不可选中该内容"); }
     return;
   }
   var on = e.target.closest("[data-shelf-on]");
   if (on) {
     var s2 = SERIES.find(function(x){ return x.id === on.getAttribute("data-shelf-on"); });
-    if (s2) { s2.onShelf = true; s2.status = "已上架"; s2.statusType = "pass"; renderList(); Proto.toast("已上架"); }
+    if (s2) { s2.onShelf = true; s2.status = "已启用"; s2.statusType = "pass"; renderList(); Proto.toast("已启用"); }
     return;
   }
+  if (e.target.closest("[data-banner]")) { Proto.toast("已发布到小程序（演示）"); return; }
   if (e.target.closest("[data-copy]")) { Proto.toast("已复制系列课（演示）"); return; }
   if (e.target.closest("[data-del]")) { Proto.toast("已删除（演示）"); return; }
 });

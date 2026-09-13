@@ -38,7 +38,7 @@
   var modules = [
     { id: "workbench", label: "工作台", href: "dashboard.html" },
     { id: "scrm", label: "SCRM", href: "leads.html" },
-    { id: "live", label: "直播", href: "lives.html", unread: true },
+    { id: "live", label: "直播", href: "lives.html" },
     { id: "content", label: "内容", href: "content-series.html" },
     { id: "trade", label: "交易", href: "orders.html" },
     { id: "data", label: "经营分析", href: "board-overview.html" },
@@ -142,6 +142,14 @@
           { id: "assess-plans", href: "assess-plans.html", label: "定制化计划" },
         ],
       },
+      {
+        group: "小程序管理",
+        links: [
+          { id: "mp-banner",    href: "mp-banner.html",   label: "Banner管理" },
+          { id: "mp-featured",  href: "mp-featured.html", label: "精选课程" },
+          { id: "mp-live-nav",  href: "mp-live.html",     label: "直播展示" },
+        ],
+      },
     ],
     mp: [
       {
@@ -182,6 +190,7 @@
         group: "商品管理",
         links: [
           { id: "goods", href: "goods.html", label: "我的商品" },
+          { id: "platform-goods", href: "platform-goods.html", label: "平台商品" },
           { id: "goods-edit", href: "goods-edit.html", label: "新建商品" },
         ],
       },
@@ -216,6 +225,12 @@
         group: "消息与通知",
         links: [
           { id: "message-push", href: "message-push.html", label: "消息推送" },
+        ],
+      },
+      {
+        group: "系统管理",
+        links: [
+          { id: "account", href: "account.html", label: "账户管理" },
         ],
       },
     ],

@@ -12,6 +12,7 @@
   <!-- 操作条 -->
   <div class="toolbar" style="margin-bottom:16px">
     <button class="btn" id="btn-renew">续费</button>
+    <button class="btn" id="btn-renew-records">续费记录</button>
     <button class="btn" id="btn-edit">编辑信息</button>
     <button class="btn" id="btn-stop">停用租户</button>
     <div class="spacer"></div>
@@ -89,8 +90,53 @@
 
 </div>
 
-<!-- ============ 弹窗 ============ -->
+<!-- 续费记录抽屉 -->
 <div class="proto-mask" id="mask"></div>
+<div class="proto-drawer" id="drawer-renew-records" style="width:720px">
+  <div class="proto-drawer-hd"><h3>续费记录 · 星启家庭教育</h3><button class="btn btn-sm btn-ghost" data-close>×</button></div>
+  <div class="proto-drawer-bd">
+    <table class="data">
+      <thead>
+        <tr>
+          <th>续费时间</th>
+          <th>套餐版本</th>
+          <th>续费时长</th>
+          <th>金额</th>
+          <th>支付方式</th>
+          <th>状态</th>
+          <th>操作人</th>
+          <th>备注</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>2026-09-08 15:26</td>
+          <td><span class="tag tag-blue">专业版</span></td>
+          <td>1 年</td>
+          <td><b>¥4,980.00</b></td>
+          <td>线下汇款</td>
+          <td><span class="badge badge-warn">待财务确认</span></td>
+          <td>平台运营</td>
+          <td class="muted" style="font-size:12px">财务确认后到期时间顺延至 2028-03-12</td>
+        </tr>
+        <tr>
+          <td>2026-03-12 10:02</td>
+          <td><span class="tag tag-blue">专业版</span></td>
+          <td>1 年</td>
+          <td><b>¥4,980.00</b></td>
+          <td>对公转账</td>
+          <td><span class="badge badge-success">已支付</span></td>
+          <td>王顾问（平台运营）</td>
+          <td class="muted" style="font-size:12px">首次开通，有效期至 2027-03-12</td>
+        </tr>
+      </tbody>
+    </table>
+    <p class="muted" style="margin-top:10px;font-size:12px">说明：续费登记后由财务确认到账，确认成功状态变为「已支付」并自动顺延到期时间；服务费率保持不变。</p>
+  </div>
+  <div class="proto-drawer-ft"><button class="btn" data-close>关闭</button></div>
+</div>
+
+<!-- ============ 弹窗 ============ -->
 
 <!-- 编辑租户弹窗（与租户列表编辑弹窗一致） -->
 <div class="proto-modal" id="modal-edit" style="width:520px">
@@ -203,7 +249,7 @@
   var mask = document.getElementById("mask");
   function closeAll() {
     mask.classList.remove("open");
-    document.querySelectorAll(".proto-modal").forEach(function (n) { n.classList.remove("open"); });
+    document.querySelectorAll(".proto-modal, .proto-drawer").forEach(function (n) { n.classList.remove("open"); });
   }
   function open(node) { mask.classList.add("open"); node.classList.add("open"); }
   mask.addEventListener("click", closeAll);
@@ -211,6 +257,7 @@
 
   document.getElementById("btn-renew").addEventListener("click", function () { open(document.getElementById("modal-renew")); });
   document.getElementById("btn-edit").addEventListener("click", function () { open(document.getElementById("modal-edit")); });
+  document.getElementById("btn-renew-records").addEventListener("click", function () { open(document.getElementById("drawer-renew-records")); });
   document.getElementById("btn-stop").addEventListener("click", function () { open(document.getElementById("modal-stop")); });
 })();
 </script>

@@ -32,7 +32,7 @@
         <span class="badge" id="od-status-badge" style="font-size:13px">—</span>
         <b class="mono" id="od-no">—</b>
         <span class="tag tag-green" id="od-channel-tag">视频号</span>
-        <span class="tag tag-blue">知识商品</span>
+        <span class="tag tag-blue">系列课商品</span>
       </div>
       <div class="os-flow" id="od-flow"></div>
     </div>
@@ -47,12 +47,12 @@
           <div class="thumb thumb-course"><img src="../assets/img/covers/comm.jpg" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:inherit;display:block" /></div>
           <div>
             <b id="od-product">—</b>
-            <div class="muted" style="font-size:12px;margin-top:2px" id="od-product-sub">知识商品</div>
+            <div class="muted" style="font-size:12px;margin-top:2px" id="od-product-sub">系列课商品</div>
           </div>
           <div class="prod-price"><b id="od-product-price">—</b></div>
         </div>
         <div class="kv" style="margin-top:12px">
-          <div class="kv-row"><span>商品类型</span><b>知识商品（虚拟）</b></div>
+          <div class="kv-row"><span>商品类型</span><b>系列课商品（虚拟）</b></div>
           <div class="kv-row"><span>交付方式</span><b>支付后自动开通</b></div>
           <div class="kv-row"><span>权益状态</span><b id="od-right-status">—</b></div>
           <div class="kv-row"><span>开通时间</span><b id="od-right-acquire">—</b></div>
@@ -80,9 +80,9 @@
       <div class="kv-grid">
         <div class="kv-row"><span>订单号</span><b class="mono" id="od-info-no">—</b></div>
         <div class="kv-row"><span>通联支付交易单号</span><b class="mono" id="od-pay-txn">—</b></div>
-        <div class="kv-row"><span>订单类型</span><b>普通订单（知识商品 1 件）</b></div>
+        <div class="kv-row"><span>订单类型</span><b>普通订单（系列课商品 1 件）</b></div>
         <div class="kv-row"><span>渠道来源</span><b id="od-source">—</b></div>
-        <div class="kv-row"><span>内容来源</span><b id="od-content-source">—</b></div>
+        <div class="kv-row"><span>商品来源</span><b id="od-content-source">—</b></div>
         <div class="kv-row"><span>结算模式</span><b id="od-settle-mode">—</b></div>
         <div class="kv-row"><span>推广人</span><b>—</b></div>
         <div class="kv-row"><span>下单时间</span><b id="od-time">—</b></div>
@@ -336,7 +336,7 @@
     alertEl.className = "alert alert-info";
     alertEl.style.marginTop = "10px";
     alertEl.style.fontSize = "13px";
-    alertEl.innerHTML = "本单为<b>知识商品订单</b>，支付成功后已<b>自动开通课程权益</b>，无物流发货环节；权益开通与回收记录可在「交易-订单管理-权益开通记录」查看。";
+    alertEl.innerHTML = "本单为<b>系列课商品订单</b>，支付成功后已<b>自动开通课程权益</b>，无物流发货环节；权益开通与回收记录可在「交易-订单管理-权益开通记录」查看。";
     flow.innerHTML =
       '<div class="os-step done"><i>1</i>确认订单</div>' +
       '<div class="os-step done"><i>2</i>支付成功</div>' +
@@ -349,7 +349,7 @@
   document.getElementById("od-channel-tag").textContent = user.source || "视频号";
   document.getElementById("od-product").textContent = order.product || (right && right.course) || "—";
   document.getElementById("od-product-sub").textContent =
-    "线上课 · " + ((right && right.chapters) ? right.chapters + " 节 · " : "") + "知识商品";
+    "线上课 · " + ((right && right.chapters) ? right.chapters + " 节 · " : "") + "系列课商品";
   document.getElementById("od-product-price").textContent = money(amount);
 
   var rightBadgeClass = "badge-info";
@@ -433,7 +433,7 @@
 
   document.getElementById("od-rights-link").href = buildUserDetailHref(uid, "rights");
 
-  // ===== 分账：按内容来源走两条链路 =====
+  // ===== 分账：按商品来源走两条链路 =====
   // 链路 A（平台内容）→ 佣金模式：商家拿佣金（默认 20%），课程金额留存艺博账户
   // 链路 B（商家自建）→ 服务费模式：商家拿课程金额，平台收服务费（默认 0.6%）
   var contentSource = order.contentSource || "self";

@@ -160,7 +160,7 @@
       <div class="access-panel" id="access-panel-pwd" style="display:none">
         <div class="form-grid" style="grid-template-columns:1fr 1fr;margin-top:4px">
           <div class="field"><label>观看密码（观众端）</label><input id="le-watch-pwd" type="text" placeholder="观众进房时输入" /></div>
-          <div class="field"><label>说明</label><div class="muted" style="font-size:12px;padding-top:8px">仅观众进房使用；与「直播设置」中的主播开播密码不是同一套。</div></div>
+          <div class="field"><label>说明</label><div class="muted" style="font-size:12px;padding-top:8px">仅观众进房使用。</div></div>
         </div>
       </div>
       <div class="access-panel" id="access-panel-named" style="display:none">
@@ -209,7 +209,6 @@
     </p>
     <div class="toolbar" style="margin-bottom:12px">
       <button class="btn btn-primary" id="btn-add-goods">+ 添加商品</button>
-      <button class="btn" id="btn-import-crm">从 SCRM 商品导入</button>
     </div>
     <table class="data">
       <thead><tr><th>商品图</th><th>商品名称</th><th>价格</th><th>讲解话术</th><th>操作</th></tr></thead>
@@ -223,16 +222,6 @@
   <h2 class="page-section-title">直播设置</h2>
   <div class="card"><div class="card-bd">
     <div class="form-grid" style="grid-template-columns:1fr 1fr">
-      <div class="field"><label>开播密码（主播端）</label>
-        <select id="le-host-pwd-mode">
-          <option value="off">不设置</option>
-          <option value="on">设置密码</option>
-        </select>
-        <p class="field-help">仅主播/助教进入推流端开播时使用，观众进房不校验此密码。</p>
-      </div>
-      <div class="field"><label>主播开播密码</label>
-        <input id="le-host-pwd" type="text" placeholder="如：host888" disabled />
-      </div>
       <div class="field" style="grid-column:1/-1">
         <label style="display:inline-block;vertical-align:middle">回放设置：</label>
         <label class="switch on" style="margin-left:8px"><input type="checkbox" checked /><span></span></label>
@@ -291,14 +280,8 @@
       <div class="field"><label>麦克风降噪</label>
         <select><option>开启</option><option>关闭</option></select>
       </div>
-      <div class="field"><label>允许观众连麦</label>
-        <select><option>不允许</option><option>允许</option></select>
-      </div>
       <div class="field"><label>允许观众留言</label>
         <select><option>开启</option><option>关闭</option></select>
-      </div>
-      <div class="field" style="grid-column:1/-1"><label>主播端设备</label>
-        <div class="muted">艺博直播伴侣 / 视频号直播伴侣 / OBS / 手机端</div>
       </div>
     </div>
   </div></div>
@@ -735,7 +718,6 @@
 .is-readonly #btn-cover-reupload,
 .is-readonly #btn-cover-delete,
 .is-readonly #btn-add-goods,
-.is-readonly #btn-import-crm,
 .is-readonly #btn-add-role,
 .is-readonly #btn-pick-owner,
 .is-readonly #btn-pick-course,
@@ -1539,7 +1521,7 @@
       toast(SAVE_GATE_TIP);
     }
   });
-  ["btn-add-role", "btn-add-goods", "btn-import-crm", "btn-more-config"].forEach(function (id) {
+  ["btn-add-role", "btn-add-goods", "btn-more-config"].forEach(function (id) {
     on($(id), "click", function () { toast("原型操作"); dirty = true; });
   });
 

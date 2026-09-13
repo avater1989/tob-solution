@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>账户管理 · 商家管理后台</title>
+<link rel="stylesheet" href="../assets/css/proto.css?v=9" />
+</head>
+<body class="admin-body" data-module="sys" data-nav="account" data-title="账户管理" data-crumb="系统管理 / 账户管理">
+<div id="header-actions">
+  <button class="btn btn-primary" id="btn-save">保存修改</button>
+</div>
+<div id="page-content" style="display:none">
+
+  <!-- 租户基本信息（只读，来自平台租户档案） -->
+  <div class="card" style="margin-bottom:16px">
+    <div class="card-hd"><h3 style="font-size:15px;font-weight:600">租户基本信息</h3><span class="muted" style="font-size:12px">由平台维护，如有变更请联系平台客服</span></div>
+    <div class="card-bd">
+      <div class="ud-profile">
+        <div class="ud-avatar">星</div>
+        <div>
+          <h3 style="margin:0 0 4px;font-size:16px">星启家庭教育 <span class="badge badge-success" style="margin-left:4px">正常</span></h3>
+          <p class="muted" style="margin:0;font-size:12px">专业版 · 2026-03-12 开通 · 到期 2027-03-12</p>
+        </div>
+      </div>
+      <div class="kv-row"><span>租户编码</span><b>10001</b></div>
+      <div class="kv-row"><span>租户名称</span><b>星启家庭教育</b></div>
+      <div class="kv-row"><span>所属公司</span><b>星启家庭教育咨询有限公司</b></div>
+      <div class="kv-row"><span>开通来源</span><b>注册留资</b></div>
+      <div class="kv-row"><span>套餐版本</span><b><span class="tag tag-blue">专业版</span></b></div>
+      <div class="kv-row"><span>服务费率</span><b>0.6%</b></div>
+      <div class="kv-row"><span>商家账号数</span><b>6</b></div>
+      <div class="kv-row"><span>开通时间</span><b>2026-03-12</b></div>
+      <div class="kv-row"><span>到期时间</span><b>2027-03-12</b></div>
+    </div>
+  </div>
+
+  <!-- 联系信息 -->
+  <div class="card" style="margin-bottom:16px">
+    <div class="card-hd"><h3 style="font-size:15px;font-weight:600">联系信息</h3></div>
+    <div class="card-bd">
+      <div class="form-grid" style="grid-template-columns:repeat(2,minmax(0,1fr));gap:14px 24px">
+        <div class="field"><label>联系人</label><input id="a-contact" value="赵老师" /></div>
+        <div class="field"><label>联系电话</label><input id="a-phone" value="138****2610" /></div>
+        <div class="field" style="grid-column:1/-1"><label>联系地址</label><input id="a-addr" value="杭州市西湖区文三路 100 号" /></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 账号安全 -->
+  <div class="card" style="margin-bottom:16px">
+    <div class="card-hd"><h3 style="font-size:15px;font-weight:600">账号安全</h3></div>
+    <div class="card-bd">
+      <table class="data">
+        <thead><tr><th>安全项</th><th>当前状态</th><th style="width:140px">操作</th></tr></thead>
+        <tbody>
+          <tr>
+            <td>登录密码</td>
+            <td>上次修改：2026-08-12</td>
+            <td class="row-actions"><a href="#" data-act="pwd">修改密码</a></td>
+          </tr>
+          <tr>
+            <td>绑定手机</td>
+            <td>138****2610</td>
+            <td class="row-actions"><a href="#" data-act="phone">更换手机</a></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card"><div class="card-bd">
+    <p class="muted" style="font-size:12px;line-height:1.8">
+      <b>说明：</b>租户基本信息（套餐、费率、有效期等）由平台统一维护，商家侧只读；如需变更套餐或续费请联系平台客服。
+      联系信息支持商家自行维护。后台登录账号的新增与维护请前往「系统用户管理 · 用户列表」。
+    </p>
+  </div></div>
+</div>
+
+<!-- 修改密码弹窗 -->
+<div class="proto-mask" id="mask"></div>
+<div class="proto-modal" id="modal-pwd" style="width:440px">
+  <div class="proto-modal-hd">
+    <h3 style="font-size:16px;font-weight:600">修改登录密码</h3>
+    <button class="btn btn-sm btn-ghost" data-close>×</button>
+  </div>
+  <div class="proto-modal-bd">
+    <div class="form-grid" style="gap:12px">
+      <div class="field" style="grid-column:1/-1"><label>原密码</label><input type="password" placeholder="请输入原密码" /></div>
+      <div class="field" style="grid-column:1/-1"><label>新密码</label><input type="password" placeholder="8-20 位，含字母、数字与符号" /></div>
+      <div class="field" style="grid-column:1/-1"><label>确认新密码</label><input type="password" placeholder="请再次输入新密码" /></div>
+    </div>
+  </div>
+  <div class="proto-modal-ft" style="border-top:1px solid var(--color-border);padding:12px 20px;display:flex;gap:8px;justify-content:flex-end">
+    <button class="btn" data-close>取消</button>
+    <button class="btn btn-primary" data-close data-toast="密码已修改，请重新登录（原型）">确定</button>
+  </div>
+</div>
+
+<style>
+.ud-profile { display:flex; gap:14px; align-items:center; padding-bottom:12px; border-bottom:1px solid var(--color-border); margin-bottom:6px; }
+.ud-avatar { width:52px; height:52px; border-radius:50%; background:#e8f3ff; color:#165dff; font-size:20px; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+.kv-row { display:flex; justify-content:space-between; align-items:center; padding:7px 0; font-size:13px; border-bottom:1px dashed var(--color-border); }
+.kv-row:last-child { border-bottom:none; }
+.kv-row span { color:var(--color-text-secondary); }
+.tag { display:inline-block; padding:2px 8px; border-radius:4px; font-size:12px; }
+.tag-blue { background:#e8f3ff; color:#165dff; }
+</style>
+
+<script src="../assets/js/proto.js"></script>
+<script src="../assets/js/admin-shell.js?v=20"></script>
+<script>
+(function () {
+  var mask = document.getElementById("mask");
+  function closeAll() {
+    mask.classList.remove("open");
+    document.querySelectorAll(".proto-modal").forEach(function (n) { n.classList.remove("open"); });
+  }
+  mask.addEventListener("click", closeAll);
+  document.querySelectorAll("[data-close]").forEach(function (n) { n.addEventListener("click", closeAll); });
+
+  document.getElementById("btn-save").addEventListener("click", function () { Proto.toast("账户信息已保存（原型）"); });
+  document.querySelectorAll("[data-act]").forEach(function (a) {
+    a.addEventListener("click", function (e) {
+      e.preventDefault();
+      var act = a.getAttribute("data-act");
+      if (act === "pwd") { mask.classList.add("open"); document.getElementById("modal-pwd").classList.add("open"); }
+      else if (act === "phone") { Proto.toast("请通过短信验证后更换绑定手机（原型）"); }
+    });
+  });
+})();
+</script>
+</body>
+</html>

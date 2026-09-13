@@ -108,6 +108,15 @@
 }
 .cm-anchor .btn.active { background: #165dff; color: #fff; border-color: #165dff; }
 
+/* Tab 切换式分区（cm-anchor 的 tab 版本） */
+.cm-tabs {
+  display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px;
+  border-bottom: 1px solid #e8e8e8; padding-bottom: 10px;
+}
+.cm-tabs .btn.active { background: #165dff; color: #fff; border-color: #165dff; }
+.tab-panel { display: none; }
+.tab-panel.active { display: block; }
+
 .cm-sticky-ft {
   position: sticky; bottom: 0; z-index: 5;
   background: rgba(255,255,255,.96); border-top: 1px solid #e8e8e8;
