@@ -24,12 +24,7 @@
 .board-funnel-analysis .dim-tabs button.active { background:var(--color-primary); color:#fff; border-color:var(--color-primary); }
 .board-split { display:grid; grid-template-columns:2fr 1fr; gap:16px; margin-bottom:16px; }
 @media (max-width:960px) { .board-split { grid-template-columns:1fr; } }
-.bottleneck-item { padding:12px 0; border-bottom:1px solid var(--color-border); }
-.bottleneck-item:last-child { border-bottom:none; }
-.bottleneck-item h4 { margin:0 0 6px; font-size:14px; }
-.bottleneck-item.is-active { background:#f2f7ff; margin:0 -12px; padding:12px; border-radius:6px; }
-.todo-risk-item { display:flex; flex-direction:column; gap:4px; padding:10px 0; border-bottom:1px solid var(--color-border); font-size:13px; }
-.todo-risk-item:last-child { border-bottom:none; }
+.board-filter-note { font-size:12px; color:var(--color-text-muted); margin-left:8px; }
 .todo-urgency { font-size:11px; padding:2px 6px; border-radius:4px; flex-shrink:0; }
 .todo-urgency.high { background:#fff1f0; color:#f53f3f; }
 .todo-urgency.medium { background:#fff7e8; color:#ff7d00; }
@@ -105,7 +100,7 @@ tr.is-selected td { background:#f2f7ff; }
       </div>
     </div>
 
-    <h2 style="margin:0 0 12px;font-size:14px">期次核心目标 <span class="muted" style="font-weight:400"> · <span data-range-label>近7日</span></span></h2>
+    <h2 style="margin:0 0 12px;font-size:14px">期次核心指标 <span class="muted" style="font-weight:400"> · <span data-range-label>近7日</span></span></h2>
     <div class="board-kpi-grid" id="term-kpis"></div>
 
     <div class="card" style="margin-bottom:16px" id="funnel-section">
@@ -124,14 +119,13 @@ tr.is-selected td { background:#f2f7ff; }
             <b id="tf-step-label">加微转化</b>
             <span class="muted" style="font-size:12px">·</span>
             <button type="button" class="btn btn-sm" id="tf-clear">清除选择</button>
-            <button type="button" class="btn btn-sm" id="tf-back-bn" hidden>返回经营瓶颈</button>
           </div>
           <div class="dim-tabs" id="tf-dim-tabs"></div>
           <div style="overflow-x:auto">
-            <table class="data" style="min-width:640px">
+            <table class="data" style="min-width:520px">
               <thead>
                 <tr>
-                  <th>维度</th><th>上游人数</th><th>下游人数</th><th>转化率</th><th>与整体差异</th><th>影响规模</th><th>操作</th>
+                  <th>维度</th><th>上游人数</th><th>下游人数</th><th>转化率</th><th>操作</th>
                 </tr>
               </thead>
               <tbody id="tf-tbody"></tbody>
@@ -145,7 +139,7 @@ tr.is-selected td { background:#f2f7ff; }
     <div class="card" style="margin-bottom:16px">
       <div class="card-hd">
         <h2>期次趋势</h2>
-        <span class="muted" style="font-size:12px;font-weight:400">按日 / 累计 / 目标进度 / 上一期同期</span>
+        <span class="muted" style="font-size:12px;font-weight:400">按日 / 累计 / 上一期同期</span>
       </div>
       <div class="card-bd">
         <div class="trend-metric-bar" id="trend-metric-bar">
@@ -263,15 +257,6 @@ tr.is-selected td { background:#f2f7ff; }
       </div>
     </div>
 
-    <div class="board-split">
-      <div class="card">
-        <div class="card-hd"><h2>经营瓶颈</h2><span class="muted" style="font-size:12px;font-weight:400">为什么未达预期</span></div>
-        <div class="card-bd" id="term-bn-list"></div>
-      </div>
-      <div class="card">
-        <div class="card-hd"><h2>待办风险</h2><span class="muted" style="font-size:12px;font-weight:400">现在需要处理</span></div>
-        <div class="card-bd" id="term-todo-list"></div>
-      </div>
     </div>
 
     <h2 style="margin:0 0 12px;font-size:14px">专项分析入口</h2>
@@ -441,18 +426,6 @@ tr.is-selected td { background:#f2f7ff; }
   function renderKpis(bundle) {
     var host = document.getElementById("term-kpis");
     host.innerHTML = (bundle.kpis || []).map(function (k) {
-      var tgt = "";
-      if (k.targetDisplay != null) {
-        if (k.kind === "count" && k.doneRate != null) {
-          tgt = "目标 " + k.targetDisplay + " · 完成 " + k.doneRate + "%";
-        } else if (k.kind === "rate" && k.gap != null) {
-          tgt = "目标 " + k.targetDisplay + " · 差距 " + (k.gap > 0 ? "+" : "") + k.gap + "pp";
-        } else {
-          tgt = "目标 " + k.targetDisplay;
-        }
-      } else {
-        tgt = "目标 未设置";
-      }
       var prior = "";
       if (k.vsPrior) {
         if (k.vsPrior.none) {
@@ -464,7 +437,6 @@ tr.is-selected td { background:#f2f7ff; }
       return '<div class="board-kpi" data-kpi="' + k.id + '">' +
         '<div class="kpi-label" data-metric="' + k.id + '">' + k.label + "</div>" +
         '<div class="kpi-value">' + k.display + "</div>" +
-        '<div class="kpi-sub muted">' + tgt + "</div>" +
         '<div class="kpi-meta">' + prior +
         ' <a href="#" data-kpi-trend="' + k.id + '" style="margin-left:6px">查看趋势</a></div></div>';
     }).join("");
@@ -521,17 +493,13 @@ tr.is-selected td { background:#f2f7ff; }
       var rateText = s.rateLabel
         ? (s.rate != null ? s.rate + "%" : "—")
         : "100%";
-      var gap = s.gap != null
-        ? (' · 目标差 <span class="' + (s.gap < 0 ? "down" : "up") + '">' +
-          (s.gap > 0 ? "+" : "") + s.gap + "pp</span>")
-        : "";
       return '<div class="step' + (clickable ? " clickable" : "") +
         (isActive ? " funnel-active" : "") +
         '" data-funnel-step="' + (fs || "") + '" data-term-step="' + s.id +
         '" style="--h:' + h + '%">' +
         '<div class="n">' + BoardMetrics.fmt(s.count) + "</div>" +
         '<div class="l">' + s.label + "</div>" +
-        '<div class="r">' + rateText + gap + "</div></div>";
+        '<div class="r">' + rateText + "</div></div>";
     }).join("");
     host.querySelectorAll(".step.clickable").forEach(function (el) {
       el.addEventListener("click", function () {
@@ -573,19 +541,9 @@ tr.is-selected td { background:#f2f7ff; }
       step.label + " / " + (BoardInsights.DIM_LABELS[dim] || dim);
 
     var srcBanner = document.getElementById("tf-source-banner");
-    var backBn = document.getElementById("tf-back-bn");
-    if (st.bottleneckId) {
-      var bnList = BoardTerm.getTermBottlenecks(termId, filters);
-      var bn = bnList.find(function (b) { return b.id === st.bottleneckId; });
-      srcBanner.hidden = false;
-      srcBanner.innerHTML = "<b>来自经营瓶颈：</b>" + (bn ? bn.title : st.bottleneckId) +
-        ' <span class="muted">· 当前分析：' + step.label + " / " +
-        (BoardInsights.DIM_LABELS[dim] || dim) + "</span>";
-      if (backBn) backBn.hidden = false;
-    } else {
+    if (srcBanner) {
       srcBanner.hidden = true;
       srcBanner.innerHTML = "";
-      if (backBn) backBn.hidden = true;
     }
 
     var tabs = document.getElementById("tf-dim-tabs");
@@ -603,7 +561,7 @@ tr.is-selected td { background:#f2f7ff; }
     var bd = BoardInsights.getFunnelDimensionBreakdown(filters, stepId, dim);
     var tbody = document.getElementById("tf-tbody");
     if (!bd.rows.length) {
-      BoardMetrics.renderEmpty(tbody, 7, "当前筛选下暂无维度数据");
+      BoardMetrics.renderEmpty(tbody, 5, "当前筛选下暂无维度数据");
     } else {
       tbody.innerHTML = bd.rows.map(function (r) {
         var listHref = "#";
@@ -633,8 +591,7 @@ tr.is-selected td { background:#f2f7ff; }
             : "");
         return '<tr class="' + sel + '"><td><b>' + r.label + "</b></td><td>" +
           BoardMetrics.fmt(r.from) + "</td><td>" + BoardMetrics.fmt(r.to) + "</td><td>" +
-          (r.rate != null ? r.rate + "%" : "—") + "</td><td>" + r.diffText + "</td><td>" +
-          (r.impact ? "约 " + r.impact + " 人" : "—") +
+          (r.rate != null ? r.rate + "%" : "—") +
           '</td><td class="row-actions"><a href="' + listHref +
           '" data-drill-save="1">查看名单</a>' + localBtn + applyBtn + "</td></tr>";
       }).join("");
@@ -1115,101 +1072,6 @@ tr.is-selected td { background:#f2f7ff; }
     });
   }
 
-  function openBottleneck(termId, b) {
-    if (!b || !b.action) return;
-    BoardInsights.saveReturnState();
-    if (b.action.type === "analysis") {
-      BoardInsights.setAnalyticsState({
-        bottleneckId: b.id,
-        funnelStep: b.action.funnelStep,
-        funnelDim: b.action.dimension || "channel",
-        scrollAnchor: "term-funnel-analysis",
-        selectedChannel: b.action.selectedChannel || "",
-        selectedLive: b.action.selectedLive || "",
-        selectedOwner: b.action.selectedOwner || ""
-      }, { syncUrl: true, push: true });
-      renderFunnel(termId, BoardMetrics.getFilters());
-      renderFunnelAnalysis(termId, BoardMetrics.getFilters());
-      renderBottlenecks(termId, BoardMetrics.getFilters());
-      var target = document.getElementById("term-funnel-analysis");
-      if (target) {
-        target.scrollIntoView({ behavior: "smooth", block: "start" });
-        target.classList.add("is-focus-flash");
-        setTimeout(function () { target.classList.remove("is-focus-flash"); }, 1200);
-      }
-      Proto.toast("已打开：" + b.title);
-    }
-  }
-
-  function renderBottlenecks(termId, filters) {
-    var list = BoardTerm.getTermBottlenecks(termId, filters);
-    var host = document.getElementById("term-bn-list");
-    var active = BoardInsights.getAnalyticsState().bottleneckId;
-    if (!list.length) {
-      host.innerHTML = '<p class="muted" style="padding:12px 0">当前期次未发现显著经营瓶颈。</p>';
-      return;
-    }
-    host.innerHTML = list.map(function (b) {
-      var children = (b.children && b.children.length)
-        ? ('<ul class="bn-children">' + b.children.map(function (c) {
-          return "<li><b>" + c.title + "</b> · " + (c.detail || "") + "</li>";
-        }).join("") + "</ul>")
-        : "";
-      return '<div class="bottleneck-item' + (active === b.id ? " is-active" : "") +
-        '" id="bn-' + b.id + '"><h4>' + b.title + "</h4>" +
-        '<p style="margin:0 0 4px;font-size:13px">当前 <b>' + b.current +
-        "</b> · 目标 " + b.target + " · 差距 " + b.gap + "</p>" +
-        '<p class="muted" style="margin:0 0 4px;font-size:12px">' + b.impact +
-        " · 主要来源：" + b.sources + "</p>" +
-        (b.reason ? '<p class="muted" style="margin:0 0 8px;font-size:12px">关联原因：' + b.reason + "</p>" : "") +
-        children +
-        '<button type="button" class="btn btn-sm btn-primary" data-bn-id="' + b.id + '">' +
-        (b.action && b.action.label ? b.action.label : "查看分析") + "</button></div>";
-    }).join("");
-    host.querySelectorAll("[data-bn-id]").forEach(function (btn) {
-      btn.onclick = function () {
-        openBottleneck(termId, list.find(function (x) { return x.id === btn.getAttribute("data-bn-id"); }));
-      };
-    });
-  }
-
-  function renderTodos(termId, filters) {
-    var list = BoardTerm.getTermTodos(termId, filters);
-    var host = document.getElementById("term-todo-list");
-    if (!list.length) {
-      host.innerHTML = '<p class="muted" style="padding:12px 0">当前暂无待办风险。</p>';
-      return;
-    }
-    host.innerHTML = list.map(function (r) {
-      var extra = {
-        term: termId,
-        focus: (r.action && r.action.focus) || "",
-        from_board: "term_review"
-      };
-      if (r.action && r.action.liveId) {
-        extra.live_id = r.action.liveId;
-        extra.selected_live = r.action.liveId;
-      }
-      if (r.action && r.action.section) extra.section = r.action.section;
-      var href = BoardMetrics.buildDrilldownUrl(
-        (r.action && r.action.href) || "leads.html",
-        extra
-      );
-      var urg = r.urgencyLabel || (r.urgency === "high" ? "紧急" : (r.urgency === "medium" ? "关注" : "一般"));
-      return '<div class="todo-risk-item">' +
-        '<div style="display:flex;justify-content:space-between;gap:8px;align-items:center">' +
-        "<b>" + r.type + " " + BoardMetrics.fmt(r.count) + (r.count === 1 && r.type.indexOf("SOP") >= 0 ? "" : " 人") + "</b>" +
-        '<span class="todo-urgency ' + (r.urgency || "low") + '">' + urg + "</span></div>" +
-        '<p class="muted" style="margin:0;font-size:12px">' + r.note +
-        (r.owner ? (" · " + r.owner) : "") + "</p>" +
-        '<a class="btn btn-sm btn-primary" href="' + href + '" data-drill-save="1">' +
-        ((r.action && r.action.label) || "去处理") + "</a></div>";
-    }).join("");
-    host.querySelectorAll("[data-drill-save]").forEach(function (a) {
-      a.addEventListener("click", function () { BoardInsights.saveReturnState(); });
-    });
-  }
-
   function maybeScrollSection() {
     var st = BoardInsights.getAnalyticsState();
     var q = new URLSearchParams(location.search);
@@ -1271,8 +1133,6 @@ tr.is-selected td { background:#f2f7ff; }
       renderPrivate(termId, filters);
       renderLives(termId, filters);
       renderConvert(termId, filters);
-      renderBottlenecks(termId, filters);
-      renderTodos(termId, filters);
       BoardMetrics.fillAttr();
       BoardMetrics.wireBoardLinks();
       maybeScrollSection();
@@ -1282,10 +1142,6 @@ tr.is-selected td { background:#f2f7ff; }
       }
     } catch (err) {
       console.error("[board-term-review sync]", err);
-      try {
-        renderBottlenecks(termId, filters);
-        renderTodos(termId, filters);
-      } catch (e2) { console.error(e2); }
     }
   }
 
@@ -1344,14 +1200,6 @@ tr.is-selected td { background:#f2f7ff; }
     }, { syncUrl: true, push: true });
     sync();
   };
-  var backBn = document.getElementById("tf-back-bn");
-  if (backBn) {
-    backBn.onclick = function () {
-      var el = document.getElementById("term-bn-list");
-      if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
-    };
-  }
-
   document.querySelectorAll("#trend-metric-bar [data-trend]").forEach(function (btn) {
     btn.onclick = function () {
       pageState.trendMetric = btn.getAttribute("data-trend");
@@ -1418,15 +1266,13 @@ tr.is-selected td { background:#f2f7ff; }
         return {
           name: "期次经营_漏斗维度",
           filename: BoardMetrics.exportFileName("期次经营_漏斗维度"),
-          headers: ["维度", "上游人数", "下游人数", "转化率", "差异", "影响"],
+          headers: ["维度", "上游人数", "下游人数", "转化率"],
           rows: rows.map(function (r) {
             return [
               r.label || "",
               r.from != null ? r.from : "",
               r.to != null ? r.to : "",
-              r.rate != null ? r.rate : "",
-              r.diffText || "",
-              r.impact != null ? r.impact : ""
+              r.rate != null ? r.rate : ""
             ];
           })
         };
@@ -1455,12 +1301,11 @@ tr.is-selected td { background:#f2f7ff; }
       return {
         name: "期次经营_核心指标",
         filename: BoardMetrics.exportFileName("期次经营_核心指标"),
-        headers: ["指标", "数值", "目标", "较上一期"],
+        headers: ["指标", "数值", "较上一期"],
         rows: (bundle.kpis || []).map(function (k) {
           return [
             k.label,
             k.display,
-            k.targetDisplay || "",
             (k.vsPrior && k.vsPrior.text) || ""
           ];
         })

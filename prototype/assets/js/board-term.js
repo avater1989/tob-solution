@@ -7,12 +7,12 @@
   function BI() { return global.BoardInsights; }
 
   var STATUS_FOCUS = {
-    prep: { title: "筹备重点", items: ["目标与人群", "直播促到SOP配置", "开播准备任务"] },
+    prep: { title: "筹备重点", items: ["人群与期次范围", "直播促到SOP配置", "开播准备任务"] },
     acquiring: { title: "获客重点", items: ["渠道流量与有效率", "加微率", "分配及时率"] },
     private_handoff: { title: "承接重点", items: ["分配与加微", "跟进覆盖", "积压处理"] },
     live_running: { title: "直播重点", items: ["邀约与推送", "到场表现", "场次准备"] },
-    convert_sprint: { title: "冲刺重点", items: ["到场未支付", "高意向跟进", "支付目标进度"] },
-    ended: { title: "复盘重点", items: ["完整漏斗", "目标完成", "场次效果"] }
+    convert_sprint: { title: "冲刺重点", items: ["到场未支付", "高意向跟进", "支付转化推进"] },
+    ended: { title: "复盘重点", items: ["完整漏斗", "渠道与场次效果", "成交结果"] }
   };
 
   var TERM_FUNNEL = [
@@ -577,7 +577,6 @@
     var useCum = series.kind !== "rate";
     var primary = useCum ? series.cumulative : series.daily;
     var vals = primary.filter(function (x) { return x != null; })
-      .concat((series.target || []).filter(function (x) { return x != null; }))
       .concat((series.priorCumulative || []).filter(function (x) { return x != null; }));
     if (!vals.length) {
       host.innerHTML = '<p class="muted" style="padding:16px">当前阶段暂无可用趋势</p>';
@@ -597,9 +596,6 @@
       return d;
     }
     var legend = '<span style="color:#165dff">当前' + (useCum ? "累计" : "") + '</span>';
-    if (series.target && series.target.some(function (v) { return v != null; })) {
-      legend += ' · <span style="color:#ff7d00">目标进度</span>';
-    }
     if (series.priorCumulative) {
       legend += ' · <span style="color:#86909c">上一期同期</span>';
     }
@@ -610,9 +606,6 @@
       '<svg viewBox="0 0 ' + w + " " + h + '" width="100%" height="' + h + '" role="img">' +
       '<line x1="' + pad.l + '" y1="' + (pad.t + ih) + '" x2="' + (pad.l + iw) + '" y2="' + (pad.t + ih) + '" stroke="#e5e6eb"/>' +
       (series.priorCumulative ? '<path d="' + path(series.priorCumulative, true) + '" fill="none" stroke="#86909c" stroke-width="1.5" stroke-dasharray="4 3"/>' : "") +
-      (series.target && series.target.some(function (v) { return v != null; })
-        ? '<path d="' + path(series.target, true) + '" fill="none" stroke="#ff7d00" stroke-width="1.5" stroke-dasharray="6 4"/>'
-        : "") +
       '<path d="' + path(primary, true) + '" fill="none" stroke="#165dff" stroke-width="2"/>' +
       series.labels.map(function (lb, i) {
         if (i % 2 !== 0 && i !== series.labels.length - 1) return "";

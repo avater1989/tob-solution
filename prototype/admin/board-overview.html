@@ -22,16 +22,6 @@
 .board-funnel-analysis .dim-tabs { display:flex; flex-wrap:wrap; gap:6px; margin:8px 0 12px; }
 .board-funnel-analysis .dim-tabs button { font-size:12px; }
 .board-funnel-analysis .dim-tabs button.active { background:var(--color-primary); color:#fff; border-color:var(--color-primary); }
-.board-split { display:grid; grid-template-columns:2fr 1fr; gap:16px; margin-bottom:16px; }
-@media (max-width:960px) { .board-split { grid-template-columns:1fr; } }
-.bottleneck-item { padding:12px 0; border-bottom:1px solid var(--color-border); }
-.bottleneck-item:last-child { border-bottom:none; }
-.bottleneck-item h4 { margin:0 0 6px; font-size:14px; }
-.todo-risk-item { display:flex; align-items:flex-start; gap:8px; padding:10px 0; border-bottom:1px solid var(--color-border); font-size:13px; }
-.todo-risk-item:last-child { border-bottom:none; }
-.todo-urgency { font-size:11px; padding:2px 6px; border-radius:4px; flex-shrink:0; }
-.todo-urgency.high { background:#fff1f0; color:#f53f3f; }
-.todo-urgency.medium { background:#fff7e8; color:#ff7d00; }
 .board-filter-note { font-size:12px; color:var(--color-text-muted); margin-left:8px; }
 </style>
 </head>
@@ -105,14 +95,13 @@
           <b id="fa-step-label">私域池 → 加微</b>
           <span class="muted" style="font-size:12px">·</span>
           <button type="button" class="btn btn-sm" id="fa-clear">清除选择</button>
-          <button type="button" class="btn btn-sm" id="fa-back-bn" hidden>返回经营瓶颈</button>
         </div>
         <div class="dim-tabs" id="fa-dim-tabs"></div>
         <div style="overflow-x:auto">
-          <table class="data" style="min-width:640px">
+          <table class="data" style="min-width:520px">
             <thead>
               <tr>
-                <th>维度</th><th>上游人数</th><th>下游人数</th><th>转化率</th><th>与整体差异</th><th>影响规模</th><th>操作</th>
+                <th>维度</th><th>上游人数</th><th>下游人数</th><th>转化率</th><th>操作</th>
               </tr>
             </thead>
             <tbody id="fa-tbody"></tbody>
@@ -120,17 +109,6 @@
         </div>
         <p class="muted" style="font-size:12px;margin:8px 0 0" id="fa-note"></p>
       </div>
-    </div>
-  </div>
-
-  <div class="board-split">
-    <div class="card">
-      <div class="card-hd"><h2>经营瓶颈</h2><span class="muted" style="font-size:12px;font-weight:400">为什么未达预期</span></div>
-      <div class="card-bd" id="bottleneck-list"></div>
-    </div>
-    <div class="card">
-      <div class="card-hd"><h2>待办风险</h2><span class="muted" style="font-size:12px;font-weight:400">现在需要处理</span></div>
-      <div class="card-bd" id="todo-risk-list"></div>
     </div>
   </div>
 
@@ -227,15 +205,12 @@
       var cmp = k.compare && k.compare.comparable
         ? '<span class="' + trendClass(k.compare.trend) + '">' + k.compareLabel + " " + k.compare.text + "</span>"
         : '<span class="muted">' + (k.compare ? k.compare.text : "") + "</span>";
-      var tgt = k.targetInfo && k.targetInfo.detail
-        ? "<br/>" + k.targetInfo.detail
-        : (k.target == null ? "" : "");
       var metric = trendMap[k.id] || "pool_new";
       return '<div class="board-kpi" data-kpi="' + k.id + '">' +
         '<div class="kpi-label" data-metric="' + k.id + '">' + k.label + "</div>" +
         '<div class="kpi-value">' + k.value + "</div>" +
         (k.sub ? '<div class="kpi-sub">' + k.sub + "</div>" : "") +
-        '<div class="kpi-meta">' + cmp + tgt +
+        '<div class="kpi-meta">' + cmp +
         '<br/><a href="#" data-open-trend="' + metric + '" data-trend-label="' + k.label + '">查看趋势</a></div></div>';
     }).join("");
     if (window.BoardTools) BoardTools.bindMetricTips(document.getElementById("core-kpis"));
@@ -302,17 +277,9 @@
     });
     document.getElementById("fa-step-label").textContent = step.label + " / " + (BoardInsights.DIM_LABELS[dim] || dim);
     var srcBanner = document.getElementById("fa-source-banner");
-    var backBn = document.getElementById("fa-back-bn");
-    if (st.bottleneckId) {
-      var bn = BoardInsights.getBottlenecks(filters).find(function (b) { return b.id === st.bottleneckId; });
-      srcBanner.hidden = false;
-      srcBanner.innerHTML = "<b>来自经营瓶颈：</b>" + (bn ? bn.title : st.bottleneckId) +
-        " <span class=\"muted\">· 当前分析：" + step.label + " / " + (BoardInsights.DIM_LABELS[dim] || dim) + "</span>";
-      if (backBn) backBn.hidden = false;
-    } else {
+    if (srcBanner) {
       srcBanner.hidden = true;
       srcBanner.innerHTML = "";
-      if (backBn) backBn.hidden = true;
     }
     var tabs = document.getElementById("fa-dim-tabs");
     tabs.innerHTML = step.dims.map(function (d) {
@@ -328,7 +295,7 @@
     var bd = BoardInsights.getFunnelDimensionBreakdown(filters, stepId, dim);
     var tbody = document.getElementById("fa-tbody");
     if (!bd.rows.length) {
-      BoardMetrics.renderEmpty(tbody, 7, "当前筛选下暂无维度数据");
+      BoardMetrics.renderEmpty(tbody, 5, "当前筛选下暂无维度数据");
     } else {
       tbody.innerHTML = bd.rows.map(function (r) {
         var listHref = "#";
@@ -354,8 +321,8 @@
           termBoardBtn = ' <a href="' + tbHref + '" data-drill-save="1">查看期次经营看板</a>';
         }
         return '<tr class="' + sel + '"><td><b>' + r.label + "</b></td><td>" + BoardMetrics.fmt(r.from) + "</td><td>" +
-          BoardMetrics.fmt(r.to) + "</td><td>" + (r.rate != null ? r.rate + "%" : "—") + "</td><td>" +
-          r.diffText + "</td><td>" + (r.impact ? "约 " + r.impact + " 人" : "—") + '</td><td class="row-actions">' +
+          BoardMetrics.fmt(r.to) + "</td><td>" + (r.rate != null ? r.rate + "%" : "—") +
+          '</td><td class="row-actions">' +
           '<a href="' + listHref + '" data-drill-save="1">查看名单</a>' + localBtn + applyBtn + termBoardBtn + "</td></tr>";
       }).join("");
     }
@@ -403,90 +370,6 @@
     });
   }
 
-  function openBottleneckAnalysis(b) {
-    if (!b || !b.action) return;
-    BoardInsights.saveReturnState();
-    if (b.action.type === "analysis") {
-      BoardInsights.setAnalyticsState({
-        bottleneckId: b.id,
-        funnelStep: b.action.funnelStep,
-        funnelDim: b.action.dimension,
-        scrollAnchor: "funnel-analysis",
-        selectedChannel: b.action.selectedChannel || "",
-        selectedLive: b.action.selectedLive || ""
-      }, { syncUrl: true, push: true });
-      renderFunnelAnalysis(BoardMetrics.getFilters());
-      var target = document.getElementById("funnel-analysis") || document.getElementById("funnel-section");
-      if (target) {
-        target.scrollIntoView({ behavior: "smooth", block: "start" });
-        target.classList.add("is-focus-flash");
-        setTimeout(function () { target.classList.remove("is-focus-flash"); }, 1200);
-      }
-      Proto.toast("已打开：" + b.title);
-      return;
-    }
-    if (b.action.type === "drill") {
-      var extra = { from_board: "overview", bottleneck_id: b.id };
-      if (b.action.liveId) {
-        extra.selected_live = b.action.liveId;
-        extra.live_id = b.action.liveId;
-        extra.live_tab = b.action.liveTab || "ended";
-      }
-      if (b.action.section) extra.section = b.action.section;
-      location.href = BoardMetrics.buildDrilldownUrl(b.action.href, extra);
-    }
-  }
-
-  function renderBottlenecks(filters) {
-    var list = BoardInsights.getBottlenecks(filters);
-    var host = document.getElementById("bottleneck-list");
-    var active = BoardInsights.getAnalyticsState().bottleneckId;
-    if (!list.length) {
-      host.innerHTML = '<p class="muted" style="padding:12px 0">当前筛选下未发现显著经营瓶颈。</p>';
-      return;
-    }
-    host.innerHTML = list.map(function (b) {
-      return '<div class="bottleneck-item' + (active === b.id ? " is-active" : "") + '" id="bn-' + b.id + '">' +
-        "<h4>" + b.title + "</h4>" +
-        '<p style="margin:0 0 4px;font-size:13px">当前 <b>' + b.current + "</b> · 目标/上期 " + b.target + " · 差距 " + b.gap + "</p>" +
-        '<p class="muted" style="margin:0 0 4px;font-size:12px">' + b.impact + " · 主要来源：" + b.sources + "</p>" +
-        (b.reason ? '<p class="muted" style="margin:0 0 8px;font-size:12px">关联原因：' + b.reason + "</p>" : "") +
-        '<button type="button" class="btn btn-sm btn-primary" data-bn-id="' + b.id + '">' + b.action.label + "</button></div>";
-    }).join("");
-    host.querySelectorAll("[data-bn-id]").forEach(function (btn) {
-      btn.onclick = function () {
-        openBottleneckAnalysis(list.find(function (x) { return x.id === btn.getAttribute("data-bn-id"); }));
-      };
-    });
-  }
-
-  function renderTodoRisks(filters) {
-    var list = BoardInsights.getTodoRisks(filters);
-    var host = document.getElementById("todo-risk-list");
-    if (!list.length) {
-      host.innerHTML = '<p class="muted" style="padding:12px 0">当前暂无待办风险。</p>';
-      return;
-    }
-    host.innerHTML = list.map(function (r) {
-      var href = BoardMetrics.buildDrilldownUrl(r.action.href, {
-        focus: r.action.focus || "",
-        live_id: r.action.liveId || "",
-        from_board: "overview"
-      });
-      var urg = r.urgencyLabel || (r.urgency === "high" ? "紧急" : (r.urgency === "medium" ? "关注" : "一般"));
-      return '<div class="todo-risk-item urgency-' + (r.urgency || "low") + '">' +
-        '<div style="display:flex;justify-content:space-between;gap:8px;align-items:center">' +
-        "<b>" + r.type + " " + BoardMetrics.fmt(r.count) + " 人</b>" +
-        '<span class="tag">' + urg + "</span></div>" +
-        '<p class="muted" style="margin:4px 0 8px;font-size:12px">' + r.note +
-        (r.owner ? (" · " + r.owner) : "") + "</p>" +
-        '<a class="btn btn-sm btn-primary" href="' + href + '" data-drill-save="1">' + r.action.label + "</a></div>";
-    }).join("");
-    host.querySelectorAll("[data-drill-save]").forEach(function (a) {
-      a.addEventListener("click", function () { BoardInsights.saveReturnState(); });
-    });
-  }
-
   function renderCrossFilters(filters) {
     var st = BoardInsights.getAnalyticsState();
     var el = document.getElementById("cross-filters");
@@ -516,8 +399,6 @@
       renderCoreKpis(d, filters);
       renderFunnelRates(d);
       renderFunnelAnalysis(filters);
-      renderBottlenecks(filters);
-      renderTodoRisks(filters);
       renderCrossFilters(filters);
       updateTopicEntries(filters);
       BoardMetrics.renderActiveFilters();
@@ -530,10 +411,6 @@
       }
     } catch (err) {
       console.error("[board-overview sync]", err);
-      try {
-        renderBottlenecks(filters);
-        renderTodoRisks(filters);
-      } catch (e2) { console.error(e2); }
     }
   }
 
@@ -548,13 +425,6 @@
   if (closeTrend) {
     closeTrend.onclick = function () {
       document.getElementById("overview-trend-card").hidden = true;
-    };
-  }
-  var backBn = document.getElementById("fa-back-bn");
-  if (backBn) {
-    backBn.onclick = function () {
-      var el = document.getElementById("bottleneck-list");
-      if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
     };
   }
 
@@ -604,15 +474,13 @@
       return {
         name: "经营总览_漏斗维度",
         filename: BoardMetrics.exportFileName("经营总览_漏斗维度"),
-        headers: ["维度", "起始人数", "到达人数", "转化率", "差异", "影响"],
+        headers: ["维度", "起始人数", "到达人数", "转化率"],
         rows: rows.map(function (r) {
           return [
             r.label || r.name || "",
             r.from != null ? r.from : "",
             r.to != null ? r.to : "",
-            r.rate != null ? r.rate : "",
-            r.diffText || "",
-            r.impact != null ? r.impact : ""
+            r.rate != null ? r.rate : ""
           ];
         })
       };
