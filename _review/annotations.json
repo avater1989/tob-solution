@@ -1,6 +1,6 @@
 {
   "v": 1,
-  "updated": "2026-09-13T23:20:00",
+  "updated": "2026-09-14T11:45:38",
   "items": [
     {
       "id": "rmtzxn3lffyfr",
@@ -58,6 +58,356 @@
       "comment": "将内容合并到 租户列表 里去",
       "status": "resolved",
       "createdAt": "2026-09-13T15:15:01.637Z"
+    },
+    {
+      "id": "rmu0n753o1uxc",
+      "page": "admin/dashboard.html",
+      "anchor": {
+        "selector": "#role-select",
+        "selectorIn": "#role-select",
+        "root": "#page-header-actions",
+        "region": "header-actions",
+        "shell": "",
+        "label": "select#role-select.wb-role-select",
+        "text": "商户管理员 助教/销售 审核员 内容运营",
+        "html": "<select class=\"wb-role-select\" id=\"role-select\" title=\"原型角色切换\" aria-label=\"原型角色切换\"> <option value=\"admin\">商户管理员</option> <option value=\"sales\">助教/销售</option> <option value=\"auditor\">审核员</option> <option value=\"content\">内容运营</option> </select>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "这里去掉审核员",
+      "status": "open",
+      "createdAt": "2026-09-14T02:47:24.564Z",
+      "_stale": false
+    },
+    {
+      "id": "rmu0n9c2izief",
+      "page": "admin/sys-users.html",
+      "anchor": {
+        "selector": "#admin-content-slot > div > div:nth-of-type(3) > div > table > tbody > tr:nth-of-type(3) > td:nth-of-type(6) > span",
+        "selectorIn": "div:nth-of-type(3) > div > table > tbody > tr:nth-of-type(3) > td:nth-of-type(6) > span",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "span.tag.tag-blue",
+        "text": "销售",
+        "html": "<span class=\"tag tag-blue\">销售</span>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "这里改成助教",
+      "status": "open",
+      "createdAt": "2026-09-14T02:49:06.906Z"
+    },
+    {
+      "id": "rmu0ncff4rejd",
+      "page": "admin/dashboard.html",
+      "anchor": {
+        "selector": "#quick-links",
+        "selectorIn": "#quick-links",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "div#quick-links.wb-quick-links",
+        "text": "查看全部直播 查看全部线索",
+        "html": "<div class=\"wb-quick-links\" id=\"quick-links\"> <a href=\"lives.html\" id=\"link-all-lives\">查看全部直播</a> <a href=\"leads.html\" id=\"link-all-leads\" class=\"wb-hidden\">查看全部线索</a> </div>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "这里去掉",
+      "status": "open",
+      "createdAt": "2026-09-14T02:51:31.216Z"
+    },
+    {
+      "id": "rmu0njnc423w4",
+      "page": "admin/videos.html",
+      "anchor": {
+        "selector": "#panel-auth > div > div:nth-of-type(2) > table > thead > tr > th:nth-of-type(4)",
+        "selectorIn": "#panel-auth > div > div:nth-of-type(2) > table > thead > tr > th:nth-of-type(4)",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "th",
+        "text": "橱窗状态",
+        "html": "<th>橱窗状态</th>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "橱窗状态和绑定橱窗去掉",
+      "status": "open",
+      "createdAt": "2026-09-14T02:57:08.068Z"
+    },
+    {
+      "id": "rmu0o5946kk9x",
+      "page": "admin/user-segments.html",
+      "anchor": {
+        "selector": "body > div:nth-of-type(4) > div:nth-of-type(2) > aside > div:nth-of-type(3) > a:nth-of-type(11) > span",
+        "selectorIn": "",
+        "root": "",
+        "region": "shell",
+        "shell": "admin-shell.js",
+        "label": "span.nav-text",
+        "text": "用户分群",
+        "html": "<span class=\"nav-text\">用户分群</span>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "用户分群和定向运营计划都直接标注二期功能",
+      "status": "open",
+      "createdAt": "2026-09-14T03:13:56.070Z"
+    },
+    {
+      "id": "rmu0o6x51o7xk",
+      "page": "admin/ops-plans.html",
+      "anchor": {
+        "selector": "body > div:nth-of-type(6) > div:nth-of-type(2) > aside > div:nth-of-type(3) > a:nth-of-type(12) > span",
+        "selectorIn": "",
+        "root": "",
+        "region": "shell",
+        "shell": "admin-shell.js",
+        "label": "span.nav-text",
+        "text": "定向运营计划",
+        "html": "<span class=\"nav-text\">定向运营计划</span>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "文案上直接提示为二期功能",
+      "status": "open",
+      "createdAt": "2026-09-14T03:15:13.861Z"
+    },
+    {
+      "id": "rmu0oathe3wtb",
+      "page": "admin/live-invite.html",
+      "anchor": {
+        "selector": "body > div:nth-of-type(7) > div:nth-of-type(2) > aside > div:nth-of-type(4) > a:nth-of-type(9)",
+        "selectorIn": "",
+        "root": "",
+        "region": "shell",
+        "shell": "admin-shell.js",
+        "label": "a.nav-item.active",
+        "text": "直播促到SOP",
+        "html": "<a class=\"nav-item active\" href=\"live-invite.html\"><span class=\"nav-text\">直播促到SOP</span></a>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "直播提醒部分 我们应该就不要直播促到SOP功能了 用户直接在直播创建部分做创建提醒",
+      "status": "open",
+      "createdAt": "2026-09-14T03:18:15.746Z"
+    },
+    {
+      "id": "rmu0ocy407gel",
+      "page": "admin/term-mgmt.html",
+      "anchor": {
+        "selector": "#tm-goals-box > summary",
+        "selectorIn": "",
+        "root": "",
+        "region": "page",
+        "shell": "",
+        "label": "summary",
+        "text": "经营目标（选填，默认折叠）",
+        "html": "<summary style=\"cursor:pointer;font-size:13px;font-weight:600;color:var(--color-text-secondary)\">经营目标（选填，默认折叠）</summary>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "去掉期次管理的经营目标",
+      "status": "open",
+      "createdAt": "2026-09-14T03:19:55.057Z"
+    },
+    {
+      "id": "rmu0odma8z4xn",
+      "page": "admin/lives.html",
+      "anchor": {
+        "selector": "#btn-tutorial",
+        "selectorIn": "#btn-tutorial",
+        "root": "#page-header-actions",
+        "region": "header-actions",
+        "shell": "",
+        "label": "button#btn-tutorial.btn",
+        "text": "使用教程",
+        "html": "<button type=\"button\" class=\"btn\" id=\"btn-tutorial\">使用教程</button>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "去掉使用教程",
+      "status": "open",
+      "createdAt": "2026-09-14T03:20:26.384Z",
+      "_stale": false
+    },
+    {
+      "id": "rmu0omutuv11g",
+      "page": "admin/live-edit.html",
+      "anchor": {
+        "selector": "#le-assist",
+        "selectorIn": "#le-assist",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "select#le-assist",
+        "text": "王助教刘助教",
+        "html": "<select id=\"le-assist\" multiple=\"\" style=\"height:60px;padding:8px\"> <option>王助教</option><option>刘助教</option> </select>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "助教应该做改成添加和编辑交互",
+      "status": "open",
+      "createdAt": "2026-09-14T03:27:37.362Z",
+      "_stale": false
+    },
+    {
+      "id": "rmu0onc2qj4tu",
+      "page": "admin/live-edit.html",
+      "anchor": {
+        "selector": "#le-teacher",
+        "selectorIn": "#le-teacher",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "select#le-teacher",
+        "text": "阮荣均赵老师王助教",
+        "html": "<select id=\"le-teacher\"><option>阮荣均</option><option>赵老师</option><option>王助教</option></select>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "主讲老师还没有增加字段在用户部分维护",
+      "status": "open",
+      "createdAt": "2026-09-14T03:27:59.714Z",
+      "_stale": false
+    },
+    {
+      "id": "rmu0ooi8amucq",
+      "page": "admin/live-edit.html",
+      "anchor": {
+        "selector": "#admin-content-slot > div > div:nth-of-type(6) > div > div > div:nth-of-type(6) > span:nth-of-type(1)",
+        "selectorIn": "div:nth-of-type(6) > div > div > div:nth-of-type(6) > span:nth-of-type(1)",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "span.pro-badge",
+        "text": "专业版",
+        "html": "<span class=\"pro-badge\">专业版</span>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "这个专业版有效期之类的去掉",
+      "status": "open",
+      "createdAt": "2026-09-14T03:28:54.346Z",
+      "_stale": false
+    },
+    {
+      "id": "rmu0ooxw9i8h9",
+      "page": "admin/live-edit.html",
+      "anchor": {
+        "selector": "#admin-content-slot > div > div:nth-of-type(7) > div > table > thead > tr > th:nth-of-type(4)",
+        "selectorIn": "div:nth-of-type(7) > div > table > thead > tr > th:nth-of-type(4)",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "th",
+        "text": "讲解话术",
+        "html": "<th>讲解话术</th>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "讲解话术去掉",
+      "status": "open",
+      "createdAt": "2026-09-14T03:29:14.649Z",
+      "_stale": false
+    },
+    {
+      "id": "rmu0oph40ij70",
+      "page": "admin/live-edit.html",
+      "anchor": {
+        "selector": "#btn-add-goods",
+        "selectorIn": "#btn-add-goods",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "button#btn-add-goods.btn.btn-primary",
+        "text": "+ 添加商品",
+        "html": "<button class=\"btn btn-primary\" id=\"btn-add-goods\">+ 添加商品</button>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "添加商品交互要加上",
+      "status": "open",
+      "createdAt": "2026-09-14T03:29:39.552Z",
+      "_stale": false
+    },
+    {
+      "id": "rmu0oqni09be5",
+      "page": "admin/live-edit.html",
+      "anchor": {
+        "selector": "#admin-content-slot > div > h2:nth-of-type(7)",
+        "selectorIn": "h2:nth-of-type(7)",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "h2.page-section-title",
+        "text": "角色设置",
+        "html": "<h2 class=\"page-section-title\">角色设置</h2>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "角色设置去掉",
+      "status": "open",
+      "createdAt": "2026-09-14T03:30:34.488Z",
+      "_stale": false
+    },
+    {
+      "id": "rmu0p40rbapzz",
+      "page": "admin/live-edit.html",
+      "anchor": {
+        "selector": "#admin-content-slot > div > h2:nth-of-type(8)",
+        "selectorIn": "h2:nth-of-type(8)",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "h2.page-section-title",
+        "text": "预约提醒",
+        "html": "<h2 class=\"page-section-title\">预约提醒</h2>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "这里改一下 不要仅针对预约人员 MA功能肯定是二期的功能 这个直播预约提醒应该是要先上的 所以还是针对该直播场景做整体的促到 另外漏了一个场景是针对应到未到人群在直播中的促到 另外直播促到SOP去掉",
+      "status": "open",
+      "createdAt": "2026-09-14T03:40:58.199Z"
+    },
+    {
+      "id": "rmu0p8hlwfc74",
+      "page": "admin/live-booking.html",
+      "anchor": {
+        "selector": "#btn-invite",
+        "selectorIn": "#btn-invite",
+        "root": "#page-header-actions",
+        "region": "header-actions",
+        "shell": "",
+        "label": "a#btn-invite.btn",
+        "text": "新建直播促到SOP",
+        "html": "<a class=\"btn\" id=\"btn-invite\" href=\"live-invite.html\">新建直播促到SOP</a>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "同样的 去掉直播促到SOP",
+      "status": "open",
+      "createdAt": "2026-09-14T03:44:26.660Z"
+    },
+    {
+      "id": "rmu0pa1ab6q1z",
+      "page": "admin/lives.html",
+      "anchor": {
+        "selector": "#lv-tbody > tr:nth-of-type(1) > td:nth-of-type(10) > span > a",
+        "selectorIn": "#lv-tbody > tr:nth-of-type(1) > td:nth-of-type(10) > span > a",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "a.row-more",
+        "text": "更多",
+        "html": "<a href=\"javascript:;\" class=\"row-more\" data-more-toggle=\"\">更多</a>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "更多选项中去掉直播促到SOP",
+      "status": "open",
+      "createdAt": "2026-09-14T03:45:38.820Z"
     }
   ]
 }
