@@ -23,7 +23,7 @@
     <div class="card-bd">
       <div class="form-grid">
         <div class="field"><label>店铺名称 *</label><input class="input" id="s-name" value="星启家庭教育" maxlength="12" /><div class="muted">展示在 C 端各页面顶部导航栏（首页为「星启家庭教育」），2-12 个字符</div></div>
-        <div class="field"><label>客服企微</label><input class="input" id="s-kf" value="星启小助手（qixiao-01）" /><div class="muted">用于 C 端「添加老师企业微信」（我的页）与「添加企微老师」（领课页）按钮，点击后唤起企微</div></div>
+        <div class="field"><label>客服企微</label><input class="input" id="s-kf" value="星启小助手（qixiao-01）" /><div class="muted">用于 C 端「添加老师企业微信」（我的页）按钮，点击后唤起企微</div></div>
       </div>
       <div class="muted" style="margin-top:12px;padding-top:12px;border-top:1px dashed var(--color-border)">
         端侧当前未展示店铺 Logo 与店铺简介，相关字段已移除；待 C 端页面支持展示后可再行开放。
@@ -33,26 +33,24 @@
 
   <!-- C 端页面与配置入口 -->
   <div class="card" style="margin-bottom:14px">
-    <div class="card-hd"><h2>C 端页面与配置入口</h2><span class="muted" style="margin-left:10px">小程序端共 10 个页面，下表为各页面在本次重构后的后台配置入口</span></div>
+    <div class="card-hd"><h2>C 端页面与配置入口</h2><span class="muted" style="margin-left:10px">仅列出原型中实际落地的页面；测评 / 定制化 / 艺博士 / 领课口头讲解即可</span></div>
     <div class="card-bd">
       <table class="as-table">
         <thead>
           <tr><th>C 端页面</th><th>页面说明</th><th style="width:200px">后台配置入口</th></tr>
         </thead>
         <tbody>
-          <tr><td><b>首页</b></td><td class="as-desc">Banner + 定制化计划入口 + 精选课程</td><td><a href="mp-home.html">首页装修</a></td></tr>
+          <tr><td><b>首页</b></td><td class="as-desc">Banner + 金刚位（测评/定制化/艺博士，无详情页）+ 精选课程</td><td><a href="mp-home.html">首页装修</a></td></tr>
           <tr><td><b>我的</b></td><td class="as-desc">用户卡 + 我的课程 + 我的直播 + 更多服务</td><td><a href="mp-mine.html">我的页装修</a></td></tr>
           <tr><td><b>课程详情</b></td><td class="as-desc">试看封面 + 目录 + 购买栏</td><td><a href="mp-course.html">课程与学习页</a></td></tr>
           <tr><td><b>学习</b></td><td class="as-desc">播放器 + 目录进度 + 完成标记</td><td><a href="mp-course.html">课程与学习页</a></td></tr>
           <tr><td><b>我的订单</b></td><td class="as-desc">状态筛选 + 订单卡 + 操作按钮</td><td><a href="mp-order.html">订单页</a></td></tr>
           <tr><td><b>支付结果</b></td><td class="as-desc">成功提示 + 分支文案 + 按钮</td><td><a href="mp-pay.html">支付结果页</a></td></tr>
-          <tr><td><b>定制化计划 / 测评</b></td><td class="as-desc">计划卡 + 进度 + 自助测评</td><td><a href="mp-assess.html">测评与计划页</a></td></tr>
-          <tr><td><b>领课</b></td><td class="as-desc">领课设置 + 批次 + 领取记录</td><td><a href="mp-claim.html">领课页</a></td></tr>
           <tr><td><b>直播列表 / 直播间</b></td><td class="as-desc">排期展示 + 挂载 + 互动</td><td><a href="mp-live.html">直播页</a></td></tr>
           <tr><td><b>全部页面</b></td><td class="as-desc">访问、转化、来源等数据表现</td><td><a href="mp-data.html">小程序数据</a></td></tr>
         </tbody>
       </table>
-      <div class="muted" style="margin-top:12px">课程内容、订单数据、测评题目与计划内容分别由「内容管理」「交易 · 订单管理」「测评管理」「计划管理」维护，本板块只负责 C 端的展示形态。</div>
+      <div class="muted" style="margin-top:12px">课程内容与订单数据分别由「内容管理」「交易 · 订单管理」维护，本板块只负责 C 端的展示形态。</div>
     </div>
   </div>
 </div>

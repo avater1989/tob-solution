@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>首页 · To-B 小程序</title>
   <link rel="stylesheet" href="../assets/css/proto.css" />
-  <link rel="stylesheet" href="../assets/css/mp.css?v=5" />
+  <link rel="stylesheet" href="../assets/css/mp.css?v=6" />
 </head>
 <body class="mp-page" data-tab="home">
   <div class="mp-frame">
@@ -21,12 +21,21 @@
         <p>8 节体系课 · 陪学营老师全程答疑</p>
       </div>
 
-      <!-- 定制化计划入口（特定条件下出现，?plan=0 隐藏） -->
-      <a class="mp-strip" id="plan-strip" href="assess.html" style="display:none">
-        <span class="mp-strip-dot">测</span>
-        <span class="mp-strip-txt" id="plan-strip-txt">老师为你定制了计划</span>
-        <span class="mp-strip-go">去测评 ›</span>
-      </a>
+      <!-- 金刚位：入口示意，详情页口头讲解即可 -->
+      <div class="mp-king">
+        <a href="#" data-toast="测评：详情页口头讲解即可（原型不落地）">
+          <span class="mp-king-ico k1">测</span>
+          测评
+        </a>
+        <a href="#" data-toast="定制化：详情页口头讲解即可（原型不落地）">
+          <span class="mp-king-ico k2">定</span>
+          定制化
+        </a>
+        <a href="#" data-toast="艺博士：详情页口头讲解即可（原型不落地）">
+          <span class="mp-king-ico k3">博</span>
+          艺博士
+        </a>
+      </div>
 
       <!-- 精选课程 -->
       <div class="mp-section" style="padding-top:16px">
@@ -53,11 +62,11 @@
           </div>
         </a>
 
-        <a class="course-card" href="claim.html">
+        <a class="course-card" href="course.html">
           <div class="course-cover">体验<br />9.9</div>
           <div class="course-info">
             <h4>9.9 引流体验课</h4>
-            <p>视频号同款 · 可领课后学习</p>
+            <p>视频号同款 · 体验入门</p>
             <div class="price">¥9.9</div>
           </div>
         </a>
@@ -65,21 +74,9 @@
 
     </div>
   </div>
-  <p class="mp-hint">首页 = Banner + 定制化计划入口 + 精选课程 · <a href="../admin/content-series.html">管理端内容</a></p>
+  <p class="mp-hint">首页 = Banner + 金刚位（测评 / 定制化 / 艺博士，无详情页）+ 精选课程 · <a href="../admin/mp-home.html">管理端装修</a></p>
 
   <script src="../assets/js/proto.js"></script>
-  <script src="../assets/js/mp-plan.js?v=1"></script>
   <script src="../assets/js/mp-shell.js"></script>
-  <script>
-    // 细长条：仅当存在定制化计划时展示
-    (function () {
-      var strip = document.getElementById("plan-strip");
-      if (!strip || !window.MpPlan || !window.MpPlan.active) return;
-      var plan = window.MpPlan.plan;
-      document.getElementById("plan-strip-txt").innerHTML =
-        "定制化计划 · <b>" + plan.name + "</b>";
-      strip.style.display = "flex";
-    })();
-  </script>
 </body>
 </html>

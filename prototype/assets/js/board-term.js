@@ -482,10 +482,13 @@
       follow_rate: "followRate",
       cover_rate: "followRate",
       attend_users: "attend",
-      attend_rate: "attend",
+      attend_rate: "attendRate",
       pay_users: "pay",
+      pay_rate: "payRate",
       pay_cum: "pay_cum",
-      gmv_cum: "gmv_cum"
+      gmv_cum: "gmv_cum",
+      refund: "refundRate",
+      refund_rate: "refundRate"
     };
     metric = alias[metric] || metric;
     var bundle = getTermBundle(termId, opts.filters);
@@ -496,39 +499,58 @@
     var targetLine = [];
     var priorCum = [];
     var seed = hash(termId + ":" + metric);
+    var m = bundle.metrics || {};
+    var wecomKpi = (bundle.kpis || []).filter(function (k) { return k.id === "wecomRate"; })[0];
     var baseDaily = {
-      pool_new: Math.max(8, Math.round((bundle.metrics.poolLeads || 100) / days)),
-      attend: Math.max(3, Math.round((bundle.metrics.attendUsers || 40) / days)),
-      pay: Math.max(2, Math.round((bundle.metrics.attributedPayUsers || 20) / days)),
-      wecomRate: bundle.kpis.filter(function (k) { return k.id === "wecomRate"; })[0],
+      pool_new: Math.max(8, Math.round((m.poolLeads || 100) / days)),
+      wecom: Math.max(5, Math.round((m.wecomLeads || 60) / days)),
+      attend: Math.max(3, Math.round((m.attendUsers || 40) / days)),
+      pay: Math.max(2, Math.round((m.attributedPayUsers || 20) / days)),
+      wecomRate: (wecomKpi && wecomKpi.value) || 64,
+      attendRate: m.wecomLeads ? Math.round((m.attendUsers / m.wecomLeads) * 1000) / 10 : 47,
+      payRate: m.wecomLeads ? Math.round((m.attributedPayUsers / m.wecomLeads) * 1000) / 10 : 32,
       followRate: 72,
-      gmv: Math.max(500, Math.round(((bundle.metrics.attrGmv || bundle.metrics.attributedGmv || 10000)) / days))
+      refundRate: 3.2,
+      gmv: Math.max(500, Math.round(((m.attrGmv || m.attributedGmv || m.fullGmv || 10000)) / days))
     };
+    if (typeof baseDaily.gmv !== "number" || isNaN(baseDaily.gmv)) {
+      baseDaily.gmv = Math.max(500, Math.round(10000 / days));
+    }
     var run = 0;
     var priorRun = 0;
     var goalPay = (term.goals && term.goals.payUsers) || null;
     var goalPool = (term.goals && term.goals.poolLeads) || null;
     var goalGmv = (term.goals && term.goals.gmv) || null;
+    var rateMetrics = { wecomRate: 1, followRate: 1, attendRate: 1, payRate: 1, refundRate: 1 };
 
     for (var i = 0; i < days; i++) {
       var day = i + 1;
       labels.push("D" + day);
       var wobble = ((seed + i * 17) % 7) - 3;
       var v;
-      var isRate = metric === "wecomRate" || metric === "followRate";
+      var isRate = !!rateMetrics[metric];
       if (metric === "pool_new" || metric === "pool_cum") v = Math.max(0, baseDaily.pool_new + wobble);
+      else if (metric === "wecom") v = Math.max(0, baseDaily.wecom + Math.round(wobble / 2));
       else if (metric === "attend") v = Math.max(0, baseDaily.attend + Math.round(wobble / 2));
       else if (metric === "pay" || metric === "pay_cum") v = Math.max(0, baseDaily.pay + Math.round(wobble / 3));
       else if (metric === "gmv" || metric === "gmv_cum") v = Math.max(0, baseDaily.gmv + wobble * 80);
-      else if (metric === "wecomRate") v = Math.max(40, Math.min(85, (baseDaily.wecomRate && baseDaily.wecomRate.value) || 64 + wobble * 0.4));
+      else if (metric === "wecomRate") v = Math.max(40, Math.min(85, baseDaily.wecomRate + wobble * 0.4));
+      else if (metric === "attendRate") v = Math.max(25, Math.min(80, baseDaily.attendRate + wobble * 0.5));
+      else if (metric === "payRate") v = Math.max(10, Math.min(60, baseDaily.payRate + wobble * 0.4));
       else if (metric === "followRate") v = Math.max(50, Math.min(95, baseDaily.followRate + wobble * 0.5));
+      else if (metric === "refundRate") v = Math.max(0.5, Math.min(12, baseDaily.refundRate + wobble * 0.15));
       else v = Math.max(0, baseDaily.pool_new + wobble);
 
       if (isRate) {
         daily.push(Math.round(v * 10) / 10);
         cum.push(null);
         priorCum.push(null);
-        var tgt = metric === "wecomRate" ? (term.goals && term.goals.wecomRate) : 78;
+        var tgt = null;
+        if (metric === "wecomRate") tgt = term.goals && term.goals.wecomRate;
+        else if (metric === "attendRate") tgt = term.goals && term.goals.attendRate;
+        else if (metric === "payRate") tgt = term.goals && term.goals.payRate;
+        else if (metric === "followRate") tgt = 78;
+        else if (metric === "refundRate") tgt = 5;
         targetLine.push(tgt != null ? tgt : null);
       } else {
         daily.push(v);
@@ -548,7 +570,7 @@
       }
     }
 
-    var kind = isRate ? "rate" : (metric.indexOf("cum") >= 0 || metric === "pay" || metric === "pool_new" || metric === "attend" || metric === "gmv" ? "cum" : "daily");
+    var kind = isRate ? "rate" : (metric.indexOf("cum") >= 0 || metric === "pay" || metric === "pool_new" || metric === "attend" || metric === "wecom" || metric === "gmv" ? "cum" : "daily");
     return {
       termId: termId,
       metric: metric,

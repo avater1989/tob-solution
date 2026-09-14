@@ -166,7 +166,7 @@
     var q = new URLSearchParams(location.search);
     var f = {};
     if (q.get("range")) f.range = q.get("range");
-    if (q.get("channel") != null && q.has("channel")) f.channel = q.get("channel");
+    if (q.get("channel") != null && q.has("channel")) f.channel = normalizeChannelFilter(q.get("channel"));
     if (q.get("term") != null && q.has("term")) f.term = q.get("term");
     if (q.get("src") != null && q.has("src")) f.src = q.get("src");
     if (q.get("transaction_type") != null && q.has("transaction_type") && !f.src) {
@@ -243,10 +243,12 @@
       } else {
         Object.assign(base, urlF);
       }
+      base.channel = normalizeChannelFilter(base.channel);
       getFilters._booted = true;
       persistFilters(base, "replace");
       ensurePopstate();
     }
+    base.channel = normalizeChannelFilter(base.channel);
     if (base.range === "custom") {
       var chk = isValidCustomRange(base.start_date, base.end_date);
       if (!chk.ok) {
@@ -272,6 +274,7 @@
     if (partial && partial.transactionType != null && partial.src == null) {
       cur.src = partial.transactionType;
     }
+    cur.channel = normalizeChannelFilter(cur.channel);
     if (cur.range === "custom") {
       var chk = isValidCustomRange(cur.start_date, cur.end_date);
       if (!chk.ok) {
@@ -390,11 +393,23 @@
     return refreshSnapshot();
   }
 
+  function matchChannelFilter(filterChannel, rowChannel) {
+    if (!filterChannel) return true;
+    if (filterChannel === "other") return !!rowChannel && rowChannel !== "video";
+    return rowChannel === filterChannel;
+  }
+
+  function normalizeChannelFilter(v) {
+    if (!v) return "";
+    if (v === "livecode" || v === "link" || v === "import") return "other";
+    return v;
+  }
+
   function sumSlices(filters) {
     filters = getDataFilters(filters);
     var list = BD().leadSlices.filter(function (s) {
       if (s.range !== filters.range) return false;
-      if (filters.channel && s.channel !== filters.channel) return false;
+      if (!matchChannelFilter(filters.channel, s.channel)) return false;
       if (filters.term && s.term !== filters.term) return false;
       return true;
     });
@@ -567,7 +582,7 @@
     filters = getDataFilters(filters || getFilters());
     var raw = BD().staffRows.filter(function (r) {
       if (r.range !== filters.range) return false;
-      if (filters.channel && r.channel !== filters.channel) return false;
+      if (!matchChannelFilter(filters.channel, r.channel)) return false;
       if (filters.term && r.term !== filters.term) return false;
       return true;
     });
@@ -1386,23 +1401,6 @@
   }
 
   function ensureCaliberUI() {
-    if (document.getElementById("board-caliber-btn")) return;
-    var host = document.querySelector(".board-filter") || document.getElementById("page-content");
-    if (!host) return;
-    var wrap = document.createElement("div");
-    wrap.className = "board-caliber-wrap";
-    wrap.innerHTML =
-      '<button type="button" class="btn btn-sm" id="board-caliber-btn">统计口径</button>' +
-      '<div class="board-caliber-pop" id="board-caliber-pop" hidden>' +
-      "<p><b>主漏斗口径</b><br/>主漏斗以筛选时间范围内首次入池的线索为统计对象，观察其截至数据更新时间是否完成分配、加微和可归因支付。</p>" +
-      "<p><b>交易指标口径</b><br/>全量交易按支付事件统计；可归因交易须能关联到筛选范围内线索/渠道/期次。缺映射时展示「—」，而非成交为 0。</p>" +
-      "<p><b>筛选作用范围</b><br/>" + FILTER_SCOPE_HELP + "</p>" +
-      '<p class="today-note" id="board-caliber-today" hidden>今日线索仍在持续转化，当前转化率不是最终结果。</p>' +
-      "</div>";
-    var filter = document.querySelector(".board-filter");
-    if (filter) filter.appendChild(wrap);
-    else host.insertBefore(wrap, host.firstChild);
-
     if (!document.getElementById("board-caliber-error")) {
       var err = document.createElement("div");
       err.id = "board-caliber-error";
@@ -1412,24 +1410,6 @@
       var page = document.getElementById("page-content");
       if (page) page.insertBefore(err, page.firstChild);
     }
-
-    var btn = document.getElementById("board-caliber-btn");
-    var pop = document.getElementById("board-caliber-pop");
-    btn.addEventListener("click", function (e) {
-      e.stopPropagation();
-      var show = pop.hasAttribute("hidden");
-      if (show) pop.removeAttribute("hidden");
-      else pop.setAttribute("hidden", "");
-      var todayNote = document.getElementById("board-caliber-today");
-      if (todayNote) {
-        if (getFilters().range === "today") todayNote.removeAttribute("hidden");
-        else todayNote.setAttribute("hidden", "");
-      }
-    });
-    document.addEventListener("click", function () {
-      pop.setAttribute("hidden", "");
-    });
-    pop.addEventListener("click", function (e) { e.stopPropagation(); });
   }
 
   function bindFilterBar(opts) {
@@ -1795,6 +1775,8 @@
     formatYmd: formatYmd,
     parseYmd: parseYmd,
     channelLabel: channelLabel,
+    matchChannelFilter: matchChannelFilter,
+    normalizeChannelFilter: normalizeChannelFilter,
     termLabel: termLabel,
     srcLabel: srcLabel,
     getRangeData: getRangeData,

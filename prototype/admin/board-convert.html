@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>交易分析 · 商家管理后台</title>
+<title>商品分析 · 商家管理后台</title>
 <link rel="stylesheet" href="../assets/css/proto.css?v=14" />
 <style>
 .trade-zone { scroll-margin-top: 72px; }
@@ -11,20 +11,16 @@
 #active-filters { margin: 0 0 12px; font-size: 12px; }
 </style>
 </head>
-<body class="admin-body" data-module="data" data-nav="board-c" data-title="交易分析" data-crumb="经营分析 / 交易" data-assist="1">
+<body class="admin-body" data-module="data" data-nav="board-c" data-title="商品分析" data-crumb="经营分析 / 商品" data-assist="1">
 <div id="header-actions">
   <span class="muted" id="board-updated" style="margin-right:8px;font-size:12px"></span>
-  <button class="btn" id="btn-refresh">刷新</button>
   <button class="btn" id="btn-export">导出</button>
 </div>
 <div id="page-content" style="display:none">
 
   <div class="board-tip">
-    <b>交易分析：</b>全量成交与归因成交分区固定，互不冒充。未归因订单明确展示，不混入可归因计算。
+    <b>商品分析：</b>按支付事件看全量成交结果与商品排行；不受获客渠道筛选影响。
     <span class="muted" id="scope-help-brief"></span>
-  </div>
-  <div class="board-tip" id="trade-empty-tip" style="display:none;background:#fff7e8;border-color:#ffcf8b">
-    <b>暂无可归因交易金额：</b>缺映射显示「—」，全量区仍完整展示。
   </div>
 
   <div class="board-filter">
@@ -34,97 +30,17 @@
       <button type="button" data-range="today">今日</button>
       <button type="button" data-range="yesterday">昨日</button>
     </div>
-    <select id="f-channel"></select>
     <select id="f-src"></select>
-    <select id="f-term"></select>
     <button class="btn" id="btn-reset">重置筛选</button>
     <span class="muted" style="font-size:12px;margin-left:8px">筛选变更后立即生效</span>
     <a class="btn" data-board-link="orders.html" href="orders.html">订单列表</a>
   </div>
   <div id="active-filters"></div>
-  <div class="board-conclusion" id="convert-conclusion"></div>
-
-  <div class="trade-zone" id="zone-attributed">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin:8px 0 12px">
-      <h2 style="margin:0;font-size:14px">A. 可归因交易 <span class="board-scope main">漏斗关联</span></h2>
-      <span class="muted" style="font-size:12px" id="attr-caliber">受 range / channel / term</span>
-    </div>
-    <div class="stat-cards board-stats" style="grid-template-columns:repeat(5,1fr)">
-      <a class="stat-card" data-board-link="orders.html" data-board-attribution="attributed" href="orders.html">
-        <div class="stat-label">可归因支付用户</div>
-        <div class="stat-value" id="attr-pay-users">128</div>
-        <div class="stat-hint">入池转化 <span id="attr-end-rate">21%</span></div>
-      </a>
-      <div class="stat-card">
-        <div class="stat-label">可归因订单</div>
-        <div class="stat-value" id="attr-orders">—</div>
-        <div class="stat-hint">GMV <span id="attr-gmv">—</span></div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-label">可归因客单价</div>
-        <div class="stat-value" style="font-size:22px" id="attr-aov">—</div>
-        <div class="stat-hint">GMV / 订单</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-label">到课成交</div>
-        <div class="stat-value" id="attr-pay-attend">82</div>
-        <div class="stat-hint">未到课 <span id="attr-pay-no-attend">46</span></div>
-      </div>
-      <a class="stat-card" href="refunds.html">
-        <div class="stat-label">可归因退款</div>
-        <div class="stat-value" style="color:#f53f3f;font-size:20px" id="attr-refund-amount">—</div>
-        <div class="stat-hint">率 <span id="attr-refund-rate">—</span></div>
-      </a>
-    </div>
-  </div>
-
-  <div class="card" style="margin:16px 0">
-    <div class="card-hd">
-      <h2>A. 转化效果分析（可归因）</h2>
-      <span class="muted" style="font-size:12px;font-weight:400">哪个维度转化低 / 贡献高 / 需跟进</span>
-    </div>
-    <div class="card-bd">
-      <div class="board-sort-bar">
-        <span class="muted">视角：</span>
-        <button type="button" class="btn btn-sm active" data-cv-dim="channel">渠道 × 支付</button>
-        <button type="button" class="btn btn-sm" data-cv-dim="term">期次 × 支付</button>
-        <button type="button" class="btn btn-sm" data-cv-dim="live">直播场次 × 支付</button>
-        <button type="button" class="btn btn-sm" data-cv-dim="nopay">到场未支付</button>
-      </div>
-      <div style="overflow-x:auto">
-        <table class="data" style="min-width:720px">
-          <thead>
-            <tr><th>维度</th><th>上游人数</th><th>支付人数</th><th>支付率</th><th>金额</th><th>vs 整体</th><th>操作</th></tr>
-          </thead>
-          <tbody id="cv-tbody"></tbody>
-        </table>
-      </div>
-      <p class="muted" style="font-size:12px;margin:8px 0 0" id="cv-note"></p>
-    </div>
-  </div>
-
-  <div class="stat-cards board-stats" style="grid-template-columns:repeat(3,1fr);margin-bottom:16px">
-    <div class="stat-card">
-      <div class="stat-label">归因覆盖率</div>
-      <div class="stat-value" id="attr-cover">—</div>
-      <div class="stat-hint">可归因订单 / 全量订单</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-label">未归因订单</div>
-      <div class="stat-value" id="unmapped-orders">—</div>
-      <div class="stat-hint">计入全量，不混入可归因</div>
-    </div>
-    <a class="stat-card" data-board-link="follow-ups.html" data-board-focus="attend_no_pay" href="follow-ups.html?focus=attend_no_pay">
-      <div class="stat-label">到场未支付</div>
-      <div class="stat-value" id="attend-no-pay">—</div>
-      <div class="stat-hint">去跟进促单</div>
-    </a>
-  </div>
 
   <div class="trade-zone" id="zone-full" style="margin-top:8px">
     <div style="display:flex;justify-content:space-between;align-items:center;margin:8px 0 12px">
-      <h2 style="margin:0;font-size:14px">B. 成交结果分析 <span class="board-scope aux">支付事件</span></h2>
-      <span class="muted" style="font-size:12px" id="full-caliber">受 range / 成交类型；不受获客渠道</span>
+      <h2 style="margin:0;font-size:14px">成交结果分析 <span class="board-scope aux">支付事件</span></h2>
+      <span class="muted" style="font-size:12px" id="full-caliber">受 range / 成交类型</span>
     </div>
     <div class="stat-cards board-stats" style="grid-template-columns:repeat(4,1fr)">
       <a class="stat-card" data-board-link="orders.html" data-board-attribution="full" href="orders.html">
@@ -145,7 +61,7 @@
       <div class="stat-card">
         <div class="stat-label">成交类型</div>
         <div class="stat-value" style="font-size:18px" id="full-src-label">全部</div>
-        <div class="stat-hint">仅作用于本区</div>
+        <div class="stat-hint">仅作用于本页</div>
       </div>
     </div>
 
@@ -156,7 +72,7 @@
       </div>
       <div class="card-bd" style="padding:0">
         <table class="data">
-          <thead><tr><th>商品</th><th>类型</th><th>订单</th><th>GMV</th><th>客单价</th><th>退款率</th><th>操作</th></tr></thead>
+          <thead><tr><th>商品</th><th>类型</th><th>订单</th><th>GMV</th><th>客单价</th><th>退款率</th></tr></thead>
           <tbody id="goods-tbody"></tbody>
         </table>
       </div>
@@ -165,135 +81,35 @@
 
 </div>
 <script src="../assets/js/proto.js"></script>
-<script src="../assets/js/board-data.js?v=10"></script>
+<script src="../assets/js/board-data.js?v=11"></script>
 <script src="../assets/js/term-store.js?v=1"></script>
-<script src="../assets/js/board-metrics.js?v=15"></script>
-<script src="../assets/js/board-insights.js?v=9"></script>
+<script src="../assets/js/board-metrics.js?v=17"></script>
+<script src="../assets/js/board-insights.js?v=11"></script>
 <script src="../assets/js/board-term.js?v=1"></script>
 <script src="../assets/js/board-dictionary.js?v=4"></script>
-<script src="../assets/js/board-tools.js?v=5"></script>
-<script src="../assets/js/admin-shell.js?v=16"></script>
+<script src="../assets/js/board-tools.js?v=6"></script>
+<script src="../assets/js/admin-shell.js?v=21"></script>
 <script>
 (function () {
   BoardMetrics.ensureCaliberUI();
   BoardMetrics.setUpdatedNow();
   BoardMetrics.fillAttr();
   var brief = document.getElementById("scope-help-brief");
-  if (brief) brief.textContent = " · " + (BoardMetrics.FILTER_SCOPE_HELP || "").slice(0, 56) + "…";
-
-  function productId(p) {
-    if (p.id) return p.id;
-    return String(p.name || "product").replace(/\s+/g, "_").slice(0, 40);
-  }
-
-  function orderHref(p) {
-    if (p.src === "视频号") return "orders.html";
-    if (p.src === "直播带货") return "live-stats.html";
-    return "orders.html";
-  }
-
-  var state = { dim: "channel" };
+  if (brief) brief.textContent = " · 全量成交按支付事件统计";
 
   function highlightSection() {
     var q = new URLSearchParams(location.search);
     var section = q.get("section") || "";
-    if (section === "attributed" || section === "attr") {
-      var za = document.getElementById("zone-attributed");
-      if (za) { za.classList.add("is-highlight"); za.scrollIntoView({ behavior: "smooth", block: "start" }); }
-    } else if (section === "full") {
+    if (section === "full" || section === "attributed" || section === "attr") {
       var zf = document.getElementById("zone-full");
       if (zf) { zf.classList.add("is-highlight"); zf.scrollIntoView({ behavior: "smooth", block: "start" }); }
     }
   }
 
-  function renderContribution(filters, d) {
-    var tbody = document.getElementById("cv-tbody");
-    var note = document.getElementById("cv-note");
-    if (state.dim === "nopay") {
-      var n = Math.max(0, (d.attendUsers || 0) - (d.payWithAttend || 0));
-      tbody.innerHTML = "<tr><td>到场未支付人群</td><td>" + BoardMetrics.fmt(d.attendUsers) +
-        "</td><td>" + BoardMetrics.fmt(n) + "</td><td>—</td><td>—</td><td>—</td>" +
-        '<td class="row-actions"><a data-board-link="follow-ups.html" data-board-focus="attend_no_pay" href="follow-ups.html?focus=attend_no_pay">去跟进</a></td></tr>';
-      note.textContent = "到场未支付不进可归因支付；点击进入跟进名单。";
-      BoardMetrics.wireBoardLinks();
-      return;
-    }
-    var rows = BoardInsights.getConvertContribution(filters, state.dim);
-    if (!rows.length) { BoardMetrics.renderEmpty(tbody, 7); note.textContent = "当前筛选下暂无贡献数据。"; return; }
-    tbody.innerHTML = rows.map(function (r) {
-      var href;
-      var act = "查看支付用户";
-      if (state.dim === "live") {
-        href = BoardMetrics.buildDrilldownUrl("orders.html", { live_id: r.id, attribution: "attributed", from_board: "convert" });
-        act = "查看支付用户";
-      } else if (state.dim === "product") {
-        href = BoardMetrics.buildDrilldownUrl("orders.html", { goods: r.id, attribution: "full", from_board: "convert" });
-        act = "查看订单";
-      } else if (state.dim === "channel") {
-        href = BoardMetrics.buildDrilldownUrl("orders.html", { channel: r.id, attribution: "attributed", from_board: "convert" });
-      } else {
-        href = BoardMetrics.buildDrilldownUrl("orders.html", { term: r.id === "mixed" ? "" : r.id, attribution: "attributed", from_board: "convert" });
-      }
-      var extra = "";
-      if (state.dim === "live") {
-        extra = ' · <a href="' + BoardMetrics.buildDrilldownUrl("board-live.html", {
-          selected_live: r.id, live_id: r.id, live_tab: "ended", from_board: "convert"
-        }) + '" data-drill-save="1">查看场次复盘</a>';
-        if (!r.canViewPayUsers) { href = ""; act = ""; }
-      }
-      if (state.dim === "term" && r.id && r.id !== "mixed" && window.BoardTerm) {
-        extra += ' · <a href="' + BoardTerm.termBoardUrl(r.id, {
-          from_board: "convert", section: "convert"
-        }) + '" data-drill-save="1">查看期次经营看板</a>';
-      }
-      var diff = r.payDiff == null ? "—" : ((r.payDiff > 0 ? "+" : "") + r.payDiff + "pp");
-      var fromCell = r.from == null ? "—" : BoardMetrics.fmt(r.from);
-      var payCell = r.pay == null ? "—" : BoardMetrics.fmt(r.pay);
-      var rateCell = r.payRate != null ? r.payRate + "%" : "—";
-      var gmvCell = r.gmv == null ? "—" : BoardMetrics.money(r.gmv);
-      var primary = act
-        ? ('<a href="' + href + '" data-drill-save="1">' + act + "</a>")
-        : (state.dim === "live" ? '<span class="muted">暂无支付用户</span>' : "");
-      return "<tr><td><b>" + r.label + "</b>" + (r.zone === "full" ? " <span class='muted'>全量</span>" : "") +
-        "</td><td>" + fromCell + "</td><td>" + payCell + "</td><td>" + rateCell + "</td><td>" +
-        gmvCell + "</td><td>" + diff +
-        '</td><td class="row-actions">' + primary + extra + "</td></tr>";
-    }).join("");
-    note.textContent = state.dim === "live"
-      ? "仅展示已结束且可分析的历史场次；未来场次请到直播分析「待开播场次」。"
-      : "可归因转化效果 · 商品成交请看下方成交结果分析。";
-    tbody.querySelectorAll("[data-drill-save]").forEach(function (a) {
-      a.addEventListener("click", function () { BoardInsights.saveReturnState(); });
-    });
-  }
-
   function renderDetails(d, filters) {
     filters = filters || BoardMetrics.getFilters();
-    var f = Object.assign({}, filters, { applySrc: true });
+    var f = Object.assign({}, filters, { applySrc: true, channel: "" });
     d = BoardMetrics.aggregateLeadMetrics(f);
-
-    document.querySelectorAll("[data-m]").forEach(function (el) {
-      var k = el.getAttribute("data-m");
-      if (d[k] == null) return;
-      el.textContent = BoardMetrics.fmt(d[k]);
-    });
-    document.querySelectorAll("[data-range-label]").forEach(function (el) { el.textContent = d.label || "—"; });
-
-    var emptyTip = document.getElementById("trade-empty-tip");
-    if (emptyTip) emptyTip.style.display = d.attrTradeEmpty ? "block" : "none";
-
-    document.getElementById("attr-pay-users").textContent = BoardMetrics.fmt(d.attrPayUsers);
-    document.getElementById("attr-end-rate").textContent = d.endRate || "—";
-    document.getElementById("attr-orders").textContent = BoardMetrics.fmt(d.attrOrders);
-    document.getElementById("attr-gmv").textContent = BoardMetrics.fmt(d.attrGmv);
-    document.getElementById("attr-aov").textContent = BoardMetrics.fmt(d.attrAov);
-    document.getElementById("attr-pay-attend").textContent = BoardMetrics.fmt(d.payWithAttend);
-    document.getElementById("attr-pay-no-attend").textContent = BoardMetrics.fmt(d.payNoAttend);
-    document.getElementById("attr-refund-amount").textContent = BoardMetrics.fmt(d.attrRefundAmount);
-    document.getElementById("attr-refund-rate").textContent = d.attrRefundRate || "—";
-    document.getElementById("attr-caliber").textContent = d.attrScope
-      ? "当前：可归因交易（渠道/期次生效）"
-      : "可归因支付用户来自漏斗；金额缺映射为「—」";
 
     document.getElementById("full-orders").textContent = BoardMetrics.fmt(d.fullOrders);
     document.getElementById("full-pay-users").textContent = BoardMetrics.fmt(d.fullPayUsers);
@@ -304,42 +120,11 @@
     var srcOpt = (BoardData.srcOptions || []).find(function (o) { return o.value === (f.src || ""); });
     document.getElementById("full-src-label").textContent = f.src ? (srcOpt ? srcOpt.label : f.src) : "全部";
 
-    var cov = BoardInsights.getAttributionCoverage(f);
-    document.getElementById("attr-cover").textContent = cov.coverRate != null ? cov.coverRate + "%" : "—";
-    document.getElementById("unmapped-orders").textContent = BoardMetrics.fmt(cov.unmappedOrders);
-    document.getElementById("attend-no-pay").textContent = BoardMetrics.fmt(Math.max(0, (d.attendUsers || 0) - (d.payWithAttend || 0)));
-
-    var concl = BoardInsights.getConvertConclusions(filters);
-    document.getElementById("convert-conclusion").innerHTML = BoardInsights.renderConclusionHtml(concl);
-    document.querySelectorAll("#convert-conclusion [data-conclusion-idx]").forEach(function (btn) {
-      btn.onclick = function () {
-        var item = concl[Number(btn.getAttribute("data-conclusion-idx"))];
-        if (!item || !item.action) return;
-        if (item.action.type === "section") {
-          var z = document.getElementById(item.action.id === "full" ? "zone-full" : "zone-attributed");
-          if (z) z.scrollIntoView({ behavior: "smooth", block: "start" });
-        } else if (item.action.type === "open_live") {
-          location.href = BoardMetrics.buildDrilldownUrl("board-live.html", {
-            selected_live: item.action.id, live_tab: "ended", from_board: "convert"
-          });
-        } else if (item.action.type === "select_channel") {
-          state.dim = "channel";
-          document.querySelectorAll("[data-cv-dim]").forEach(function (b) {
-            b.classList.toggle("active", b.getAttribute("data-cv-dim") === "channel");
-          });
-          BoardInsights.setAnalyticsState({ dimension: "channel" }, { syncUrl: true, push: true });
-          renderContribution(filters, d);
-        }
-      };
-    });
-
-    renderContribution(filters, d);
-
     var products = BoardMetrics.getFullProductRows(f);
     var tbody = document.getElementById("goods-tbody");
     var po = 0, pg = 0;
     if (!products.length) {
-      BoardMetrics.renderEmpty(tbody, 7);
+      BoardMetrics.renderEmpty(tbody, 6);
       document.getElementById("goods-orders").textContent = "—";
       document.getElementById("goods-gmv").textContent = "—";
     } else {
@@ -347,14 +132,9 @@
         po += p.orders || 0;
         pg += p.gmv || 0;
         var aov = p.orders ? Math.round(p.gmv / p.orders) : null;
-        var href = BoardMetrics.buildDrilldownUrl(orderHref(p), {
-          product_id: productId(p),
-          attribution: "full",
-          transaction_type: p.src || ""
-        });
         return "<tr><td>" + p.name + "</td><td>" + p.type + "</td><td>" + BoardMetrics.fmt(p.orders) +
           "</td><td>" + BoardMetrics.money(p.gmv) + "</td><td>" + (aov == null ? "—" : BoardMetrics.money(aov)) +
-          "</td><td>" + p.refundRate + '</td><td class="row-actions"><a href="' + href + '">订单</a></td></tr>';
+          "</td><td>" + p.refundRate + "</td></tr>";
       }).join("");
       document.getElementById("goods-orders").textContent = BoardMetrics.fmt(po);
       document.getElementById("goods-gmv").textContent = BoardMetrics.money(pg);
@@ -364,26 +144,8 @@
     BoardMetrics.wireBoardLinks();
   }
 
-  document.querySelectorAll("[data-cv-dim]").forEach(function (btn) {
-    btn.onclick = function () {
-      state.dim = btn.getAttribute("data-cv-dim");
-      document.querySelectorAll("[data-cv-dim]").forEach(function (b) { b.classList.toggle("active", b === btn); });
-      BoardInsights.setAnalyticsState({ dimension: state.dim }, { syncUrl: true, push: true });
-      renderContribution(BoardMetrics.getFilters(), BoardMetrics.aggregateLeadMetrics());
-    };
-  });
-  (function bootDim() {
-    var q = new URLSearchParams(location.search);
-    var dim = q.get("dimension") || BoardInsights.getAnalyticsState().dimension || "";
-    if (dim && dim !== "product") {
-      state.dim = dim;
-      document.querySelectorAll("[data-cv-dim]").forEach(function (b) {
-        b.classList.toggle("active", b.getAttribute("data-cv-dim") === dim);
-      });
-    }
-  })();
-
   function onChange(k, d, f) { renderDetails(d, f); }
+  BoardMetrics.setFilters({ channel: "" }, { push: false });
   BoardMetrics.bindRange("range-seg", onChange);
   BoardMetrics.bindFilterBar({ onApply: onChange, showSrc: true, autoApply: true });
   highlightSection();
@@ -391,35 +153,18 @@
   BoardTools.init({
     onApply: onChange,
     collectExtra: function () {
-      return { dimension: state.dim || "channel", section: new URLSearchParams(location.search).get("section") || "" };
+      return { section: "full" };
     },
     getExportTable: function () {
-      if (state.dim === "nopay") {
-        var d = BoardMetrics.aggregateLeadMetrics();
-        var n = Math.max(0, (d.attendUsers || 0) - (d.payWithAttend || 0));
-        return {
-          name: "到场未支付",
-          filename: BoardMetrics.exportFileName("到场未支付"),
-          headers: ["人群", "到场人数", "未支付人数"],
-          rows: [["到场未支付人群", d.attendUsers || 0, n]]
-        };
-      }
-      var rows = BoardInsights.getConvertContribution(BoardMetrics.getFilters(), state.dim);
-      if (!rows.length) return { reason: "暂无贡献数据", rows: [] };
+      var products = BoardMetrics.getFullProductRows(Object.assign({}, BoardMetrics.getFilters(), { applySrc: true }));
+      if (!products.length) return { reason: "暂无商品成交数据", rows: [] };
       return {
-        name: "转化贡献分析",
-        filename: BoardMetrics.exportFileName("转化贡献分析_" + state.dim),
-        headers: ["维度", "口径", "上游人数", "支付人数", "支付率", "金额", "客单价", "vs整体"],
-        rows: rows.map(function (r) {
-          return [
-            r.label, r.zone === "full" ? "全量" : "可归因",
-            r.from == null ? "—" : r.from,
-            r.pay == null ? "—" : r.pay,
-            r.payRate != null ? r.payRate : "—",
-            r.gmv == null ? "—" : r.gmv,
-            r.aov == null ? "—" : r.aov,
-            r.payDiff == null ? "—" : r.payDiff
-          ];
+        name: "商品成交排行",
+        filename: BoardMetrics.exportFileName("商品成交排行"),
+        headers: ["商品", "类型", "订单", "GMV", "客单价", "退款率"],
+        rows: products.map(function (p) {
+          var aov = p.orders ? Math.round(p.gmv / p.orders) : "—";
+          return [p.name, p.type, p.orders, p.gmv, aov, p.refundRate];
         })
       };
     }

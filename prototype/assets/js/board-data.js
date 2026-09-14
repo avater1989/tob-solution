@@ -583,9 +583,7 @@
     channelOptions: [
       { value: "", label: "全部渠道" },
       { value: "video", label: "视频号" },
-      { value: "link", label: "获客链接" },
-      { value: "livecode", label: "渠道活码" },
-      { value: "import", label: "手动导入" }
+      { value: "other", label: "其他" }
     ],
     termOptions: [
       { value: "", label: "全部期次" },

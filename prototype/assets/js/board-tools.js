@@ -622,43 +622,14 @@
     wrap.className = "board-toolbar";
     wrap.innerHTML =
       '<div class="board-toolbar-group">' +
-      '<button type="button" class="btn btn-sm" id="btn-views">常用视图</button>' +
-      '<div class="board-toolbar-menu" id="menu-views" hidden></div>' +
-      '</div>' +
-      '<button type="button" class="btn btn-sm" id="btn-save-view">保存当前视图</button>' +
-      '<button type="button" class="btn btn-sm" id="btn-glossary">数据口径</button>' +
-      '<div class="board-toolbar-group">' +
       '<button type="button" class="btn btn-sm" id="btn-export-menu">导出</button>' +
       '<div class="board-toolbar-menu" id="menu-export" hidden>' +
       '<button type="button" data-exp="csv">导出当前表格CSV</button>' +
       '<button type="button" data-exp="print">打印当前报表</button>' +
       '<button type="button" data-exp="summary">复制当前数据摘要</button>' +
-      '</div></div>' +
-      '<button type="button" class="btn btn-sm" id="btn-share">分享</button>' +
-      '<span class="board-view-status muted" id="board-view-status"></span>';
+      '</div></div>';
     host.appendChild(wrap);
 
-    document.getElementById("btn-glossary").onclick = function () { openGlossary(); };
-    document.getElementById("btn-share").onclick = function () {
-      var url = buildShareUrl();
-      copyText(url).then(function (ok) {
-        toast(ok ? ("链接已复制 · " + shareSummary()) : "复制失败，请手动复制地址栏");
-        if (!ok) {
-          window.prompt("复制分享链接", url);
-        }
-      });
-    };
-    document.getElementById("btn-save-view").onclick = function () { openSaveViewDialog(); };
-    document.getElementById("btn-views").onclick = function (e) {
-      e.stopPropagation();
-      var menu = document.getElementById("menu-views");
-      var show = menu.hidden;
-      closeMenus();
-      if (show) {
-        renderViewsMenu();
-        menu.hidden = false;
-      }
-    };
     document.getElementById("btn-export-menu").onclick = function (e) {
       e.stopPropagation();
       var menu = document.getElementById("menu-export");
@@ -685,8 +656,6 @@
     document.addEventListener("keydown", function (e) {
       if (e.key === "Escape") closeMenus();
     });
-    updateViewStatus();
-    BM().onFilterChange(function () { updateViewStatus(); });
   }
 
   function renderViewsMenu() {

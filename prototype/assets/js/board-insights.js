@@ -134,7 +134,8 @@
     var f = filters || BM().getFilters();
     var list = (BD().leadSlices || []).filter(function (r) {
       if (r.range !== f.range) return false;
-      if (f.channel && r.channel !== f.channel) return false;
+      if (BM().matchChannelFilter && !BM().matchChannelFilter(f.channel, r.channel)) return false;
+      if (!BM().matchChannelFilter && f.channel && r.channel !== f.channel) return false;
       if (f.term && r.term !== f.term) return false;
       return true;
     });
@@ -263,6 +264,19 @@
     return { step: step, rows: out, overallRate: overallRate, overallFrom: overall.from, overallTo: overall.to };
   }
 
+  var OVERVIEW_METRICS = [
+    { id: "pool", label: "入池人数", trendKey: "pool_new", kind: "count", tipId: "pool" },
+    { id: "wecom", label: "加微人数", trendKey: "wecom", kind: "count", tipId: "wecom" },
+    { id: "wecom_rate", label: "加微率", trendKey: "wecomRate", kind: "rate", tipId: "wecom_rate" },
+    { id: "cover_rate", label: "跟进覆盖率", trendKey: "followRate", kind: "rate", tipId: "cover_rate" },
+    { id: "attend", label: "到场人数", trendKey: "attend", kind: "count", tipId: "attend" },
+    { id: "attend_rate", label: "到场率", trendKey: "attendRate", kind: "rate", tipId: "attend_rate" },
+    { id: "pay", label: "支付人数", trendKey: "pay", kind: "count", tipId: "pay_users" },
+    { id: "pay_rate", label: "支付率", trendKey: "payRate", kind: "rate", tipId: "pay_rate" },
+    { id: "gmv", label: "成交GMV", trendKey: "gmv", kind: "money", tipId: "full_gmv" },
+    { id: "refund", label: "退款率", trendKey: "refundRate", kind: "rate", tipId: "refund_rate" }
+  ];
+
   function getCoreKpis(filters) {
     filters = filters || BM().getFilters();
     var d = BM().aggregateLeadMetrics(filters);
@@ -276,19 +290,35 @@
     var wecomRate = d.poolLeads ? Math.round((d.wecomLeads / d.poolLeads) * 1000) / 10 : null;
     var attendRate = d.wecomLeads ? Math.round((d.attendUsers / d.wecomLeads) * 1000) / 10 : null;
     var payRate = d.wecomLeads ? Math.round((d.attributedPayUsers / d.wecomLeads) * 1000) / 10 : null;
+    var coverRate = parsePct(d.coverRate);
     var refundNum = parsePct(d.fullRefundRate || d.refundRate);
 
     var priorWecom = prior && prior.poolLeads ? Math.round((prior.wecomLeads / prior.poolLeads) * 1000) / 10 : null;
-    var priorAttend = prior && prior.wecomLeads ? Math.round((prior.attendUsers / prior.wecomLeads) * 1000) / 10 : null;
+    var priorAttendRate = prior && prior.wecomLeads ? Math.round((prior.attendUsers / prior.wecomLeads) * 1000) / 10 : null;
+    var priorPayRate = prior && prior.wecomLeads ? Math.round((prior.attributedPayUsers / prior.wecomLeads) * 1000) / 10 : null;
+    var priorCover = prior ? parsePct(prior.coverRate) : null;
     var priorPayUsers = prior ? prior.attributedPayUsers : null;
     var priorPool = prior ? prior.poolLeads : null;
+    var priorWecomCnt = prior ? prior.wecomLeads : null;
+    var priorAttendCnt = prior ? prior.attendUsers : null;
     var priorGmv = prior ? prior.totalGmv || prior.fullGmv : null;
     var priorRefund = prior ? parsePct(prior.refundRate || prior.fullRefundRate) : null;
 
-    var list = [
-      {
+    function rateTargetInfo(val, target, higherBetter) {
+      if (val == null || target == null) return null;
+      var ok = higherBetter ? val >= target : val <= target;
+      var gap = Math.round(Math.abs(val - target) * 10) / 10;
+      return {
+        label: ok ? (higherBetter ? "达到目标" : "在目标内") : (higherBetter ? "低于目标" : "超出目标"),
+        detail: (ok ? (higherBetter ? "高于目标 " : "低于目标上限 ") : (higherBetter ? "低于目标 " : "高于目标上限 ")) + gap + "个百分点",
+        rate: higherBetter ? Math.round((val / target) * 100) : null
+      };
+    }
+
+    var byId = {
+      pool: {
         id: "pool",
-        label: "私域池人数",
+        label: "入池人数",
         value: BM().fmt(d.poolLeads),
         raw: d.poolLeads,
         kind: "count",
@@ -297,7 +327,17 @@
         target: targets.poolLeads,
         targetInfo: targetProgress(d.poolLeads, targets.poolLeads, true)
       },
-      {
+      wecom: {
+        id: "wecom",
+        label: "加微人数",
+        value: BM().fmt(d.wecomLeads),
+        sub: wecomRate != null ? "加微率 " + wecomRate + "%" : "",
+        raw: d.wecomLeads,
+        kind: "count",
+        compare: deltaCount(d.wecomLeads, priorWecomCnt),
+        compareLabel: cmpLabel
+      },
+      wecom_rate: {
         id: "wecom_rate",
         label: "加微率",
         value: wecomRate != null ? wecomRate + "%" : "—",
@@ -307,35 +347,45 @@
         compare: deltaPoints(wecomRate, priorWecom),
         compareLabel: cmpLabel,
         target: targets.wecomRate,
-        targetInfo: wecomRate != null && targets.wecomRate != null ? {
-          label: wecomRate >= targets.wecomRate ? "达到目标" : "低于目标",
-          detail: wecomRate >= targets.wecomRate
-            ? "高于目标 " + Math.round((wecomRate - targets.wecomRate) * 10) / 10 + "个百分点"
-            : "低于目标 " + Math.round((targets.wecomRate - wecomRate) * 10) / 10 + "个百分点",
-          rate: Math.round((wecomRate / targets.wecomRate) * 100)
-        } : null
+        targetInfo: rateTargetInfo(wecomRate, targets.wecomRate, true)
       },
-      {
+      cover_rate: {
+        id: "cover_rate",
+        label: "跟进覆盖率",
+        value: coverRate != null ? coverRate + "%" : "—",
+        sub: "未跟进 " + BM().fmt(d.noFollow),
+        raw: coverRate,
+        kind: "rate",
+        compare: deltaPoints(coverRate, priorCover),
+        compareLabel: cmpLabel
+      },
+      attend: {
         id: "attend",
+        label: "到场人数",
+        value: BM().fmt(d.attendUsers),
+        sub: attendRate != null ? "到场率 " + attendRate + "%" : "",
+        raw: d.attendUsers,
+        kind: "count",
+        compare: deltaCount(d.attendUsers, priorAttendCnt),
+        compareLabel: cmpLabel,
+        target: targets.attendUsers,
+        targetInfo: targetProgress(d.attendUsers, targets.attendUsers, true)
+      },
+      attend_rate: {
+        id: "attend_rate",
         label: "到场率",
         value: attendRate != null ? attendRate + "%" : "—",
         sub: "到场 " + BM().fmt(d.attendUsers) + " 人",
         raw: attendRate,
         kind: "rate",
-        compare: deltaPoints(attendRate, priorAttend),
+        compare: deltaPoints(attendRate, priorAttendRate),
         compareLabel: cmpLabel,
         target: targets.attendRate,
-        targetInfo: attendRate != null && targets.attendRate != null ? {
-          label: attendRate >= targets.attendRate ? "达到目标" : "低于目标",
-          detail: attendRate >= targets.attendRate
-            ? "高于目标 " + Math.round((attendRate - targets.attendRate) * 10) / 10 + "个百分点"
-            : "低于目标 " + Math.round((targets.attendRate - attendRate) * 10) / 10 + "个百分点",
-          rate: Math.round((attendRate / targets.attendRate) * 100)
-        } : null
+        targetInfo: rateTargetInfo(attendRate, targets.attendRate, true)
       },
-      {
+      pay: {
         id: "pay",
-        label: "可归因支付",
+        label: "支付人数",
         value: BM().fmt(d.attributedPayUsers),
         sub: payRate != null ? "支付率 " + payRate + "%" : "",
         raw: d.attributedPayUsers,
@@ -345,9 +395,21 @@
         target: targets.payUsers,
         targetInfo: targetProgress(d.attributedPayUsers, targets.payUsers, true)
       },
-      {
+      pay_rate: {
+        id: "pay_rate",
+        label: "支付率",
+        value: payRate != null ? payRate + "%" : "—",
+        sub: "可归因支付 / 加微",
+        raw: payRate,
+        kind: "rate",
+        compare: deltaPoints(payRate, priorPayRate),
+        compareLabel: cmpLabel,
+        target: targets.payRate,
+        targetInfo: rateTargetInfo(payRate, targets.payRate, true)
+      },
+      gmv: {
         id: "gmv",
-        label: "全量成交 GMV",
+        label: "成交GMV",
         value: BM().money(d.fullGmv),
         sub: BM().fmt(d.fullOrders) + " 笔订单",
         raw: d.fullGmv,
@@ -357,7 +419,7 @@
         target: targets.fullGmv,
         targetInfo: targetProgress(d.fullGmv, targets.fullGmv, true)
       },
-      {
+      refund: {
         id: "refund",
         label: "退款率",
         value: refundNum != null ? refundNum + "%" : "—",
@@ -367,15 +429,18 @@
         compare: deltaPoints(refundNum, priorRefund),
         compareLabel: cmpLabel,
         target: targets.refundRateMax,
-        targetInfo: refundNum != null && targets.refundRateMax != null ? {
-          label: refundNum <= targets.refundRateMax ? "在目标内" : "超出目标",
-          detail: refundNum <= targets.refundRateMax
-            ? "低于目标上限 " + Math.round((targets.refundRateMax - refundNum) * 10) / 10 + "个百分点"
-            : "高于目标上限 " + Math.round((refundNum - targets.refundRateMax) * 10) / 10 + "个百分点",
-          rate: null
-        } : null
+        targetInfo: rateTargetInfo(refundNum, targets.refundRateMax, false)
       }
-    ];
+    };
+
+    var list = OVERVIEW_METRICS.map(function (def) {
+      var k = byId[def.id];
+      if (!k) return null;
+      k.trendKey = def.trendKey;
+      k.tipId = def.tipId || def.id;
+      return k;
+    }).filter(Boolean);
+
     if (filters.range === "custom") {
       return list.map(function (k) {
         k.compareLabel = "与上一等长周期比较";
@@ -802,7 +867,7 @@
     if (from === "acquire") parts.push("获客分析");
     if (from === "private") parts.push("私域转化");
     if (from === "live") parts.push("直播分析");
-    if (from === "convert") parts.push("交易分析");
+    if (from === "convert") parts.push("商品分析");
     var step = q.get("funnel_step");
     if (step) {
       var s = FUNNEL_STEPS.find(function (x) { return x.id === step; });
@@ -932,6 +997,51 @@
     return worst;
   }
 
+  function collapseToVideoOther(rows) {
+    var video = null;
+    var other = {
+      id: "other",
+      label: "其他",
+      pool: 0,
+      valid: 0,
+      wecom: 0,
+      attend: 0,
+      pay: 0,
+      gmv: 0
+    };
+    var hasOther = false;
+    (rows || []).forEach(function (r) {
+      if (r.id === "video") {
+        video = Object.assign({}, r, { id: "video", label: "视频号" });
+        return;
+      }
+      hasOther = true;
+      other.pool += r.pool || 0;
+      other.valid += r.valid || 0;
+      other.wecom += r.wecom || 0;
+      other.attend += r.attend || 0;
+      other.pay += r.pay || 0;
+      other.gmv += r.gmv || 0;
+    });
+    if (hasOther) {
+      other.validRate = rateNum(other.pool, other.valid);
+      other.wecomRate = rateNum(other.wecom, other.pool);
+      other.attendRate = rateNum(other.attend, other.wecom);
+      other.payRate = rateNum(other.pay, other.wecom);
+      other.gmv = other.gmv || null;
+      other.wecomDiff = null;
+      other.attendDiff = null;
+      other.payDiff = null;
+      other.trendPay = null;
+      other.dropLabel = "—";
+      other.dropId = "";
+    }
+    var out = [];
+    if (video) out.push(video);
+    if (hasOther && (other.pool || other.wecom || other.pay)) out.push(other);
+    return out;
+  }
+
   function getChannelQuality(filters) {
     filters = filters || BM().getFilters();
     var d = BM().aggregateLeadMetrics(filters);
@@ -980,6 +1090,7 @@
         dropId: drop.id
       };
     });
+    rows = collapseToVideoOther(rows);
     return { rows: rows, overallWecom: overallWecom, overallAttend: overallAttend, overallPay: overallPay };
   }
 
@@ -1457,6 +1568,7 @@
     comparePeriodLabel: comparePeriodLabel,
     getPriorMetrics: getPriorMetrics,
     getCoreKpis: getCoreKpis,
+    OVERVIEW_METRICS: OVERVIEW_METRICS,
     getFunnelDimensionBreakdown: getFunnelDimensionBreakdown,
     getBottlenecks: getBottlenecks,
     getTodoRisks: getTodoRisks,

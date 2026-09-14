@@ -8,8 +8,6 @@
     "<strong>C 端小程序</strong>" +
     '<a href="home.html">首页</a><span class="sep">·</span>' +
     '<a href="lives.html">直播</a><span class="sep">·</span>' +
-    '<a href="assess.html">测评</a><span class="sep">·</span>' +
-    '<a href="claim.html">领课</a><span class="sep">·</span>' +
     '<a href="orders.html">订单</a><span class="sep">·</span>' +
     '<a href="mine.html">我的</a><span class="sep">|</span>' +
     '<a href="../admin/dashboard.html">切管理端</a><span class="sep">·</span>' +

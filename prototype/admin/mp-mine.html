@@ -153,11 +153,9 @@
   <div class="proto-modal-bd">
     <div class="form-grid">
       <div class="field"><label>图标 *</label><input class="input" id="m-icon" placeholder="如：测 / 📘，支持 emoji 或单字" maxlength="2" /></div>
-      <div class="field"><label>名称 *</label><input class="input" id="m-name" placeholder="如：我的定制化计划" maxlength="12" /></div>
+      <div class="field"><label>名称 *</label><input class="input" id="m-name" placeholder="如：我的订单" maxlength="12" /></div>
       <div class="field"><label>跳转目标 *</label>
         <select class="input" id="m-target">
-          <option value="assess">测评与计划页 assess.html</option>
-          <option value="claim">领课页 claim.html</option>
           <option value="orders">我的订单页 orders.html</option>
           <option value="wecom">复制老师企业微信</option>
         </select>
@@ -181,16 +179,12 @@ function stTag(on){ return on ? '<span class="as-tag green">展示中</span>' : 
 
 /* 跳转目标：只保留 C 端真实存在的落地页 */
 var TARGETS = [
-  { v:"assess", label:"测评与计划页", file:"assess.html", note:"我的定制化计划" },
-  { v:"claim",  label:"领课页",       file:"claim.html",  note:"领课兑换（短信落地）" },
   { v:"orders", label:"我的订单页",   file:"orders.html", note:"我的订单" },
   { v:"wecom",  label:"复制老师企业微信", file:"", note:"端上复制企微号并提示" }
 ];
 var MAX_MENU = 8;
 
 var MENUS = [
-  { id:"M1", icon:"测", name:"我的定制化计划", target:"assess" },
-  { id:"M2", icon:"课", name:"领课兑换（短信落地）", target:"claim" },
   { id:"M3", icon:"单", name:"我的订单", target:"orders" },
   { id:"M4", icon:"微", name:"添加老师企业微信", target:"wecom" }
 ];

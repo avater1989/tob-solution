@@ -26,7 +26,7 @@
 </div>
 
 <div id="page-content" style="display:none">
-  <div class="as-banner">按 C 端首页的真实结构配置装修。C 端首页固定为三段：<b>主推 Banner</b> → <b>定制化计划入口</b>（仅学员存在计划时展示）→ <b>精选课程</b>。此处只配置端上真实存在的模块，配置后 C 端即时生效。</div>
+  <div class="as-banner">按 C 端首页的真实结构配置装修。C 端首页固定为三段：<b>主推 Banner</b> → <b>金刚位</b>（测评 / 定制化 / 艺博士，原型仅入口示意、不做详情页）→ <b>精选课程</b>。</div>
 
   <!-- 主推 Banner -->
   <div class="card" style="margin-bottom:14px">
@@ -49,32 +49,35 @@
     </div>
   </div>
 
-  <!-- 定制化计划入口 -->
+  <!-- 金刚位 -->
   <div class="card" style="margin-bottom:14px">
-    <div class="card-hd"><h2>定制化计划入口</h2><span class="muted" style="margin-left:10px">C 端首页的细长条，仅当学员已拿到定制化计划时出现</span></div>
+    <div class="card-hd"><h2>金刚位</h2><span class="muted" style="margin-left:10px">Banner 下方固定三入口；本原型不做测评 / 定制化 / 艺博士详情页，评审时口头讲解</span></div>
     <div class="card-bd">
-      <div class="form-grid" style="max-width:640px">
-        <div class="field"><label>入口开关</label>
-          <select class="input" id="plan-on">
-            <option value="1" selected>展示（学员有计划时出现）</option>
-            <option value="0">不展示</option>
-          </select>
-          <div class="muted">关闭后，即使学员有定制化计划，首页也不再显示该入口</div>
-        </div>
-        <div class="field"><label>入口文案</label>
-          <input class="input" id="plan-txt" value="去测评" maxlength="8" />
-          <div class="muted">细长条右侧引导文案，实际展示为「去测评 ›」</div>
-        </div>
-      </div>
-      <div style="margin-top:14px">
-        <div class="muted" style="margin-bottom:8px">C 端效果预览</div>
-        <div class="mp-strip-pv">
-          <span class="dot">测</span>
-          <span class="txt" id="pv-plan-txt">定制化计划 · <b>亲子沟通 21 天训练营计划</b></span>
-          <span class="go" id="pv-plan-go">去测评 ›</span>
-        </div>
-      </div>
-      <div class="muted" style="margin-top:12px">计划本身（名称、步骤、截止时间）在 <a href="assess-plans.html">计划管理 · 定制化计划</a> 中下发，此处只控制首页入口的展示。</div>
+      <table class="as-table">
+        <thead>
+          <tr><th style="width:80px">图标</th><th>名称</th><th>跳转</th><th style="width:90px">状态</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><div class="deco-cover" style="width:48px;height:48px;border-radius:14px;background:linear-gradient(135deg,#ffb020,#ff7a45)">测</div></td>
+            <td><div class="as-name">测评</div><div class="as-desc">入口示意</div></td>
+            <td style="font-size:12px">无详情页（讲解）</td>
+            <td><span class="as-tag green">展示中</span></td>
+          </tr>
+          <tr>
+            <td><div class="deco-cover c2" style="width:48px;height:48px;border-radius:14px;background:linear-gradient(135deg,#5b8cff,#3b6ef5)">定</div></td>
+            <td><div class="as-name">定制化</div><div class="as-desc">入口示意</div></td>
+            <td style="font-size:12px">无详情页（讲解）</td>
+            <td><span class="as-tag green">展示中</span></td>
+          </tr>
+          <tr>
+            <td><div class="deco-cover c3" style="width:48px;height:48px;border-radius:14px;background:linear-gradient(135deg,#34c759,#1faa4a)">博</div></td>
+            <td><div class="as-name">艺博士</div><div class="as-desc">入口示意</div></td>
+            <td style="font-size:12px">无详情页（讲解）</td>
+            <td><span class="as-tag green">展示中</span></td>
+          </tr>
+        </tbody>
+      </table>
     </div>
   </div>
 
@@ -117,8 +120,6 @@
           <select class="input" id="b-link-type">
             <option value="course">课程详情</option>
             <option value="live">直播间</option>
-            <option value="claim">领课页</option>
-            <option value="assess">测评与计划页</option>
             <option value="lives">直播列表页</option>
           </select>
           <select class="input" id="b-link"></select>
@@ -156,18 +157,16 @@ function esc(s){ return String(s).replace(/[&<>"']/g,function(c){return({"&":"&a
 function stTag(on){ return on ? '<span class="as-tag green">展示中</span>' : '<span class="as-tag gray">已隐藏</span>'; }
 
 /* Banner 跳转：只保留 C 端真实存在的落地页 */
-var LINK_TYPE_LABEL = { course:"课程详情", live:"直播间", claim:"领课页", assess:"测评与计划页", lives:"直播列表页" };
+var LINK_TYPE_LABEL = { course:"课程详情", live:"直播间", lives:"直播列表页" };
 var LINK_OPTIONS = {
   course: ["亲子沟通基础", "家庭教育入门系列", "9.9 引流体验课"],
   live:   ["亲子沟通 90 分钟", "开学第一课 · 家长专场"],
-  claim:  ["领课页"],
-  assess: ["测评与计划页"],
   lives:  ["直播列表页"]
 };
 
 var BANNERS = [
   { id:"B1", title:"亲子沟通，从听懂开始", sub:"8 节体系课 · 陪学营老师全程答疑", pill:"今晚 20:00 公开课 · 预约即可", linkType:"course", link:"亲子沟通基础", on:true, cls:"" },
-  { id:"B2", title:"家庭教育风格测评免费测", sub:"3 分钟了解你的教养风格", pill:"限时免费", linkType:"assess", link:"测评与计划页", on:true, cls:"c2" },
+  { id:"B2", title:"家庭教育风格测评免费测", sub:"3 分钟了解你的教养风格", pill:"限时免费", linkType:"course", link:"家庭教育入门系列", on:true, cls:"c2" },
   { id:"B3", title:"开学第一课 · 家长专场直播", sub:"9 月 12 日 20:00 开播", pill:"预约即可", linkType:"live", link:"开学第一课 · 家长专场", on:false, cls:"c3" }
 ];
 
@@ -175,7 +174,7 @@ var BANNERS = [
 var SELECTED = [
   { id:"S1", title:"亲子沟通基础", sub:"8 节 · 适合 3–12 岁家庭", price:"¥199", origin:"¥299" },
   { id:"S2", title:"家庭教育入门系列", sub:"3 门组合 · 系统学习", price:"¥399", origin:"" },
-  { id:"S3", title:"9.9 引流体验课", sub:"视频号同款 · 可领课后学习", price:"¥9.9", origin:"" }
+  { id:"S3", title:"9.9 引流体验课", sub:"视频号同款 · 体验入门", price:"¥9.9", origin:"" }
 ];
 var COURSE_POOL = ["亲子沟通基础","家庭教育入门系列","9.9 引流体验课","青春期沟通 21 天营","亲子情绪管理音频课","非暴力沟通父母工作坊","家庭会议实践指南","写作业不吼不叫"];
 
@@ -310,14 +309,6 @@ document.getElementById("course-ok").onclick = function(){
   closeAll(); renderAll();
   Proto.toast(picked.length ? "已保存 "+picked.length+" 门课程（演示）" : "已清空精选课程");
 };
-
-/* 计划入口即时预览 */
-document.getElementById("plan-txt").addEventListener("input", function(){
-  document.getElementById("pv-plan-go").textContent = (this.value.trim() || "去测评") + " ›";
-});
-document.getElementById("plan-on").addEventListener("change", function(){
-  document.getElementById("pv-plan-txt").parentNode.style.opacity = this.value === "0" ? ".35" : "1";
-});
 
 document.getElementById("btn-preview").onclick = function(){ window.open("../miniprogram/home.html","_blank"); };
 document.getElementById("btn-save").onclick = function(){ Proto.toast("首页装修已保存，C 端即时生效（演示）"); };

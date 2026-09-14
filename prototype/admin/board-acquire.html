@@ -10,13 +10,12 @@
 <body class="admin-body" data-module="data" data-nav="board-a" data-title="获客分析" data-crumb="经营分析 / 获客" data-assist="1">
 <div id="header-actions">
   <span class="muted" id="board-updated" style="margin-right:8px;font-size:12px"></span>
-  <button class="btn" id="btn-refresh">刷新</button>
   <button class="btn" id="btn-export">导出</button>
 </div>
 <div id="page-content" style="display:none">
 
   <div class="board-tip">
-    <b>获客专题：</b>回答「从哪来」与「质量如何」。「视频号获客首单」为前端辅指标，不进后链路。
+    <b>获客专题：</b>回答「从哪来」与「质量如何」。渠道仅区分视频号与其他；「视频号获客首单」为前端辅指标，不进后链路。
     <span class="muted">暂无投放成本，不展示 CAC / ROI。</span>
     <span class="muted" id="scope-help-brief"></span>
   </div>
@@ -34,8 +33,6 @@
     <span class="muted" style="font-size:12px;margin-left:8px">筛选变更后立即生效</span>
   </div>
   <div id="active-filters"></div>
-  <div class="board-conclusion" id="acquire-conclusion"></div>
-
   <div class="stat-cards board-stats" style="grid-template-columns:repeat(4,1fr)">
     <a class="stat-card" data-board-link="leads.html" href="leads.html">
       <div class="stat-label" id="lbl-pool">入池线索</div>
@@ -55,14 +52,14 @@
     <div class="stat-card">
       <div class="stat-label">头部渠道</div>
       <div class="stat-value" style="font-size:20px" id="top-channel">视频号 —</div>
-      <div class="stat-hint">当前筛选下入池结构</div>
+      <div class="stat-hint">当前筛选下入池占比最高</div>
     </div>
   </div>
 
   <div class="card" style="margin-bottom:16px">
     <div class="card-hd">
       <h2>渠道质量分析</h2>
-      <span class="muted" style="font-size:12px;font-weight:400">点击渠道联动期次与名单 · 成本数据：暂无</span>
+      <span class="muted" style="font-size:12px;font-weight:400">仅展示视频号 / 其他 · 成本数据：暂无</span>
     </div>
     <div class="card-bd">
       <div class="board-sort-bar">
@@ -74,54 +71,15 @@
         <button type="button" class="btn btn-sm" data-cq-sort="gmv">成交贡献</button>
       </div>
       <div style="overflow-x:auto">
-        <table class="data" style="min-width:960px">
+        <table class="data" style="min-width:720px">
           <thead>
             <tr>
               <th>渠道</th><th>入池</th><th>有效率</th><th>加微 / 率</th><th>到场 / 率</th>
-              <th>支付 / 率</th><th>归因GMV</th><th>支付率 vs 整体</th><th>环比</th><th>主要流失</th><th>操作</th>
+              <th>支付 / 率</th><th>归因GMV</th>
             </tr>
           </thead>
           <tbody id="cq-tbody"></tbody>
         </table>
-      </div>
-      <div class="board-detail-panel" id="cq-detail" hidden>
-        <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap">
-          <h3 id="cq-detail-title">渠道详情</h3>
-          <button type="button" class="btn btn-sm" id="cq-clear">清除选择</button>
-        </div>
-        <p class="muted" style="margin:0 0 8px;font-size:12px" id="cq-detail-note"></p>
-        <table class="data">
-          <thead><tr><th>期次</th><th>入池</th><th>加微率</th><th>到场率</th><th>支付率</th><th>操作</th></tr></thead>
-          <tbody id="cq-term-tbody"></tbody>
-        </table>
-        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px" id="cq-actions"></div>
-      </div>
-    </div>
-  </div>
-
-  <div class="board-two">
-    <div class="card">
-      <div class="card-hd"><h2>渠道结构（入池）</h2><span class="board-scope main">主口径</span></div>
-      <div class="card-bd"><div class="channel-bars" id="channel-bars"></div></div>
-    </div>
-    <div class="card">
-      <div class="card-hd"><h2>视频号辅漏斗</h2><span class="board-scope aux">辅口径</span></div>
-      <div class="card-bd">
-        <div class="board-funnel slope">
-          <div class="step" data-m-h="vxOrders" style="--h:100%"><div class="n" data-m="vxOrders">286</div><div class="l">获客首单</div><div class="r">100%</div></div>
-          <div class="step" data-m-h="vxLeads" style="--h:84%"><div class="n" data-m="vxLeads">241</div><div class="l">流入线索</div><div class="r" id="r-vxLeads">84%</div></div>
-          <div class="step drop" data-m-h="vxClaim" style="--h:69%"><div class="n" data-m="vxClaim">198</div><div class="l">领课成功</div><div class="r" id="r-vxClaim">82%</div></div>
-        </div>
-        <div style="margin-top:10px">
-          <p style="font-size:13px;margin:0 0 8px">
-            今日发生发送失败 <b data-m="smsFailureEvents">18</b>
-            · 当前待重发 <b data-m="smsFailedPending">18</b>
-          </p>
-          <div style="display:flex;gap:8px">
-            <a class="btn btn-sm" data-board-link="orders.html" data-board-focus="sms_failed" href="orders.html?focus=sms_failed">去重试</a>
-            <a class="btn btn-sm" data-board-link="orders.html" href="orders.html">全部订单</a>
-          </div>
-        </div>
       </div>
     </div>
   </div>
@@ -129,13 +87,13 @@
 
 </div>
 <script src="../assets/js/proto.js"></script>
-<script src="../assets/js/board-data.js?v=10"></script>
+<script src="../assets/js/board-data.js?v=11"></script>
 <script src="../assets/js/term-store.js?v=1"></script>
-<script src="../assets/js/board-metrics.js?v=15"></script>
-<script src="../assets/js/board-insights.js?v=9"></script>
+<script src="../assets/js/board-metrics.js?v=17"></script>
+<script src="../assets/js/board-insights.js?v=11"></script>
 <script src="../assets/js/board-term.js?v=1"></script>
 <script src="../assets/js/board-dictionary.js?v=4"></script>
-<script src="../assets/js/board-tools.js?v=5"></script>
+<script src="../assets/js/board-tools.js?v=6"></script>
 <script src="../assets/js/admin-shell.js?v=16"></script>
 <script>
 (function () {
@@ -145,150 +103,37 @@
   var brief = document.getElementById("scope-help-brief");
   if (brief) brief.textContent = " · " + (BoardMetrics.FILTER_SCOPE_HELP || "").slice(0, 48) + "…";
 
-  var LINK = { video: "orders.html", livecode: "channel-livecode.html", link: "acquire-links.html", import: "leads.html" };
-  var state = { sort: "pool", selected: null };
+  var state = { sort: "pool" };
 
-  function fmtDiff(n) {
-    if (n == null) return "—";
-    if (n === 0) return "持平";
-    return (n > 0 ? "高于整体 +" : "低于整体 ") + Math.abs(n) + "pp";
-  }
-
-  function renderConclusion(filters) {
-    var lines = BoardInsights.getChannelConclusions(filters);
-    document.getElementById("acquire-conclusion").innerHTML = BoardInsights.renderConclusionHtml(lines);
-    document.querySelectorAll("#acquire-conclusion [data-conclusion-idx]").forEach(function (btn) {
-      btn.onclick = function () {
-        var item = lines[Number(btn.getAttribute("data-conclusion-idx"))];
-        if (!item || !item.action) return;
-        if (item.action.type === "select_channel" || item.action.type === "select_channel_drop") {
-          selectChannel(item.action.id, item.action.id);
-          if (item.action.dropId) {
-            BoardInsights.setAnalyticsState({ funnelStep: item.action.dropId }, { syncUrl: true });
-          }
-        }
-      };
-    });
-  }
-
-  function selectChannel(id, label, opts) {
-    opts = opts || {};
-    state.selected = id;
-    BoardInsights.setAnalyticsState({
-      selectedChannel: id,
-      channelSort: state.sort,
-      scrollAnchor: "cq-detail"
-    }, { syncUrl: true, push: true });
-    if (opts.applyGlobal) {
-      BoardMetrics.setFilters({ channel: id }, { push: true });
-      var ch = document.getElementById("f-channel");
-      if (ch) ch.value = id;
-      Proto.toast("已应用为全局筛选：" + label);
-    } else {
-      Proto.toast("已局部分析：" + label + "（保留全渠道比较）");
-    }
-    renderDetails(BoardMetrics.aggregateLeadMetrics());
-    var detail = document.getElementById("cq-detail");
-    if (detail) {
-      detail.hidden = false;
-      detail.scrollIntoView({ behavior: "smooth", block: "nearest" });
-    }
+  function qualityRows(filters) {
+    var q = BoardInsights.getChannelQuality(filters);
+    return BoardInsights.sortBy(q.rows, state.sort, "desc");
   }
 
   function renderQuality(filters) {
-    var q = BoardInsights.getChannelQuality(filters);
-    var rows = BoardInsights.sortBy(q.rows, state.sort, "desc");
+    var rows = qualityRows(filters);
     var tbody = document.getElementById("cq-tbody");
     if (!rows.length) {
-      BoardMetrics.renderEmpty(tbody, 11);
-      document.getElementById("cq-detail").hidden = true;
+      BoardMetrics.renderEmpty(tbody, 7);
       return;
     }
     tbody.innerHTML = rows.map(function (r) {
-      var sel = state.selected === r.id ? " is-selected" : "";
-      var trend = r.trendPay == null ? "暂无可比数据" : ((r.trendPay > 0 ? "+" : "") + r.trendPay + "pp");
       var gmv = r.gmv == null ? "—" : BoardMetrics.money(r.gmv);
-      return '<tr class="' + sel + '" data-ch="' + r.id + '"><td><b>' + r.label + "</b></td><td>" +
+      return "<tr><td><b>" + r.label + "</b></td><td>" +
         BoardMetrics.fmt(r.pool) + "</td><td>" + (r.validRate != null ? r.validRate + "%" : "—") + "</td><td>" +
         BoardMetrics.fmt(r.wecom) + " / " + (r.wecomRate != null ? r.wecomRate + "%" : "—") + "</td><td>" +
         BoardMetrics.fmt(r.attend) + " / " + (r.attendRate != null ? r.attendRate + "%" : "—") + "</td><td>" +
-        BoardMetrics.fmt(r.pay) + " / " + (r.payRate != null ? r.payRate + "%" : "—") + "</td><td>" + gmv +
-        "</td><td>" + fmtDiff(r.payDiff) + "</td><td>" + trend + "</td><td>" + r.dropLabel +
-        '</td><td class="row-actions"><a href="#" data-pick-ch="' + r.id + '" data-pick-label="' + r.label + '">分析</a></td></tr>';
+        BoardMetrics.fmt(r.pay) + " / " + (r.payRate != null ? r.payRate + "%" : "—") + "</td><td>" + gmv + "</td></tr>";
     }).join("");
-
-    tbody.querySelectorAll("[data-pick-ch]").forEach(function (a) {
-      a.onclick = function (e) {
-        e.preventDefault();
-        selectChannel(a.getAttribute("data-pick-ch"), a.getAttribute("data-pick-label"));
-      };
-    });
-
-    var detail = document.getElementById("cq-detail");
-    if (!state.selected) {
-      detail.hidden = true;
-      return;
-    }
-    detail.hidden = false;
-    var row = rows.find(function (r) { return r.id === state.selected; }) || q.rows.find(function (r) { return r.id === state.selected; });
-    document.getElementById("cq-detail-title").textContent = (row ? row.label : state.selected) + " · 期次表现";
-    document.getElementById("cq-detail-note").textContent =
-      "主要流失：" + (row ? row.dropLabel : "—") + " · 成本：暂无成本数据";
-    var terms = BoardInsights.getChannelTermBreakdown(filters, state.selected);
-    var tt = document.getElementById("cq-term-tbody");
-    if (!terms.length) BoardMetrics.renderEmpty(tt, 6);
-    else {
-      tt.innerHTML = terms.map(function (t) {
-        var href = BoardMetrics.buildDrilldownUrl("leads.html", {
-          channel: state.selected, term: t.id === "mixed" ? "" : t.id, from_board: "acquire"
-        });
-        var termBoard = (t.id && t.id !== "mixed" && window.BoardTerm)
-          ? (' · <a href="' + BoardTerm.termBoardUrl(t.id, {
-              selected_channel: state.selected,
-              channel: state.selected,
-              from_board: "acquire"
-            }) + '" data-drill-save="1">查看期次经营看板</a>')
-          : "";
-        return "<tr><td>" + t.label + "</td><td>" + BoardMetrics.fmt(t.pool) + "</td><td>" +
-          (t.wecomRate != null ? t.wecomRate + "%" : "—") + "</td><td>" +
-          (t.attendRate != null ? t.attendRate + "%" : "—") + "</td><td>" +
-          (t.payRate != null ? t.payRate + "%" : "—") +
-          '</td><td class="row-actions"><a href="' + href + '" data-drill-save="1">查看名单</a>' + termBoard + "</td></tr>";
-      }).join("");
-    }
-    var leadsHref = BoardMetrics.buildDrilldownUrl("leads.html", { channel: state.selected, from_board: "acquire" });
-    var liveHref = BoardMetrics.buildDrilldownUrl("board-live.html", { channel: state.selected, from_board: "acquire" });
-    var funnelHref = BoardMetrics.buildDrilldownUrl("board-overview.html", {
-      channel: state.selected, funnel_step: row ? row.dropId : "pool_wecom", funnel_dim: "channel"
-    });
-    document.getElementById("cq-actions").innerHTML =
-      '<button type="button" class="btn btn-sm btn-primary" id="cq-apply-global">仅看' + (row ? row.label : "该渠道") + '</button>' +
-      '<a class="btn btn-sm" href="' + leadsHref + '" data-drill-save="1">查看用户名单</a>' +
-      '<a class="btn btn-sm" href="' + liveHref + '" data-drill-save="1">关联直播场次</a>' +
-      '<a class="btn btn-sm" href="' + funnelHref + '" data-drill-save="1">查看流失环节</a>';
-    var applyBtn = document.getElementById("cq-apply-global");
-    if (applyBtn) {
-      applyBtn.onclick = function () {
-        selectChannel(state.selected, row ? row.label : state.selected, { applyGlobal: true });
-      };
-    }
-    detail.querySelectorAll("[data-drill-save]").forEach(function (a) {
-      a.addEventListener("click", function () { BoardInsights.saveReturnState(); });
-    });
   }
 
   function renderDetails(d) {
     var filters = BoardMetrics.getFilters();
-    var qSel = new URLSearchParams(location.search).get("selected_channel");
-    var stSel = (BoardInsights.getAnalyticsState().selectedChannel) || "";
-    state.selected = qSel || stSel || state.selected;
-    /* 全局渠道筛选不等于局部选择：有全局筛选时仍可看全表，除非用户点了仅看 */
     var ch = filters.channel;
     var lblPool = document.getElementById("lbl-pool");
     var lblVx = document.getElementById("lbl-vx-orders");
     if (ch) {
-      var opt = (BoardData.channelOptions || []).find(function (o) { return o.value === ch; });
-      var name = opt ? opt.label : ch;
+      var name = BoardMetrics.channelLabel(ch) || ch;
       if (lblPool) lblPool.textContent = "入池线索（" + name + "）";
       if (lblVx) lblVx.textContent = ch === "video" ? "视频号获客首单（当前渠道）" : "视频号获客首单（渠道外）";
     } else {
@@ -296,33 +141,23 @@
       if (lblVx) lblVx.textContent = "视频号获客首单";
     }
 
-    var slices = BoardMetrics.getLeadSlices();
     var pool = d.poolLeads || 0;
-    var byCh = {};
-    slices.forEach(function (s) { byCh[s.channelLabel] = (byCh[s.channelLabel] || 0) + (s.pool || 0); });
-    var bars = document.getElementById("channel-bars");
-    var keys = Object.keys(byCh).sort(function (a, b) { return byCh[b] - byCh[a]; });
-    if (!keys.length || !pool) {
-      bars.innerHTML = '<div class="muted" style="padding:12px 0">当前筛选条件下暂无数据</div>';
+    var rows = BoardInsights.sortBy(
+      BoardInsights.getChannelQuality(Object.assign({}, filters, { channel: "" })).rows,
+      "pool",
+      "desc"
+    );
+    if (!rows.length || !pool) {
       document.getElementById("top-channel").textContent = "—";
     } else {
-      bars.innerHTML = keys.map(function (name) {
-        var pct = Math.round((byCh[name] / pool) * 100);
-        return '<div class="row"><span>' + name + '</span><div class="track"><div class="fill" style="width:' + pct + '%"></div></div><span class="pct">' + pct + '%</span></div>';
-      }).join("");
-      document.getElementById("top-channel").textContent = keys[0] + " " + Math.round((byCh[keys[0]] / pool) * 100) + "%";
+      var top = rows[0];
+      var topPool = rows.reduce(function (s, r) { return s + (r.pool || 0); }, 0) || pool;
+      document.getElementById("top-channel").textContent =
+        top.label + " " + Math.round(((top.pool || 0) / topPool) * 100) + "%";
     }
 
     document.getElementById("valid-rate").textContent = d.validLeadIn ? Math.round((d.poolLeads / d.validLeadIn) * 100) + "%" : "—";
-    var base = d.vxOrders || 0;
-    document.getElementById("r-vxLeads").textContent = BoardMetrics.pct(d.vxLeads, base);
-    document.getElementById("r-vxClaim").textContent = BoardMetrics.pct(d.vxClaim, d.vxLeads);
-    document.querySelectorAll('.board-funnel.slope .step[data-m-h^="vx"]').forEach(function (el) {
-      var k = el.getAttribute("data-m-h");
-      el.style.setProperty("--h", (base ? Math.max(28, Math.round((d[k] / base) * 100)) : 28) + "%");
-    });
 
-    renderConclusion(filters);
     renderQuality(filters);
     BoardMetrics.renderActiveFilters();
     BoardMetrics.wireBoardLinks();
@@ -337,11 +172,6 @@
       renderQuality(BoardMetrics.getFilters());
     };
   });
-  document.getElementById("cq-clear").onclick = function () {
-    state.selected = null;
-    BoardInsights.setAnalyticsState({ selectedChannel: "" }, { syncUrl: true, push: true });
-    renderDetails(BoardMetrics.aggregateLeadMetrics());
-  };
 
   BoardMetrics.bindRange("range-seg", function (k, d) { renderDetails(d); });
   BoardMetrics.bindFilterBar({ onApply: function (k, d) { renderDetails(d); }, autoApply: true });
@@ -349,30 +179,22 @@
   BoardTools.init({
     onApply: function (k, d) { renderDetails(d); },
     collectExtra: function () {
-      return {
-        sort: state.sort || "",
-        selected_channel: state.selected || "",
-        dimension: "channel"
-      };
+      return { sort: state.sort || "", dimension: "channel" };
     },
     getExportTable: function () {
-      var q = BoardInsights.getChannelQuality(BoardMetrics.getFilters());
-      var rows = BoardInsights.sortBy(q.rows, state.sort || "pool", "desc");
+      var rows = qualityRows(BoardMetrics.getFilters());
       if (!rows.length) return { reason: "当前筛选下暂无渠道质量数据", rows: [] };
       return {
         name: "渠道质量分析",
         filename: BoardMetrics.exportFileName("渠道质量分析"),
-        headers: ["渠道", "入池", "有效率", "加微人数", "加微率", "到场人数", "到场率", "支付人数", "支付率", "归因GMV", "支付率差异", "环比", "主要流失"],
+        headers: ["渠道", "入池", "有效率", "加微人数", "加微率", "到场人数", "到场率", "支付人数", "支付率", "归因GMV"],
         rows: rows.map(function (r) {
           return [
             r.label, r.pool, r.validRate != null ? r.validRate : "—",
             r.wecom, r.wecomRate != null ? r.wecomRate : "—",
             r.attend, r.attendRate != null ? r.attendRate : "—",
             r.pay, r.payRate != null ? r.payRate : "—",
-            r.gmv == null ? "—" : r.gmv,
-            r.payDiff == null ? "—" : r.payDiff,
-            r.trendPay == null ? "—" : r.trendPay,
-            r.dropLabel || "—"
+            r.gmv == null ? "—" : r.gmv
           ];
         })
       };

@@ -6,8 +6,9 @@
 <title>期次经营复盘 · 商家管理后台</title>
 <link rel="stylesheet" href="../assets/css/proto.css?v=14" />
 <style>
-.board-kpi-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-bottom:16px; }
-@media (max-width:960px) { .board-kpi-grid { grid-template-columns:repeat(2,1fr); } }
+.board-kpi-grid { display:grid; grid-template-columns:repeat(5,1fr); gap:12px; margin-bottom:16px; }
+@media (max-width:1200px) { .board-kpi-grid { grid-template-columns:repeat(3,1fr); } }
+@media (max-width:720px) { .board-kpi-grid { grid-template-columns:repeat(2,1fr); } }
 .board-kpi { background:#fff; border:1px solid var(--color-border); border-radius:8px; padding:14px 16px; }
 .board-kpi .kpi-label { font-size:12px; color:var(--color-text-muted); margin-bottom:4px; }
 .board-kpi .kpi-value { font-size:24px; font-weight:700; line-height:1.2; }
@@ -15,280 +16,83 @@
 .board-kpi .kpi-meta { font-size:11px; color:var(--color-text-muted); margin-top:8px; line-height:1.5; }
 .board-kpi .kpi-meta .up { color:#00b42a; }
 .board-kpi .kpi-meta .down { color:#f53f3f; }
-.board-funnel .step.clickable { cursor:pointer; transition:border-color .15s, box-shadow .15s; }
-.board-funnel .step.clickable:hover { border-color:#94bfff; }
-.board-funnel .step.funnel-active { border-color:var(--color-primary); box-shadow:0 0 0 2px rgba(22,93,255,.15); }
-.board-funnel-analysis { margin-top:12px; padding-top:12px; border-top:1px dashed var(--color-border); }
-.board-funnel-analysis .dim-tabs { display:flex; flex-wrap:wrap; gap:6px; margin:8px 0 12px; }
-.board-funnel-analysis .dim-tabs button { font-size:12px; }
-.board-funnel-analysis .dim-tabs button.active { background:var(--color-primary); color:#fff; border-color:var(--color-primary); }
-.board-split { display:grid; grid-template-columns:2fr 1fr; gap:16px; margin-bottom:16px; }
-@media (max-width:960px) { .board-split { grid-template-columns:1fr; } }
 .board-filter-note { font-size:12px; color:var(--color-text-muted); margin-left:8px; }
-.todo-urgency { font-size:11px; padding:2px 6px; border-radius:4px; flex-shrink:0; }
-.todo-urgency.high { background:#fff1f0; color:#f53f3f; }
-.todo-urgency.medium { background:#fff7e8; color:#ff7d00; }
-.todo-urgency.low { background:#f2f3f5; color:#86909c; }
-.board-filter-note { font-size:12px; color:var(--color-text-muted); margin-left:8px; }
-.term-hero-meta { display:flex; flex-wrap:wrap; gap:8px 16px; font-size:13px; margin:8px 0 0; }
-.term-hero-meta span { color:var(--color-text-secondary); }
-.term-focus { margin-top:12px; font-size:13px; }
-.term-focus ul { margin:6px 0 0; padding-left:18px; }
-.term-empty { text-align:center; padding:48px 16px; background:#fff; border:1px dashed var(--color-border); border-radius:8px; margin-bottom:16px; }
-.trend-metric-bar { display:flex; flex-wrap:wrap; gap:6px; margin-bottom:12px; }
 .trend-metric-bar button.active { background:var(--color-primary); color:#fff; border-color:var(--color-primary); }
+.term-empty { text-align:center; padding:48px 16px; background:#fff; border:1px dashed var(--color-border); border-radius:8px; margin-bottom:16px; }
 #from-source { margin:0 0 12px; padding:10px 12px; background:#f2f7ff; border:1px solid #bedaff; border-radius:6px; font-size:13px; }
 #term-trend-chart { min-height:220px; }
-.is-focus-flash { outline:2px solid var(--color-primary); outline-offset:2px; border-radius:8px; }
-tr.is-selected td { background:#f2f7ff; }
-.bn-children { margin:8px 0 0; padding:0; list-style:none; font-size:12px; color:var(--color-text-muted); }
-.bn-children li { padding:4px 0 4px 10px; border-left:2px solid #bedaff; margin-bottom:4px; }
+#slice-seg button:disabled { opacity:.45; cursor:not-allowed; }
+.term-window-chip { font-size:12px; color:var(--color-text-muted); margin-left:8px; white-space:nowrap; }
 </style>
 </head>
 <body class="admin-body" data-module="data" data-nav="board-t" data-title="期次经营复盘" data-crumb="经营分析 / 期次经营复盘" data-assist="1">
 <div id="header-actions">
-  <div class="segmented" id="range-seg" style="margin-right:8px">
-    <button type="button" class="active" data-range="7d">近7日</button>
-    <button type="button" data-range="30d">近30日</button>
-    <button type="button" data-range="today">今日</button>
-    <button type="button" data-range="yesterday">昨日</button>
+  <span class="muted" style="font-size:12px;margin-right:8px">统计切片</span>
+  <div class="segmented" id="slice-seg" style="margin-right:8px">
+    <button type="button" class="active" data-slice="term">整期</button>
+    <button type="button" data-slice="7d">近7日</button>
+    <button type="button" data-slice="30d">近30日</button>
+    <button type="button" data-slice="custom">自定义</button>
   </div>
+  <span class="muted" id="slice-range-label" style="font-size:12px;margin-right:8px"></span>
   <span class="muted" id="board-updated" style="margin-right:8px;font-size:12px"></span>
-  <button class="btn" id="btn-refresh">刷新</button>
 </div>
 <div id="page-content" style="display:none">
 
   <div class="board-tip">
-    <b>期次经营看板：</b>围绕单个招生期次复盘获客、私域承接、直播提醒、到场与支付全链路，定位瓶颈并下钻专项报表。
+    <b>期次经营复盘：</b>以招生期次为主轴；时间仅为期内切片（默认整期）。
     <span class="muted" id="scope-help-brief"></span>
   </div>
 
   <div class="board-filter">
     <select id="f-term" title="选择期次"></select>
-    <select id="f-channel"></select>
-    <button class="btn" id="btn-reset">重置筛选</button>
-    <span class="board-filter-note">请选择具体期次进行经营复盘；筛选变更后立即生效</span>
+    <span class="term-window-chip" id="term-window-chip">经营周期 —</span>
+    <span class="board-filter-note" id="slice-hint">默认按整期统计；近 N 日仅截取期内可用区间</span>
   </div>
-  <div id="active-filters"></div>
   <div id="from-source" hidden></div>
 
   <div id="term-empty" class="term-empty" hidden>
-    <h2 style="margin:0 0 8px;font-size:16px">请选择一个具体期次进行经营复盘</h2>
-    <p class="muted" style="margin:0 0 16px;font-size:13px">「全部期次」不能作为单个期次复盘对象。请在上方筛选中选择春启 03 期、春启 04 期或试听公开课。</p>
+    <h2 style="margin:0 0 8px;font-size:16px" id="term-empty-title">请选择一个具体期次进行经营复盘</h2>
+    <p class="muted" style="margin:0 0 16px;font-size:13px" id="term-empty-desc">「全部期次」不能作为单个期次复盘对象。请在上方选择具体期次。</p>
     <button type="button" class="btn btn-primary" id="btn-pick-default">打开默认经营期次</button>
   </div>
 
   <div id="term-main" hidden>
-
-    <div class="card" style="margin-bottom:16px" id="term-hero">
-      <div class="card-bd">
-        <div style="display:flex;flex-wrap:wrap;align-items:center;gap:8px">
-          <h2 style="margin:0;font-size:18px" id="th-name">—</h2>
-          <span class="tag" id="th-status">—</span>
-          <span class="muted" style="font-size:12px" id="th-stage"></span>
-          <button type="button" class="btn btn-sm" id="btn-edit-term" style="margin-left:auto;display:none">编辑期次</button>
-        </div>
-        <div class="term-hero-meta">
-          <span>负责人：<b id="th-owner">—</b></span>
-          <span>经营周期：<b id="th-dates">—</b></span>
-          <span>转化截止：<b id="th-deadline">—</b></span>
-          <span id="th-days-wrap">剩余：<b id="th-days">—</b></span>
-          <span>关联直播：<b id="th-lives">—</b> 场</span>
-          <span>获客渠道：<b id="th-channels">—</b> 个</span>
-        </div>
-        <div class="term-focus" id="th-focus"></div>
-      </div>
-    </div>
-
-    <h2 style="margin:0 0 12px;font-size:14px">期次核心指标 <span class="muted" style="font-weight:400"> · <span data-range-label>近7日</span></span></h2>
+    <h2 style="margin:0 0 12px;font-size:14px">核心经营指标 <span class="muted" style="font-weight:400"> · <span data-slice-label>整期</span></span></h2>
     <div class="board-kpi-grid" id="term-kpis"></div>
 
-    <div class="card" style="margin-bottom:16px" id="funnel-section">
-      <div class="card-hd">
-        <h2>期次端到端漏斗</h2>
-        <span class="muted" style="font-size:12px;font-weight:400">私域池 → 分配 → 加微 → 跟进 → 到场 → 支付</span>
-      </div>
-      <div class="card-bd">
-        <div class="board-funnel slope lg" id="term-funnel"></div>
-        <p class="board-attr" data-board-attr></p>
-
-        <div class="board-funnel-analysis" id="term-funnel-analysis">
-          <div id="tf-source-banner" class="board-analysis-source" hidden></div>
-          <div style="display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-bottom:8px">
-            <span class="muted" style="font-size:12px">当前分析：</span>
-            <b id="tf-step-label">加微转化</b>
-            <span class="muted" style="font-size:12px">·</span>
-            <button type="button" class="btn btn-sm" id="tf-clear">清除选择</button>
-          </div>
-          <div class="dim-tabs" id="tf-dim-tabs"></div>
-          <div style="overflow-x:auto">
-            <table class="data" style="min-width:520px">
-              <thead>
-                <tr>
-                  <th>维度</th><th>上游人数</th><th>下游人数</th><th>转化率</th><th>操作</th>
-                </tr>
-              </thead>
-              <tbody id="tf-tbody"></tbody>
-            </table>
-          </div>
-          <p class="muted" style="font-size:12px;margin:8px 0 0" id="tf-note"></p>
-        </div>
-      </div>
-    </div>
-
-    <div class="card" style="margin-bottom:16px">
-      <div class="card-hd">
-        <h2>期次趋势</h2>
+    <div class="card" id="term-trend-section" style="margin-bottom:16px">
+      <div class="card-hd" style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap">
+        <h2 style="margin:0">核心指标趋势</h2>
         <span class="muted" style="font-size:12px;font-weight:400">按日 / 累计 / 上一期同期</span>
       </div>
       <div class="card-bd">
-        <div class="trend-metric-bar" id="trend-metric-bar">
-          <button type="button" class="btn btn-sm active" data-trend="pool_new">新增入池</button>
-          <button type="button" class="btn btn-sm" data-trend="pool_cum">累计入池</button>
-          <button type="button" class="btn btn-sm" data-trend="wecomRate">加微率</button>
-          <button type="button" class="btn btn-sm" data-trend="followRate">跟进覆盖率</button>
-          <button type="button" class="btn btn-sm" data-trend="attend">到场人数</button>
-          <button type="button" class="btn btn-sm" data-trend="pay">支付人数</button>
-          <button type="button" class="btn btn-sm" data-trend="pay_cum">累计支付</button>
-          <button type="button" class="btn btn-sm" data-trend="gmv">GMV</button>
-        </div>
+        <div class="trend-metric-bar" id="term-trend-bar" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px"></div>
+        <p class="muted" style="font-size:12px;margin:0 0 8px" id="term-trend-note"></p>
         <div id="term-trend-chart"></div>
-      </div>
-    </div>
-
-    <div class="card" style="margin-bottom:16px">
-      <div class="card-hd" style="flex-wrap:wrap;gap:8px">
-        <h2>渠道质量贡献</h2>
-        <div class="board-sort-bar" style="margin:0">
-          <span class="muted">排序：</span>
-          <button type="button" class="btn btn-sm active" data-ch-sort="pool">规模</button>
-          <button type="button" class="btn btn-sm" data-ch-sort="payRate">支付率</button>
-          <button type="button" class="btn btn-sm" data-ch-sort="gmv">成交贡献</button>
-        </div>
-      </div>
-      <div class="card-bd" style="padding:0;overflow-x:auto">
-        <table class="data" style="min-width:900px">
-          <thead>
-            <tr>
-              <th>渠道</th><th>入池</th><th>占比</th><th>加微率</th><th>到场率</th>
-              <th>支付率</th><th>归因GMV</th><th>vs 期次</th><th>主要流失</th><th>操作</th>
-            </tr>
-          </thead>
-          <tbody id="term-ch-tbody"></tbody>
-        </table>
-      </div>
-      <p class="muted" style="padding:8px 16px;font-size:12px;margin:0">
-        本表仅展示当前期次内渠道表现。
-        <a data-board-link="board-acquire.html" href="board-acquire.html" id="link-full-acquire">查看完整渠道分析</a>
-      </p>
-    </div>
-
-    <div class="card" style="margin-bottom:16px">
-      <div class="card-hd">
-        <h2>私域承接</h2>
-        <span class="muted" style="font-size:12px;font-weight:400">团队执行摘要 · 详细分析进私域转化</span>
-      </div>
-      <div class="card-bd">
-        <div class="stat-cards board-stats" style="grid-template-columns:repeat(4,1fr);margin-bottom:12px" id="term-private-stats"></div>
-        <div style="overflow-x:auto">
-          <table class="data" style="min-width:880px">
-            <thead>
-              <tr>
-                <th>员工</th><th>承接</th><th>及时率</th><th>加微率</th><th>覆盖率</th>
-                <th>未跟进</th><th>支付</th><th>标签</th><th>操作</th>
-              </tr>
-            </thead>
-            <tbody id="term-staff-tbody"></tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-
-    <div class="card" style="margin-bottom:16px">
-      <div class="card-hd" style="flex-wrap:wrap;gap:8px">
-        <h2>关联直播</h2>
-        <div class="segmented" id="term-live-tab">
-          <button type="button" class="active" data-live-tab="ended">已结束场次</button>
-          <button type="button" data-live-tab="upcoming">待开播场次</button>
-        </div>
-      </div>
-      <div class="card-bd" style="padding:0;overflow-x:auto">
-        <table class="data" style="min-width:960px">
-          <thead id="term-live-thead"></thead>
-          <tbody id="term-live-tbody"></tbody>
-        </table>
-      </div>
-    </div>
-
-    <div class="card" style="margin-bottom:16px" id="zone-convert-a">
-      <div class="card-hd">
-        <h2>A. 转化效果（可归因）</h2>
-        <span class="muted" style="font-size:12px;font-weight:400">支付结构与贡献</span>
-      </div>
-      <div class="card-bd">
-        <div class="stat-cards board-stats" style="grid-template-columns:repeat(5,1fr);margin-bottom:12px" id="term-convert-a"></div>
-        <div class="board-two">
-          <div>
-            <h3 style="margin:0 0 8px;font-size:13px">按渠道支付贡献</h3>
-            <table class="data"><thead><tr><th>渠道</th><th>支付</th><th>支付率</th><th>操作</th></tr></thead>
-              <tbody id="term-pay-ch"></tbody></table>
+        <div style="margin-top:16px;padding-top:12px;border-top:1px dashed var(--color-border)">
+          <h3 style="margin:0 0 8px;font-size:13px" id="term-detail-title">指标明细</h3>
+          <div style="overflow-x:auto">
+            <table class="data" style="min-width:960px">
+              <thead id="term-detail-thead"></thead>
+              <tbody id="term-metric-detail"></tbody>
+            </table>
           </div>
-          <div>
-            <h3 style="margin:0 0 8px;font-size:13px">按直播场次支付贡献</h3>
-            <table class="data"><thead><tr><th>场次</th><th>支付</th><th>支付率</th><th>操作</th></tr></thead>
-              <tbody id="term-pay-live"></tbody></table>
-          </div>
+          <p class="muted" style="font-size:12px;margin:8px 0 0" id="term-detail-note"></p>
         </div>
       </div>
     </div>
-
-    <div class="card" style="margin-bottom:16px" id="zone-convert-b">
-      <div class="card-hd">
-        <h2>B. 成交结果</h2>
-        <span class="muted" style="font-size:12px;font-weight:400">全量订单与商品 · 口径固定</span>
-      </div>
-      <div class="card-bd">
-        <div class="stat-cards board-stats" style="grid-template-columns:repeat(4,1fr);margin-bottom:12px" id="term-convert-b"></div>
-        <p class="muted" style="font-size:12px;margin:0 0 8px" id="term-cover-note"></p>
-        <table class="data">
-          <thead><tr><th>商品</th><th>类型</th><th>订单</th><th>GMV</th><th>操作</th></tr></thead>
-          <tbody id="term-product-tbody"></tbody>
-        </table>
-      </div>
-    </div>
-
-    </div>
-
-    <h2 style="margin:0 0 12px;font-size:14px">专项分析入口</h2>
-    <div class="board-topic-entries" id="topic-entries">
-      <a class="board-topic-entry" data-board-link="board-acquire.html" href="board-acquire.html">
-        <div class="t">获客质量分析</div>
-        <div class="d">保留当前期次，查看完整渠道比较</div>
-      </a>
-      <a class="board-topic-entry" data-board-link="board-private.html" href="board-private.html">
-        <div class="t">私域承接分析</div>
-        <div class="d">保留当前期次，查看员工与阶段运营</div>
-      </a>
-      <a class="board-topic-entry" data-board-link="board-live.html" href="board-live.html?live_tab=ended">
-        <div class="t">直播场次复盘</div>
-        <div class="d">保留当前期次，查看关联场次与直播提醒</div>
-      </a>
-      <a class="board-topic-entry" data-board-link="board-convert.html" href="board-convert.html">
-        <div class="t">转化贡献分析</div>
-        <div class="d">保留当前期次，查看可归因转化与全量成交</div>
-      </a>
-    </div>
-
   </div>
+
 </div>
 <script src="../assets/js/proto.js"></script>
 <script src="../assets/js/board-data.js?v=10"></script>
 <script src="../assets/js/term-store.js?v=1"></script>
-<script src="../assets/js/board-metrics.js?v=15"></script>
-<script src="../assets/js/board-insights.js?v=9"></script>
-<script src="../assets/js/board-term.js?v=1"></script>
+<script src="../assets/js/board-metrics.js?v=16"></script>
+<script src="../assets/js/board-insights.js?v=10"></script>
+<script src="../assets/js/board-term.js?v=2"></script>
 <script src="../assets/js/board-dictionary.js?v=4"></script>
-<script src="../assets/js/board-tools.js?v=5"></script>
+<script src="../assets/js/board-tools.js?v=6"></script>
 <script src="../assets/js/admin-shell.js?v=20"></script>
 <script>
 (function () {
@@ -296,30 +100,215 @@ tr.is-selected td { background:#f2f7ff; }
   BoardMetrics.setUpdatedNow();
   BoardMetrics.fillAttr();
   var brief = document.getElementById("scope-help-brief");
-  if (brief) brief.textContent = " · " + (BoardMetrics.FILTER_SCOPE_HELP || "").slice(0, 48) + "…";
+  if (brief) brief.textContent = " · 期次圈人，统计切片圈事件窗口";
 
-  var pageState = {
-    trendMetric: "pool_new",
-    liveTab: "ended",
-    chSort: "pool",
-    bootstrappedTerm: false
+  var METRICS = BoardInsights.OVERVIEW_METRICS || [];
+  var trendState = {
+    metric: (METRICS[0] && METRICS[0].trendKey) || "pool_new",
+    label: (METRICS[0] && METRICS[0].label) || "入池人数"
   };
+  var pageState = {
+    sliceMode: "term",
+    lastTermId: null,
+    bootstrappedTerm: false,
+    lastSliceLabel: "整期"
+  };
+  var lastDetailRows = null;
 
   var FROM_LABELS = {
     overview: "经营总览",
     acquire: "获客分析",
     private: "私域转化分析",
     live: "直播分析",
-    convert: "交易分析",
-    term_review: "期次经营看板"
+    convert: "商品分析",
+    term_review: "期次经营复盘"
   };
 
   function trendClass(t) {
     return t === "up" ? "up" : t === "down" ? "down" : "";
   }
 
+  function fmtDetailCell(v, kind) {
+    if (v == null) return "—";
+    if (kind === "rate") return v + "%";
+    if (kind === "money") return BoardMetrics.money(v);
+    return BoardMetrics.fmt(v);
+  }
+
   function currentTermId() {
     return (BoardMetrics.getFilters().term || "").trim();
+  }
+
+  function addDaysYmd(ymd, delta) {
+    var d = BoardMetrics.parseYmd(ymd);
+    if (!d) return "";
+    d.setDate(d.getDate() + delta);
+    return BoardMetrics.formatYmd(d);
+  }
+
+  function minYmd(a, b) { return !a ? b : (!b ? a : (a < b ? a : b)); }
+  function maxYmd(a, b) { return !a ? b : (!b ? a : (a > b ? a : b)); }
+
+  function getTermBounds(term) {
+    if (!term) return null;
+    var start = term.startDate || "";
+    var end = term.conversionDeadline || term.endDate || "";
+    if (!start || !end) return null;
+    return { start: start, end: end };
+  }
+
+  function resolveTermSlice(term, mode, customStart, customEnd) {
+    var bounds = getTermBounds(term);
+    if (!bounds) {
+      return { ok: false, reason: "期次缺少经营起止日期" };
+    }
+    var today = BoardMetrics.formatYmd(BoardMetrics.businessToday());
+    if (bounds.start > today) {
+      return {
+        ok: false,
+        upcoming: true,
+        reason: "期次尚未开始（" + bounds.start + " 起）",
+        bounds: bounds
+      };
+    }
+    var availableEnd = minYmd(bounds.end, today);
+    if (availableEnd < bounds.start) {
+      return { ok: false, reason: "当前无可统计区间", bounds: bounds };
+    }
+    var ended = bounds.end < today;
+
+    if (mode === "custom" && customStart && customEnd) {
+      var s = maxYmd(customStart, bounds.start);
+      var e = minYmd(customEnd, availableEnd);
+      if (s > e) {
+        return { ok: false, reason: "自定义区间与期次窗口无交集", bounds: bounds };
+      }
+      return {
+        ok: true,
+        mode: "custom",
+        start_date: s,
+        end_date: e,
+        sliceLabel: "自定义",
+        bounds: bounds,
+        ended: ended,
+        clamped: s !== customStart || e !== customEnd
+      };
+    }
+
+    if (mode === "7d" || mode === "30d") {
+      var span = mode === "30d" ? 29 : 6;
+      var end = availableEnd;
+      var start = maxYmd(addDaysYmd(end, -span), bounds.start);
+      var label = mode === "30d" ? "近30日" : "近7日";
+      if (ended) {
+        return {
+          ok: true,
+          mode: mode,
+          start_date: start,
+          end_date: end,
+          sliceLabel: label,
+          bounds: bounds,
+          ended: true,
+          hint: "该期已结束，近 N 日已裁剪为期内可用区间"
+        };
+      }
+      return {
+        ok: true,
+        mode: mode,
+        start_date: start,
+        end_date: end,
+        sliceLabel: label,
+        bounds: bounds,
+        ended: false
+      };
+    }
+
+    return {
+      ok: true,
+      mode: "term",
+      start_date: bounds.start,
+      end_date: availableEnd,
+      sliceLabel: "整期",
+      bounds: bounds,
+      ended: ended
+    };
+  }
+
+  function writeSliceParam(mode) {
+    try {
+      var q = new URLSearchParams(location.search);
+      if (mode && mode !== "term") q.set("slice", mode);
+      else q.delete("slice");
+      var qs = q.toString();
+      var next = location.pathname + (qs ? "?" + qs : "") + location.hash;
+      var cur = location.pathname + location.search + location.hash;
+      if (next !== cur) history.replaceState({ boardFilters: true }, "", next);
+    } catch (e) {}
+  }
+
+  function applySliceToFilters(termId, slice, push) {
+    var cur = BoardMetrics.getFilters();
+    if (
+      cur.term === termId &&
+      cur.range === "custom" &&
+      cur.start_date === slice.start_date &&
+      cur.end_date === slice.end_date &&
+      !(cur.channel || "")
+    ) {
+      writeSliceParam(pageState.sliceMode);
+      return;
+    }
+    BoardMetrics.setFilters({
+      term: termId,
+      channel: "",
+      range: "custom",
+      start_date: slice.start_date,
+      end_date: slice.end_date
+    }, { push: !!push });
+    writeSliceParam(pageState.sliceMode);
+  }
+
+  function syncSliceUI(slice) {
+    var seg = document.getElementById("slice-seg");
+    if (seg) {
+      seg.querySelectorAll("[data-slice]").forEach(function (b) {
+        var mode = b.getAttribute("data-slice");
+        b.classList.toggle("active", mode === pageState.sliceMode);
+      });
+    }
+    var labelEl = document.getElementById("slice-range-label");
+    if (labelEl) {
+      if (slice && slice.ok) {
+        labelEl.textContent = BoardMetrics.formatDateRangeFriendly(slice.start_date, slice.end_date);
+      } else {
+        labelEl.textContent = "";
+      }
+    }
+    var chip = document.getElementById("term-window-chip");
+    if (chip) {
+      if (slice && slice.bounds) {
+        chip.textContent = "经营周期 " + slice.bounds.start + " — " + slice.bounds.end;
+      } else {
+        chip.textContent = "经营周期 —";
+      }
+    }
+    var hint = document.getElementById("slice-hint");
+    if (hint) {
+      if (slice && slice.upcoming) {
+        hint.textContent = slice.reason || "期次尚未开始";
+      } else if (slice && slice.hint) {
+        hint.textContent = slice.hint;
+      } else if (slice && slice.clamped) {
+        hint.textContent = "已按期次窗口裁剪自定义区间";
+      } else {
+        hint.textContent = "默认按整期统计；近 N 日仅截取期内可用区间";
+      }
+    }
+    var displayLabel = (slice && slice.ok) ? (slice.sliceLabel || "整期") : "—";
+    pageState.lastSliceLabel = displayLabel;
+    document.querySelectorAll("[data-slice-label]").forEach(function (el) {
+      el.textContent = displayLabel;
+    });
   }
 
   function ensureDefaultTerm() {
@@ -329,38 +318,19 @@ tr.is-selected td { background:#f2f7ff; }
     if (q.has("term")) return;
     var def = BoardTerm.defaultTermId();
     if (!def) return;
-    BoardMetrics.setFilters({ term: def }, { push: true });
+    BoardMetrics.setFilters({ term: def, channel: "" }, { push: true });
     var sel = document.getElementById("f-term");
     if (sel) sel.value = def;
   }
 
-  function bootAnalyticsFromUrl() {
-    var q = new URLSearchParams(location.search);
-    var patch = {};
-    if (q.get("funnel_step")) patch.funnelStep = q.get("funnel_step");
-    if (q.get("funnel_dim")) patch.funnelDim = q.get("funnel_dim");
-    if (q.get("bottleneck_id")) {
-      patch.bottleneckId = q.get("bottleneck_id");
-      patch.scrollAnchor = "term-funnel-analysis";
-    }
-    if (q.get("selected_channel")) patch.selectedChannel = q.get("selected_channel");
-    if (q.get("selected_term")) patch.selectedTerm = q.get("selected_term");
-    if (q.get("selected_owner")) patch.selectedOwner = q.get("selected_owner");
-    if (q.get("selected_live") || q.get("live_id")) {
-      patch.selectedLive = q.get("selected_live") || q.get("live_id");
-    }
-    if (q.get("live_tab")) {
-      patch.liveTab = q.get("live_tab");
-      pageState.liveTab = q.get("live_tab");
-    }
-    if (q.get("section")) patch.section = q.get("section");
-    if (q.get("anchor")) patch.scrollAnchor = q.get("anchor");
-    if (q.get("metric")) pageState.trendMetric = q.get("metric");
-    if (Object.keys(patch).length) BoardInsights.setAnalyticsState(patch, { syncUrl: false });
+  function showEmpty(show) {
+    document.getElementById("term-empty").hidden = !show;
+    document.getElementById("term-main").hidden = show;
   }
 
   function renderFromSource() {
     var el = document.getElementById("from-source");
+    if (!el) return;
     var q = new URLSearchParams(location.search);
     var from = q.get("from_board") || q.get("from") || "";
     if (!from || from === "term_review") {
@@ -371,778 +341,257 @@ tr.is-selected td { background:#f2f7ff; }
     var label = FROM_LABELS[from] || from;
     var term = BoardTerm.getTermById(currentTermId());
     var bits = ["来自：" + label];
-    if (q.get("selected_channel") || q.get("channel")) {
-      var cid = q.get("selected_channel") || q.get("channel");
-      bits.push(BoardMetrics.channelLabel(cid) || cid);
-    }
     if (term) bits.push(term.name);
-    var href = (BoardInsights.buildReturnBoardUrl
+    var href = BoardInsights.buildReturnBoardUrl
       ? BoardInsights.buildReturnBoardUrl("board-overview.html")
-      : "board-overview.html");
+      : "board-overview.html";
     el.hidden = false;
     el.innerHTML = "<b>" + bits.join(" / ") +
       '</b> <a href="' + href + '" style="margin-left:8px">返回来源报表</a>';
   }
 
-  function showEmpty(show) {
-    document.getElementById("term-empty").hidden = !show;
-    document.getElementById("term-main").hidden = show;
-    var editBtn = document.getElementById("btn-edit-term");
-    if (editBtn) editBtn.style.display = show ? "none" : "";
-  }
-
-  function renderHero(bundle) {
-    var term = bundle.term;
-    document.getElementById("th-name").textContent = term.name;
-    document.getElementById("th-status").textContent =
-      (term.lifecycleLabel || term.statusLabel || term.status);
-    document.getElementById("th-stage").textContent = term.currentStage ? ("经营阶段：" + term.currentStage) : "";
-    document.getElementById("th-owner").textContent = term.owner || "—";
-    document.getElementById("th-dates").textContent =
-      (term.startDate || "—") + " — " + (term.endDate || "—");
-    document.getElementById("th-deadline").textContent = term.conversionDeadline || "—";
-    var days = bundle.daysLeft;
-    var daysWrap = document.getElementById("th-days-wrap");
-    if (term.status === "ended" || term.lifecycle === "ended") {
-      daysWrap.innerHTML = "状态：<b>已结束</b>";
-    } else if (days == null) {
-      daysWrap.innerHTML = "剩余：<b>—</b>";
-    } else if (days < 0) {
-      daysWrap.innerHTML = "已过转化截止 <b>" + Math.abs(days) + "</b> 天";
-    } else {
-      daysWrap.innerHTML = "距离转化结束：<b>" + days + "</b> 天";
-    }
-    document.getElementById("th-lives").textContent = String(bundle.liveCount);
-    document.getElementById("th-channels").textContent = String(bundle.channelCount);
-    var focus = bundle.focus || {};
-    document.getElementById("th-focus").innerHTML =
-      "<b>" + (focus.title || "关注重点") + "：</b><ul>" +
-      (focus.items || []).map(function (x) { return "<li>" + x + "</li>"; }).join("") +
-      "</ul>";
-    var editBtn = document.getElementById("btn-edit-term");
-    if (editBtn) editBtn.style.display = term && term.id ? "" : "none";
-  }
-
-  function renderKpis(bundle) {
-    var host = document.getElementById("term-kpis");
-    host.innerHTML = (bundle.kpis || []).map(function (k) {
-      var prior = "";
-      if (k.vsPrior) {
-        if (k.vsPrior.none) {
-          prior = '<span class="muted">' + k.vsPrior.text + "</span>";
-        } else {
-          prior = '<span class="' + trendClass(k.vsPrior.trend) + '">较上一期 ' + k.vsPrior.text + "</span>";
-        }
-      }
-      return '<div class="board-kpi" data-kpi="' + k.id + '">' +
-        '<div class="kpi-label" data-metric="' + k.id + '">' + k.label + "</div>" +
-        '<div class="kpi-value">' + k.display + "</div>" +
-        '<div class="kpi-meta">' + prior +
-        ' <a href="#" data-kpi-trend="' + k.id + '" style="margin-left:6px">查看趋势</a></div></div>';
+  function renderTrendBar() {
+    var bar = document.getElementById("term-trend-bar");
+    if (!bar) return;
+    bar.innerHTML = METRICS.map(function (m) {
+      var active = m.trendKey === trendState.metric ? " active" : "";
+      return '<button type="button" class="btn btn-sm' + active + '" data-trend="' + m.trendKey +
+        '" data-trend-label="' + m.label + '">' + m.label + "</button>";
     }).join("");
-    host.querySelectorAll("[data-kpi-trend]").forEach(function (a) {
-      a.onclick = function (e) {
-        e.preventDefault();
-        var map = {
-          pool: "pool_new",
-          wecomRate: "wecomRate",
-          attendRate: "attend",
-          payUsers: "pay",
-          payRate: "pay",
-          gmv: "gmv"
-        };
-        var m = map[a.getAttribute("data-kpi-trend")] || "pool_new";
-        pageState.trendMetric = m;
-        document.querySelectorAll("#trend-metric-bar [data-trend]").forEach(function (b) {
-          b.classList.toggle("active", b.getAttribute("data-trend") === m);
-        });
-        renderTrend(currentTermId());
-        var chart = document.getElementById("term-trend-chart");
-        if (chart) chart.scrollIntoView({ behavior: "smooth", block: "start" });
-      };
-    });
-    if (window.BoardTools) BoardTools.bindMetricTips(host);
-  }
-
-  function mapFunnelStep(stepId) {
-    var map = {
-      pool: null,
-      assign: "pool_wecom",
-      wecom: "pool_wecom",
-      follow: "wecom_attend",
-      attend: "wecom_attend",
-      pay: "attend_pay"
-    };
-    return map[stepId] || stepId;
-  }
-
-  function renderFunnel(termId, filters) {
-    var funnel = BoardTerm.getTermFunnel(termId, filters);
-    var st = BoardInsights.getAnalyticsState();
-    var active = st.funnelStep || "";
-    var host = document.getElementById("term-funnel");
-    var max = 1;
-    (funnel.steps || []).forEach(function (s) {
-      if (s.count != null && s.count > max) max = s.count;
-    });
-    host.innerHTML = (funnel.steps || []).map(function (s) {
-      var h = Math.max(18, Math.round((s.count || 0) / max * 100));
-      var fs = s.funnelStep || mapFunnelStep(s.id);
-      var clickable = !!fs;
-      var isActive = clickable && active && active === fs;
-      var rateText = s.rateLabel
-        ? (s.rate != null ? s.rate + "%" : "—")
-        : "100%";
-      return '<div class="step' + (clickable ? " clickable" : "") +
-        (isActive ? " funnel-active" : "") +
-        '" data-funnel-step="' + (fs || "") + '" data-term-step="' + s.id +
-        '" style="--h:' + h + '%">' +
-        '<div class="n">' + BoardMetrics.fmt(s.count) + "</div>" +
-        '<div class="l">' + s.label + "</div>" +
-        '<div class="r">' + rateText + "</div></div>";
-    }).join("");
-    host.querySelectorAll(".step.clickable").forEach(function (el) {
-      el.addEventListener("click", function () {
-        var id = el.getAttribute("data-funnel-step");
-        if (!id) return;
-        BoardInsights.setAnalyticsState({
-          funnelStep: id,
-          scrollAnchor: "term-funnel-analysis",
-          bottleneckId: ""
-        }, { syncUrl: true, push: true });
-        renderFunnelAnalysis(termId, filters);
-        var fa = document.getElementById("term-funnel-analysis");
-        if (fa) {
-          fa.scrollIntoView({ behavior: "smooth", block: "start" });
-          fa.classList.add("is-focus-flash");
-          setTimeout(function () { fa.classList.remove("is-focus-flash"); }, 1200);
-        }
-      });
-    });
-  }
-
-  function analysisDims(step) {
-    var dims = (step && step.dims) ? step.dims.slice() : ["channel", "staff", "live"];
-    return dims.filter(function (d) { return d !== "term"; });
-  }
-
-  function renderFunnelAnalysis(termId, filters) {
-    filters = BoardTerm.getTermBundle(termId, filters) ? BoardTerm.getTermBundle(termId, filters).filters : filters;
-    var st = BoardInsights.getAnalyticsState();
-    var stepId = st.funnelStep || "pool_wecom";
-    var dim = st.funnelDim || "channel";
-    if (dim === "term") dim = "channel";
-    var step = BoardInsights.FUNNEL_STEPS.find(function (s) { return s.id === stepId; }) || BoardInsights.FUNNEL_STEPS[0];
-    var dims = analysisDims(step);
-    if (dims.indexOf(dim) < 0) dim = dims[0] || "channel";
-    var selectedObj = st.selectedChannel || st.selectedOwner || st.selectedLive || "";
-
-    document.getElementById("tf-step-label").textContent =
-      step.label + " / " + (BoardInsights.DIM_LABELS[dim] || dim);
-
-    var srcBanner = document.getElementById("tf-source-banner");
-    if (srcBanner) {
-      srcBanner.hidden = true;
-      srcBanner.innerHTML = "";
-    }
-
-    var tabs = document.getElementById("tf-dim-tabs");
-    tabs.innerHTML = dims.map(function (d) {
-      return '<button type="button" class="btn btn-sm' + (d === dim ? " active" : "") +
-        '" data-tf-dim="' + d + '">' + BoardInsights.DIM_LABELS[d] + "</button>";
-    }).join("");
-    tabs.querySelectorAll("[data-tf-dim]").forEach(function (btn) {
+    bar.querySelectorAll("[data-trend]").forEach(function (btn) {
       btn.onclick = function () {
-        BoardInsights.setAnalyticsState({ funnelDim: btn.getAttribute("data-tf-dim") }, { syncUrl: true, push: true });
-        renderFunnelAnalysis(termId, BoardMetrics.getFilters());
+        openTermTrend(btn.getAttribute("data-trend"), btn.getAttribute("data-trend-label"), false);
       };
     });
+  }
 
-    var bd = BoardInsights.getFunnelDimensionBreakdown(filters, stepId, dim);
-    var tbody = document.getElementById("tf-tbody");
-    if (!bd.rows.length) {
-      BoardMetrics.renderEmpty(tbody, 5, "当前筛选下暂无维度数据");
-    } else {
-      tbody.innerHTML = bd.rows.map(function (r) {
-        var listHref = "#";
-        if (dim === "channel" || dim === "staff") {
-          listHref = BoardMetrics.buildDrilldownUrl("leads.html",
-            Object.assign(BoardInsights.drillExtraForAnalysis(stepId, dim, r.id), {
-              term: termId,
-              from_board: "term_review"
-            }));
-        } else if (dim === "live") {
-          listHref = BoardMetrics.buildDrilldownUrl("board-live.html", {
-            term: termId,
-            selected_live: r.id,
-            live_id: r.id,
-            live_tab: "ended",
-            from_board: "term_review"
-          });
-        }
-        var sel = selectedObj && String(selectedObj) === String(r.id) ? " is-selected" : "";
-        var localBtn = ' <a href="#" data-local-dim="' + dim + '" data-local-id="' + r.id +
-          '" data-local-label="' + r.label + '">局部高亮</a>';
-        var applyBtn = (dim === "channel")
-          ? (' <a href="#" data-apply-global="channel" data-apply-id="' + r.id +
-            '" data-apply-label="' + r.label + '">仅看</a>')
-          : (dim === "staff"
-            ? (' <a href="#" data-apply-owner="' + r.id + '" data-apply-label="' + r.label + '">仅看</a>')
-            : "");
-        return '<tr class="' + sel + '"><td><b>' + r.label + "</b></td><td>" +
-          BoardMetrics.fmt(r.from) + "</td><td>" + BoardMetrics.fmt(r.to) + "</td><td>" +
-          (r.rate != null ? r.rate + "%" : "—") +
-          '</td><td class="row-actions"><a href="' + listHref +
-          '" data-drill-save="1">查看名单</a>' + localBtn + applyBtn + "</td></tr>";
-      }).join("");
-    }
-    document.getElementById("tf-note").textContent =
-      "整体 " + step.rateLabel + " " + (bd.overallRate != null ? bd.overallRate + "%" : "—") +
-      "（" + BoardMetrics.fmt(bd.overallFrom) + " → " + BoardMetrics.fmt(bd.overallTo) +
-      "）。局部高亮不改变顶部全局筛选；「仅看」会应用为全局筛选。";
+  function syncTrendBar() {
+    document.querySelectorAll("#term-trend-bar [data-trend]").forEach(function (b) {
+      b.classList.toggle("active", b.getAttribute("data-trend") === trendState.metric);
+    });
+  }
 
-    tbody.querySelectorAll("[data-drill-save]").forEach(function (a) {
-      a.addEventListener("click", function () {
-        BoardInsights.saveReturnState();
-        BoardInsights.setAnalyticsState({ scrollAnchor: "term-funnel-analysis" });
-      });
+  function buildMetricDetailTable(termId, filters) {
+    if (!window.BoardTerm || !termId) return null;
+    var seriesMap = {};
+    var labels = null;
+    METRICS.forEach(function (m) {
+      var s = BoardTerm.buildTrendSeries(termId, m.trendKey, filters);
+      if (s) {
+        seriesMap[m.trendKey] = s;
+        if (!labels) labels = s.labels;
+      }
     });
-    tbody.querySelectorAll("[data-local-dim]").forEach(function (a) {
-      a.addEventListener("click", function (e) {
-        e.preventDefault();
-        var dimKey = a.getAttribute("data-local-dim");
-        var id = a.getAttribute("data-local-id");
-        var label = a.getAttribute("data-local-label");
-        var patch = { selectedChannel: "", selectedTerm: "", selectedOwner: "", selectedLive: "" };
-        if (dimKey === "channel") patch.selectedChannel = id;
-        if (dimKey === "staff") patch.selectedOwner = id;
-        if (dimKey === "live") patch.selectedLive = id;
-        BoardInsights.setAnalyticsState(patch, { syncUrl: true, push: true });
-        renderFunnelAnalysis(termId, BoardMetrics.getFilters());
-        Proto.toast("已局部选中：" + label + "（未改全局筛选）");
-      });
-    });
-    tbody.querySelectorAll("[data-apply-global]").forEach(function (a) {
-      a.addEventListener("click", function (e) {
-        e.preventDefault();
-        var id = a.getAttribute("data-apply-id");
-        var label = a.getAttribute("data-apply-label");
-        BoardMetrics.setFilters({ channel: id }, { push: true });
-        var ch = document.getElementById("f-channel");
-        if (ch) ch.value = id;
-        sync();
-        Proto.toast("已仅看：" + label);
-      });
-    });
-    tbody.querySelectorAll("[data-apply-owner]").forEach(function (a) {
-      a.addEventListener("click", function (e) {
-        e.preventDefault();
-        var id = a.getAttribute("data-apply-owner");
-        var label = a.getAttribute("data-apply-label");
-        BoardInsights.setAnalyticsState({ selectedOwner: id }, { syncUrl: true, push: true });
-        location.href = BoardMetrics.buildDrilldownUrl("board-private.html", {
-          term: termId,
-          owner: id,
-          selected_owner: id,
-          from_board: "term_review"
+    if (!labels || !labels.length) return null;
+    return {
+      labels: labels,
+      metrics: METRICS,
+      seriesMap: seriesMap,
+      rows: labels.map(function (lb, i) {
+        var row = { label: lb, cells: {} };
+        METRICS.forEach(function (m) {
+          var s = seriesMap[m.trendKey];
+          row.cells[m.trendKey] = s && s.daily ? s.daily[i] : null;
         });
-        Proto.toast("仅看员工：" + label);
-      });
-    });
+        return row;
+      })
+    };
   }
 
-  function renderTrend(termId) {
-    var series = BoardTerm.buildTrendSeries(termId, pageState.trendMetric, {
-      filters: BoardMetrics.getFilters()
-    });
-    BoardTerm.renderTrendChart(document.getElementById("term-trend-chart"), series);
-  }
+  function renderMetricDetail(termId, filters) {
+    var title = document.getElementById("term-detail-title");
+    var thead = document.getElementById("term-detail-thead");
+    var tbody = document.getElementById("term-metric-detail");
+    var note = document.getElementById("term-detail-note");
+    if (!title || !thead || !tbody) return;
 
-  function renderChannels(termId, filters) {
-    var rows = BoardTerm.getTermChannels(termId, filters).slice();
-    var sortKey = pageState.chSort;
-    rows.sort(function (a, b) {
-      var av = a[sortKey] == null ? -Infinity : a[sortKey];
-      var bv = b[sortKey] == null ? -Infinity : b[sortKey];
-      return bv - av;
-    });
-    var st = BoardInsights.getAnalyticsState();
-    var tbody = document.getElementById("term-ch-tbody");
-    if (!rows.length) {
-      BoardMetrics.renderEmpty(tbody, 10, "当前期次暂无渠道数据");
+    title.textContent = "指标明细";
+    var table = buildMetricDetailTable(termId, filters);
+    lastDetailRows = table;
+    var colCount = METRICS.length + 1;
+
+    if (!table) {
+      thead.innerHTML = "<tr><th>日期</th>" +
+        METRICS.map(function (m) { return "<th>" + m.label + "</th>"; }).join("") + "</tr>";
+      BoardMetrics.renderEmpty(tbody, colCount, "暂无按日明细");
+      if (note) note.textContent = "";
       return;
     }
-    tbody.innerHTML = rows.map(function (r) {
-      var sel = st.selectedChannel === r.id ? " is-selected" : "";
-      var vs = r.payDiff == null ? "—" : ((r.payDiff > 0 ? "+" : "") + r.payDiff + "pp");
-      var gmv = r.gmv == null ? "—" : BoardMetrics.money(r.gmv);
-      var acquireHref = BoardMetrics.buildDrilldownUrl("board-acquire.html", {
-        term: termId,
-        selected_channel: r.id,
-        from_board: "term_review"
-      });
-      var leadsHref = BoardMetrics.buildDrilldownUrl("leads.html", {
-        term: termId,
-        channel: r.id,
-        from_board: "term_review"
-      });
-      return '<tr class="' + sel + '"><td><b>' + r.label + "</b></td><td>" +
-        BoardMetrics.fmt(r.pool) + "</td><td>" + (r.share != null ? r.share + "%" : "—") +
-        "</td><td>" + (r.wecomRate != null ? r.wecomRate + "%" : "—") +
-        "</td><td>" + (r.attendRate != null ? r.attendRate + "%" : "—") +
-        "</td><td>" + (r.payRate != null ? r.payRate + "%" : "—") +
-        "</td><td>" + gmv + "</td><td>" + vs + "</td><td>" + (r.dropLabel || "—") +
-        '</td><td class="row-actions">' +
-        '<a href="#" data-local-ch="' + r.id + '" data-local-label="' + r.label + '">局部高亮</a> · ' +
-        '<a href="#" data-only-ch="' + r.id + '" data-only-label="' + r.label + '">仅看</a> · ' +
-        '<a href="' + leadsHref + '" data-drill-save="1">查看用户</a> · ' +
-        '<a href="' + acquireHref + '" data-drill-save="1">完整分析</a></td></tr>';
+
+    thead.innerHTML = "<tr><th>日期</th>" +
+      METRICS.map(function (m) { return "<th>" + m.label + "</th>"; }).join("") + "</tr>";
+    tbody.innerHTML = table.rows.map(function (r) {
+      return "<tr><td>" + r.label + "</td>" +
+        METRICS.map(function (m) {
+          return "<td>" + fmtDetailCell(r.cells[m.trendKey], m.kind) + "</td>";
+        }).join("") + "</tr>";
     }).join("");
-    tbody.querySelectorAll("[data-local-ch]").forEach(function (a) {
-      a.onclick = function (e) {
-        e.preventDefault();
-        BoardInsights.setAnalyticsState({
-          selectedChannel: a.getAttribute("data-local-ch"),
-          selectedOwner: "",
-          selectedLive: ""
-        }, { syncUrl: true, push: true });
-        renderChannels(termId, filters);
-        Proto.toast("已局部选中：" + a.getAttribute("data-local-label"));
-      };
-    });
-    tbody.querySelectorAll("[data-only-ch]").forEach(function (a) {
-      a.onclick = function (e) {
-        e.preventDefault();
-        var id = a.getAttribute("data-only-ch");
-        BoardMetrics.setFilters({ channel: id }, { push: true });
-        var ch = document.getElementById("f-channel");
-        if (ch) ch.value = id;
-        sync();
-        Proto.toast("已仅看：" + a.getAttribute("data-only-label"));
-      };
-    });
-    tbody.querySelectorAll("[data-drill-save]").forEach(function (a) {
-      a.addEventListener("click", function () { BoardInsights.saveReturnState(); });
-    });
-  }
 
-  function renderPrivate(termId, filters) {
-    var bundle = BoardTerm.getTermBundle(termId, filters);
-    var d = bundle.metrics;
-    var se = BoardInsights.getStaffExecution(filters);
-    var team = se.team || {};
-    var wecomRate = d.poolLeads ? Math.round((d.wecomLeads / d.poolLeads) * 1000) / 10 : null;
-    var cover = d.wecomLeads
-      ? Math.round(((d.wecomLeads - (d.noFollow || 0)) / d.wecomLeads) * 1000) / 10
-      : null;
-    var attendNoPay = Math.max(0, (d.attendUsers || 0) - (d.payWithAttend || 0));
-    var highIntent = Math.round(Math.max(0, (d.wecomLeads || 0) * 0.08));
-    document.getElementById("term-private-stats").innerHTML =
-      '<a class="stat-card" href="' + BoardMetrics.buildDrilldownUrl("leads.html", {
-        term: termId, focus: "unassigned", from_board: "term_review"
-      }) + '"><div class="stat-label">待分配</div><div class="stat-value" style="color:#ff7d00">' +
-      BoardMetrics.fmt(d.backlog) + '</div><div class="stat-hint">超时 ' +
-      BoardMetrics.fmt(d.backlogLate) + "</div></a>" +
-      '<div class="stat-card"><div class="stat-label">团队及时率</div><div class="stat-value">' +
-      (team.timely != null ? team.timely + "%" : "—") +
-      '</div><div class="stat-hint">加微率 ' + (wecomRate != null ? wecomRate + "%" : "—") + "</div></div>" +
-      '<a class="stat-card" href="' + BoardMetrics.buildDrilldownUrl("follow-ups.html", {
-        term: termId, focus: "no_follow", from_board: "term_review"
-      }) + '"><div class="stat-label">未跟进</div><div class="stat-value" style="color:#ff7d00">' +
-      BoardMetrics.fmt(d.noFollow) + '</div><div class="stat-hint">覆盖率 ' +
-      (cover != null ? cover + "%" : "—") + "</div></a>" +
-      '<a class="stat-card" href="' + BoardMetrics.buildDrilldownUrl("follow-ups.html", {
-        term: termId, focus: "attend_no_pay", from_board: "term_review"
-      }) + '"><div class="stat-label">到场未支付</div><div class="stat-value">' +
-      BoardMetrics.fmt(attendNoPay) + '</div><div class="stat-hint">高意向约 ' +
-      BoardMetrics.fmt(highIntent) + "</div></a>";
-
-    var st = BoardInsights.getAnalyticsState();
-    var rows = (se.rows || []).filter(function (r) { return !r.isOther; });
-    var tbody = document.getElementById("term-staff-tbody");
-    if (!rows.length) {
-      BoardMetrics.renderEmpty(tbody, 9, "暂无员工执行数据");
-      return;
+    if (note) {
+      note.textContent = "与上方核心指标同一套口径；时间窗口为当前统计切片（" +
+        (pageState.lastSliceLabel || "整期") + "）。";
     }
-    tbody.innerHTML = rows.map(function (r) {
-      var sel = st.selectedOwner === r.id ? " is-selected" : "";
-      var tags = [];
-      if (r.volumeHigh) tags.push("量大");
-      if (r.efficiencyLow) tags.push("需关注");
-      var privateHref = BoardMetrics.buildDrilldownUrl("board-private.html", {
-        term: termId, selected_owner: r.id, owner: r.id, from_board: "term_review"
-      });
-      var leadsHref = BoardMetrics.buildDrilldownUrl("leads.html", {
-        term: termId, owner: r.id, from_board: "term_review"
-      });
-      return '<tr class="' + sel + '"><td><b>' + r.label + "</b></td><td>" +
-        BoardMetrics.fmt(r.assigned) + "</td><td>" + r.timelyRate + "%</td><td>" +
-        (r.wecomRate != null ? r.wecomRate + "%" : "—") + "</td><td>" +
-        (r.cover != null ? r.cover + "%" : "—") + "</td><td>" +
-        BoardMetrics.fmt(r.noFollow) + "</td><td>" + BoardMetrics.fmt(r.pay) +
-        "</td><td>" + (tags.length ? tags.join(" · ") : "—") +
-        '</td><td class="row-actions">' +
-        '<a href="#" data-local-owner="' + r.id + '" data-local-label="' + r.label + '">局部高亮</a> · ' +
-        '<a href="' + leadsHref + '" data-drill-save="1">查看用户</a> · ' +
-        '<a href="' + privateHref + '" data-drill-save="1">进入私域</a></td></tr>';
+  }
+
+  function renderCoreKpis(filters) {
+    var kpis = BoardInsights.getCoreKpis(filters);
+    document.getElementById("term-kpis").innerHTML = kpis.map(function (k) {
+      var cmp = k.compare && k.compare.comparable
+        ? '<span class="' + trendClass(k.compare.trend) + '">' + k.compareLabel + " " + k.compare.text + "</span>"
+        : '<span class="muted">' + (k.compare ? k.compare.text : "") + "</span>";
+      var metric = k.trendKey || "pool_new";
+      var tipId = k.tipId || k.id;
+      return '<div class="board-kpi" data-kpi="' + k.id + '">' +
+        '<div class="kpi-label" data-metric="' + tipId + '">' + k.label + "</div>" +
+        '<div class="kpi-value">' + k.value + "</div>" +
+        (k.sub ? '<div class="kpi-sub">' + k.sub + "</div>" : "") +
+        '<div class="kpi-meta">' + cmp +
+        '<br/><a href="#" data-open-trend="' + metric + '" data-trend-label="' + k.label + '">查看趋势</a></div></div>';
     }).join("");
-    tbody.querySelectorAll("[data-local-owner]").forEach(function (a) {
+    if (window.BoardTools) BoardTools.bindMetricTips(document.getElementById("term-kpis"));
+    document.querySelectorAll("[data-open-trend]").forEach(function (a) {
       a.onclick = function (e) {
         e.preventDefault();
-        BoardInsights.setAnalyticsState({
-          selectedOwner: a.getAttribute("data-local-owner"),
-          selectedChannel: "",
-          selectedLive: ""
-        }, { syncUrl: true, push: true });
-        renderPrivate(termId, filters);
-        Proto.toast("已局部选中：" + a.getAttribute("data-local-label"));
+        openTermTrend(a.getAttribute("data-open-trend"), a.getAttribute("data-trend-label"), true);
       };
     });
-    tbody.querySelectorAll("[data-drill-save]").forEach(function (a) {
-      a.addEventListener("click", function () { BoardInsights.saveReturnState(); });
-    });
   }
 
-  function closeLiveDrawer() {
-    var d = document.getElementById("live-drawer");
-    if (d) d.remove();
-    BoardInsights.setAnalyticsState({ selectedLive: "", liveId: "" }, { syncUrl: true, push: true });
-    if (pageState.liveScrollY != null) window.scrollTo(0, pageState.liveScrollY);
-    var focusBtn = document.querySelector('[data-open-live="' + (pageState.openedLive || "") + '"]');
-    if (focusBtn && focusBtn.focus) focusBtn.focus();
-    pageState.openedLive = "";
-  }
-
-  function openLiveDrawer(liveId) {
-    var detail = BoardInsights.getLiveSessionDetail(liveId, BoardMetrics.getFilters());
-    if (!detail) {
-      Proto.toast("未找到场次 " + liveId);
-      return;
-    }
-    var r = detail.row;
-    pageState.liveScrollY = window.scrollY || 0;
-    pageState.openedLive = r.id;
-    BoardInsights.setAnalyticsState({
-      selectedLive: r.id,
-      liveId: r.id,
-      liveTab: pageState.liveTab,
-      scrollAnchor: "term-live-tab"
-    }, { syncUrl: true, push: true });
-
-    var existing = document.getElementById("live-drawer");
-    if (existing) existing.remove();
-    var drawer = document.createElement("div");
-    drawer.id = "live-drawer";
-    drawer.className = "board-drawer-overlay";
-    drawer.innerHTML =
-      '<div class="board-drawer live-recap-drawer" role="dialog" aria-modal="true" aria-label="场次详情">' +
-      '<div class="board-drawer-hd"><h3 id="live-panel-title"></h3><button type="button" class="btn btn-sm" data-close>关闭</button></div>' +
-      '<div class="board-drawer-bd">' +
-      '<p class="muted" style="font-size:12px;margin:0 0 8px" id="live-panel-sub"></p>' +
-      '<div class="board-mini-funnel" id="live-funnel"></div>' +
-      '<div class="board-two" style="margin-top:12px">' +
-      '<div><h4 style="margin:0 0 8px;font-size:13px">渠道 / 期次表现</h4>' +
-      '<table class="data"><thead><tr><th>维度</th><th>到场</th><th>支付</th><th>支付率</th></tr></thead><tbody id="live-dim-tbody"></tbody></table></div>' +
-      '<div><h4 style="margin:0 0 8px;font-size:13px">风险与操作</h4>' +
-      '<p style="font-size:13px;margin:0 0 10px" id="live-risks"></p>' +
-      '<div style="display:flex;gap:8px;flex-wrap:wrap" id="live-actions"></div></div></div></div></div>';
-    document.body.appendChild(drawer);
-
-    document.getElementById("live-panel-title").textContent =
-      (r.upcoming ? "准备情况 · " : "场次复盘 · ") + r.id + " " + r.name;
-    document.getElementById("live-panel-sub").textContent =
-      (r.upcoming ? "待开播 · 准备状态" : "已结束 · 效果复盘") +
-      " · 直播提醒：" + (r.sopDone ? "已配置" : "未配置") +
-      (r.sopMissing && r.sopMissing.length ? " · " + r.sopMissing.join("、") : "");
-
-    document.getElementById("live-funnel").innerHTML = [
-      ["目标", r.target], ["邀约", r.invite], ["推送成功", r.pushOk],
-      ["到场", r.attend == null ? "—" : r.attend],
-      ["有效观看", r.watch == null ? "—" : r.watch],
-      ["支付", r.payUsers || 0]
-    ].map(function (x) {
-      return '<div class="mf"><div class="n">' + BoardMetrics.fmt(x[1]) + '</div><div class="l">' + x[0] + "</div></div>";
-    }).join("");
-
-    var dims = detail.channels.map(function (c) {
-      return "<tr><td>渠道 · " + c.label + "</td><td>" + BoardMetrics.fmt(c.attend) + "</td><td>" +
-        BoardMetrics.fmt(c.pay) + "</td><td>" + (c.payRate != null ? c.payRate + "%" : "—") + "</td></tr>";
-    }).concat(detail.terms.map(function (tm) {
-      return "<tr><td>期次 · " + tm.label + "</td><td>" + BoardMetrics.fmt(tm.attend) + "</td><td>" +
-        BoardMetrics.fmt(tm.pay) + "</td><td>—</td></tr>";
-    }));
-    document.getElementById("live-dim-tbody").innerHTML = dims.join("") || "<tr><td colspan='4' class='muted'>暂无维度数据</td></tr>";
-
+  function openTermTrend(metric, label, scroll) {
+    if (!window.BoardTerm) return;
     var termId = currentTermId();
-    if (r.upcoming) {
-      document.getElementById("live-risks").textContent =
-        (r.sopMissing && r.sopMissing.length ? "当前风险：" + r.sopMissing.join("；") : "准备就绪，可继续跟进触达。");
-      document.getElementById("live-actions").innerHTML =
-        '<a class="btn btn-sm btn-primary" href="live-booking.html?live_id=' + r.id + '&term=' + termId + '&from_board=term_review">去配置</a>' +
-        '<a class="btn btn-sm" href="live-booking.html?live_id=' + r.id + '&term=' + termId + '&from_board=term_review">去发送</a>' +
-        '<a class="btn btn-sm" href="live-edit.html?live_id=' + r.id + '&focus=remind">查看直播提醒</a>';
-    } else {
-      document.getElementById("live-risks").textContent =
-        "未到场 " + detail.noShow + " · 到场未支付 " + detail.attendNoPay +
-        " · 推送缺口 " + detail.pushFail +
-        (r.sopDone ? "" : " · 未配置直播提醒");
-      var noShow = BoardMetrics.buildDrilldownUrl("follow-ups.html", { term: termId, live_id: r.id, focus: "no_show", from_board: "term_review" });
-      var noPay = BoardMetrics.buildDrilldownUrl("follow-ups.html", { term: termId, live_id: r.id, focus: "attend_no_pay", from_board: "term_review" });
-      document.getElementById("live-actions").innerHTML =
-        '<a class="btn btn-sm btn-primary" href="live-edit.html?live_id=' + r.id + '&focus=remind">查看直播提醒</a>' +
-        '<a class="btn btn-sm" href="' + noShow + '" data-drill-save="1">查看未到场用户</a>' +
-        '<a class="btn btn-sm" href="' + noPay + '" data-drill-save="1">查看到场未支付用户</a>';
+    if (!termId) return;
+    if (metric) trendState.metric = metric;
+    if (label) trendState.label = label;
+    syncTrendBar();
+    var filters = BoardMetrics.getFilters();
+    var note = document.getElementById("term-trend-note");
+    var host = document.getElementById("term-trend-chart");
+    var term = BoardTerm.getTermById(termId) || {};
+    if (note) {
+      note.textContent = (trendState.label || "指标") + " · 期次 " + (term.name || termId) +
+        " · 切片 " + (pageState.lastSliceLabel || "整期");
     }
-    drawer.querySelectorAll("[data-drill-save]").forEach(function (a) {
-      a.addEventListener("click", function () { BoardInsights.saveReturnState(); });
-    });
-    var closeBtn = drawer.querySelector("[data-close]");
-    closeBtn.onclick = closeLiveDrawer;
-    drawer.addEventListener("click", function (e) { if (e.target === drawer) closeLiveDrawer(); });
-    document.addEventListener("keydown", function onEsc(ev) {
-      if (ev.key === "Escape") {
-        document.removeEventListener("keydown", onEsc);
-        closeLiveDrawer();
-      }
-    });
-    closeBtn.focus();
+    var series = BoardTerm.buildTrendSeries(termId, trendState.metric, filters);
+    BoardTerm.renderTrendChart(host, series);
+    if (scroll) {
+      var card = document.getElementById("term-trend-section");
+      if (card) card.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    }
   }
 
-  function renderLives(termId, filters) {
-    var lives = BoardTerm.getTermLives(termId, filters);
-    var tab = pageState.liveTab || "ended";
-    document.querySelectorAll("#term-live-tab [data-live-tab]").forEach(function (b) {
-      b.classList.toggle("active", b.getAttribute("data-live-tab") === tab);
-    });
-    var thead = document.getElementById("term-live-thead");
-    var tbody = document.getElementById("term-live-tbody");
-    var st = BoardInsights.getAnalyticsState();
-    if (tab === "upcoming") {
-      thead.innerHTML = "<tr><th>场次ID</th><th>主题</th><th>期次角色</th><th>开播时间</th><th>目标</th><th>直播提醒</th><th>推送</th><th>风险</th><th>操作</th></tr>";
-      var up = lives.upcoming || [];
-      if (!up.length) {
-        BoardMetrics.renderEmpty(tbody, 9, "当前期次暂无待开播场次");
-        return;
-      }
-      tbody.innerHTML = up.map(function (r) {
-        var sel = st.selectedLive === r.id ? " is-selected" : "";
-        var risk = (r.sopMissing && r.sopMissing.length) ? r.sopMissing.join("；") : "—";
-        return '<tr class="' + sel + '"><td>' + r.id + "</td><td>" + r.name +
-          "</td><td>" + (r.roleInTerm || "—") + "</td><td>" + (r.startAt || "—") +
-          "</td><td>" + BoardMetrics.fmt(r.target) + "</td><td>" +
-          (r.sopDone ? "已创建" : "未创建") + "</td><td>" + (r.remindStatus || "—") +
-          "</td><td>" + risk + '</td><td class="row-actions">' +
-          '<a href="#" data-open-live="' + r.id + '">准备情况</a> · ' +
-          '<a href="live-edit.html?live_id=' + r.id + '&focus=remind">去配置</a></td></tr>';
-      }).join("");
-    } else {
-      thead.innerHTML = "<tr><th>场次ID</th><th>主题</th><th>期次角色</th><th>邀约</th><th>推送成功</th><th>到场 / 率</th><th>支付</th><th>直播提醒</th><th>操作</th></tr>";
-      var ended = lives.ended || [];
-      if (!ended.length) {
-        BoardMetrics.renderEmpty(tbody, 9, "当前期次暂无已结束场次");
-        return;
-      }
-      tbody.innerHTML = ended.map(function (r) {
-        var sel = st.selectedLive === r.id ? " is-selected" : "";
-        var noShow = BoardMetrics.buildDrilldownUrl("follow-ups.html", {
-          term: termId, live_id: r.id, focus: "no_show", from_board: "term_review"
-        });
-        var noPay = BoardMetrics.buildDrilldownUrl("follow-ups.html", {
-          term: termId, live_id: r.id, focus: "attend_no_pay", from_board: "term_review"
-        });
-        return '<tr class="' + sel + '"><td>' + r.id + "</td><td>" + r.name +
-          "</td><td>" + (r.roleInTerm || "—") + "</td><td>" + BoardMetrics.fmt(r.invite) +
-          "</td><td>" + BoardMetrics.fmt(r.pushOk) + "</td><td>" +
-          (r.attend == null ? "—" : BoardMetrics.fmt(r.attend)) + " / " + (r.attendRate || "—") +
-          "</td><td>" + BoardMetrics.fmt(r.payUsers) + "</td><td>" +
-          (r.sopDone ? "已配置" : "未配置") +
-          '</td><td class="row-actions">' +
-          '<a href="#" data-open-live="' + r.id + '">场次复盘</a> · ' +
-          '<a href="' + noShow + '" data-drill-save="1">未到场</a> · ' +
-          '<a href="' + noPay + '" data-drill-save="1">到场未支付</a></td></tr>';
-      }).join("");
-    }
-    tbody.querySelectorAll("[data-open-live]").forEach(function (a) {
-      a.onclick = function (e) {
-        e.preventDefault();
-        openLiveDrawer(a.getAttribute("data-open-live"));
-      };
-    });
-    tbody.querySelectorAll("[data-drill-save]").forEach(function (a) {
-      a.addEventListener("click", function () { BoardInsights.saveReturnState(); });
-    });
-  }
-
-  function renderConvert(termId, filters) {
-    var cv = BoardTerm.getTermConvert(termId, filters);
-    document.getElementById("term-convert-a").innerHTML =
-      '<div class="stat-card"><div class="stat-label">可归因支付</div><div class="stat-value">' +
-      BoardMetrics.fmt(cv.payUsers) + '</div><div class="stat-hint">GMV ' +
-      (cv.attrGmv == null || cv.attrGmv === "—" ? "—" : (typeof cv.attrGmv === "number" ? BoardMetrics.money(cv.attrGmv) : cv.attrGmv)) +
-      "</div></div>" +
-      '<div class="stat-card"><div class="stat-label">到场支付</div><div class="stat-value">' +
-      BoardMetrics.fmt(cv.payWithAttend) + '</div><div class="stat-hint">未到场支付 ' +
-      BoardMetrics.fmt(cv.payNoAttend) + "</div></div>" +
-      '<a class="stat-card" href="' + BoardMetrics.buildDrilldownUrl("follow-ups.html", {
-        term: termId, focus: "attend_no_pay", from_board: "term_review"
-      }) + '"><div class="stat-label">到场未支付</div><div class="stat-value" style="color:#ff7d00">' +
-      BoardMetrics.fmt(cv.attendNoPay) + '</div><div class="stat-hint">去跟进</div></a>' +
-      '<a class="stat-card" href="' + BoardMetrics.buildDrilldownUrl("follow-ups.html", {
-        term: termId, follow_stage: "高意向", from_board: "term_review"
-      }) + '"><div class="stat-label">高意向未支付</div><div class="stat-value">' +
-      BoardMetrics.fmt(cv.highIntentNoPay) + '</div><div class="stat-hint">约估</div></a>' +
-      '<div class="stat-card"><div class="stat-label">可归因订单</div><div class="stat-value">' +
-      (cv.attrOrders == null || cv.attrOrders === "—" ? "—" : BoardMetrics.fmt(cv.attrOrders)) +
-      '</div><div class="stat-hint">可归因口径</div></div>';
-
-    function payRows(list, kind) {
-      list = (list || []).slice(0, 5);
-      if (!list.length) return '<tr><td colspan="4" class="muted">暂无数据</td></tr>';
-      return list.map(function (r) {
-        var href;
-        if (kind === "live") {
-          href = "#";
-        } else {
-          href = BoardMetrics.buildDrilldownUrl("orders.html", {
-            term: termId, channel: r.id, attribution: "attributed", from_board: "term_review"
-          });
-        }
-        return "<tr><td>" + r.label + "</td><td>" + BoardMetrics.fmt(r.pay) +
-          "</td><td>" + (r.payRate != null ? r.payRate + "%" : "—") +
-          '</td><td class="row-actions">' +
-          (kind === "live"
-            ? ('<a href="#" data-open-live="' + r.id + '">场次复盘</a>')
-            : ('<a href="' + href + '" data-drill-save="1">查看支付</a>')) +
-          "</td></tr>";
-      }).join("");
-    }
-    document.getElementById("term-pay-ch").innerHTML = payRows(cv.byChannel, "channel");
-    document.getElementById("term-pay-live").innerHTML = payRows(cv.byLive, "live");
-    document.querySelectorAll("#term-pay-live [data-open-live]").forEach(function (a) {
-      a.onclick = function (e) {
-        e.preventDefault();
-        openLiveDrawer(a.getAttribute("data-open-live"));
-      };
-    });
-    document.querySelectorAll("#zone-convert-a [data-drill-save]").forEach(function (a) {
-      a.addEventListener("click", function () { BoardInsights.saveReturnState(); });
-    });
-
-    var aov = null;
-    if (cv.fullOrders && cv.fullGmv != null && typeof cv.fullGmv === "number") {
-      aov = BoardMetrics.money(Math.round(cv.fullGmv / cv.fullOrders));
-    }
-    document.getElementById("term-convert-b").innerHTML =
-      '<div class="stat-card"><div class="stat-label">全量订单</div><div class="stat-value">' +
-      BoardMetrics.fmt(cv.fullOrders) + '</div><div class="stat-hint">全量口径</div></div>' +
-      '<div class="stat-card"><div class="stat-label">全量 GMV</div><div class="stat-value" style="font-size:20px">' +
-      (cv.fullGmv == null ? "—" : (typeof cv.fullGmv === "number" ? BoardMetrics.money(cv.fullGmv) : cv.fullGmv)) +
-      '</div><div class="stat-hint">客单价 ' + (aov || "—") + "</div></div>" +
-      '<div class="stat-card"><div class="stat-label">归因覆盖率</div><div class="stat-value">' +
-      (cv.coverage && cv.coverage.coverRate != null ? cv.coverage.coverRate + "%" : "—") +
-      '</div><div class="stat-hint">可归因 / 全量订单</div></div>' +
-      '<a class="stat-card" data-board-link="board-convert.html" data-board-section="full" href="board-convert.html">' +
-      '<div class="stat-label">进入交易分析</div><div class="stat-value" style="font-size:18px">B 区</div>' +
-      '<div class="stat-hint">保留当前期次</div></a>';
-
-    var cov = cv.coverage;
-    document.getElementById("term-cover-note").textContent = cov
-      ? ("归因覆盖：可归因订单 " + (cov.attrOrders != null ? cov.attrOrders : "—") +
-        " · 未归因 " + (cov.unmappedOrders != null ? cov.unmappedOrders : "—") +
-        " · 缺失映射显示「—」，不以 0 冒充")
-      : "成交口径固定：可归因与全量分区展示。";
-
-    var products = cv.products || [];
-    var pt = document.getElementById("term-product-tbody");
-    if (!products.length) {
-      BoardMetrics.renderEmpty(pt, 5, "暂无商品成交数据");
-    } else {
-      pt.innerHTML = products.map(function (p) {
-        var href = BoardMetrics.buildDrilldownUrl("orders.html", {
-          term: termId, goods: p.name || p.id, attribution: "full", from_board: "term_review"
-        });
-        return "<tr><td>" + (p.name || "—") + "</td><td>" + (p.type || "—") +
-          "</td><td>" + BoardMetrics.fmt(p.orders) + "</td><td>" +
-          (p.gmv == null ? "—" : BoardMetrics.money(p.gmv)) +
-          '</td><td class="row-actions"><a href="' + href + '" data-drill-save="1">查看订单</a></td></tr>';
-      }).join("");
-    }
-    document.querySelectorAll("#zone-convert-a [data-drill-save], #zone-convert-b [data-drill-save]").forEach(function (a) {
-      a.addEventListener("click", function () { BoardInsights.saveReturnState(); });
-    });
-  }
-
-  function maybeScrollSection() {
-    var st = BoardInsights.getAnalyticsState();
+  function maybeScrollTrend() {
     var q = new URLSearchParams(location.search);
-    var section = q.get("section") || st.section || "";
-    if (section === "attributed" || section === "attr") {
-      var za = document.getElementById("zone-convert-a");
-      if (za) za.scrollIntoView({ behavior: "smooth", block: "start" });
-    } else if (section === "full") {
-      var zb = document.getElementById("zone-convert-b");
-      if (zb) zb.scrollIntoView({ behavior: "smooth", block: "start" });
-    }
-    if (st.scrollAnchor === "term-funnel-analysis") {
+    var st = BoardInsights.getAnalyticsState();
+    if (q.get("section") === "trend" || st.section === "trend" || q.get("metric") || st.scrollAnchor === "term-trend-section") {
       setTimeout(function () {
-        var fa = document.getElementById("term-funnel-analysis");
-        if (fa) fa.scrollIntoView({ behavior: "smooth", block: "start" });
+        var el = document.getElementById("term-trend-section");
+        if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
       }, 80);
     }
   }
 
-  function sync() {
+  function sync(opts) {
+    opts = opts || {};
     ensureDefaultTerm();
-    BoardMetrics.setUpdatedNow();
+    BoardMetrics.setFilters({ channel: "" }, { push: false });
+    var termId = currentTermId();
+    var emptyTitle = document.getElementById("term-empty-title");
+    var emptyDesc = document.getElementById("term-empty-desc");
     renderFromSource();
-    var filters = BoardMetrics.getFilters();
-    var termId = (filters.term || "").trim();
-    BoardMetrics.renderActiveFilters();
-    BoardMetrics.renderActiveFilters._onClear = function () { sync(); };
 
-    var emptyTitle = document.querySelector("#term-empty h2");
-    var emptyDesc = document.querySelector("#term-empty p");
     if (!termId) {
       showEmpty(true);
+      syncSliceUI(null);
       if (emptyTitle) emptyTitle.textContent = "请选择一个具体期次进行经营复盘";
       if (emptyDesc) {
-        emptyDesc.textContent =
-          "「全部期次」不能作为单个期次复盘对象。请在上方筛选中选择春启 03 期、春启 04 期或试听公开课。";
+        emptyDesc.textContent = "「全部期次」不能作为单个期次复盘对象。请在上方选择具体期次。";
       }
+      lastDetailRows = null;
       BoardMetrics.wireBoardLinks();
       return;
     }
-    var bundle = BoardTerm.getTermBundle(termId, filters);
-    if (!bundle) {
+
+    var term = BoardTerm.getTermById(termId);
+    if (!term) {
       showEmpty(true);
+      syncSliceUI(null);
       if (emptyTitle) emptyTitle.textContent = "未找到该期次";
-      if (emptyDesc) {
-        emptyDesc.textContent = "URL 中的期次无效或不存在，请重新选择一个具体期次。";
-      }
+      if (emptyDesc) emptyDesc.textContent = "URL 中的期次无效或不存在，请重新选择。";
+      lastDetailRows = null;
       BoardMetrics.wireBoardLinks();
       return;
     }
+
+    if (pageState.lastTermId && pageState.lastTermId !== termId) {
+      pageState.sliceMode = "term";
+    }
+    pageState.lastTermId = termId;
+
+    var f = BoardMetrics.getFilters();
+    var slice = resolveTermSlice(
+      term,
+      pageState.sliceMode,
+      f.start_date,
+      f.end_date
+    );
+    syncSliceUI(slice);
+
+    if (!slice.ok) {
+      showEmpty(true);
+      if (emptyTitle) emptyTitle.textContent = slice.upcoming ? "期次尚未开始" : "暂无可统计区间";
+      if (emptyDesc) emptyDesc.textContent = slice.reason || "请更换期次或等待开营。";
+      lastDetailRows = null;
+      BoardMetrics.wireBoardLinks();
+      return;
+    }
+
+    applySliceToFilters(termId, slice, !!opts.pushSlice);
+    var filters = BoardMetrics.getFilters();
+
     showEmpty(false);
     try {
-      renderHero(bundle);
-      renderKpis(bundle);
-      renderFunnel(termId, filters);
-      renderFunnelAnalysis(termId, filters);
-      renderTrend(termId);
-      renderChannels(termId, filters);
-      renderPrivate(termId, filters);
-      renderLives(termId, filters);
-      renderConvert(termId, filters);
+      BoardMetrics.applyRange("custom", document, { skipSet: true });
+      renderCoreKpis(filters);
+      openTermTrend();
+      renderMetricDetail(termId, filters);
       BoardMetrics.fillAttr();
       BoardMetrics.wireBoardLinks();
-      maybeScrollSection();
-      var stLive = BoardInsights.getAnalyticsState().selectedLive;
-      if (stLive && pageState.openedLive !== stLive && !document.getElementById("live-drawer")) {
-        setTimeout(function () { openLiveDrawer(stLive); }, 120);
-      }
+      maybeScrollTrend();
+      if (slice.hint && opts.toastHint) Proto.toast(slice.hint);
     } catch (err) {
       console.error("[board-term-review sync]", err);
     }
+  }
+
+  function setSliceMode(mode, opts) {
+    opts = opts || {};
+    mode = mode || "term";
+    if (mode === "custom" && window.BoardTools && BoardTools.openCustomDate) {
+      var term = BoardTerm.getTermById(currentTermId());
+      BoardTools.openCustomDate(function () {
+        var f = BoardMetrics.getFilters();
+        /* 清空自定义会回到近7日：对本页等价于重置为整期 */
+        if (f.range !== "custom" || !f.start_date || !f.end_date) {
+          pageState.sliceMode = "term";
+          sync({ pushSlice: true, toastHint: false });
+          return;
+        }
+        var slice = resolveTermSlice(term, "custom", f.start_date, f.end_date);
+        if (!slice.ok) {
+          Proto.toast(slice.reason || "自定义区间无效");
+          pageState.sliceMode = "term";
+          sync({ pushSlice: true, toastHint: false });
+          return;
+        }
+        if (slice.clamped) Proto.toast("已按期次窗口裁剪自定义区间");
+        pageState.sliceMode = "custom";
+        sync({ pushSlice: true });
+      });
+      return;
+    }
+    pageState.sliceMode = mode;
+    sync({ pushSlice: true, toastHint: !!opts.toastHint });
   }
 
   document.getElementById("btn-pick-default").onclick = function () {
@@ -1151,168 +600,91 @@ tr.is-selected td { background:#f2f7ff; }
       Proto.toast("暂无可用期次");
       return;
     }
-    BoardMetrics.setFilters({ term: def }, { push: true });
+    pageState.sliceMode = "term";
+    BoardMetrics.setFilters({ term: def, channel: "" }, { push: true });
     var sel = document.getElementById("f-term");
     if (sel) sel.value = def;
-    sync();
+    sync({ pushSlice: true });
   };
 
-  var btnEditTerm = document.getElementById("btn-edit-term");
-  if (btnEditTerm) {
-    btnEditTerm.onclick = function () {
-      var tid = currentTermId();
-      if (!tid || !window.TermStore) {
-        Proto.toast("请先选择具体期次");
-        return;
+  document.getElementById("slice-seg").addEventListener("click", function (e) {
+    var btn = e.target.closest("[data-slice]");
+    if (!btn || btn.disabled) return;
+    setSliceMode(btn.getAttribute("data-slice"), { toastHint: true });
+  });
+
+  (function bootFromUrl() {
+    var q = new URLSearchParams(location.search);
+    if (q.get("metric")) {
+      var key = q.get("metric");
+      var found = METRICS.find(function (m) { return m.trendKey === key || m.id === key; });
+      if (found) {
+        trendState.metric = found.trendKey;
+        trendState.label = found.label;
+      } else {
+        trendState.metric = key;
       }
-      var keepFilters = BoardMetrics.getFilters();
-      TermStore.openEditor({
-        mode: "edit",
-        termId: tid,
-        onSaved: function (saved) {
-          TermStore.syncBoardData();
-          BoardMetrics.fillFilterOptions();
-          BoardMetrics.setFilters({
-            range: keepFilters.range,
-            channel: keepFilters.channel,
-            term: saved.id,
-            src: keepFilters.src
-          }, { push: true });
-          var sel = document.getElementById("f-term");
-          if (sel) sel.value = saved.id;
-          sync();
-          Proto.toast("期次已更新，已保留当前筛选");
-        }
-      });
-    };
-  }
+    }
+    if (q.get("section")) {
+      BoardInsights.setAnalyticsState({ section: q.get("section") }, { syncUrl: false });
+    }
+    var sliceQ = q.get("slice");
+    if (sliceQ === "7d" || sliceQ === "30d" || sliceQ === "term" || sliceQ === "custom") {
+      pageState.sliceMode = sliceQ;
+    } else if (q.get("range") === "custom" && q.get("start_date") && q.get("end_date")) {
+      pageState.sliceMode = "custom";
+    } else {
+      pageState.sliceMode = "term";
+    }
+  })();
 
-  document.getElementById("tf-clear").onclick = function () {
-    BoardInsights.setAnalyticsState({
-      funnelStep: "pool_wecom",
-      funnelDim: "channel",
-      bottleneckId: "",
-      selectedChannel: "",
-      selectedTerm: "",
-      selectedOwner: "",
-      selectedLive: "",
-      scrollAnchor: ""
-    }, { syncUrl: true, push: true });
-    sync();
-  };
-  document.querySelectorAll("#trend-metric-bar [data-trend]").forEach(function (btn) {
-    btn.onclick = function () {
-      pageState.trendMetric = btn.getAttribute("data-trend");
-      document.querySelectorAll("#trend-metric-bar [data-trend]").forEach(function (b) {
-        b.classList.toggle("active", b === btn);
-      });
-      var termId = currentTermId();
-      if (termId) renderTrend(termId);
-    };
+  BoardMetrics.setFilters({ channel: "" }, { push: false });
+  BoardMetrics.bindFilterBar({
+    onApply: function () {
+      sync({ pushSlice: true });
+    },
+    autoApply: true
   });
-
-  document.querySelectorAll("[data-ch-sort]").forEach(function (btn) {
-    btn.onclick = function () {
-      pageState.chSort = btn.getAttribute("data-ch-sort");
-      document.querySelectorAll("[data-ch-sort]").forEach(function (b) {
-        b.classList.toggle("active", b === btn);
-      });
-      var termId = currentTermId();
-      if (termId) renderChannels(termId, BoardMetrics.getFilters());
-    };
-  });
-
-  document.querySelectorAll("#term-live-tab [data-live-tab]").forEach(function (btn) {
-    btn.onclick = function () {
-      pageState.liveTab = btn.getAttribute("data-live-tab");
-      BoardInsights.setAnalyticsState({ liveTab: pageState.liveTab }, { syncUrl: true, push: true });
-      var termId = currentTermId();
-      if (termId) renderLives(termId, BoardMetrics.getFilters());
-    };
-  });
-
-  bootAnalyticsFromUrl();
-  BoardMetrics.bindRange("range-seg", function () { sync(); });
-  BoardMetrics.bindFilterBar({ onApply: function () { sync(); }, autoApply: true });
   BoardTools.init({
-    onApply: function () { sync(); },
+    onApply: function () { sync({ pushSlice: true }); },
     collectExtra: function () {
-      var st = BoardInsights.getAnalyticsState();
       return {
-        funnel_step: st.funnelStep || "",
-        funnel_dim: st.funnelDim || "",
-        bottleneck_id: st.bottleneckId || "",
-        selected_channel: st.selectedChannel || "",
-        selected_term: st.selectedTerm || "",
-        selected_owner: st.selectedOwner || "",
-        selected_live: st.selectedLive || "",
-        live_tab: pageState.liveTab || st.liveTab || "",
-        section: st.section || "",
-        metric: pageState.trendMetric || ""
+        metric: trendState.metric || "",
+        slice: pageState.sliceMode || "term"
       };
     },
     getExportTable: function () {
-      var filters = BoardMetrics.getFilters();
-      var termId = filters.term;
+      var termId = currentTermId();
       if (!termId) {
         return { reason: "请先选择具体期次后再导出", headers: [], rows: [] };
       }
-      var st = BoardInsights.getAnalyticsState();
-      var bd = BoardInsights.getFunnelDimensionBreakdown
-        ? BoardInsights.getFunnelDimensionBreakdown(filters, st.funnelStep || "pool_wecom", st.funnelDim === "term" ? "channel" : (st.funnelDim || "channel"))
-        : null;
-      var rows = bd && bd.rows ? bd.rows : [];
-      if (rows.length) {
+      var table = lastDetailRows;
+      if (!table) table = buildMetricDetailTable(termId, BoardMetrics.getFilters());
+      var name = "期次经营_指标明细";
+      var headers = ["日期"].concat(METRICS.map(function (m) { return m.label; }));
+      if (!table || !table.rows || !table.rows.length) {
         return {
-          name: "期次经营_漏斗维度",
-          filename: BoardMetrics.exportFileName("期次经营_漏斗维度"),
-          headers: ["维度", "上游人数", "下游人数", "转化率"],
-          rows: rows.map(function (r) {
-            return [
-              r.label || "",
-              r.from != null ? r.from : "",
-              r.to != null ? r.to : "",
-              r.rate != null ? r.rate : ""
-            ];
-          })
+          name: name,
+          filename: BoardMetrics.exportFileName(name),
+          headers: headers,
+          rows: []
         };
       }
-      var channels = BoardTerm.getTermChannels(termId, filters);
-      if (channels.length) {
-        return {
-          name: "期次经营_渠道贡献",
-          filename: BoardMetrics.exportFileName("期次经营_渠道贡献"),
-          headers: ["渠道", "入池", "占比", "加微率", "到场率", "支付率", "归因GMV", "流失"],
-          rows: channels.map(function (r) {
-            return [
-              r.label,
-              r.pool,
-              r.share != null ? r.share : "",
-              r.wecomRate != null ? r.wecomRate : "",
-              r.attendRate != null ? r.attendRate : "",
-              r.payRate != null ? r.payRate : "",
-              r.gmv != null ? r.gmv : "",
-              r.dropLabel || ""
-            ];
-          })
-        };
-      }
-      var bundle = BoardTerm.getTermBundle(termId, filters);
       return {
-        name: "期次经营_核心指标",
-        filename: BoardMetrics.exportFileName("期次经营_核心指标"),
-        headers: ["指标", "数值", "较上一期"],
-        rows: (bundle.kpis || []).map(function (k) {
-          return [
-            k.label,
-            k.display,
-            (k.vsPrior && k.vsPrior.text) || ""
-          ];
+        name: name,
+        filename: BoardMetrics.exportFileName(name),
+        headers: headers,
+        rows: table.rows.map(function (r) {
+          return [r.label].concat(METRICS.map(function (m) {
+            return fmtDetailCell(r.cells[m.trendKey], m.kind);
+          }));
         })
       };
     }
   });
-  sync();
+
+  renderTrendBar();
+  sync({ pushSlice: false });
 })();
 </script>
 </body>
