@@ -620,7 +620,7 @@
         priorityCount: upcoming.filter(function (l) { return !l.inviteSent; }).length,
         note: upcoming[0].name + (upcoming.length > 1 ? (" 等 " + upcoming.length + " 场") : ""),
         owner: "直播运营",
-        action: { label: "去发送", href: "live-invite.html", liveId: upcoming[0].id }
+        action: { label: "去发送提醒", href: "live-booking.html", liveId: upcoming[0].id }
       });
     }
     var attendNoPay = Math.max(0, d.attendUsers - d.payWithAttend);

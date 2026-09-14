@@ -94,13 +94,6 @@
 }
 .wb-empty .wb-empty-title { font-size: 14px; color: var(--color-text-secondary); margin-bottom: 6px; }
 .wb-empty .wb-empty-desc { font-size: 12px; color: var(--color-text-muted); margin-bottom: 12px; }
-.wb-quick-links {
-  display: flex; flex-wrap: wrap; gap: 16px; margin-top: 4px; margin-bottom: 8px;
-}
-.wb-quick-links a {
-  font-size: 13px; color: var(--color-primary); text-decoration: none;
-}
-.wb-quick-links a:hover { text-decoration: underline; }
 .wb-sop-detail {
   margin-top: 6px; padding: 8px 10px; background: #f7f8fa; border-radius: 6px;
   font-size: 12px; color: var(--color-text-secondary); line-height: 1.6;
@@ -132,7 +125,6 @@
   <select class="wb-role-select" id="role-select" title="原型角色切换" aria-label="原型角色切换">
     <option value="admin">商户管理员</option>
     <option value="sales">助教/销售</option>
-    <option value="auditor">审核员</option>
     <option value="content">内容运营</option>
   </select>
   <div class="segmented" id="range-seg" style="margin-right:8px">
@@ -270,10 +262,6 @@
   <div class="wb-quick-block" id="block-create">
     <div class="wb-meta"><h2>快捷创建</h2></div>
     <div class="wb-quick" id="quick-create"></div>
-    <div class="wb-quick-links" id="quick-links">
-      <a href="lives.html" id="link-all-lives">查看全部直播</a>
-      <a href="leads.html" id="link-all-leads">查看全部线索</a>
-    </div>
   </div>
 
 </div>

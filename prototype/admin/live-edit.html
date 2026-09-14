@@ -57,13 +57,15 @@
       </div>
       <div class="field"><label>主讲老师 *</label>
         <select id="le-teacher"><option>阮荣均</option><option>赵老师</option><option>王助教</option></select>
+        <p class="muted" style="margin:6px 0 0;font-size:12px">讲师信息在「系统用户管理 · 用户列表」中维护，此处仅从已有用户中选择</p>
       </div>
       <div class="field"><label>开始时间 *</label><input id="le-start" type="datetime-local" value="2026-09-12T20:00" /></div>
       <div class="field"><label>结束时间 *</label><input id="le-end" type="datetime-local" value="2026-09-12T22:00" /></div>
       <div class="field"><label>助教</label>
-        <select id="le-assist" multiple style="height:60px;padding:8px">
-          <option>王助教</option><option>刘助教</option>
-        </select>
+        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+          <div id="le-assist-list" style="display:flex;gap:6px;flex-wrap:wrap"></div>
+          <button type="button" class="btn btn-sm" id="btn-assist-add">＋ 添加 / 编辑助教</button>
+        </div>
       </div>
       <div class="field" style="grid-column:1/-1"><label>直播介绍</label>
         <textarea id="le-intro" rows="3" style="width:100%;padding:8px;border:1px solid var(--color-border);border-radius:6px" placeholder="介绍本次直播内容、主讲老师、适合人群等"></textarea>
@@ -183,7 +185,6 @@
 
 
       <div class="goods-line goods-validity">
-        <span class="pro-badge">专业版</span>
         <span class="validity-label">有效期：</span>
         <label class="opt"><input type="radio" name="valid" checked /><span class="opt-text">长期有效，暂不支持修改</span></label>
       </div>
@@ -211,10 +212,10 @@
       <button class="btn btn-primary" id="btn-add-goods">+ 添加商品</button>
     </div>
     <table class="data">
-      <thead><tr><th>商品图</th><th>商品名称</th><th>价格</th><th>讲解话术</th><th>操作</th></tr></thead>
+      <thead><tr><th>商品图</th><th>商品名称</th><th>价格</th><th>操作</th></tr></thead>
       <tbody id="goods-tbody">
-        <tr><td><div class="thumb"></div></td><td>春启 03 期家长必修课</td><td>¥9.9</td><td><input placeholder="选填" style="width:240px" /></td><td><a href="#" data-act="del">移除</a></td></tr>
-        <tr><td><div class="thumb"></div></td><td>今晚直播·家长公开课</td><td>¥0</td><td><input placeholder="选填" style="width:240px" /></td><td><a href="#" data-act="del">移除</a></td></tr>
+        <tr><td><div class="thumb"></div></td><td>春启 03 期家长必修课</td><td>¥9.9</td><td><a href="#" data-act="del">移除</a></td></tr>
+        <tr><td><div class="thumb"></div></td><td>今晚直播·家长公开课</td><td>¥0</td><td><a href="#" data-act="del">移除</a></td></tr>
       </tbody>
     </table>
   </div></div>
@@ -286,20 +287,12 @@
     </div>
   </div></div>
 
-  <h2 class="page-section-title">角色设置</h2>
-  <div class="card"><div class="card-bd">
-    <button class="btn btn-sm" id="btn-add-role">+ 添加角色</button>
-    <span class="muted" style="margin-left:12px;font-size:12px">添加用户成为主播、助理或嘉宾</span>
-  </div></div>
-
-
   <h2 class="page-section-title">预约提醒</h2>
   <div class="card"><div class="card-bd">
     <p class="muted" style="margin:0 0 12px;font-size:13px;line-height:1.6">
-      此处仅配置本场直播的<strong>标准预约提醒</strong>（服务已预约/已订阅用户）。
-      直播通过审核并上架后，系统将根据直播时间自动生成预约提醒任务。
-      高级规则、预约用户及发送记录可在预约管理中查看。
-      面向私域人群的营销促到请到 <a href="live-invite.html">SCRM · 直播促到SOP</a> 配置。
+      此处配置本场直播的<strong>整体促到提醒</strong>：覆盖开播前预约提醒、正式开播提醒、<strong>直播中应到未到人群召回</strong>与回放生成提醒。
+      直播通过审核并上架后，系统将根据直播时间自动生成提醒任务；
+      高级规则、预约用户及发送记录可在「预约管理」中查看。
     </p>
     <div class="form-grid" style="grid-template-columns:1fr 1fr">
       <div class="field"><label>启用预约提醒</label>
@@ -316,21 +309,60 @@
       <div class="field"><label>正式开播提醒</label>
         <select id="le-remind-start"><option value="1" selected>开启（提醒订阅用户）</option><option value="0">关闭</option></select>
       </div>
+      <div class="field"><label>直播中促到（应到未到召回）</label>
+        <select id="le-remind-inlive">
+          <option value="15m" selected>开启（开播后 15 分钟提醒未观看用户）</option>
+          <option value="30m">开启（开播后 30 分钟提醒未观看用户）</option>
+          <option value="0">关闭</option>
+        </select>
+      </div>
       <div class="field"><label>回放生成提醒</label>
         <select id="le-remind-replay"><option value="1" selected>开启（提醒已预约未观看）</option><option value="0">关闭</option></select>
       </div>
     </div>
     <div class="toolbar" style="margin-top:12px;border:none;padding:0;background:transparent">
-      <button type="button" class="btn" id="btn-view-booking" disabled title="请先保存直播，再配置本场预约提醒或直播促到SOP。">查看预约与提醒</button>
-      <button type="button" class="btn" id="btn-view-sop" disabled title="请先保存直播，再配置本场预约提醒或直播促到SOP。" style="margin-left:8px">配置直播促到SOP</button>
-      <span class="muted" id="le-booking-hint" style="font-size:12px;margin-left:8px">请先保存直播，再配置本场预约提醒或直播促到SOP。</span>
-      <a class="btn" id="btn-advanced-remind" href="#" style="margin-left:auto;pointer-events:none;opacity:.55" title="请先保存直播，再配置本场预约提醒或直播促到SOP。" aria-disabled="true">查看高级配置</a>
+      <button type="button" class="btn" id="btn-view-booking" disabled title="请先保存直播，再配置本场预约提醒。">查看预约与提醒</button>
+      <span class="muted" id="le-booking-hint" style="font-size:12px;margin-left:8px">请先保存直播，再配置本场预约提醒。</span>
+      <a class="btn" id="btn-advanced-remind" href="#" style="margin-left:auto;pointer-events:none;opacity:.55" title="请先保存直播，再配置本场预约提醒。" aria-disabled="true">查看高级配置</a>
     </div>
   </div></div>
 
 </div>
 
 <div class="proto-mask" id="mask"></div>
+
+<!-- 添加 / 编辑助教弹窗 -->
+<div class="proto-modal" id="modal-assist" style="width:420px">
+  <div class="proto-modal-hd">
+    <h3 style="font-size:16px;font-weight:600">添加 / 编辑助教</h3>
+    <button class="btn btn-sm btn-ghost" data-close-modal="modal-assist">×</button>
+  </div>
+  <div class="proto-modal-bd">
+    <p class="muted" style="margin:0 0 10px;font-size:12px">从系统用户中选择本场直播的助教；助教人选在「系统用户管理 · 用户列表」中维护。</p>
+    <div class="cm-check" id="assist-check-list"></div>
+  </div>
+  <div class="proto-drawer-ft" style="border-top:1px solid var(--color-border);padding:12px 20px;display:flex;gap:8px;justify-content:flex-end">
+    <button class="btn" data-close-modal="modal-assist">取消</button>
+    <button class="btn btn-primary" id="assist-save">确定</button>
+  </div>
+</div>
+
+<!-- 添加商品弹窗 -->
+<div class="proto-modal" id="modal-add-goods" style="width:520px">
+  <div class="proto-modal-hd">
+    <h3 style="font-size:16px;font-weight:600">添加商品</h3>
+    <button class="btn btn-sm btn-ghost" data-close-modal="modal-add-goods">×</button>
+  </div>
+  <div class="proto-modal-bd">
+    <p class="muted" style="margin:0 0 10px;font-size:12px">从商品库中选择需要在本场直播讲解带出的商品；已在列表中的商品不可重复添加。</p>
+    <div class="cm-check" id="goods-check-list"></div>
+  </div>
+  <div class="proto-drawer-ft" style="border-top:1px solid var(--color-border);padding:12px 20px;display:flex;gap:8px;justify-content:flex-end">
+    <button class="btn" data-close-modal="modal-add-goods">取消</button>
+    <button class="btn btn-primary" id="goods-add-save">添加</button>
+  </div>
+</div>
+
 <div class="proto-modal" id="modal-viewers" style="width:560px">
   <div class="proto-modal-hd">
     <h3 style="font-size:16px;font-weight:600">选择可观看用户</h3>
@@ -366,6 +398,11 @@
 </div>
 
 <style>
+.assist-chip { display:inline-flex; align-items:center; gap:4px; padding:4px 10px; border:1px solid var(--color-border); border-radius:14px; font-size:12px; background:#f7f8fa; }
+.assist-chip a { color:var(--color-text-muted); text-decoration:none; font-size:14px; line-height:1; cursor:pointer; }
+.assist-chip a:hover { color:#f53f3f; }
+.cm-check { display:flex; flex-direction:column; gap:8px; }
+.cm-check label { font-size:13px; display:flex; align-items:center; gap:6px; }
 .viewer-summary {
   padding: 10px 12px;
   background: #f7f8fa;
@@ -556,7 +593,6 @@
   width: 14px; height: 14px; margin: 0; vertical-align: middle;
 }
 .goods-validity .opt input[type=radio] { width: 14px; height: 14px; margin: 0; vertical-align: middle; }
-.goods-validity .pro-badge { align-self: center; }
 .goods-links { gap: 12px; }
 .shelf-label { line-height: 22px; }
 .shelf-time-input {
@@ -718,7 +754,6 @@
 .is-readonly #btn-cover-reupload,
 .is-readonly #btn-cover-delete,
 .is-readonly #btn-add-goods,
-.is-readonly #btn-add-role,
 .is-readonly #btn-pick-owner,
 .is-readonly #btn-pick-course,
 .is-readonly #btn-pick-viewers,
@@ -935,7 +970,7 @@
         '<td><div class="thumb"></div></td>' +
         "<td>" + (p.name || "商品") + "</td>" +
         "<td>¥" + price + "</td>" +
-        '<td><input placeholder="选填" style="width:240px" /></td>' +
+        '' +
         '<td><a href="#" data-act="del">移除</a></td>';
       tb.appendChild(tr);
     });
@@ -1048,7 +1083,7 @@
     try { return JSON.stringify(collect()); } catch (e) { return ""; }
   }
 
-  var SAVE_GATE_TIP = "请先保存直播，再配置本场预约提醒或直播促到SOP。";
+  var SAVE_GATE_TIP = "请先保存直播，再配置本场预约提醒。";
 
   function setCoverUi() {
     var has = !!coverConfigured;
@@ -1065,18 +1100,12 @@
   function disableBookingLinks() {
     var tip = SAVE_GATE_TIP;
     var btn = $("btn-view-booking");
-    var sop = $("btn-view-sop");
     var hint = $("le-booking-hint");
     var adv = $("btn-advanced-remind");
     if (btn) {
       btn.disabled = true;
       btn.setAttribute("title", tip);
       btn.onclick = function () { toast(tip); };
-    }
-    if (sop) {
-      sop.disabled = true;
-      sop.setAttribute("title", tip);
-      sop.onclick = function () { toast(tip); };
     }
     if (hint) hint.textContent = tip;
     if (adv) {
@@ -1091,20 +1120,13 @@
 
   function enableBookingLink(id) {
     var btn = $("btn-view-booking");
-    var sop = $("btn-view-sop");
     var hint = $("le-booking-hint");
     var adv = $("btn-advanced-remind");
     var href = LiveOps.buildUrl("live-booking.html", { live_id: id, tab: "reminders", from: "detail" });
-    var sopHref = LiveOps.buildUrl("live-invite.html", { live_id: id });
     if (btn) {
       btn.disabled = false;
       btn.removeAttribute("title");
       btn.onclick = function () { location.href = href; };
-    }
-    if (sop) {
-      sop.disabled = false;
-      sop.removeAttribute("title");
-      sop.onclick = function () { location.href = sopHref; };
     }
     if (hint) hint.textContent = "已关联直播 " + id;
     if (adv) {
@@ -1512,17 +1534,106 @@
   on($("btn-view-booking"), "click", function () {
     if (this.disabled) toast(SAVE_GATE_TIP);
   });
-  on($("btn-view-sop"), "click", function () {
-    if (this.disabled) toast(SAVE_GATE_TIP);
-  });
   on($("btn-advanced-remind"), "click", function (e) {
     if (!liveId) {
       e.preventDefault();
       toast(SAVE_GATE_TIP);
     }
   });
-  ["btn-add-role", "btn-add-goods", "btn-more-config"].forEach(function (id) {
+  ["btn-more-config"].forEach(function (id) {
     on($(id), "click", function () { toast("原型操作"); dirty = true; });
+  });
+
+  /* ---- 助教：添加 / 编辑交互 ---- */
+  var STAFF_POOL = ["王助教", "刘助教", "李助教", "赵老师"];
+  var assistState = ["王助教", "刘助教"];
+  function renderAssistChips() {
+    var box = $("le-assist-list");
+    if (!box) return;
+    box.innerHTML = assistState.map(function (n) {
+      return '<span class="assist-chip">' + n + ' <a href="#" data-assist-remove="' + n + '" title="移除">×</a></span>';
+    }).join("");
+    box.querySelectorAll("[data-assist-remove]").forEach(function (a) {
+      on(a, "click", function (e) {
+        e.preventDefault();
+        var name = a.getAttribute("data-assist-remove");
+        assistState = assistState.filter(function (x) { return x !== name; });
+        renderAssistChips();
+        dirty = true;
+        toast("已移除助教「" + name + "」（原型）");
+      });
+    });
+  }
+  renderAssistChips();
+  on($("btn-assist-add"), "click", function () {
+    var list = $("assist-check-list");
+    list.innerHTML = STAFF_POOL.map(function (n) {
+      var hit = assistState.indexOf(n) !== -1;
+      return '<label><input type="checkbox" value="' + n + '"' + (hit ? " checked" : "") + " /> " + n + "</label>";
+    }).join("");
+    openModal($("modal-assist"));
+  });
+  on($("assist-save"), "click", function () {
+    assistState = Array.prototype.slice.call(document.querySelectorAll("#assist-check-list input:checked"))
+      .map(function (c) { return c.value; });
+    renderAssistChips();
+    closeModals();
+    dirty = true;
+    toast("助教已更新（原型）");
+  });
+
+  /* ---- 直播间商品：添加商品交互 ---- */
+  var GOODS_POOL = [
+    { name: "9.9 引流课·亲子沟通", price: "9.9" },
+    { name: "青春期沟通训练营", price: "299" },
+    { name: "家庭咨询 60 分钟服务卡", price: "199" },
+    { name: "家庭教育指导手册（电子版）", price: "39" }
+  ];
+  function existingGoodsNames() {
+    var names = {};
+    document.querySelectorAll("#goods-tbody tr td:nth-child(2)").forEach(function (td) {
+      names[td.textContent.trim()] = true;
+    });
+    return names;
+  }
+  function bindGoodsDel(a) {
+    on(a, "click", function (e) {
+      e.preventDefault();
+      var tr = a.closest("tr");
+      if (tr) tr.remove();
+      dirty = true;
+      toast("已移除（原型）");
+    });
+  }
+  on($("btn-add-goods"), "click", function () {
+    var has = existingGoodsNames();
+    var list = $("goods-check-list");
+    list.innerHTML = GOODS_POOL.map(function (g) {
+      return '<label><input type="checkbox" data-name="' + g.name + '" data-price="' + g.price + '"' +
+        (has[g.name] ? " disabled" : "") + " /> " + g.name + "（¥" + g.price + "）" +
+        (has[g.name] ? ' <span class="muted">已添加</span>' : "") + "</label>";
+    }).join("");
+    openModal($("modal-add-goods"));
+  });
+  document.querySelectorAll("[data-close-modal]").forEach(function (n) {
+    on(n, "click", function (e) { e.preventDefault(); closeModals(); });
+  });
+
+  on($("goods-add-save"), "click", function () {
+    var picked = document.querySelectorAll("#goods-check-list input:checked");
+    var tb = $("goods-tbody");
+    picked.forEach(function (c) {
+      var tr = document.createElement("tr");
+      tr.innerHTML =
+        '<td><div class="thumb"></div></td>' +
+        "<td>" + c.getAttribute("data-name") + "</td>" +
+        "<td>¥" + c.getAttribute("data-price") + "</td>" +
+        '<td><a href="#" data-act="del">移除</a></td>';
+      tb.appendChild(tr);
+      bindGoodsDel(tr.querySelector('[data-act="del"]'));
+    });
+    closeModals();
+    if (picked.length) { dirty = true; toast("已添加 " + picked.length + " 个商品（原型）"); }
   });
 
   /* ---- 指定用户观看范围 ---- */

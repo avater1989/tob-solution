@@ -454,7 +454,7 @@
         count: 1,
         note: l.id + "「" + l.name + "」· " + (l.startAt || ""),
         owner: "直播运营",
-        action: { label: "去配置", href: "live-invite.html", liveId: l.id }
+        action: { label: "去配置提醒", href: "live-booking.html", liveId: l.id }
       });
     });
 

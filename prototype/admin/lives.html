@@ -92,7 +92,6 @@ tr.live-highlight { background: #f0f5ff; }
 </head>
 <body class="admin-body" data-module="live" data-nav="lives" data-title="直播列表" data-crumb="直播 / 直播管理 / 直播列表">
 <div id="header-actions">
-  <button type="button" class="btn" id="btn-tutorial">使用教程</button>
   <a class="btn btn-primary" href="live-edit.html" id="btn-create">+ 新建直播</a>
 </div>
 <div id="page-content" style="display:none">
@@ -516,10 +515,6 @@ tr.live-highlight { background: #f0f5ff; }
   }
 
   /* events */
-  document.getElementById("btn-tutorial").addEventListener("click", function () {
-    toast("打开使用教程（原型）");
-  });
-
   document.getElementById("btn-create").addEventListener("click", function () {
     saveCtx({});
   });

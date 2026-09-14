@@ -85,7 +85,6 @@
 <body class="admin-body" data-module="live" data-nav="live-booking" data-title="预约管理" data-crumb="直播 / 直播管理 / 预约管理">
 <div id="header-actions">
   <button class="btn" type="button" id="btn-export">导出</button>
-  <a class="btn" id="btn-invite" href="live-invite.html">新建直播促到SOP</a>
   <button class="btn btn-primary" type="button" id="btn-new-reminder">+ 新建提醒规则</button>
 </div>
 
@@ -95,7 +94,7 @@
   <div id="view-list" style="display:none">
     <div class="bk-list-tip">
       <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
-      管理全部直播的预约用户与标准系统提醒。系统提醒面向已预约/已订阅用户，私域营销请使用「新建直播促到SOP」。当前共 <b id="bk-list-count" style="margin:0 4px">0</b> 场直播
+      管理全部直播的预约用户与标准系统提醒，支持面向该直播场景的整体促到（含直播中应到未到人群召回）。当前共 <b id="bk-list-count" style="margin:0 4px">0</b> 场直播
     </div>
 
     <div class="card" style="margin-bottom:12px"><div class="card-bd" style="padding:12px 16px">
@@ -322,6 +321,7 @@
             <option value="">全部类型</option>
             <option value="pre_live">开播前提醒</option>
             <option value="live_start">开播提醒</option>
+          <option value="in_live">直播中提醒</option>
             <option value="replay_ready">回放生成提醒</option>
             <option value="live_changed">直播时间变更通知</option>
             <option value="live_cancelled">直播取消通知</option>
@@ -392,6 +392,7 @@
         <select id="rm-type">
           <option value="pre_live">开播前提醒</option>
           <option value="live_start">开播提醒</option>
+          <option value="in_live">直播中提醒</option>
           <option value="replay_ready">回放生成提醒</option>
           <option value="live_changed">直播时间变更通知</option>
           <option value="live_cancelled">直播取消通知</option>
@@ -428,13 +429,17 @@
         <label>提醒渠道 *</label>
         <div style="display:flex;gap:16px;padding:6px 0;flex-wrap:wrap">
           <label><input type="checkbox" name="rm-ch" value="短信" checked /> 短信</label>
-          <label><input type="checkbox" name="rm-ch" value="站内信" checked /> 站内信</label>
-          <label><input type="checkbox" name="rm-ch" value="企微" /> 企微</label>
+          <label><input type="checkbox" name="rm-ch" value="外呼" /> 外呼</label>
         </div>
       </div>
       <div class="field" style="grid-column:1/-1">
-        <label>提醒文案 *</label>
-        <textarea id="rm-template" rows="4" placeholder="支持变量：{昵称} {直播名称} {开播时间}"></textarea>
+        <label>选择模板 *</label>
+        <select id="rm-template">
+          <option>系统默认模板（含 {昵称} {直播名称} {开播时间}）</option>
+          <option>促到模板（含直播间福利与预约引导）</option>
+          <option>召回模板（面向应到未到，含直播进行中入口）</option>
+        </select>
+        <p class="muted" style="margin:6px 0 0;font-size:12px">模板支持变量：{昵称} {直播名称} {开播时间}；模板内容在「消息推送」中维护。</p>
       </div>
       <div class="field">
         <label>是否启用</label>
@@ -444,7 +449,7 @@
         </select>
       </div>
     </div>
-    <p class="muted" style="font-size:12px;margin:12px 0 0">仅支持标准系统提醒，不提供立即推送或营销人群圈选。私域转化请使用「新建直播促到SOP」。</p>
+    <p class="muted" style="font-size:12px;margin:12px 0 0">支持面向直播场景的整体促到提醒；人群营销圈选（MA）为二期功能。</p>
   </div>
   <div class="proto-modal-ft">
     <button class="btn" type="button" data-close>取消</button>
@@ -599,6 +604,7 @@
   var TYPE_LABEL = {
     pre_live: "开播前提醒",
     live_start: "开播提醒",
+    in_live: "直播中提醒",
     replay_ready: "回放生成提醒",
     live_changed: "直播时间变更通知",
     live_cancelled: "直播取消通知"
@@ -606,6 +612,7 @@
   var TYPE_CLASS = {
     pre_live: "rm-type-pre",
     live_start: "rm-type-start",
+    in_live: "rm-type-start",
     replay_ready: "rm-type-replay",
     live_changed: "rm-type-changed",
     live_cancelled: "rm-type-cancel"
@@ -756,17 +763,11 @@
         "<td class=\"row-actions\">" +
           "<a class=\"link-blue\" href=\"live-booking.html?live_id=" + esc(l.id) + "&tab=bookings\">进入详情</a>" +
           "<a class=\"link-blue\" href=\"live-booking.html?live_id=" + esc(l.id) + "&tab=reminders\">提醒计划</a>" +
-          "<a class=\"link-blue\" href=\"live-invite.html?live_id=" + esc(l.id) + "\">新建促到SOP</a>" +
         "</td></tr>";
     }).join("");
   }
 
   /* ---------- Single view ---------- */
-  function updateHeaderInvite(liveId) {
-    var a = document.getElementById("btn-invite");
-    a.href = liveId ? ("live-invite.html?live_id=" + encodeURIComponent(liveId)) : "live-invite.html";
-  }
-
   function switchTab(tab, push) {
     currentTab = tab || "bookings";
     document.querySelectorAll("#bk-tabs a").forEach(function (a) {
@@ -1054,6 +1055,11 @@
         { v: "10m", t: "开播前 10 分钟" }
       ],
       live_start: [{ v: "live_started", t: "正式开播时" }],
+      in_live: [
+        { v: "in_15m", t: "开播后 15 分钟" },
+        { v: "in_30m", t: "开播后 30 分钟" },
+        { v: "custom_in", t: "自定义（开播后 N 分钟）" }
+      ],
       replay_ready: [{ v: "replay_ready", t: "回放生成时" }],
       live_changed: [{ v: "live_changed", t: "直播时间变更时" }],
       live_cancelled: [{ v: "live_cancelled", t: "直播取消时" }]
@@ -1301,7 +1307,6 @@
     syncReminderCreateButtons(live);
     document.title = "预约管理 · " + live.name + " · 商家管理后台";
     document.body.setAttribute("data-crumb", "直播 / 直播管理 / 预约管理 / " + live.name);
-    updateHeaderInvite(liveId);
     renderStats(live);
     fillChannelFilter(liveId);
     switchTab(tab || getTabFromUrl(), false);
@@ -1313,7 +1318,6 @@
     document.getElementById("view-single").style.display = "none";
     document.title = "预约管理 · 商家管理后台";
     document.body.setAttribute("data-crumb", "直播 / 直播管理 / 预约管理");
-    updateHeaderInvite(null);
     renderList();
   }
 

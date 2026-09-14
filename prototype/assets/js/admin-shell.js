@@ -69,8 +69,8 @@
           { id: "leads-dup", href: "leads-dup.html", label: "重复线索" },
           { id: "users", href: "users.html", label: "用户列表" },
           { id: "user-tags", href: "user-tags.html", label: "标签管理" },
-          { id: "user-segments", href: "user-segments.html", label: "用户分群" },
-          { id: "ops-plans", href: "ops-plans.html", label: "定向运营计划" },
+          { id: "user-segments", href: "user-segments.html", label: "用户分群（二期）" },
+          { id: "ops-plans", href: "ops-plans.html", label: "定向运营计划（二期）" },
         ],
       },
       {
@@ -84,7 +84,6 @@
           { id: "mass-customer", href: "mass-customer.html", label: "客户群发" },
           { id: "mass-group", href: "mass-group.html", label: "客户群群发" },
           { id: "mass-moment", href: "mass-moment.html", label: "群发朋友圈" },
-          { id: "invite", href: "live-invite.html", label: "直播促到SOP" },
           { id: "quick-task", href: "quick-tasks.html", label: "快捷任务" },
           { id: "sop-personal", href: "sop-personal.html", label: "个人SOP" },
           { id: "sop-group", href: "sop-group.html", label: "群SOP" },
@@ -259,11 +258,6 @@
       "<li><a href='lives.html'>② 直播转化</a></li>" +
       "<li><a href='orders.html'>③ 订单管理</a></li>" +
       "<li><a href='leads.html'>④ 私域运营</a></li></ul></div>",
-    "live-invite":
-      "<div class='assist-block'><h3>直播促到SOP</h3><ul>" +
-      "<li>面向私域人群配置直播前邀约、预约后催到、开播提醒和直播中召回</li>" +
-      "<li>支持按标签 / 期次 / 阶段筛选并排除已购等</li>" +
-      "<li>与预约管理中的系统提醒职责分离</li></ul></div>",
     scrm:
       "<div class='assist-block'><h3>现网对齐</h3><ol>" +
       "<li>客户中心 / 营销管理 / 内容中心</li>" +

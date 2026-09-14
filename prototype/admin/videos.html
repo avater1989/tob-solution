@@ -19,17 +19,15 @@
       <div class="card-bd" style="padding:0">
         <table class="data">
           <thead><tr>
-            <th>店铺名称</th><th>小店ID</th><th>授权状态</th><th>橱窗状态</th><th>授权时间</th><th style="width:230px">操作</th>
+            <th>店铺名称</th><th>小店ID</th><th>授权状态</th><th>授权时间</th><th style="width:160px">操作</th>
           </tr></thead>
           <tbody>
             <tr>
               <td><b>赵老师的书塾</b></td>
               <td>wx_store_8f21****</td>
               <td><span class="badge badge-success">已授权</span></td>
-              <td><span class="badge badge-success">已绑定橱窗</span></td>
               <td>2026-08-20 10:12</td>
               <td class="row-actions">
-                <a href="#" data-store-act="bind">绑定橱窗</a>
                 <a href="#" data-store-act="renew">重新授权</a>
                 <a href="#" data-store-act="unbind">解绑</a>
               </td>
@@ -38,10 +36,8 @@
               <td><b>赵老师小课堂</b></td>
               <td>wx_store_3c09****</td>
               <td><span class="badge badge-success">已授权</span></td>
-              <td><span class="badge badge-warn">未绑定橱窗</span></td>
               <td>2026-09-01 15:40</td>
               <td class="row-actions">
-                <a href="#" data-store-act="bind">绑定橱窗</a>
                 <a href="#" data-store-act="renew">重新授权</a>
                 <a href="#" data-store-act="unbind">解绑</a>
               </td>
@@ -50,20 +46,12 @@
         </table>
       </div>
       <div class="guide-box" id="wx-guide">
-        <a class="guide-toggle" href="#" id="wx-guide-toggle">查看授权 / 绑定橱窗指引 ▾</a>
+        <a class="guide-toggle" href="#" id="wx-guide-toggle">查看授权指引 ▾</a>
         <div class="guide-body" id="wx-guide-body" style="display:none">
           <p class="guide-title">微信小店授权步骤</p>
           <ol>
             <li>使用微信小店「店长」微信登录微信小店后台，进入「服务市场 → 经营工具 → 我的服务」，获取 <b>小店ID</b> 与 <b>授权密钥</b>；</li>
-            <li>回到本页点击「+ 授权微信小店」，填写小店信息并完成授权；</li>
-            <li>微信小店绑定橱窗（见下方指引）。</li>
-          </ol>
-          <p class="guide-title">微信小店绑定橱窗步骤</p>
-          <ol>
-            <li>点击链接进入 <a href="https://channels.weixin.qq.com/" target="_blank" style="color:var(--color-primary)">视频号助手</a>，用微信小店店长微信登录；</li>
-            <li>进入「直播 → 直播管理 → 开放能力」，查看 <b>橱窗ID</b> 与 <b>橱窗密钥</b>；</li>
-            <li>回到本页点击对应店铺的「绑定橱窗」，填入橱窗ID与密钥；</li>
-            <li>绑定成功后，课程审核通过可自动上架橱窗；未绑定则需手动上架。</li>
+            <li>回到本页点击「+ 授权微信小店」，填写小店信息并完成授权。</li>
           </ol>
         </div>
       </div>
@@ -88,30 +76,10 @@
       <div class="field"><label>授权密钥 *</label><input type="password" placeholder="请输入授权密钥" /></div>
       <div class="field"><label>小店名称</label><input placeholder="选填，便于识别" /></div>
     </div>
-    <p class="muted" style="margin:10px 0 0;font-size:12px">授权成功后请继续完成「绑定橱窗」，否则课程审核通过后需手动上架。</p>
   </div>
   <div class="proto-modal-ft" style="border-top:1px solid var(--color-border);padding:12px 20px;display:flex;gap:8px;justify-content:flex-end">
     <button class="btn" data-close>取消</button>
     <button class="btn btn-primary" id="wxauth-submit">确认授权</button>
-  </div>
-</div>
-
-<!-- 绑定橱窗弹窗 -->
-<div class="proto-modal" id="modal-wxbind" style="width:540px">
-  <div class="proto-modal-hd">
-    <h3 style="font-size:16px;font-weight:600">绑定橱窗 · <span id="bind-store">—</span></h3>
-    <button class="btn btn-sm btn-ghost" data-close>×</button>
-  </div>
-  <div class="proto-modal-bd">
-    <p class="muted" style="margin:0 0 10px;font-size:12px">登录 <a href="https://channels.weixin.qq.com/" target="_blank" style="color:var(--color-primary)">视频号助手</a>（使用小店店长微信）→ 直播 → 直播管理 → 开放能力，查看橱窗ID 与 橱窗密钥。</p>
-    <div class="form-grid">
-      <div class="field"><label>橱窗ID *</label><input placeholder="win_xxxx" /></div>
-      <div class="field"><label>橱窗密钥 *</label><input type="password" placeholder="请输入橱窗密钥" /></div>
-    </div>
-  </div>
-  <div class="proto-modal-ft" style="border-top:1px solid var(--color-border);padding:12px 20px;display:flex;gap:8px;justify-content:flex-end">
-    <button class="btn" data-close>取消</button>
-    <button class="btn btn-primary" data-close data-toast="橱窗绑定成功，课程审核通过将自动上架（原型）">确认绑定</button>
   </div>
 </div>
 
@@ -158,7 +126,7 @@
       var body = document.getElementById("wx-guide-body");
       var showGuide = body.style.display === "none";
       body.style.display = showGuide ? "block" : "none";
-      this.textContent = showGuide ? "收起指引 ▴" : "查看授权 / 绑定橱窗指引 ▾";
+      this.textContent = showGuide ? "收起指引 ▴" : "查看授权指引 ▾";
     });
   }
   document.querySelectorAll("[data-store-act]").forEach(function (a) {
@@ -167,10 +135,7 @@
       var act = a.getAttribute("data-store-act");
       var tr = a.closest("tr");
       var store = tr ? tr.querySelector("td b").textContent.trim() : "—";
-      if (act === "bind") {
-        document.getElementById("bind-store").textContent = store;
-        open(document.getElementById("modal-wxbind"));
-      } else if (act === "renew") {
+      if (act === "renew") {
         Proto.toast("重新授权「" + store + "」（原型）");
       } else if (act === "unbind") {
         if (confirm("确定解绑「" + store + "」？解绑后该店铺商品将停止同步。")) {
@@ -184,7 +149,7 @@
   });
   document.getElementById("wxauth-submit").addEventListener("click", function () {
     closeAll();
-    Proto.toast("授权成功，请继续绑定橱窗（原型）");
+    Proto.toast("授权成功（原型）");
   });
 })();
 </script>

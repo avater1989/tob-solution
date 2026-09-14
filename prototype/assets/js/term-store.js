@@ -351,11 +351,6 @@
       '<div class="field" style="grid-column:1/-1"><label>备注</label>' +
       '<textarea id="tm-remark" rows="2" style="width:100%;padding:8px;border:1px solid var(--color-border);border-radius:6px" placeholder="选填"></textarea></div>' +
       '</div>' +
-      '<details id="tm-goals-box" style="margin-top:12px">' +
-      '<summary style="cursor:pointer;font-size:13px;font-weight:600;color:var(--color-text-secondary)">经营目标（选填，默认折叠）</summary>' +
-      '<p class="muted" style="font-size:12px;margin:8px 0">复用期次复盘已展示的目标项；未填写时复盘显示「未设置」，不生成虚假完成率。</p>' +
-      '<div class="form-grid" id="tm-goals-grid" style="grid-template-columns:1fr 1fr;margin-top:8px"></div>' +
-      '</details>' +
       '</div>' +
       '<div class="proto-modal-ft">' +
       '<button class="btn" type="button" data-term-close>取消</button>' +
@@ -368,14 +363,6 @@
       o.value = n;
       o.textContent = n;
       owner.appendChild(o);
-    });
-    var grid = document.getElementById("tm-goals-grid");
-    GOAL_FIELDS.forEach(function (f) {
-      var wrap = document.createElement("div");
-      wrap.className = "field";
-      wrap.innerHTML = "<label>" + f.label + "</label>" +
-        '<input type="number" min="0" step="any" data-goal="' + f.key + '" placeholder="' + f.hint + '" />';
-      grid.appendChild(wrap);
     });
     function closeEditor() {
       editorState.draft = null;

@@ -100,8 +100,7 @@
           <th>上架状态</th>
           <th>权重</th>
           <th>播放量</th>
-          <th>完播率</th>
-          <th style="width:240px">操作</th>
+                    <th style="width:240px">操作</th>
         </tr>
       </thead>
       <tbody id="rp-tbody">
@@ -118,7 +117,6 @@
           <td><span class="rp-badge rp-on">已上架</span></td>
           <td><span class="rp-price">¥0</span></td>
           <td>186</td>
-          <td>42%</td>
           <td class="row-actions"></td>
         </tr>
         <tr data-shelf="on" data-gen="ready" data-live-id="L004" data-scope="付费本场资格" data-valid="购买后 48 小时">
@@ -134,7 +132,6 @@
           <td><span class="rp-badge rp-on">已上架</span></td>
           <td><span class="rp-price">¥0</span></td>
           <td>4</td>
-          <td>0%</td>
           <td class="row-actions"></td>
         </tr>
         <tr data-shelf="off" data-gen="pending" data-live-id="L001" data-scope="已购学员授课 · 春启03" data-valid="长期有效">
@@ -150,7 +147,6 @@
           <td><span class="rp-badge rp-off">未上架</span></td>
           <td><span class="rp-price">¥0</span></td>
           <td>0</td>
-          <td>0%</td>
           <td class="row-actions"></td>
         </tr>
         <tr data-shelf="off" data-gen="processing" data-live-id="L004" data-scope="公开可看" data-valid="长期有效">
@@ -166,7 +162,6 @@
           <td><span class="rp-badge rp-off">未上架</span></td>
           <td><span class="rp-price">¥0</span></td>
           <td>0</td>
-          <td>0%</td>
           <td class="row-actions"></td>
         </tr>
         <tr data-shelf="off" data-gen="failed" data-live-id="L003" data-scope="指定用户" data-valid="长期有效">
@@ -182,7 +177,6 @@
           <td><span class="rp-badge rp-off">未上架</span></td>
           <td><span class="rp-price">¥0</span></td>
           <td>0</td>
-          <td>0%</td>
           <td class="row-actions"></td>
         </tr>
         <tr data-shelf="off" data-gen="ready" data-live-id="L004" data-scope="公开可看" data-valid="上架后 7 天">
@@ -198,7 +192,6 @@
           <td><span class="rp-badge rp-off">未上架</span></td>
           <td><span class="rp-price">¥0</span></td>
           <td>0</td>
-          <td>0%</td>
           <td class="row-actions"></td>
         </tr>
         <tr data-shelf="off" data-gen="ready" data-scope="已购学员授课" data-valid="长期有效">
@@ -214,7 +207,6 @@
           <td><span class="rp-badge rp-off">未上架</span></td>
           <td><span class="rp-price">¥0</span></td>
           <td>0</td>
-          <td>0%</td>
           <td class="row-actions"></td>
         </tr>
         <tr data-shelf="off" data-gen="processing" data-scope="公开可看" data-valid="长期有效">
@@ -230,7 +222,6 @@
           <td><span class="rp-badge rp-off">未上架</span></td>
           <td><span class="rp-price">¥0</span></td>
           <td>0</td>
-          <td>0%</td>
           <td class="row-actions"></td>
         </tr>
       </tbody>
@@ -319,7 +310,6 @@
       <div class="field"><label>有效期</label><div id="dd-valid">—</div></div>
       <div class="field"><label>权重</label><div id="dd-weight">—</div></div>
       <div class="field"><label>播放量</label><div id="dd-plays">—</div></div>
-      <div class="field"><label>完播率</label><div id="dd-finish">—</div></div>
     </div>
     <h4 style="margin:16px 0 8px">回放预览</h4>
     <div class="rp-player">
@@ -506,8 +496,7 @@
       scope: tr.getAttribute("data-scope") || "复用本场直播观看配置",
       valid: tr.getAttribute("data-valid") || "长期有效",
       weight: tds[10] ? tds[10].textContent.trim() : "¥0",
-      plays: tds[11] ? tds[11].textContent.trim() : "0",
-      finish: tds[12] ? tds[12].textContent.trim() : "0%"
+      plays: tds[11] ? tds[11].textContent.trim() : "0"
     };
   }
 
@@ -584,7 +573,6 @@
     document.getElementById("dd-valid").textContent    = d.valid;
     document.getElementById("dd-weight").textContent   = d.weight;
     document.getElementById("dd-plays").textContent    = d.plays;
-    document.getElementById("dd-finish").textContent   = d.finish;
     open(document.getElementById("drawer-detail"));
   }
 

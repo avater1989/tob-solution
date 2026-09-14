@@ -13,6 +13,8 @@
 </div>
 <div id="page-content" style="display:none">
 
+  <div class="alert alert-warning" style="margin-bottom:12px;padding:10px 12px;border-radius:8px;background:#fff7e8;border:1px solid #ffe1ba;color:#ad6800;font-size:13px"><b>二期功能：</b>定向运营计划计划于二期上线，本期仅作原型示意，暂不可实际使用。</div>
+
   <div class="alert alert-info" style="margin-bottom:12px;padding:10px 12px;border-radius:8px;background:#e8f3ff;border:1px solid #a0cfff;color:#165dff;font-size:13px">
     定向运营计划 = <b>目标人群</b> × <b>运营动作</b> × <b>执行周期</b>。对选定人群在指定时间自动执行通知、发资料、赠送试听或创建跟进等动作，并回收触达与转化效果。人群来自「<a href="user-segments.html" style="color:inherit;text-decoration:underline">用户分群</a>」，通知渠道见「<a href="message-push.html" style="color:inherit;text-decoration:underline">消息推送</a>」。
   </div>
@@ -337,7 +339,7 @@
       var resultLink = "";
       if (p.status === "running" || p.status === "done") {
         if (p.action === "scrm") resultLink = '<a href="follow-ups.html" data-row-act="goto">查看跟进任务</a>';
-        else if (p.action === "live") resultLink = '<a href="live-invite.html" data-row-act="goto">查看促到 SOP</a>';
+        else if (p.action === "live") resultLink = '<a href="live-booking.html" data-row-act="goto">查看提醒计划</a>';
         else resultLink = '<a href="#" data-row-act="result">查看执行结果</a>';
       }
       return '<tr data-id="'+p.id+'">' +
@@ -647,7 +649,7 @@
       links.push('<button type="button" class="btn" data-close>稍后查看</button>');
     } else if (payload.action === "live") {
       msg += "已关联直播促到 SOP，人群与执行以 SOP 规则为准。";
-      var href = "live-invite.html";
+      var href = "live-booking.html";
       if (payload.liveId) href += "?live_id=" + encodeURIComponent(payload.liveId);
       if (payload.sopId) href += (href.indexOf("?") >= 0 ? "&" : "?") + "sop_id=" + encodeURIComponent(payload.sopId);
       links.push('<a class="btn btn-primary" href="' + href + '">查看促到 SOP</a>');

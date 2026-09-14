@@ -394,7 +394,6 @@
     var editRejected = buildUrl("live-edit.html", { live_id: id, from: "platform_rejected", focus: "cover" });
     var progress = buildUrl("live-edit.html", { live_id: id, mode: "view", focus: "platform" });
     var booking = buildUrl("live-booking.html", { live_id: id, from: "detail" });
-    var sop = buildUrl("live-invite.html", { live_id: id, from: "detail" });
     var control = buildUrl("live-control.html", { live_id: id });
     var screen = buildUrl("live-screen.html", { live_id: id });
     var stats = buildUrl("live-stats.html", { live_id: id });
@@ -431,7 +430,6 @@
         secondary: [
           { label: "查看详情", href: detail },
           { label: "预约管理", href: booking },
-          { label: "直播促到SOP", href: sop },
           { label: "分享", action: "share" },
           { label: "编辑", href: edit }
         ]
@@ -441,7 +439,6 @@
         secondary: [
           { label: "场次数据", href: stats },
           { label: "预约管理", href: booking },
-          { label: "直播促到SOP", href: sop },
           { label: "分享", action: "share" },
           { label: "进入中控台", href: control },
           { label: "直播大屏", href: screen },
@@ -514,7 +511,7 @@
       platform_pending: "等待平台审核结果",
       platform_rejected: "按平台驳回原因修改后重新提交",
       ready_shelf: "上架后可进行开播准备",
-      upcoming: "完成预约提醒与直播促到SOP",
+      upcoming: "完成预约提醒设置",
       living: "进入中控台管理直播",
       ended: "查看场次数据与回放",
       cancelled: "可复制后重新创建"
@@ -652,7 +649,7 @@
     if (!hasSop) {
       warnings.push({
         id: "sop",
-        label: "直播促到SOP尚未配置（不阻断提交）",
+        label: "预约提醒尚未配置（不阻断提交）",
         field: "sop"
       });
     }
@@ -870,7 +867,7 @@
       shelfStatus: "published",
       runtimeStatus: "not_started",
       shelvedAt: (PB() && PB().DEMO_NOW) || "",
-      nextActionHint: "配置预约与直播促到SOP"
+      nextActionHint: "配置预约提醒"
     });
   }
 

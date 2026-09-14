@@ -1007,7 +1007,7 @@
         statusLabel: am.statusLabel || "待处理",
         action: am.action,
         actionLabel: am.actionLabel,
-        href: "live-invite.html?live_id=" + s.liveId + "&sop_id=" + s.id + "&focus=pending&from=dashboard&todo_id=TODO_SOP_" + s.id + "&return_url=" + encodeURIComponent("dashboard.html?restore=1"),
+        href: "live-booking.html?live_id=" + s.liveId + "&tab=reminders&from=dashboard&todo_id=TODO_SOP_" + s.id + "&return_url=" + encodeURIComponent("dashboard.html?restore=1"),
         roles: ["admin", "sales"],
         liveId: s.liveId,
         sopId: s.id,
