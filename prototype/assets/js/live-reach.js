@@ -1,5 +1,5 @@
 /**
- * 直播触达统一数据层（预约提醒 + 直播促到SOP）
+ * 直播触达统一数据层（预约提醒 + 直播提醒）
  * 与 ProtoBiz（localStorage）同步；兼容旧 sessionStorage。
  */
 (function (global) {
@@ -691,7 +691,7 @@
       return sop;
     },
     AUDIENCE_PRESETS: {
-      sop_filters: { id: "sop_filters", label: "沿用本 SOP 人群筛选" },
+      sop_filters: { id: "sop_filters", label: "沿用本直播提醒人群筛选" },
       high_intent_unbooked: { id: "high_intent_unbooked", label: "高意向但未预约" },
       booked: { id: "booked", label: "已预约用户" },
       booked_not_entered: { id: "booked_not_entered", label: "已预约但未进入直播间" },
@@ -876,10 +876,10 @@
     },
     validateSopStart: function (sop) {
       var issues = [];
-      if (!sop) return [{ code: "missing", severity: "hard", reason: "未找到直播促到SOP", fixLabel: "返回列表", fixHref: "live-invite.html" }];
+      if (!sop) return [{ code: "missing", severity: "hard", reason: "未找到直播提醒配置", fixLabel: "查看预约管理", fixHref: "live-booking.html" }];
       var live = api.getLive(sop.liveId);
       if (!live) {
-        issues.push({ code: "no_live", severity: "hard", reason: "关联直播不存在", fixLabel: "重新选择直播", fixHref: "live-invite.html?sop_id=" + encodeURIComponent(sop.id) });
+        issues.push({ code: "no_live", severity: "hard", reason: "关联直播不存在", fixLabel: "重新选择直播", fixHref: "live-booking.html?live_id=" + encodeURIComponent(sop.liveId || "") });
         return issues;
       }
       var ended = live.liveStatus === "ended" || live.execStatus === "ended" ||
@@ -888,7 +888,7 @@
         issues.push({
           code: "live_ended",
           severity: "hard",
-          reason: "直播「" + live.name + "」已结束，不可再启动促到SOP",
+          reason: "直播「" + live.name + "」已结束，无法再配置直播提醒",
           fixLabel: "查看预约管理",
           fixHref: "live-booking.html?live_id=" + encodeURIComponent(live.id)
         });
@@ -978,8 +978,8 @@
       var sop = {
         id: uid("SOP"),
         liveId: payload.liveId,
-        name: payload.name || ((live ? live.name : "直播") + "直播促到SOP"),
-        sopName: payload.name || ((live ? live.name : "直播") + "直播促到SOP"),
+        name: payload.name || ((live ? live.name : "直播") + "直播提醒"),
+        sopName: payload.name || ((live ? live.name : "直播") + "直播提醒"),
         category: "scrm_campaign",
         status: "draft",
         period: payload.period || "",
@@ -1006,17 +1006,17 @@
         var live = api.getLive((global.ProtoBiz.getSop(id) || {}).liveId);
         if (status === "running") {
           if (!live || live.auditStatus !== "approved" || !live.shelf) {
-            return { error: "直播未通过审核并上架，无法启动直播促到SOP" };
+            return { error: "直播未通过审核并上架，无法启动直播提醒" };
           }
         }
-        return global.ProtoBiz.setSopStatus(id, status) || { error: "未找到促到SOP" };
+        return global.ProtoBiz.setSopStatus(id, status) || { error: "未找到直播提醒配置" };
       }
       var sop = api.getSop(id);
       if (!sop) return null;
       var live2 = api.getLive(sop.liveId);
       if (status === "running") {
         if (!live2 || live2.auditStatus !== "approved" || !live2.shelf) {
-          return { error: "直播未通过审核并上架，无法启动直播促到SOP" };
+          return { error: "直播未通过审核并上架，无法启动直播提醒" };
         }
         sop.startedAt = new Date().toISOString().slice(0, 16).replace("T", " ");
       }

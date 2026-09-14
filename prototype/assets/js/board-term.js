@@ -7,7 +7,7 @@
   function BI() { return global.BoardInsights; }
 
   var STATUS_FOCUS = {
-    prep: { title: "筹备重点", items: ["人群与期次范围", "直播促到SOP配置", "开播准备任务"] },
+    prep: { title: "筹备重点", items: ["人群与期次范围", "直播提醒配置", "开播准备任务"] },
     acquiring: { title: "获客重点", items: ["渠道流量与有效率", "加微率", "分配及时率"] },
     private_handoff: { title: "承接重点", items: ["分配与加微", "跟进覆盖", "积压处理"] },
     live_running: { title: "直播重点", items: ["邀约与推送", "到场表现", "场次准备"] },
@@ -450,7 +450,7 @@
       risks.push({
         urgency: "high",
         urgencyLabel: "紧急",
-        type: "开播前未完成直播促到SOP",
+        type: "开播前未配置直播提醒",
         count: 1,
         note: l.id + "「" + l.name + "」· " + (l.startAt || ""),
         owner: "直播运营",

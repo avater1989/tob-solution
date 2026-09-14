@@ -78,7 +78,7 @@
   var TYPE_LABELS = {
     lead: "未分配线索",
     audit: "直播审核",
-    urge: "直播促到SOP异常",
+    urge: "直播提醒异常",
     aftersale: "售后",
     live_exception: "直播异常",
     follow: "运营建议",
@@ -437,7 +437,7 @@
     document.querySelector('[data-rt="aftersale"]').textContent = afterN;
     $("rt-unassigned-hint").textContent = leadN ? (rt.unassignedHint || "有待分配线索") : "暂无未分配线索";
     $("rt-audit-hint").textContent = auditN ? ("含 " + auditN + " 场待提交/待改") : "暂无待提交场次";
-    $("rt-urge-hint").textContent = urgeN ? ("异常 " + urgeN + " 条") : "暂无SOP异常";
+    $("rt-urge-hint").textContent = urgeN ? ("异常 " + urgeN + " 条") : "暂无直播提醒异常";
     $("rt-aftersale-hint").textContent = afterN ? (rt.aftersaleHint || "有待处理售后") : "暂无待处理售后";
     $("rt-unassigned").classList.toggle("wb-hidden", !role.showLead);
     $("rt-audit").classList.toggle("wb-hidden", !role.showAuditRealtime);

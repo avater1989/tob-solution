@@ -138,7 +138,7 @@
         {
           id: "SOP001",
           sopName: "春启03直播前邀约与催到SOP",
-          name: "春启03直播前邀约与催到SOP",
+          name: "春启03 直播前邀约与催到提醒",
           liveId: "L001",
           owner: "赵老师",
           status: "scheduled",
@@ -172,7 +172,7 @@
         {
           id: "SOP002",
           sopName: "早间家长课催到召回SOP",
-          name: "早间家长课催到召回SOP",
+          name: "早间家长课催到召回提醒",
           liveId: "L002",
           owner: "赵老师",
           status: "completed",
@@ -205,7 +205,7 @@
         {
           id: "SOP003",
           sopName: "春启04招生预热SOP",
-          name: "春启04招生预热SOP",
+          name: "春启04招生预热提醒",
           liveId: "L003",
           owner: "赵老师",
           status: "draft",
@@ -239,7 +239,7 @@
         {
           id: "SOP004",
           sopName: "春启03开播中召回SOP",
-          name: "春启03开播中召回SOP",
+          name: "春启03开播中召回提醒",
           liveId: "L001",
           owner: "赵老师",
           status: "failed",
@@ -837,7 +837,7 @@
       };
     }
     if (s.status === "paused") {
-      return { action: "resume", actionLabel: "恢复执行", reason: "SOP 已暂停", statusLabel: "已暂停" };
+      return { action: "resume", actionLabel: "恢复执行", reason: "直播提醒已暂停", statusLabel: "已暂停" };
     }
     if (s.status === "empty_audience") {
       return { action: "audience", actionLabel: "配置目标人群", reason: "目标人群为空", statusLabel: "待处理" };
@@ -989,7 +989,7 @@
       todos.push({
         id: "TODO_SOP_" + s.id,
         type: "urge",
-        typeLabel: "直播促到SOP异常",
+        typeLabel: "直播提醒异常",
         filterKey: "urge",
         kind: "system",
         completeMode: "business",
@@ -1112,7 +1112,7 @@
       audit: auditN,
       auditHint: auditN > 0 ? ("含 " + auditN + " 场待提交/待改") : "暂无待提交场次",
       urgeTasks: urgeN,
-      urgeHint: urgeN ? ("异常 " + urgeN + " 条") : "暂无SOP异常",
+      urgeHint: urgeN ? ("异常 " + urgeN + " 条") : "暂无直播提醒异常",
       urgePeople: 0,
       aftersale: afterN,
       aftersaleHint: afterN

@@ -51,7 +51,7 @@
   <div class="card"><div class="card-bd">
     <p class="muted" style="font-size:12px;line-height:1.8">
       <b>说明：</b>计划启动后，系统按「例行更新」的人群<b>每日增量执行</b>，无需人工重复操作；同一用户在同一计划内默认只执行一次。
-      运营动作当前支持<b>发资料</b>、<b>赠送试听</b>、<b>创建跟进任务</b>与<b>关联直播促到 SOP</b>；优惠券、积分等营销权益可在「营销工具」上线后接入。
+      运营动作当前支持<b>发资料</b>、<b>赠送试听</b>、<b>创建跟进任务</b>与<b>关联直播提醒</b>；优惠券、积分等营销权益可在「营销工具」上线后接入。
     </p>
   </div></div>
 </div>
@@ -78,7 +78,7 @@
           <option value="pack">发资料</option>
           <option value="trial">赠送试听</option>
           <option value="scrm">创建跟进任务</option>
-          <option value="live">关联直播促到 SOP</option>
+          <option value="live">关联直播提醒</option>
         </select>
       </div>
       <p class="muted" id="pl-action-hint" style="grid-column:1/-1;margin:0;font-size:12px"></p>
@@ -184,7 +184,7 @@
         </div>
       </div>
 
-      <!-- 关联直播促到 SOP -->
+      <!-- 关联直播提醒 -->
       <div class="action-panel" data-action="live" style="display:none">
         <div class="form-grid" style="grid-template-columns:1fr 1fr;gap:10px 16px">
           <div class="field"><label>关联直播 *</label>
@@ -195,7 +195,7 @@
               <option value="L103">9.9 引流试听课直播</option>
             </select>
           </div>
-          <div class="field"><label>促到 SOP *</label>
+          <div class="field"><label>直播提醒 *</label>
             <select id="pl-sop" style="width:100%;padding:7px 8px;border:1px solid var(--color-border);border-radius:6px">
               <option value="">请先选择直播</option>
             </select>
@@ -203,9 +203,9 @@
           <div class="field" style="grid-column:1/-1">
             <label style="display:flex;align-items:center;gap:8px;font-weight:400">
               <input type="checkbox" id="pl-bring-seg" checked />
-              将本计划目标人群带入该 SOP（复用已有触达规则，不在此维护第二套）
+              将本计划目标人群带入该直播提醒配置（复用已有触达规则，不在此维护第二套）
             </label>
-            <p class="muted" style="margin:6px 0 0;font-size:12px">步骤、渠道与文案请在「直播促到 SOP」中配置；本计划只负责圈人并关联执行。</p>
+            <p class="muted" style="margin:6px 0 0;font-size:12px">步骤、渠道与文案请在「直播提醒」中配置；本计划只负责圈人并关联执行。</p>
           </div>
         </div>
       </div>
@@ -268,25 +268,25 @@
     pack: "发资料",
     trial: "赠送试听",
     scrm: "创建跟进任务",
-    live: "关联直播促到 SOP"
+    live: "关联直播提醒"
   };
   var ACTION_HINT = {
     pack: "选择资料与领取方式，并向目标人群发送通知；每人限领仅对本动作生效。",
     trial: "为目标人群开通指定课程的试听权益，并设置范围与有效期。",
     scrm: "按规则为对应负责人创建 SCRM 跟进任务；无负责人时按下方策略处理。",
-    live: "将目标人群带入已有直播促到 SOP，复用其步骤与触达规则，不在此维护第二套。"
+    live: "将目标人群带入已有直播提醒，复用其步骤与触达规则，不在此维护第二套。"
   };
   var DEFAULT_NOTIFY = "家长你好，这是一份《亲子沟通实用手册》，添加老师即可领取完整资料包。";
   var SOP_BY_LIVE = {
     L101: [
-      { value: "S101", text: "春启03 · 开播前邀约 SOP" },
-      { value: "S102", text: "春启03 · 预约催到 SOP" }
+      { value: "S101", text: "春启03 · 开播前邀约提醒" },
+      { value: "S102", text: "春启03 · 预约催到提醒" }
     ],
     L102: [
-      { value: "S201", text: "入学准备 · 开播提醒 SOP" }
+      { value: "S201", text: "入学准备 · 开播提醒" }
     ],
     L103: [
-      { value: "S301", text: "引流试听 · 召回 SOP" }
+      { value: "S301", text: "引流试听 · 召回提醒" }
     ]
   };
 
@@ -294,7 +294,7 @@
     { id:"P1", name:"新客首单转化", seg:"新客（系统人群）", action:"pack", actionLabel:"发资料", giftDetail:"亲子沟通实用手册", ch:"站内信 + 短信", cycle:"T+1 每日增量", status:"running", touch:286, conv:"领取 132 · 转化 48" },
     { id:"P2", name:"领课未加微唤醒", seg:"领课未加微用户", action:"scrm", actionLabel:"创建跟进任务", giftDetail:"企微老师 1v1 引导", ch:"—", cycle:"T+1 每日增量", status:"running", touch:168, conv:"加微 42" },
     { id:"P3", name:"沉默用户唤醒", seg:"沉默用户（30 天未互动）", action:"trial", actionLabel:"赠送试听", giftDetail:"家长必修课 · 7 天", ch:"短信", cycle:"每周一 10:00", status:"waiting", touch:0, conv:"—" },
-    { id:"P4", name:"直播预约未到课催到", seg:"直播预约未到课", action:"live", actionLabel:"关联直播促到 SOP", giftDetail:"春启03 · 预约催到 SOP", ch:"—", cycle:"一次性", status:"done", touch:142, conv:"到课 37" }
+    { id:"P4", name:"直播预约未到课催到", seg:"直播预约未到课", action:"live", actionLabel:"关联直播提醒", giftDetail:"春启03 · 预约催到提醒", ch:"—", cycle:"一次性", status:"done", touch:142, conv:"到课 37" }
   ];
 
   var mask = document.getElementById("mask");
@@ -448,10 +448,10 @@
       return;
     }
     if (!list.length) {
-      sel.appendChild(new Option("该直播暂无 SOP，请先去创建", ""));
+      sel.appendChild(new Option("该直播暂无直播提醒，请先在「直播创建 → 预约提醒」配置", ""));
       return;
     }
-    sel.appendChild(new Option("请选择 SOP", ""));
+    sel.appendChild(new Option("请选择直播提醒", ""));
     list.forEach(function(item){ sel.appendChild(new Option(item.text, item.value)); });
   }
 
@@ -534,7 +534,7 @@
       var req = document.getElementById("pl-follow-req").value.trim();
       return req ? (req.length > 24 ? req.slice(0, 24) + "…" : req) : "跟进任务";
     }
-    if (action === "live") return selectedText("pl-sop") || selectedText("pl-live") || "促到 SOP";
+    if (action === "live") return selectedText("pl-sop") || selectedText("pl-live") || "直播提醒";
     return "";
   }
 
@@ -551,7 +551,7 @@
       if (!document.getElementById("pl-follow-req").value.trim()) { Proto.toast("请填写跟进要求"); return false; }
     } else if (action === "live") {
       if (!document.getElementById("pl-live").value) { Proto.toast("请选择关联直播"); return false; }
-      if (!document.getElementById("pl-sop").value) { Proto.toast("请选择促到 SOP"); return false; }
+      if (!document.getElementById("pl-sop").value) { Proto.toast("请选择直播提醒"); return false; }
     }
     return true;
   }
@@ -608,7 +608,7 @@
       lines.push("对象人群：" + who + "。");
     } else if (p.action === "live") {
       lines.push("谁得到什么：" + who + (p.bringSeg ? " 将被带入" : " 可关联") + "「" + p.sopName + "」。");
-      lines.push("关联直播：" + p.liveName + "；触达步骤与文案复用该 SOP 已有规则。");
+      lines.push("关联直播：" + p.liveName + "；触达步骤与文案复用该直播提醒已有规则。");
     }
     lines.push("执行方式：" + p.cycle + "。");
     return lines.join("\n");
@@ -648,11 +648,11 @@
       links.push('<a class="btn btn-primary" href="follow-ups.html">查看跟进任务</a>');
       links.push('<button type="button" class="btn" data-close>稍后查看</button>');
     } else if (payload.action === "live") {
-      msg += "已关联直播促到 SOP，人群与执行以 SOP 规则为准。";
+      msg += "已关联直播提醒，人群与执行以直播提醒规则为准。";
       var href = "live-booking.html";
       if (payload.liveId) href += "?live_id=" + encodeURIComponent(payload.liveId);
       if (payload.sopId) href += (href.indexOf("?") >= 0 ? "&" : "?") + "sop_id=" + encodeURIComponent(payload.sopId);
-      links.push('<a class="btn btn-primary" href="' + href + '">查看促到 SOP</a>');
+      links.push('<a class="btn btn-primary" href="' + href + '">查看直播提醒</a>');
       links.push('<button type="button" class="btn" data-close>稍后查看</button>');
     }
     document.getElementById("pl-started-msg").textContent = msg;

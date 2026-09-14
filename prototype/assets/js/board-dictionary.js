@@ -121,7 +121,7 @@
       refund: "—",
       caliber: "直播运营",
       update: "配置变更时",
-      note: "历史场次看效果，待开播场次看直播促到SOP准备。"
+      note: "历史场次看效果，待开播场次看直播提醒配置。"
     },
     {
       id: "term_attr_cover",

@@ -47,7 +47,7 @@
       <div class="stat-hint" id="stat-attend-hint">有效样本 <span id="stat-attend-sample">0</span></div>
     </div>
     <div class="stat-card">
-      <div class="stat-label">促到到课差</div>
+      <div class="stat-label">提醒到课差</div>
       <div class="stat-value" style="color:#00b42a" id="invite-lift">+9pt</div>
       <div class="stat-hint" id="invite-lift-hint">相关，非因果</div>
     </div>
@@ -66,7 +66,7 @@
         <option value="attend_asc">到场率最低</option>
         <option value="pay_asc">支付率最低</option>
         <option value="gap">与平均差距最大</option>
-        <option value="no_sop">未执行直播促到SOP</option>
+        <option value="no_sop">未配置直播提醒</option>
         <option value="risk">风险最高</option>
       </select>
     </div>
@@ -91,7 +91,7 @@
       </div>
     </div>
     <div class="card">
-      <div class="card-hd"><h2>私域促到效果</h2></div>
+      <div class="card-hd"><h2>私域提醒效果</h2></div>
       <div class="card-bd" style="padding:0">
         <table class="data">
           <thead><tr><th>分组</th><th>场次</th><th>场均到课率</th></tr></thead>
@@ -181,7 +181,7 @@
     var vsAvg = r.attendDiff == null ? "—" : ((r.attendDiff > 0 ? "+" : "") + r.attendDiff + "pp vs 整体平均到场率");
     document.getElementById("live-panel-sub").textContent =
       "已结束 · 经营判断" +
-      " · 直播促到SOP：" + (r.sopDone ? "已执行" : "未执行") +
+      " · 直播提醒：" + (r.sopDone ? "已配置" : "未配置") +
       " · " + vsAvg;
 
     document.getElementById("live-funnel").innerHTML = [
@@ -211,7 +211,7 @@
     if (r.attendDiff != null && r.attendDiff < 0) {
       conclusions.push("到场率低于整体平均 " + Math.abs(r.attendDiff) + " 个百分点");
     }
-    if (!r.sopDone) conclusions.push("未执行直播促到SOP");
+    if (!r.sopDone) conclusions.push("未配置直播提醒");
     if (detail.pushFail) conclusions.push("推送缺口 " + detail.pushFail);
     if (r.payRateNum != null && r.payRateNum < 10) conclusions.push("支付率偏低（" + r.payRateNum + "%）");
     document.getElementById("live-risks").textContent =
@@ -240,7 +240,7 @@
     var thead = document.getElementById("live-thead");
     var tbody = document.getElementById("live-tbody");
     var rows = BoardInsights.getLiveRecapRows(filters, { tab: "ended", sort: liveState.sort });
-    thead.innerHTML = "<tr><th>场次ID</th><th>主题</th><th>目标</th><th>邀约</th><th>推送成功</th><th>到场 / 率</th><th>有效观看</th><th>支付 / 率</th><th>直播促到SOP</th><th>vs 平均</th><th>操作</th></tr>";
+    thead.innerHTML = "<tr><th>场次ID</th><th>主题</th><th>目标</th><th>邀约</th><th>推送成功</th><th>到场 / 率</th><th>有效观看</th><th>支付 / 率</th><th>直播提醒</th><th>vs 平均</th><th>操作</th></tr>";
     if (!rows.length) { BoardMetrics.renderEmpty(tbody, 11, "暂无已结束场次"); return; }
     tbody.innerHTML = rows.map(function (r) {
       var sel = liveState.selected === r.id ? " is-selected" : "";
@@ -252,7 +252,7 @@
         (r.attend == null ? "—" : BoardMetrics.fmt(r.attend)) + " / " + (r.attendRate || "—") + "</td><td>" +
         (r.watch == null ? "—" : BoardMetrics.fmt(r.watch)) + "</td><td>" +
         BoardMetrics.fmt(r.payUsers) + " / " + (r.payRateNum != null ? r.payRateNum + "%" : "—") +
-        "</td><td>" + (r.sopDone ? "已执行" : "未执行") + "</td><td>" + vs +
+        "</td><td>" + (r.sopDone ? "已配置" : "未配置") + "</td><td>" + vs +
         '</td><td class="row-actions"><a href="#" data-open-live="' + r.id + '">场次复盘</a></td></tr>';
     }).join("");
     tbody.querySelectorAll("[data-open-live]").forEach(function (a) {
@@ -283,7 +283,7 @@
     document.getElementById("stat-attend-hint").textContent = "有效样本 " + (sample || "—");
     var liftOk = sum.sampleOk && sessions;
     document.getElementById("invite-lift").textContent = liftOk ? (d.inviteLift || "—") : "—";
-    document.getElementById("invite-lift-hint").textContent = liftOk ? "有促到场次平均到课更高（相关表现，非因果）" : "样本不足";
+    document.getElementById("invite-lift-hint").textContent = liftOk ? "有提醒场次平均到课更高（相关表现，非因果）" : "样本不足";
 
     var lines = BoardInsights.getLiveConclusions(filters);
     document.getElementById("live-conclusion").innerHTML = BoardInsights.renderConclusionHtml(lines);
@@ -299,10 +299,10 @@
 
     var g = d.inviteGroups || sum;
     document.getElementById("invite-groups").innerHTML =
-      "<tr><td>已执行直播促到SOP</td><td>" + (g.sent || 0) + "</td><td>" + (g.sentAvg || "—") + "</td></tr>" +
-      "<tr><td>未执行直播促到SOP</td><td>" + (g.miss || 0) + "</td><td>" + (g.missAvg || "—") + "</td></tr>" +
+      "<tr><td>已配置直播提醒</td><td>" + (g.sent || 0) + "</td><td>" + (g.sentAvg || "—") + "</td></tr>" +
+      "<tr><td>未配置直播提醒</td><td>" + (g.miss || 0) + "</td><td>" + (g.missAvg || "—") + "</td></tr>" +
       "<tr><td>数据不足场次</td><td>" + (g.pending || 0) + "</td><td>—</td></tr>";
-    document.getElementById("invite-note").textContent = "全部场次比较：期次影响场次名额；获客渠道不影响场次。直播促到SOP执行组与未执行组到场率为相关表现。";
+    document.getElementById("invite-note").textContent = "全部场次比较：期次影响场次名额；获客渠道不影响场次。直播提醒配置组与未配置组到场率为相关表现。";
 
     if (liveState.selected) openPanel(liveState.selected);
     BoardMetrics.renderActiveFilters();
@@ -338,7 +338,7 @@
       return {
         name: "直播场次复盘",
         filename: BoardMetrics.exportFileName("直播场次复盘"),
-        headers: ["场次ID", "主题", "状态", "目标", "邀约", "推送成功", "到场", "到场率", "有效观看", "支付", "支付率", "直播促到SOP", "vs平均"],
+        headers: ["场次ID", "主题", "状态", "目标", "邀约", "推送成功", "到场", "到场率", "有效观看", "支付", "支付率", "直播提醒", "vs平均"],
         rows: rows.map(function (r) {
           return [
             r.id, r.name, r.upcoming ? "未开播" : "已结束",

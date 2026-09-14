@@ -402,7 +402,7 @@
       var bits = [];
       if (d.noFollow >= 10) bits.push("未跟进用户较多（" + d.noFollow + " 人）");
       var noSop = liveRows.filter(function (r) { return !r.sopDone; }).length;
-      if (noSop) bits.push(noSop + " 场未执行直播促到SOP");
+      if (noSop) bits.push(noSop + " 场未配置直播提醒");
       if (d.backlogLate >= 5) bits.push("分配超时 " + d.backlogLate + " 人");
       return bits.length ? bits.join("、") : "建议结合渠道与场次下钻核对";
     }
@@ -547,7 +547,7 @@
         sources: lowLive.id,
         reason: lowLive.sopDone
           ? "同时到场率低于平均，建议检查邀约与目标人群"
-          : (lowLive.id + "未执行直播促到SOP，同时到场率低于平均，建议检查邀约及促到执行情况"),
+          : (lowLive.id + "未配置直播提醒，同时到场率低于平均，建议检查邀约及直播提醒配置情况"),
         action: {
           label: "查看场次复盘",
           type: "drill",
@@ -615,7 +615,7 @@
       risks.push({
         urgency: "high",
         urgencyLabel: "紧急",
-        type: "开播前未完成直播促到SOP",
+        type: "开播前未配置直播提醒",
         count: upcoming.length,
         priorityCount: upcoming.filter(function (l) { return !l.inviteSent; }).length,
         note: upcoming[0].name + (upcoming.length > 1 ? (" 等 " + upcoming.length + " 场") : ""),
@@ -1185,10 +1185,10 @@
     var sopMissing = [];
     if (upcoming) {
       if (!target) sopMissing.push("目标人群未配置");
-      if (!invite && !sopDone) sopMissing.push("直播促到SOP未创建");
+      if (!invite && !sopDone) sopMissing.push("直播提醒未创建");
       if ((r.remindStatus || "").indexOf("待") >= 0) sopMissing.push("推送未执行");
     } else if (!sopDone) {
-      sopMissing.push("未执行直播促到SOP");
+      sopMissing.push("未配置直播提醒");
     }
     return Object.assign({}, r, {
       target: target,
@@ -1295,7 +1295,7 @@
     if (low && low.attendDiff != null && low.attendDiff < 0) {
       var assoc = low.sopDone
         ? "建议检查邀约与目标人群配置。"
-        : (low.id + "未执行直播促到SOP，同时到场率低于平均，建议检查邀约及促到执行情况。");
+        : (low.id + "未配置直播提醒，同时到场率低于平均，建议检查邀约及直播提醒配置情况。");
       lines.push({
         text: (low.id || "") + "「" + low.name + "」到场率低于平均 " + Math.abs(low.attendDiff) + " 个百分点。" + assoc,
         action: { type: "open_live", id: low.id, label: "查看" + low.id + "场次" }
@@ -1305,7 +1305,7 @@
     var sopOff = rows.filter(function (r) { return !r.sopDone && !r.upcoming; }).length;
     if (sopOn || sopOff) {
       lines.push({
-        text: "已结束场次中 " + sopOn + " 场执行了直播促到SOP，" + sopOff + " 场未执行（执行组与未执行组相关表现，非因果结论）。"
+        text: "已结束场次中 " + sopOn + " 场配置了直播提醒，" + sopOff + " 场未执行（执行组与未执行组相关表现，非因果结论）。"
       });
     }
     return lines.slice(0, 3);
