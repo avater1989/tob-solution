@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>对账详情 · 商家管理后台</title>
+<link rel="stylesheet" href="../assets/css/proto.css?v=9" />
+</head>
+<body class="admin-body" data-module="trade" data-nav="recon" data-title="对账详情" data-crumb="交易 / 资产管理 / 对账管理 / 对账详情">
+<div id="header-actions">
+  <button class="btn" id="btn-back" onclick="location.href='recon.html'">返回对账管理</button>
+  <button class="btn" id="btn-download">下载渠道账单</button>
+  <button class="btn btn-primary" id="btn-handle">处理差异</button>
+</div>
+<div id="page-content" style="display:none">
+
+  <div id="rc-empty" style="display:none" class="card"><div class="card-bd" style="padding:48px;text-align:center">
+    <p style="font-size:15px;margin:0 0 16px">未找到对应对账单，请返回对账管理重新选择。</p>
+    <a class="btn btn-primary" href="recon.html">返回对账管理</a>
+  </div></div>
+
+  <div id="rc-found" style="display:none">
+
+    <!-- 状态头 -->
+    <div class="card" style="margin-bottom:8px"><div class="card-bd">
+      <div class="order-status-bar">
+        <div class="os-main">
+          <span class="badge" id="rc-status" style="font-size:13px">—</span>
+          <b class="mono" id="rc-no">—</b>
+          <span class="tag tag-blue" id="rc-channel">—</span>
+          <span class="muted" id="rc-period">—</span>
+        </div>
+        <div class="os-side muted" id="rc-created">—</div>
+      </div>
+    </div></div>
+
+    <!-- 对账单信息 + 金额与笔数 -->
+    <div class="detail-cols">
+      <div class="card"><div class="card-hd"><h2>对账单信息</h2></div>
+        <div class="card-bd">
+          <div class="kv-grid">
+            <div class="kv-row"><span>对账单号</span><b class="mono" id="rc-info-no">—</b></div>
+            <div class="kv-row"><span>账期</span><b id="rc-info-period">—</b></div>
+            <div class="kv-row"><span>账单渠道</span><b id="rc-info-channel">—</b></div>
+            <div class="kv-row"><span>租户</span><b id="rc-info-tenant">—</b></div>
+            <div class="kv-row"><span>对账方式</span><b>按渠道交易单号逐笔核对（T+1）</b></div>
+            <div class="kv-row"><span>生成时间</span><b id="rc-info-time">—</b></div>
+            <div class="kv-row"><span>关联结算单</span><b><a class="link" href="settlement.html" id="rc-settle-link">查看结算单 →</a></b></div>
+          </div>
+        </div>
+      </div>
+      <div class="card"><div class="card-hd"><h2>金额与笔数</h2><span class="muted" style="font-size:12px">平台 vs 渠道</span></div>
+        <div class="card-bd">
+          <div class="kv">
+            <div class="kv-row"><span>平台订单数</span><b id="rc-plat-count">—</b></div>
+            <div class="kv-row"><span>渠道账单笔数</span><b id="rc-chan-count">—</b></div>
+            <div class="kv-row"><span>交易额</span><b id="rc-gross">—</b></div>
+            <div class="kv-row"><span>退款额</span><b id="rc-refund">—</b></div>
+            <div class="kv-row"><span>交易净额</span><b id="rc-net" style="color:#cb2634">—</b></div>
+            <div class="kv-row"><span>差异笔数</span><b id="rc-diff-count">—</b></div>
+          </div>
+          <p class="muted" style="font-size:12px;margin:8px 0 0">对平后进入结算池，服务费与分账以「结算单」为准。</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 差异列表（有差异时显示） -->
+    <div class="card" id="rc-diff-card" style="display:none;margin-bottom:8px">
+      <div class="card-hd"><h2>差异明细</h2><span class="muted" style="font-size:12px">处理完差异后对账单自动重算</span></div>
+      <div class="card-bd" style="padding:0;overflow-x:auto">
+        <table class="data">
+          <thead><tr><th>差异类型</th><th>平台记录</th><th>渠道记录</th><th>差值</th><th>发现时间</th><th>处理状态</th></tr></thead>
+          <tbody id="rc-diff-body"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- 逐笔核对明细 -->
+    <div class="card"><div class="card-hd"><h2>逐笔核对明细</h2><span class="muted" style="font-size:12px">示例数据</span></div>
+      <div class="card-bd" style="padding:0;overflow-x:auto">
+        <table class="data">
+          <thead><tr><th>平台订单号</th><th>渠道交易单号</th><th>平台金额</th><th>渠道金额</th><th>差值</th><th>状态</th></tr></thead>
+          <tbody id="rc-detail-body"></tbody>
+        </table>
+      </div>
+      <div class="toolbar" style="margin:8px 16px">
+        <span class="muted">共 <b id="rc-detail-total">0</b> 笔</span>
+        <div class="spacer"></div>
+        <span class="muted">仅展示差异与前若干笔示例</span>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<style>
+.detail-cols{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px}
+.kv-grid{display:grid;grid-template-columns:1fr;gap:0}
+.kv-row{display:flex;justify-content:space-between;gap:16px;padding:7px 0;font-size:13px;border-bottom:1px dashed var(--color-border)}
+.kv-row:last-child{border-bottom:none}
+.kv-row span{color:var(--color-text-secondary);flex:none}
+.kv-row b{text-align:right}
+.mono{font-family:ui-monospace,Consolas,monospace;font-size:12px}
+.danger{color:#cb2634;font-weight:600}
+.success{color:#009a29}
+.link{color:var(--color-primary);font-size:12px;text-decoration:none}
+.order-status-bar{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.os-main{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+@media(max-width:1100px){.detail-cols{grid-template-columns:1fr}}
+</style>
+
+<script src="../assets/js/proto.js"></script>
+<script src="../assets/js/admin-shell.js?v=14"></script>
+<script>
+(function () {
+  /* 对账单演示数据：与 recon.html 列表一致 */
+  var BILLS = {
+    RC20260407001: {
+      period: "04-01 ~ 04-07", channel: "通联支付", tenant: "星启家庭教育",
+      platCount: 86, chanCount: 86, gross: "¥8,432.20", refund: "¥308.80",
+      diffCount: 2, status: "有差异", time: "2026-04-08 02:00",
+      diffs: [
+        { type: "金额不一致", cls: "badge-warn", plat: "YB20260403100112 · ¥299.00", chan: "交易单 4200002388202604031… ¥269.10（券后）", delta: "-¥29.90", time: "2026-04-08 02:00", st: "待处理" },
+        { type: "渠道单边账", cls: "badge-danger", plat: "未找到对应订单（疑似掉单）", chan: "交易单 4200002388202604029… ¥9.90（04-02 23:59）", delta: "+¥9.90", time: "2026-04-08 02:00", st: "待处理" }
+      ],
+      details: [
+        ["YB20260403100112", "4200002388202604031", "¥299.00", "¥269.10", "-¥29.90", "金额不一致"],
+        ["—", "4200002388202604029", "—", "¥9.90", "+¥9.90", "渠道单边账"],
+        ["YB20260403100115", "4200002388202604032", "¥9.90", "¥9.90", "¥0.00", "已对平"],
+        ["YB20260402100088", "4200002388202604021", "¥199.00", "¥199.00", "¥0.00", "已对平"],
+        ["YB20260401100031", "4200002388202604011", "¥9.90", "¥9.90", "¥0.00", "已对平"]
+      ]
+    },
+    RC20260407002: {
+      period: "04-01 ~ 04-07", channel: "视频号小店", tenant: "青藤家长学堂",
+      platCount: 31, chanCount: 31, gross: "¥3,069.00", refund: "¥0.00",
+      diffCount: 0, status: "已对平", time: "2026-04-08 02:05",
+      diffs: [],
+      details: [
+        ["YB20260405100210", "WX20260405100512", "¥299.00", "¥299.00", "¥0.00", "已对平"],
+        ["YB20260404100188", "WX20260404100821", "¥9.90", "¥9.90", "¥0.00", "已对平"],
+        ["YB20260402100077", "WX20260402100319", "¥99.00", "¥99.00", "¥0.00", "已对平"]
+      ]
+    },
+    RC20260331001: {
+      period: "03-25 ~ 03-31", channel: "通联支付", tenant: "慧心教育",
+      platCount: 42, chanCount: 42, gross: "¥4,135.30", refund: "¥9.90",
+      diffCount: 0, status: "已对平", time: "2026-04-01 02:00",
+      diffs: [],
+      details: [
+        ["YB20260330100102", "4200002370202603301", "¥199.00", "¥199.00", "¥0.00", "已对平"],
+        ["YB20260328100066", "4200002370202603281", "¥9.90", "¥9.90", "¥0.00", "已对平"],
+        ["YB20260326100041", "4200002370202603261", "¥299.00", "¥299.00", "¥0.00", "已对平"]
+      ]
+    },
+    RC20260331002: {
+      period: "03-25 ~ 03-31", channel: "视频号小店", tenant: "乐学伴家庭",
+      platCount: 18, chanCount: 18, gross: "¥1,782.00", refund: "¥0.00",
+      diffCount: 0, status: "已对平", time: "2026-04-01 02:03",
+      diffs: [],
+      details: [
+        ["YB20260329100093", "WX20260329100516", "¥99.00", "¥99.00", "¥0.00", "已对平"],
+        ["YB20260327100052", "WX20260327100217", "¥9.90", "¥9.90", "¥0.00", "已对平"]
+      ]
+    }
+  };
+  var STATUS_CLS = { "有差异": "badge-warn", "已对平": "badge-success", "待对账": "badge" };
+
+  function $(id) { return document.getElementById(id); }
+  function setText(id, v) { var n = $(id); if (n) n.textContent = (v == null || v === "") ? "—" : v; }
+  function money(s) { return parseFloat(String(s).replace(/[¥,]/g, "")) || 0; }
+  function query(k) {
+    try { return new URLSearchParams(location.search).get(k) || ""; } catch (e) { return ""; }
+  }
+
+  var no = query("no") || query("bill_no") || "";
+  var d = BILLS[no];
+  if (!d) { $("rc-empty").style.display = ""; return; }
+
+  $("rc-found").style.display = "";
+  document.title = "对账详情 · " + no + " · 商家管理后台";
+
+  /* 状态头 */
+  var badge = $("rc-status");
+  badge.textContent = d.status;
+  badge.className = "badge " + (STATUS_CLS[d.status] || "badge-warn");
+  setText("rc-no", no);
+  setText("rc-channel", d.channel);
+  setText("rc-period", d.period);
+  setText("rc-created", "生成时间 " + d.time);
+
+  /* 对账单信息 */
+  setText("rc-info-no", no);
+  setText("rc-info-period", d.period);
+  setText("rc-info-channel", d.channel);
+  setText("rc-info-tenant", d.tenant);
+  setText("rc-info-time", d.time);
+
+  /* 金额与笔数 */
+  setText("rc-plat-count", d.platCount + " 笔");
+  setText("rc-chan-count", d.chanCount + " 笔");
+  setText("rc-gross", d.gross);
+  setText("rc-refund", "-" + d.refund);
+  setText("rc-net", "¥" + (money(d.gross) - money(d.refund)).toFixed(2));
+  setText("rc-diff-count", d.diffCount + " 笔");
+
+  /* 差异明细 */
+  if (d.diffs.length) {
+    $("rc-diff-card").style.display = "";
+    $("rc-diff-body").innerHTML = d.diffs.map(function (x) {
+      return "<tr><td><span class=\"badge " + x.cls + "\">" + x.type + "</span></td>" +
+        "<td>" + x.plat + "</td><td>" + x.chan + "</td>" +
+        "<td class=\"danger\">" + x.delta + "</td><td>" + x.time + "</td>" +
+        "<td><span class=\"badge badge-warn\">" + x.st + "</span></td></tr>";
+    }).join("");
+  } else {
+    $("rc-diff-card").style.display = "none";
+    $("btn-handle").style.display = "none";
+  }
+
+  /* 逐笔核对明细 */
+  $("rc-detail-body").innerHTML = d.details.map(function (r) {
+    var ok = r[5] === "已对平";
+    return "<tr><td class=\"mono\">" + r[0] + "</td><td class=\"mono\">" + r[1] + "</td>" +
+      "<td>" + r[2] + "</td><td>" + r[3] + "</td>" +
+      "<td class=\"" + (ok ? "success" : "danger") + "\">" + r[4] + "</td>" +
+      "<td><span class=\"badge " + (ok ? "badge-success" : "badge-warn") + "\">" + r[5] + "</span></td></tr>";
+  }).join("");
+  setText("rc-detail-total", d.platCount);
+
+  $("btn-download").addEventListener("click", function () { Proto.toast("已下载渠道账单（原型）"); });
+  $("btn-handle").addEventListener("click", function () { Proto.toast("已进入差异处理（原型，可在对账管理列表操作）"); });
+})();
+</script>
+</body>
+</html>

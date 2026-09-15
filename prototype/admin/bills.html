@@ -3,14 +3,11 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>交易账单 · 商家管理后台</title>
+<title>支付流水 · 商家管理后台</title>
 <link rel="stylesheet" href="../assets/css/proto.css?v=9" />
 </head>
-<body class="admin-body" data-module="trade" data-nav="bills" data-title="交易账单" data-crumb="交易 / 资产管理 / 交易账单">
-<div id="header-actions">
-  <button class="btn" id="btn-export">导出账单</button>
-  <button class="btn" id="btn-recon">去对账</button>
-</div>
+<body class="admin-body" data-module="trade" data-nav="bills" data-title="支付流水" data-crumb="交易 / 资产管理 / 支付流水">
+<div id="header-actions"></div>
 <div id="page-content" style="display:none">
 
   <!-- 顶部统计 -->
@@ -19,13 +16,6 @@
     <div class="stat"><div class="label">本期支出</div><div class="value">¥2,080.15</div><div class="hint">退款 + 入金手续费 + 分成</div></div>
     <div class="stat"><div class="label">净收入</div><div class="value">¥22,569.85</div><div class="hint">按支付时间口径</div></div>
     <div class="stat"><div class="label">待核对差异</div><div class="value">2</div><div class="hint"><a href="recon.html" style="color:inherit">去对账 →</a></div></div>
-  </div>
-
-  <!-- Tab -->
-  <div class="tabs" id="bl-tabs">
-    <a class="active" href="#" data-tab="txn">交易明细</a>
-    <a href="#" data-tab="bill">交易账单</a>
-    <a href="#" data-tab="summary">汇总报表</a>
   </div>
 
   <!-- 筛选 -->
@@ -45,8 +35,10 @@
     </div>
   </div></div>
 
-  <!-- 交易明细表 -->
-  <div class="card" id="panel-txn"><div class="card-bd" style="padding:0">
+  <!-- 支付流水明细 -->
+  <div class="card" id="panel-txn">
+    <div class="card-hd"><h2>支付流水明细</h2><span class="muted" style="font-size:12px">按订单「支付时间」逐笔记录收入 / 支出</span></div>
+    <div class="card-bd" style="padding:0">
     <table class="data">
       <thead>
         <tr>
@@ -64,37 +56,16 @@
     </table>
   </div></div>
 
-  <!-- 交易账单表 -->
-  <div class="card" id="panel-bill" style="display:none"><div class="card-bd" style="padding:0">
-    <table class="data">
-      <thead>
-        <tr><th>账期日</th><th>收入</th><th>支出</th><th>手续费</th><th>净额</th><th>状态</th><th style="width:120px">操作</th></tr>
-      </thead>
-      <tbody>
-        <tr><td>2026-09-07</td><td>¥1,028.90</td><td>-¥63.40</td><td>-¥3.09</td><td><b>¥962.41</b></td><td><span class="badge badge-success">已对账</span></td><td><a href="#" data-toast="下载当日账单（原型）">下载</a></td></tr>
-        <tr><td>2026-09-06</td><td>¥842.00</td><td>-¥28.60</td><td>-¥2.53</td><td><b>¥810.87</b></td><td><span class="badge badge-warn">待核对</span></td><td><a href="#" data-toast="下载当日账单（原型）">下载</a></td></tr>
-        <tr><td>2026-09-05</td><td>¥996.30</td><td>—</td><td>-¥2.99</td><td><b>¥993.31</b></td><td><span class="badge badge-success">已对账</span></td><td><a href="#" data-toast="下载当日账单（原型）">下载</a></td></tr>
-      </tbody>
-    </table>
-  </div></div>
-
-  <!-- 汇总报表 -->
-  <div class="card" id="panel-summary" style="display:none"><div class="card-bd">
-    <div class="detail-cols">
-      <div class="kv">
-        <div class="kv-row"><span>订单收入合计</span><b>¥24,650.00</b></div>
-        <div class="kv-row"><span>退款冲减</span><b>-¥486.20</b></div>
-        <div class="kv-row"><span>入金手续费（0.3%）</span><b>-¥73.95</b></div>
-        <div class="kv-row"><span>分账支出</span><b>-¥1,520.00</b></div>
-        <div class="kv-row"><span>净收入</span><b style="color:#cb2634">¥22,569.85</b></div>
-      </div>
-      <p class="muted" style="font-size:12px;line-height:1.9">交易明细按订单「支付时间」逐笔记录收入 / 支出；交易账单按天聚合，支持与<b>通联支付「资金账单」</b>跨平台对账。
-        分账明细见「结算单」；分账与结算规则由平台统一配置（运营后台 · 结算规则配置）；数据同步可能存在约 3 秒误差，属正常现象。</p>
-    </div>
+  <!-- 口径说明 -->
+  <div class="card" style="margin-top:16px"><div class="card-bd">
+    <p class="muted" style="font-size:12px;line-height:1.9">
+      <b>口径说明：</b>支付流水按订单「支付时间」逐笔记录收入 / 支出，支持与<b>通联支付「资金账单」</b>跨平台对账。
+      分账明细见「结算单」；分账与结算规则由平台统一配置（运营后台 · 结算规则配置）；数据同步可能存在约 3 秒误差，属正常现象。
+    </p>
   </div></div>
 
   <div class="toolbar" style="margin-top:8px">
-    <span class="muted">共 <b>1,024</b> 条交易记录</span>
+    <span class="muted">共 <b>1,024</b> 条支付流水</span>
     <div class="spacer"></div>
     <select><option>10条/页</option><option>20条/页</option></select>
     <button class="btn btn-sm" disabled>上一页</button><button class="btn btn-sm">下一页</button>
@@ -114,19 +85,6 @@
 <script src="../assets/js/admin-shell.js?v=14"></script>
 <script>
 (function () {
-  document.querySelectorAll("#bl-tabs a").forEach(function(a){
-    a.addEventListener("click", function(e){
-      e.preventDefault();
-      document.querySelectorAll("#bl-tabs a").forEach(function(n){n.classList.remove("active");});
-      a.classList.add("active");
-      var t=a.getAttribute("data-tab");
-      document.getElementById("panel-txn").style.display = t==="txn" ? "" : "none";
-      document.getElementById("panel-bill").style.display = t==="bill" ? "" : "none";
-      document.getElementById("panel-summary").style.display = t==="summary" ? "" : "none";
-    });
-  });
-  document.getElementById("btn-export").addEventListener("click", function(){ Proto.toast("已导出交易账单（原型）"); });
-  document.getElementById("btn-recon").addEventListener("click", function(){ location.href="recon.html"; });
   document.getElementById("btn-query").addEventListener("click", function(){ Proto.toast("已筛选（原型）"); });
   document.getElementById("btn-reset").addEventListener("click", function(){ Proto.toast("已重置（原型）"); });
 })();

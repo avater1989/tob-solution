@@ -25,16 +25,10 @@
       <div class="wd-set">
         <div class="row"><span>提现中金额</span><b>¥0.00</b></div>
         <div class="row"><span>自动提现</span><span class="badge badge-success">已开启</span> <span class="muted" style="font-size:12px">每日 08:00</span></div>
-        <div class="row"><span>结算银行账户</span><b>招商银行（****8888）</b> <a href="payment.html" class="link">修改</a></div>
+        <div class="row"><span>结算银行账户</span><b>招商银行（****8888）</b> <a href="#" class="link" id="btn-edit-bank">修改</a></div>
       </div>
     </div>
   </div></div>
-
-  <!-- Tab -->
-  <div class="tabs" id="wd-tabs">
-    <a class="active" href="#" data-tab="list">提现记录</a>
-    <a href="#" data-tab="guide">规则说明</a>
-  </div>
 
   <!-- 提现记录表 -->
   <div class="card" id="panel-list"><div class="card-bd" style="padding:0">
@@ -49,18 +43,6 @@
         <tr><td class="mono">WD20260701002</td><td>自动提现</td><td><b>¥4,100.00</b></td><td>招商银行（****8888）</td><td><span class="badge badge-warn">处理中</span></td><td>2026-07-01 08:00</td><td>—</td><td><a href="#" data-toast="查看详情（原型）">详情</a></td></tr>
       </tbody>
     </table>
-  </div></div>
-
-  <!-- 规则说明 -->
-  <div class="card" id="panel-guide" style="display:none"><div class="card-bd">
-    <div class="kv">
-      <div class="kv-row"><span>提现时间</span><b>每日 08:00 自动提现至银行卡，24 小时内到账</b></div>
-      <div class="kv-row"><span>最低提现金额</span><b>满 1 元即可提现</b></div>
-      <div class="kv-row"><span>手动提现</span><b>可在任意时间发起，1-5 个工作日审核到账</b></div>
-      <div class="kv-row"><span>留存金额</span><b>可设置保留金额不自动提现（当前 ¥0.00）</b></div>
-      <div class="kv-row"><span>手续费发票</span><b>支付手续费可申请开具发票（服务商账户）</b></div>
-    </div>
-    <p class="muted" style="margin-top:8px;font-size:12px">修改结算/提现银行账户需前往收款账户页（同主体非同名卡需提交银行账户证明）。</p>
   </div></div>
 
   <div class="toolbar" style="margin-top:8px">
@@ -98,12 +80,40 @@
     <div class="field" style="margin-bottom:10px"><label>自动提现开关</label>
       <select style="width:100%;padding:7px 8px;border:1px solid var(--color-border);border-radius:6px"><option>开启（每日 08:00 自动提现）</option><option>关闭</option></select>
     </div>
-    <div class="field" style="margin-bottom:10px"><label>留存金额（元）</label><input value="500" style="width:100%;padding:7px 8px;border:1px solid var(--color-border);border-radius:6px" /><span class="muted" style="font-size:12px">账户余额高于留存金额部分才会提现</span></div>
+    <div class="field" style="margin-bottom:10px"><label>留存金额（元）</label><input value="500" style="width:100%;padding:7px 8px;border:1px solid var(--color-border);border-radius:6px" /><span class="muted" style="font-size:12px">账户余额高于留存金额部分才会提现；单日提现金额不能超过 2 万元</span></div>
     <div class="field"><label>提现附言</label><input value="艺博课程结算提现" style="width:100%;padding:7px 8px;border:1px solid var(--color-border);border-radius:6px" /></div>
   </div>
   <div class="proto-drawer-ft" style="border-top:1px solid var(--color-border);padding:12px 20px;display:flex;gap:8px;justify-content:flex-end">
     <button class="btn" data-close>取消</button>
     <button class="btn btn-primary" id="auto-submit">保存设置</button>
+  </div>
+</div>
+
+<!-- 修改银行账号弹窗 -->
+<div class="proto-modal" id="modal-bank" style="width:520px">
+  <div class="proto-modal-hd"><h3 style="font-size:16px;font-weight:600">修改结算银行账户</h3><button class="btn btn-sm btn-ghost" data-close>×</button></div>
+  <div class="proto-modal-bd">
+    <div class="form-grid" style="grid-template-columns:1fr 1fr">
+      <div class="field" style="grid-column:1/-1"><label>账户名称 *</label>
+        <input id="bk-name" value="星启家庭教育咨询有限公司" style="width:100%;padding:7px 8px;border:1px solid var(--color-border);border-radius:6px" />
+      </div>
+      <div class="field"><label>开户银行 *</label>
+        <select id="bk-bank" style="width:100%;padding:7px 8px;border:1px solid var(--color-border);border-radius:6px">
+          <option>招商银行</option><option>工商银行</option><option>建设银行</option><option>中国银行</option>
+        </select>
+      </div>
+      <div class="field"><label>开户支行</label>
+        <input id="bk-branch" value="招商银行深圳科技园支行" style="width:100%;padding:7px 8px;border:1px solid var(--color-border);border-radius:6px" />
+      </div>
+      <div class="field" style="grid-column:1/-1"><label>银行账号 *</label>
+        <input id="bk-acct" value="6225 8888 8888 8842" style="width:100%;padding:7px 8px;border:1px solid var(--color-border);border-radius:6px;font-family:ui-monospace,Consolas,monospace" />
+      </div>
+    </div>
+    <p class="muted" style="margin-top:8px;font-size:12px">结算卡需与商户主体同名；非同名的对公 / 对私卡需上传银行账户证明，平台审核通过后生效。</p>
+  </div>
+  <div class="proto-drawer-ft" style="border-top:1px solid var(--color-border);padding:12px 20px;display:flex;gap:8px;justify-content:flex-end">
+    <button class="btn" data-close>取消</button>
+    <button class="btn btn-primary" id="bk-submit">保存并提交审核</button>
   </div>
 </div>
 
@@ -130,18 +140,16 @@
   mask.addEventListener("click", closeAll);
   document.querySelectorAll("[data-close]").forEach(function(n){ n.addEventListener("click", closeAll); });
 
-  document.querySelectorAll("#wd-tabs a").forEach(function(a){
-    a.addEventListener("click", function(e){
-      e.preventDefault();
-      document.querySelectorAll("#wd-tabs a").forEach(function(n){n.classList.remove("active");});
-      a.classList.add("active");
-      document.getElementById("panel-list").style.display = a.getAttribute("data-tab")==="list" ? "" : "none";
-      document.getElementById("panel-guide").style.display = a.getAttribute("data-tab")==="guide" ? "" : "none";
-    });
-  });
-
   document.getElementById("btn-withdraw").addEventListener("click", function(){ open(document.getElementById("modal-withdraw")); });
   document.getElementById("btn-auto").addEventListener("click", function(){ open(document.getElementById("modal-auto")); });
+  document.getElementById("btn-edit-bank").addEventListener("click", function(e){ e.preventDefault(); open(document.getElementById("modal-bank")); });
+  document.getElementById("bk-submit").addEventListener("click", function(){
+    var acct = document.getElementById("bk-acct").value.trim();
+    var name = document.getElementById("bk-name").value.trim();
+    if(!name || !acct){ Proto.toast("请填写账户名称与银行账号"); return; }
+    closeAll();
+    Proto.toast("银行账户修改已提交审核（原型）");
+  });
   document.getElementById("wd-submit").addEventListener("click", function(){ closeAll(); Proto.toast("提现申请已提交（原型）"); });
   document.getElementById("auto-submit").addEventListener("click", function(){ closeAll(); Proto.toast("自动提现设置已保存（原型）"); });
   document.getElementById("btn-export").addEventListener("click", function(){ Proto.toast("已导出提现记录（原型）"); });

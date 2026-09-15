@@ -1,0 +1,557 @@
+{
+  "v": 1,
+  "updated": "2026-09-16T00:55:51",
+  "items": [
+    {
+      "id": "rmu2vzp5ohxku",
+      "page": "ops/pay-channels.html",
+      "anchor": {
+        "selector": "#btn-guide",
+        "selectorIn": "#btn-guide",
+        "root": "#page-header-actions",
+        "region": "header-actions",
+        "shell": "",
+        "label": "button#btn-guide.btn.btn-primary",
+        "text": "接入说明",
+        "html": "<button class=\"btn btn-primary\" id=\"btn-guide\">接入说明</button>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "去掉",
+      "status": "open",
+      "createdAt": "2026-09-15T16:29:06.204Z",
+      "_stale": false
+    },
+    {
+      "id": "rmu2vzsfof90d",
+      "page": "ops/pay-channels.html",
+      "anchor": {
+        "selector": "#btn-probe",
+        "selectorIn": "#btn-probe",
+        "root": "#page-header-actions",
+        "region": "header-actions",
+        "shell": "",
+        "label": "button#btn-probe.btn",
+        "text": "订单状态查询",
+        "html": "<button class=\"btn\" id=\"btn-probe\">订单状态查询</button>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "去掉",
+      "status": "open",
+      "createdAt": "2026-09-15T16:29:10.453Z",
+      "_stale": true
+    },
+    {
+      "id": "rmu2vzvhgy9nv",
+      "page": "ops/pay-channels.html",
+      "anchor": {
+        "selector": "#btn-sync",
+        "selectorIn": "#btn-sync",
+        "root": "#page-header-actions",
+        "region": "header-actions",
+        "shell": "",
+        "label": "button#btn-sync.btn",
+        "text": "同步渠道账单",
+        "html": "<button class=\"btn\" id=\"btn-sync\">同步渠道账单</button>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "去掉",
+      "status": "open",
+      "createdAt": "2026-09-15T16:29:14.404Z",
+      "_stale": true
+    },
+    {
+      "id": "rmu2w5h9mzb1y",
+      "page": "ops/onboard-audit.html",
+      "anchor": {
+        "selector": "#admin-content-slot > div > div:nth-of-type(1) > span",
+        "selectorIn": "div:nth-of-type(1) > span",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "span",
+        "text": "进件链路：商家提交 → 平台初审 → 通联审核（工商 + 法人实名 + 影印件 OCR）→ 审核通过 → 绑定手机 → 提现协议签约 → 可收款。平台初审不通过可直接驳回；通联审核结果通过异步通知回写。",
+        "html": "<span>进件链路：商家提交 → <b>平台初审</b> → 通联审核（工商 + 法人实名 + 影印件 OCR）→ 审核通过 → 绑定手机 → <b>提现协议签约</b> → 可收款。平台初审不通过可直接驳回；通联审核结果通过异步通知回写。</span>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "进件链路：商家线下提供资料 → 平台录入→ 平台初审 → 通联审核（工商 + 法人实名 + 影印件 OCR）→ 审核通过 → 绑定手机 → 提现协议签约 → 可收款。",
+      "status": "open",
+      "createdAt": "2026-09-15T16:33:35.914Z",
+      "_stale": false
+    },
+    {
+      "id": "rmu2w66rj0jax",
+      "page": "ops/onboard-audit.html",
+      "anchor": {
+        "selector": "#btn-export",
+        "selectorIn": "#btn-export",
+        "root": "#page-header-actions",
+        "region": "header-actions",
+        "shell": "",
+        "label": "button#btn-export.btn",
+        "text": "导出进件记录",
+        "html": "<button class=\"btn\" id=\"btn-export\">导出进件记录</button>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "去掉",
+      "status": "open",
+      "createdAt": "2026-09-15T16:34:08.959Z",
+      "_stale": false
+    },
+    {
+      "id": "rmu2w69y30cti",
+      "page": "ops/onboard-audit.html",
+      "anchor": {
+        "selector": "#btn-rule",
+        "selectorIn": "#btn-rule",
+        "root": "#page-header-actions",
+        "region": "header-actions",
+        "shell": "",
+        "label": "button#btn-rule.btn",
+        "text": "审核要点",
+        "html": "<button class=\"btn\" id=\"btn-rule\">审核要点</button>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "去掉",
+      "status": "open",
+      "createdAt": "2026-09-15T16:34:13.083Z"
+    },
+    {
+      "id": "rmu2w9py6molz",
+      "page": "ops/recon.html",
+      "anchor": {
+        "selector": "#panel-diffs > div > div:nth-of-type(1) > span",
+        "selectorIn": "#panel-diffs > div > div:nth-of-type(1) > span",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "span.muted",
+        "text": "超 SLA 未处理将自动升级；结案后对账单重算",
+        "html": "<span class=\"muted\" style=\"font-size:12px\">超 SLA 未处理将自动升级；结案后对账单重算</span>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "去掉",
+      "status": "open",
+      "createdAt": "2026-09-15T16:36:53.790Z",
+      "_stale": false
+    },
+    {
+      "id": "rmu2w9u479vw7",
+      "page": "ops/recon.html",
+      "anchor": {
+        "selector": "#panel-diffs > div > div:nth-of-type(2) > table > thead > tr > th:nth-of-type(7)",
+        "selectorIn": "#panel-diffs > div > div:nth-of-type(2) > table > thead > tr > th:nth-of-type(7)",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "th",
+        "text": "SLA 剩余",
+        "html": "<th>SLA 剩余</th>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "去掉",
+      "status": "open",
+      "createdAt": "2026-09-15T16:36:59.191Z",
+      "_stale": false
+    },
+    {
+      "id": "rmu2w9xi5ieuj",
+      "page": "ops/recon.html",
+      "anchor": {
+        "selector": "#panel-diffs > div > div:nth-of-type(2) > table > thead > tr > th:nth-of-type(6)",
+        "selectorIn": "#panel-diffs > div > div:nth-of-type(2) > table > thead > tr > th:nth-of-type(6)",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "th",
+        "text": "责任人",
+        "html": "<th>责任人</th>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "去掉",
+      "status": "open",
+      "createdAt": "2026-09-15T16:37:03.582Z"
+    },
+    {
+      "id": "rmu2wcx184sf5",
+      "page": "admin/assets.html",
+      "anchor": {
+        "selector": "#btn-bill",
+        "selectorIn": "#btn-bill",
+        "root": "#page-header-actions",
+        "region": "header-actions",
+        "shell": "",
+        "label": "button#btn-bill.btn",
+        "text": "查看交易账单",
+        "html": "<button class=\"btn\" id=\"btn-bill\">查看交易账单</button>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "去掉",
+      "status": "open",
+      "createdAt": "2026-09-15T16:39:22.940Z",
+      "_stale": false
+    },
+    {
+      "id": "rmu2we5rvju3r",
+      "page": "admin/assets.html",
+      "anchor": {
+        "selector": "#btn-withdraw",
+        "selectorIn": "#btn-withdraw",
+        "root": "#page-header-actions",
+        "region": "header-actions",
+        "shell": "",
+        "label": "button#btn-withdraw.btn.btn-primary",
+        "text": "发起提现",
+        "html": "<button class=\"btn btn-primary\" id=\"btn-withdraw\">发起提现</button>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "去掉",
+      "status": "open",
+      "createdAt": "2026-09-15T16:40:20.923Z"
+    },
+    {
+      "id": "rmu2wele52gdl",
+      "page": "admin/bills.html",
+      "anchor": {
+        "selector": "#btn-export",
+        "selectorIn": "#btn-export",
+        "root": "#page-header-actions",
+        "region": "header-actions",
+        "shell": "",
+        "label": "button#btn-export.btn",
+        "text": "导出账单",
+        "html": "<button class=\"btn\" id=\"btn-export\">导出账单</button>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "去掉",
+      "status": "open",
+      "createdAt": "2026-09-15T16:40:41.165Z",
+      "_stale": false
+    },
+    {
+      "id": "rmu2weoezln1b",
+      "page": "admin/bills.html",
+      "anchor": {
+        "selector": "#btn-recon",
+        "selectorIn": "#btn-recon",
+        "root": "#page-header-actions",
+        "region": "header-actions",
+        "shell": "",
+        "label": "button#btn-recon.btn",
+        "text": "去对账",
+        "html": "<button class=\"btn\" id=\"btn-recon\">去对账</button>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "去掉",
+      "status": "open",
+      "createdAt": "2026-09-15T16:40:45.084Z"
+    },
+    {
+      "id": "rmu2wg3xtf9r6",
+      "page": "admin/withdraw.html",
+      "anchor": {
+        "selector": "#modal-auto > div:nth-of-type(2) > div:nth-of-type(2) > span",
+        "selectorIn": "",
+        "root": "",
+        "region": "page",
+        "shell": "",
+        "label": "span.muted",
+        "text": "账户余额高于留存金额部分才会提现",
+        "html": "<span class=\"muted\" style=\"font-size:12px\">账户余额高于留存金额部分才会提现</span>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "增加文案：单日提现金额不能超过2万元",
+      "status": "open",
+      "createdAt": "2026-09-15T16:41:51.857Z",
+      "_stale": false
+    },
+    {
+      "id": "rmu2wgrampbi5",
+      "page": "admin/withdraw.html",
+      "anchor": {
+        "selector": "#wd-tabs > a:nth-of-type(2)",
+        "selectorIn": "#wd-tabs > a:nth-of-type(2)",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "a.active",
+        "text": "规则说明",
+        "html": "<a href=\"#\" data-tab=\"guide\" class=\"active\">规则说明</a>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "去掉",
+      "status": "open",
+      "createdAt": "2026-09-15T16:42:22.126Z"
+    },
+    {
+      "id": "rmu2wj00naifv",
+      "page": "admin/recon.html",
+      "anchor": {
+        "selector": "#admin-content-slot > div > div:nth-of-type(4) > div > table > tbody > tr:nth-of-type(1) > td:nth-of-type(1) > a",
+        "selectorIn": "div:nth-of-type(4) > div > table > tbody > tr:nth-of-type(1) > td:nth-of-type(1) > a",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "a.link-mono",
+        "text": "RC20260407001",
+        "html": "<a href=\"#\" class=\"link-mono\" data-toast=\"查看对账单明细（原型）\">RC20260407001</a>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "点击跳转到「对账详情」页，并且按照对账单的内容，增加对账详情页",
+      "status": "open",
+      "createdAt": "2026-09-15T16:44:06.743Z",
+      "_stale": false
+    },
+    {
+      "id": "rmu2wl9s6fkkr",
+      "page": "admin/recon.html",
+      "anchor": {
+        "selector": "#admin-content-slot > div > div:nth-of-type(4) > div > table > tbody > tr:nth-of-type(1) > td:nth-of-type(11) > a:nth-of-type(1)",
+        "selectorIn": "div:nth-of-type(4) > div > table > tbody > tr:nth-of-type(1) > td:nth-of-type(11) > a:nth-of-type(1)",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "a",
+        "text": "差异处理",
+        "html": "<a href=\"#\" data-tab-jump=\"diffs\">差异处理</a>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "将差异处理的内容，做成弹窗，不要用tab",
+      "status": "open",
+      "createdAt": "2026-09-15T16:45:52.711Z"
+    },
+    {
+      "id": "rmu2wpdl5nxx5",
+      "page": "ops/pay-channels.html",
+      "anchor": {
+        "selector": "#admin-content-slot > div > div:nth-of-type(2) > div:nth-of-type(2) > table > tbody > tr:nth-of-type(2) > td:nth-of-type(7) > a",
+        "selectorIn": "div:nth-of-type(2) > div:nth-of-type(2) > table > tbody > tr:nth-of-type(2) > td:nth-of-type(7) > a",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "a",
+        "text": "查看接入说明",
+        "html": "<a href=\"#\" data-row-act=\"open\">查看接入说明</a>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "去掉",
+      "status": "open",
+      "createdAt": "2026-09-15T16:49:04.265Z"
+    },
+    {
+      "id": "rmu2wq6iuuvlv",
+      "page": "ops/settle-rules.html",
+      "anchor": {
+        "selector": "#modal-rule > div:nth-of-type(2) > div > div:nth-of-type(7) > label",
+        "selectorIn": "",
+        "root": "",
+        "region": "page",
+        "shell": "",
+        "label": "label",
+        "text": "是否需先开票",
+        "html": "<label>是否需先开票</label>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "去掉",
+      "status": "open",
+      "createdAt": "2026-09-15T16:49:41.766Z",
+      "_stale": false
+    },
+    {
+      "id": "rmu2wqb92zgo1",
+      "page": "ops/settle-rules.html",
+      "anchor": {
+        "selector": "#modal-rule > div:nth-of-type(2) > div > div:nth-of-type(9) > label",
+        "selectorIn": "",
+        "root": "",
+        "region": "page",
+        "shell": "",
+        "label": "label",
+        "text": "最低留存（元）",
+        "html": "<label>最低留存（元）</label>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "去掉",
+      "status": "open",
+      "createdAt": "2026-09-15T16:49:47.894Z",
+      "_stale": false
+    },
+    {
+      "id": "rmu2wtl4p6xl4",
+      "page": "ops/settle-rules.html",
+      "anchor": {
+        "selector": "#sr-parties > tr:nth-of-type(1) > td:nth-of-type(1) > b",
+        "selectorIn": "",
+        "root": "",
+        "region": "page",
+        "shell": "",
+        "label": "b",
+        "text": "星启家庭教育",
+        "html": "<b>星启家庭教育</b>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "商家",
+      "status": "open",
+      "createdAt": "2026-09-15T16:52:20.665Z",
+      "_stale": false
+    },
+    {
+      "id": "rmu2wtokcezlh",
+      "page": "ops/settle-rules.html",
+      "anchor": {
+        "selector": "#modal-rule > div:nth-of-type(2) > table > thead > tr > th:nth-of-type(2)",
+        "selectorIn": "",
+        "root": "",
+        "region": "page",
+        "shell": "",
+        "label": "th",
+        "text": "通联会员号",
+        "html": "<th>通联会员号</th>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "去掉",
+      "status": "open",
+      "createdAt": "2026-09-15T16:52:25.116Z",
+      "_stale": false
+    },
+    {
+      "id": "rmu2wtujussi4",
+      "page": "ops/settle-rules.html",
+      "anchor": {
+        "selector": "#sr-add",
+        "selectorIn": "",
+        "root": "",
+        "region": "page",
+        "shell": "",
+        "label": "button#sr-add.btn.btn-sm",
+        "text": "＋ 添加分账方",
+        "html": "<button class=\"btn btn-sm\" id=\"sr-add\" style=\"margin-top:8px\">＋ 添加分账方</button>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "去掉",
+      "status": "open",
+      "createdAt": "2026-09-15T16:52:32.875Z",
+      "_stale": false
+    },
+    {
+      "id": "rmu2wuwp0koau",
+      "page": "ops/settle-rules.html",
+      "anchor": {
+        "selector": "#modal-rule > div:nth-of-type(2) > div > div:nth-of-type(4) > label",
+        "selectorIn": "",
+        "root": "",
+        "region": "page",
+        "shell": "",
+        "label": "label",
+        "text": "内容来源（链路）*",
+        "html": "<label>内容来源（链路）*</label>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "改成适用商品",
+      "status": "open",
+      "createdAt": "2026-09-15T16:53:22.308Z",
+      "_stale": false
+    },
+    {
+      "id": "rmu2wvdx0vd9w",
+      "page": "ops/settle-rules.html",
+      "anchor": {
+        "selector": "#modal-rule > div:nth-of-type(2) > div > div:nth-of-type(3) > label",
+        "selectorIn": "",
+        "root": "",
+        "region": "page",
+        "shell": "",
+        "label": "label",
+        "text": "适用范围 *",
+        "html": "<label>适用范围 *</label>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "改成「适用商家」",
+      "status": "open",
+      "createdAt": "2026-09-15T16:53:44.628Z",
+      "_stale": false
+    },
+    {
+      "id": "rmu2ww0cb1acg",
+      "page": "ops/settle-rules.html",
+      "anchor": {
+        "selector": "#sr-scope",
+        "selectorIn": "",
+        "root": "",
+        "region": "page",
+        "shell": "",
+        "label": "select#sr-scope",
+        "text": "全部商品（全局默认） 按商品分组：家长课堂 按商品分组：亲子训练营 按商品类型：知识商品 按商品类型：服务商品 指定租户：慧心教育 指定单个商品",
+        "html": "<select id=\"sr-scope\"> <option>全部商品（全局默认）</option> <option>按商品分组：家长课堂</option> <option>按商品分组：亲子训练营</option> <option>按商品类型：知识商品</option> <option>按商品类型：服务商品</option> <option>指定租户：慧心教育</option> <option>指定单个商品</option> </select>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "展示租户名称",
+      "status": "open",
+      "createdAt": "2026-09-15T16:54:13.691Z",
+      "_stale": false
+    },
+    {
+      "id": "rmu2wxi2l5fhv",
+      "page": "ops/settle-rules.html",
+      "anchor": {
+        "selector": "#admin-content-slot > div > div:nth-of-type(3)",
+        "selectorIn": "div:nth-of-type(3)",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "div.card",
+        "text": "结算规则 命中优先级：商品 > 商品分组/类目 > 租户/套餐/合同 > 全局默认；同一订单仅命中一条 规则名称 优先级 适用范围 分账方与比例 账期 结算门槛 最低留存 先开票 状态 更新时间 操作 平台内容 · 默认佣金规则链路 A 商品类型 全部平台内容（运营后台下发） 星启家庭教育 20% 艺博平台 80% T",
+        "html": "<div class=\"card\" style=\"margin-bottom:12px\"> <div class=\"card-hd\"> <h2>结算规则</h2> <span class=\"muted\" style=\"font-size:12px\">命中优先级：商品 &gt; 商品分组/类目 &gt; 租户/套餐/合同 &gt; 全局默认；同一订单仅命中一条</span> </div> <div class=\"card-bd\" style=\"padding:0\"> <table class=\"data\"> <thead> <tr> <th>规则名称</t"
+      },
+      "type": "layout",
+      "priority": "P1",
+      "comment": "根据新增结算规则里的条目来修改这个列表内容",
+      "status": "open",
+      "createdAt": "2026-09-15T16:55:23.326Z"
+    },
+    {
+      "id": "rmu2wy3h2a08o",
+      "page": "ops/trade-settings.html",
+      "anchor": {
+        "selector": "body > div:nth-of-type(2) > div:nth-of-type(2) > aside > div:nth-of-type(5) > a:nth-of-type(2)",
+        "selectorIn": "",
+        "root": "",
+        "region": "shell",
+        "shell": "admin-shell.js",
+        "label": "a.nav-item.active",
+        "text": "交易选项",
+        "html": "<a class=\"nav-item active\" href=\"trade-settings.html\">交易选项</a>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "去掉",
+      "status": "open",
+      "createdAt": "2026-09-15T16:55:51.062Z"
+    }
+  ]
+}

@@ -1,0 +1,848 @@
+{
+  "v": 1,
+  "updated": "2026-09-16T00:25:56",
+  "items": [
+    {
+      "id": "rmtzxn3lffyfr",
+      "page": "admin/platform-goods.html",
+      "anchor": {
+        "selector": "#admin-content-slot > div > div:nth-of-type(4) > div > table > thead > tr > th:nth-of-type(3)",
+        "selectorIn": "div:nth-of-type(4) > div > table > thead > tr > th:nth-of-type(3)",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "th",
+        "text": "价格",
+        "html": "<th>价格</th>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "右侧增加「佣金」字段，显示为金额，是价格的20%",
+      "status": "resolved",
+      "createdAt": "2026-09-13T14:51:59.092Z"
+    },
+    {
+      "id": "rmtzxu62l5ogy",
+      "page": "ops/tenant-detail.html",
+      "anchor": {
+        "selector": "#btn-renew",
+        "selectorIn": "#btn-renew",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "button#btn-renew.btn",
+        "text": "续费",
+        "html": "<button class=\"btn\" id=\"btn-renew\">续费</button>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "右侧增加续费记录，记录着每次续费的时间金额等信息",
+      "status": "resolved",
+      "createdAt": "2026-09-13T14:57:28.894Z"
+    },
+    {
+      "id": "rmtzygqdhma8f",
+      "page": "ops/pay-members.html",
+      "anchor": {
+        "selector": "body > div:nth-of-type(4) > div:nth-of-type(2) > aside > div:nth-of-type(2) > a:nth-of-type(2)",
+        "selectorIn": "",
+        "root": "",
+        "region": "shell",
+        "shell": "admin-shell.js",
+        "label": "a.nav-item.active",
+        "text": "会员管理",
+        "html": "<a class=\"nav-item active\" href=\"pay-members.html\">会员管理</a>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "将内容合并到 租户列表 里去",
+      "status": "resolved",
+      "createdAt": "2026-09-13T15:15:01.637Z"
+    },
+    {
+      "id": "rmu0n9c2izief",
+      "page": "admin/sys-users.html",
+      "anchor": {
+        "selector": "#admin-content-slot > div > div:nth-of-type(3) > div > table > tbody > tr:nth-of-type(3) > td:nth-of-type(6) > span",
+        "selectorIn": "div:nth-of-type(3) > div > table > tbody > tr:nth-of-type(3) > td:nth-of-type(6) > span",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "span.tag.tag-blue",
+        "text": "销售",
+        "html": "<span class=\"tag tag-blue\">销售</span>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "这里改成助教",
+      "status": "open",
+      "createdAt": "2026-09-14T02:49:06.906Z"
+    },
+    {
+      "id": "rmu0ncff4rejd",
+      "page": "admin/dashboard.html",
+      "anchor": {
+        "selector": "#quick-links",
+        "selectorIn": "#quick-links",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "div#quick-links.wb-quick-links",
+        "text": "查看全部直播 查看全部线索",
+        "html": "<div class=\"wb-quick-links\" id=\"quick-links\"> <a href=\"lives.html\" id=\"link-all-lives\">查看全部直播</a> <a href=\"leads.html\" id=\"link-all-leads\" class=\"wb-hidden\">查看全部线索</a> </div>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "这里去掉",
+      "status": "open",
+      "createdAt": "2026-09-14T02:51:31.216Z",
+      "_stale": true
+    },
+    {
+      "id": "rmu0o5946kk9x",
+      "page": "admin/user-segments.html",
+      "anchor": {
+        "selector": "body > div:nth-of-type(4) > div:nth-of-type(2) > aside > div:nth-of-type(3) > a:nth-of-type(11) > span",
+        "selectorIn": "",
+        "root": "",
+        "region": "shell",
+        "shell": "admin-shell.js",
+        "label": "span.nav-text",
+        "text": "用户分群",
+        "html": "<span class=\"nav-text\">用户分群</span>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "用户分群和定向运营计划都直接标注二期功能",
+      "status": "open",
+      "createdAt": "2026-09-14T03:13:56.070Z"
+    },
+    {
+      "id": "rmu0o6x51o7xk",
+      "page": "admin/ops-plans.html",
+      "anchor": {
+        "selector": "body > div:nth-of-type(6) > div:nth-of-type(2) > aside > div:nth-of-type(3) > a:nth-of-type(12) > span",
+        "selectorIn": "",
+        "root": "",
+        "region": "shell",
+        "shell": "admin-shell.js",
+        "label": "span.nav-text",
+        "text": "定向运营计划",
+        "html": "<span class=\"nav-text\">定向运营计划</span>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "文案上直接提示为二期功能",
+      "status": "open",
+      "createdAt": "2026-09-14T03:15:13.861Z"
+    },
+    {
+      "id": "rmu0oathe3wtb",
+      "page": "admin/live-invite.html",
+      "anchor": {
+        "selector": "body > div:nth-of-type(7) > div:nth-of-type(2) > aside > div:nth-of-type(4) > a:nth-of-type(9)",
+        "selectorIn": "",
+        "root": "",
+        "region": "shell",
+        "shell": "admin-shell.js",
+        "label": "a.nav-item.active",
+        "text": "直播促到SOP",
+        "html": "<a class=\"nav-item active\" href=\"live-invite.html\"><span class=\"nav-text\">直播促到SOP</span></a>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "直播提醒部分 我们应该就不要直播促到SOP功能了 用户直接在直播创建部分做创建提醒",
+      "status": "open",
+      "createdAt": "2026-09-14T03:18:15.746Z"
+    },
+    {
+      "id": "rmu0ocy407gel",
+      "page": "admin/term-mgmt.html",
+      "anchor": {
+        "selector": "#tm-goals-box > summary",
+        "selectorIn": "",
+        "root": "",
+        "region": "page",
+        "shell": "",
+        "label": "summary",
+        "text": "经营目标（选填，默认折叠）",
+        "html": "<summary style=\"cursor:pointer;font-size:13px;font-weight:600;color:var(--color-text-secondary)\">经营目标（选填，默认折叠）</summary>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "去掉期次管理的经营目标",
+      "status": "open",
+      "createdAt": "2026-09-14T03:19:55.057Z"
+    },
+    {
+      "id": "rmu0odma8z4xn",
+      "page": "admin/lives.html",
+      "anchor": {
+        "selector": "#btn-tutorial",
+        "selectorIn": "#btn-tutorial",
+        "root": "#page-header-actions",
+        "region": "header-actions",
+        "shell": "",
+        "label": "button#btn-tutorial.btn",
+        "text": "使用教程",
+        "html": "<button type=\"button\" class=\"btn\" id=\"btn-tutorial\">使用教程</button>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "去掉使用教程",
+      "status": "open",
+      "createdAt": "2026-09-14T03:20:26.384Z",
+      "_stale": false
+    },
+    {
+      "id": "rmu0omutuv11g",
+      "page": "admin/live-edit.html",
+      "anchor": {
+        "selector": "#le-assist",
+        "selectorIn": "#le-assist",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "select#le-assist",
+        "text": "王助教刘助教",
+        "html": "<select id=\"le-assist\" multiple=\"\" style=\"height:60px;padding:8px\"> <option>王助教</option><option>刘助教</option> </select>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "助教应该做改成添加和编辑交互",
+      "status": "open",
+      "createdAt": "2026-09-14T03:27:37.362Z",
+      "_stale": false
+    },
+    {
+      "id": "rmu0onc2qj4tu",
+      "page": "admin/live-edit.html",
+      "anchor": {
+        "selector": "#le-teacher",
+        "selectorIn": "#le-teacher",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "select#le-teacher",
+        "text": "阮荣均赵老师王助教",
+        "html": "<select id=\"le-teacher\"><option>阮荣均</option><option>赵老师</option><option>王助教</option></select>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "主讲老师还没有增加字段在用户部分维护",
+      "status": "open",
+      "createdAt": "2026-09-14T03:27:59.714Z",
+      "_stale": false
+    },
+    {
+      "id": "rmu0ooi8amucq",
+      "page": "admin/live-edit.html",
+      "anchor": {
+        "selector": "#admin-content-slot > div > div:nth-of-type(6) > div > div > div:nth-of-type(6) > span:nth-of-type(1)",
+        "selectorIn": "div:nth-of-type(6) > div > div > div:nth-of-type(6) > span:nth-of-type(1)",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "span.pro-badge",
+        "text": "专业版",
+        "html": "<span class=\"pro-badge\">专业版</span>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "这个专业版有效期之类的去掉",
+      "status": "open",
+      "createdAt": "2026-09-14T03:28:54.346Z",
+      "_stale": false
+    },
+    {
+      "id": "rmu0ooxw9i8h9",
+      "page": "admin/live-edit.html",
+      "anchor": {
+        "selector": "#admin-content-slot > div > div:nth-of-type(7) > div > table > thead > tr > th:nth-of-type(4)",
+        "selectorIn": "div:nth-of-type(7) > div > table > thead > tr > th:nth-of-type(4)",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "th",
+        "text": "讲解话术",
+        "html": "<th>讲解话术</th>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "讲解话术去掉",
+      "status": "open",
+      "createdAt": "2026-09-14T03:29:14.649Z",
+      "_stale": false
+    },
+    {
+      "id": "rmu0oph40ij70",
+      "page": "admin/live-edit.html",
+      "anchor": {
+        "selector": "#btn-add-goods",
+        "selectorIn": "#btn-add-goods",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "button#btn-add-goods.btn.btn-primary",
+        "text": "+ 添加商品",
+        "html": "<button class=\"btn btn-primary\" id=\"btn-add-goods\">+ 添加商品</button>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "添加商品交互要加上",
+      "status": "open",
+      "createdAt": "2026-09-14T03:29:39.552Z",
+      "_stale": false
+    },
+    {
+      "id": "rmu0oqni09be5",
+      "page": "admin/live-edit.html",
+      "anchor": {
+        "selector": "#admin-content-slot > div > h2:nth-of-type(7)",
+        "selectorIn": "h2:nth-of-type(7)",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "h2.page-section-title",
+        "text": "角色设置",
+        "html": "<h2 class=\"page-section-title\">角色设置</h2>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "角色设置去掉",
+      "status": "open",
+      "createdAt": "2026-09-14T03:30:34.488Z",
+      "_stale": false
+    },
+    {
+      "id": "rmu0p40rbapzz",
+      "page": "admin/live-edit.html",
+      "anchor": {
+        "selector": "#admin-content-slot > div > h2:nth-of-type(8)",
+        "selectorIn": "h2:nth-of-type(8)",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "h2.page-section-title",
+        "text": "预约提醒",
+        "html": "<h2 class=\"page-section-title\">预约提醒</h2>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "这里改一下 不要仅针对预约人员 MA功能肯定是二期的功能 这个直播预约提醒应该是要先上的 所以还是针对该直播场景做整体的促到 另外漏了一个场景是针对应到未到人群在直播中的促到 另外直播促到SOP去掉",
+      "status": "open",
+      "createdAt": "2026-09-14T03:40:58.199Z"
+    },
+    {
+      "id": "rmu0p8hlwfc74",
+      "page": "admin/live-booking.html",
+      "anchor": {
+        "selector": "#btn-invite",
+        "selectorIn": "#btn-invite",
+        "root": "#page-header-actions",
+        "region": "header-actions",
+        "shell": "",
+        "label": "a#btn-invite.btn",
+        "text": "新建直播促到SOP",
+        "html": "<a class=\"btn\" id=\"btn-invite\" href=\"live-invite.html\">新建直播促到SOP</a>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "同样的 去掉直播促到SOP",
+      "status": "open",
+      "createdAt": "2026-09-14T03:44:26.660Z",
+      "_stale": false
+    },
+    {
+      "id": "rmu0pa1ab6q1z",
+      "page": "admin/lives.html",
+      "anchor": {
+        "selector": "#lv-tbody > tr:nth-of-type(1) > td:nth-of-type(10) > span > a",
+        "selectorIn": "#lv-tbody > tr:nth-of-type(1) > td:nth-of-type(10) > span > a",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "a.row-more",
+        "text": "更多",
+        "html": "<a href=\"javascript:;\" class=\"row-more\" data-more-toggle=\"\">更多</a>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "更多选项中去掉直播促到SOP",
+      "status": "open",
+      "createdAt": "2026-09-14T03:45:38.820Z"
+    },
+    {
+      "id": "rmu0q32yhrzyu",
+      "page": "admin/live-booking.html",
+      "anchor": {
+        "selector": "#modal-reminder > div:nth-of-type(2) > div > div:nth-of-type(6) > div > label:nth-of-type(2)",
+        "selectorIn": "",
+        "root": "",
+        "region": "page",
+        "shell": "",
+        "label": "label",
+        "text": "站内信",
+        "html": "<label><input type=\"checkbox\" name=\"rm-ch\" value=\"站内信\" checked=\"\"> 站内信</label>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "渠道去掉站内信和企微 增加外呼 提醒文案变为选择模板",
+      "status": "open",
+      "createdAt": "2026-09-14T04:08:14.009Z",
+      "_stale": false
+    },
+    {
+      "id": "rmu0q4ql32bbr",
+      "page": "admin/live-booking.html",
+      "anchor": {
+        "selector": "#rm-type",
+        "selectorIn": "",
+        "root": "",
+        "region": "page",
+        "shell": "",
+        "label": "select#rm-type",
+        "text": "开播前提醒 开播提醒 回放生成提醒 直播时间变更通知 直播取消通知",
+        "html": "<select id=\"rm-type\"> <option value=\"pre_live\">开播前提醒</option> <option value=\"live_start\">开播提醒</option> <option value=\"replay_ready\">回放生成提醒</option> <option value=\"live_changed\">直播时间变更通知</option> <option value=\"live_cancelled\">直播取消通知</option> </select>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "提醒场景中应该有直播中提醒",
+      "status": "open",
+      "createdAt": "2026-09-14T04:09:31.288Z"
+    },
+    {
+      "id": "rmu0q5bun5t1f",
+      "page": "admin/live-replay.html",
+      "anchor": {
+        "selector": "#admin-content-slot > div > div:nth-of-type(3) > div > table > thead > tr > th:nth-of-type(13)",
+        "selectorIn": "div:nth-of-type(3) > div > table > thead > tr > th:nth-of-type(13)",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "th",
+        "text": "完播率",
+        "html": "<th>完播率</th>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "完播率先删掉吧 统计起来复杂了",
+      "status": "open",
+      "createdAt": "2026-09-14T04:09:58.847Z"
+    },
+    {
+      "id": "rmu0qkdziy4bd",
+      "page": "admin/assets.html",
+      "anchor": {
+        "selector": "#admin-content-slot > div > div:nth-of-type(2) > div:nth-of-type(2) > table > tbody > tr:nth-of-type(1) > td:nth-of-type(1)",
+        "selectorIn": "div:nth-of-type(2) > div:nth-of-type(2) > table > tbody > tr:nth-of-type(1) > td:nth-of-type(1)",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "td",
+        "text": "通联支付（平台商户）艺博教育科技 · 收单 + 分账",
+        "html": "<td><b>通联支付（平台商户）</b><br><span class=\"muted\" style=\"font-size:12px\">艺博教育科技 · 收单 + 分账</span></td>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "作为小B 商户端 是不是不应该看到艺博通联支付？",
+      "status": "open",
+      "createdAt": "2026-09-14T04:21:41.454Z",
+      "_stale": false
+    },
+    {
+      "id": "rmu0qldz8uehe",
+      "page": "admin/assets.html",
+      "anchor": {
+        "selector": "#admin-content-slot > div > div:nth-of-type(2) > div:nth-of-type(2) > table > tbody > tr:nth-of-type(2) > td:nth-of-type(7) > a:nth-of-type(2)",
+        "selectorIn": "div:nth-of-type(2) > div:nth-of-type(2) > table > tbody > tr:nth-of-type(2) > td:nth-of-type(7) > a:nth-of-type(2)",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "a",
+        "text": "分账规则",
+        "html": "<a href=\"split-rules.html\">分账规则</a>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "这里给去掉吧",
+      "status": "open",
+      "createdAt": "2026-09-14T04:22:28.101Z"
+    },
+    {
+      "id": "rmu21vo42kbqa",
+      "page": "admin/orders.html",
+      "anchor": {
+        "selector": "#ord-tbody > tr:nth-of-type(1) > td:nth-of-type(13) > a:nth-of-type(1)",
+        "selectorIn": "#ord-tbody > tr:nth-of-type(1) > td:nth-of-type(13) > a:nth-of-type(1)",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "a",
+        "text": "详情",
+        "html": "<a href=\"order-detail.html\">详情</a>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "增加详情页，里面包含「交易流水号」",
+      "status": "open",
+      "createdAt": "2026-09-15T02:26:09.747Z"
+    },
+    {
+      "id": "rmu21wmxol68g",
+      "page": "ops/trade-orders.html",
+      "anchor": {
+        "selector": "#ord-tbody > tr:nth-of-type(1) > td:nth-of-type(15) > a:nth-of-type(1)",
+        "selectorIn": "#ord-tbody > tr:nth-of-type(1) > td:nth-of-type(15) > a:nth-of-type(1)",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "a",
+        "text": "详情",
+        "html": "<a href=\"#\" data-toast=\"订单详情（原型示意）\">详情</a>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "增加详情页，里面包含「交易流水号」等该有的内容。",
+      "status": "open",
+      "createdAt": "2026-09-15T02:26:54.876Z",
+      "_stale": false
+    },
+    {
+      "id": "rmu2sptmjcysh",
+      "page": "ops/trade-orders.html",
+      "anchor": {
+        "selector": "#admin-content-slot > div > div:nth-of-type(4) > div > table > thead > tr > th:nth-of-type(1)",
+        "selectorIn": "div:nth-of-type(4) > div > table > thead > tr > th:nth-of-type(1)",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "th",
+        "text": "订单号",
+        "html": "<th>订单号</th>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "右侧加入【渠道支付流水号】一列",
+      "status": "open",
+      "createdAt": "2026-09-15T14:57:26.588Z",
+      "_stale": false
+    },
+    {
+      "id": "rmu2sza9txjxq",
+      "page": "ops/aftersales.html",
+      "anchor": {
+        "selector": "#as-tabs > a:nth-of-type(6)",
+        "selectorIn": "#as-tabs > a:nth-of-type(6)",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "a.active",
+        "text": "仅退款",
+        "html": "<a href=\"#\" data-tab=\"refund-only\" class=\"active\">仅退款</a>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "去掉",
+      "status": "open",
+      "createdAt": "2026-09-15T15:04:48.065Z",
+      "_stale": false
+    },
+    {
+      "id": "rmu2szdcoedx5",
+      "page": "ops/aftersales.html",
+      "anchor": {
+        "selector": "#as-tabs > a:nth-of-type(7)",
+        "selectorIn": "#as-tabs > a:nth-of-type(7)",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "a",
+        "text": "退款并回收权益",
+        "html": "<a href=\"#\" data-tab=\"return\">退款并回收权益</a>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "去掉",
+      "status": "open",
+      "createdAt": "2026-09-15T15:04:52.056Z",
+      "_stale": false
+    },
+    {
+      "id": "rmu2t0hjukbun",
+      "page": "ops/aftersales.html",
+      "anchor": {
+        "selector": "#as-tbody > tr:nth-of-type(2) > td:nth-of-type(1)",
+        "selectorIn": "#as-tbody > tr:nth-of-type(2) > td:nth-of-type(1)",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "td",
+        "text": "AS202609070005",
+        "html": "<td><a href=\"aftersale-detail.html?id=AS202609070005\" class=\"link-mono\">AS202609070005</a></td>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "删掉这一行",
+      "status": "open",
+      "createdAt": "2026-09-15T15:05:44.154Z",
+      "_stale": false
+    },
+    {
+      "id": "rmu2t2ucp8xnn",
+      "page": "ops/aftersales.html",
+      "anchor": {
+        "selector": "#admin-content-slot > div > div:nth-of-type(4)",
+        "selectorIn": "div:nth-of-type(4)",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "div.card",
+        "text": "售后单号 类型 关联订单/商品 买家 订单来源租户 退款金额 申请原因 状态 申请时间 操作 AS202609080001 退货退款 YB20260907000331家长手册 · 2 件 李*** U0001 星启家庭教育 ¥78.00含退运费 ¥0 尺码/规格不符 待商家处理 2026-09-08 10:12 处理详",
+        "html": "<div class=\"card\"><div class=\"card-bd\" style=\"padding:0\"> <table class=\"data\"> <thead> <tr> <th>售后单号</th> <th>类型</th> <th>关联订单/商品</th> <th>买家</th> <th>订单来源租户</th> <th>退款金额</th> <th>申请原因</th> <th>状态</th> <th>申请时间</th> <th style=\"width:160px\">操作</th> </tr> </thead> <tbody id=\"as-tb"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "请检查这个列表的内容，很混乱，请对齐列表",
+      "status": "open",
+      "createdAt": "2026-09-15T15:07:34.057Z"
+    },
+    {
+      "id": "rmu2tcz8t94s7",
+      "page": "ops/trade-orders.html",
+      "anchor": {
+        "selector": "#admin-content-slot > div > div:nth-of-type(4)",
+        "selectorIn": "div:nth-of-type(4)",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "div.card",
+        "text": "订单号 商品信息 买家 实付金额 渠道来源 订单来源租户 内容来源 结算模式 推广人 支付状态 权益状态 退款状态 下单时间 操作 YB20260907000331 春启 03 期家长必修课线上课 · 12 节 · 知识商品 李***138****2610 ¥9.90 视频号 星启家庭教育 星启家庭教育 平台 佣金 2",
+        "html": "<div class=\"card\"><div class=\"card-bd\" style=\"padding:0\"> <table class=\"data\"> <thead> <tr> <th>订单号</th> <th>商品信息</th> <th>买家</th> <th>实付金额</th> <th>渠道来源</th> <th>订单来源租户</th> <th>内容来源</th> <th>结算模式</th> <th>推广人</th> <th>支付状态</th> <th>权益状态</th> <th>退款状态</th> <th>下单时间</th> <th styl"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "整个列表的格式都乱了，请优化调整",
+      "status": "open",
+      "createdAt": "2026-09-15T15:15:26.957Z",
+      "_stale": false
+    },
+    {
+      "id": "rmu2tduve1aqz",
+      "page": "ops/trade-orders.html",
+      "anchor": {
+        "selector": "#admin-content-slot > div > div:nth-of-type(1) > div:nth-of-type(4)",
+        "selectorIn": "div:nth-of-type(1) > div:nth-of-type(4)",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "div.stat",
+        "text": "退款中3含待审核 1 笔",
+        "html": "<div class=\"stat\"><div class=\"label\">退款中</div><div class=\"value\">3</div><div class=\"hint\">含待审核 1 笔</div></div>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "去掉",
+      "status": "open",
+      "createdAt": "2026-09-15T15:16:07.946Z"
+    },
+    {
+      "id": "rmu2u66x3k83a",
+      "page": "admin/goods.html",
+      "anchor": {
+        "selector": "#gd-tabs > a:nth-of-type(5)",
+        "selectorIn": "#gd-tabs > a:nth-of-type(5)",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "a",
+        "text": "上架中",
+        "html": "<a href=\"#\" data-tab=\"onsale\">上架中</a>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "去掉",
+      "status": "open",
+      "createdAt": "2026-09-15T15:38:09.928Z",
+      "_stale": false
+    },
+    {
+      "id": "rmu2u69uvb1gu",
+      "page": "admin/goods.html",
+      "anchor": {
+        "selector": "#gd-tabs > a:nth-of-type(6)",
+        "selectorIn": "#gd-tabs > a:nth-of-type(6)",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "a",
+        "text": "已下架",
+        "html": "<a href=\"#\" data-tab=\"off\">已下架</a>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "去掉",
+      "status": "open",
+      "createdAt": "2026-09-15T15:38:13.735Z",
+      "_stale": false
+    },
+    {
+      "id": "rmu2u6daz0s9y",
+      "page": "admin/goods.html",
+      "anchor": {
+        "selector": "#gd-tabs > a:nth-of-type(7)",
+        "selectorIn": "#gd-tabs > a:nth-of-type(7)",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "a",
+        "text": "草稿",
+        "html": "<a href=\"#\" data-tab=\"draft\">草稿</a>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "去掉",
+      "status": "open",
+      "createdAt": "2026-09-15T15:38:18.203Z"
+    },
+    {
+      "id": "rmu2ukgymxxdu",
+      "page": "admin/bills.html",
+      "anchor": {
+        "selector": "#bl-tabs > a:nth-of-type(3)",
+        "selectorIn": "#bl-tabs > a:nth-of-type(3)",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "a.active",
+        "text": "汇总报表",
+        "html": "<a href=\"#\" data-tab=\"summary\" class=\"active\">汇总报表</a>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "去掉",
+      "status": "open",
+      "createdAt": "2026-09-15T15:49:16.126Z",
+      "_stale": false
+    },
+    {
+      "id": "rmu2upbp8ttz5",
+      "page": "admin/bills.html",
+      "anchor": {
+        "selector": "body > div:nth-of-type(2) > div:nth-of-type(2) > aside > div:nth-of-type(5) > a:nth-of-type(2) > span",
+        "selectorIn": "",
+        "root": "",
+        "region": "shell",
+        "shell": "admin-shell.js",
+        "label": "span.nav-text",
+        "text": "交易账单",
+        "html": "<span class=\"nav-text\">交易账单</span>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "改成「支付流水」",
+      "status": "open",
+      "createdAt": "2026-09-15T15:53:02.588Z",
+      "_stale": false,
+      "updatedAt": "2026-09-15T16:01:30.704Z"
+    },
+    {
+      "id": "rmu2upluwptv2",
+      "page": "admin/bills.html",
+      "anchor": {
+        "selector": "#bl-tabs > a:nth-of-type(2)",
+        "selectorIn": "#bl-tabs > a:nth-of-type(2)",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "a",
+        "text": "交易账单",
+        "html": "<a href=\"#\" data-tab=\"bill\" class=\"\">交易账单</a>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "去掉",
+      "status": "open",
+      "createdAt": "2026-09-15T15:53:15.752Z",
+      "_stale": false,
+      "updatedAt": "2026-09-15T16:01:38.574Z"
+    },
+    {
+      "id": "rmu2v2bkq4bl5",
+      "page": "admin/withdraw.html",
+      "anchor": {
+        "selector": "#admin-content-slot > div > div:nth-of-type(1) > div > div > div:nth-of-type(2) > div:nth-of-type(3) > a",
+        "selectorIn": "div:nth-of-type(1) > div > div > div:nth-of-type(2) > div:nth-of-type(3) > a",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "a.link",
+        "text": "修改",
+        "html": "<a href=\"payment.html\" class=\"link\">修改</a>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "去掉详情，改成「弹窗」，用于修改银行账号",
+      "status": "open",
+      "createdAt": "2026-09-15T16:03:08.954Z"
+    },
+    {
+      "id": "rmu2vixnh53yi",
+      "page": "admin/settlement.html",
+      "anchor": {
+        "selector": "#admin-content-slot > div > div:nth-of-type(1) > div:nth-of-type(4)",
+        "selectorIn": "div:nth-of-type(1) > div:nth-of-type(4)",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "div.stat",
+        "text": "收款账户招商银行 ****8842星启家庭教育（对公）",
+        "html": "<div class=\"stat\"><div class=\"label\">收款账户</div><div class=\"value\" style=\"font-size:16px\">招商银行 ****8842</div><div class=\"hint\">星启家庭教育（对公）</div></div>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "去掉",
+      "status": "open",
+      "createdAt": "2026-09-15T16:16:04.061Z"
+    },
+    {
+      "id": "rmu2vviul5eat",
+      "page": "ops/pay-channels.html",
+      "anchor": {
+        "selector": "#btn-sync",
+        "selectorIn": "#btn-sync",
+        "root": "#page-header-actions",
+        "region": "header-actions",
+        "shell": "",
+        "label": "button#btn-sync.btn",
+        "text": "同步渠道账单",
+        "html": "<button class=\"btn\" id=\"btn-sync\">同步渠道账单</button>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "去掉",
+      "status": "open",
+      "createdAt": "2026-09-15T16:25:51.405Z",
+      "_stale": false
+    },
+    {
+      "id": "rmu2vvmpy7rle",
+      "page": "ops/pay-channels.html",
+      "anchor": {
+        "selector": "#btn-probe",
+        "selectorIn": "#btn-probe",
+        "root": "#page-header-actions",
+        "region": "header-actions",
+        "shell": "",
+        "label": "button#btn-probe.btn",
+        "text": "订单状态查询",
+        "html": "<button class=\"btn\" id=\"btn-probe\">订单状态查询</button>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "去掉",
+      "status": "open",
+      "createdAt": "2026-09-15T16:25:56.422Z"
+    }
+  ]
+}

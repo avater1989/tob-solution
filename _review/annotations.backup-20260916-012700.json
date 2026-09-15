@@ -1,0 +1,181 @@
+{
+  "v": 1,
+  "updated": "2026-09-16T01:24:42",
+  "items": [
+    {
+      "id": "rmu2xt39s6ziw",
+      "page": "ops/pay-channels.html",
+      "anchor": {
+        "selector": "#admin-content-slot > div > div:nth-of-type(2) > div:nth-of-type(2) > table > tbody > tr:nth-of-type(1) > td:nth-of-type(7) > a:nth-of-type(2)",
+        "selectorIn": "div:nth-of-type(2) > div:nth-of-type(2) > table > tbody > tr:nth-of-type(1) > td:nth-of-type(7) > a:nth-of-type(2)",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "a",
+        "text": "结算规则",
+        "html": "<a href=\"settle-rules.html\">结算规则</a>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "去掉",
+      "status": "open",
+      "createdAt": "2026-09-15T17:19:57.136Z"
+    },
+    {
+      "id": "rmu2xtn8h9uhu",
+      "page": "admin/withdraw.html",
+      "anchor": {
+        "selector": "#panel-guide > div",
+        "selectorIn": "#panel-guide > div",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "div.card-bd",
+        "text": "提现时间每日 08:00 自动提现至银行卡，24 小时内到账 最低提现金额满 1 元即可提现 手动提现可在任意时间发起，1-5 个工作日审核到账 留存金额可设置保留金额不自动提现（当前 ¥0.00） 手续费发票支付手续费可申请开具发票（服务商账户） 修改结算 / 提现银行账户请在上方「结算银行账户」处点「修改」弹窗提交",
+        "html": "<div class=\"card-bd\"> <div class=\"kv\"> <div class=\"kv-row\"><span>提现时间</span><b>每日 08:00 自动提现至银行卡，24 小时内到账</b></div> <div class=\"kv-row\"><span>最低提现金额</span><b>满 1 元即可提现</b></div> <div class=\"kv-row\"><span>手动提现</span><b>可在任意时间发起，1-5 个工作日审核到账</b></div> <div class=\"kv-row\"><span>留存金额"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "去掉",
+      "status": "open",
+      "createdAt": "2026-09-15T17:20:23.009Z"
+    },
+    {
+      "id": "rmu2xukrz7wej",
+      "page": "admin/recon.html",
+      "anchor": {
+        "selector": "#admin-content-slot > div > div:nth-of-type(6) > div:nth-of-type(1)",
+        "selectorIn": "div:nth-of-type(6) > div:nth-of-type(1)",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "div.card-hd",
+        "text": "对账规则说明",
+        "html": "<div class=\"card-hd\"><h2>对账规则说明</h2></div>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "去掉",
+      "status": "open",
+      "createdAt": "2026-09-15T17:21:06.480Z",
+      "_stale": false
+    },
+    {
+      "id": "rmu2xuojmkntt",
+      "page": "admin/recon.html",
+      "anchor": {
+        "selector": "#admin-content-slot > div > div:nth-of-type(6) > div:nth-of-type(2)",
+        "selectorIn": "div:nth-of-type(6) > div:nth-of-type(2)",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "div.card-bd",
+        "text": "每日 T+1 自动拉取通联支付 / 视频号小店账单，与平台订单按交易单号逐笔核对； 差异类型：金额不一致、平台/渠道单边账、退款状态不一致； 金额与笔数全部一致 → 对账单状态「已对平」，可参与结算；存在差异 → 需处理完差异后重算； MVP 为商户侧对账视图；平台侧对账异常工单流转为后续能力。",
+        "html": "<div class=\"card-bd\"> <ul class=\"muted\" style=\"font-size:13px;line-height:1.9;padding-left:16px\"> <li>每日 T+1 自动拉取通联支付 / 视频号小店账单，与平台订单按交易单号逐笔核对；</li> <li>差异类型：金额不一致、平台/渠道单边账、退款状态不一致；</li> <li>金额与笔数全部一致 → 对账单状态「已对平」，可参与结算；存在差异 → 需处理完差异后重算；</li> <li>MVP 为商户侧对账视图；平台侧对账异常工单流转为后续能力。</l"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "去掉",
+      "status": "open",
+      "createdAt": "2026-09-15T17:21:11.363Z"
+    },
+    {
+      "id": "rmu2xw0no2h2c",
+      "page": "admin/goods.html",
+      "anchor": {
+        "selector": "#gd-tabs > a:nth-of-type(4)",
+        "selectorIn": "#gd-tabs > a:nth-of-type(4)",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "a.active",
+        "text": "直播商品",
+        "html": "<a href=\"#\" data-tab=\"live\" class=\"active\">直播商品</a>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "右侧增加「微信小店商品」",
+      "status": "open",
+      "createdAt": "2026-09-15T17:22:13.717Z"
+    },
+    {
+      "id": "rmu2xwvthrzjs",
+      "page": "ops/dashboard.html",
+      "anchor": {
+        "selector": "#admin-content-slot > div > div:nth-of-type(2) > div:nth-of-type(2) > table > tbody > tr:nth-of-type(5) > td:nth-of-type(1)",
+        "selectorIn": "div:nth-of-type(2) > div:nth-of-type(2) > table > tbody > tr:nth-of-type(5) > td:nth-of-type(1)",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "td",
+        "text": "风控预警",
+        "html": "<td><span class=\"badge badge-danger\">风控预警</span></td>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "删除这行",
+      "status": "open",
+      "createdAt": "2026-09-15T17:22:54.101Z",
+      "_stale": false
+    },
+    {
+      "id": "rmu2xx5aso8wl",
+      "page": "ops/dashboard.html",
+      "anchor": {
+        "selector": "#admin-content-slot > div > div:nth-of-type(3) > div:nth-of-type(1)",
+        "selectorIn": "div:nth-of-type(3) > div:nth-of-type(1)",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "div.card-hd",
+        "text": "租户动态 全部租户 →",
+        "html": "<div class=\"card-hd\"> <h2>租户动态</h2> <a href=\"tenants.html\" style=\"font-size:13px;color:var(--color-primary);text-decoration:none\">全部租户 →</a> </div>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "去掉整个板块",
+      "status": "open",
+      "createdAt": "2026-09-15T17:23:06.388Z",
+      "_stale": false,
+      "updatedAt": "2026-09-15T17:23:18.117Z"
+    },
+    {
+      "id": "rmu2xyy4958s6",
+      "page": "admin/content-series.html",
+      "anchor": {
+        "selector": "body > div:nth-of-type(3) > div:nth-of-type(2) > aside > div:nth-of-type(2) > a:nth-of-type(1) > span",
+        "selectorIn": "",
+        "root": "",
+        "region": "shell",
+        "shell": "admin-shell.js",
+        "label": "span.nav-text",
+        "text": "系列课",
+        "html": "<span class=\"nav-text\">系列课</span>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "下方增加一个「线下课（待完善）」，页面类似于图文板块",
+      "status": "open",
+      "createdAt": "2026-09-15T17:24:30.393Z"
+    },
+    {
+      "id": "rmu2xz7i2dkym",
+      "page": "ops/content-series.html",
+      "anchor": {
+        "selector": "body > div:nth-of-type(3) > div:nth-of-type(2) > aside > div:nth-of-type(2) > a:nth-of-type(1)",
+        "selectorIn": "",
+        "root": "",
+        "region": "shell",
+        "shell": "admin-shell.js",
+        "label": "a.nav-item.active",
+        "text": "系列课",
+        "html": "<a class=\"nav-item active\" href=\"content-series.html\">系列课</a>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "下方增加一个「线下课（待完善）」，页面类似于图文板块",
+      "status": "open",
+      "createdAt": "2026-09-15T17:24:42.555Z"
+    }
+  ]
+}

@@ -56,6 +56,7 @@
         group: "内容管理",
         links: [
           { id: "content-series", href: "content-series.html", label: "系列课" },
+          { id: "content-offline", href: "content-offline.html", label: "线下课（待完善）" },
           { id: "content-video", href: "content-video.html", label: "视频" },
           { id: "content-article", href: "content-article.html", label: "图文" },
           { id: "content-category", href: "content-category.html", label: "内容分类" },
@@ -109,7 +110,6 @@
         group: "风控与规则",
         links: [
           { id: "settle-rules", href: "settle-rules.html", label: "结算规则配置" },
-          { id: "trade-settings", href: "trade-settings.html", label: "交易选项" },
         ],
       },
     ],

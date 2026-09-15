@@ -7,10 +7,7 @@
 <link rel="stylesheet" href="../assets/css/proto.css?v=9" />
 </head>
 <body class="admin-body" data-module="trade" data-nav="assets" data-title="资产总览" data-crumb="交易 / 资产管理 / 资产总览">
-<div id="header-actions">
-  <button class="btn" id="btn-bill">查看交易账单</button>
-  <button class="btn btn-primary" id="btn-withdraw">发起提现</button>
-</div>
+<div id="header-actions"></div>
 <div id="page-content" style="display:none">
 
   <!-- 顶部账户余额概况 -->
@@ -84,25 +81,7 @@
   </div></div>
 </div>
 
-<!-- 提现弹窗 -->
-<div class="proto-mask" id="mask"></div>
-<div class="proto-modal" id="modal-withdraw" style="width:520px">
-  <div class="proto-modal-hd"><h3 style="font-size:16px;font-weight:600">发起提现</h3><button class="btn btn-sm btn-ghost" data-close>×</button></div>
-  <div class="proto-modal-bd">
-    <div class="form-grid" style="grid-template-columns:1fr 1fr">
-      <div class="field"><label>提现账户</label><div>通联支付结算卡（进件绑定）</div></div>
-      <div class="field"><label>可提现金额</label><div>¥3,286.50</div></div>
-      <div class="field"><label>提现金额 *</label><input id="wd-amount" type="number" value="3000" /></div>
-      <div class="field"><label>到账时间</label><div>提交后 1-5 个工作日</div></div>
-    </div>
-    <p class="muted" style="margin-top:8px">每日 08:00 自动提现已默认开启？可在「提现管理」中配置自动提现与留存金额。</p>
-  </div>
-  <div class="proto-drawer-ft" style="border-top:1px solid var(--color-border);padding:12px 20px;display:flex;gap:8px;justify-content:flex-end">
-    <button class="btn" data-close>取消</button>
-    <button class="btn btn-primary" id="wd-submit">确认提现</button>
-  </div>
-</div>
-
+<!-- 本页为只读概览：发起提现 / 查看账单请到「提现管理」「支付流水」 -->
 <style>
 .asset-hero{display:flex;justify-content:space-between;align-items:center;gap:24px;flex-wrap:wrap}
 .big-num{font-size:30px;font-weight:600;color:#1d2129;margin:6px 0}
@@ -119,17 +98,5 @@
 
 <script src="../assets/js/proto.js"></script>
 <script src="../assets/js/admin-shell.js?v=14"></script>
-<script>
-(function () {
-  var mask=document.getElementById("mask");
-  function closeAll(){ mask.classList.remove("open"); document.querySelectorAll(".proto-modal,.proto-drawer").forEach(function(n){n.classList.remove("open");}); }
-  function open(n){ mask.classList.add("open"); n.classList.add("open"); }
-  mask.addEventListener("click", closeAll);
-  document.querySelectorAll("[data-close]").forEach(function(n){ n.addEventListener("click", closeAll); });
-  document.getElementById("btn-withdraw").addEventListener("click", function(){ open(document.getElementById("modal-withdraw")); });
-  document.getElementById("wd-submit").addEventListener("click", function(){ closeAll(); Proto.toast("提现申请已提交（原型）"); });
-  document.getElementById("btn-bill").addEventListener("click", function(){ location.href="bills.html"; });
-})();
-</script>
 </body>
 </html>

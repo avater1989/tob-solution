@@ -154,10 +154,9 @@
         <p class="muted" style="margin:0;font-size:12px">任意用户可进入本场直播与回放（仍受上架状态影响）。</p>
       </div>
       <div class="access-panel" id="access-panel-paid" style="display:none">
-        <div class="form-grid" style="grid-template-columns:1fr 1fr;margin-top:4px">
-          <div class="field"><label>单场价格（元）</label><input id="le-access-price" type="number" min="0" step="0.01" value="9.9" placeholder="如：9.9" /></div>
-          <div class="field"><label>说明</label><div class="muted" style="font-size:12px;padding-top:8px">付费购买的是本场观看资格，不是购物车里的挂载商品。</div></div>
-        </div>
+        <p class="muted" style="margin:0;font-size:12px">
+          选择付费后，会生成一款商品，需要前往更新商品信息并上架才生效。付费购买的是本场观看资格，不是购物车里的挂载商品。
+        </p>
       </div>
       <div class="access-panel" id="access-panel-pwd" style="display:none">
         <div class="form-grid" style="grid-template-columns:1fr 1fr;margin-top:4px">
@@ -1015,7 +1014,6 @@
     if ($("le-agree")) $("le-agree").checked = !!v.agreedOpsRules;
 
     setAccessMode(saleModeToAccess(v.saleMode || v.accessMode));
-    if ($("le-access-price") && v.accessPrice != null) $("le-access-price").value = v.accessPrice;
     if ($("le-watch-pwd") && v.watchPassword) $("le-watch-pwd").value = v.watchPassword;
     if ($("le-solo-sell")) $("le-solo-sell").checked = v.soloSell !== false;
 
@@ -1065,7 +1063,6 @@
       content: ($("le-content") && $("le-content").value) || "",
       saleMode: saleMode,
       accessMode: access,
-      accessPrice: $("le-access-price") ? Number($("le-access-price").value) || 0 : 0,
       watchPassword: access === "pwd" && $("le-watch-pwd") ? $("le-watch-pwd").value.trim() : "",
       hostPassword: hostOn && $("le-host-pwd") ? $("le-host-pwd").value.trim() : "",
       soloSell: $("le-solo-sell") ? !!$("le-solo-sell").checked : true,

@@ -1,0 +1,425 @@
+{
+  "v": 1,
+  "exportedAt": "2026-09-15T17:12:44.990Z",
+  "items": [
+    {
+      "id": "rmtz8hhzwiqpf",
+      "page": "admin/videos.html",
+      "anchor": {
+        "selector": "#admin-content-slot > div > div:nth-of-type(1)",
+        "selectorIn": "div:nth-of-type(1)",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "div.alert.alert-info",
+        "text": "路径③ 视频号获客承接 本页仅保留「店铺授权」能力，为一期部署同步能力，页面不阻断验收（E3）。",
+        "html": "<div class=\"alert alert-info\" style=\"margin-bottom:8px;align-items:flex-start\"> <svg viewBox=\"0 0 24 24\" width=\"16\" height=\"16\" fill=\"currentColor\" style=\"flex-shrink:0;margin-top:2px\"><path d=\"M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "去掉",
+      "status": "open",
+      "createdAt": "2026-09-13T03:07:47.421Z",
+      "_stale": false
+    },
+    {
+      "id": "rmtz8hl9df2xw",
+      "page": "admin/videos.html",
+      "anchor": {
+        "selector": "#panel-auth > div:nth-of-type(1)",
+        "selectorIn": "#panel-auth > div:nth-of-type(1)",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "div.alert",
+        "text": "部署配置 · 非路径阻断 一期可走部署同步（E3），本页 不作为路径③验收阻断项。",
+        "html": "<div class=\"alert\" style=\"margin-bottom:8px;background:#fff7e6;border:1px solid #ffd591;color:#ad6800;align-items:flex-start;display:flex;gap:8px;padding:10px 12px;border-radius:6px\"> <div> <div style=\"font-weight:600\">部署配置 · 非路径阻断</div> <div style=\"margin-top:2px;font-size:13px\""
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "去掉",
+      "status": "open",
+      "createdAt": "2026-09-13T03:07:51.649Z"
+    },
+    {
+      "id": "rmtzdk70b653l",
+      "page": "admin/content-series.html",
+      "anchor": {
+        "selector": "#cs-list > div:nth-of-type(2) > div:nth-of-type(3) > a:nth-of-type(2)",
+        "selectorIn": "#cs-list > div:nth-of-type(2) > div:nth-of-type(3) > a:nth-of-type(2)",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "a.btn",
+        "text": "目录管理",
+        "html": "<a class=\"btn\" href=\"content-series-outline.html?id=S002\">目录管理</a>"
+      },
+      "type": "remove",
+      "priority": "P1",
+      "comment": "去掉",
+      "status": "open",
+      "createdAt": "2026-09-13T05:29:51.228Z",
+      "_stale": false
+    },
+    {
+      "id": "rmtzdkkb1t0js",
+      "page": "admin/content-series.html",
+      "anchor": {
+        "selector": "#cs-list > div:nth-of-type(2) > div:nth-of-type(3) > button:nth-of-type(2)",
+        "selectorIn": "#cs-list > div:nth-of-type(2) > div:nth-of-type(3) > button:nth-of-type(2)",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "button.btn",
+        "text": "上架",
+        "html": "<button class=\"btn\" data-shelf-on=\"S002\">上架</button>"
+      },
+      "type": "add",
+      "priority": "P1",
+      "comment": "点击后先二次确认",
+      "status": "open",
+      "createdAt": "2026-09-13T05:30:08.461Z",
+      "_stale": false
+    },
+    {
+      "id": "rmtzdkq8cju9o",
+      "page": "admin/content-series.html",
+      "anchor": {
+        "selector": "#cs-list > div:nth-of-type(1) > div:nth-of-type(3) > a:nth-of-type(2)",
+        "selectorIn": "#cs-list > div:nth-of-type(1) > div:nth-of-type(3) > a:nth-of-type(2)",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "a.btn",
+        "text": "目录管理",
+        "html": "<a class=\"btn\" href=\"content-series-outline.html?id=S001\">目录管理</a>"
+      },
+      "type": "remove",
+      "priority": "P1",
+      "comment": "删除",
+      "status": "open",
+      "createdAt": "2026-09-13T05:30:16.140Z",
+      "_stale": false
+    },
+    {
+      "id": "rmtzdkui9pqeo",
+      "page": "admin/content-series.html",
+      "anchor": {
+        "selector": "#cs-list > div:nth-of-type(3) > div:nth-of-type(3) > a:nth-of-type(2)",
+        "selectorIn": "#cs-list > div:nth-of-type(3) > div:nth-of-type(3) > a:nth-of-type(2)",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "a.btn",
+        "text": "目录管理",
+        "html": "<a class=\"btn\" href=\"content-series-outline.html?id=S003\">目录管理</a>"
+      },
+      "type": "remove",
+      "priority": "P1",
+      "comment": "删除",
+      "status": "open",
+      "createdAt": "2026-09-13T05:30:21.682Z",
+      "_stale": false
+    },
+    {
+      "id": "rmtzdlansqqrh",
+      "page": "admin/content-series.html",
+      "anchor": {
+        "selector": "#cs-reset",
+        "selectorIn": "#cs-reset",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "button#cs-reset.btn",
+        "text": "重置",
+        "html": "<button class=\"btn\" id=\"cs-reset\">重置</button>"
+      },
+      "type": "add",
+      "priority": "P1",
+      "comment": "旁边增加查询按钮",
+      "status": "open",
+      "createdAt": "2026-09-13T05:30:42.616Z"
+    },
+    {
+      "id": "rmtzlpuieis40",
+      "page": "admin/live-edit.html",
+      "anchor": {
+        "selector": "#le-access-price",
+        "selectorIn": "#le-access-price",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "input#le-access-price",
+        "text": "",
+        "html": "<input id=\"le-access-price\" type=\"number\" min=\"0\" step=\"0.01\" value=\"9.9\" placeholder=\"如：9.9\">"
+      },
+      "type": "remove",
+      "priority": "P1",
+      "comment": "去掉",
+      "status": "open",
+      "createdAt": "2026-09-13T09:18:11.894Z",
+      "_stale": false
+    },
+    {
+      "id": "rmtzlr14o4gek",
+      "page": "admin/live-edit.html",
+      "anchor": {
+        "selector": "#access-panel-paid > div > div:nth-of-type(2) > div",
+        "selectorIn": "#access-panel-paid > div > div:nth-of-type(2) > div",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "div.muted",
+        "text": "付费购买的是本场观看资格，不是购物车里的挂载商品。",
+        "html": "<div class=\"muted\" style=\"font-size:12px;padding-top:8px\">付费购买的是本场观看资格，不是购物车里的挂载商品。</div>"
+      },
+      "type": "add",
+      "priority": "P1",
+      "comment": "选择付费后，会生成一款商品，需要前往更新商品信息并上架才生效。",
+      "status": "open",
+      "createdAt": "2026-09-13T09:19:07.128Z",
+      "_stale": false,
+      "updatedAt": "2026-09-13T09:19:47.349Z"
+    },
+    {
+      "id": "rmtzly8dj0jw2",
+      "page": "admin/goods-edit.html",
+      "anchor": {
+        "selector": "#admin-content-slot > div > div:nth-of-type(5) > div:nth-of-type(1) > h3",
+        "selectorIn": "div:nth-of-type(5) > div:nth-of-type(1) > h3",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "h3",
+        "text": "交付与售后",
+        "html": "<h3>交付与售后</h3>"
+      },
+      "type": "interaction",
+      "priority": "P1",
+      "comment": "本模块增加【交付内容】。 如果是系列课，取值于「系列课」列表。 如果是定制化计划商品，取值于「定制化计划」列表。 如果是直播商品，取值于「直播列表」中的「付费直播」。",
+      "status": "open",
+      "createdAt": "2026-09-13T09:24:43.111Z",
+      "_stale": false,
+      "updatedAt": "2026-09-13T10:47:33.491Z"
+    },
+    {
+      "id": "rmu2x6spm4zj8",
+      "page": "ops/aftersales.html",
+      "anchor": {
+        "selector": "#btn-rule",
+        "selectorIn": "#btn-rule",
+        "root": "#page-header-actions",
+        "region": "header-actions",
+        "shell": "",
+        "label": "button#btn-rule.btn.btn-primary",
+        "text": "售后规则",
+        "html": "<button class=\"btn btn-primary\" id=\"btn-rule\">售后规则</button>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "去掉",
+      "status": "open",
+      "createdAt": "2026-09-15T17:02:37.018Z"
+    },
+    {
+      "id": "rmu2x7bntanug",
+      "page": "admin/aftersales.html",
+      "anchor": {
+        "selector": "#btn-rule",
+        "selectorIn": "#btn-rule",
+        "root": "#page-header-actions",
+        "region": "header-actions",
+        "shell": "",
+        "label": "button#btn-rule.btn.btn-primary",
+        "text": "售后规则",
+        "html": "<button class=\"btn btn-primary\" id=\"btn-rule\">售后规则</button>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "去掉",
+      "status": "open",
+      "createdAt": "2026-09-15T17:03:01.577Z"
+    },
+    {
+      "id": "rmu2x9pyvm46f",
+      "page": "ops/settle-rules.html",
+      "anchor": {
+        "selector": "#modal-rule > div:nth-of-type(2) > div > div:nth-of-type(2) > label",
+        "selectorIn": "",
+        "root": "",
+        "region": "page",
+        "shell": "",
+        "label": "label",
+        "text": "优先级 *",
+        "html": "<label>优先级 *</label>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "去掉，，对应修改列表",
+      "status": "open",
+      "createdAt": "2026-09-15T17:04:53.432Z",
+      "_stale": false,
+      "updatedAt": "2026-09-15T17:06:15.297Z"
+    },
+    {
+      "id": "rmu2x9v83jk34",
+      "page": "ops/settle-rules.html",
+      "anchor": {
+        "selector": "#modal-rule > div:nth-of-type(2) > div > div:nth-of-type(7) > label",
+        "selectorIn": "",
+        "root": "",
+        "region": "page",
+        "shell": "",
+        "label": "label",
+        "text": "结算门槛（元）",
+        "html": "<label>结算门槛（元）</label>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "去掉，，对应修改列表",
+      "status": "open",
+      "createdAt": "2026-09-15T17:05:00.244Z",
+      "_stale": false,
+      "updatedAt": "2026-09-15T17:06:19.553Z"
+    },
+    {
+      "id": "rmu2x9z5cfrpn",
+      "page": "ops/settle-rules.html",
+      "anchor": {
+        "selector": "#modal-rule > div:nth-of-type(2) > div > div:nth-of-type(5) > label",
+        "selectorIn": "",
+        "root": "",
+        "region": "page",
+        "shell": "",
+        "label": "label",
+        "text": "平台费率方式",
+        "html": "<label>平台费率方式</label>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "去掉，，对应修改列表",
+      "status": "open",
+      "createdAt": "2026-09-15T17:05:05.328Z",
+      "_stale": false,
+      "updatedAt": "2026-09-15T17:06:09.812Z"
+    },
+    {
+      "id": "rmu2xb5wqqra3",
+      "page": "ops/settle-rules.html",
+      "anchor": {
+        "selector": "#sr-cycle",
+        "selectorIn": "",
+        "root": "",
+        "region": "page",
+        "shell": "",
+        "label": "select#sr-cycle",
+        "text": "T+1T+7周结月结",
+        "html": "<select id=\"sr-cycle\"><option>T+1</option><option>T+7</option><option>周结</option><option>月结</option></select>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "去掉周结、月结，改成T+15、T+30，对应修改列表",
+      "status": "open",
+      "createdAt": "2026-09-15T17:06:00.746Z",
+      "_stale": false
+    },
+    {
+      "id": "rmu2xcar6i8ig",
+      "page": "ops/settle-rules.html",
+      "anchor": {
+        "selector": "#btn-test",
+        "selectorIn": "#btn-test",
+        "root": "#page-header-actions",
+        "region": "header-actions",
+        "shell": "",
+        "label": "button#btn-test.btn",
+        "text": "试算",
+        "html": "<button class=\"btn\" id=\"btn-test\">试算</button>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "去掉",
+      "status": "open",
+      "createdAt": "2026-09-15T17:06:53.682Z",
+      "_stale": false
+    },
+    {
+      "id": "rmu2xcjvdye4p",
+      "page": "ops/settle-rules.html",
+      "anchor": {
+        "selector": "#sr-tbody > tr:nth-of-type(1) > td:nth-of-type(10) > a:nth-of-type(2)",
+        "selectorIn": "#sr-tbody > tr:nth-of-type(1) > td:nth-of-type(10) > a:nth-of-type(2)",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "a",
+        "text": "试算",
+        "html": "<a href=\"#\" data-row-act=\"test\">试算</a>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "去掉全部试算的按钮",
+      "status": "open",
+      "createdAt": "2026-09-15T17:07:05.497Z",
+      "_stale": false
+    },
+    {
+      "id": "rmu2xd8r96hs6",
+      "page": "admin/orders.html",
+      "anchor": {
+        "selector": "#admin-content-slot > div > div:nth-of-type(1) > div:nth-of-type(4)",
+        "selectorIn": "div:nth-of-type(1) > div:nth-of-type(4)",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "div.stat",
+        "text": "退款中3含待审核 1 笔",
+        "html": "<div class=\"stat\"><div class=\"label\">退款中</div><div class=\"value\">3</div><div class=\"hint\">含待审核 1 笔</div></div>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "去掉",
+      "status": "open",
+      "createdAt": "2026-09-15T17:07:37.750Z",
+      "_stale": false
+    },
+    {
+      "id": "rmu2xdcjn3m0l",
+      "page": "admin/orders.html",
+      "anchor": {
+        "selector": "#page-header-actions > button:nth-of-type(3)",
+        "selectorIn": "button:nth-of-type(3)",
+        "root": "#page-header-actions",
+        "region": "header-actions",
+        "shell": "",
+        "label": "button.btn",
+        "text": "权益开通记录",
+        "html": "<button class=\"btn\" onclick=\"location.href='entitlement.html'\">权益开通记录</button>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "去掉",
+      "status": "open",
+      "createdAt": "2026-09-15T17:07:42.660Z"
+    },
+    {
+      "id": "rmu2xew3alxe5",
+      "page": "admin/goods.html",
+      "anchor": {
+        "selector": "#gd-tbody > tr:nth-of-type(1) > td:nth-of-type(10)",
+        "selectorIn": "#gd-tbody > tr:nth-of-type(1) > td:nth-of-type(10)",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "td.row-actions",
+        "text": "编辑 下架 分享",
+        "html": "<td class=\"row-actions\"> <a href=\"goods-edit.html\">编辑</a> <a href=\"#\" data-row-act=\"off\">下架</a> <a href=\"#\" data-row-act=\"share\">分享</a> </td>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "右侧增加按钮：同步到微信小店",
+      "status": "open",
+      "createdAt": "2026-09-15T17:08:54.646Z"
+    }
+  ]
+}

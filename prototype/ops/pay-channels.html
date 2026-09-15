@@ -7,11 +7,7 @@
 <link rel="stylesheet" href="../assets/css/proto.css?v=4" />
 </head>
 <body class="admin-body" data-module="trade" data-nav="pay-channels" data-title="收款与清分" data-crumb="运营后台 / 交易与结算 / 收款与进件 / 收款与清分">
-<div id="header-actions">
-  <button class="btn" id="btn-sync">同步渠道账单</button>
-  <button class="btn" id="btn-probe">订单状态查询</button>
-  <button class="btn btn-primary" id="btn-guide">接入说明</button>
-</div>
+<div id="header-actions"></div>
 <div id="page-content" style="display:none">
 
   <div class="alert alert-info" style="margin-bottom:12px">
@@ -31,7 +27,7 @@
             <td><span class="badge badge-success">收款中</span></td>
             <td>0.30%（方案报价 1）</td>
             <td>D+1 结算至存管账户</td>
-            <td class="row-actions"><a href="#" data-row-act="detail">账户信息</a><a href="settle-rules.html">结算规则</a></td>
+            <td class="row-actions"><a href="#" data-row-act="detail">账户信息</a></td>
           </tr>
           <tr>
             <td><b>微信支付（直连备用）</b><br><span class="muted" style="font-size:12px">通联通道异常时降级</span></td>
@@ -40,7 +36,7 @@
             <td><span class="badge">未启用</span></td>
             <td>—</td>
             <td>—</td>
-            <td class="row-actions"><a href="#" data-row-act="open">查看接入说明</a></td>
+            <td class="row-actions"><span class="muted">—</span></td>
           </tr>
         </tbody>
       </table>
@@ -76,7 +72,7 @@
         <div class="field"><label>提现时点</label><div>D1（T+1 日 14:00 触发代付）</div></div>
         <div class="field"><label>退款约束</label><div>当日退货额 ≤ 当日交易额；且 ≤ 原收款人账户余额（不足需先充值）</div></div>
       </div>
-      <p class="muted" style="margin-top:10px;font-size:12px">兜底能力：<b>订单状态查询</b>（异步通知不保证 100% 到达，交易完成后未收到通知时主动查询）；<b>平台头寸查询</b>（通联通头寸 / 电子账户头寸）。</p>
+      <p class="muted" style="margin-top:10px;font-size:12px">兜底能力（系统自动，无需人工触发）：<b>订单状态查询</b>（异步通知不保证 100% 到达，交易完成后未收到通知时主动查询）；<b>平台头寸查询</b>（通联通头寸 / 电子账户头寸）。</p>
     </div>
   </div>
 
@@ -110,14 +106,9 @@
   document.querySelectorAll("[data-row-act]").forEach(function (a) {
     a.addEventListener("click", function (e) {
       e.preventDefault();
-      var act = a.getAttribute("data-row-act");
-      if (act === "detail") Proto.toast("打开商户号详情（原型）");
-      else Proto.toast("打开微信支付直连接入说明（原型）");
+      if (a.getAttribute("data-row-act") === "detail") Proto.toast("打开商户号详情（原型）");
     });
   });
-  document.getElementById("btn-guide").addEventListener("click", function(){ Proto.toast("打开通联云商通接入说明（原型）"); });
-  document.getElementById("btn-sync").addEventListener("click", function(){ Proto.toast("已同步通联渠道账单（原型）"); });
-  document.getElementById("btn-probe").addEventListener("click", function(){ Proto.toast("已发起订单状态查询（原型，用于异步通知未到达的兜底）"); });
 })();
 </script>
 </body>

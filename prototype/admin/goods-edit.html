@@ -17,10 +17,11 @@
 
   <!-- 商品类型 -->
   <div class="cm-section">
-    <div class="cm-section-hd"><h3>商品类型</h3><span class="muted">系列课与定制化计划商品可由「内容」模块一键创建</span></div>
+    <div class="cm-section-hd"><h3>商品类型</h3><span class="muted">系列课与定制化计划商品可由「内容」模块一键创建；直播商品由「直播」模块创建</span></div>
     <div class="cm-choice" id="gd-type">
       <label class="cm-choice-item active"><input type="radio" name="gtype" value="series" checked /><b>系列课商品</b><span>由系列课创建，购买后按目录解锁学习</span></label>
       <label class="cm-choice-item"><input type="radio" name="gtype" value="plan" /><b>定制化计划商品</b><span>由定制化计划创建，按关卡与任务推进</span></label>
+      <label class="cm-choice-item"><input type="radio" name="gtype" value="live" /><b>直播商品</b><span>由付费直播创建，购买后交付该场观看资格</span></label>
     </div>
   </div>
 
@@ -161,14 +162,17 @@
   } catch (ePre) {}
 
   // 交付内容：随商品类型联动
-  // 系列课商品取值于「系列课」列表；定制化计划商品取值于「定制化计划」列表
+  // 系列课商品取值于「系列课」列表；定制化计划商品取值于「定制化计划」列表；
+  // 直播商品取值于「直播列表」中的「付费直播」
   var DELIVER = {
     series: ["小学语文阅读启蒙系列", "家长情绪管理训练营", "AI 学习规划入门"],
     plan:   ["亲子沟通 21 天定制化计划 · 第 4 期", "开学季学习习惯养成计划", "青春期沟通家长共学计划"],
+    live:   ["午间答疑 · 直播中（付费直播）", "春启 03 期家长公开课（付费直播）"],
   };
   var DELIVER_HINT = {
     series: "取值于「系列课」列表：购买后交付所选系列课内容",
     plan:   "取值于「定制化计划」列表：购买后按关卡与任务开通计划",
+    live:   "取值于「直播列表」中的「付费直播」：购买后交付该场观看资格，付费场次需先在「直播创建」生成商品并上架",
   };
   var deliverSel = document.getElementById("f-deliver");
   function renderDeliver(type) {

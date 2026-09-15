@@ -7,14 +7,11 @@
 <link rel="stylesheet" href="../assets/css/proto.css?v=4" />
 </head>
 <body class="admin-body" data-module="trade" data-nav="onboard-audit" data-title="进件审核" data-crumb="运营后台 / 交易与结算 / 收款与进件 / 进件审核">
-<div id="header-actions">
-  <button class="btn" id="btn-export">导出进件记录</button>
-  <button class="btn" id="btn-rule">审核要点</button>
-</div>
+<div id="header-actions"></div>
 <div id="page-content" style="display:none">
 
   <div class="alert alert-info" style="margin-bottom:12px">
-    <span>进件链路：商家提交 → <b>平台初审</b> → 通联审核（工商 + 法人实名 + 影印件 OCR）→ 审核通过 → 绑定手机 → <b>提现协议签约</b> → 可收款。平台初审不通过可直接驳回；通联审核结果通过异步通知回写。</span>
+    <span>进件链路：商家线下提供资料 → 平台录入 → <b>平台初审</b> → 通联审核（工商 + 法人实名 + 影印件 OCR）→ 审核通过 → 绑定手机 → <b>提现协议签约</b> → 可收款。</span>
   </div>
 
   <!-- 统计 -->
@@ -274,8 +271,7 @@
     });
   });
 
-  document.getElementById("btn-rule").addEventListener("click", function(){ open(document.getElementById("modal-rule")); });
-  document.getElementById("btn-export").addEventListener("click", function(){ Proto.toast("已导出进件记录（原型）"); });
+  /* 「审核要点」入口已移除；弹窗 #modal-rule 内容保留作留痕，当前无入口。 */
 })();
 </script>
 </body>

@@ -20,7 +20,6 @@
     <div class="stat"><div class="label">近 30 天交易额</div><div class="value">¥12,648.50</div><div class="hint">128 笔已支付</div></div>
     <div class="stat"><div class="label">待付款</div><div class="value">9</div><div class="hint">超 30 分钟自动关闭</div></div>
     <div class="stat"><div class="label">待开通权益</div><div class="value">2</div><div class="hint"><a href="entitlement.html" style="color:inherit">去处理 →</a></div></div>
-    <div class="stat"><div class="label">退款中</div><div class="value">3</div><div class="hint">含待审核 1 笔</div></div>
     <div class="stat"><div class="label">已完成</div><div class="value">116</div><div class="hint">权益已开通</div></div>
   </div>
 
@@ -37,7 +36,7 @@
   <!-- 筛选 -->
   <div class="card" style="margin-bottom:8px"><div class="card-bd">
     <div class="form-grid" style="grid-template-columns:repeat(5,minmax(0,1fr));gap:8px 12px">
-      <input id="f-order-no" placeholder="订单号 / 交易单号" />
+      <input id="f-order-no" placeholder="订单号 / 渠道支付流水号" />
       <input id="f-product" placeholder="商品名称" />
       <input id="f-buyer" placeholder="买家（姓名/手机号）" />
       <select id="f-channel">
@@ -77,6 +76,7 @@
       <thead>
         <tr>
           <th>订单号</th>
+          <th style="white-space:nowrap">渠道支付流水号</th>
           <th>商品信息</th>
           <th>买家</th>
           <th>实付金额</th>
@@ -94,14 +94,14 @@
       </thead>
       <tbody id="ord-tbody">
         <tr>
-          <td><a href="#" data-toast="订单详情（原型示意）" class="link-mono">YB20260907000331</a></td>
+          <td><a href="order-detail.html?no=YB20260907000331" class="link-mono">YB20260907000331</a></td>
+          <td class="mono">WX20260907140221</td>
           <td>春启 03 期家长必修课<br><span class="muted">线上课 · 12 节 · 知识商品</span></td>
           <td>李***<br><span class="muted">138****2610</span></td>
           <td><b>¥9.90</b></td>
           <td><span class="tag tag-green">视频号</span></td>
           <td><span class="tag tag-blue">星启家庭教育</span></td>
           <td><span class="tag tag-blue">星启家庭教育</span></td>
-          <td><span class="tag tag-purple">平台</span></td>
           <td>佣金 20%</td>
           <td>—</td>
           <td><span class="badge badge-info">已支付</span></td>
@@ -109,13 +109,14 @@
           <td><span class="muted">—</span></td>
           <td>2026-09-07 14:22</td>
           <td class="row-actions">
-            <a href="#" data-toast="订单详情（原型示意）">详情</a>
+            <a href="order-detail.html?no=YB20260907000331">详情</a>
             <a href="entitlement.html">权益记录</a>
             <a href="aftersales.html">退款</a>
           </td>
         </tr>
         <tr>
-          <td><a href="#" data-toast="订单详情（原型示意）" class="link-mono">YB20260329100456</a></td>
+          <td><a href="order-detail.html?no=YB20260329100456" class="link-mono">YB20260329100456</a></td>
+          <td class="mono muted">—</td>
           <td>今晚直播·家长公开课<br><span class="muted">直播课 · ¥0 免费</span></td>
           <td>陈***<br><span class="muted">186****4411</span></td>
           <td><b>¥0.00</b></td>
@@ -129,20 +130,19 @@
           <td><span class="muted">—</span></td>
           <td>2026-03-28 20:18</td>
           <td class="row-actions">
-            <a href="#" data-toast="订单详情（原型示意）">详情</a>
+            <a href="order-detail.html?no=YB20260329100456">详情</a>
             <a href="#" data-row-act="note">备注</a>
           </td>
         </tr>
         <tr>
-          <td><a href="#" data-toast="订单详情（原型示意）" class="link-mono">YB20260327100789</a></td>
+          <td><a href="order-detail.html?no=YB20260327100789" class="link-mono">YB20260327100789</a></td>
+          <td class="mono muted">—</td>
           <td>9.9 引流课·亲子沟通<br><span class="muted">线上课 · ¥9.9 限时</span></td>
           <td>刘***<br><span class="muted">137****0012</span></td>
           <td><b>¥9.90</b></td>
           <td><span class="tag tag-blue">小程序</span></td>
           <td><span class="tag tag-blue">晨光少儿成长</span></td>
           <td><span class="tag tag-blue">青藤家长学堂</span></td>
-          <td><span class="tag tag-blue">慧心教育</span></td>
-          <td><span class="tag tag-green">自建</span></td>
           <td>服务费 0.6%</td>
           <td>王助教</td>
           <td><span class="badge badge-warn">待付款</span></td>
@@ -150,16 +150,18 @@
           <td><span class="muted">—</span></td>
           <td>2026-03-27 15:30</td>
           <td class="row-actions">
-            <a href="#" data-toast="订单详情（原型示意）">详情</a>
+            <a href="order-detail.html?no=YB20260327100789">详情</a>
             <a href="#" data-row-act="close">关闭订单</a>
           </td>
         </tr>
         <tr>
-          <td><a href="#" data-toast="订单详情（原型示意）" class="link-mono">YB20260325000666</a></td>
+          <td><a href="order-detail.html?no=YB20260325000666" class="link-mono">YB20260325000666</a></td>
+          <td class="mono">WX20260325140222</td>
           <td>9.9 引流课·亲子沟通<br><span class="muted">线上课 · ¥9.9 限时</span></td>
           <td>赵***<br><span class="muted">186****2099</span></td>
           <td><b>¥9.90</b></td>
           <td><span class="tag tag-blue">小程序</span></td>
+          <td><span class="tag tag-blue">星启家庭教育</span></td>
           <td><span class="tag tag-green">自建</span></td>
           <td>服务费 0.6%</td>
           <td>赵老师</td>
@@ -168,16 +170,18 @@
           <td><span class="badge badge-danger">已退款 ¥9.90</span></td>
           <td>2026-03-25 14:22</td>
           <td class="row-actions">
-            <a href="#" data-toast="订单详情（原型示意）">详情</a>
+            <a href="order-detail.html?no=YB20260325000666">详情</a>
             <a href="aftersales.html">退款单</a>
           </td>
         </tr>
         <tr>
-          <td><a href="#" data-toast="订单详情（原型示意）" class="link-mono">YB20260325000901</a></td>
+          <td><a href="order-detail.html?no=YB20260325000901" class="link-mono">YB20260325000901</a></td>
+          <td class="mono">WX20260325110503</td>
           <td>视频号·春启 03 期家长课<br><span class="muted">线上课 · 公域同步</span></td>
           <td>张***<br><span class="muted">159****8832</span></td>
           <td><b>¥99.00</b></td>
           <td><span class="tag tag-green">视频号</span></td>
+          <td><span class="tag tag-blue">星启家庭教育</span></td>
           <td><span class="tag tag-purple">平台</span></td>
           <td>佣金 20%</td>
           <td>—</td>
@@ -186,17 +190,19 @@
           <td><span class="muted">—</span></td>
           <td>2026-03-25 11:05</td>
           <td class="row-actions">
-            <a href="#" data-toast="订单详情（原型示意）">详情</a>
+            <a href="order-detail.html?no=YB20260325000901">详情</a>
             <a href="#" data-row-act="refund">退款</a>
             <a href="#" data-row-act="note">备注</a>
           </td>
         </tr>
         <tr>
-          <td><a href="#" data-toast="订单详情（原型示意）" class="link-mono">YB20260324100231</a></td>
+          <td><a href="order-detail.html?no=YB20260324100231" class="link-mono">YB20260324100231</a></td>
+          <td class="mono">WX20260324184706</td>
           <td>青春期沟通训练营<br><span class="muted">线上课 · ¥299</span></td>
           <td>周***<br><span class="muted">133****7788</span></td>
           <td><b>¥299.00</b></td>
           <td><span class="tag tag-blue">小程序</span></td>
+          <td><span class="tag tag-blue">星启家庭教育</span></td>
           <td><span class="tag tag-green">自建</span></td>
           <td>服务费 0.6%</td>
           <td>赵老师</td>
@@ -205,7 +211,7 @@
           <td><span class="badge badge-warn">退款中</span></td>
           <td>2026-03-24 18:47</td>
           <td class="row-actions">
-            <a href="#" data-toast="订单详情（原型示意）">详情</a>
+            <a href="order-detail.html?no=YB20260324100231">详情</a>
             <a href="aftersales.html">退款单</a>
           </td>
         </tr>
@@ -323,11 +329,12 @@
     var tds = tr.querySelectorAll("td");
     return {
       orderNo: tds[0] ? tds[0].textContent.trim() : "",
-      product: tds[1] ? tds[1].textContent.trim() : "",
-      buyer: tds[2] ? tds[2].childNodes[0].textContent.trim() : "",
-      paid: tds[3] ? tds[3].textContent.trim() : "",
-      payStatus: tds[9] ? tds[9].textContent.trim() : "",
-      settleMode: tds[7] ? tds[7].textContent.trim() : "",
+      channelTxn: tds[1] ? tds[1].textContent.trim() : "",
+      product: tds[2] ? tds[2].textContent.trim() : "",
+      buyer: tds[3] ? tds[3].childNodes[0].textContent.trim() : "",
+      paid: tds[4] ? tds[4].textContent.trim() : "",
+      settleMode: tds[8] ? tds[8].textContent.trim() : "",
+      payStatus: tds[10] ? tds[10].textContent.trim() : "",
     };
   }
 
@@ -377,7 +384,7 @@
   if (window.BoardMetrics && BoardMetrics.applyDrilldownToList) {
     BoardMetrics.applyDrilldownToList({
       tbody: "ord-tbody",
-      cols: { product: 1, channel: 4, tenant: 5, promoter: 8, payStatus: 9, refundStatus: 11, owner: 8 }
+      cols: { product: 2, channel: 5, tenant: 6, promoter: 9, payStatus: 10, refundStatus: 12, owner: 9 }
     });
   }
 })();

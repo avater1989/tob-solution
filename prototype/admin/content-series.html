@@ -211,7 +211,10 @@ document.addEventListener("click", function(e) {
   var on = e.target.closest("[data-shelf-on]");
   if (on) {
     var s2 = SERIES.find(function(x){ return x.id === on.getAttribute("data-shelf-on"); });
-    if (s2) { s2.onShelf = true; s2.status = "已启用"; s2.statusType = "pass"; renderList(); Proto.toast("已启用"); }
+    if (!s2) return;
+    /* 启用前二次确认 */
+    if (!confirm("确定启用「" + s2.name + "」？\n启用后可在「新建商品」中选择该系列课内容。")) return;
+    s2.onShelf = true; s2.status = "已启用"; s2.statusType = "pass"; renderList(); Proto.toast("已启用");
     return;
   }
   if (e.target.closest("[data-banner]")) { Proto.toast("已发布到小程序（演示）"); return; }

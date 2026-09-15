@@ -121,6 +121,7 @@
         group: "内容管理",
         links: [
           { id: "content-series",   href: "content-series.html",   label: "系列课" },
+          { id: "content-offline",  href: "content-offline.html",  label: "线下课（待完善）" },
           { id: "content-video",    href: "content-video.html",    label: "视频" },
           { id: "content-article",  href: "content-article.html",  label: "图文" },
           { id: "content-category", href: "content-category.html", label: "内容分类" },
@@ -200,7 +201,7 @@
         group: "资产管理",
         links: [
           { id: "assets", href: "assets.html", label: "资产总览" },
-          { id: "bills", href: "bills.html", label: "交易账单" },
+          { id: "bills", href: "bills.html", label: "支付流水" },
           { id: "withdraw", href: "withdraw.html", label: "提现管理" },
           { id: "recon", href: "recon.html", label: "对账管理", badge: 2 },
           { id: "settlement", href: "settlement.html", label: "结算单", badge: 2 },

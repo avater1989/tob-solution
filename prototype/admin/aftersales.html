@@ -9,7 +9,6 @@
 <body class="admin-body" data-module="trade" data-nav="aftersales" data-title="售后维权" data-crumb="交易 / 售后管理 / 售后维权">
 <div id="header-actions">
   <button class="btn" id="btn-export">导出售后单</button>
-  <button class="btn btn-primary" id="btn-rule">售后规则</button>
 </div>
 <div id="page-content" style="display:none">
 
@@ -338,7 +337,7 @@
   }
 
   document.querySelectorAll("#as-tabs a").forEach(function(a){ a.addEventListener("click", function(e){ e.preventDefault(); document.querySelectorAll("#as-tabs a").forEach(function(n){n.classList.remove("active");}); a.classList.add("active"); Proto.toast("已切换到「"+a.textContent+"」（原型）"); }); });
-  document.getElementById("btn-rule").addEventListener("click", function(){ open(document.getElementById("modal-rule")); });
+  /* 「售后规则」入口已移除；弹窗 #modal-rule 内容保留作留痕，当前无入口。 */
   document.getElementById("btn-export").addEventListener("click", function(){ Proto.toast("已导出售后单（原型）"); });
   document.getElementById("btn-query").addEventListener("click", function(){ Proto.toast("已筛选（原型）"); });
   document.getElementById("btn-reset").addEventListener("click", function(){ Proto.toast("已重置（原型）"); });

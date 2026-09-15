@@ -9,7 +9,6 @@
 <body class="admin-body" data-module="biz" data-nav="aftersales" data-title="退款与权益回收" data-crumb="运营后台 / 交易 / 售后管理 / 退款与权益回收">
 <div id="header-actions">
   <button class="btn" id="btn-export">导出售后单</button>
-  <button class="btn btn-primary" id="btn-rule">售后规则</button>
 </div>
 <div id="page-content" style="display:none">
 
@@ -28,9 +27,6 @@
     <a href="#" data-tab="processing">处理中</a>
     <a href="#" data-tab="done">已完成</a>
     <a href="#" data-tab="closed">已关闭</a>
-    <span class="spacer"></span>
-    <a href="#" data-tab="refund-only">仅退款</a>
-    <a href="#" data-tab="return">退款并回收权益</a>
   </div>
 
   <!-- 筛选 -->
@@ -85,18 +81,6 @@
           <td class="row-actions"><a href="aftersale-detail.html?id=AS202609080001">处理</a><a href="aftersale-detail.html?id=AS202609080001">详情</a></td>
         </tr>
         <tr>
-          <td><a href="aftersale-detail.html?id=AS202609070005" class="link-mono">AS202609070005</a></td>
-          <td><span class="tag tag-blue">仅退款</span></td>
-          <td><a href="#" data-toast="订单详情（原型示意）" class="link-mono">YB20260905100981</a><br><span class="muted" style="font-size:12px">引流课 · 虚拟商品</span></td>
-          <td>刘*** U0004</td>
-          <td><span class="tag tag-blue">晨光少儿成长</span></td>
-          <td><b class="danger">¥9.90</b></td>
-          <td>拍错了/不想要了</td>
-          <td><span class="badge badge-info">待回收权益</span></td>
-          <td>2026-09-07 16:41</td>
-          <td class="row-actions"><a href="aftersale-detail.html?id=AS202609070005">详情</a></td>
-        </tr>
-        <tr>
           <td><a href="aftersale-detail.html?id=AS202609060002" class="link-mono">AS202609060002</a></td>
           <td><span class="tag tag-green">仅退款</span></td>
           <td><a href="#" data-toast="订单详情（原型示意）" class="link-mono">YB20260906000892</a><br><span class="muted" style="font-size:12px">家长手册</span></td>
@@ -114,7 +98,6 @@
           <td><a href="#" data-toast="订单详情（原型示意）" class="link-mono">YB20260902007721</a><br><span class="muted" style="font-size:12px">亲子沟通训练营（权益回收）</span></td>
           <td>周*** U0006</td>
           <td><span class="tag tag-blue">星启家庭教育</span></td>
-          <td><span class="tag tag-blue">青藤家长学堂</span></td>
           <td><b class="danger">¥299.00</b></td>
           <td>已学部分按比例退款，回收课程权益</td>
           <td><span class="badge badge-success">已完成</span></td>
@@ -127,7 +110,6 @@
           <td><a href="#" data-toast="订单详情（原型示意）" class="link-mono">YB20260831002210</a><br><span class="muted" style="font-size:12px">课程重复购买</span></td>
           <td>郑*** U0005</td>
           <td><span class="tag tag-blue">慧心教育</span></td>
-          <td><span class="tag tag-blue">星启家庭教育</span></td>
           <td><b class="danger">¥9.90</b></td>
           <td>重复购买</td>
           <td><span class="badge">已关闭</span><br><span class="muted" style="font-size:12px">商家拒绝，可再申请</span></td>
@@ -143,6 +125,7 @@
           <td><span class="tag tag-purple">退款并回收权益</span></td>
           <td><a href="#" data-toast="订单详情（原型示意）" class="link-mono">YB20260324100231</a></td>
           <td>周*** U0006</td>
+          <td><span class="tag tag-blue">星启家庭教育</span></td>
           <td><b class="danger">¥299.00</b></td>
           <td>商品/服务问题</td>
           <td><span class="badge badge-warn">待审核</span><br><span class="muted" style="font-size:12px">权益：退款成功后回收</span></td>
@@ -172,6 +155,7 @@
           <td><span class="tag tag-purple">退款并回收权益</span></td>
           <td><a href="#" data-toast="订单详情（原型示意）" class="link-mono">YB20260318000771</a></td>
           <td>郑*** U0005</td>
+          <td><span class="tag tag-blue">慧心教育</span></td>
           <td><b class="danger">¥9.90</b></td>
           <td>重复支付</td>
           <td><span class="badge badge-success">已退款</span><br><span class="muted" style="font-size:12px">权益：已回收</span></td>
@@ -352,7 +336,7 @@
   }
 
   document.querySelectorAll("#as-tabs a").forEach(function(a){ a.addEventListener("click", function(e){ e.preventDefault(); document.querySelectorAll("#as-tabs a").forEach(function(n){n.classList.remove("active");}); a.classList.add("active"); Proto.toast("已切换到「"+a.textContent+"」（原型）"); }); });
-  document.getElementById("btn-rule").addEventListener("click", function(){ open(document.getElementById("modal-rule")); });
+  /* 「售后规则」入口已移除；弹窗 #modal-rule 内容保留作留痕，当前无入口。 */
   document.getElementById("btn-export").addEventListener("click", function(){ Proto.toast("已导出售后单（原型）"); });
   document.getElementById("btn-query").addEventListener("click", function(){ Proto.toast("已筛选（原型）"); });
   document.getElementById("btn-reset").addEventListener("click", function(){ Proto.toast("已重置（原型）"); });

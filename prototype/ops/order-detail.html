@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>订单详情 · 运营后台</title>
+<link rel="stylesheet" href="../assets/css/proto.css?v=9" />
+</head>
+<body class="admin-body" data-module="biz" data-nav="trade-orders" data-title="订单详情" data-crumb="运营后台 / 交易 / 订单管理 / 订单列表 / 订单详情">
+<div id="header-actions">
+  <button class="btn" id="btn-back-list" onclick="location.href='trade-orders.html'">返回订单列表</button>
+  <button class="btn" id="btn-export">导出订单</button>
+  <a class="btn btn-primary" id="btn-refund" href="aftersales.html">发起退款</a>
+</div>
+<div id="page-content" style="display:none">
+
+  <div id="od-empty" style="display:none" class="card"><div class="card-bd" style="padding:48px;text-align:center">
+    <p style="font-size:15px;margin:0 0 16px">未找到对应订单，请返回订单列表重新选择。</p>
+    <a class="btn btn-primary" href="trade-orders.html">返回订单列表</a>
+  </div></div>
+
+  <div id="od-found" style="display:none">
+
+    <!-- 状态头 -->
+    <div class="card" style="margin-bottom:8px"><div class="card-bd">
+      <div class="order-status-bar">
+        <div class="os-main">
+          <span class="badge" id="od-pay-badge" style="font-size:13px">—</span>
+          <b class="mono" id="od-no">—</b>
+          <span class="tag tag-blue" id="od-channel">—</span>
+          <span class="muted" id="od-created">—</span>
+        </div>
+        <div class="os-side muted" id="od-status-side">—</div>
+      </div>
+    </div></div>
+
+    <!-- 订单信息 + 金额与结算 -->
+    <div class="detail-cols">
+      <div class="card"><div class="card-hd"><h2>订单信息</h2></div>
+        <div class="card-bd">
+          <div class="kv-grid">
+            <div class="kv-row"><span>订单号</span><b class="mono" id="od-info-no">—</b></div>
+            <div class="kv-row"><span>交易流水号</span><b class="mono" id="od-txn-no">—</b></div>
+            <div class="kv-row"><span>渠道支付流水号</span><b class="mono" id="od-channel-txn">—</b></div>
+            <div class="kv-row"><span>订单类型</span><b id="od-order-type">—</b></div>
+            <div class="kv-row"><span>渠道来源</span><b id="od-source">—</b></div>
+            <div class="kv-row"><span>订单来源租户</span><b id="od-tenant">—</b></div>
+            <div class="kv-row"><span>内容来源</span><b id="od-content-source">—</b></div>
+            <div class="kv-row"><span>结算模式</span><b id="od-settle-mode">—</b></div>
+            <div class="kv-row"><span>推广人</span><b id="od-promoter">—</b></div>
+            <div class="kv-row"><span>下单时间</span><b id="od-time">—</b></div>
+            <div class="kv-row"><span>支付时间</span><b id="od-pay-time">—</b></div>
+            <div class="kv-row"><span>支付方式</span><b id="od-pay-method">—</b></div>
+          </div>
+        </div>
+      </div>
+      <div class="card"><div class="card-hd"><h2>金额与结算</h2><span class="muted" style="font-size:12px">按支付时间口径</span></div>
+        <div class="card-bd">
+          <div class="kv">
+            <div class="kv-row"><span>商品金额</span><b id="od-gross">—</b></div>
+            <div class="kv-row"><span>优惠抵扣</span><b id="od-discount">—</b></div>
+            <div class="kv-row"><span>实付金额</span><b id="od-paid">—</b></div>
+            <div class="kv-row"><span id="od-fee-label">平台佣金</span><b id="od-fee" class="danger">—</b></div>
+            <div class="kv-row"><span>商户应得</span><b id="od-net" style="color:#cb2634">—</b></div>
+            <div class="kv-row"><span>分账状态</span><b id="od-split-status">—</b></div>
+          </div>
+          <p class="muted" style="font-size:12px;margin:8px 0 0">资金由平台统一收单后按分账规则清分至各分账方，明细见「结算单」。</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 商品信息 + 买家信息 -->
+    <div class="detail-cols">
+      <div class="card"><div class="card-hd"><h2>商品信息</h2></div>
+        <div class="card-bd" style="padding:0">
+          <table class="data">
+            <thead><tr><th>商品名称</th><th>类型</th><th>规格</th><th>数量</th><th>单价</th><th>金额</th></tr></thead>
+            <tbody><tr id="od-goods-row">
+              <td id="od-goods-name">—</td>
+              <td id="od-goods-type">—</td>
+              <td id="od-goods-spec">—</td>
+              <td>1</td>
+              <td id="od-goods-price">—</td>
+              <td id="od-goods-amount">—</td>
+            </tr></tbody>
+          </table>
+        </div>
+        <div class="card-bd" style="border-top:1px solid var(--color-border)">
+          <div class="kv">
+            <div class="kv-row"><span>权益状态</span><b id="od-benefit">—</b></div>
+            <div class="kv-row"><span>权益开通时间</span><b id="od-benefit-time">—</b></div>
+            <div class="kv-row"><span>关联权益记录</span><b><a class="link" href="entitlement.html" id="od-benefit-link">查看权益开通记录 →</a></b></div>
+          </div>
+        </div>
+      </div>
+      <div class="card"><div class="card-hd"><h2>买家信息</h2></div>
+        <div class="card-bd">
+          <div class="kv">
+            <div class="kv-row"><span>买家</span><b id="od-buyer">—</b></div>
+            <div class="kv-row"><span>手机号</span><b class="mono" id="od-phone">—</b></div>
+            <div class="kv-row"><span>是否企微好友</span><b id="od-wecom">—</b></div>
+            <div class="kv-row"><span>所属用户</span><b><a class="link" href="user-detail.html" id="od-user-link">查看用户详情 →</a></b></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 退款信息（涉退款时显示） -->
+    <div class="card" id="od-refund-card" style="display:none;margin-bottom:8px">
+      <div class="card-hd"><h2>退款信息</h2></div>
+      <div class="card-bd">
+        <div class="kv-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:0 32px">
+          <div class="kv-row"><span>退款状态</span><b id="od-refund-status">—</b></div>
+          <div class="kv-row"><span>退款金额</span><b id="od-refund-amount">—</b></div>
+          <div class="kv-row"><span>退款处理</span><b id="od-refund-note">—</b></div>
+          <div class="kv-row"><span>关联售后单</span><b><a class="link" href="aftersales.html" id="od-refund-link">去售后管理 →</a></b></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 处理记录 -->
+    <div class="card"><div class="card-hd"><h2>处理记录</h2></div>
+      <div class="card-bd">
+        <ul class="muted" style="font-size:12px;padding-left:16px;line-height:1.9" id="od-logs"></ul>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<style>
+.detail-cols{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px}
+.kv-grid{display:grid;grid-template-columns:1fr;gap:0}
+.kv-row{display:flex;justify-content:space-between;gap:16px;padding:7px 0;font-size:13px;border-bottom:1px dashed var(--color-border)}
+.kv-row:last-child{border-bottom:none}
+.kv-row span{color:var(--color-text-secondary);flex:none}
+.kv-row b{text-align:right}
+.mono{font-family:ui-monospace,Consolas,monospace;font-size:12px}
+.danger{color:#cb2634}
+.link{color:var(--color-primary);font-size:12px;text-decoration:none}
+.order-status-bar{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.os-main{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+@media(max-width:1100px){.detail-cols{grid-template-columns:1fr}}
+</style>
+
+<script src="../assets/js/proto.js"></script>
+<script src="../assets/js/ops-shell.js?v=7"></script>
+<script>
+(function () {
+  /* 订单演示数据：与 trade-orders.html 列表一致 */
+  var ORDERS = {
+    YB20260907000331: {
+      goods: "春启 03 期家长必修课", type: "线上课", spec: "12 节 · 知识商品",
+      buyer: "李***", phone: "138****2610", wecom: true,
+      gross: "¥9.90", discount: "—", paid: "¥9.90",
+      channel: "视频号", tenant: "星启家庭教育", contentSource: "星启家庭教育",
+      settleMode: "佣金 20%", promoter: "—",
+      payStatus: "已支付", benefit: "已开通", refundStatus: "",
+      time: "2026-09-07 14:22", channelTxn: "WX20260907140221", payTxn: "TL20260907000331XX"
+    },
+    YB20260329100456: {
+      goods: "今晚直播·家长公开课", type: "直播课", spec: "免费场次",
+      buyer: "陈***", phone: "186****4411", wecom: false,
+      gross: "¥0.00", discount: "—", paid: "¥0.00",
+      channel: "直播间", tenant: "晨光少儿成长", contentSource: "自建",
+      settleMode: "服务费 0.6%", promoter: "阮荣均",
+      payStatus: "已完成", benefit: "已开通", refundStatus: "",
+      time: "2026-03-28 20:18", channelTxn: "—", payTxn: "—"
+    },
+    YB20260327100789: {
+      goods: "9.9 引流课·亲子沟通", type: "线上课", spec: "限时 ¥9.9",
+      buyer: "刘***", phone: "137****0012", wecom: false,
+      gross: "¥9.90", discount: "—", paid: "¥9.90",
+      channel: "小程序", tenant: "晨光少儿成长", contentSource: "青藤家长学堂",
+      settleMode: "服务费 0.6%", promoter: "王助教",
+      payStatus: "待付款", benefit: "未开通", refundStatus: "",
+      time: "2026-03-27 15:30", channelTxn: "—", payTxn: "—"
+    },
+    YB20260325000666: {
+      goods: "9.9 引流课·亲子沟通", type: "线上课", spec: "限时 ¥9.9",
+      buyer: "赵***", phone: "186****2099", wecom: true,
+      gross: "¥9.90", discount: "—", paid: "¥9.90",
+      channel: "小程序", tenant: "星启家庭教育", contentSource: "自建",
+      settleMode: "服务费 0.6%", promoter: "赵老师",
+      payStatus: "已退款", benefit: "已回收", refundStatus: "已退款 ¥9.90",
+      time: "2026-03-25 14:22", channelTxn: "WX20260325140222", payTxn: "TL20260325140066XX"
+    },
+    YB20260325000901: {
+      goods: "视频号·春启 03 期家长课", type: "线上课", spec: "公域同步",
+      buyer: "张***", phone: "159****8832", wecom: false,
+      gross: "¥99.00", discount: "—", paid: "¥99.00",
+      channel: "视频号", tenant: "星启家庭教育", contentSource: "平台",
+      settleMode: "佣金 20%", promoter: "—",
+      payStatus: "已支付", benefit: "已开通", refundStatus: "",
+      time: "2026-03-25 11:05", channelTxn: "WX20260325110503", payTxn: "TL20260325110001XX"
+    },
+    YB20260324100231: {
+      goods: "青春期沟通训练营", type: "线上课", spec: "¥299 系列课",
+      buyer: "周***", phone: "133****7788", wecom: true,
+      gross: "¥299.00", discount: "—", paid: "¥299.00",
+      channel: "小程序", tenant: "星启家庭教育", contentSource: "自建",
+      settleMode: "服务费 0.6%", promoter: "赵老师",
+      payStatus: "已支付", benefit: "已开通", refundStatus: "退款中 ¥299.00",
+      time: "2026-03-24 18:47", channelTxn: "WX20260324184706", payTxn: "TL20260324180031XX"
+    }
+  };
+
+  var BADGE = {
+    "待付款": "badge-warn", "已支付": "badge-info", "已完成": "badge-success",
+    "已退款": "badge-danger", "已关闭": "badge"
+  };
+
+  function $(id) { return document.getElementById(id); }
+  function setText(id, v) { var n = $(id); if (n) n.textContent = (v == null || v === "") ? "—" : v; }
+  function money(s) { return parseFloat(String(s).replace(/[¥,]/g, "")) || 0; }
+
+  function query(key) {
+    try { return new URLSearchParams(location.search).get(key) || ""; }
+    catch (e) { return ""; }
+  }
+
+  var no = query("no") || query("order_no") || "";
+  var d = ORDERS[no];
+
+  if (!d) {
+    $("od-empty").style.display = "";
+    document.body.setAttribute("data-crumb", "运营后台 / 交易 / 订单管理 / 订单列表 / 订单详情");
+    return;
+  }
+
+  $("od-found").style.display = "";
+
+  /* 状态头 */
+  var badge = $("od-pay-badge");
+  badge.textContent = d.payStatus;
+  badge.className = "badge " + (BADGE[d.payStatus] || "badge-info");
+  $("od-no").textContent = no;
+  $("od-channel").textContent = d.channel;
+  $("od-created").textContent = d.time;
+  $("od-status-side").textContent =
+    "权益：" + d.benefit + (d.refundStatus ? " · 退款：" + d.refundStatus : "");
+
+  /* 订单信息 */
+  setText("od-info-no", no);
+  setText("od-txn-no", "TXN" + no.replace(/\D/g, "").slice(-14));
+  setText("od-channel-txn", d.channelTxn);
+  setText("od-order-type", "普通订单（" + d.type + " 1 件）");
+  setText("od-source", d.channel);
+  setText("od-tenant", d.tenant);
+  setText("od-content-source", d.contentSource);
+  setText("od-settle-mode", d.settleMode);
+  setText("od-promoter", d.promoter);
+  setText("od-time", d.time);
+  setText("od-pay-time", d.payStatus === "待付款" ? "—" : d.time);
+  setText("od-pay-method", d.payStatus === "待付款" ? "—" : "通联支付（" + d.channel + "内）");
+
+  /* 金额与结算 */
+  var paid = money(d.paid);
+  var isCommission = d.settleMode.indexOf("佣金") >= 0;
+  var fee = isCommission ? paid * 0.2 : paid * 0.006;
+  setText("od-gross", d.gross);
+  setText("od-discount", d.discount);
+  setText("od-paid", d.paid);
+  $("od-fee-label").textContent = isCommission ? "平台佣金（20%）" : "平台服务费（0.6%）";
+  setText("od-fee", paid ? "-¥" + fee.toFixed(2) : "—");
+  setText("od-net", paid ? "¥" + (paid - fee).toFixed(2) : "—");
+  setText("od-split-status", d.payStatus === "待付款" ? "—" : (d.payStatus === "已退款" ? "已退回" : "已分账"));
+
+  /* 商品信息 */
+  setText("od-goods-name", d.goods);
+  setText("od-goods-type", d.type);
+  setText("od-goods-spec", d.spec);
+  setText("od-goods-price", d.paid);
+  setText("od-goods-amount", d.paid);
+  setText("od-benefit", d.benefit);
+  setText("od-benefit-time", d.benefit === "已开通" ? d.time : "—");
+
+  /* 买家信息 */
+  setText("od-buyer", d.buyer);
+  setText("od-phone", d.phone);
+  setText("od-wecom", d.wecom ? "是" : "否");
+
+  /* 退款信息 */
+  if (d.refundStatus) {
+    $("od-refund-card").style.display = "";
+    setText("od-refund-status", d.refundStatus);
+    setText("od-refund-amount", d.paid);
+    setText("od-refund-note", "通过通联支付原路退回买家；已分账订单同步回退分账资金。");
+  } else {
+    $("od-refund-card").style.display = "none";
+  }
+
+  /* 处理记录 */
+  var logs = [];
+  logs.push(d.time + " 买家在" + d.channel + "下单，订单创建");
+  if (d.payStatus === "待付款") {
+    logs.push("等待买家付款，超 30 分钟未支付将自动关闭");
+  } else {
+    logs.push(d.time + " 通联支付回调成功，实付 " + d.paid);
+    logs.push(d.time + " 权益" + d.benefit + "，结算模式：" + d.settleMode);
+  }
+  if (d.refundStatus) {
+    logs.push(d.time + " 买家提交退款申请（" + d.refundStatus + "），处理见「退款与权益回收」");
+  }
+  if (!d.channelTxn || d.channelTxn === "—") {
+    logs.push("该订单无渠道支付流水号（未产生渠道侧支付）");
+  }
+  $("od-logs").innerHTML = logs.map(function (t) { return "<li>" + t + "</li>"; }).join("");
+
+  /* 待付款订单不显示发起退款 */
+  if (d.payStatus === "待付款" || d.payStatus === "已完成" && d.gross === "¥0.00") {
+    $("btn-refund").style.display = "none";
+  }
+
+  $("btn-export").addEventListener("click", function () { Proto.toast("已导出订单 " + no + "（原型）"); });
+})();
+</script>
+</body>
+</html>

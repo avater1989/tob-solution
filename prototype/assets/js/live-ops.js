@@ -908,7 +908,6 @@
       }),
       saleMode: src.saleMode || "免费",
       accessMode: src.accessMode || "",
-      accessPrice: src.accessPrice,
       watchPassword: src.watchPassword || "",
       hostPassword: src.hostPassword || "",
       soloSell: src.soloSell !== false,

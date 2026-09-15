@@ -27,10 +27,7 @@
     <a href="#" data-tab="series">系列课商品</a>
     <a href="#" data-tab="plan">定制化计划商品</a>
     <a href="#" data-tab="live">直播商品</a>
-    <span class="spacer"></span>
-    <a href="#" data-tab="onsale">上架中</a>
-    <a href="#" data-tab="off">已下架</a>
-    <a href="#" data-tab="draft">草稿</a>
+    <a href="#" data-tab="wxshop">微信小店商品</a>
   </div>
 
   <!-- 筛选 -->
@@ -88,6 +85,7 @@
             <a href="goods-edit.html">编辑</a>
             <a href="#" data-row-act="off">下架</a>
             <a href="#" data-row-act="share">分享</a>
+            <a href="#" data-row-act="sync">同步到微信小店</a>
           </td>
         </tr>
         <tr>
@@ -104,6 +102,7 @@
             <a href="goods-edit.html">编辑</a>
             <a href="#" data-row-act="on">上架</a>
             <a href="#" data-row-act="share">分享</a>
+            <a href="#" data-row-act="sync">同步到微信小店</a>
           </td>
         </tr>
         <tr>
@@ -235,6 +234,7 @@
         else if(act==="on") Proto.toast("已上架（原型）");
         else if(act==="publish") Proto.toast("草稿已发布上架（原型）");
         else if(act==="share") Proto.toast("已生成商品分享链接（原型）");
+        else if(act==="sync") Proto.toast("已同步到微信小店，商品将在视频号小店展示（原型）");
       });
     });
   });

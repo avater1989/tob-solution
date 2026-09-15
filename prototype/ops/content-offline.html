@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>线下课 · 运营后台</title>
+<link rel="stylesheet" href="../assets/css/proto.css?v=9" />
+<style>
+.ca-list { background: #fff; border: 1px solid #e8e8e8; border-radius: 8px; overflow: hidden; }
+.ca-row {
+  display: flex; align-items: center; gap: 14px;
+  padding: 14px 16px; border-bottom: 1px solid #f0f0f0;
+  transition: background .12s;
+}
+.ca-row:last-child { border-bottom: 0; }
+.ca-row:hover { background: #fafbff; }
+.ca-cover {
+  width: 96px; height: 64px; border-radius: 6px; flex-shrink: 0;
+  background: #f2f3f5; overflow: hidden;
+}
+.ca-cover img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.ca-info { flex: 1; min-width: 0; }
+.ca-title {
+  font-size: 14px; font-weight: 500; color: #1d2129;
+  margin-bottom: 4px;
+  display: flex; align-items: center; gap: 10px;
+}
+.ca-meta { font-size: 12px; color: #8c8c8c; display: flex; gap: 14px; flex-wrap: wrap; }
+.ca-meta b { color: #595959; font-weight: 500; }
+.ca-actions { display: flex; gap: 6px; flex-wrap: wrap; }
+.ca-cat { font-size: 11px; padding: 1px 6px; border-radius: 3px; background: #e8f3ff; color: #165dff; font-weight: 500; flex-shrink: 0; }
+</style>
+</head>
+<body class="admin-body" data-module="content" data-nav="content-offline" data-title="线下课" data-crumb="运营后台 / 内容 / 内容管理 / 线下课">
+
+<div id="header-actions">
+  <button class="btn" data-toast="批量操作待完善（原型）">批量删除</button>
+  <button class="btn btn-primary" data-toast="新增线下课待完善（原型）">+ 新增线下课</button>
+</div>
+
+<div id="page-content" style="display:none">
+  <div class="card" style="margin-bottom:14px;border-color:#d3adf7;background:#f9f0ff"><div class="card-bd" style="padding:10px 16px;font-size:13px;color:#531dab">
+    平台内容中台 · 线下课标准库；与商家后台「线下课」双轨，审核入口见侧栏「内容审核」。
+  </div></div>
+  <div class="card" style="margin-bottom:14px;border-color:#ffd591;background:#fff7e6"><div class="card-bd" style="padding:10px 16px;font-size:13px;color:#d48806">
+    <b>本模块待完善</b>：线下课（场地排课、到店核销）为后续能力，当前仅提供列表骨架与上下架，页面形态参照「图文」；
+    排课、报名名额、签到核销、退款规则等尚未定义。
+  </div></div>
+
+  <div class="card" style="margin-bottom:14px"><div class="card-bd" style="padding:12px 16px">
+    <div class="toolbar" style="border:none;padding:0;background:transparent">
+      <input class="input" type="text" id="co-keyword" placeholder="搜索线下课名称或简介..." style="width:240px" />
+      <select class="input" id="co-cat" style="width:160px">
+        <option value="">全部内容分类</option>
+      </select>
+      <select class="input" id="co-status" style="width:140px">
+        <option value="">全部上下架</option><option>已上架</option><option>已下架</option>
+      </select>
+      <button class="btn btn-primary">查询</button>
+      <button class="btn">重置</button>
+    </div>
+  </div></div>
+
+  <div class="ca-list" id="co-list"></div>
+
+  <div style="display:flex;align-items:center;gap:8px;margin-top:16px">
+    <span style="color:#8c8c8c;font-size:12px">共 <b id="co-count">3</b> 条</span>
+    <div style="margin-left:auto;display:flex;gap:6px">
+      <button class="btn" disabled>上一页</button>
+      <button class="btn btn-primary">1</button>
+      <button class="btn" disabled>下一页</button>
+    </div>
+  </div>
+</div>
+
+<script src="../assets/js/proto.js"></script>
+<script src="../assets/js/content-cats.js?v=1"></script>
+<script src="../assets/js/ops-shell.js?v=7"></script>
+<script>
+var OFFLINES = [
+  { id: "O001", title: "卓越家族培养计划 · 线下工作坊", cover: "../assets/img/covers/classroom.jpg",
+    tenant: "星启家庭教育", cat: "家庭教育", city: "上海", sessions: 2, signed: 86,
+    status: "已上架", statusType: "pass", onShelf: true },
+  { id: "O002", title: "亲子沟通实战 · 线下沙龙", cover: "../assets/img/covers/talk.jpg",
+    tenant: "晨光少儿成长", cat: "K12 教育", city: "深圳", sessions: 1, signed: 32,
+    status: "已上架", statusType: "pass", onShelf: true },
+  { id: "O003", title: "学习习惯养成 · 线下营（筹备中）", cover: "../assets/img/covers/parent.jpg",
+    tenant: "慧心教育", cat: "K12 教育", city: "北京", sessions: 0, signed: 0,
+    status: "已下架", statusType: "review", onShelf: false }
+];
+
+function esc(s) {
+  return String(s).replace(/[&<>"']/g, function(c) {
+    return ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c];
+  });
+}
+
+function renderList() {
+  var html = OFFLINES.map(function(o) {
+    return '' +
+      '<div class="ca-row">' +
+        '<div class="ca-cover"><img src="' + o.cover + '" alt="" /></div>' +
+        '<div class="ca-info">' +
+          '<div class="ca-title">' + esc(o.title) +
+            '<span class="ca-cat">' + esc(o.cat) + '</span>' +
+            '<span class="audit-badge ' + o.statusType + '">' + esc(o.status) + '</span>' +
+          '</div>' +
+          '<div class="ca-meta">' +
+            '<span><b>ID:</b> ' + esc(o.id) + '</span>' +
+            '<span><b>租户:</b> ' + esc(o.tenant) + '</span>' +
+            '<span><b>城市:</b> ' + esc(o.city) + '</span>' +
+            '<span><b>场次:</b> ' + o.sessions + '</span>' +
+            '<span><b>报名:</b> ' + o.signed + '</span>' +
+          '</div>' +
+        '</div>' +
+        '<div class="ca-actions">' +
+          '<button class="btn" data-toast="分享待完善（原型）"' + (o.onShelf ? '' : ' disabled') + '>分享</button>' +
+          '<button class="btn" data-toast="线下课详情待完善（原型）">查看线下课</button>' +
+          (o.onShelf
+            ? '<button class="btn" data-shelf-off="' + o.id + '">下架</button>'
+            : '<button class="btn" data-shelf-on="' + o.id + '">上架</button>') +
+          '<button class="btn" style="color:#f53f3f;border-color:#ffa39e" data-del="' + o.id + '">删除</button>' +
+        '</div>' +
+      '</div>';
+  }).join("");
+  document.getElementById("co-list").innerHTML = html ||
+    '<div style="padding:32px;text-align:center;color:#8c8c8c;font-size:13px">暂无线下课</div>';
+  document.getElementById("co-count").textContent = OFFLINES.length;
+}
+
+document.addEventListener("click", function(e) {
+  var off = e.target.closest("[data-shelf-off]");
+  if (off) {
+    var o = OFFLINES.find(function(x){ return x.id === off.getAttribute("data-shelf-off"); });
+    if (o) { o.onShelf = false; o.status = "已下架"; o.statusType = "review"; renderList(); Proto.toast("已下架"); }
+    return;
+  }
+  var on = e.target.closest("[data-shelf-on]");
+  if (on) {
+    var o2 = OFFLINES.find(function(x){ return x.id === on.getAttribute("data-shelf-on"); });
+    if (o2) { o2.onShelf = true; o2.status = "已上架"; o2.statusType = "pass"; renderList(); Proto.toast("已上架"); }
+    return;
+  }
+  var del = e.target.closest("[data-del]");
+  if (del) {
+    var id = del.getAttribute("data-del");
+    var d = OFFLINES.find(function(x){ return x.id === id; });
+    if (confirm("确定删除《" + (d ? d.title : id) + "》？删除后学员端将不再展示，且无法恢复。")) {
+      OFFLINES = OFFLINES.filter(function(x){ return x.id !== id; });
+      renderList();
+      Proto.toast("已删除");
+    }
+    return;
+  }
+});
+
+// 内容分类下拉取值于「内容分类」页面列表
+document.getElementById("co-cat").insertAdjacentHTML("beforeend", window.ContentCats.optionsHtml());
+
+function tryRender() {
+  if (document.getElementById("page-content").style.display !== "none") renderList();
+  else setTimeout(tryRender, 80);
+}
+if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", tryRender);
+else tryRender();
+</script>
+</body>
+</html>
