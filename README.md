@@ -10,6 +10,10 @@
 | 在线演示（GitHub Pages） | https://avater1989.github.io/tob-solution/ |
 | 原型导航入口 | https://avater1989.github.io/tob-solution/prototype/index.html |
 | 商家工作台 | https://avater1989.github.io/tob-solution/prototype/admin/dashboard.html |
+| 期次管理（商品×助教留资） | https://avater1989.github.io/tob-solution/prototype/admin/term-mgmt.html |
+| 直播促到 | https://avater1989.github.io/tob-solution/prototype/admin/live-booking.html |
+| 测评项目 | https://avater1989.github.io/tob-solution/prototype/admin/assess-projects.html |
+| 测评结果（作答明细） | https://avater1989.github.io/tob-solution/prototype/admin/assess-results.html |
 | 经营总览 | https://avater1989.github.io/tob-solution/prototype/admin/board-overview.html |
 | 期次经营复盘 | https://avater1989.github.io/tob-solution/prototype/admin/board-term-review.html |
 | 商品分析 | https://avater1989.github.io/tob-solution/prototype/admin/board-convert.html |
@@ -82,7 +86,7 @@
 ### 5. 路径④ 私域运营（2.5 min）
 
 1. **SCRM 概览**：线索概览与简报  
-2. **分配规则**：推广期次 + 渠道×商品×期次  
+2. **期次管理**：绑定视频号商品 + 承接助教（留资按商品分配）  
 3. 侧栏按现网结构：客户中心 / 公域获客 / 营销管理 / 工单中心 / 内容中心 / 业务设置  
 4. **直播促到** → **用户详情**打标 → **看板**
 

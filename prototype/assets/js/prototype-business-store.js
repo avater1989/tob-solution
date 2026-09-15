@@ -5,8 +5,8 @@
  * - 兼容旧参数：liveId / spring03 / live-spring-03 等
  */
 (function (global) {
-  var STORE_KEY = "proto_biz_store_v8";
-  var VERSION = 8;
+  var STORE_KEY = "proto_biz_store_v9";
+  var VERSION = 9;
   var DEMO_NOW = "2026-09-09 16:00:00";
 
   var LIVE_ALIASES = {
@@ -242,10 +242,10 @@
           name: "春启03开播中召回提醒",
           liveId: "L001",
           owner: "赵老师",
-          status: "failed",
-          failReason: "企微群发接口超时",
-          failStep: "开播中未到场召回",
-          failChannel: "企微",
+          status: "completed",
+          failReason: "",
+          failStep: "",
+          failChannel: "",
           lastExecAt: "2026-09-09 15:40",
           retryCount: 1,
           targetAudience: "已预约未进入",
@@ -269,10 +269,10 @@
           startedAt: "2026-09-09 15:30",
           executionLogs: [
             { at: "2026-09-09 15:30", action: "启动", by: "系统" },
-            { at: "2026-09-09 15:40", action: "失败", by: "系统", detail: "企微群发接口超时" }
+            { at: "2026-09-09 15:40", action: "完成", by: "系统" }
           ],
           steps: [
-            { id: "ST1", name: "开播中未到场召回", timing: "开播后 10 分钟", audience: "已预约未进入", channels: ["企微"], goal: "到课", auto: true, status: "failed", target: 200, reached: 42, converted: 0 }
+            { id: "ST1", name: "开播中未到场召回", timing: "开播后 10 分钟", audience: "已预约未进入", channels: ["企微"], goal: "到课", auto: true, status: "completed", target: 200, reached: 42, converted: 0 }
           ]
         }
       ],

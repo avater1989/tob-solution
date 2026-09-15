@@ -24,7 +24,7 @@
       showAuditRealtime: true,
       showUrge: true,
       showAftersale: true,
-      showLiveSchedule: true,
+      showLiveSchedule: false,
       showLeadsLink: true,
       canAssign: true
     },
@@ -39,7 +39,7 @@
       showAuditRealtime: false,
       showUrge: true,
       showAftersale: false,
-      showLiveSchedule: true,
+      showLiveSchedule: false,
       showLeadsLink: true,
       canAssign: false
     },
@@ -54,7 +54,7 @@
       showAuditRealtime: true,
       showUrge: false,
       showAftersale: false,
-      showLiveSchedule: true,
+      showLiveSchedule: false,
       showLeadsLink: false,
       canAssign: false
     },
@@ -69,7 +69,7 @@
       showAuditRealtime: true,
       showUrge: false,
       showAftersale: false,
-      showLiveSchedule: true,
+      showLiveSchedule: false,
       showLeadsLink: false,
       canAssign: false
     }
@@ -89,7 +89,7 @@
   var CREATE_ITEMS = {
     series: { tag: "创建", title: "新建系列课", desc: "创建线上系列课并进入上架流程", href: "content-series-edit.html" },
     live: { tag: "创建", title: "新建直播", desc: "创建场次并保存草稿，列表提交平台审核", href: "live-edit.html" },
-    urge: { tag: "配置", title: "配置直播预约提醒", desc: "在预约管理中配置开播前提醒与直播中应到未到召回", href: "live-booking.html" },
+    urge: { tag: "配置", title: "配置直播预约提醒", desc: "在直播促到中配置开播前提醒与直播中应到未到召回", href: "live-booking.html" },
     lead: { tag: "创建", title: "新建线索", desc: "手工录入或导入线索", href: "leads.html?action=create&from=dashboard" }
   };
 
@@ -693,12 +693,14 @@
   }
 
   function renderLive() {
-    var role = ROLES[state.role];
     var block = $("block-live");
+    if (!block) return;
+    var role = ROLES[state.role];
     if (!role.showLiveSchedule) { block.classList.add("wb-hidden"); return; }
     block.classList.remove("wb-hidden");
     var wrap = $("live-schedule");
     var empty = $("live-empty");
+    if (!wrap || !empty) return;
     var list = todayLiveSchedule().filter(function (l) {
       return !l.roles || l.roles.indexOf(state.role) >= 0;
     });

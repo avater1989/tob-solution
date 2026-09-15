@@ -14,7 +14,7 @@
 </div>
 
 <div id="page-content" style="display:none">
-  <div class="as-banner">管理本店铺的测评项目，支持配置题目、评分规则、关联规则与项目级报告。</div>
+  <div class="as-banner">管理本店铺的测评项目，支持配置题目、评分规则与关联规则。</div>
 
   <div class="card" style="margin-bottom:14px"><div class="card-bd" style="padding:12px 16px">
     <div class="toolbar" style="border:none;padding:0;background:transparent">
@@ -35,9 +35,8 @@
         <th style="width:70px">题目数</th>
         <th style="width:80px">状态</th>
         <th style="width:80px">上下架</th>
-        <th style="width:140px">项目级报告</th>
         <th style="width:110px">创建时间</th>
-        <th style="width:340px">操作</th>
+        <th style="width:300px">操作</th>
       </tr>
     </thead>
     <tbody id="tbody"></tbody>
@@ -72,61 +71,18 @@
   </div>
 </div>
 
-<!-- 项目级报告配置 -->
-<div class="proto-modal as-wide-modal" id="modal-report">
-  <div style="background:#fff;border-radius:10px;width:min(860px,94vw);max-height:90vh;overflow:hidden;display:flex;flex-direction:column">
-    <div class="proto-modal-hd"><h3 style="margin:0;font-size:16px">项目级报告配置</h3><button class="ctrl-icon-btn" data-close>×</button></div>
-    <div class="proto-modal-bd" style="overflow:auto">
-      <div class="muted" style="margin:0 0 12px;font-size:13px" id="rp-sub">—</div>
-      <div class="as-report-layout">
-        <div>
-          <div class="field"><label>前端报告组件 *</label>
-            <select class="input" id="rp-tpl">
-              <option value="generic-v1" data-label="通用测评报告 · v1 · 通用" data-desc="通用结构，适合多数测评">通用测评报告 · v1 · 通用</option>
-              <option value="mental-health-v1" data-label="心理健康报告 · v1 · 心理健康" data-desc="基础心理报告模板">心理健康报告 · v1 · 心理健康</option>
-              <option value="mental-health-v2" data-label="心理健康报告 · v2 · 心理健康" data-desc="新版干预型心理报告，增加趋势说明和后续行动建议" selected>心理健康报告 · v2 · 心理健康</option>
-              <option value="career-profile-v1" data-label="职业画像报告 · v1 · 职业发展" data-desc="职业兴趣与能力画像">职业画像报告 · v1 · 职业发展</option>
-              <option value="ability-radar-v1" data-label="能力雷达报告 · v1 · 能力测评" data-desc="多维能力雷达图">能力雷达报告 · v1 · 能力测评</option>
-            </select>
-          </div>
-          <p class="muted" style="font-size:12px;margin:-4px 0 12px" id="rp-desc">新版干预型心理报告，增加趋势说明和后续行动建议</p>
-          <label style="display:flex;align-items:center;gap:8px;font-size:13px;margin-bottom:12px">
-            <input type="checkbox" id="rp-on" checked> 启用该测评项目的专属报告
-          </label>
-        </div>
-        <div class="as-report-preview" id="rp-preview">
-          <div class="muted" style="font-size:11px;margin-bottom:4px">实时预览 <span id="rp-preview-title">心理健康报告 v2</span> · 陈同学</div>
-          <div class="as-report-level" id="rp-level">中等风险</div>
-          <div class="muted" style="font-size:12px;margin-bottom:14px">陈同学 · 样本数据</div>
-          <h4 style="margin:0 0 8px;font-size:14px">核心状态画像</h4>
-          <div class="as-seg" style="margin-bottom:12px;font-size:12px;line-height:1.6;color:#595959">情绪波动适中，压力感知偏高；社交适应尚可，建议关注睡眠与情绪记录。</div>
-          <h4 style="margin:0 0 8px;font-size:14px">下一步行动</h4>
-          <div class="as-preview-item">保持规律作息，并记录一周内的情绪变化。</div>
-          <div class="as-preview-item">完成情绪调节训练后再次评估。</div>
-        </div>
-      </div>
-    </div>
-    <div class="proto-modal-ft" style="justify-content:flex-end;gap:8px">
-      <button class="btn" data-close>取消</button>
-      <button class="btn" id="btn-preview-mock">模拟预览</button>
-      <button class="btn btn-primary" id="btn-save-report">保存项目报告</button>
-    </div>
-  </div>
-</div>
-
 <div class="proto-mask" id="mask"></div>
 
 <script src="../assets/js/proto.js"></script>
 <script src="../assets/js/admin-shell.js?v=14"></script>
 <script>
 var PROJECTS = [
-  { id:"MP01", name:"亲子沟通能力测评", desc:"评估家长与孩子的沟通模式与冲突处理", questions:12, status:"已发布", shelf:"已上架", report:"通用测评报告 · v1", reportKey:"generic-v1", created:"2026-08-12", rules:2 },
-  { id:"MP02", name:"家庭教育风格测评", desc:"识别家庭教养风格与边界设定倾向", questions:8, status:"草稿", shelf:"已下架", report:"能力雷达报告 · v1", reportKey:"ability-radar-v1", created:"2026-09-02", rules:0 },
-  { id:"PP01", name:"心理健康测评", desc:"综合心理健康评估", questions:1, status:"已发布", shelf:"已上架", report:"心理健康报告 · v2", reportKey:"mental-health-v2", created:"2024-11-15", rules:3 },
-  { id:"PP02", name:"学习能力诊断", desc:"评估学习风格与能力结构", questions:12, status:"已发布", shelf:"已上架", report:"能力雷达报告 · v1", reportKey:"ability-radar-v1", created:"2026-08-20", rules:2 },
-  { id:"PP03", name:"情绪调节问卷", desc:"评估情绪调节能力与压力应对", questions:5, status:"草稿", shelf:"已下架", report:"通用测评报告 · v1", reportKey:"generic-v1", created:"2026-09-01", rules:0 }
+  { id:"MP01", name:"亲子沟通能力测评", desc:"评估家长与孩子的沟通模式与冲突处理", questions:12, status:"已发布", shelf:"已上架", created:"2026-08-12", rules:2 },
+  { id:"MP02", name:"家庭教育风格测评", desc:"识别家庭教养风格与边界设定倾向", questions:8, status:"草稿", shelf:"已下架", created:"2026-09-02", rules:0 },
+  { id:"PP01", name:"心理健康测评", desc:"综合心理健康评估", questions:1, status:"已发布", shelf:"已上架", created:"2024-11-15", rules:3 },
+  { id:"PP02", name:"学习能力诊断", desc:"评估学习风格与能力结构", questions:12, status:"已发布", shelf:"已上架", created:"2026-08-20", rules:2 },
+  { id:"PP03", name:"情绪调节问卷", desc:"评估情绪调节能力与压力应对", questions:5, status:"草稿", shelf:"已下架", created:"2026-09-01", rules:0 }
 ];
-var reportTarget = null;
 
 function esc(s){ return String(s).replace(/[&<>"']/g,function(c){return({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"})[c];}); }
 function filtered() {
@@ -149,7 +105,6 @@ function render() {
       '<a class="btn" href="assess-questions.html?id='+p.id+'">配置题目</a>' +
       '<a class="btn" href="assess-scoring.html?id='+p.id+'">评分规则</a>' +
       '<a class="btn" href="assess-relations.html?from=project&id='+p.id+'">关联规则'+(p.rules?' ('+p.rules+')':'')+'</a>' +
-      '<button class="btn" data-report="'+p.id+'">报告配置</button>' +
       (p.shelf==='已上架'
         ? '<button class="btn" data-shelf="'+p.id+'">下架</button>'
         : '<button class="btn btn-primary" data-shelf="'+p.id+'">上架</button>') +
@@ -160,26 +115,18 @@ function render() {
       '<td>'+p.questions+'</td>' +
       '<td><span class="as-tag '+(p.status==='已发布'?'green':'gray')+'">'+esc(p.status)+'</span></td>' +
       '<td><span class="as-tag '+(p.shelf==='已上架'?'green':'orange')+'">'+esc(p.shelf)+'</span></td>' +
-      '<td style="font-size:12px">'+esc(p.report)+'</td>' +
       '<td style="font-size:12px;color:#8c8c8c">'+esc(p.created)+'</td>' +
       '<td><div class="as-acts">' + acts + '</div></td></tr>';
-  }).join("") || '<tr><td colspan="8" style="text-align:center;color:#bfbfbf;padding:28px">暂无项目</td></tr>';
+  }).join("") || '<tr><td colspan="7" style="text-align:center;color:#bfbfbf;padding:28px">暂无项目</td></tr>';
 }
 
 var mask = document.getElementById("mask");
 function closeAll(){ mask.classList.remove("open"); document.querySelectorAll(".proto-modal").forEach(function(n){n.classList.remove("open");}); }
 function openM(id){ mask.classList.add("open"); document.getElementById(id).classList.add("open"); }
 
-function syncReportDesc(){
-  var opt = document.getElementById("rp-tpl").selectedOptions[0];
-  document.getElementById("rp-desc").textContent = opt.getAttribute("data-desc") || "";
-  document.getElementById("rp-preview-title").textContent = (opt.getAttribute("data-label")||"").split(" · ")[0] + " " + (opt.getAttribute("data-label")||"").split(" · ")[1];
-}
-
 document.getElementById("btn-query").onclick = render;
 document.getElementById("btn-reset").onclick = function(){ document.getElementById("f-q").value=""; document.getElementById("f-shelf").value=""; render(); };
 document.getElementById("btn-new").onclick = function(){ openM("modal-new"); };
-document.getElementById("rp-tpl").onchange = syncReportDesc;
 
 document.getElementById("btn-save-new").onclick = function(){
   var name = document.getElementById("np-name").value.trim();
@@ -187,24 +134,11 @@ document.getElementById("btn-save-new").onclick = function(){
   var nid = "MP" + Date.now().toString().slice(-4);
   PROJECTS.unshift({
     id:nid, name:name, desc:document.getElementById("np-desc").value.trim()||"暂无项目描述",
-    questions:0, status:"草稿", shelf:"已下架", report:"通用测评报告 · v1", reportKey:"generic-v1",
+    questions:0, status:"草稿", shelf:"已下架",
     created:new Date().toISOString().slice(0,10), rules:0
   });
   closeAll();
   location.href = "assess-questions.html?id=" + nid;
-};
-
-document.getElementById("btn-preview-mock").onclick = function(){
-  document.getElementById("rp-level").textContent = "中等风险";
-  document.getElementById("rp-level").className = "as-report-level";
-  Proto.toast("已切换为模拟预览");
-};
-document.getElementById("btn-save-report").onclick = function(){
-  if (!reportTarget) return;
-  var opt = document.getElementById("rp-tpl").selectedOptions[0];
-  reportTarget.reportKey = opt.value;
-  reportTarget.report = opt.getAttribute("data-label").replace(/ · /g, " · ").split(" · ").slice(0,2).join(" · ");
-  closeAll(); render(); Proto.toast("项目报告已保存");
 };
 
 document.addEventListener("click", function(e){
@@ -216,20 +150,10 @@ document.addEventListener("click", function(e){
       '<div style="font-size:13px;line-height:2">' +
         '<div>描述：'+esc(p0.desc)+'</div>' +
         '<div>题目数：'+p0.questions+' · 状态：'+esc(p0.status)+' · '+esc(p0.shelf)+'</div>' +
-        '<div>项目级报告：'+esc(p0.report)+'</div>' +
         '<div>关联规则：'+p0.rules+' 条</div>' +
       '</div>' +
       '<div class="muted" style="font-size:12px;margin-top:12px">该测评可直接被「定制化计划」引用，分配给店铺学员作答。</div>';
     openM("modal-view"); return;
-  }
-  var report = e.target.closest("[data-report]");
-  if (report) {
-    reportTarget = PROJECTS.find(function(x){return x.id===report.getAttribute("data-report");});
-    document.getElementById("rp-sub").textContent = reportTarget.name;
-    document.getElementById("rp-tpl").value = reportTarget.reportKey || "mental-health-v2";
-    document.getElementById("rp-on").checked = true;
-    syncReportDesc();
-    openM("modal-report"); return;
   }
   var shelf = e.target.closest("[data-shelf]");
   if (shelf) {

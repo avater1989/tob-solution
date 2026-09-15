@@ -101,7 +101,6 @@
       {
         group: "业务设置",
         links: [
-          { id: "lead-rule", href: "lead-rule.html", label: "分配规则" },
           { id: "term-mgmt", href: "term-mgmt.html", label: "期次管理" },
           { id: "sidebar-mgmt", href: "sidebar-mgmt.html", label: "侧边栏管理" },
         ],
@@ -112,7 +111,7 @@
         group: "直播",
         links: [
           { id: "lives", href: "lives.html", label: "直播列表" },
-          { id: "live-booking", href: "live-booking.html", label: "预约管理" },
+          { id: "live-booking", href: "live-booking.html", label: "直播促到" },
           { id: "live-replay", href: "live-replay.html", label: "直播回放" },
         ],
       },

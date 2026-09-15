@@ -429,7 +429,7 @@
         primary: { label: "上架", action: "publish" },
         secondary: [
           { label: "查看详情", href: detail },
-          { label: "预约管理", href: booking },
+          { label: "直播促到", href: booking },
           { label: "分享", action: "share" },
           { label: "编辑", href: edit }
         ]
@@ -438,7 +438,7 @@
         primary: { label: "查看详情", href: detail },
         secondary: [
           { label: "场次数据", href: stats },
-          { label: "预约管理", href: booking },
+          { label: "直播促到", href: booking },
           { label: "分享", action: "share" },
           { label: "进入中控台", href: control },
           { label: "直播大屏", href: screen },

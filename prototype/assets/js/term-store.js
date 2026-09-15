@@ -3,8 +3,16 @@
  * 依赖：可选 BoardData（同步看板期次选项）
  */
 (function (global) {
-  var KEY = "merchant_term_store_v1";
+  var KEY = "merchant_term_store_v2";
   var STAFF = ["赵老师", "阮荣均", "王助教", "李管理", "刘助教", "陈奕均"];
+  /* 视频号带货商品（演示种子）：期次绑定后，这些商品产生的留资分配给期次承接助教 */
+  var VX_GOODS = [
+    { id: "P2026030101", name: "春启 03 期家长必修课" },
+    { id: "P2026090701", name: "视频号·春启 03 期家长课" },
+    { id: "P2026080201", name: "家庭教育入门体验课（视频号）" },
+    { id: "P2026090105", name: "青春期沟通专题课" },
+    { id: "P2026070120", name: "亲子沟通 21 天定制化计划 · 第 4 期" }
+  ];
   var GOAL_FIELDS = [
     { key: "poolLeads", label: "入池人数目标", hint: "人" },
     { key: "wecomRate", label: "加微率目标", hint: "%" },
@@ -41,11 +49,42 @@
         enabledChannels: (t.enabledChannels || []).slice(),
         relatedLiveIds: (t.relatedLiveIds || []).slice(),
         liveRoles: t.liveRoles ? Object.assign({}, t.liveRoles) : {},
+        vxGoods: (t.vxGoods || []).slice(),
+        assistants: (t.assistants || (t.owner ? [t.owner] : [])).slice(),
         demoOnly: !!t.demoOnly,
         endedEarly: t.status === "ended" && t.endDate && t.endDate > todayStr() ? true : !!t.endedEarly,
         referenced: !!(t.relatedLiveIds && t.relatedLiveIds.length) || !!t.demoOnly || t.id === "trial"
       });
     });
+  }
+
+  function normalizeVxGoods(list) {
+    if (!Array.isArray(list)) return [];
+    var map = {};
+    VX_GOODS.forEach(function (g) { map[g.id] = g; });
+    return list.map(function (item) {
+      if (typeof item === "string") {
+        return map[item] ? { id: map[item].id, name: map[item].name } : { id: item, name: item };
+      }
+      if (item && item.id) {
+        var hit = map[item.id];
+        return { id: item.id, name: (hit && hit.name) || item.name || item.id };
+      }
+      return null;
+    }).filter(Boolean);
+  }
+
+  function normalizeAssistants(list, ownerFallback) {
+    var out = [];
+    var seen = {};
+    (Array.isArray(list) ? list : []).forEach(function (n) {
+      n = String(n || "").trim();
+      if (!n || seen[n]) return;
+      seen[n] = true;
+      out.push(n);
+    });
+    if (!out.length && ownerFallback) out.push(ownerFallback);
+    return out;
   }
 
   function loadRaw() {
@@ -134,6 +173,8 @@
       enabledChannels: (t.enabledChannels || []).slice(),
       relatedLiveIds: (t.relatedLiveIds || []).slice(),
       liveRoles: t.liveRoles ? Object.assign({}, t.liveRoles) : {},
+      vxGoods: normalizeVxGoods(t.vxGoods),
+      assistants: normalizeAssistants(t.assistants, t.owner),
       demoOnly: !!t.demoOnly,
       endedEarly: !!t.endedEarly || !!t.forceEnded,
       forceEnded: !!t.forceEnded || !!t.endedEarly,
@@ -248,6 +289,8 @@
         enabledChannels: (t.enabledChannels || []).slice(),
         relatedLiveIds: (t.relatedLiveIds || []).slice(),
         liveRoles: t.liveRoles ? Object.assign({}, t.liveRoles) : {},
+        vxGoods: (t.vxGoods || []).slice(),
+        assistants: (t.assistants || []).slice(),
         demoOnly: t.demoOnly,
         remark: t.remark,
         endedEarly: t.endedEarly,
@@ -338,7 +381,7 @@
       document.body.appendChild(m);
     }
     var html =
-      '<div class="proto-modal" id="modal-term-edit" style="width:560px">' +
+      '<div class="proto-modal" id="modal-term-edit" style="width:640px">' +
       '<div class="proto-modal-hd"><h3 id="tm-title" style="font-size:16px;font-weight:600">新建期次</h3>' +
       '<button class="btn btn-sm btn-ghost" type="button" data-term-close>×</button></div>' +
       '<div class="proto-modal-bd">' +
@@ -348,6 +391,16 @@
       '<div class="field"><label>结束日期 *</label><input id="tm-end" type="date" /></div>' +
       '<div class="field" style="grid-column:1/-1"><label>负责人 *</label>' +
       '<select id="tm-owner"><option value="">请选择员工</option></select></div>' +
+      '<div class="field" style="grid-column:1/-1">' +
+      '<label>视频号商品</label>' +
+      '<p class="muted" style="margin:0 0 8px;font-size:12px;line-height:1.5">选择本期内承接留资的视频号带货商品；这些商品产生的留资将分配给下方承接助教。</p>' +
+      '<div id="tm-vx-goods" style="display:flex;flex-direction:column;gap:6px;max-height:140px;overflow:auto;padding:8px 10px;border:1px solid var(--color-border);border-radius:6px;background:#fafbfc"></div>' +
+      '</div>' +
+      '<div class="field" style="grid-column:1/-1">' +
+      '<label>承接助教 *</label>' +
+      '<p class="muted" style="margin:0 0 8px;font-size:12px;line-height:1.5">绑定商品产生的留资将分配给所选助教（可多选，按轮询/负载均衡分配）。</p>' +
+      '<div id="tm-assistants" style="display:flex;flex-wrap:wrap;gap:8px 14px;padding:8px 10px;border:1px solid var(--color-border);border-radius:6px;background:#fafbfc"></div>' +
+      '</div>' +
       '<div class="field" style="grid-column:1/-1"><label>备注</label>' +
       '<textarea id="tm-remark" rows="2" style="width:100%;padding:8px;border:1px solid var(--color-border);border-radius:6px" placeholder="选填"></textarea></div>' +
       '</div>' +
@@ -363,6 +416,22 @@
       o.value = n;
       o.textContent = n;
       owner.appendChild(o);
+    });
+    var goodsBox = document.getElementById("tm-vx-goods");
+    VX_GOODS.forEach(function (g) {
+      var lab = document.createElement("label");
+      lab.style.cssText = "display:flex;align-items:flex-start;gap:8px;font-size:13px;cursor:pointer;margin:0";
+      lab.innerHTML =
+        '<input type="checkbox" data-vx-good="' + g.id + '" style="margin-top:2px" />' +
+        '<span><b>' + g.name + '</b><span class="muted" style="margin-left:6px;font-size:12px">' + g.id + "</span></span>";
+      goodsBox.appendChild(lab);
+    });
+    var asstBox = document.getElementById("tm-assistants");
+    STAFF.forEach(function (n) {
+      var lab = document.createElement("label");
+      lab.style.cssText = "display:inline-flex;align-items:center;gap:6px;font-size:13px;cursor:pointer;margin:0";
+      lab.innerHTML = '<input type="checkbox" data-assistant="' + n + '" />' + "<span>" + n + "</span>";
+      asstBox.appendChild(lab);
     });
     function closeEditor() {
       editorState.draft = null;
@@ -395,6 +464,18 @@
       if (!start || !end) { toast("请填写开始与结束日期"); return; }
       if (end < start) { toast("结束日期不得早于开始日期"); return; }
       if (!ownerVal) { toast("请选择负责人"); return; }
+      var vxGoods = [];
+      document.querySelectorAll("#tm-vx-goods [data-vx-good]").forEach(function (cb) {
+        if (!cb.checked) return;
+        var id = cb.getAttribute("data-vx-good");
+        var hit = VX_GOODS.filter(function (g) { return g.id === id; })[0];
+        if (hit) vxGoods.push({ id: hit.id, name: hit.name });
+      });
+      var assistants = [];
+      document.querySelectorAll("#tm-assistants [data-assistant]").forEach(function (cb) {
+        if (cb.checked) assistants.push(cb.getAttribute("data-assistant"));
+      });
+      if (!assistants.length) { toast("请至少选择一名承接助教"); return; }
       var goals = {};
       document.querySelectorAll("#tm-goals-grid [data-goal]").forEach(function (inp) {
         if (inp.value !== "") goals[inp.getAttribute("data-goal")] = inp.value;
@@ -407,7 +488,9 @@
         owner: ownerVal,
         remark: document.getElementById("tm-remark").value.trim(),
         goals: goals,
-        conversionDeadline: end
+        conversionDeadline: end,
+        vxGoods: vxGoods,
+        assistants: assistants
       });
       closeEditor();
       toast(editorState.mode === "create" ? "已新建期次" : "已保存期次");
@@ -426,6 +509,21 @@
     document.getElementById("tm-end").value = term ? term.endDate : "";
     document.getElementById("tm-owner").value = term ? (term.owner || "") : "";
     document.getElementById("tm-remark").value = term ? (term.remark || "") : "";
+    var selectedGoods = {};
+    ((term && term.vxGoods) || []).forEach(function (g) {
+      selectedGoods[typeof g === "string" ? g : g.id] = true;
+    });
+    document.querySelectorAll("#tm-vx-goods [data-vx-good]").forEach(function (cb) {
+      cb.checked = !!selectedGoods[cb.getAttribute("data-vx-good")];
+    });
+    var selectedAsst = {};
+    var asstList = (term && term.assistants && term.assistants.length)
+      ? term.assistants
+      : (term && term.owner ? [term.owner] : []);
+    asstList.forEach(function (n) { selectedAsst[n] = true; });
+    document.querySelectorAll("#tm-assistants [data-assistant]").forEach(function (cb) {
+      cb.checked = !!selectedAsst[cb.getAttribute("data-assistant")];
+    });
     var goals = (term && term.goals) || {};
     document.querySelectorAll("#tm-goals-grid [data-goal]").forEach(function (inp) {
       var k = inp.getAttribute("data-goal");
@@ -459,6 +557,7 @@
   global.TermStore = {
     KEY: KEY,
     STAFF: STAFF,
+    VX_GOODS: VX_GOODS,
     GOAL_FIELDS: GOAL_FIELDS,
     list: list,
     get: get,

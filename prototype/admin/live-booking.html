@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>预约管理 · 商家管理后台</title>
+<title>直播促到 · 商家管理后台</title>
 <link rel="stylesheet" href="../assets/css/proto.css?v=9" />
 <style>
 .user-cell { display: flex; align-items: center; gap: 8px; }
@@ -82,7 +82,7 @@
 .row-actions a:last-child { margin-right: 0; }
 </style>
 </head>
-<body class="admin-body" data-module="live" data-nav="live-booking" data-title="预约管理" data-crumb="直播 / 直播管理 / 预约管理">
+<body class="admin-body" data-module="live" data-nav="live-booking" data-title="直播促到" data-crumb="直播 / 直播管理 / 直播促到">
 <div id="header-actions">
   <button class="btn" type="button" id="btn-export">导出</button>
   <button class="btn btn-primary" type="button" id="btn-new-reminder">+ 新建提醒规则</button>
@@ -1305,8 +1305,8 @@
       });
     }
     syncReminderCreateButtons(live);
-    document.title = "预约管理 · " + live.name + " · 商家管理后台";
-    document.body.setAttribute("data-crumb", "直播 / 直播管理 / 预约管理 / " + live.name);
+    document.title = "直播促到 · " + live.name + " · 商家管理后台";
+    document.body.setAttribute("data-crumb", "直播 / 直播管理 / 直播促到 / " + live.name);
     renderStats(live);
     fillChannelFilter(liveId);
     switchTab(tab || getTabFromUrl(), false);
@@ -1316,8 +1316,8 @@
     currentLiveId = null;
     document.getElementById("view-list").style.display = "";
     document.getElementById("view-single").style.display = "none";
-    document.title = "预约管理 · 商家管理后台";
-    document.body.setAttribute("data-crumb", "直播 / 直播管理 / 预约管理");
+    document.title = "直播促到 · 商家管理后台";
+    document.body.setAttribute("data-crumb", "直播 / 直播管理 / 直播促到");
     renderList();
   }
 
@@ -1340,7 +1340,7 @@
 
   /* ---------- Events ---------- */
   document.getElementById("btn-export").addEventListener("click", function () {
-    Proto.toast(currentLiveId ? "已导出本场预约与提醒数据（原型）" : "已导出预约管理列表（原型）");
+    Proto.toast(currentLiveId ? "已导出本场预约与提醒数据（原型）" : "已导出直播促到列表（原型）");
   });
   document.getElementById("btn-new-reminder").addEventListener("click", function () {
     var live = currentLiveId ? LR.getLive(currentLiveId) : null;

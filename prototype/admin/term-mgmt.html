@@ -14,7 +14,7 @@
 
   <div class="board-tip" style="margin-bottom:12px">
     <b>期次：</b>一次招生/推广经营周期（如「春启03期」）。同一期可关联多场直播与多个推广商品；同一课程可用于不同期次。
-    期次不等于课程、教学班或单场直播。
+    在期次中绑定<strong>视频号商品</strong>与<strong>承接助教</strong>后，这些商品产生的留资将自动分配给相关助教（原独立「分配规则」已并入此处）。
   </div>
 
   <div class="card" style="margin-bottom:8px"><div class="card-bd">
@@ -46,6 +46,8 @@
           <th>期次名称</th>
           <th>起止时间</th>
           <th>负责人</th>
+          <th>视频号商品</th>
+          <th>承接助教</th>
           <th>状态</th>
           <th style="width:220px">操作</th>
         </tr>
@@ -83,9 +85,9 @@
 </style>
 
 <script src="../assets/js/proto.js"></script>
-<script src="../assets/js/board-data.js?v=10"></script>
-<script src="../assets/js/term-store.js?v=1"></script>
-<script src="../assets/js/admin-shell.js?v=20"></script>
+<script src="../assets/js/board-data.js?v=11"></script>
+<script src="../assets/js/term-store.js?v=2"></script>
+<script src="../assets/js/admin-shell.js?v=22"></script>
 <script>
 (function () {
   var mask = document.getElementById("mask");
@@ -110,6 +112,21 @@
     return '<span class="badge badge-success">进行中</span>';
   }
 
+  function goodsCell(t) {
+    var list = t.vxGoods || [];
+    if (!list.length) return '<span class="muted">未绑定</span>';
+    return list.map(function (g) {
+      var name = typeof g === "string" ? g : (g.name || g.id);
+      return '<div style="font-size:12px;line-height:1.5">' + name + "</div>";
+    }).join("");
+  }
+
+  function asstCell(t) {
+    var list = t.assistants || [];
+    if (!list.length) return t.owner || "—";
+    return list.join("、");
+  }
+
   function filtered() {
     var name = (document.getElementById("f-name").value || "").trim();
     var st = document.getElementById("f-status").value;
@@ -125,7 +142,7 @@
     var tb = document.getElementById("tm-tbody");
     document.getElementById("tm-count").textContent = String(rows.length);
     if (!rows.length) {
-      tb.innerHTML = '<tr><td colspan="5" class="muted" style="text-align:center;padding:36px">暂无期次</td></tr>';
+      tb.innerHTML = '<tr><td colspan="7" class="muted" style="text-align:center;padding:36px">暂无期次</td></tr>';
       return;
     }
     tb.innerHTML = rows.map(function (t) {
@@ -142,6 +159,8 @@
         "<td><b>" + t.name + "</b>" + (t.remark ? '<div class="muted" style="font-size:12px">' + t.remark + "</div>" : "") + "</td>" +
         "<td>" + t.startDate + " ~ " + t.endDate + "</td>" +
         "<td>" + (t.owner || "—") + "</td>" +
+        "<td>" + goodsCell(t) + "</td>" +
+        "<td>" + asstCell(t) + "</td>" +
         "<td>" + badge(t.lifecycle) + "</td>" +
         '<td class="row-actions">' + acts + "</td>" +
         "</tr>";
