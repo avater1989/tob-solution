@@ -4,23 +4,28 @@
 
 ## 对外链接
 
+> 当前远端：`main` @ `a39e060`（0915-交易模块优化-2）· Pages 自动随 main 发布
+
 | 用途 | 链接 |
 |------|------|
 | GitHub 仓库 | https://github.com/avater1989/tob-solution |
 | 在线演示（GitHub Pages） | https://avater1989.github.io/tob-solution/ |
 | 原型导航入口 | https://avater1989.github.io/tob-solution/prototype/index.html |
 | 商家工作台 | https://avater1989.github.io/tob-solution/prototype/admin/dashboard.html |
+| 线索池（SCRM） | https://avater1989.github.io/tob-solution/prototype/admin/leads.html |
 | 期次管理（商品×助教留资） | https://avater1989.github.io/tob-solution/prototype/admin/term-mgmt.html |
+| 直播列表 | https://avater1989.github.io/tob-solution/prototype/admin/lives.html |
 | 直播促到 | https://avater1989.github.io/tob-solution/prototype/admin/live-booking.html |
+| 直播中控台（L005） | https://avater1989.github.io/tob-solution/prototype/admin/live-control.html?live_id=L005 |
+| 系列课 | https://avater1989.github.io/tob-solution/prototype/admin/content-series.html |
 | 测评项目 | https://avater1989.github.io/tob-solution/prototype/admin/assess-projects.html |
 | 测评结果（作答明细） | https://avater1989.github.io/tob-solution/prototype/admin/assess-results.html |
+| 订单列表 | https://avater1989.github.io/tob-solution/prototype/admin/orders.html |
+| 对账管理 | https://avater1989.github.io/tob-solution/prototype/admin/recon.html |
 | 经营总览 | https://avater1989.github.io/tob-solution/prototype/admin/board-overview.html |
 | 期次经营复盘 | https://avater1989.github.io/tob-solution/prototype/admin/board-term-review.html |
 | 商品分析 | https://avater1989.github.io/tob-solution/prototype/admin/board-convert.html |
 | C 端小程序首页 | https://avater1989.github.io/tob-solution/prototype/miniprogram/home.html |
-| 直播列表 | https://avater1989.github.io/tob-solution/prototype/admin/lives.html |
-| 直播中控台（L005 直播中） | https://avater1989.github.io/tob-solution/prototype/admin/live-control.html?live_id=L005 |
-| 直播中控台演示工具 | https://avater1989.github.io/tob-solution/prototype/admin/live-control.html?live_id=L005&demo=1 |
 
 ## 怎么打开
 
