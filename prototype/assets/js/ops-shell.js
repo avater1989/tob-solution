@@ -104,6 +104,7 @@
         group: "财务",
         links: [
           { id: "fee-ledger", href: "fee-ledger.html", label: "服务费台账" },
+          { id: "pay-flows", href: "pay-flows.html", label: "支付流水" },
         ],
       },
       {

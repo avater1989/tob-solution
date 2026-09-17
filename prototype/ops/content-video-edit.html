@@ -21,14 +21,13 @@
   <div class="cm-page-hd">
     <div>
       <h1 id="e-title">新建视频</h1>
-      <p class="sub">在同一页面完成视频内容、展示和商品规则配置</p>
+      <p class="sub">在同一页面完成视频内容与分享配置</p>
     </div>
   </div>
 
   <div class="cm-anchor" id="anchors">
     <button class="btn active" data-goto="sec-content">内容信息</button>
     <button class="btn" data-goto="sec-video">视频内容</button>
-    <button class="btn" data-goto="sec-product">商品信息</button>
     <button class="btn" data-goto="sec-share">分享设置</button>
   </div>
 
@@ -78,40 +77,6 @@
       </div>
       <div class="field" style="grid-column:1/-1">
         <label class="cm-check"><input type="checkbox" checked> 设为必看视频</label>
-      </div>
-    </div>
-  </div>
-
-  <div class="cm-section" id="sec-product">
-    <div class="cm-section-hd"><h2>商品信息 <span class="hint">配置获取方式、有效期与店铺展示</span></h2></div>
-    <div class="field"><label class="cm-check"><input type="checkbox" checked> 允许在店铺或链接中独立获取</label></div>
-    <div class="field">
-      <label>获取方式</label>
-      <div class="cm-choice">
-        <label><input type="radio" name="access" checked> 免费获取</label>
-        <label><input type="radio" name="access"> 付费购买</label>
-        <label><input type="radio" name="access"> 仅限指定用户</label>
-      </div>
-    </div>
-    <div class="form-grid" style="grid-template-columns:1fr 1fr">
-      <div class="field"><label>销售价格（元）</label><input class="input" type="number" value="0" /></div>
-      <div class="field"><label>内容分类</label>
-        <select class="input"><option>默认分组</option><option selected>K12 教育</option><option>家庭教育</option></select>
-      </div>
-    </div>
-    <div class="field">
-      <label>上架策略</label>
-      <div class="cm-choice">
-        <label><input type="radio" name="shelf"> 立即上架</label>
-        <label><input type="radio" name="shelf"> 定时上架</label>
-        <label><input type="radio" name="shelf" checked> 暂不上架</label>
-      </div>
-    </div>
-    <div class="field">
-      <label>店铺显示</label>
-      <div class="cm-choice">
-        <label><input type="radio" name="store" checked> 显示</label>
-        <label><input type="radio" name="store"> 隐藏</label>
       </div>
     </div>
   </div>
