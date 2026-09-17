@@ -202,9 +202,9 @@
         links: [
           { id: "assets", href: "assets.html", label: "资产总览" },
           { id: "bills", href: "bills.html", label: "支付流水" },
-          { id: "withdraw", href: "withdraw.html", label: "提现管理" },
           { id: "recon", href: "recon.html", label: "对账管理", badge: 2 },
           { id: "settlement", href: "settlement.html", label: "结算单", badge: 2 },
+          { id: "withdraw", href: "withdraw.html", label: "提现管理" },
         ],
       },
     ],

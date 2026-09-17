@@ -6,32 +6,33 @@
 <title>平台审核工作台 · 运营后台</title>
 <link rel="stylesheet" href="../assets/css/proto.css?v=4" />
 </head>
-<body class="admin-body" data-module="content" data-nav="audit" data-title="平台审核工作台" data-crumb="运营后台 / 内容 / 平台审核" data-assist="1">
+<body class="admin-body" data-module="content" data-nav="audit" data-title="平台审核工作台" data-crumb="运营后台 / 内容 / 平台审核（待办 + 审核记录）" data-assist="1">
 <div id="header-actions">
+  <button class="btn" id="btn-export">导出记录</button>
   <button class="btn" id="btn-batch-pass">批量通过</button>
   <button class="btn" data-toast="审核规范文档（原型）">审核规范</button>
 </div>
 <div id="page-content" style="display:none">
 
-  <!-- 统计卡 -->
+  <!-- 统计卡（合并原「审核记录」的累计 / 通过率口径） -->
   <div class="grid-4" style="margin-bottom:16px">
-    <div class="stat"><div class="label">待平台审核</div><div class="value" id="st-pending">0</div><div class="hint">直播 / 系列课 / 图文 / 商品</div></div>
-    <div class="stat"><div class="label">今日已审核</div><div class="value" id="st-done">0</div><div class="hint" id="st-done-hint">通过 0 · 驳回 0</div></div>
+    <div class="stat"><div class="label">待平台审核</div><div class="value" id="st-pending">0</div><div class="hint">直播 / 系列课 / 视频 / 图文 / 商品</div></div>
+    <div class="stat"><div class="label">累计审核</div><div class="value" id="st-total">0</div><div class="hint">全部租户</div></div>
+    <div class="stat"><div class="label">通过率</div><div class="value" id="st-rate-pass">—</div><div class="hint" id="st-rate-hint">通过 0 · 驳回 0</div></div>
     <div class="stat"><div class="label">平均审核时长</div><div class="value">3.2 小时</div><div class="hint">SLA 目标 4 小时</div></div>
-    <div class="stat"><div class="label">本周驳回率</div><div class="value" id="st-rate">—</div><div class="hint">平台审核</div></div>
   </div>
 
-  <!-- 状态 Tab -->
+  <!-- 状态 Tab：待办 + 留痕同页（原「平台审核记录」已并入） -->
   <div class="tabs" id="audit-tabs">
     <a class="active" href="#" data-tab="pending">待平台审核 (<span id="tab-pending-n">0</span>)</a>
-    <a href="#" data-tab="passed">已通过</a>
-    <a href="#" data-tab="rejected">已驳回</a>
-    <a href="#" data-tab="appeal">商家申诉</a>
+    <a href="#" data-tab="passed">已通过 (<span id="tab-passed-n">0</span>)</a>
+    <a href="#" data-tab="rejected">已驳回 (<span id="tab-rejected-n">0</span>)</a>
+    <a href="#" data-tab="appeal">商家申诉 (<span id="tab-appeal-n">0</span>)</a>
   </div>
 
   <!-- 筛选 -->
   <div class="card" style="margin-bottom:8px"><div class="card-bd">
-    <div class="form-grid" style="grid-template-columns:repeat(5,minmax(0,1fr));gap:8px 12px">
+    <div class="form-grid" style="grid-template-columns:repeat(6,minmax(0,1fr));gap:8px 12px">
       <input id="f-title" placeholder="内容标题 / 编号" />
       <select id="f-tenant">
         <option value="">来源租户</option>
@@ -41,16 +42,16 @@
         <option value="">内容类型</option>
         <option>直播</option><option>系列课</option><option>视频</option><option>图文</option><option>商品</option>
       </select>
-      <select id="f-urgent">
-        <option value="">紧急程度</option>
-        <option>紧急（今晚开播）</option><option>普通</option>
+      <select id="f-result">
+        <option value="">审核结果</option>
+        <option value="passed">通过</option><option value="rejected">驳回</option><option value="appeal">申诉待复核</option>
       </select>
       <button class="btn btn-primary" id="btn-query">筛选</button>
       <button class="btn" id="btn-reset">重置</button>
     </div>
   </div></div>
 
-  <!-- 审核列表 -->
+  <!-- 审核队列 / 审核记录（同一张表，按 Tab 切换数据） -->
   <div class="card"><div class="card-bd" style="padding:0">
     <table class="data">
       <thead>
@@ -59,9 +60,8 @@
           <th>内容</th>
           <th>类型</th>
           <th>来源租户</th>
-          <th>提交时间</th>
-          <th>紧急程度</th>
-          <th>状态</th>
+          <th>提交 / 审核时间</th>
+          <th>状态 · 备注</th>
           <th style="width:170px">操作</th>
         </tr>
       </thead>
@@ -70,7 +70,7 @@
   </div></div>
 
   <div class="toolbar" style="margin-top:8px">
-    <span class="muted" id="pager-hint">共 <b>0</b> 条待审核</span>
+    <span class="muted" id="pager-hint">共 <b>0</b> 条</span>
     <div class="spacer"></div>
     <button class="btn btn-sm" disabled>上一页</button>
     <button class="btn btn-sm">下一页</button>
@@ -98,7 +98,7 @@
     <div style="margin-top:10px;padding:8px 12px;border-radius:6px;background:#e8f3ff;border:1px solid #a0cfff;color:#165dff;font-size:12px">
       审核范围：<b>直播（必审）</b>、<b>系列课 / 视频 / 图文（上架前审核）</b>、<b>商品（服务类抽审）</b>。审核通过后内容发布到 C 端小程序。
     </div>
-    <p class="muted" style="margin:10px 0 0;font-size:12px">平台审核通过后可上架；驳回需填写原因并通知商家。</p>
+    <p class="muted" style="margin:10px 0 0;font-size:12px">平台审核通过后可上架；驳回需填写原因并通知商家；驳回结果与申诉复核结论均写入本页「已通过 / 已驳回 / 商家申诉」Tab。</p>
   </div>
   <div class="proto-modal-ft" style="border-top:1px solid var(--color-border);padding:12px 20px;display:flex;gap:8px;justify-content:flex-end">
     <button class="btn" data-close>关闭</button>
@@ -118,7 +118,7 @@
     <ul style="margin:0 0 10px 18px;font-size:13px;color:var(--color-text-secondary);line-height:1.9">
       <li>内容将<b>发布到 C 端小程序</b>，买家可见、可预约</li>
       <li>商家后台状态同步变更为「审核通过 / 待开播」</li>
-      <li>操作将记入审核记录与操作日志</li>
+      <li>操作将记入<b>本页「已通过」Tab</b>与操作日志</li>
     </ul>
     <div class="field"><label>审核备注</label>
       <input id="ps-note" placeholder="选填，商家可见" />
@@ -174,7 +174,8 @@
   var currentId = null;
   var currentIsLive = false;
   var currentIsSeries = false;
-  var listCache = [];
+  var rowMap = {};
+  var currentTab = "pending";
 
   // 视频 / 图文 / 商品 的待审示例（系列课来自 SeriesStore；直播来自 ProtoBiz）
   var LOCAL_ITEMS = [
@@ -183,9 +184,18 @@
     { id: "AR2026090602", typeLabel: "图文", name: "青春期沟通家长手册（电子版）", merchantName: "星启家庭教育", submittedAt: "2026-09-06 15:04",
       rows: [["图文标题","青春期沟通家长手册（电子版）"],["封面图","article-cover.jpg（已预览）"],["正文字数","约 8,600 字"],["售卖价格","¥39.00"],["内容摘要","青春期常见沟通场景与应对话术"]] },
     { id: "GO2026090404", typeLabel: "商品", name: "家庭咨询 60 分钟服务卡", merchantName: "慧心教育", submittedAt: "2026-09-04 17:45",
-      rows: [["商品名称","家庭咨询 60 分钟服务卡"],["商品类型","服务商品"],["售卖价格","¥199.00"],["服务说明","1v1 线上咨询 60 分钟"],["交付方式","支付后开通服务额度"]] }
+      rows: [["商品名称","家庭咨询 60 分钟服务卡"],["商品类型","定制化计划商品"],["售卖价格","¥199.00"],["服务说明","1v1 线上咨询 60 分钟"],["交付方式","支付后开通服务额度"]] }
   ];
   var localDone = {};
+
+  // 审核留痕（原「平台审核记录」页的演示数据，已并入本页）
+  var RECORDS = [
+    { id: "RC2026091801", name: "少儿专注力训练营", typeLabel: "系列课", merchantName: "晨光少儿成长", result: "passed", remark: "—", by: "平台运营", at: "今天 11:02" },
+    { id: "RC2026091802", name: "家庭教育 21 天打卡营", typeLabel: "系列课", merchantName: "慧心教育", result: "rejected", remark: "A-03 宣传用语含绝对化承诺（\"100% 提升成绩\"）", by: "平台运营", at: "今天 09:48", appeal: true },
+    { id: "RC2026091703", name: "家长情绪管理直播", typeLabel: "直播", merchantName: "青藤家长学堂", result: "passed", remark: "备注：直播全程需录像留痕", by: "平台运营", at: "昨天 18:20" },
+    { id: "RC2026090204", name: "春启 03 期家长必修课", typeLabel: "系列课", merchantName: "星启家庭教育", result: "passed", remark: "—", by: "平台运营", at: "09-02 14:31" },
+    { id: "RC2026090105", name: "儿童时间管理课", typeLabel: "系列课", merchantName: "晨光少儿成长", result: "rejected", remark: "C-02 封面图与课程内容不符", by: "平台运营", at: "09-01 10:15" }
+  ];
 
   function typeTag(t) {
     var cls = t === "直播" ? "tag-purple" : (t === "系列课" || t === "视频" ? "tag-blue" : "tag-orange");
@@ -214,6 +224,12 @@
     });
   }
 
+  function pendingLives() {
+    return (Biz.getLives() || []).filter(function (l) {
+      return l.auditStatus === "pending_platform_review";
+    });
+  }
+
   function allItems() {
     var lives = pendingLives().map(function (l) {
       return {
@@ -238,73 +254,152 @@
     });
   }
 
-  function pendingLives() {
-    return (Biz.getLives() || []).filter(function (l) {
-      return l.auditStatus === "pending_platform_review";
+  // 审核日志 → 记录行（平台侧通过 / 驳回；系列课按 SeriesStore 还原类型）
+  function logRecords() {
+    return (Biz.getReviewLogs() || []).filter(function (r) {
+      return r.side === "platform" && (r.status === "approved" || r.status === "platform_rejected");
+    }).map(function (r) {
+      var live = Biz.getLive(r.liveId) || {};
+      var series = Store.get ? Store.get(r.liveId) : null;
+      return {
+        id: r.liveId,
+        name: series ? series.name : (live.name || r.liveId),
+        typeLabel: series ? "系列课" : "直播",
+        merchantName: (series && series.merchantName) || live.merchantName || "星启家庭教育",
+        result: r.status === "approved" ? "passed" : "rejected",
+        remark: r.reason || "—",
+        by: r.by || "平台审核员",
+        at: r.at || "—"
+      };
     });
+  }
+
+  function allRecords() {
+    return logRecords().concat(RECORDS);
+  }
+
+  function splitRecords() {
+    var recs = allRecords();
+    return {
+      records: recs,
+      passed: recs.filter(function (r) { return r.result === "passed"; }),
+      rejected: recs.filter(function (r) { return r.result === "rejected" && !r.appeal; }),
+      appeal: recs.filter(function (r) { return r.result === "rejected" && r.appeal; })
+    };
+  }
+
+  function matchFilter(x, kw, tenant, type) {
+    if (type && x.typeLabel !== type) return false;
+    if (tenant && x.merchantName !== tenant) return false;
+    if (kw && (x.name || "").indexOf(kw) < 0 && (x.id || "").indexOf(kw) < 0) return false;
+    return true;
+  }
+
+  function pendingRowHtml(x) {
+    return '<tr data-id="' + esc(x.id) + '">' +
+      '<td><input type="checkbox" class="row-check" data-id="' + esc(x.id) + '" /></td>' +
+      "<td><b>" + esc(x.name) + "</b><br><span class=\"muted\">" + esc(x.typeLabel) +
+      " · " + esc(x.submittedAt) + " · " + esc(x.id) + "</span></td>" +
+      "<td>" + typeTag(x.typeLabel) + "</td>" +
+      "<td>" + esc(x.merchantName) + "</td>" +
+      "<td>" + esc(x.submittedAt) + "</td>" +
+      '<td><span class="badge badge-warn">待平台审核</span></td>' +
+      '<td class="row-actions">' +
+        '<a href="#" data-row-act="detail">审核详情</a>' +
+        '<a href="#" data-row-act="pass">平台通过</a>' +
+        '<a href="#" data-row-act="reject">平台驳回</a>' +
+      "</td></tr>";
+  }
+
+  function recordRowHtml(r) {
+    var badge = r.result === "passed"
+      ? '<span class="badge badge-success">通过</span>'
+      : (r.appeal ? '<span class="badge badge-info">申诉待复核</span>' : '<span class="badge badge-danger">驳回</span>');
+    var remark = r.remark && r.remark !== "—"
+      ? '<br><span class="muted" style="font-size:12px">' + esc(r.remark) + "</span>"
+      : "";
+    var acts = '<a href="#" data-row-act="view">查看</a>';
+    if (r.result === "rejected" && !r.appeal) acts += '<a href="#" data-row-act="appeal">申诉</a>';
+    if (r.appeal) acts += '<a href="#" data-row-act="review">复核</a>';
+    return '<tr data-id="' + esc(r.id) + '" data-kind="record">' +
+      '<td><span class="muted">—</span></td>' +
+      "<td><b>" + esc(r.name) + "</b><br><span class=\"muted\">" + esc(r.typeLabel) +
+      " · " + esc(r.id) + "</span></td>" +
+      "<td>" + typeTag(r.typeLabel) + "</td>" +
+      "<td>" + esc(r.merchantName) + "</td>" +
+      "<td>" + esc(r.at) + '<br><span class="muted">' + esc(r.by) + "</span></td>" +
+      "<td>" + badge + remark + "</td>" +
+      '<td class="row-actions">' + acts + "</td></tr>";
   }
 
   function render() {
     var kw = (document.getElementById("f-title").value || "").trim();
     var tenant = document.getElementById("f-tenant").value;
     var type = document.getElementById("f-type").value;
-    var all = allItems();
-    var list = all.filter(function (x) {
-      if (type && x.typeLabel !== type) return false;
-      if (tenant && x.merchantName !== tenant) return false;
-      if (kw && (x.name || "").indexOf(kw) < 0 && (x.id || "").indexOf(kw) < 0) return false;
-      return true;
-    });
-    listCache = list;
+    var result = document.getElementById("f-result").value;
 
-    var logs = Biz.getReviewLogs() || [];
-    var passed = logs.filter(function (r) { return r.status === "approved" && r.side === "platform"; }).length;
-    var rejected = logs.filter(function (r) { return r.status === "platform_rejected"; }).length;
+    var pendingAll = allItems();
+    var sp = splitRecords();
 
-    document.getElementById("st-pending").textContent = String(all.length);
-    document.getElementById("tab-pending-n").textContent = String(all.length);
-    document.getElementById("st-done").textContent = String(passed + rejected);
-    document.getElementById("st-done-hint").textContent = "通过 " + passed + " · 驳回 " + rejected;
-    document.getElementById("st-rate").textContent = (passed + rejected)
-      ? (Math.round(rejected * 1000 / (passed + rejected)) / 10) + "%"
+    // 统计卡
+    var passN = sp.passed.length;
+    var rejectN = sp.records.filter(function (r) { return r.result === "rejected"; }).length;
+    document.getElementById("st-pending").textContent = String(pendingAll.length);
+    document.getElementById("st-total").textContent = String(sp.records.length);
+    document.getElementById("st-rate-pass").textContent = (passN + rejectN)
+      ? (Math.round(passN * 1000 / (passN + rejectN)) / 10) + "%"
       : "—";
-    document.getElementById("pager-hint").innerHTML = "共 <b>" + list.length + "</b> 条待审核";
+    document.getElementById("st-rate-hint").textContent = "通过 " + passN + " · 驳回 " + rejectN;
+
+    // Tab 角标
+    document.getElementById("tab-pending-n").textContent = String(pendingAll.length);
+    document.getElementById("tab-passed-n").textContent = String(passN);
+    document.getElementById("tab-rejected-n").textContent = String(sp.rejected.length);
+    document.getElementById("tab-appeal-n").textContent = String(sp.appeal.length);
+
+    // 当前 Tab 数据
+    var list, recordMode = currentTab !== "pending";
+    if (currentTab === "pending") list = pendingAll;
+    else if (currentTab === "passed") list = sp.passed;
+    else if (currentTab === "rejected") list = sp.rejected;
+    else list = sp.appeal;
+
+    list = list.filter(function (x) { return matchFilter(x, kw, tenant, type); });
+    if (recordMode && result) {
+      list = list.filter(function (r) {
+        return result === "appeal" ? !!r.appeal : r.result === result;
+      });
+    }
+
+    rowMap = {};
+    list.forEach(function (x) { rowMap[x.id] = x; });
+
+    document.getElementById("pager-hint").innerHTML = "共 <b>" + list.length + "</b> 条" +
+      (currentTab === "pending" ? "待审核" : "审核记录");
 
     var tbody = document.getElementById("audit-tbody");
     if (!list.length) {
-      tbody.innerHTML = '<tr><td colspan="8" class="muted" style="text-align:center;padding:24px">暂无待平台审核内容</td></tr>';
+      tbody.innerHTML = '<tr><td colspan="7" class="muted" style="text-align:center;padding:24px">' +
+        (currentTab === "pending" ? "暂无待平台审核内容" : "该状态下暂无审核记录") + "</td></tr>";
       return;
     }
     tbody.innerHTML = list.map(function (x) {
-      return '<tr data-id="' + esc(x.id) + '">' +
-        '<td><input type="checkbox" class="row-check" data-id="' + esc(x.id) + '" /></td>' +
-        "<td><b>" + esc(x.name) + "</b><br><span class=\"muted\">" + esc(x.typeLabel) +
-        " · " + esc(x.submittedAt) + " · " + esc(x.id) + "</span></td>" +
-        "<td>" + typeTag(x.typeLabel) + "</td>" +
-        "<td>" + esc(x.merchantName) + "</td>" +
-        "<td>" + esc(x.submittedAt) + "</td>" +
-        '<td><span class="badge">普通</span></td>' +
-        '<td><span class="badge badge-warn">待平台审核</span></td>' +
-        '<td class="row-actions">' +
-          '<a href="#" data-row-act="detail">审核详情</a>' +
-          '<a href="#" data-row-act="pass">平台通过</a>' +
-          '<a href="#" data-row-act="reject">平台驳回</a>' +
-        "</td></tr>";
+      return currentTab === "pending" ? pendingRowHtml(x) : recordRowHtml(x);
     }).join("");
 
     tbody.querySelectorAll("[data-row-act]").forEach(function (a) {
       a.addEventListener("click", function (e) {
         e.preventDefault();
         var id = a.closest("tr").getAttribute("data-id");
-        var item = listCache.find(function (x) { return x.id === id; });
+        var item = rowMap[id];
         if (!item) return;
-        currentId = id;
-        currentIsLive = !!item.isLive;
-        currentIsSeries = !!item.isSeries;
         var act = a.getAttribute("data-row-act");
-        if (act === "detail") openDetail(item);
-        else if (act === "pass") openPass(item);
-        else if (act === "reject") openReject(item);
+        if (act === "detail") { openDetail(item); return; }
+        if (act === "pass") { openPass(item); return; }
+        if (act === "reject") { openReject(item); return; }
+        if (act === "view") { Proto.toast("审核详情（原型）：" + item.name); return; }
+        if (act === "appeal") { Proto.toast("已登记商家申诉，进入复核队列（原型）"); return; }
+        if (act === "review") { Proto.toast("已提交复核结论（原型）"); return; }
       });
     });
   }
@@ -319,14 +414,20 @@
   document.querySelectorAll("[data-close]").forEach(function (n) { n.addEventListener("click", closeAll); });
 
   function openDetail(item) {
+    var isPending = !item.result;
+    document.getElementById("dt-pass").style.display = isPending ? "" : "none";
+    document.getElementById("dt-reject").style.display = isPending ? "" : "none";
     document.getElementById("dt-title").textContent = item.name;
     document.getElementById("dt-tenant").textContent = item.merchantName;
-    document.getElementById("dt-time").textContent = item.submittedAt;
+    document.getElementById("dt-time").textContent = item.submittedAt || item.at || "—";
     document.getElementById("dt-type").textContent = item.typeLabel;
     document.getElementById("dt-id").textContent = item.id;
-    document.getElementById("dt-rows").innerHTML = item.rows.map(function (r) {
-      return "<tr><td>" + esc(r[0]) + "</td><td>" + esc(r[1]) + '</td><td><span class="badge badge-success">合规</span></td></tr>';
-    }).join("");
+    document.getElementById("dt-rows").innerHTML = item.rows
+      ? item.rows.map(function (r) {
+          return "<tr><td>" + esc(r[0]) + "</td><td>" + esc(r[1]) + '</td><td><span class="badge badge-success">合规</span></td></tr>';
+        }).join("")
+      : "<tr><td>审核结果</td><td>" + (item.result === "passed" ? "通过" : "驳回") + "</td><td>" +
+        esc(item.remark || "—") + "</td></tr>";
     open(document.getElementById("modal-detail"));
   }
   function openPass(item) {
@@ -345,32 +446,34 @@
     open(document.getElementById("modal-reject"));
   }
 
+  function switchTab(tab) {
+    currentTab = tab;
+    document.querySelectorAll("#audit-tabs a").forEach(function (n) {
+      n.classList.toggle("active", n.dataset.tab === tab);
+    });
+    render();
+  }
+
   document.querySelectorAll("#audit-tabs a").forEach(function (a) {
     a.addEventListener("click", function (e) {
       e.preventDefault();
-      document.querySelectorAll("#audit-tabs a").forEach(function (n) { n.classList.remove("active"); });
-      a.classList.add("active");
-      if (a.dataset.tab === "passed" || a.dataset.tab === "rejected") {
-        location.href = "audit-records.html";
-        return;
-      }
-      if (a.dataset.tab === "pending") render();
-      else Proto.toast("已切换到「" + a.textContent.trim() + "」（原型）");
+      switchTab(a.dataset.tab);
     });
   });
 
   document.getElementById("dt-pass").addEventListener("click", function () {
-    var item = listCache.find(function (x) { return x.id === currentId; });
+    var item = rowMap[currentId];
     closeAll();
     if (item) openPass(item);
   });
   document.getElementById("dt-reject").addEventListener("click", function () {
-    var item = listCache.find(function (x) { return x.id === currentId; });
+    var item = rowMap[currentId];
     closeAll();
     if (item) openReject(item);
   });
 
-  function approve(id, isLive, isSeries) {
+  function approve(id, isLive, isSeries, note) {
+    var item = rowMap[id];
     if (isLive && Biz.getLive(id)) {
       Biz.setAuditStatus(id, "approved", { by: "平台审核员", side: "platform" });
     } else if (isSeries) {
@@ -382,9 +485,14 @@
       }
     } else {
       localDone[id] = true;
+      if (item) {
+        RECORDS.unshift({ id: id, name: item.name, typeLabel: item.typeLabel, merchantName: item.merchantName,
+          result: "passed", remark: note || "—", by: "平台审核员", at: "刚刚" });
+      }
     }
   }
   function reject(id, reason, isLive, isSeries) {
+    var item = rowMap[id];
     if (isLive && Biz.getLive(id)) {
       Biz.setAuditStatus(id, "platform_rejected", { reason: reason, by: "平台审核员", side: "platform" });
     } else if (isSeries) {
@@ -396,14 +504,20 @@
       }
     } else {
       localDone[id] = true;
+      if (item) {
+        RECORDS.unshift({ id: id, name: item.name, typeLabel: item.typeLabel, merchantName: item.merchantName,
+          result: "rejected", remark: reason, by: "平台审核员", at: "刚刚" });
+      }
     }
   }
 
   document.getElementById("ps-submit").addEventListener("click", function () {
     if (!currentId) return;
-    approve(currentId, currentIsLive, currentIsSeries);
+    var note = (document.getElementById("ps-note").value || "").trim();
+    var wasSeries = currentIsSeries;
+    approve(currentId, currentIsLive, currentIsSeries, note);
     closeAll();
-    Proto.toast(currentIsSeries ? "系列课已通过，商家侧已启用" : "平台已通过，内容可上架");
+    Proto.toast(wasSeries ? "系列课已通过，商家侧已启用" : (note ? "平台已通过（备注已同步商家）" : "平台已通过，内容可上架"));
     render();
   });
   document.getElementById("rj-submit").addEventListener("click", function () {
@@ -418,21 +532,25 @@
   });
 
   document.getElementById("btn-batch-pass").addEventListener("click", function () {
+    if (currentTab !== "pending") { Proto.toast("请先切换到「待平台审核」Tab"); return; }
     var ids = Array.from(document.querySelectorAll(".row-check:checked")).map(function (c) {
       return c.getAttribute("data-id");
     });
     if (!ids.length) { Proto.toast("请先勾选待通过内容"); return; }
     ids.forEach(function (id) {
-      var item = listCache.find(function (x) { return x.id === id; });
+      var item = rowMap[id];
       approve(id, item && item.isLive, item && item.isSeries);
     });
     Proto.toast("已批量平台通过 " + ids.length + " 条");
     render();
   });
+  document.getElementById("btn-export").addEventListener("click", function () {
+    Proto.toast("已导出" + (currentTab === "pending" ? "待审队列" : "审核记录") + "（原型）");
+  });
   document.getElementById("btn-query").addEventListener("click", render);
   document.getElementById("btn-reset").addEventListener("click", function () {
     document.getElementById("f-title").value = "";
-    ["f-tenant", "f-type", "f-urgent"].forEach(function (id) { document.getElementById(id).value = ""; });
+    ["f-tenant", "f-type", "f-result"].forEach(function (id) { document.getElementById(id).value = ""; });
     render();
     Proto.toast("已重置");
   });
@@ -441,7 +559,16 @@
     document.querySelectorAll("#audit-tbody .row-check").forEach(function (x) { x.checked = c; });
   });
 
-  render();
+  // 支持从看板 / 内容页带 Tab 进入
+  (function bootTab() {
+    var t = "";
+    try { t = new URLSearchParams(location.search).get("tab") || ""; } catch (e) {}
+    if (["pending", "passed", "rejected", "appeal"].indexOf(t) >= 0) currentTab = t;
+    document.querySelectorAll("#audit-tabs a").forEach(function (n) {
+      n.classList.toggle("active", n.dataset.tab === currentTab);
+    });
+    render();
+  })();
 })();
 </script>
 </body>

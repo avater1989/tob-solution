@@ -26,7 +26,6 @@
 .cs-stats { display: flex; gap: 16px; font-size: 12px; color: #595959; flex-wrap: wrap; }
 .cs-stats b { color: #165dff; font-weight: 600; font-family: monospace; }
 .cs-cat { font-size: 11px; padding: 1px 6px; border-radius: 3px; background: #e8f3ff; color: #165dff; font-weight: 500; flex-shrink: 0; }
-.cs-src { font-size: 11px; padding: 1px 6px; border-radius: 3px; background: #f4f0ff; color: #722ed1; font-weight: 500; }
 .cs-actions { display: flex; gap: 6px; flex-wrap: wrap; justify-content: flex-end; max-width: 380px; }
 .cs-empty {
   font-size: 12px; color: #bfbfbf; text-align: center;
@@ -55,11 +54,6 @@
         <option value="enabled">已启用</option>
         <option value="disabled">已停用</option>
         <option value="rejected">已驳回</option>
-      </select>
-      <select class="input" id="cs-source" style="width:120px">
-        <option value="">全部来源</option>
-        <option value="self">自建</option>
-        <option value="platform">平台</option>
       </select>
       <button class="btn btn-primary" id="cs-query">查询</button>
       <button class="btn" id="cs-reset">重置</button>
@@ -96,7 +90,6 @@ var Store = window.SeriesStore;
 var filterCat = "";
 var filterKeyword = "";
 var filterStatus = "";
-var filterSource = "";
 
 function esc(s) {
   return String(s == null ? "" : s).replace(/[&<>"']/g, function(c) {
@@ -108,7 +101,6 @@ function filteredSeries() {
   return Store.list({
     cat: filterCat || undefined,
     status: filterStatus || undefined,
-    source: filterSource || undefined,
     keyword: filterKeyword || undefined
   });
 }
@@ -161,7 +153,6 @@ function renderList() {
         '<div class="cs-info">' +
           '<div class="cs-title">' + esc(s.name) +
             '<span class="cs-cat">' + esc(s.cat) + "</span>" +
-            '<span class="cs-src">' + (s.source === "platform" ? "平台" : "自建") + "</span>" +
             '<span class="audit-badge ' + badge + '">' + esc(label) + "</span>" +
             '<span style="color:#8c8c8c;font-size:11px;font-weight:400">ID: ' + esc(s.id) + "</span>" +
           "</div>" +
@@ -256,19 +247,17 @@ document.getElementById("cs-cat").insertAdjacentHTML("beforeend", window.Content
 document.getElementById("cs-query").addEventListener("click", function() {
   filterCat = document.getElementById("cs-cat").value;
   filterStatus = document.getElementById("cs-status").value;
-  filterSource = document.getElementById("cs-source").value;
   filterKeyword = document.getElementById("cs-keyword").value.trim();
   renderList();
 });
 document.getElementById("cs-reset").addEventListener("click", function() {
-  filterCat = ""; filterKeyword = ""; filterStatus = ""; filterSource = "";
+  filterCat = ""; filterKeyword = ""; filterStatus = "";
   document.getElementById("cs-cat").value = "";
   document.getElementById("cs-status").value = "";
-  document.getElementById("cs-source").value = "";
   document.getElementById("cs-keyword").value = "";
   renderList();
 });
-["cs-cat", "cs-status", "cs-source"].forEach(function(id) {
+["cs-cat", "cs-status"].forEach(function(id) {
   document.getElementById(id).addEventListener("change", function() {
     document.getElementById("cs-query").click();
   });

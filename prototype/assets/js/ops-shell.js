@@ -80,7 +80,6 @@
         group: "平台审核",
         links: [
           { id: "audit", href: "audit.html", label: "平台审核工作台", badge: 0 },
-          { id: "audit-records", href: "audit-records.html", label: "平台审核记录" },
         ],
       },
     ],

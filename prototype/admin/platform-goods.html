@@ -20,14 +20,7 @@
     <div class="stat"><div class="label">商品总销量</div><div class="value">672</div><div class="hint">近 30 天 +58</div></div>
   </div>
 
-  <!-- 类型/状态 Tab -->
-  <div class="tabs" id="pg-tabs">
-    <a class="active" href="#" data-tab="all">全部</a>
-    <a href="#" data-tab="series">系列课商品</a>
-    <a href="#" data-tab="plan">定制化计划商品</a>
-    <a href="#" data-tab="live">直播商品</a>
-  </div>
-
+  <!-- 无 Tab：类型 / 状态筛选在筛选区 -->
   <!-- 筛选 -->
   <div class="card" style="margin-bottom:8px"><div class="card-bd">
     <div class="form-grid" style="grid-template-columns:repeat(5,minmax(0,1fr));gap:8px 12px">
@@ -166,15 +159,6 @@
   function open(node){ mask.classList.add("open"); node.classList.add("open"); }
   mask.addEventListener("click", closeAll);
   document.querySelectorAll("[data-close]").forEach(function(n){ n.addEventListener("click", closeAll); });
-
-  document.querySelectorAll("#pg-tabs a").forEach(function(a){
-    a.addEventListener("click", function(e){
-      e.preventDefault();
-      document.querySelectorAll("#pg-tabs a").forEach(function(n){n.classList.remove("active");});
-      a.classList.add("active");
-      Proto.toast("已切换到「"+a.textContent+"」（原型）");
-    });
-  });
 
   document.querySelectorAll("#pg-tbody tr").forEach(function(tr){
     tr.querySelectorAll("[data-row-act]").forEach(function(a){
