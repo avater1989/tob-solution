@@ -167,16 +167,12 @@
         group: "租户管理",
         links: [
           { id: "tenants", href: "tenants.html", label: "租户列表" },
-          { id: "users", href: "users.html", label: "租户用户" },
-          { id: "tenant-roles", href: "tenant-roles.html", label: "租户角色" },
-          { id: "template-roles", href: "template-roles.html", label: "租户模板角色" },
         ],
       },
       {
-        group: "租户应用与资源",
+        group: "应用管理",
         links: [
-          { id: "apps", href: "apps.html", label: "租户应用管理" },
-          { id: "resources", href: "resources.html", label: "租户资源管理" },
+          { id: "apps", href: "apps.html", label: "应用管理" },
         ],
       },
       {
@@ -199,16 +195,17 @@
       "<li><a href='data.html'>③ 全局数据</a></li>" +
       "<li><a href='orders.html'>④ 全局订单</a></li></ul></div>",
     tenant:
-      "<div class='assist-block'><h3>租户与用户</h3><ul>" +
+      "<div class='assist-block'><h3>租户与配置</h3><ul>" +
       "<li>商家在注册页留资后成为开通线索</li>" +
       "<li>开通即创建租户并分配商户管理员账号</li>" +
-      "<li>租户用户维护各租户的后台登录账号</li>" +
-      "<li>支持新增用户、锁定解锁、停用删除</li>" +
+      "<li>列表「配置」进入租户配置页，五个分页统一维护</li>" +
+      "<li>分页：租户 / 组织架构 / 岗位 / 租户用户 / 应用授权</li>" +
       "<li>停用后商家后台只读，C 端内容下架</li></ul></div>" +
-      "<div class='assist-block'><h3>角色与资源</h3><ul>" +
-      "<li>模板角色随租户开通下发为内置角色</li>" +
-      "<li>商家也可在后台自建角色（此处可见）</li>" +
-      "<li>功能资源配置维护权限勾选的资源树</li>" +
+      "<div class='assist-block'><h3>应用与权限</h3><ul>" +
+      "<li>应用管理维护平台应用；「资源配置」「角色管理」进入应用配置页</li>" +
+      "<li>资源树按应用隔离，类型区分菜单 / 按钮</li>" +
+      "<li>平台为该应用定义内置角色，随租户开通下发</li>" +
+      "<li>商家自建角色仍在商家后台，此处可见</li>" +
       "<li>应用按套餐授权，可对租户单独覆盖</li></ul></div>",
     content:
       "<div class='assist-block'><h3>内容中台</h3><ul>" +

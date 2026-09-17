@@ -127,8 +127,8 @@
 
   <div class="toolbar" style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap">
     <button class="btn" id="btn-back-bottom" type="button">← 返回售后列表</button>
-    <a class="btn" id="btn-back-rights" href="users.html" style="display:none">返回用户权益</a>
-    <a class="btn" id="btn-back-users" href="users.html" style="display:none">返回原用户列表</a>
+    <a class="btn" id="btn-back-rights" href="tenant-config.html?tab=user" style="display:none">返回用户权益</a>
+    <a class="btn" id="btn-back-users" href="tenant-config.html?tab=user" style="display:none">返回原用户列表</a>
   </div>
   </div>
 </div>
@@ -276,7 +276,7 @@
   }
 
   function usersListHref() {
-    return returnTo || "users.html";
+    return returnTo || "tenant-config.html?tab=user";
   }
 
   function applyDashBack() {

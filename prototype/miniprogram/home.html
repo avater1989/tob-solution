@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>首页 · To-B 小程序</title>
   <link rel="stylesheet" href="../assets/css/proto.css" />
-  <link rel="stylesheet" href="../assets/css/mp.css?v=6" />
+  <link rel="stylesheet" href="../assets/css/mp.css?v=10" />
 </head>
 <body class="mp-page" data-tab="home">
   <div class="mp-frame">
@@ -14,24 +14,32 @@
     <div class="mp-nav">星启家庭教育</div>
     <div class="mp-body">
 
-      <!-- Banner -->
-      <div class="mp-banner">
-        <span class="mp-banner-pill">今晚 20:00 公开课 · 预约即可</span>
-        <h3>亲子沟通，从听懂开始</h3>
-        <p>8 节体系课 · 陪学营老师全程答疑</p>
+      <!-- 头图：艺博士欢迎卡 -->
+      <div class="mp-doc">
+        <div class="mp-doc-txt">
+          <h3>您好，我是艺博士</h3>
+          <p>您的专属家庭成长顾问</p>
+          <div class="mp-doc-ask">
+            <span>您可以问：</span>
+            <a class="mp-doc-chip" href="ai.html">孩子辍学</a>
+            <a class="mp-doc-chip" href="ai.html">青春期孩子叛逆</a>
+            <a class="mp-doc-chip" href="ai.html">亲子沟通</a>
+          </div>
+        </div>
+        <img class="mp-doc-ip" src="../assets/img/ip/yibo.svg" alt="艺博士" />
       </div>
 
-      <!-- 金刚位：入口示意，详情页口头讲解即可 -->
+      <!-- 金刚位：测评 / 定制化 / 艺博士 三个入口都有落地页 -->
       <div class="mp-king">
-        <a href="#" data-toast="测评：详情页口头讲解即可（原型不落地）">
+        <a href="assess.html">
           <span class="mp-king-ico k1">测</span>
           测评
         </a>
-        <a href="#" data-toast="定制化：详情页口头讲解即可（原型不落地）">
+        <a href="plan.html">
           <span class="mp-king-ico k2">定</span>
           定制化
         </a>
-        <a href="#" data-toast="艺博士：详情页口头讲解即可（原型不落地）">
+        <a href="ai.html">
           <span class="mp-king-ico k3">博</span>
           艺博士
         </a>
@@ -74,7 +82,7 @@
 
     </div>
   </div>
-  <p class="mp-hint">首页 = Banner + 金刚位（测评 / 定制化 / 艺博士，无详情页）+ 精选课程 · <a href="../admin/mp-home.html">管理端装修</a></p>
+  <p class="mp-hint">首页 = 艺博士欢迎卡（头图）+ 金刚位（测评 / 定制化 / 艺博士）+ 精选课程 · <a href="ai.html">艺博士对话</a> · <a href="../admin/mp-home.html">管理端装修</a></p>
 
   <script src="../assets/js/proto.js"></script>
   <script src="../assets/js/mp-shell.js"></script>

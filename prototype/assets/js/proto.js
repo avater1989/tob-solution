@@ -73,28 +73,42 @@
   });
 })();
 
-/* 评审标注层：自动加载 annotate.css / annotate.js，全站页面按 Alt+E 即可标注。
-   隐藏方式：localStorage.setItem('proto:review', 'off') */
+/* 评审标注层：加载 review-kit（通用标注工具），全站页面按 Alt+E 即可标注。
+   隐藏方式：localStorage.setItem('proto:review', 'off')
+   接入别处时：把下面的 REVIEW_KIT 配置与 kit 路径改成你自己的即可。 */
+window.REVIEW_KIT = {
+  serverBase: "/__review",      // 与 review-kit/serve.py --prefix 一致
+  storeKey: "proto:review:v1",  // 沿用原键，历史标注不丢
+  pageRoot: "/prototype/",      // 页面标识记成 admin/lives.html 这种相对路径
+  roots: [
+    { sel: "#page-content", region: "content" },
+    { sel: "#page-header-actions", region: "header-actions" },
+    { sel: "#header-actions", region: "header-actions" },
+    { sel: ".mp-body", region: "mp" },
+    { sel: ".mp-frame", region: "mp" },
+    { sel: ".hub-inner", region: "hub" }
+  ],
+  shells: [
+    { name: "admin-shell.js", hints: ["admin-topbar", "admin-brand", "admin-modules", "sidebar"], container: "admin-app" },
+    { name: "ops-shell.js", hints: ["ops-topbar", "ops-sidebar"], container: "ops-app" },
+    { name: "mp-shell.js", hints: ["mp-tabbar", "review-bar"], container: "mp-frame" }
+  ]
+};
 (function () {
   try {
     if (localStorage.getItem("proto:review") === "off") return;
   } catch (e) {}
-  var self = document.currentScript;
-  var base = "";
-  if (self && self.src) {
-    base = self.src.replace(/\/js\/proto\.js.*$/, "/");
-  } else {
-    base = /\/(admin|ops|miniprogram)\//.test(location.pathname) ? "../assets/" : "assets/";
-  }
+  /* kit 位于站点根的 review-kit/：页面在 prototype/{admin,ops,miniprogram}/ 下时上溯两级 */
+  var base = /\/(admin|ops|miniprogram)\//.test(location.pathname) ? "../../review-kit/" : "../review-kit/";
   if (document.getElementById("__ann_css")) return;
   var l = document.createElement("link");
   l.id = "__ann_css";
   l.rel = "stylesheet";
-  l.href = base + "css/annotate.css?v=1";
+  l.href = base + "annotate.css?v=1";
   document.head.appendChild(l);
   var s = document.createElement("script");
   s.id = "__ann_js";
-  s.src = base + "js/annotate.js?v=1";
+  s.src = base + "annotate.js?v=1";
   s.defer = true;
   document.head.appendChild(s);
 })();

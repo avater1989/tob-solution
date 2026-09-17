@@ -6,7 +6,7 @@
 <title>应用管理 · 运营后台</title>
 <link rel="stylesheet" href="../assets/css/proto.css?v=4" />
 </head>
-<body class="admin-body" data-module="tenant" data-nav="apps" data-title="应用管理" data-crumb="运营后台 / 租户管理 / 应用管理" data-assist="1">
+<body class="admin-body" data-module="tenant" data-nav="apps" data-title="应用管理" data-crumb="运营后台 / 应用管理" data-assist="1">
 <div id="page-content" style="display:none">
 
   <!-- 搜索区 -->
@@ -42,7 +42,7 @@
   <div class="toolbar" style="margin-bottom:12px">
     <button class="btn btn-primary" id="btn-add">新增应用</button>
     <div class="spacer"></div>
-    <span class="muted" style="font-size:12px">应用即平台对外提供的子系统/接口；租户开通时按套餐获得应用授权</span>
+    <span class="muted" style="font-size:12px">应用即平台对外提供的子系统/接口；「资源配置」「角色管理」进入应用配置页，租户侧的授权在租户配置页维护</span>
   </div>
 
   <!-- 表格 -->
@@ -58,7 +58,7 @@
           <th>套餐要求</th>
           <th>状态</th>
           <th>更新时间</th>
-          <th style="width:160px">操作</th>
+          <th style="width:260px">操作</th>
         </tr>
       </thead>
       <tbody>
@@ -71,7 +71,7 @@
           <td>全部套餐</td>
           <td><span class="badge badge-success">已上架</span></td>
           <td>2026-09-02 09:30</td>
-          <td class="row-actions"><a href="#" data-row-act="edit">编辑</a><a href="#" data-row-act="grant">授权管理</a><a href="#" data-row-act="ver">版本记录</a></td>
+          <td class="row-actions"><a href="app-config.html?id=APP_MCH_ADMIN&amp;tab=resources">资源配置</a><a href="app-config.html?id=APP_MCH_ADMIN&amp;tab=roles">角色管理</a><a href="#" data-row-act="edit">编辑</a><a href="#" data-row-act="ver">版本记录</a></td>
         </tr>
         <tr>
           <td><b>C 端小程序</b><p class="muted" style="margin:2px 0 0;font-size:12px">内容售卖与直播转化的 C 端承接</p></td>
@@ -82,7 +82,7 @@
           <td>全部套餐</td>
           <td><span class="badge badge-success">已上架</span></td>
           <td>2026-09-05 20:10</td>
-          <td class="row-actions"><a href="#" data-row-act="edit">编辑</a><a href="#" data-row-act="grant">授权管理</a><a href="#" data-row-act="ver">版本记录</a></td>
+          <td class="row-actions"><a href="app-config.html?id=APP_C_MP&amp;tab=resources">资源配置</a><a href="app-config.html?id=APP_C_MP&amp;tab=roles">角色管理</a><a href="#" data-row-act="edit">编辑</a><a href="#" data-row-act="ver">版本记录</a></td>
         </tr>
         <tr>
           <td><b>视频号助手</b><p class="muted" style="margin:2px 0 0;font-size:12px">公域视频号订单同步与推广链接管理</p></td>
@@ -93,7 +93,7 @@
           <td>专业版</td>
           <td><span class="badge badge-warn">灰度中</span></td>
           <td>2026-08-25 16:40</td>
-          <td class="row-actions"><a href="#" data-row-act="edit">编辑</a><a href="#" data-row-act="grant">授权管理</a><a href="#" data-row-act="ver">版本记录</a></td>
+          <td class="row-actions"><a href="app-config.html?id=APP_CHANNELS&amp;tab=resources">资源配置</a><a href="app-config.html?id=APP_CHANNELS&amp;tab=roles">角色管理</a><a href="#" data-row-act="edit">编辑</a><a href="#" data-row-act="ver">版本记录</a></td>
         </tr>
         <tr>
           <td><b>开放接口（OpenAPI）</b><p class="muted" style="margin:2px 0 0;font-size:12px">商品/订单/用户数据开放，供商家自有系统对接</p></td>
@@ -104,7 +104,7 @@
           <td>专业版</td>
           <td><span class="badge badge-success">已上架</span></td>
           <td>2026-08-14 11:20</td>
-          <td class="row-actions"><a href="#" data-row-act="edit">编辑</a><a href="#" data-row-act="grant">授权管理</a><a href="#" data-row-act="ver">版本记录</a></td>
+          <td class="row-actions"><a href="app-config.html?id=APP_OPEN_API&amp;tab=resources">资源配置</a><a href="app-config.html?id=APP_OPEN_API&amp;tab=roles">角色管理</a><a href="#" data-row-act="edit">编辑</a><a href="#" data-row-act="ver">版本记录</a></td>
         </tr>
         <tr>
           <td><b>企微 SCRM 连接器</b><p class="muted" style="margin:2px 0 0;font-size:12px">企业微信侧边栏与群运营能力，规划中</p></td>
@@ -115,7 +115,7 @@
           <td>专业版</td>
           <td><span class="badge">已下架</span></td>
           <td>2026-06-30 18:00</td>
-          <td class="row-actions"><a href="#" data-row-act="edit">编辑</a><a href="#" data-row-act="grant">授权管理</a><a href="#" data-row-act="up">上架</a></td>
+          <td class="row-actions"><a href="app-config.html?id=APP_WECOM_SCRM&amp;tab=resources">资源配置</a><a href="app-config.html?id=APP_WECOM_SCRM&amp;tab=roles">角色管理</a><a href="#" data-row-act="edit">编辑</a><a href="#" data-row-act="ver">版本记录</a><a href="#" data-row-act="up">上架</a></td>
         </tr>
       </tbody>
     </table>
@@ -166,7 +166,7 @@
       </div>
       <div class="field" style="grid-column:1/-1"><label>应用说明</label><input placeholder="选填" /></div>
     </div>
-    <p class="muted" style="margin:10px 0 0;font-size:12px">新增应用后，需在「功能资源配置」中挂载其菜单/接口资源，再对租户授权。</p>
+    <p class="muted" style="margin:10px 0 0;font-size:12px">新增应用后，需在应用配置的「资源管理」中挂载其菜单/按钮资源，再对租户授权。</p>
   </div>
   <div class="proto-modal-ft" style="border-top:1px solid var(--color-border);padding:12px 20px;display:flex;gap:8px;justify-content:flex-end">
     <button class="btn" data-close>取消</button>
@@ -202,41 +202,6 @@
   <div class="proto-modal-ft" style="border-top:1px solid var(--color-border);padding:12px 20px;display:flex;gap:8px;justify-content:flex-end">
     <button class="btn" data-close>取消</button>
     <button class="btn btn-primary" data-close data-toast="应用信息已保存（原型）">保存</button>
-  </div>
-</div>
-
-<!-- 授权管理弹窗 -->
-<div class="proto-modal" id="modal-grant" style="width:640px">
-  <div class="proto-modal-hd">
-    <h3 style="font-size:16px;font-weight:600">授权管理 · <span id="grant-name">商家管理后台</span></h3>
-    <button class="btn btn-sm btn-ghost" data-close>×</button>
-  </div>
-  <div class="proto-modal-bd">
-    <p class="muted" style="margin:0 0 10px;font-size:12px">按租户单独增减应用授权；默认随套餐自动授权，此处可对单个租户覆盖。</p>
-    <table class="data" style="font-size:12px">
-      <thead>
-        <tr><th style="text-align:left">租户</th><th>套餐</th><th>授权来源</th><th>授权状态</th><th>操作</th></tr>
-      </thead>
-      <tbody>
-        <tr><td style="text-align:left">星启家庭教育（10001）</td><td>专业版</td><td>套餐默认</td><td><span class="badge badge-success">已授权</span></td><td><a href="#" data-grant-act="revoke">取消授权</a></td></tr>
-        <tr><td style="text-align:left">晨光少儿成长（10002）</td><td>标准版</td><td>套餐默认</td><td><span class="badge badge-success">已授权</span></td><td><a href="#" data-grant-act="revoke">取消授权</a></td></tr>
-        <tr><td style="text-align:left">慧心教育（10004）</td><td>标准版</td><td>单独授权（试用）</td><td><span class="badge badge-warn">试用中（至 09-30）</span></td><td><a href="#" data-grant-act="revoke">取消授权</a></td></tr>
-        <tr><td style="text-align:left">乐学伴家庭（10006）</td><td>专业版</td><td>套餐默认</td><td><span class="badge badge-success">已授权</span></td><td><a href="#" data-grant-act="revoke">取消授权</a></td></tr>
-        <tr><td style="text-align:left">某旧商户（10008）</td><td>—</td><td>—</td><td><span class="badge">未授权</span></td><td><a href="#" data-grant-act="grant">单独授权</a></td></tr>
-      </tbody>
-    </table>
-    <div style="margin-top:12px;display:flex;gap:8px;align-items:center">
-      <select class="ua-size" style="min-width:180px">
-        <option>选择租户…</option>
-        <option>星启家庭教育（10001）</option>
-        <option>晨光少儿成长（10002）</option>
-        <option>慧心教育（10004）</option>
-      </select>
-      <button class="btn btn-sm btn-primary" data-close data-toast="已为所选租户单独授权（原型）">添加授权</button>
-    </div>
-  </div>
-  <div class="proto-modal-ft" style="border-top:1px solid var(--color-border);padding:12px 20px;display:flex;gap:8px;justify-content:flex-end">
-    <button class="btn" data-close>关闭</button>
   </div>
 </div>
 
@@ -341,9 +306,6 @@
           document.getElementById("ed-code").value = tr.children[1].textContent.trim();
           document.getElementById("ed-ver").value = tr.children[3].textContent.trim();
           open(document.getElementById("modal-edit"));
-        } else if (act === "grant") {
-          document.getElementById("grant-name").textContent = name;
-          open(document.getElementById("modal-grant"));
         } else if (act === "ver") {
           document.getElementById("ver-name").textContent = name;
           open(document.getElementById("modal-ver"));
@@ -353,19 +315,6 @@
           open(document.getElementById("modal-confirm"));
         }
       });
-    });
-  });
-
-  // 授权管理内操作
-  document.querySelectorAll("[data-grant-act]").forEach(function (a) {
-    a.addEventListener("click", function (e) {
-      e.preventDefault();
-      var revoke = a.getAttribute("data-grant-act") === "revoke";
-      document.getElementById("cf-title").textContent = revoke ? "取消授权" : "单独授权";
-      document.getElementById("cf-text").textContent = revoke
-        ? "确认取消该租户的应用授权？取消后其后台入口隐藏、接口调用将被拒绝（数据保留）。"
-        : "确认为该租户单独开通应用授权？授权即刻生效。";
-      open(document.getElementById("modal-confirm"));
     });
   });
 

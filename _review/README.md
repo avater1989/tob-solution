@@ -58,6 +58,7 @@ python3 _review/serve.py          # 默认 8090，端口被占用可直接跟参
 
 - 标注层不改动原型页面 DOM，只读不改；角标与高亮都画在独立图层里，删掉 `annotate.js` 即完全复原。
 - 页面通过 `assets/js/proto.js` 自动加载标注层（覆盖 170 个页面），`prototype/index.html` 单独引入。
+- 标注层已抽成通用件 **`review-kit/`**（可移植到其他项目，配置见 `review-kit/README.md`）；本仓库的标注层实现以 `review-kit/` 为准，`prototype/assets/js/annotate.js` 仅作回滚备份。
 - 临时隐藏标注层：控制台执行 `localStorage.setItem('proto:review','off')`，恢复用 `localStorage.removeItem('proto:review')`。
 - 重定向桩页（如 `admin/courses.html`、`admin/live-audit.html`）会自动跳转到真实页面，不需要也无需标注。
 

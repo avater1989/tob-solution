@@ -6,7 +6,7 @@
 <title>用户详情 · 运营后台</title>
 <link rel="stylesheet" href="../assets/css/proto.css?v=4" />
 </head>
-<body class="admin-body" data-module="tenant" data-nav="users" data-title="用户详情" data-crumb="运营后台 / 租户管理 / 租户用户 / 用户详情" data-assist="1">
+<body class="admin-body" data-module="tenant" data-nav="tenants" data-title="用户详情" data-crumb="运营后台 / 租户管理 / 租户列表 / 租户配置 / 用户详情" data-assist="1">
 <div id="page-content" style="display:none">
 
   <!-- 操作条 -->
@@ -16,7 +16,7 @@
     <button class="btn" id="btn-stop">停用账号</button>
     <button class="btn btn-danger" id="btn-del">删除账号</button>
     <div class="spacer"></div>
-    <button class="btn btn-ghost" onclick="history.back()">返回</button>
+    <a class="btn btn-ghost" href="tenant-config.html?tab=user">返回租户用户</a>
   </div>
 
   <div class="grid-2" style="gap:16px">
@@ -63,7 +63,7 @@
             <span class="ud-chip ud-chip-blue">商户管理员角色</span><span class="ud-chip ud-chip-blue">内容运营角色</span><span class="ud-chip ud-chip-blue">销售角色</span><span class="muted">…</span>
           </div>
           <div class="row-actions" style="margin-top:10px">
-            <a href="tenant-detail.html">查看租户</a>
+            <a href="tenant-config.html">查看租户</a>
           </div>
         </div>
         <!-- 已解绑租户卡片 2 -->

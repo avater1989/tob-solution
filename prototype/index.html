@@ -46,7 +46,22 @@
       </p>
     </div>
   </div>
-  <link rel="stylesheet" href="assets/css/annotate.css?v=1" />
-  <script src="assets/js/annotate.js?v=1" defer></script>
+  <!-- 评审标注层：review-kit（通用工具，位于仓库根 review-kit/） -->
+  <script>
+  window.REVIEW_KIT = {
+    serverBase: "/__review",
+    storeKey: "proto:review:v1",
+    pageRoot: "/prototype/",
+    roots: [
+      { sel: "#page-content", region: "content" },
+      { sel: "#header-actions", region: "header-actions" }
+    ],
+    shells: [
+      { name: "admin-shell.js", hints: ["admin-topbar", "admin-brand", "admin-modules", "sidebar"], container: "admin-app" }
+    ]
+  };
+  </script>
+  <link rel="stylesheet" href="../review-kit/annotate.css?v=1" />
+  <script src="../review-kit/annotate.js?v=1" defer></script>
 </body>
 </html>

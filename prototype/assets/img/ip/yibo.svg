@@ -1,0 +1,74 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 216 296" width="216" height="296" role="img" aria-label="艺博士形象">
+  <defs>
+    <linearGradient id="ybArmL" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#ffa64d" /><stop offset="1" stop-color="#f07800" />
+    </linearGradient>
+    <linearGradient id="ybArmR" x1="0" y1="1" x2="1" y2="0">
+      <stop offset="0" stop-color="#ef6c00" /><stop offset="1" stop-color="#ffb066" />
+    </linearGradient>
+    <linearGradient id="ybBody" x1="0.15" y1="0" x2="0.85" y2="1">
+      <stop offset="0" stop-color="#ffb066" /><stop offset="0.55" stop-color="#fa8c2e" /><stop offset="1" stop-color="#ee6f00" />
+    </linearGradient>
+    <radialGradient id="ybHead" cx="0.36" cy="0.26" r="0.86">
+      <stop offset="0" stop-color="#ffc48a" /><stop offset="0.5" stop-color="#fa8c2e" /><stop offset="1" stop-color="#ed6b00" />
+    </radialGradient>
+    <linearGradient id="ybLeafL" x1="0" y1="1" x2="0.6" y2="0">
+      <stop offset="0" stop-color="#4ade80" /><stop offset="1" stop-color="#a7f3a0" />
+    </linearGradient>
+    <linearGradient id="ybLeafR" x1="0" y1="1" x2="0.6" y2="0">
+      <stop offset="0" stop-color="#22c55e" /><stop offset="1" stop-color="#9df09a" />
+    </linearGradient>
+  </defs>
+
+  <!-- 左臂（垂放，多半被身体挡住，只露出外侧一线） -->
+  <path d="M60 200 Q46 220 46 240" stroke="url(#ybArmL)" stroke-width="26" stroke-linecap="round" fill="none" />
+
+  <!-- 右臂（挥手） -->
+  <path d="M148 202 Q176 168 182 122" stroke="url(#ybArmR)" stroke-width="26" stroke-linecap="round" fill="none" />
+  <ellipse cx="186" cy="104" rx="22" ry="23" fill="#fdba74" />
+  <g stroke="#f59e0b" stroke-width="2.2" stroke-linecap="round" fill="none">
+    <path d="M175 88 v12" /><path d="M185 86 v12" /><path d="M195 90 v11" />
+  </g>
+
+  <!-- 腿 -->
+  <ellipse cx="80" cy="268" rx="17" ry="15" fill="#ee6f00" />
+  <ellipse cx="120" cy="268" rx="17" ry="15" fill="#ee6f00" />
+
+  <!-- 身体 -->
+  <ellipse cx="100" cy="218" rx="62" ry="46" fill="url(#ybBody)" />
+
+  <!-- 头顶两片叶子 -->
+  <ellipse cx="68" cy="40" rx="23" ry="32" transform="rotate(-38 68 40)" fill="url(#ybLeafL)" />
+  <ellipse cx="134" cy="32" rx="27" ry="36" transform="rotate(34 134 32)" fill="url(#ybLeafR)" />
+
+  <!-- 头 -->
+  <circle cx="100" cy="142" r="78" fill="url(#ybHead)" />
+
+  <!-- 学士帽 -->
+  <ellipse cx="97" cy="76" rx="26" ry="8" fill="#1f2937" />
+  <path d="M60 64 L97 48 L134 64 L97 80 Z" fill="#4b5563" />
+  <path d="M134 64 Q142 72 140 84" stroke="#fbbf24" stroke-width="3" fill="none" stroke-linecap="round" />
+  <circle cx="140" cy="87" r="4.5" fill="#fbbf24" />
+
+  <!-- 脸 -->
+  <ellipse cx="100" cy="162" rx="57" ry="50" fill="#fff7ef" />
+
+  <!-- 额头徽章 -->
+  <circle cx="100" cy="98" r="15" fill="none" stroke="#ffffff" stroke-width="4.5" />
+  <path d="M93 100 q3.5 -6 7 0 q3.5 6 7 0" stroke="#fdba74" stroke-width="2.8" fill="none" stroke-linecap="round" />
+
+  <!-- 腮红 -->
+  <g stroke="#fca5a5" stroke-width="2.6" stroke-linecap="round" fill="none">
+    <path d="M48 166 l8 8" /><path d="M54 161 l8 8" /><path d="M60 156 l8 8" />
+    <path d="M152 174 l-8 -8" /><path d="M146 169 l-8 -8" /><path d="M140 164 l-8 -8" />
+  </g>
+
+  <!-- 眼睛 -->
+  <ellipse cx="79" cy="161" rx="11.5" ry="13.5" fill="#1f2937" />
+  <ellipse cx="121" cy="161" rx="11.5" ry="13.5" fill="#1f2937" />
+  <circle cx="83" cy="155" r="4" fill="#ffffff" />
+  <circle cx="125" cy="155" r="4" fill="#ffffff" />
+
+  <!-- 微笑 -->
+  <path d="M88 188 Q100 200 112 188" stroke="#1f2937" stroke-width="3.6" fill="none" stroke-linecap="round" />
+</svg>

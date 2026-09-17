@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>艺博士 · To-B 小程序</title>
+  <link rel="stylesheet" href="../assets/css/proto.css" />
+  <link rel="stylesheet" href="../assets/css/mp.css?v=10" />
+</head>
+<body class="mp-page">
+  <div class="mp-frame">
+    <div class="mp-top" style="height:250px"></div>
+    <div class="mp-status"><span>9:41</span><span>艺博士</span><span>100%</span></div>
+    <div class="mp-nav">
+      <a class="back" href="home.html">←</a>
+      艺博士
+      <a class="mp-search-ico" href="#" style="position:absolute;right:14px" data-toast="已开启新对话（原型）">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14" /></svg>
+      </a>
+    </div>
+
+    <div class="mp-body" style="padding-bottom:72px">
+
+      <!-- 人物卡 -->
+      <div class="mp-ai-hd">
+        <img class="mp-ai-hd-av" src="../assets/img/ip/yibo.svg" alt="艺博士" />
+        <div class="mp-ai-hd-bd">
+          <div class="mp-ai-hd-name">艺博士 <span class="mp-ai-hd-tag">AI 顾问</span></div>
+          <div class="mp-ai-hd-sub">懂测评 · 懂孩子 · 懂家庭沟通</div>
+        </div>
+        <span class="mp-ai-hd-on"><i></i>在线</span>
+      </div>
+
+      <!-- 能力入口 -->
+      <div class="mp-ai-caps">
+        <a class="mp-ai-cap" href="#" data-toast="解读测评报告：原型不落地">
+          <span class="mp-ai-cap-ico" style="background:linear-gradient(135deg,#ffb020,#ff7a45)">报</span>
+          <span>报告解读</span>
+        </a>
+        <a class="mp-ai-cap" href="#" data-toast="生成学习规划：原型不落地">
+          <span class="mp-ai-cap-ico" style="background:linear-gradient(135deg,#5b8cff,#3b6ef5)">规</span>
+          <span>学习规划</span>
+        </a>
+        <a class="mp-ai-cap" href="#" data-toast="生成沟通话术：原型不落地">
+          <span class="mp-ai-cap-ico" style="background:linear-gradient(135deg,#34c759,#1faa4a)">话</span>
+          <span>沟通话术</span>
+        </a>
+        <a class="mp-ai-cap" href="#" data-toast="情绪陪伴：原型不落地">
+          <span class="mp-ai-cap-ico" style="background:linear-gradient(135deg,#b39bf0,#8b5cf6)">伴</span>
+          <span>情绪陪伴</span>
+        </a>
+      </div>
+
+      <!-- 对话流 -->
+      <div class="mp-ai-flow">
+        <div class="mp-ai-day">今天 14:20</div>
+
+        <!-- 欢迎 -->
+        <div class="mp-ai-msg">
+          <img class="mp-ai-msg-av" src="../assets/img/ip/yibo-face.svg" alt="" />
+          <div class="mp-ai-bubble">
+            你好，我是艺博士 👋
+            <span class="mp-ai-line">我可以帮你解读测评报告、分析孩子行为背后的原因，也能直接给你一段能照着说的沟通话术。</span>
+            <span class="mp-ai-line">现在有什么想聊的？</span>
+          </div>
+        </div>
+        <div class="mp-ai-follow">
+          <a href="#" data-toast="已发送：孩子厌学怎么办（原型）">孩子厌学怎么办</a>
+          <a href="#" data-toast="已发送：青春期叛逆怎么沟通（原型）">青春期叛逆怎么沟通</a>
+          <a href="#" data-toast="已发送：怎么提高专注力（原型）">怎么提高专注力</a>
+        </div>
+
+        <!-- 用户提问 -->
+        <div class="mp-ai-msg me">
+          <span class="mp-ai-msg-av me-av"></span>
+          <div class="mp-ai-bubble">孩子上初二，最近特别叛逆，说什么都不听。</div>
+        </div>
+
+        <!-- 艺博士回答 -->
+        <div class="mp-ai-msg">
+          <img class="mp-ai-msg-av" src="../assets/img/ip/yibo-face.svg" alt="" />
+          <div class="mp-ai-bubble">
+            <b>初二是自我意识最强的阶段</b>，孩子的"不听"往往不是针对你，而是在确认"我能不能自己说了算"。
+            <span class="mp-ai-line">可以先做两件事：</span>
+            <span class="mp-ai-line">1. 把命令句换成选择题，比如"你想先写数学还是先背单词"；</span>
+            <span class="mp-ai-line">2. 每天留 10 分钟只听不说，让他把话讲完。</span>
+            <span class="mp-ai-tip">提示：这两条执行 2 周后再做一次测评，能看到明显变化。</span>
+
+            <a class="mp-ai-inline" href="course.html">
+              <span class="mp-ai-inline-img">沟通<br />基础</span>
+              <span class="mp-ai-inline-bd">
+                <span class="mp-ai-inline-t">亲子沟通基础</span>
+                <span class="mp-ai-inline-m">8 节 · 适合 3–12 岁家庭</span>
+              </span>
+              <span class="mp-ai-inline-go">去看 ›</span>
+            </a>
+          </div>
+        </div>
+
+        <div class="mp-ai-follow">
+          <a href="#" data-toast="已发送：帮我生成一段话术（原型）">帮我生成一段话术</a>
+          <a href="#" data-toast="已发送：推荐相关测评（原型）">推荐相关测评</a>
+        </div>
+
+        <!-- 用户提问 2 -->
+        <div class="mp-ai-msg me">
+          <span class="mp-ai-msg-av me-av"></span>
+          <div class="mp-ai-bubble">帮我生成一段话术，今晚就想跟他聊聊。</div>
+        </div>
+
+        <!-- 正在输入 -->
+        <div class="mp-ai-msg">
+          <img class="mp-ai-msg-av" src="../assets/img/ip/yibo-face.svg" alt="" />
+          <div class="mp-ai-bubble" style="padding:12px 14px">
+            <span class="mp-ai-typing"><i></i><i></i><i></i></span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- 底部输入栏 -->
+    <div class="mp-ai-bar">
+      <input class="mp-ai-bar-in" type="text" placeholder="把问题告诉艺博士…" />
+      <a class="mp-ai-bar-ico" href="#" data-toast="语音输入：原型不落地">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="11" rx="3" /><path d="M5.5 11.5a6.5 6.5 0 0 0 13 0" /><path d="M12 18v3" /></svg>
+      </a>
+      <a class="mp-ai-bar-send" href="#" data-toast="艺博士正在思考…（原型不落地）">发送</a>
+    </div>
+  </div>
+
+  <p class="mp-hint">艺博士 = 智能体对话页（从首页欢迎卡 / 金刚位进入） · <a href="assess.html">测评页</a> · <a href="../admin/mp-settings.html">管理端页面配置</a></p>
+
+  <script src="../assets/js/proto.js"></script>
+  <script src="../assets/js/mp-shell.js"></script>
+</body>
+</html>

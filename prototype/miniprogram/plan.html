@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>定制化计划详情 · To-B 小程序</title>
+  <link rel="stylesheet" href="../assets/css/proto.css" />
+  <link rel="stylesheet" href="../assets/css/mp.css?v=10" />
+</head>
+<body class="mp-page" data-tabbar="0">
+  <div class="mp-frame">
+    <div class="mp-top" style="height:180px"></div>
+    <div class="mp-status"><span>9:41</span><span>定制化计划</span><span>100%</span></div>
+
+    <div class="mp-nav mp-nav-plan">
+      <a class="back" href="home.html">←</a>
+      <span class="mp-nav-t">
+        卓越父母成长营（体验卡）
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7" /></svg>
+      </span>
+      <a class="mp-nav-cal" href="#" data-toast="计划日历：原型不落地">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5" width="17" height="16" rx="3" /><path d="M8 3v4M16 3v4M3.5 10h17" /><path d="M8 14h2.5M13.5 14H16M8 17.5h2.5" /></svg>
+      </a>
+    </div>
+
+    <div class="mp-body">
+
+      <!-- 计划信息条 -->
+      <div class="mp-pmeta">
+        <b>计划01-如何培高情商</b>
+        <span>赵大宝</span>
+      </div>
+
+      <!-- 当前任务卡 -->
+      <div class="mp-taskcard">
+        <div class="mp-taskcard-h"><i>任务4</i>如何引导孩子</div>
+        <div class="mp-taskcard-sub">当前关卡完成进度 (24%)</div>
+        <div class="mp-taskcard-bar">
+          <span class="mp-taskcard-track"><b style="width:66.7%"></b></span>
+          <span class="mp-taskcard-num">4/6</span>
+        </div>
+      </div>
+
+      <!-- 第一关卡 -->
+      <div class="mp-chapter">
+        <b>第一关卡 情绪表达与认知</b>
+        <em></em>
+      </div>
+
+      <!-- 任务关卡地图 -->
+      <div class="mp-journey">
+        <svg class="mp-journey-line" viewBox="0 0 347 520" preserveAspectRatio="none" fill="none">
+          <polyline points="277,52 187,132 90,215 189,308 280,388 187,468"
+            stroke="#dfe2e7" stroke-width="5" stroke-linecap="round" stroke-dasharray="0.5 15" />
+        </svg>
+
+        <span class="mp-node done" style="left:calc(79.8% - 40px);top:12px">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5 10 17.5 19 7" /></svg>
+        </span>
+
+        <span class="mp-node done" style="left:calc(53.9% - 40px);top:92px">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5 10 17.5 19 7" /></svg>
+        </span>
+
+        <span class="mp-node done" style="left:calc(25.9% - 40px);top:175px">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5 10 17.5 19 7" /></svg>
+        </span>
+
+        <span class="mp-node cur" style="left:calc(54.5% - 44px);top:264px">
+          <img class="mp-node-ip" src="../assets/img/ip/yibo-face.svg" alt="" />
+          <span>任务4</span>
+        </span>
+
+        <span class="mp-node todo" style="left:calc(80.7% - 40px);top:348px">
+          <svg viewBox="0 0 24 24" fill="#fff"><path d="M12 3.2l2.6 5.5 6 .8-4.4 4.2 1.1 6-5.3-2.9-5.3 2.9 1.1-6L3.4 9.5l6-.8L12 3.2z" /></svg>
+          <span>任务5</span>
+        </span>
+
+        <span class="mp-node todo" style="left:calc(53.9% - 40px);top:428px">
+          <svg viewBox="0 0 24 24" fill="#fff"><path d="M12 3.2l2.6 5.5 6 .8-4.4 4.2 1.1 6-5.3-2.9-5.3 2.9 1.1-6L3.4 9.5l6-.8L12 3.2z" /></svg>
+          <span>任务6</span>
+        </span>
+      </div>
+
+      <!-- 第二关卡 -->
+      <div class="mp-chapter" style="margin-bottom:18px">
+        <b>第二关卡 如何表达情绪</b>
+      </div>
+
+    </div>
+  </div>
+
+  <p class="mp-hint">定制化计划详情：任务进度卡 + 关卡任务地图（已完成 / 进行中 / 未解锁） · <a href="home.html">返回首页</a></p>
+
+  <script src="../assets/js/proto.js"></script>
+  <script src="../assets/js/mp-shell.js"></script>
+</body>
+</html>

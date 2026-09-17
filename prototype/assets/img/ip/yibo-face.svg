@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 230" width="200" height="230" role="img" aria-label="艺博士头像">
+  <defs>
+    <radialGradient id="ybHeadF" cx="0.36" cy="0.26" r="0.86">
+      <stop offset="0" stop-color="#ffc48a" /><stop offset="0.5" stop-color="#fa8c2e" /><stop offset="1" stop-color="#ed6b00" />
+    </radialGradient>
+    <linearGradient id="ybLeafLF" x1="0" y1="1" x2="0.6" y2="0">
+      <stop offset="0" stop-color="#4ade80" /><stop offset="1" stop-color="#a7f3a0" />
+    </linearGradient>
+    <linearGradient id="ybLeafRF" x1="0" y1="1" x2="0.6" y2="0">
+      <stop offset="0" stop-color="#22c55e" /><stop offset="1" stop-color="#9df09a" />
+    </linearGradient>
+  </defs>
+
+  <!-- 头顶两片叶子 -->
+  <ellipse cx="68" cy="34" rx="23" ry="31" transform="rotate(-38 68 34)" fill="url(#ybLeafLF)" />
+  <ellipse cx="134" cy="27" rx="27" ry="35" transform="rotate(34 134 27)" fill="url(#ybLeafRF)" />
+
+  <!-- 头 -->
+  <circle cx="100" cy="134" r="80" fill="url(#ybHeadF)" />
+
+  <!-- 学士帽 -->
+  <ellipse cx="97" cy="68" rx="26" ry="8" fill="#1f2937" />
+  <path d="M60 56 L97 40 L134 56 L97 72 Z" fill="#4b5563" />
+  <path d="M134 56 Q142 64 140 76" stroke="#fbbf24" stroke-width="3" fill="none" stroke-linecap="round" />
+  <circle cx="140" cy="79" r="4.5" fill="#fbbf24" />
+
+  <!-- 脸 -->
+  <ellipse cx="100" cy="154" rx="58" ry="50" fill="#fff7ef" />
+
+  <!-- 额头徽章 -->
+  <circle cx="100" cy="90" r="15" fill="none" stroke="#ffffff" stroke-width="4.5" />
+  <path d="M93 92 q3.5 -6 7 0 q3.5 6 7 0" stroke="#fdba74" stroke-width="2.8" fill="none" stroke-linecap="round" />
+
+  <!-- 腮红 -->
+  <g stroke="#fca5a5" stroke-width="2.6" stroke-linecap="round" fill="none">
+    <path d="M46 158 l8 8" /><path d="M52 153 l8 8" /><path d="M58 148 l8 8" />
+    <path d="M154 166 l-8 -8" /><path d="M148 161 l-8 -8" /><path d="M142 156 l-8 -8" />
+  </g>
+
+  <!-- 眼睛 -->
+  <ellipse cx="79" cy="153" rx="11.5" ry="13.5" fill="#1f2937" />
+  <ellipse cx="121" cy="153" rx="11.5" ry="13.5" fill="#1f2937" />
+  <circle cx="83" cy="147" r="4" fill="#ffffff" />
+  <circle cx="125" cy="147" r="4" fill="#ffffff" />
+
+  <!-- 微笑 -->
+  <path d="M88 180 Q100 192 112 180" stroke="#1f2937" stroke-width="3.6" fill="none" stroke-linecap="round" />
+</svg>
