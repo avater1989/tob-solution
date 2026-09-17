@@ -43,6 +43,19 @@
       include: "本场直播观看权（不含系列课正式课权益）",
       service: "可在「我的 → 账号与帮助」联系商家；直播门票售后以商家说明为准"
     },
+    offlineTicket: {
+      id: "offlineTicket",
+      title: "卓越家族培养计划 · 线下工作坊门票",
+      type: "offline",
+      typeLabel: "线下门票",
+      price: "299",
+      access: "付费购买",
+      validity: "本场有效",
+      validityStart: "支付成功即获得本场报名资格",
+      startHow: "支付成功后可在详情页查看报名状态；请按课程时间到场",
+      include: "本场线下课报名资格（按线下课 ID 隔离，不含其他场次）",
+      service: "未开课可退以商家说明为准；可在「我的 → 账号与帮助」联系商家"
+    },
     liveGoods: {
       id: "liveGoods",
       title: "亲子沟通基础",

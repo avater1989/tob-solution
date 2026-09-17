@@ -1,5 +1,5 @@
 /**
- * 经营分析工具栏（P2）
+ * 数据看板工具栏（P2）
  * 自定义日期 / 常用视图 / 导出 / 分享 / 数据口径
  * 依赖：board-metrics、board-dictionary、proto；可选 board-insights
  */
@@ -578,7 +578,7 @@
       document.getElementById("page-content").insertBefore(bar, document.getElementById("page-content").firstChild);
     }
     var f = BM().getFilters();
-    bar.innerHTML = "<h1>" + (document.body.getAttribute("data-title") || "经营分析") + "</h1>" +
+    bar.innerHTML = "<h1>" + (document.body.getAttribute("data-title") || "数据看板") + "</h1>" +
       "<p>筛选：" + BM().rangeLabel(f) +
       (f.channel ? " · " + BM().channelLabel(f.channel) : " · 全部渠道") +
       (f.term ? " · " + BM().termLabel(f.term) : " · 全部期次") + "</p>" +
@@ -595,7 +595,7 @@
     var f = BM().getFilters();
     var d = BM().aggregateLeadMetrics(f);
     var text = [
-      document.body.getAttribute("data-title") || "经营分析",
+      document.body.getAttribute("data-title") || "数据看板",
       shareSummary(),
       "私域池 " + (d.poolLeads != null ? d.poolLeads : "—"),
       "加微 " + (d.wecomLeads != null ? d.wecomLeads : "—"),

@@ -1,5 +1,5 @@
 /**
- * 经营分析闭环 — 环比/目标、漏斗维度、经营瓶颈、待办风险（依赖 board-data + board-metrics）
+ * 数据看板闭环 — 环比/目标、漏斗维度、经营瓶颈、待办风险（依赖 board-data + board-metrics）
  */
 (function (global) {
   var STATE_KEY = "board_analytics_state_v1";
@@ -862,7 +862,7 @@
       else if (q.get("focus")) parts.push(q.get("focus"));
       return parts.join(" / ");
     }
-    parts.push("经营分析");
+    parts.push("数据看板");
     if (from === "overview" || /board-overview/.test(location.pathname)) parts.push("总览");
     if (from === "acquire") parts.push("获客分析");
     if (from === "private") parts.push("私域转化");

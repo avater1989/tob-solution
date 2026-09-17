@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>线下课报名记录 · 商家管理后台</title>
+<link rel="stylesheet" href="../assets/css/proto.css?v=9" />
+<style>
+.user-cell { display: flex; align-items: center; gap: 8px; }
+.user-avatar {
+  width: 28px; height: 28px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  color: #fff; font-size: 12px; font-weight: 600;
+  flex-shrink: 0;
+}
+.sg-selector {
+  display: flex; align-items: center; gap: 12px;
+  padding: 14px 18px;
+  background: #fff; border: 1px solid #e8e8e8; border-radius: 8px;
+  margin-bottom: 12px;
+}
+.sg-selector-label { font-size: 13px; color: #8c8c8c; }
+.sg-selector-current {
+  font-size: 14px; font-weight: 600;
+  padding: 6px 12px; background: #f0f5ff; border-radius: 4px;
+  border: 1px solid #d6e4ff; color: #165dff;
+}
+.sg-selector-back {
+  margin-left: auto; font-size: 12px; color: #165dff; text-decoration: none;
+  padding: 4px 10px; border-radius: 4px;
+}
+.sg-selector-back:hover { background: #f0f5ff; }
+.st-pill {
+  display: inline-block; padding: 2px 8px; border-radius: 3px;
+  font-size: 12px; font-weight: 500;
+}
+.st-signed { background: rgba(22,93,255,.12); color: #165dff; }
+.st-paid { background: rgba(0,180,42,.12); color: #00b42a; }
+.st-cancelled { background: rgba(134,144,156,.15); color: #4e5969; }
+</style>
+</head>
+<body class="admin-body" data-module="content" data-nav="content-offline" data-title="报名记录" data-crumb="内容 / 内容管理 / 线下课 / 报名记录">
+
+<div id="header-actions">
+  <button class="btn" type="button" id="btn-export">导出</button>
+  <a class="btn" href="content-offline.html">返回列表</a>
+</div>
+
+<div id="page-content" style="display:none">
+  <div class="sg-selector">
+    <span class="sg-selector-label">当前线下课</span>
+    <select class="input" id="sg-course" style="width:360px"></select>
+    <span class="sg-selector-current" id="sg-meta">—</span>
+    <a class="sg-selector-back" href="content-offline.html">← 返回列表</a>
+  </div>
+
+  <div class="card" style="margin-bottom:8px"><div class="card-bd">
+    <div class="form-grid" style="grid-template-columns:repeat(4,minmax(0,1fr));gap:8px 12px">
+      <select class="input" id="f-status">
+        <option value="">全部状态</option>
+        <option value="signed">已报名</option>
+        <option value="paid">已支付</option>
+        <option value="cancelled">已取消</option>
+      </select>
+      <select class="input" id="f-channel">
+        <option value="">全部渠道</option>
+        <option>小程序首页</option>
+        <option>分享短链</option>
+        <option>企微私聊</option>
+        <option>短信</option>
+      </select>
+      <input class="input" id="f-keyword" placeholder="姓名 / 手机号" />
+      <div style="display:flex;gap:8px;align-items:center">
+        <button class="btn btn-primary" type="button" id="btn-query">查询</button>
+        <button class="btn" type="button" id="btn-reset">重置</button>
+      </div>
+    </div>
+  </div></div>
+
+  <div class="card"><div class="card-bd" style="padding:0">
+    <table class="data">
+      <thead>
+        <tr>
+          <th>用户</th>
+          <th>手机号</th>
+          <th>渠道</th>
+          <th>报名时间</th>
+          <th>获取方式</th>
+          <th>状态</th>
+          <th>实付金额</th>
+        </tr>
+      </thead>
+      <tbody id="sg-tbody"></tbody>
+    </table>
+  </div></div>
+  <div class="toolbar" style="margin-top:8px">
+    <span class="muted" id="sg-summary">共 0 条</span>
+    <div class="spacer"></div>
+    <button class="btn btn-sm" type="button" disabled>上一页</button>
+    <button class="btn btn-sm btn-primary" type="button">1</button>
+    <button class="btn btn-sm" type="button" disabled>下一页</button>
+  </div>
+</div>
+
+<script src="../assets/js/proto.js"></script>
+<script src="../assets/js/admin-shell.js?v=20"></script>
+<script>
+var COURSES = [
+  { id: "O001", title: "卓越家族培养计划 · 线下工作坊", access: "paid", price: 299, signed: 86, capacity: 100 },
+  { id: "O002", title: "亲子沟通实战 · 线下沙龙", access: "free", price: 0, signed: 32, capacity: 40 },
+  { id: "O003", title: "学习习惯养成 · 线下营（筹备中）", access: "paid", price: 999, signed: 0, capacity: 30 }
+];
+
+var SIGNUPS = {
+  O001: [
+    { name: "陈女士", phone: "138****2103", channel: "小程序首页", time: "2026-09-12 14:22", access: "付费", status: "paid", amount: 299, color: "#165dff" },
+    { name: "王先生", phone: "139****8821", channel: "分享短链", time: "2026-09-13 09:05", access: "付费", status: "paid", amount: 299, color: "#00b42a" },
+    { name: "李女士", phone: "136****4410", channel: "企微私聊", time: "2026-09-14 20:18", access: "付费", status: "cancelled", amount: 0, color: "#86909c" },
+    { name: "赵女士", phone: "137****6602", channel: "短信", time: "2026-09-15 11:40", access: "付费", status: "paid", amount: 299, color: "#fa8c16" },
+    { name: "周先生", phone: "135****9918", channel: "小程序首页", time: "2026-09-16 16:33", access: "付费", status: "paid", amount: 299, color: "#722ed1" }
+  ],
+  O002: [
+    { name: "刘女士", phone: "158****3301", channel: "小程序首页", time: "2026-09-18 10:12", access: "免费", status: "signed", amount: 0, color: "#165dff" },
+    { name: "孙先生", phone: "159****7744", channel: "分享短链", time: "2026-09-19 15:48", access: "免费", status: "signed", amount: 0, color: "#00b42a" },
+    { name: "吴女士", phone: "151****2256", channel: "企微私聊", time: "2026-09-20 08:30", access: "免费", status: "cancelled", amount: 0, color: "#86909c" }
+  ],
+  O003: []
+};
+
+var STATUS_LABEL = { signed: "已报名", paid: "已支付", cancelled: "已取消" };
+var STATUS_CLS = { signed: "st-signed", paid: "st-paid", cancelled: "st-cancelled" };
+
+var params = new URLSearchParams(location.search);
+var currentId = params.get("id") || "O001";
+if (!COURSES.some(function (c) { return c.id === currentId; })) currentId = "O001";
+
+var sel = document.getElementById("sg-course");
+sel.innerHTML = COURSES.map(function (c) {
+  return '<option value="' + c.id + '"' + (c.id === currentId ? " selected" : "") + ">" + c.id + " · " + c.title + "</option>";
+}).join("");
+
+function updateMeta() {
+  var c = COURSES.find(function (x) { return x.id === currentId; });
+  if (!c) return;
+  var access = c.access === "paid" ? ("¥" + c.price) : "免费";
+  document.getElementById("sg-meta").textContent =
+    access + " · 报名 " + c.signed + "/" + c.capacity;
+}
+
+function esc(s) {
+  return String(s).replace(/[&<>"']/g, function (ch) {
+    return ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[ch];
+  });
+}
+
+function render() {
+  var status = document.getElementById("f-status").value;
+  var channel = document.getElementById("f-channel").value;
+  var kw = document.getElementById("f-keyword").value.trim();
+  var rows = (SIGNUPS[currentId] || []).filter(function (r) {
+    if (status && r.status !== status) return false;
+    if (channel && r.channel !== channel) return false;
+    if (kw && r.name.indexOf(kw) < 0 && r.phone.indexOf(kw) < 0) return false;
+    return true;
+  });
+  var tbody = document.getElementById("sg-tbody");
+  if (!rows.length) {
+    tbody.innerHTML = '<tr><td colspan="7" class="muted" style="text-align:center;padding:36px">暂无报名记录</td></tr>';
+  } else {
+    tbody.innerHTML = rows.map(function (r) {
+      return "<tr>" +
+        '<td><div class="user-cell"><span class="user-avatar" style="background:' + r.color + '">' + esc(r.name.charAt(0)) + "</span>" + esc(r.name) + "</div></td>" +
+        "<td>" + esc(r.phone) + "</td>" +
+        "<td>" + esc(r.channel) + "</td>" +
+        "<td>" + esc(r.time) + "</td>" +
+        "<td>" + esc(r.access) + "</td>" +
+        '<td><span class="st-pill ' + STATUS_CLS[r.status] + '">' + STATUS_LABEL[r.status] + "</span></td>" +
+        "<td>" + (r.amount > 0 ? ("¥" + r.amount) : "—") + "</td>" +
+        "</tr>";
+    }).join("");
+  }
+  document.getElementById("sg-summary").textContent = "共 " + rows.length + " 条";
+}
+
+sel.addEventListener("change", function () {
+  currentId = this.value;
+  history.replaceState(null, "", "content-offline-signups.html?id=" + encodeURIComponent(currentId));
+  updateMeta();
+  render();
+});
+
+document.getElementById("btn-query").addEventListener("click", render);
+document.getElementById("btn-reset").addEventListener("click", function () {
+  document.getElementById("f-status").value = "";
+  document.getElementById("f-channel").value = "";
+  document.getElementById("f-keyword").value = "";
+  render();
+});
+document.getElementById("btn-export").addEventListener("click", function () {
+  Proto.toast("已导出报名记录（原型示意）");
+});
+
+updateMeta();
+render();
+</script>
+</body>
+</html>

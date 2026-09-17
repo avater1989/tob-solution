@@ -41,7 +41,7 @@
     { id: "live", label: "直播", href: "lives.html" },
     { id: "content", label: "内容", href: "content-series.html" },
     { id: "trade", label: "交易", href: "orders.html" },
-    { id: "data", label: "经营分析", href: "board-overview.html" },
+    { id: "data", label: "数据看板", href: "board-overview.html" },
     { id: "sys", label: "系统管理", href: "sys-users.html" },
   ];
 
@@ -121,7 +121,7 @@
         group: "内容管理",
         links: [
           { id: "content-series",   href: "content-series.html",   label: "系列课" },
-          { id: "content-offline",  href: "content-offline.html",  label: "线下课（待完善）" },
+          { id: "content-offline",  href: "content-offline.html",  label: "线下课" },
           { id: "content-video",    href: "content-video.html",    label: "视频" },
           { id: "content-article",  href: "content-article.html",  label: "图文" },
           { id: "content-category", href: "content-category.html", label: "内容分类" },
@@ -233,7 +233,7 @@
     ],
     data: [
       {
-        group: "经营分析",
+        group: "数据看板",
         links: [
           { id: "board-o", href: "board-overview.html", label: "总览" },
           { id: "board-t", href: "board-term-review.html", label: "期次经营复盘" },

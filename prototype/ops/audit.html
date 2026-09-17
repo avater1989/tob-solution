@@ -165,18 +165,19 @@
 
 <script src="../assets/js/proto.js"></script>
 <script src="../assets/js/prototype-business-store.js"></script>
+<script src="../assets/js/series-store.js?v=1"></script>
 <script src="../assets/js/ops-shell.js?v=7"></script>
 <script>
 (function () {
   var Biz = window.ProtoBiz;
+  var Store = window.SeriesStore;
   var currentId = null;
   var currentIsLive = false;
+  var currentIsSeries = false;
   var listCache = [];
 
-  // 课程 / 视频 / 图文 / 商品 的待审示例（直播待审数据来自 ProtoBiz）
+  // 视频 / 图文 / 商品 的待审示例（系列课来自 SeriesStore；直播来自 ProtoBiz）
   var LOCAL_ITEMS = [
-    { id: "CO2026090701", typeLabel: "系列课", name: "亲子沟通 21 天训练营", merchantName: "星启家庭教育", submittedAt: "2026-09-07 09:20",
-      rows: [["课程标题","亲子沟通 21 天训练营"],["课程封面","series-cover.jpg（已预览）"],["课程目录","21 节 · 含试看 2 节"],["售卖价格","¥299.00"],["课程简介","面向家长的系统化亲子沟通训练营"]] },
     { id: "VI2026090503", typeLabel: "视频", name: "写作业不吼不叫 · 方法拆解", merchantName: "晨光少儿成长", submittedAt: "2026-09-05 11:32",
       rows: [["视频标题","写作业不吼不叫 · 方法拆解"],["视频封面","video-cover.jpg（已预览）"],["视频时长","42 分 18 秒"],["售卖价格","¥69.00"],["试看设置","每节前 3 分钟"]] },
     { id: "AR2026090602", typeLabel: "图文", name: "青春期沟通家长手册（电子版）", merchantName: "星启家庭教育", submittedAt: "2026-09-06 15:04",
@@ -190,6 +191,29 @@
     var cls = t === "直播" ? "tag-purple" : (t === "系列课" || t === "视频" ? "tag-blue" : "tag-orange");
     return '<span class="tag ' + cls + '">' + esc(t) + "</span>";
   }
+
+  function pendingSeries() {
+    return Store.listPendingAudit().map(function (c) {
+      var trialN = (c.chapters || []).filter(function (ch) { return ch.trial; }).length;
+      return {
+        id: c.id,
+        typeLabel: "系列课",
+        name: c.name,
+        merchantName: c.merchantName || "星启家庭教育",
+        submittedAt: c.submittedAt || c.updatedAt || "—",
+        isLive: false,
+        isSeries: true,
+        rows: [
+          ["课程标题", c.name],
+          ["内容分类", c.cat || "—"],
+          ["课程目录", Store.chapterCount(c) + " 章 · 试看 " + trialN + " 节"],
+          ["讲师", c.teacher || "—"],
+          ["课程简介", c.intro || "—"]
+        ]
+      };
+    });
+  }
+
   function allItems() {
     var lives = pendingLives().map(function (l) {
       return {
@@ -197,13 +221,15 @@
         merchantName: l.merchantName || "星启家庭教育",
         submittedAt: l.submittedPlatformAt || l.submittedInternalAt || "—",
         isLive: true,
+        isSeries: false,
         rows: [["直播名称", l.name], ["开播时间", l.startAt || "—"], ["封面图", "live-cover.jpg（已预览）"], ["挂载商品", "关联课程商品"], ["宣传话术", "公开课招生话术"]]
       };
     });
+    var series = pendingSeries();
     var locals = LOCAL_ITEMS.filter(function (x) { return !localDone[x.id]; }).map(function (x) {
-      return { id: x.id, typeLabel: x.typeLabel, name: x.name, merchantName: x.merchantName, submittedAt: x.submittedAt, isLive: false, rows: x.rows };
+      return { id: x.id, typeLabel: x.typeLabel, name: x.name, merchantName: x.merchantName, submittedAt: x.submittedAt, isLive: false, isSeries: false, rows: x.rows };
     });
-    return lives.concat(locals);
+    return lives.concat(series).concat(locals);
   }
 
   function esc(s) {
@@ -274,6 +300,7 @@
         if (!item) return;
         currentId = id;
         currentIsLive = !!item.isLive;
+        currentIsSeries = !!item.isSeries;
         var act = a.getAttribute("data-row-act");
         if (act === "detail") openDetail(item);
         else if (act === "pass") openPass(item);
@@ -305,12 +332,14 @@
   function openPass(item) {
     currentId = item.id;
     currentIsLive = !!item.isLive;
+    currentIsSeries = !!item.isSeries;
     document.getElementById("ps-name").textContent = item.name;
     open(document.getElementById("modal-pass"));
   }
   function openReject(item) {
     currentId = item.id;
     currentIsLive = !!item.isLive;
+    currentIsSeries = !!item.isSeries;
     document.getElementById("rj-name").textContent = item.name;
     document.getElementById("rj-note").value = "";
     open(document.getElementById("modal-reject"));
@@ -341,16 +370,30 @@
     if (item) openReject(item);
   });
 
-  function approve(id, isLive) {
+  function approve(id, isLive, isSeries) {
     if (isLive && Biz.getLive(id)) {
       Biz.setAuditStatus(id, "approved", { by: "平台审核员", side: "platform" });
+    } else if (isSeries) {
+      Store.approveAudit(id);
+      if (Biz.addReviewLog) {
+        try {
+          Biz.addReviewLog({ id: id, status: "approved", side: "platform", by: "平台审核员", at: Store.nowStr() });
+        } catch (eLog) {}
+      }
     } else {
       localDone[id] = true;
     }
   }
-  function reject(id, reason, isLive) {
+  function reject(id, reason, isLive, isSeries) {
     if (isLive && Biz.getLive(id)) {
       Biz.setAuditStatus(id, "platform_rejected", { reason: reason, by: "平台审核员", side: "platform" });
+    } else if (isSeries) {
+      Store.rejectAudit(id, reason);
+      if (Biz.addReviewLog) {
+        try {
+          Biz.addReviewLog({ id: id, status: "platform_rejected", side: "platform", by: "平台审核员", reason: reason, at: Store.nowStr() });
+        } catch (eLog2) {}
+      }
     } else {
       localDone[id] = true;
     }
@@ -358,9 +401,9 @@
 
   document.getElementById("ps-submit").addEventListener("click", function () {
     if (!currentId) return;
-    approve(currentId, currentIsLive);
+    approve(currentId, currentIsLive, currentIsSeries);
     closeAll();
-    Proto.toast("平台已通过，内容可上架");
+    Proto.toast(currentIsSeries ? "系列课已通过，商家侧已启用" : "平台已通过，内容可上架");
     render();
   });
   document.getElementById("rj-submit").addEventListener("click", function () {
@@ -368,7 +411,7 @@
     if (!note) { Proto.toast("请填写驳回说明"); return; }
     if (!currentId) return;
     var rule = document.getElementById("rj-reason").value;
-    reject(currentId, rule + "：" + note, currentIsLive);
+    reject(currentId, rule + "：" + note, currentIsLive, currentIsSeries);
     closeAll();
     Proto.toast("已平台驳回并通知商家");
     render();
@@ -381,7 +424,7 @@
     if (!ids.length) { Proto.toast("请先勾选待通过内容"); return; }
     ids.forEach(function (id) {
       var item = listCache.find(function (x) { return x.id === id; });
-      approve(id, item && item.isLive);
+      approve(id, item && item.isLive, item && item.isSeries);
     });
     Proto.toast("已批量平台通过 " + ids.length + " 条");
     render();

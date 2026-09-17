@@ -5,14 +5,14 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>系列课详情 · 艺博 To-B</title>
 <link rel="stylesheet" href="../assets/css/proto.css?v=9" />
-<link rel="stylesheet" href="../assets/css/content-mgmt.css?v=3" />
+<link rel="stylesheet" href="../assets/css/content-mgmt.css?v=4" />
 </head>
 <body class="admin-body" data-module="content" data-nav="content-series" data-title="系列课详情" data-crumb="内容 / 内容管理 / 系列课 / 详情">
 
 <div id="header-actions">
   <button class="btn" id="btn-share">分享</button>
-  <a class="btn" href="content-series-outline.html?id=S001">查看目录</a>
-  <a class="btn btn-primary" href="content-series-edit.html?id=S001">编辑</a>
+  <a class="btn" id="btn-outline" href="content-series-outline.html">查看目录</a>
+  <a class="btn btn-primary" id="btn-edit" href="content-series-edit.html">编辑</a>
 </div>
 
 <div id="page-content" style="display:none">
@@ -31,20 +31,20 @@
   <div id="cs-found">
   <div class="cm-page-hd">
     <div>
-      <h1 id="d-name">小学语文阅读启蒙系列</h1>
+      <h1 id="d-name">—</h1>
       <p class="sub">系列课详情</p>
     </div>
   </div>
 
   <div class="cm-hero">
-    <div class="cm-avatar" id="d-avatar">小</div>
+    <div class="cm-avatar" id="d-avatar">课</div>
     <div class="cm-hero-bd">
       <div class="cm-hero-title">
-        <span id="d-name2">小学语文阅读启蒙系列</span>
-        <span class="cm-pill" id="d-pub">已发布</span>
-        <span class="cm-pill" id="d-shelf">已上架</span>
+        <span id="d-name2">—</span>
+        <span class="cm-pill" id="d-source">自建</span>
+        <span class="cm-pill" id="d-shelf">—</span>
       </div>
-      <div class="cm-hero-desc" id="d-desc">针对 6-12 岁儿童阅读兴趣培养，从绘本到章节书的进阶路径。</div>
+      <div class="cm-hero-desc" id="d-desc">—</div>
     </div>
   </div>
 
@@ -52,113 +52,105 @@
     <div class="cm-section-hd"><h2>内容信息</h2></div>
     <div class="cm-dl">
       <div class="item"><span class="k">内容类型</span><span class="v">系列课</span></div>
-      <div class="item"><span class="k">内容分类</span><span class="v" id="d-cat">K12 教育</span></div>
-      <div class="item"><span class="k">内容摘要</span><span class="v" id="d-summary">3 章 · 6 视频</span></div>
-      <div class="item"><span class="k">更新时间</span><span class="v" id="d-updated">2026-09-01</span></div>
-      <div class="item"><span class="k">讲师</span><span class="v" id="d-teacher">张老师</span></div>
-      <div class="item"><span class="k">总时长</span><span class="v" id="d-duration">2.5h</span></div>
+      <div class="item"><span class="k">内容分类</span><span class="v" id="d-cat">—</span></div>
+      <div class="item"><span class="k">内容摘要</span><span class="v" id="d-summary">—</span></div>
+      <div class="item"><span class="k">更新时间</span><span class="v" id="d-updated">—</span></div>
+      <div class="item"><span class="k">讲师</span><span class="v" id="d-teacher">—</span></div>
+      <div class="item"><span class="k">总时长</span><span class="v" id="d-duration">—</span></div>
+      <div class="item"><span class="k">关联商品</span><span class="v" id="d-goods">—</span></div>
     </div>
   </div>
 
-  <div class="cm-section">
-    <div class="cm-section-hd"><h2>状态信息</h2></div>
-    <div class="cm-dl">
-      <div class="item"><span class="k">上架设置</span><span class="v" id="d-shelfmode">立即上架（保存后提交内容审核队列）</span></div>
-      <div class="item"><span class="k">店铺显示</span><span class="v">显示</span></div>
-    </div>
+  <div class="cm-section" id="d-reject-sec" style="display:none">
+    <div class="cm-section-hd"><h2>驳回信息</h2></div>
+    <p id="d-reject" style="margin:0;color:#f53f3f;font-size:13px"></p>
   </div>
 
   <div class="cm-section">
     <div class="cm-section-hd">
       <h2>系列课目录</h2>
-      <a class="btn btn-primary" id="d-outline-link" href="content-series-outline.html?id=S001">查看目录</a>
+      <a class="btn btn-primary" id="d-outline-link" href="#">查看目录</a>
     </div>
-    <p style="margin:0;font-size:13px;color:#8c8c8c">目录包含章节与视频编排，可在「目录管理」中调整顺序、必修与试看。</p>
+    <div id="d-outline-preview" style="font-size:13px;color:#595959"></div>
   </div>
   </div>
 </div>
 
-<!-- 弹窗遮罩 -->
 <div class="proto-mask" id="mask"></div>
 
 <script src="../assets/js/proto.js"></script>
 <script src="../assets/js/share-modal.js?v=1"></script>
-<script src="../assets/js/admin-shell.js?v=14"></script>
+<script src="../assets/js/series-store.js?v=1"></script>
+<script src="../assets/js/admin-shell.js?v=15"></script>
 <script>
-var DATA = {
-  S001: { name:"小学语文阅读启蒙系列", cat:"K12 教育", teacher:"张老师", desc:"针对 6-12 岁儿童阅读兴趣培养，从绘本到章节书的进阶路径。", summary:"3 章 · 6 视频", duration:"2.5h", shelf:"已上架", updated:"2026-09-01", color:"" },
-  S002: { name:"家长情绪管理训练营", cat:"家庭教育", teacher:"李老师", desc:"8 周系统训练，帮助家长识别情绪、管理情绪、与孩子正向沟通。", summary:"2 章 · 4 视频", duration:"1.8h", shelf:"草稿", pub:"草稿", updated:"2026-08-20", color:"green" },
-  S003: { name:"AI 学习规划入门", cat:"学习能力", teacher:"王博士", desc:"AI 助力学习规划，10 节实操课让孩子学会用 AI 工具提升学习效率。", summary:"4 章 · 5 视频", duration:"3.2h", shelf:"已上架", updated:"2026-09-04", color:"orange" }
-};
-/* Aliases: rights courseId / legacy ids → catalog entry (+ optional display name) */
+var Store = window.SeriesStore;
 var ALIASES = {
-  CS_TRAIN: { id: "S002", name: "训练营主课" },
-  "训练营主课": { id: "S002", name: "训练营主课" },
-  "引流体验课": { id: "S003", name: "引流体验课" }
+  CS_TRAIN: "S002",
+  "训练营主课": "S002",
+  "引流体验课": "S003"
 };
 
 var q = new URLSearchParams(location.search);
 var rawId = q.get("id") || q.get("courseId") || "";
-var alias = ALIASES[rawId] || null;
-var id = alias ? alias.id : (rawId || "S001");
-var nameOverride = alias && alias.name ? alias.name : "";
-var d = DATA[id] || null;
+var id = ALIASES[rawId] || rawId || "";
+var d = Store.get(id);
 
 var from = q.get("from") || "";
 var userId = q.get("user") || "";
 var returnTo = "";
 try {
   returnTo = q.get("returnTo") || q.get("return_to") || "";
-  if (returnTo) {
-    try { returnTo = decodeURIComponent(returnTo); } catch (eRt) {}
-  }
+  if (returnTo) { try { returnTo = decodeURIComponent(returnTo); } catch (eRt) {} }
 } catch (eQ) {}
-
-/* Rights courseIds S002/S003 map to 训练营主课 / 引流体验课 when opened from user */
-if (!nameOverride && (from === "user" || userId)) {
-  if (id === "S002") nameOverride = "训练营主课";
-  if (id === "S003") nameOverride = "引流体验课";
-}
-
-function buildUserRightsHref() {
-  var href = "user-detail.html?id=" + encodeURIComponent(userId || "") + "&tab=rights";
-  if (returnTo) href += "&returnTo=" + encodeURIComponent(returnTo);
-  return href;
-}
 
 if (from === "user" || userId) {
   var banner = document.getElementById("cs-from-banner");
   var back = document.getElementById("cs-back-rights");
   if (banner) banner.style.display = "";
   if (back) {
-    back.href = buildUserRightsHref();
-    back.textContent = "返回用户权益";
+    back.href = "user-detail.html?id=" + encodeURIComponent(userId || "") + "&tab=rights" +
+      (returnTo ? "&returnTo=" + encodeURIComponent(returnTo) : "");
   }
 }
 
+function esc(s){ return String(s == null ? "" : s).replace(/[&<>"']/g,function(c){return({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"})[c];}); }
+
 function apply() {
-  var displayName = nameOverride || d.name;
-  ["d-name","d-name2"].forEach(function(k){ document.getElementById(k).textContent = displayName; });
-  document.getElementById("d-avatar").textContent = displayName.charAt(0);
-  document.getElementById("d-avatar").className = "cm-avatar " + (d.color||"");
-  document.getElementById("d-desc").textContent = d.desc;
+  var label = Store.STATUS_LABEL[d.status] || d.status;
+  document.getElementById("d-name").textContent = d.name;
+  document.getElementById("d-name2").textContent = d.name;
+  document.getElementById("d-avatar").textContent = d.name.charAt(0);
+  document.getElementById("d-desc").textContent = d.intro;
   document.getElementById("d-cat").textContent = d.cat;
-  document.getElementById("d-summary").textContent = d.summary;
-  document.getElementById("d-updated").textContent = d.updated;
-  document.getElementById("d-teacher").textContent = d.teacher;
-  document.getElementById("d-duration").textContent = d.duration;
-  document.getElementById("d-shelf").textContent = d.shelf;
-  document.getElementById("d-shelf").className = "cm-pill" + (d.shelf === "已上架" ? "" : " off");
-  var shelfmode = document.getElementById("d-shelfmode");
-  if (shelfmode) shelfmode.textContent = d.shelf === "草稿" ? "暂存草稿" : "立即上架（保存后提交内容审核队列）";
-  document.getElementById("d-pub").textContent = d.pub || "已发布";
-  document.getElementById("d-outline-link").href = "content-series-outline.html?id=" + encodeURIComponent(id);
-  var outlineA = document.querySelector('#header-actions a[href*="outline"]') ||
-    document.querySelector('#page-header-actions a[href*="outline"]');
-  var editA = document.querySelector('#header-actions a[href*="edit"]') ||
-    document.querySelector('#page-header-actions a[href*="edit"]');
-  if (outlineA) outlineA.href = "content-series-outline.html?id=" + encodeURIComponent(id);
-  if (editA) editA.href = "content-series-edit.html?id=" + encodeURIComponent(id);
+  document.getElementById("d-summary").textContent = Store.chapterCount(d) + " 章 · " + Store.chapterCount(d) + " 视频";
+  document.getElementById("d-updated").textContent = d.updatedAt || "—";
+  document.getElementById("d-teacher").textContent = d.teacher || "—";
+  document.getElementById("d-duration").textContent = Store.durationSummary(d);
+  document.getElementById("d-goods").textContent = d.goodsId || "未绑定";
+  document.getElementById("d-shelf").textContent = label;
+  document.getElementById("d-shelf").className = "cm-pill" + (d.status === Store.STATUS.enabled ? "" : " off");
+  document.getElementById("d-source").textContent = d.source === "platform" ? "平台" : "自建";
+
+  if (d.status === Store.STATUS.rejected && d.rejectReason) {
+    document.getElementById("d-reject-sec").style.display = "";
+    document.getElementById("d-reject").textContent = d.rejectReason;
+  }
+
+  var outlineHref = "content-series-outline.html?id=" + encodeURIComponent(id);
+  document.getElementById("d-outline-link").href = outlineHref;
+  document.getElementById("btn-outline").href = outlineHref;
+  document.getElementById("btn-edit").href = "content-series-edit.html?id=" + encodeURIComponent(id);
+  if (!Store.canEditContent(d)) {
+    document.getElementById("btn-edit").textContent = "查看编辑页";
+  }
+
+  var preview = (d.chapters || []).map(function(ch, i) {
+    return '<div style="padding:8px 0;border-bottom:1px solid #f3f4f6">' +
+      (i + 1) + ". " + esc(ch.title) + " · " + esc(ch.videoName) +
+      (ch.trial ? ' <span style="color:#165dff">试看</span>' : "") +
+      "</div>";
+  }).join("");
+  document.getElementById("d-outline-preview").innerHTML = preview || '<span style="color:#bfbfbf">暂无章节</span>';
 }
 
 var emptyEl = document.getElementById("cs-empty");
@@ -166,28 +158,25 @@ var foundEl = document.getElementById("cs-found");
 if (!d) {
   if (emptyEl) emptyEl.style.display = "";
   if (foundEl) foundEl.style.display = "none";
-  var haShare = document.getElementById("btn-share");
-  if (haShare) haShare.style.display = "none";
-  document.querySelectorAll('#header-actions a[href*="outline"], #header-actions a[href*="edit"], #page-header-actions a[href*="outline"], #page-header-actions a[href*="edit"]').forEach(function (a) {
-    a.style.display = "none";
-  });
+  document.getElementById("btn-share").style.display = "none";
+  document.getElementById("btn-outline").style.display = "none";
+  document.getElementById("btn-edit").style.display = "none";
 } else {
   if (emptyEl) emptyEl.style.display = "none";
   if (foundEl) foundEl.style.display = "";
   apply();
 }
 
-var mask = document.getElementById("mask");
-function closeAll() {
-  mask && mask.classList.remove("open");
-  document.querySelectorAll(".proto-modal,.proto-drawer").forEach(function(n){ n.classList.remove("open"); });
-}
 document.getElementById("btn-share").addEventListener("click", function(){
   if (!d) return;
-  XiboShare.open({ type: "系列课", url: "https://yibo.app/s/" + id, cover: "../assets/img/covers/" + (id === "S002" ? "emotion" : id === "S003" ? "ai" : "reading") + ".jpg", name: d.name, desc: d.desc });
+  XiboShare.open({
+    type: "系列课",
+    url: "https://yibo.app/s/" + id,
+    cover: d.cover,
+    name: d.shareTitle || d.name,
+    desc: d.shareDesc || d.intro
+  });
 });
-mask && mask.addEventListener("click", closeAll);
-document.querySelectorAll("[data-close]").forEach(function(b){ b.addEventListener("click", closeAll); });
 </script>
 </body>
 </html>

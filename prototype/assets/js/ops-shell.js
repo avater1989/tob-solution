@@ -44,7 +44,7 @@
     { id: "biz", label: "交易", href: "trade-orders.html" },
     { id: "trade", label: "财务", href: "settlements.html" },
     { id: "sys", label: "系统管理", href: "sys-users.html" },
-    { id: "data", label: "全局数据", href: "data.html" },
+    { id: "data", label: "数据看板", href: "data.html" },
   ];
 
   var sidebars = {
@@ -56,7 +56,7 @@
         group: "内容管理",
         links: [
           { id: "content-series", href: "content-series.html", label: "系列课" },
-          { id: "content-offline", href: "content-offline.html", label: "线下课（待完善）" },
+          { id: "content-offline", href: "content-offline.html", label: "线下课" },
           { id: "content-video", href: "content-video.html", label: "视频" },
           { id: "content-article", href: "content-article.html", label: "图文" },
           { id: "content-category", href: "content-category.html", label: "内容分类" },
@@ -192,7 +192,7 @@
       "<div class='assist-block'><h3>评审路径</h3><ul>" +
       "<li><a href='tenants.html'>① 租户开通</a></li>" +
       "<li><a href='content-series.html'>② 内容中台</a></li>" +
-      "<li><a href='data.html'>③ 全局数据</a></li>" +
+      "<li><a href='data.html'>③ 数据看板</a></li>" +
       "<li><a href='orders.html'>④ 全局订单</a></li></ul></div>",
     tenant:
       "<div class='assist-block'><h3>租户与配置</h3><ul>" +
@@ -279,7 +279,7 @@
     '<a href="tenants.html">①租户开通</a><span class="sep">·</span>' +
     '<a href="content-series.html">②内容</a><span class="sep">·</span>' +
     '<a href="settlements.html">③对账结算</a><span class="sep">·</span>' +
-    '<a href="data.html">④全局数据</a><span class="sep">·</span>' +
+    '<a href="data.html">④数据看板</a><span class="sep">·</span>' +
     '<a href="orders.html">⑤全局订单</a><span class="sep">|</span>' +
     '<a href="../admin/dashboard.html">切商家后台</a><span class="sep">·</span>' +
     '<a href="../miniprogram/home.html">切 C 端</a><span class="sep">·</span>' +
@@ -288,7 +288,7 @@
 
   var notice = showNotice
     ? '<div class="notice-bar" id="notice-bar">' +
-      "<span>运营后台 · 平台侧演示原型（v1.2）· 租户开通、内容中台（管理+审核）、交易与结算（对账 / 结算 / 提现 / 发票 / 风控）与全局数据</span>" +
+      "<span>运营后台 · 平台侧演示原型（v1.2）· 租户开通、内容中台（管理+审核）、交易与结算（对账 / 结算 / 提现 / 发票 / 风控）与数据看板</span>" +
       '<button type="button" class="close-notice" id="close-notice" aria-label="关闭">×</button>' +
       "</div>"
     : "";

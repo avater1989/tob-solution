@@ -19,8 +19,10 @@
         <p style="font-size:13px;color:#888;margin-top:8px" id="pay-desc">权益已开通 · 资金进入艺博备付金待分账（示意）</p>
         <div style="margin-top:28px">
           <a class="mp-btn" href="learn.html" id="go-learn">去学习</a>
-          <a class="mp-btn mp-btn-outline" href="mine.html" style="margin-top:10px">返回我的</a>
+          <a class="mp-btn mp-btn-outline" href="mine.html" style="margin-top:10px" id="go-mine">返回我的</a>
           <a class="mp-btn mp-btn-outline" href="live-room.html" style="margin-top:10px" id="go-live">返回直播间</a>
+          <a class="mp-btn" href="offline-detail.html?id=O001&signed=1" style="margin-top:10px;display:none" id="go-offline">查看线下课</a>
+          <a class="mp-btn mp-btn-outline" href="offline.html" style="margin-top:10px;display:none" id="go-offline-list">返回线下课列表</a>
         </div>
       </div>
     </div>
@@ -31,14 +33,41 @@
   <script>
     var params = new URLSearchParams(location.search);
     var from = params.get("from") || "course";
+    var ret = params.get("return") || "";
+    var course = params.get("course") || "O001";
     var desc = document.getElementById("pay-desc");
     var goLive = document.getElementById("go-live");
     var goLearn = document.getElementById("go-learn");
-    if (from === "live" || from === "ticket") {
+    var goOffline = document.getElementById("go-offline");
+    var goOfflineList = document.getElementById("go-offline-list");
+
+    if (from === "offline") {
+      desc.textContent = "本场线下课报名资格已开通 · 请按课程时间到场";
+      goLearn.style.display = "none";
+      goLive.style.display = "none";
+      goOffline.style.display = "block";
+      goOfflineList.style.display = "block";
+      goOffline.href = ret || ("offline-detail.html?id=" + encodeURIComponent(course) + "&signed=1");
+      try {
+        var key = "mp_offline_rights_v1";
+        var map = JSON.parse(localStorage.getItem(key) || "{}") || {};
+        var oid = course;
+        if (ret) {
+          var m = ret.match(/[?&]id=([^&]+)/);
+          if (m) oid = decodeURIComponent(m[1]);
+        }
+        map[oid] = { valid: true, grantedAt: new Date().toISOString(), source: "pay" };
+        localStorage.setItem(key, JSON.stringify(map));
+      } catch (e) {}
+    } else if (from === "live" || from === "ticket") {
       desc.textContent = "直播/课程权益已开通 · 可返回直播间继续观看";
       goLearn.style.display = from === "live" ? "block" : "none";
+      goOffline.style.display = "none";
+      goOfflineList.style.display = "none";
     } else {
       goLive.style.display = "none";
+      goOffline.style.display = "none";
+      goOfflineList.style.display = "none";
     }
   </script>
 </body>

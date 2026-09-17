@@ -17,6 +17,7 @@
 
 <div id="page-content" style="display:none">
   <a class="cm-back" href="content-series.html">← 返回系列课列表</a>
+  <div id="edit-lock" class="cm-alert" style="display:none;margin-bottom:12px"></div>
 
   <div class="cm-tabs" id="anchors">
     <button class="btn active" data-tab="sec-content">内容信息</button>
@@ -38,8 +39,12 @@
         <select class="input" id="f-cat"></select>
       </div>
       <div class="field">
+        <label>讲师</label>
+        <input class="input" id="f-teacher" placeholder="如：张老师" />
+      </div>
+      <div class="field">
         <label>封面</label>
-        <div class="cm-cover-up has-img"><img src="../assets/img/covers/reading.jpg" alt="" /><span class="cm-cover-tip">更换封面</span></div>
+        <div class="cm-cover-up has-img" id="f-cover-box"><img id="f-cover-img" src="../assets/img/covers/reading.jpg" alt="" /><span class="cm-cover-tip">更换封面</span></div>
       </div>
       <div class="field" style="grid-column:1/-1">
         <label>系列课简介 <span style="float:right;color:#8c8c8c;font-weight:400" id="intro-cnt">0/256</span></label>
@@ -50,19 +55,10 @@
         <div class="rt-editor">
           <div class="rt-toolbar">
             <button type="button" class="rt-btn">⊕ 插入</button>
-            <button type="button" class="rt-btn">↶</button>
-            <button type="button" class="rt-btn">↷</button>
-            <div class="rt-divider"></div>
-            <button type="button" class="rt-btn">正文</button>
-            <button type="button" class="rt-btn">16px</button>
             <button type="button" class="rt-btn"><b>B</b></button>
             <button type="button" class="rt-btn"><i>I</i></button>
-            <button type="button" class="rt-btn"><u>U</u></button>
-            <button type="button" class="rt-btn">≡</button>
-            <div class="rt-divider"></div>
-            <button type="button" class="rt-btn">预览</button>
           </div>
-          <div class="rt-body" contenteditable="true"><span class="rt-placeholder">输入系列课详情，支持粘贴富文本内容</span></div>
+          <div class="rt-body" id="f-detail" contenteditable="true"><span class="rt-placeholder">输入系列课详情，支持粘贴富文本内容</span></div>
         </div>
       </div>
     </div>
@@ -70,47 +66,38 @@
 
   <div class="cm-section tab-panel" id="sec-status">
     <div class="cm-section-hd">
-      <h2>状态设置 <span class="hint">配置内容在店铺内的展示状态</span></h2>
+      <h2>状态设置 <span class="hint">保存后进入目录配置章节；有章节后可提交平台审核</span></h2>
     </div>
     <div class="field">
-      <label>启用设置</label>
+      <label>启用意图</label>
       <div class="cm-choice col">
-        <label><input type="radio" name="shelf" checked> 立即启用（保存后提交内容审核队列）</label>
-        <label><input type="radio" name="shelf"> 定时启用 <input type="datetime-local" class="input" style="width:200px;margin-left:8px" /></label>
-        <label><input type="radio" name="shelf"> 暂存草稿</label>
+        <label><input type="radio" name="shelf" value="audit" checked> 配置完目录后提交平台审核（通过后启用）</label>
+        <label><input type="radio" name="shelf" value="draft"> 暂存草稿</label>
       </div>
     </div>
     <div class="field">
       <label>店铺显示</label>
       <div class="cm-choice">
-        <label><input type="radio" name="store" checked> 显示</label>
-        <label><input type="radio" name="store"> 隐藏（仅可通过链接访问）</label>
+        <label><input type="radio" name="store" value="1" checked> 显示</label>
+        <label><input type="radio" name="store" value="0"> 隐藏（仅可通过链接访问）</label>
       </div>
     </div>
   </div>
 
   <div class="cm-section tab-panel" id="sec-share">
     <div class="cm-section-hd">
-      <h2>分享设置 <span class="hint">自定义学员端分享卡片的标题、描述与封面；列表页「分享」弹窗（链接 / 二维码 / 海报）默认使用以上内容</span></h2>
+      <h2>分享设置 <span class="hint">自定义学员端分享卡片</span></h2>
     </div>
     <div class="form-grid" style="grid-template-columns:1fr 1fr">
       <div class="field">
         <label>分享标题 <span style="float:right;color:#8c8c8c;font-weight:400" id="share-title-cnt">0/30</span></label>
         <input class="input" id="f-share-title" maxlength="30" placeholder="默认使用系列课名称" />
       </div>
-      <div class="field">
-        <label>分享封面</label>
-        <div class="cm-choice">
-          <label><input type="radio" name="share-cover" checked> 使用课程封面</label>
-          <label><input type="radio" name="share-cover"> 自定义上传</label>
-        </div>
-      </div>
       <div class="field" style="grid-column:1/-1">
         <label>分享描述 <span style="float:right;color:#8c8c8c;font-weight:400" id="share-desc-cnt">0/60</span></label>
-        <textarea class="input" id="f-share-desc" rows="2" maxlength="60" placeholder="默认使用系列课简介，建议60字内"></textarea>
+        <textarea class="input" id="f-share-desc" rows="2" maxlength="60" placeholder="默认使用系列课简介"></textarea>
       </div>
     </div>
-    <p style="font-size:12px;color:#8c8c8c;margin:8px 0 0">草稿阶段可预览分享卡片；内容正式启用后生成可用短链和二维码。</p>
     <button class="btn" style="margin-top:10px" id="btn-share-preview">预览分享卡片</button>
   </div>
 </div>
@@ -118,65 +105,67 @@
 <script src="../assets/js/proto.js"></script>
 <script src="../assets/js/content-cats.js?v=1"></script>
 <script src="../assets/js/share-modal.js?v=1"></script>
+<script src="../assets/js/series-store.js?v=1"></script>
 <script src="../assets/js/admin-shell.js?v=15"></script>
 <script>
-var PRESET = {
-  S001: { name:"小学语文阅读启蒙系列", cat:"K12 教育", intro:"针对 6-12 岁儿童阅读兴趣培养，从绘本到章节书的进阶路径。", cover:"../assets/img/covers/reading.jpg" },
-  S002: { name:"家长情绪管理训练营", cat:"家庭教育", intro:"8 周系统训练，帮助家长识别情绪、管理情绪、与孩子正向沟通。", cover:"../assets/img/covers/emotion.jpg" },
-  S003: { name:"AI 学习规划入门", cat:"学习能力", intro:"AI 助力学习规划，10 节实操课让孩子学会用 AI 工具提升学习效率。", cover:"../assets/img/covers/ai.jpg" }
-};
-
-// 内容分类下拉：取值于「内容分类」页面列表
+var Store = window.SeriesStore;
 var catSel = document.getElementById("f-cat");
 catSel.insertAdjacentHTML("beforeend", window.ContentCats.optionsHtml({ emptyLabel: "未分类" }));
 
 var id = new URLSearchParams(location.search).get("id") || "";
-var isNew = !id || !PRESET[id];
-if (!isNew) {
-  var p = PRESET[id];
-  document.getElementById("f-name").value = p.name;
-  document.getElementById("f-intro").value = p.intro;
-  catSel.value = p.cat;
-  if (catSel.selectedIndex < 0) catSel.selectedIndex = 0;
+var course = id ? Store.get(id) : null;
+var isNew = !course;
+if (isNew) {
+  course = Store.createBlank({ source: "self" });
+  id = course.id;
+}
+
+var locked = !Store.canEditContent(course);
+var lockEl = document.getElementById("edit-lock");
+if (locked) {
+  lockEl.style.display = "block";
+  if (course.source === "platform") {
+    lockEl.textContent = "平台下发内容，商家侧不可编辑。可查看目录或启停用于店铺。";
+  } else if (course.status === Store.STATUS.enabled) {
+    lockEl.textContent = "内容已启用，请先在列表停用后再编辑。";
+  } else if (course.status === Store.STATUS.pending_audit) {
+    lockEl.textContent = "内容正在平台审核中，暂不可编辑。";
+  }
+  document.querySelectorAll("#page-content input, #page-content textarea, #page-content select, #page-content [contenteditable]").forEach(function(el) {
+    el.disabled = true;
+    if (el.isContentEditable) el.contentEditable = "false";
+  });
+  document.getElementById("btn-draft").disabled = true;
+  document.getElementById("btn-save-outline").textContent = "查看目录";
+}
+
+document.getElementById("f-name").value = course.name || "";
+document.getElementById("f-intro").value = course.intro || "";
+document.getElementById("f-teacher").value = course.teacher || "";
+catSel.value = course.cat || "未分类";
+if (catSel.selectedIndex < 0) catSel.selectedIndex = 0;
+document.getElementById("f-cover-img").src = course.cover || "../assets/img/covers/reading.jpg";
+document.getElementById("f-share-title").value = course.shareTitle || "";
+document.getElementById("f-share-desc").value = course.shareDesc || "";
+if (course.detail) {
+  var body = document.getElementById("f-detail");
+  body.innerHTML = course.detail;
+}
+if (course.storeVisible === false) {
+  document.querySelector('input[name="store"][value="0"]').checked = true;
 }
 
 function updCnt(){
   document.getElementById("name-cnt").textContent = (document.getElementById("f-name").value||"").length + "/45";
   document.getElementById("intro-cnt").textContent = (document.getElementById("f-intro").value||"").length + "/256";
+  document.getElementById("share-title-cnt").textContent = (document.getElementById("f-share-title").value||"").length + "/30";
+  document.getElementById("share-desc-cnt").textContent = (document.getElementById("f-share-desc").value||"").length + "/60";
 }
-document.getElementById("f-name").addEventListener("input", updCnt);
-document.getElementById("f-intro").addEventListener("input", updCnt);
+["f-name","f-intro","f-share-title","f-share-desc"].forEach(function(fid){
+  document.getElementById(fid).addEventListener("input", updCnt);
+});
 updCnt();
 
-// 分享设置字数
-var fShareTitle = document.getElementById("f-share-title");
-var fShareDesc = document.getElementById("f-share-desc");
-function updShareCnt(){
-  document.getElementById("share-title-cnt").textContent = (fShareTitle.value||"").length + "/30";
-  document.getElementById("share-desc-cnt").textContent = (fShareDesc.value||"").length + "/60";
-}
-fShareTitle.addEventListener("input", updShareCnt);
-fShareDesc.addEventListener("input", updShareCnt);
-if (!isNew) {
-  // 默认分享语 = 内容名称 / 简介
-  fShareTitle.placeholder = PRESET[id].name;
-  fShareDesc.placeholder = PRESET[id].intro;
-}
-updShareCnt();
-
-// 预览分享卡片（链接 / 二维码 / 海报 / 分享设置，与列表页「分享」弹窗一致）
-document.getElementById("btn-share-preview").addEventListener("click", function(){
-  var p = !isNew ? PRESET[id] : null;
-  XiboShare.open({
-    type: "系列课",
-    url: "https://yibo.app/s/" + (id || "NEW"),
-    cover: p ? p.cover : "../assets/img/covers/reading.jpg",
-    name: fShareTitle.value || (p ? p.name : document.getElementById("f-name").value) || "未命名系列课",
-    desc: fShareDesc.value || (p ? p.intro : "") || ""
-  });
-});
-
-// Tab 切换：仅显示当前分区
 document.getElementById("anchors").addEventListener("click", function(e){
   var b = e.target.closest("[data-tab]"); if (!b) return;
   document.querySelectorAll("#anchors .btn").forEach(function(x){ x.classList.remove("active"); });
@@ -184,16 +173,72 @@ document.getElementById("anchors").addEventListener("click", function(e){
   document.querySelectorAll(".tab-panel").forEach(function(p){ p.classList.toggle("active", p.id === b.getAttribute("data-tab")); });
 });
 
-function goOutline(){
-  var nid = id || "S002";
-  location.href = "content-series-outline.html?id=" + encodeURIComponent(nid);
+function collect() {
+  var name = document.getElementById("f-name").value.trim();
+  if (!name) { Proto.toast("请填写系列课名称"); return null; }
+  var detailEl = document.getElementById("f-detail");
+  var detailHtml = detailEl.querySelector(".rt-placeholder") ? "" : detailEl.innerHTML;
+  var intent = (document.querySelector('input[name="shelf"]:checked') || {}).value || "draft";
+  course.name = name;
+  course.cat = catSel.value || "未分类";
+  course.teacher = document.getElementById("f-teacher").value.trim() || "未指定";
+  course.intro = document.getElementById("f-intro").value.trim();
+  course.detail = detailHtml;
+  course.cover = document.getElementById("f-cover-img").src;
+  course.shareTitle = document.getElementById("f-share-title").value.trim();
+  course.shareDesc = document.getElementById("f-share-desc").value.trim();
+  course.storeVisible = document.querySelector('input[name="store"]:checked').value === "1";
+  if (course.status === Store.STATUS.draft || course.status === Store.STATUS.rejected || isNew) {
+    if (intent === "draft") course.status = Store.STATUS.draft;
+  }
+  course._intentAudit = intent === "audit";
+  return course;
 }
-function draft(){ Proto.toast("草稿已保存"); }
-document.getElementById("btn-draft").addEventListener("click", draft);
-document.getElementById("btn-save-outline").addEventListener("click", goOutline);
 
-document.querySelector(".rt-body").addEventListener("focus", function(){
+function persist(toastMsg) {
+  if (locked) return course;
+  var c = collect();
+  if (!c) return null;
+  Store.save(c);
+  if (toastMsg) Proto.toast(toastMsg);
+  return c;
+}
+
+document.getElementById("btn-draft").addEventListener("click", function(){
+  persist("草稿已保存");
+});
+document.getElementById("btn-save-outline").addEventListener("click", function(){
+  if (locked) {
+    location.href = "content-series-outline.html?id=" + encodeURIComponent(id);
+    return;
+  }
+  var c = persist();
+  if (!c) return;
+  location.href = "content-series-outline.html?id=" + encodeURIComponent(c.id) +
+    (c._intentAudit ? "&intent=audit" : "");
+});
+
+document.getElementById("btn-share-preview").addEventListener("click", function(){
+  XiboShare.open({
+    type: "系列课",
+    url: "https://yibo.app/s/" + id,
+    cover: course.cover,
+    name: document.getElementById("f-share-title").value || document.getElementById("f-name").value || "未命名系列课",
+    desc: document.getElementById("f-share-desc").value || document.getElementById("f-intro").value || ""
+  });
+});
+
+document.getElementById("f-detail").addEventListener("focus", function(){
   var ph = this.querySelector(".rt-placeholder"); if (ph) ph.remove();
+});
+
+var covers = ["reading.jpg","emotion.jpg","ai.jpg","series.jpg"];
+var coverIdx = 0;
+document.getElementById("f-cover-box").addEventListener("click", function(){
+  if (locked) return;
+  coverIdx = (coverIdx + 1) % covers.length;
+  document.getElementById("f-cover-img").src = "../assets/img/covers/" + covers[coverIdx];
+  Proto.toast("已切换封面（原型）");
 });
 </script>
 </body>

@@ -1,4 +1,4 @@
-/* 商家端经营分析 — 统一筛选 / 计算 / 渲染引擎（依赖 board-data.js） v8 Phase5 */
+/* 商家端数据看板 — 统一筛选 / 计算 / 渲染引擎（依赖 board-data.js） v8 Phase5 */
 (function (global) {
   var FILTER_KEY = "merchant_board_filters";
   var SNAPSHOT_KEY = "board_snapshot_v1";
@@ -1591,8 +1591,8 @@
         : "board-overview.html");
     var fromQ = "";
     try { fromQ = new URLSearchParams(location.search).get("from_board") || ""; } catch (e) {}
-    var fromLabel = (fromQ === "term_review" || fromQ === "term-review") ? "来自期次经营看板" : "来自经营分析";
-    var backLabel = (fromQ === "term_review" || fromQ === "term-review") ? "返回期次经营看板" : "返回经营分析";
+    var fromLabel = (fromQ === "term_review" || fromQ === "term-review") ? "来自期次经营看板" : "来自数据看板";
+    var backLabel = (fromQ === "term_review" || fromQ === "term-review") ? "返回期次经营看板" : "返回数据看板";
     el.innerHTML = "<b>" + fromLabel + "</b> · " + (ctx || text) +
       (visible >= 0 ? " · 匹配 <b>" + visible + "</b> / " + total + " 行（演示样本）" : "") +
       ' · <a href="' + backHref + '" style="color:var(--color-primary);margin-right:8px">' + backLabel + "</a>" +

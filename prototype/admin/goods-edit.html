@@ -143,17 +143,36 @@
 </style>
 
 <script src="../assets/js/proto.js"></script>
+<script src="../assets/js/series-store.js?v=1"></script>
 <script src="../assets/js/admin-shell.js?v=15"></script>
 <script>
 (function () {
-  // ===== 从「内容」模块带入（系列课 / 定制化计划 的「创建商品」入口）=====
+  var Store = window.SeriesStore;
+  var boundSeriesId = "";
+
   // 支持 ?from=series|plan&id=xxx&title=商品名称&desc=简介
   try {
     var q = new URLSearchParams(location.search);
     var from = q.get("from") || "";
+    var sid = q.get("id") || "";
     var title = q.get("title") || "";
     var desc = q.get("desc") || "";
-    if (title) {
+
+    if (from === "series" && sid) {
+      var course = Store.get(sid);
+      if (!course) {
+        Proto.toast("未找到系列课 " + sid);
+      } else if (!Store.canCreateGoods(course)) {
+        Proto.toast("该系列课未启用，无法创建商品");
+      } else {
+        boundSeriesId = course.id;
+        document.getElementById("f-gname").value = title || course.name;
+        if (desc || course.intro) {
+          document.getElementById("f-gdetail").value = desc || course.intro;
+        }
+        Proto.toast("已带入系列课「" + course.name + "」，保存后将绑定交付内容");
+      }
+    } else if (title) {
       document.getElementById("f-gname").value = title;
       if (desc) document.getElementById("f-gdetail").value = desc;
       var srcName = from === "plan" ? "定制化计划" : "系列课";
@@ -161,28 +180,37 @@
     }
   } catch (ePre) {}
 
-  // 交付内容：随商品类型联动
-  // 系列课商品取值于「系列课」列表；定制化计划商品取值于「定制化计划」列表；
-  // 直播商品取值于「直播列表」中的「付费直播」
+  // 交付内容：系列课取值于 SeriesStore 已启用列表
+  function enabledSeriesNames() {
+    return Store.list({ status: Store.STATUS.enabled }).map(function (c) {
+      return { id: c.id, name: c.name };
+    });
+  }
+
   var DELIVER = {
-    series: ["小学语文阅读启蒙系列", "家长情绪管理训练营", "AI 学习规划入门"],
-    plan:   ["亲子沟通 21 天定制化计划 · 第 4 期", "开学季学习习惯养成计划", "青春期沟通家长共学计划"],
-    live:   ["午间答疑 · 直播中（付费直播）", "春启 03 期家长公开课（付费直播）"],
+    series: enabledSeriesNames(),
+    plan:   [{ id: "", name: "亲子沟通 21 天定制化计划 · 第 4 期" }, { id: "", name: "开学季学习习惯养成计划" }, { id: "", name: "青春期沟通家长共学计划" }],
+    live:   [{ id: "", name: "午间答疑 · 直播中（付费直播）" }, { id: "", name: "春启 03 期家长公开课（付费直播）" }]
   };
   var DELIVER_HINT = {
-    series: "取值于「系列课」列表：购买后交付所选系列课内容",
+    series: "取值于「系列课」已启用列表：购买后交付所选系列课内容",
     plan:   "取值于「定制化计划」列表：购买后按关卡与任务开通计划",
-    live:   "取值于「直播列表」中的「付费直播」：购买后交付该场观看资格，付费场次需先在「直播创建」生成商品并上架",
+    live:   "取值于「直播列表」中的「付费直播」：购买后交付该场观看资格"
   };
   var deliverSel = document.getElementById("f-deliver");
   function renderDeliver(type) {
     var list = DELIVER[type] || [];
-    deliverSel.innerHTML = list.map(function(n){ return '<option>' + n + '</option>'; }).join("");
+    if (type === "series") list = enabledSeriesNames();
+    deliverSel.innerHTML = list.map(function (n) {
+      var id = typeof n === "object" ? n.id : "";
+      var name = typeof n === "object" ? n.name : n;
+      var sel = boundSeriesId && id === boundSeriesId ? " selected" : "";
+      return '<option value="' + (id || name) + '"' + sel + ">" + name + (id ? "（" + id + "）" : "") + "</option>";
+    }).join("");
     document.getElementById("f-deliver-hint").textContent = DELIVER_HINT[type] || "";
   }
   renderDeliver("series");
 
-  // 商品类型单选高亮
   document.querySelectorAll("#gd-type input[name=gtype]").forEach(function(r){
     r.addEventListener("change", function(){
       document.querySelectorAll("#gd-type .cm-choice-item").forEach(function(n){ n.classList.remove("active"); });
@@ -193,7 +221,18 @@
   });
   document.getElementById("btn-add-sku").addEventListener("click", function(){ Proto.toast("已添加一条规格行（原型）"); });
   document.getElementById("btn-save-draft").addEventListener("click", function(){ Proto.toast("草稿已保存（原型）"); });
-  document.getElementById("btn-submit").addEventListener("click", function(){ Proto.toast("保存成功，已提交内容审核队列（原型）"); setTimeout(function(){ location.href="goods.html"; }, 1200); });
+  document.getElementById("btn-submit").addEventListener("click", function(){
+    var goodsId = "G" + Date.now().toString().slice(-8);
+    var deliverVal = deliverSel.value;
+    var seriesId = boundSeriesId || (deliverVal && Store.get(deliverVal) ? deliverVal : "");
+    if (seriesId) {
+      Store.setGoodsId(seriesId, goodsId);
+      Proto.toast("商品 " + goodsId + " 已绑定系列课 " + seriesId + "，已提交审核队列（原型）");
+    } else {
+      Proto.toast("保存成功，已提交内容审核队列（原型）");
+    }
+    setTimeout(function(){ location.href="goods.html"; }, 1200);
+  });
 })();
 </script>
 </body>

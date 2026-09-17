@@ -23,7 +23,7 @@
 .ca-title {
   font-size: 14px; font-weight: 500; color: #1d2129;
   margin-bottom: 4px;
-  display: flex; align-items: center; gap: 10px;
+  display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
 }
 .ca-meta {
   font-size: 12px; color: #8c8c8c;
@@ -32,19 +32,26 @@
 .ca-meta b { color: #595959; font-weight: 500; }
 .ca-actions { display: flex; gap: 6px; flex-wrap: wrap; }
 .ca-cat { font-size: 11px; padding: 1px 6px; border-radius: 3px; background: #e8f3ff; color: #165dff; font-weight: 500; flex-shrink: 0; }
+.phase-pill {
+  font-size: 11px; padding: 1px 6px; border-radius: 3px; font-weight: 500; flex-shrink: 0;
+  background: #f2f3f5; color: #4e5969;
+}
+.phase-pill.open { background: #e8ffea; color: #00b42a; }
+.phase-pill.soon { background: #fff7e6; color: #d48806; }
+.phase-pill.ended { background: #f2f3f5; color: #86909c; }
+.phase-pill.live { background: #fff1f0; color: #f53f3f; }
 </style>
 </head>
 <body class="admin-body" data-module="content" data-nav="content-offline" data-title="线下课" data-crumb="内容 / 内容管理 / 线下课">
 
 <div id="header-actions">
   <button class="btn" data-toast="批量操作待完善（原型）">批量删除</button>
-  <button class="btn btn-primary" data-toast="新增线下课待完善（原型）">+ 新增线下课</button>
+  <a class="btn btn-primary" href="content-offline-edit.html">+ 新增线下课</a>
 </div>
 
 <div id="page-content" style="display:none">
-  <div class="card" style="margin-bottom:14px;border-color:#ffd591;background:#fff7e6"><div class="card-bd" style="padding:10px 16px;font-size:13px;color:#d48806">
-    <b>本模块待完善</b>：线下课（场地排课、到店核销）为后续能力，当前仅提供列表骨架与上下架，页面形态参照「图文」；
-    排课、报名名额、签到核销、退款规则等尚未定义。
+  <div class="card" style="margin-bottom:14px;border-color:#b7eb8f;background:#f6ffed"><div class="card-bd" style="padding:10px 16px;font-size:13px;color:#389e0d">
+    <b>一期已支持</b>：报名开始/截止、课程开始/结束、免费/付费门票商品化、报名记录。到店核销与场地排课为后续能力。
   </div></div>
 
   <div class="card" style="margin-bottom:14px"><div class="card-bd" style="padding:12px 16px">
@@ -73,10 +80,7 @@
   </div>
 </div>
 
-<!-- 弹窗遮罩 -->
 <div class="proto-mask" id="mask"></div>
-
-<!-- 删除二次确认 -->
 <div class="proto-modal" id="modal-del" style="width:440px">
   <div class="proto-modal-hd"><h3 style="font-size:16px;font-weight:600">删除线下课</h3><button class="btn btn-sm btn-ghost" data-close>×</button></div>
   <div class="proto-modal-bd">
@@ -90,17 +94,26 @@
 
 <script src="../assets/js/proto.js"></script>
 <script src="../assets/js/content-cats.js?v=1"></script>
-<script src="../assets/js/admin-shell.js?v=19"></script>
+<script src="../assets/js/admin-shell.js?v=20"></script>
 <script>
 var OFFLINES = [
   { id: "O001", title: "卓越家族培养计划 · 线下工作坊", cover: "../assets/img/covers/classroom.jpg",
-    teacher: "赵老师", cat: "家庭教育", city: "上海", sessions: 2, signed: 86,
+    teacher: "赵老师", cat: "家庭教育", city: "上海",
+    signupStart: "2026-09-01 10:00", signupEnd: "2026-09-25 23:59",
+    courseStart: "2026-09-28 09:30", courseEnd: "2026-09-29 17:00",
+    capacity: 100, signed: 86, access: "paid", price: 299,
     status: "已上架", statusType: "pass", onShelf: true },
   { id: "O002", title: "亲子沟通实战 · 线下沙龙", cover: "../assets/img/covers/talk.jpg",
-    teacher: "阮荣均", cat: "K12 教育", city: "深圳", sessions: 1, signed: 32,
+    teacher: "阮荣均", cat: "K12 教育", city: "深圳",
+    signupStart: "2026-09-10 09:00", signupEnd: "2026-10-05 18:00",
+    courseStart: "2026-10-12 14:00", courseEnd: "2026-10-12 17:30",
+    capacity: 40, signed: 32, access: "free", price: 0,
     status: "已上架", statusType: "pass", onShelf: true },
   { id: "O003", title: "学习习惯养成 · 线下营（筹备中）", cover: "../assets/img/covers/parent.jpg",
-    teacher: "王助教", cat: "K12 教育", city: "北京", sessions: 0, signed: 0,
+    teacher: "王助教", cat: "K12 教育", city: "北京",
+    signupStart: "2026-11-01 10:00", signupEnd: "2026-11-20 23:59",
+    courseStart: "2026-11-28 09:00", courseEnd: "2026-11-30 16:00",
+    capacity: 30, signed: 0, access: "paid", price: 999,
     status: "已下架", statusType: "review", onShelf: false }
 ];
 
@@ -110,6 +123,25 @@ function esc(s) {
   return String(s).replace(/[&<>"']/g, function(c) {
     return ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c];
   });
+}
+
+function parseTs(s) {
+  return new Date(String(s).replace(/-/g, "/")).getTime();
+}
+
+function derivePhase(o) {
+  var now = Date.now();
+  var ss = parseTs(o.signupStart), se = parseTs(o.signupEnd);
+  var cs = parseTs(o.courseStart), ce = parseTs(o.courseEnd);
+  if (now < ss) return { label: "报名未开始", cls: "soon" };
+  if (now <= se) return { label: "报名中", cls: "open" };
+  if (now < cs) return { label: "报名截止", cls: "ended" };
+  if (now <= ce) return { label: "开课中", cls: "live" };
+  return { label: "已结束", cls: "ended" };
+}
+
+function accessLabel(o) {
+  return o.access === "paid" ? ("¥" + o.price) : "免费";
 }
 
 function filteredOfflines() {
@@ -123,29 +155,34 @@ function filteredOfflines() {
 
 function renderList() {
   var html = filteredOfflines().map(function(o) {
+    var phase = derivePhase(o);
+    var cap = o.capacity ? (o.signed + "/" + o.capacity) : String(o.signed);
     return '' +
       '<div class="ca-row">' +
         '<div class="ca-cover"><img src="' + o.cover + '" alt="" /></div>' +
         '<div class="ca-info">' +
           '<div class="ca-title">' + esc(o.title) +
             '<span class="ca-cat">' + esc(o.cat) + '</span>' +
+            '<span class="phase-pill ' + phase.cls + '">' + phase.label + '</span>' +
             '<span class="audit-badge ' + o.statusType + '">' + esc(o.status) + '</span>' +
           '</div>' +
           '<div class="ca-meta">' +
             '<span><b>ID:</b> ' + esc(o.id) + '</span>' +
             '<span><b>讲师:</b> ' + esc(o.teacher) + '</span>' +
             '<span><b>城市:</b> ' + esc(o.city) + '</span>' +
-            '<span><b>场次:</b> ' + o.sessions + '</span>' +
-            '<span><b>报名:</b> ' + o.signed + '</span>' +
+            '<span><b>报名窗:</b> ' + esc(o.signupStart) + ' ~ ' + esc(o.signupEnd) + '</span>' +
+            '<span><b>开课:</b> ' + esc(o.courseStart) + ' ~ ' + esc(o.courseEnd) + '</span>' +
+            '<span><b>获取:</b> ' + accessLabel(o) + '</span>' +
+            '<span><b>报名:</b> ' + cap + '</span>' +
           '</div>' +
         '</div>' +
         '<div class="ca-actions">' +
           '<button class="btn" data-toast="分享待完善（原型）"' + (o.onShelf ? '' : ' disabled') + '>分享</button>' +
-          '<button class="btn" data-toast="线下课详情待完善（原型）">查看线下课</button>' +
+          '<a class="btn" href="content-offline-edit.html?id=' + o.id + '">编辑</a>' +
+          '<a class="btn" href="content-offline-signups.html?id=' + o.id + '">报名记录</a>' +
           (o.onShelf
             ? '<button class="btn" data-shelf-off="' + o.id + '">下架</button>'
-            : '<button class="btn btn-primary" data-toast="线下课编辑待完善（原型）">编辑</button>' +
-              '<button class="btn" data-shelf-on="' + o.id + '">上架</button>') +
+            : '<button class="btn" data-shelf-on="' + o.id + '">上架</button>') +
           '<button class="btn" style="color:#f53f3f;border-color:#ffa39e" data-del="' + o.id + '">删除</button>' +
           '<button class="btn" data-toast="已复制线下课（演示）">复制</button>' +
         '</div>' +
@@ -201,7 +238,6 @@ document.addEventListener("click", function(e) {
 mask && mask.addEventListener("click", closeAll);
 document.querySelectorAll("[data-close]").forEach(function(b) { b.addEventListener("click", closeAll); });
 
-// 内容分类下拉取值于「内容分类」页面列表
 document.getElementById("co-cat").insertAdjacentHTML("beforeend", window.ContentCats.optionsHtml());
 document.getElementById("co-cat").addEventListener("change", function(){ filterCat = this.value; renderList(); });
 document.getElementById("co-status").addEventListener("change", function(){ filterStatus = this.value; renderList(); });

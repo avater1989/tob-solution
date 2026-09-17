@@ -5,86 +5,198 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>首页 · To-B 小程序</title>
   <link rel="stylesheet" href="../assets/css/proto.css" />
-  <link rel="stylesheet" href="../assets/css/mp.css?v=10" />
+  <link rel="stylesheet" href="../assets/css/mp.css?v=15" />
 </head>
 <body class="mp-page" data-tab="home">
   <div class="mp-frame">
     <div class="mp-top"></div>
     <div class="mp-status"><span>9:41</span><span>To-B 小程序</span><span>100%</span></div>
-    <div class="mp-nav">星启家庭教育</div>
-    <div class="mp-body">
 
-      <!-- 头图：艺博士欢迎卡 -->
-      <div class="mp-doc">
-        <div class="mp-doc-txt">
-          <h3>您好，我是艺博士</h3>
-          <p>您的专属家庭成长顾问</p>
-          <div class="mp-doc-ask">
-            <span>您可以问：</span>
-            <a class="mp-doc-chip" href="ai.html">孩子辍学</a>
-            <a class="mp-doc-chip" href="ai.html">青春期孩子叛逆</a>
-            <a class="mp-doc-chip" href="ai.html">亲子沟通</a>
-          </div>
-        </div>
-        <img class="mp-doc-ip" src="../assets/img/ip/yibo.svg" alt="艺博士" />
+    <div class="mp-body" id="mpHomeBody">
+
+      <!-- 搜索栏 -->
+      <div class="mp-searchrow">
+        <a class="mp-search" href="#" data-toast="搜索：原型不落地">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+          想学什么搜搜看
+        </a>
+        <a class="mp-search-ico" href="#" data-toast="消息通知：原型不落地" aria-label="通知">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 9.5a5.5 5.5 0 0 1 11 0c0 4.2 1.5 5.5 1.5 5.5H5s1.5-1.3 1.5-5.5z"/><path d="M10 18.5a2 2 0 0 0 4 0"/></svg>
+        </a>
+        <a class="mp-search-ico" href="#" data-toast="扫一扫：原型不落地" aria-label="扫一扫">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8V5a1 1 0 0 1 1-1h3M20 8V5a1 1 0 0 0-1-1h-3M4 16v3a1 1 0 0 0 1 1h3M20 16v3a1 1 0 0 1-1 1h-3"/><path d="M7 12h10"/></svg>
+        </a>
       </div>
 
-      <!-- 金刚位：测评 / 定制化 / 艺博士 三个入口都有落地页 -->
-      <div class="mp-king">
-        <a href="assess.html">
-          <span class="mp-king-ico k1">测</span>
-          测评
+      <!-- 艺博士欢迎卡（UI 稿整卡切图，保证还原度） -->
+      <a class="mp-doc mp-doc--shot" href="ai.html">
+        <img src="../assets/img/mp-home/doc-card-full.png?v=2" alt="您好，我是艺博士。您的专属家庭成长顾问。您可以问：孩子辍学、青春期孩子叛逆、亲子沟通" />
+      </a>
+
+      <!-- 消息提醒：定制化计划入口 -->
+      <a class="mp-strip" href="plan.html">
+        <span class="mp-strip-dot">测</span>
+        <span class="mp-strip-txt"><b>定制化计划</b>·亲子沟通 21天训练营计划</span>
+        <span class="mp-strip-go">去测评 ›</span>
+      </a>
+
+      <!-- 直播 -->
+      <div class="mp-section mp-section--live" style="padding-top:4px">
+        <div class="mp-section-head">
+          <div class="mp-section-title">
+            直播
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M4 7.5A2.5 2.5 0 0 1 6.5 5h7A2.5 2.5 0 0 1 16 7.5v9a2.5 2.5 0 0 1-2.5 2.5h-7A2.5 2.5 0 0 1 4 16.5v-9z"/><path d="M17 10.2l3.2-1.8a1 1 0 0 1 1.5.9v5.4a1 1 0 0 1-1.5.9L17 13.8V10.2z" opacity=".85"/></svg>
+          </div>
+          <a class="mp-section-more" href="lives.html">更多 ›</a>
+        </div>
+
+        <div class="mp-lrow">
+          <div class="mp-lcard">
+            <a class="mp-lcard-cover" href="lives.html">
+              <img src="../assets/img/mp-home/live-1.png" alt="直播封面" />
+              <span class="mp-lcard-meta">
+                <span class="mp-lcard-time">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="12" r="8"/><path d="M12 8v4.5l3 1.5"/></svg>
+                  09.17/21:30
+                </span>
+                <span class="mp-lcard-host">翟海霞</span>
+              </span>
+            </a>
+            <div class="mp-lcard-title">通过2026年中高卷了解中高考命题趋势及方向...</div>
+            <div class="mp-lcard-ft">
+              <div class="mp-lcard-avs">
+                <img src="../assets/img/mp-home/av-1.png" alt="" />
+                <img src="../assets/img/mp-home/av-2.png" alt="" />
+                <img src="../assets/img/mp-home/av-3.png" alt="" />
+              </div>
+              <span class="mp-lcard-num">已有296人已预约</span>
+              <a class="mp-lcard-btn" href="#" data-toast="已预约该直播（原型）">预约</a>
+            </div>
+          </div>
+
+          <div class="mp-lcard">
+            <a class="mp-lcard-cover" href="lives.html">
+              <img src="../assets/img/mp-home/live-2.png" alt="直播封面" />
+              <span class="mp-lcard-meta">
+                <span class="mp-lcard-time">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="12" r="8"/><path d="M12 8v4.5l3 1.5"/></svg>
+                  09.17/19:45
+                </span>
+                <span class="mp-lcard-host">戴东</span>
+              </span>
+            </a>
+            <div class="mp-lcard-title">活出经典：打破孩子的天花板，实现人生跃迁...</div>
+            <div class="mp-lcard-ft">
+              <div class="mp-lcard-avs">
+                <img src="../assets/img/mp-home/av-2.png" alt="" />
+                <img src="../assets/img/mp-home/av-3.png" alt="" />
+                <img src="../assets/img/mp-home/av-1.png" alt="" />
+              </div>
+              <span class="mp-lcard-num">已有188人已预约</span>
+              <a class="mp-lcard-btn" href="#" data-toast="已预约该直播（原型）">预约</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 线下课 -->
+      <div class="mp-section" style="padding-top:8px">
+        <div class="mp-section-head">
+          <div class="mp-section-title">线下课</div>
+          <a class="mp-section-more" href="offline.html">更多 ›</a>
+        </div>
+        <a class="mp-crow" href="offline-detail.html?id=O001">
+          <div class="mp-crow-cover">
+            <img src="../assets/img/covers/classroom.jpg" alt="线下课封面" />
+          </div>
+          <div class="mp-crow-bd">
+            <div class="mp-crow-title">卓越家族培养计划 · 线下工作坊</div>
+            <div class="mp-crow-tags">
+              <span class="mp-crow-tag">上海</span>
+              <span class="mp-crow-tag">报名中</span>
+            </div>
+            <div class="mp-crow-meta">赵老师 · 09-28 开课</div>
+            <div class="mp-crow-num">86/100 人已报名</div>
+          </div>
+          <span class="mp-crow-btn">¥299</span>
         </a>
-        <a href="plan.html">
-          <span class="mp-king-ico k2">定</span>
-          定制化
-        </a>
-        <a href="ai.html">
-          <span class="mp-king-ico k3">博</span>
-          艺博士
+        <a class="mp-crow" href="offline-detail.html?id=O002">
+          <div class="mp-crow-cover">
+            <img src="../assets/img/covers/talk.jpg" alt="线下课封面" />
+          </div>
+          <div class="mp-crow-bd">
+            <div class="mp-crow-title">亲子沟通实战 · 线下沙龙</div>
+            <div class="mp-crow-tags">
+              <span class="mp-crow-tag">深圳</span>
+              <span class="mp-crow-tag">免费</span>
+            </div>
+            <div class="mp-crow-meta">阮荣均 · 10-12 开课</div>
+            <div class="mp-crow-num">32/40 人已报名</div>
+          </div>
+          <span class="mp-crow-btn">报名</span>
         </a>
       </div>
 
       <!-- 精选课程 -->
-      <div class="mp-section" style="padding-top:16px">
+      <div class="mp-section mp-section--courses">
         <div class="mp-section-head">
           <div class="mp-section-title">精选课程</div>
-          <a class="mp-section-more" href="lives.html">更多 ›</a>
+          <a class="mp-section-more" href="learn.html">更多 ›</a>
         </div>
 
-        <a class="course-card" href="course.html">
-          <div class="course-cover">沟通<br />基础</div>
-          <div class="course-info">
-            <h4>亲子沟通基础</h4>
-            <p>8 节 · 适合 3–12 岁家庭</p>
-            <div class="price">¥199 <s>¥299</s></div>
+        <a class="mp-crow" href="course.html">
+          <div class="mp-crow-cover">
+            <img src="../assets/img/mp-home/course-1.png" alt="课程封面" />
           </div>
+          <div class="mp-crow-bd">
+            <div class="mp-crow-title">如何培养孩子的六大关键社会能力</div>
+            <div class="mp-crow-tags">
+              <span class="mp-crow-tag">养育规律</span>
+              <span class="mp-crow-tag">学前准备</span>
+            </div>
+            <div class="mp-crow-meta">秦红英 | 共12讲</div>
+            <div class="mp-crow-num">55497人学过</div>
+          </div>
+          <span class="mp-crow-btn">立即学习</span>
         </a>
 
-        <a class="course-card" href="course.html">
-          <div class="course-cover">系列<br />入门</div>
-          <div class="course-info">
-            <h4>家庭教育入门系列</h4>
-            <p>3 门组合 · 系统学习</p>
-            <div class="price">¥399</div>
+        <a class="mp-crow" href="course.html">
+          <div class="mp-crow-cover">
+            <img src="../assets/img/mp-home/course-2.png" alt="课程封面" />
           </div>
-        </a>
-
-        <a class="course-card" href="course.html">
-          <div class="course-cover">体验<br />9.9</div>
-          <div class="course-info">
-            <h4>9.9 引流体验课</h4>
-            <p>视频号同款 · 体验入门</p>
-            <div class="price">¥9.9</div>
+          <div class="mp-crow-bd">
+            <div class="mp-crow-title">能量智慧站桩（初级）课程</div>
+            <div class="mp-crow-tags">
+              <span class="mp-crow-tag">生命实修</span>
+            </div>
+            <div class="mp-crow-meta">戴东 | 共16讲</div>
+            <div class="mp-crow-num">162851人学过</div>
           </div>
+          <span class="mp-crow-btn">立即学习</span>
         </a>
       </div>
 
     </div>
+
+    <a class="mp-float-top" href="#mpHomeBody" id="mpFloatTop" aria-label="回到顶部">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V6"/><path d="M6.5 11.5 12 6l5.5 5.5"/></svg>
+      <span>顶部</span>
+    </a>
   </div>
-  <p class="mp-hint">首页 = 艺博士欢迎卡（头图）+ 金刚位（测评 / 定制化 / 艺博士）+ 精选课程 · <a href="ai.html">艺博士对话</a> · <a href="../admin/mp-home.html">管理端装修</a></p>
+  <p class="mp-hint">首页 = 搜索 + 艺博士欢迎卡 + 直播横滑 + 线下课 + 精选课程 · <a href="ai.html">艺博士</a> · <a href="../admin/mp-home.html">管理端装修</a></p>
 
   <script src="../assets/js/proto.js"></script>
   <script src="../assets/js/mp-shell.js"></script>
+  <script>
+    (function () {
+      var body = document.getElementById("mpHomeBody");
+      var fab = document.getElementById("mpFloatTop");
+      if (!body || !fab) return;
+      fab.addEventListener("click", function (e) {
+        e.preventDefault();
+        body.scrollTo({ top: 0, behavior: "smooth" });
+      });
+    })();
+  </script>
 </body>
 </html>

@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>线下课 · To-B 小程序</title>
+  <link rel="stylesheet" href="../assets/css/proto.css" />
+  <link rel="stylesheet" href="../assets/css/mp.css?v=11" />
+</head>
+<body class="mp-page" data-tabbar="0">
+  <div class="mp-frame">
+    <div class="mp-top" style="height:170px"></div>
+    <div class="mp-status"><span>9:41</span><span>线下课</span><span>100%</span></div>
+    <div class="mp-nav"><a class="back" href="home.html">←</a>线下课</div>
+    <div class="mp-body" style="padding:0 14px" id="off-list"></div>
+  </div>
+  <p class="mp-hint">线下课列表 · <a href="../admin/content-offline.html">管理端线下课</a></p>
+
+  <script src="../assets/js/proto.js"></script>
+  <script src="../assets/js/mp-shell.js"></script>
+  <script>
+  var ITEMS = [
+    {
+      id: "O001",
+      title: "卓越家族培养计划 · 线下工作坊",
+      teacher: "赵老师",
+      city: "上海",
+      courseStart: "09-28 09:30",
+      access: "paid",
+      price: 299,
+      signed: 86,
+      capacity: 100,
+      cover: "../assets/img/covers/classroom.jpg",
+      badge: "报名中"
+    },
+    {
+      id: "O002",
+      title: "亲子沟通实战 · 线下沙龙",
+      teacher: "阮荣均",
+      city: "深圳",
+      courseStart: "10-12 14:00",
+      access: "free",
+      price: 0,
+      signed: 32,
+      capacity: 40,
+      cover: "../assets/img/covers/talk.jpg",
+      badge: "免费报名"
+    }
+  ];
+
+  document.getElementById("off-list").innerHTML = ITEMS.map(function (o) {
+    var price = o.access === "paid" ? ("¥" + o.price) : "免费";
+    var progress = o.signed + "/" + o.capacity + " 人";
+    return (
+      '<div class="mp-live-card" style="margin-top:12px">' +
+        '<a href="offline-detail.html?id=' + o.id + '" style="color:inherit">' +
+          '<div class="mp-live-cover" style="background:url(' + o.cover + ') center/cover;min-height:120px">' +
+            '<span class="mp-live-badge">' + o.badge + "</span>" +
+            "<h3>" + o.title + "</h3>" +
+            "<p>" + o.teacher + " · " + o.city + " · " + o.courseStart + "</p>" +
+          "</div>" +
+        "</a>" +
+        '<div class="mp-live-ft">' +
+          '<div class="mp-live-ft-l">' + price + " · 已报 " + progress + "</div>" +
+          '<a class="mp-live-ft-btn" href="offline-detail.html?id=' + o.id + '">查看详情</a>' +
+        "</div>" +
+      "</div>"
+    );
+  }).join("");
+  </script>
+</body>
+</html>

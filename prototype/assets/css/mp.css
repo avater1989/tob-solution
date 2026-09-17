@@ -88,7 +88,7 @@
 }
 .mp-body::-webkit-scrollbar { width: 0; }
 
-/* ===== 底部 3 Tab（首页 / 直播 / 我的） ===== */
+/* ===== 底部 3 Tab（首页 / 定制化 / 我的） ===== */
 .mp-tabbar {
   height: 58px;
   background: rgba(255, 255, 255, .96);
@@ -219,6 +219,9 @@
 .mp-section-title { font-size: 16.5px; font-weight: 800; letter-spacing: .2px; }
 .mp-section-more { font-size: 12px; color: var(--mp-sub); }
 .mp-section-more:hover { text-decoration: none; }
+/* 首页：直播与精选课程间距收紧 */
+.mp-section--live { padding-bottom: 2px; }
+.mp-section--courses .mp-section-head { margin-top: 6px; }
 
 /* 渐变标题条（参考图「基础认知」） */
 .mp-bar {
@@ -702,6 +705,7 @@
   min-height: 132px;
   color: inherit;
 }
+.mp-doc:hover { text-decoration: none; }
 .mp-doc::after {
   content: "";
   position: absolute; right: -34px; top: -76px;
@@ -730,6 +734,24 @@
   object-fit: contain; object-position: bottom;
 }
 
+/* UI 稿整卡切图：像素级还原欢迎卡 */
+.mp-doc.mp-doc--shot {
+  display: block;
+  padding: 0;
+  min-height: 0;
+  background: transparent;
+  box-shadow: 0 8px 20px rgba(255, 145, 60, .16);
+  border-radius: 16px;
+  overflow: hidden;
+}
+.mp-doc.mp-doc--shot::after { display: none; }
+.mp-doc.mp-doc--shot img {
+  width: 100%;
+  height: auto;
+  display: block;
+  vertical-align: top;
+}
+
 /* ----- 直播横滑卡 ----- */
 .mp-lrow {
   display: flex; gap: 10px;
@@ -747,21 +769,26 @@
   transition: transform .18s ease, box-shadow .18s ease;
 }
 .mp-lcard:hover { text-decoration: none; transform: translateY(-1px); box-shadow: 0 10px 22px rgba(29, 33, 41, .12); }
-.mp-lcard-cover { position: relative; display: block; height: 106px; }
+.mp-lcard-cover { position: relative; display: block; height: 118px; }
 .mp-lcard-cover img { width: 100%; height: 100%; object-fit: cover; display: block; }
-.mp-lcard-time {
+.mp-lcard-meta {
   position: absolute; left: 8px; bottom: 8px;
+  display: inline-flex; align-items: stretch;
+  border-radius: 6px; overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, .18);
+}
+.mp-lcard-time {
   display: inline-flex; align-items: center; gap: 4px;
-  background: rgba(20, 24, 32, .58);
+  background: rgba(20, 24, 32, .62);
   color: #fff; font-size: 10.5px; font-weight: 600;
-  border-radius: 6px; padding: 3px 7px;
+  padding: 3px 7px;
 }
 .mp-lcard-time svg { width: 11px; height: 11px; }
 .mp-lcard-host {
-  position: absolute; right: 8px; bottom: 8px;
+  display: inline-flex; align-items: center;
   background: linear-gradient(135deg, #ff6a45, #f04438);
   color: #fff; font-size: 10.5px; font-weight: 700;
-  border-radius: 6px; padding: 3px 7px;
+  padding: 3px 8px;
 }
 .mp-lcard-title {
   font-size: 13.5px; font-weight: 700; color: var(--mp-ink);
@@ -829,13 +856,13 @@
 .mp-float-top {
   position: absolute; right: 13px; bottom: 72px;
   width: 46px; height: 46px; border-radius: 50%;
-  background: #fff;
-  box-shadow: 0 6px 18px rgba(29, 33, 41, .16);
+  background: linear-gradient(145deg, #ff7a4d, #f04438);
+  box-shadow: 0 6px 18px rgba(240, 68, 56, .32);
   display: flex; flex-direction: column; align-items: center; justify-content: center;
   gap: 1px; z-index: 6;
-  color: var(--mp-brand);
+  color: #fff;
 }
-.mp-float-top:hover { text-decoration: none; box-shadow: 0 8px 22px rgba(240, 68, 56, .22); }
+.mp-float-top:hover { text-decoration: none; box-shadow: 0 8px 22px rgba(240, 68, 56, .4); }
 .mp-float-top svg { width: 15px; height: 15px; }
 .mp-float-top span { font-size: 9.5px; font-weight: 700; }
 
