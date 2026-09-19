@@ -129,14 +129,14 @@
         <label>关联商品</label>
         <div style="display:flex;gap:8px;align-items:center">
           <input class="input" id="f-goods" placeholder="goods_id，如 G-ART-001" style="flex:1" />
-          <a class="btn" href="goods-edit.html?type=article&content_id=A001">创建商品</a>
+          <a class="btn" href="goods-edit.html?create_mode=from_content&content_type=article&content_id=A001">创建商品</a>
           <a class="btn" href="goods.html?content_id=A001">查看关联商品</a>
         </div>
       </div>
       <div class="field">
-        <label>发布状态</label>
+        <label>上下架状态</label>
         <select class="input" id="f-pub">
-          <option>草稿</option><option>待审核</option><option>已发布</option><option>已下架</option>
+          <option>草稿</option><option>待审核</option><option>已上架</option><option>已下架</option>
         </select>
       </div>
       <div class="field" style="grid-column:1/-1">

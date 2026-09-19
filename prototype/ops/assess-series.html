@@ -3,11 +3,11 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>测评包 · 运营后台</title>
+<title>测评包 · 运营管理后台</title>
 <link rel="stylesheet" href="../assets/css/proto.css?v=9" />
 <link rel="stylesheet" href="../assets/css/assess.css?v=5" />
 </head>
-<body class="admin-body" data-module="content" data-nav="assess-series" data-title="测评包" data-crumb="运营后台 / 内容与审核 / 测评中心 / 测评包">
+<body class="admin-body" data-module="content" data-nav="assess-series" data-title="测评包" data-crumb="内容 / 测评中心 / 测评包">
 
 <div id="header-actions">
   <a class="btn" href="assess-projects.html">管理单测评</a>
@@ -36,7 +36,6 @@
         <th>测评包</th>
         <th style="width:160px">流程摘要</th>
         <th style="width:160px">报告模板</th>
-        <th style="width:80px">状态</th>
         <th style="width:80px">上下架</th>
         <th style="width:320px">操作</th>
       </tr>
@@ -56,8 +55,7 @@
         <select class="input" id="m-tpl"></select>
         <p class="muted" style="font-size:12px;margin:6px 0 0">包级报告在用户完成包流程后按此模板 + 智能体生成。</p>
       </div>
-      <div class="field"><label style="display:flex;align-items:center;gap:8px;font-weight:400"><input type="checkbox" id="m-enabled" checked> 启用该测评包</label></div>
-      <p class="muted" style="font-size:12px;margin:0">保存后进入 LogicFlow 编排：添加分流题 / 测评节点并连线。</p>
+      <p class="muted" style="font-size:12px;margin:0">保存后默认已下架；配置流程后可在列表操作上架。进入 LogicFlow 编排：添加分流题 / 测评节点并连线。</p>
     </div>
     <div class="proto-modal-ft" style="justify-content:flex-end;gap:8px">
       <button class="btn" data-close>取消</button>
@@ -81,7 +79,7 @@
 
 <script src="../assets/js/proto.js"></script>
 <script src="../assets/js/assess-flow-store.js?v=2"></script>
-<script src="../assets/js/assess-report-store.js?v=1"></script>
+<script src="../assets/js/assess-report-store.js?v=2"></script>
 <script src="../assets/js/ops-shell.js?v=16"></script>
 <script>
 var Store = window.AssessFlowStore;
@@ -121,10 +119,9 @@ function render() {
       "<div class=\"as-desc\">" + esc(s.desc || "") + "</div></td>" +
       "<td style=\"font-size:12px\">" + esc(Store.packageSummary(s)) + "</td>" +
       "<td style=\"font-size:12px\">" + esc(ReportStore.templateLabel(s.reportTemplateId)) + "</td>" +
-      '<td><span class="as-tag ' + (s.enabled !== false ? "green" : "gray") + '">' + (s.enabled !== false ? "已启用" : "已停用") + "</span></td>" +
       '<td><span class="as-tag ' + (s.shelf === "已上架" ? "green" : "orange") + '">' + esc(s.shelf || "已下架") + "</span></td>" +
       '<td><div class="as-acts">' + acts + "</div></td></tr>";
-  }).join("") || '<tr><td colspan="7" style="text-align:center;color:#bfbfbf;padding:28px">暂无测评包</td></tr>';
+  }).join("") || '<tr><td colspan="6" style="text-align:center;color:#bfbfbf;padding:28px">暂无测评包</td></tr>';
 }
 
 var mask = document.getElementById("mask");
@@ -143,7 +140,6 @@ function openEdit(sid) {
   document.getElementById("m-title").textContent = s ? "编辑测评包" : "新建测评包";
   document.getElementById("m-name").value = s ? s.name : "";
   document.getElementById("m-desc").value = s ? (s.desc || "") : "";
-  document.getElementById("m-enabled").checked = s ? s.enabled !== false : true;
   document.getElementById("m-tpl").innerHTML = ReportStore.templateOptionsHtml(s ? s.reportTemplateId : "RT01");
   openM("modal-edit");
 }
@@ -169,9 +165,9 @@ document.getElementById("btn-save").onclick = function () {
   flow.ownerId = id;
   flow.name = name;
   flow.desc = document.getElementById("m-desc").value.trim();
-  flow.enabled = document.getElementById("m-enabled").checked;
   flow.reportTemplateId = tpl;
   flow.shelf = prev ? (prev.shelf || "已下架") : "已下架";
+  flow.enabled = flow.shelf === "已上架";
   Store.savePackageFlow(flow);
   closeAll();
   location.href = "assess-flow.html?scope=package&id=" + encodeURIComponent(id);
@@ -197,8 +193,9 @@ document.addEventListener("click", function (e) {
   if (shelf) {
     var s2 = Store.getPackageFlow(shelf.getAttribute("data-shelf"));
     s2.shelf = s2.shelf === "已上架" ? "已下架" : "已上架";
+    s2.enabled = s2.shelf === "已上架";
     Store.savePackageFlow(s2);
-    Proto.toast(s2.shelf);
+    Proto.toast(s2.shelf === "已上架" ? "已上架" : "已下架");
     render();
     return;
   }

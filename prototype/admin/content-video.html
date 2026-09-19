@@ -41,15 +41,15 @@
         <option value="">全部状态</option>
         <option value="draft">草稿</option>
         <option value="pending_audit">待平台审核</option>
-        <option value="enabled">已启用</option>
-        <option value="disabled">已停用</option>
+        <option value="enabled">已上架</option>
+        <option value="disabled">已下架</option>
         <option value="rejected">已驳回</option>
       </select>
       <button class="btn btn-primary" id="btn-query">查询</button>
       <button class="btn" id="btn-reset">重置</button>
     </div>
   </div></div>
-  <p style="font-size:12px;color:#8c8c8c;margin:0 0 12px">系列课已并入线上课。启用后可绑定商品；已启用时章节锁定，须先停用再改。</p>
+  <p style="font-size:12px;color:#8c8c8c;margin:0 0 12px">系列课已并入线上课。上架后可绑定商品；已上架时章节锁定，须先下架再改。</p>
   <div id="list"></div>
   <div style="margin-top:12px;font-size:12px;color:#8c8c8c">共 <b id="count">0</b> 条</div>
 </div>
@@ -100,12 +100,15 @@ function render() {
       acts += '<a class="btn" href="content-video-edit.html?id=' + encodeURIComponent(c.id) + '">编辑</a>';
     }
     if (c.status === Store.STATUS.enabled) {
-      acts += '<button class="btn" data-act="disable" data-id="' + c.id + '">停用</button>';
-      if (Store.canCreateGoods(c)) acts += '<a class="btn btn-primary" href="goods-edit.html?type=online_course&content_id=' + encodeURIComponent(c.id) + '">建商品</a>';
+      acts += '<button class="btn" data-act="disable" data-id="' + c.id + '">下架</button>';
+      if (Store.canCreateGoods(c)) acts += '<a class="btn btn-primary" href="goods-edit.html?create_mode=from_content&content_type=online_course&content_id=' + encodeURIComponent(c.id) + '">建商品</a>';
+    } else if (c.status === Store.STATUS.disabled) {
+      acts += '<button class="btn btn-primary" data-act="enable" data-id="' + c.id + '">上架</button>';
+      acts += '<button class="btn" data-act="enable-draft" data-id="' + c.id + '">恢复草稿</button>';
     } else if (Store.canSubmitAudit(c)) {
       acts += '<button class="btn btn-primary" data-act="submit" data-id="' + c.id + '">提交审核</button>';
     }
-    if (c.status === Store.STATUS.disabled || c.status === Store.STATUS.rejected) {
+    if (c.status === Store.STATUS.rejected) {
       acts += '<button class="btn" data-act="enable-draft" data-id="' + c.id + '">恢复草稿</button>';
     }
     return '<div class="cs-row">' +
@@ -150,7 +153,10 @@ document.getElementById("list").addEventListener("click", function (e) {
     Proto.toast(r.ok ? "已提交平台审核" : r.msg);
   } else if (act === "disable") {
     Store.setStatus(id, Store.STATUS.disabled);
-    Proto.toast("已停用");
+    Proto.toast("已下架");
+  } else if (act === "enable") {
+    var r2 = Store.enableDirect(id);
+    Proto.toast(r2 && r2.ok === false ? (r2.msg || "上架失败") : "已上架");
   } else if (act === "enable-draft") {
     Store.setStatus(id, Store.STATUS.draft);
     Proto.toast("已恢复为草稿");

@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>报告模板 · 运营后台</title>
+<title>报告模板 · 运营管理后台</title>
 <link rel="stylesheet" href="../assets/css/proto.css?v=9" />
 <link rel="stylesheet" href="../assets/css/assess.css?v=6" />
 <style>
@@ -26,7 +26,7 @@
 .rt-agent-tip { font-size:12px; color:#722ed1; margin-top:4px; }
 </style>
 </head>
-<body class="admin-body" data-module="content" data-nav="assess-report-templates" data-title="报告模板" data-crumb="运营后台 / 内容与审核 / 测评中心 / 报告模板">
+<body class="admin-body" data-module="content" data-nav="assess-report-templates" data-title="报告模板" data-crumb="内容 / 测评中心 / 报告模板">
 
 <div id="header-actions">
   <button class="btn btn-primary" id="btn-new">+ 新建模板</button>
@@ -46,7 +46,7 @@
         <th>关联智能体</th>
         <th>状态</th>
         <th>更新时间</th>
-        <th style="width:160px">操作</th>
+        <th style="width:200px">操作</th>
       </tr>
     </thead>
     <tbody id="tbody"></tbody>
@@ -63,7 +63,7 @@
           <div class="form-grid" style="grid-template-columns:1fr 1fr">
             <div class="field"><label>版本</label><input class="input" id="t-ver" value="v1.0" /></div>
             <div class="field"><label>状态</label>
-              <select class="input" id="t-status"><option>启用</option><option>草稿</option></select>
+              <select class="input" id="t-status"><option>上架</option><option>下架</option></select>
             </div>
           </div>
           <div class="field"><label>关联智能体 * <span class="muted" style="font-weight:400">用于生成报告解读内容</span></label>
@@ -97,7 +97,7 @@
 <div class="proto-mask" id="mask"></div>
 
 <script src="../assets/js/proto.js"></script>
-<script src="../assets/js/assess-report-store.js?v=1"></script>
+<script src="../assets/js/assess-report-store.js?v=2"></script>
 <script src="../assets/js/ops-shell.js?v=20"></script>
 <script>
 var Store = window.AssessReportStore;
@@ -152,12 +152,16 @@ function refreshPreview() {
 function render() {
   document.getElementById("tbody").innerHTML = Store.listTemplates().map(function (t) {
     var ag = Store.agentById(t.agentId);
+    var st = Store.normalizeStatus(t.status);
+    var shelfBtn = st === "上架"
+      ? "<button class='btn' data-shelf='" + t.id + "' data-to='下架'>下架</button>"
+      : "<button class='btn btn-primary' data-shelf='" + t.id + "' data-to='上架'>上架</button>";
     return "<tr><td><b>" + esc(t.name) + "</b><br><span class='muted' style='font-size:12px'>" + esc(t.id) + "</span></td>" +
       "<td>" + esc(t.ver) + "</td>" +
       "<td>" + esc(ag ? ag.name : "未关联") + "</td>" +
-      "<td><span class='as-tag " + (t.status === "启用" ? "green" : "gray") + "'>" + esc(t.status) + "</span></td>" +
+      "<td><span class='as-tag " + (st === "上架" ? "green" : "gray") + "'>" + esc(st) + "</span></td>" +
       "<td style='font-size:12px'>" + esc(t.updated) + "</td>" +
-      "<td class='as-acts'><button class='btn' data-edit='" + t.id + "'>编辑 / 预览</button></td></tr>";
+      "<td class='as-acts'><button class='btn' data-edit='" + t.id + "'>编辑 / 预览</button> " + shelfBtn + "</td></tr>";
   }).join("") || "<tr><td colspan='6' style='text-align:center;color:#bfbfbf;padding:28px'>暂无模板</td></tr>";
 }
 
@@ -178,7 +182,7 @@ function openEditor(id) {
     document.getElementById("m-title").textContent = "新建报告模板";
     document.getElementById("t-name").value = "";
     document.getElementById("t-ver").value = "v1.0";
-    document.getElementById("t-status").value = "启用";
+    document.getElementById("t-status").value = "上架";
     document.getElementById("t-data").value = "{{user_name}}, {{assess_name}}, {{total_score}}, {{segment_label}}, {{finish_time}}";
     document.getElementById("t-copy").value = "{{ai_summary}}, {{advice}}";
     document.getElementById("t-style").value = "theme: family-soft";
@@ -190,7 +194,7 @@ function openEditor(id) {
     document.getElementById("m-title").textContent = "编辑报告模板";
     document.getElementById("t-name").value = t.name;
     document.getElementById("t-ver").value = t.ver;
-    document.getElementById("t-status").value = t.status || "启用";
+    document.getElementById("t-status").value = Store.normalizeStatus(t.status || "上架");
     document.getElementById("t-data").value = t.dataVars || "";
     document.getElementById("t-copy").value = t.copyVars || "";
     document.getElementById("t-style").value = t.style || "";
@@ -207,6 +211,14 @@ document.getElementById("btn-refresh-preview").onclick = refreshPreview;
   document.getElementById(id).addEventListener("change", refreshPreview);
 });
 document.getElementById("tbody").addEventListener("click", function (e) {
+  var shelf = e.target.closest("[data-shelf]");
+  if (shelf) {
+    var to = shelf.getAttribute("data-to");
+    Store.setTemplateStatus(shelf.getAttribute("data-shelf"), to);
+    render();
+    Proto.toast(to === "上架" ? "已上架" : "已下架");
+    return;
+  }
   var btn = e.target.closest("[data-edit]");
   if (btn) openEditor(btn.getAttribute("data-edit"));
 });

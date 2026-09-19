@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>内容标签 · 运营后台</title>
+<title>商品类目 · 商家管理后台</title>
 <link rel="stylesheet" href="../assets/css/proto.css?v=9" />
 <style>
 .tg-indent { color:#8c8c8c; margin-right:4px; }
@@ -11,20 +11,20 @@
 .tg-status.off { border-color:#d9d9d9; color:#8c8c8c; background:#fafafa; }
 </style>
 </head>
-<body class="admin-body" data-module="content" data-nav="content-tags" data-title="内容标签" data-crumb="运营后台 / 内容与审核 / 内容资产 / 内容标签">
+<body class="admin-body" data-module="trade" data-nav="goods-category" data-title="商品类目" data-crumb="交易 / 商品管理 / 商品类目">
 
 <div id="header-actions">
-  <button class="btn btn-primary" id="btn-new">+ 新建标签</button>
+  <button class="btn btn-primary" id="btn-new">+ 新建类目</button>
 </div>
 
 <div id="page-content" style="display:none">
-  <div style="margin-bottom:12px;font-size:13px;color:#8c8c8c">维护可层级的内容标签；线上课 / 章节 / 线下课 / 文章的标签选择均为树状下拉多选</div>
+  <div style="margin-bottom:12px;font-size:13px;color:#8c8c8c">维护两级商品类目，供店铺商品 / 微信小店商品选用（原「商品分组」能力并入类目）</div>
   <div class="card"><div class="card-bd" style="padding:0">
     <table class="data">
       <thead>
         <tr>
-          <th>标签名称</th>
-          <th style="width:160px">父标签</th>
+          <th>类目名称</th>
+          <th style="width:160px">父类目</th>
           <th style="width:80px">排序</th>
           <th style="width:90px">状态</th>
           <th style="width:260px">操作</th>
@@ -39,14 +39,14 @@
 <div class="proto-modal" id="modal">
   <div style="background:#fff;border-radius:10px;width:440px;max-width:92vw;overflow:hidden">
     <div class="proto-modal-hd">
-      <h3 style="margin:0;font-size:16px" id="modal-title">新建标签</h3>
+      <h3 style="margin:0;font-size:16px" id="modal-title">新建类目</h3>
       <button type="button" class="btn btn-sm btn-ghost" data-close>×</button>
     </div>
     <div class="proto-modal-bd">
-      <div class="field"><label>标签名称 *</label><input class="input" id="f-name" placeholder="如：亲子沟通" /></div>
-      <div class="field"><label>父标签</label><select class="input" id="f-parent"></select></div>
+      <div class="field"><label>类目名称 *</label><input class="input" id="f-name" placeholder="如：线上咨询" /></div>
+      <div class="field"><label>父类目</label><select class="input" id="f-parent"></select></div>
       <div class="field"><label>排序</label><input class="input" id="f-sort" type="number" value="1" /></div>
-      <div class="field"><label><input type="checkbox" id="f-enabled" checked> 上架</label></div>
+      <div class="field"><label><input type="checkbox" id="f-enabled" checked> 启用</label></div>
     </div>
     <div class="proto-modal-ft" style="justify-content:flex-end;gap:8px;padding:12px 16px;border-top:1px solid var(--color-border);display:flex">
       <button class="btn" data-close>取消</button>
@@ -56,12 +56,12 @@
 </div>
 
 <script src="../assets/js/proto.js"></script>
-<script src="../assets/js/content-tags.js?v=2"></script>
-<script src="../assets/js/ops-shell.js?v=16"></script>
+<script src="../assets/js/goods-taxonomy.js?v=1"></script>
+<script src="../assets/js/admin-shell.js?v=16"></script>
 <script>
-var Tags = window.ContentTags;
+var Tax = window.GoodsTaxonomy;
 var editingId = null;
-var esc = Tags.esc;
+var esc = Tax.esc;
 
 function openModal() {
   document.getElementById("mask").classList.add("open");
@@ -77,12 +77,12 @@ document.querySelectorAll("[data-close]").forEach(function (b) {
 document.getElementById("mask").addEventListener("click", closeModal);
 
 function render() {
-  var flat = Tags.treeFlat();
+  var flat = Tax.catTreeFlat();
   var map = {};
-  Tags.list().forEach(function (t) { map[t.id] = t.name; });
+  Tax.listCats().forEach(function (t) { map[t.id] = t.name; });
   document.getElementById("tbody").innerHTML = flat.map(function (t) {
     var indent = t.depth ? '<span class="tg-indent">' + new Array(t.depth + 1).join("— ") + "</span>" : "";
-    var st = t.enabled ? '<span class="tg-status">上架</span>' : '<span class="tg-status off">下架</span>';
+    var st = t.enabled ? '<span class="tg-status">启用</span>' : '<span class="tg-status off">停用</span>';
     return "<tr>" +
       "<td>" + indent + "<b>" + esc(t.name) + "</b> <span class='muted' style='font-size:12px'>" + esc(t.id) + "</span></td>" +
       "<td>" + esc(t.parentId ? (map[t.parentId] || t.parentId) : "—") + "</td>" +
@@ -90,22 +90,20 @@ function render() {
       "<td>" + st + "</td>" +
       "<td>" +
         '<button class="btn btn-sm" data-act="edit" data-id="' + t.id + '">编辑</button> ' +
-        '<button class="btn btn-sm" data-act="child" data-id="' + t.id + '">加子标签</button> ' +
-        '<button class="btn btn-sm" data-act="toggle" data-id="' + t.id + '">' + (t.enabled ? "下架" : "上架") + "</button> " +
+        '<button class="btn btn-sm" data-act="child" data-id="' + t.id + '">加子类目</button> ' +
+        '<button class="btn btn-sm" data-act="toggle" data-id="' + t.id + '">' + (t.enabled ? "停用" : "启用") + "</button> " +
         '<button class="btn btn-sm" data-act="del" data-id="' + t.id + '">删除</button>' +
       "</td></tr>";
-  }).join("") || "<tr><td colspan='5' class='muted'>暂无标签</td></tr>";
+  }).join("") || "<tr><td colspan='5' class='muted'>暂无类目</td></tr>";
 }
 
 function fillParent(excludeId, selected) {
-  var sel = document.getElementById("f-parent");
-  sel.innerHTML = Tags.parentOptionsHtml(excludeId);
-  if (selected) sel.value = selected;
+  document.getElementById("f-parent").innerHTML = Tax.catParentOptionsHtml(excludeId, selected);
 }
 
 document.getElementById("btn-new").addEventListener("click", function () {
   editingId = null;
-  document.getElementById("modal-title").textContent = "新建标签";
+  document.getElementById("modal-title").textContent = "新建类目";
   document.getElementById("f-name").value = "";
   document.getElementById("f-sort").value = "1";
   document.getElementById("f-enabled").checked = true;
@@ -118,40 +116,38 @@ document.getElementById("tbody").addEventListener("click", function (e) {
   if (!btn) return;
   var id = btn.getAttribute("data-id");
   var act = btn.getAttribute("data-act");
-  var row = Tags.get(id);
-  if (!row) return;
-  if (act === "edit") {
+  var cat = Tax.getCat(id);
+  if (act === "edit" && cat) {
     editingId = id;
-    document.getElementById("modal-title").textContent = "编辑标签";
-    document.getElementById("f-name").value = row.name;
-    document.getElementById("f-sort").value = row.sort || 1;
-    document.getElementById("f-enabled").checked = !!row.enabled;
-    fillParent(id, row.parentId || "");
+    document.getElementById("modal-title").textContent = "编辑类目";
+    document.getElementById("f-name").value = cat.name;
+    document.getElementById("f-sort").value = cat.sort || 1;
+    document.getElementById("f-enabled").checked = cat.enabled !== false;
+    fillParent(id, cat.parentId || "");
     openModal();
   } else if (act === "child") {
     editingId = null;
-    document.getElementById("modal-title").textContent = "新建子标签";
+    document.getElementById("modal-title").textContent = "新建子类目";
     document.getElementById("f-name").value = "";
     document.getElementById("f-sort").value = "1";
     document.getElementById("f-enabled").checked = true;
     fillParent(null, id);
     openModal();
-  } else if (act === "toggle") {
-    Tags.setEnabled(id, !row.enabled);
-    Proto.toast(row.enabled ? "已下架" : "已上架");
+  } else if (act === "toggle" && cat) {
+    cat.enabled = !cat.enabled;
+    Tax.saveCat(cat);
     render();
   } else if (act === "del") {
-    var r = Tags.remove(id);
-    if (!r.ok) { Proto.toast(r.msg); return; }
-    Proto.toast("已删除");
-    render();
+    var r = Tax.removeCat(id);
+    if (!r.ok) Proto.toast(r.msg);
+    else { Proto.toast("已删除"); render(); }
   }
 });
 
 document.getElementById("btn-save").addEventListener("click", function () {
   var name = document.getElementById("f-name").value.trim();
-  if (!name) { Proto.toast("请填写标签名称"); return; }
-  Tags.save({
+  if (!name) { Proto.toast("请填写类目名称"); return; }
+  Tax.saveCat({
     id: editingId || undefined,
     name: name,
     parentId: document.getElementById("f-parent").value || "",

@@ -29,7 +29,7 @@
     <div class="cm-hero-bd">
       <div class="cm-hero-title">
         <span id="d-name2">9 月新学期家长指南</span>
-        <span class="cm-pill" id="d-pub">已发布</span>
+        <span class="cm-pill" id="d-pub">已上架</span>
         <span class="cm-pill" id="d-shelf">已上架</span>
       </div>
       <div class="cm-hero-desc" id="d-desc">用一篇图文快速了解新学期家长准备事项。</div>
@@ -93,7 +93,7 @@ document.getElementById("d-shelf").textContent = d.shelf;
 document.getElementById("d-shelf").className = "cm-pill" + (d.shelf === "已上架" ? "" : " off");
 var shelfmode = document.getElementById("d-shelfmode");
 if (shelfmode) shelfmode.textContent = d.shelf === "草稿" ? "暂存草稿" : "立即上架（保存后提交内容审核队列）";
-document.getElementById("d-pub").textContent = d.pub || "已发布";
+document.getElementById("d-pub").textContent = d.pub || "已上架";
 document.getElementById("btn-edit").href = "content-article-edit.html?id=" + id;
 document.getElementById("btn-task").href = "content-tasks.html?type=article&ref=" + encodeURIComponent(id);
 var mask = document.getElementById("mask");

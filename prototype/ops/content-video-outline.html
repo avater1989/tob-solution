@@ -132,7 +132,7 @@ function render() {
   if (readonly) {
     alertEl.style.display = "block";
     alertEl.textContent = course.status === Store.STATUS.enabled
-      ? "内容已启用，章节锁定。请先返回列表停用后再调整。"
+      ? "内容已上架，章节锁定。请先返回列表下架后再调整。"
       : (course.status === Store.STATUS.pending_audit ? "审核中，章节锁定。" : "当前只读。");
   } else {
     alertEl.style.display = "none";
@@ -140,7 +140,7 @@ function render() {
   document.getElementById("btn-new-ch").style.display = readonly ? "none" : "";
   document.getElementById("btn-publish").style.display = readonly ? "none" : "";
   document.getElementById("btn-publish").textContent =
-    course.source === "platform" ? "完成并启用" : "完成并提交审核";
+    course.source === "platform" ? "完成并上架" : "完成并提交审核";
   document.getElementById("o-ch-count").textContent = Store.chapterCount(course);
 
   document.getElementById("o-chapters").innerHTML = (course.chapters || []).map(function (ch, i) {
@@ -267,7 +267,7 @@ document.getElementById("o-chapters").addEventListener("click", function (e) {
 
 document.getElementById("btn-publish").addEventListener("click", function () {
   var r = course.source === "platform" ? Store.enableDirect(id) : Store.submitAudit(id);
-  Proto.toast(r.ok ? (course.source === "platform" ? "已启用" : "已提交审核") : r.msg);
+  Proto.toast(r.ok ? (course.source === "platform" ? "已上架" : "已提交审核") : r.msg);
   if (r.ok) setTimeout(function () { location.href = "content-video.html"; }, 600);
 });
 </script>

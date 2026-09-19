@@ -3,569 +3,393 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>我的商品 · 商家管理后台</title>
+<title>店铺商品 · 商家管理后台</title>
 <link rel="stylesheet" href="../assets/css/proto.css?v=9" />
+<style>
+.gd-cell { display:flex; align-items:center; gap:10px; }
+.thumb { width:36px; height:36px; border-radius:6px; display:inline-flex; align-items:center; justify-content:center; color:#fff; font-size:12px; font-weight:600; flex-shrink:0; }
+.t-blue { background:#1677ff; } .t-purple { background:#722ed1; } .t-orange { background:#fa8c16; }
+.t-green { background:#52c41a; } .t-cyan { background:#13c2c2; } .t-gray { background:#8c8c8c; }
+.mono { font-family:ui-monospace,Consolas,monospace; font-size:12px; }
+.create-mask, .create-modal, .proto-mask, .proto-modal { display:none; }
+.create-mask.open, .create-modal.open, .proto-mask.open { display:block; }
+.proto-modal.open { display:flex; }
+.create-mask, .proto-mask { position:fixed; inset:0; background:rgba(0,0,0,.45); z-index:1000; }
+.create-modal { position:fixed; left:50%; top:50%; transform:translate(-50%,-50%); z-index:1001; background:#fff; border-radius:12px; width:560px; max-width:92vw; box-shadow:0 12px 40px rgba(0,0,0,.18); }
+.create-choice { display:grid; grid-template-columns:1fr 1fr; gap:12px; padding:16px 20px 20px; }
+.create-choice a { border:1px solid var(--color-border); border-radius:10px; padding:16px; text-decoration:none; color:inherit; display:block; }
+.create-choice a:hover { border-color:var(--color-primary); background:var(--color-primary-soft); }
+.create-choice a b { display:block; margin-bottom:6px; font-size:15px; }
+.create-choice a span { font-size:12px; color:var(--color-text-secondary); line-height:1.6; }
+.status-stack { display:flex; flex-direction:column; gap:4px; align-items:flex-start; }
+</style>
 </head>
-<body class="admin-body" data-module="trade" data-nav="goods" data-title="我的商品" data-crumb="交易 / 商品管理 / 我的商品">
+<body class="admin-body" data-module="trade" data-nav="goods" data-title="店铺商品" data-crumb="交易 / 商品管理 / 店铺商品">
 <div id="header-actions">
   <button class="btn" id="btn-batch">批量操作</button>
   <button class="btn btn-primary" id="btn-create">新建商品</button>
 </div>
 <div id="page-content" style="display:none">
 
-  <!-- 顶部统计：全部（平台商品口径） -->
-  <div class="grid-4" id="stats-all" style="margin-bottom:16px">
-    <div class="stat"><div class="label">在售商品</div><div class="value">36</div><div class="hint">课程 18 · 计划 6 · 直播 4</div></div>
-    <div class="stat"><div class="label">待上架</div><div class="value">3</div><div class="hint">草稿 2 · 定时上架 1</div></div>
-    <div class="stat"><div class="label">本月上新</div><div class="value">7</div><div class="hint">上架中 5 · 草稿 2</div></div>
-    <div class="stat"><div class="label">商品总销量</div><div class="value">1,284</div><div class="hint">近 30 天 +126</div></div>
+  <div class="grid-4" style="margin-bottom:16px">
+    <div class="stat"><div class="label">在售商品</div><div class="value" id="st-onsale">0</div><div class="hint">已通过审核且上架</div></div>
+    <div class="stat"><div class="label">待平台审核</div><div class="value" id="st-pending">0</div><div class="hint">已提审 · 等待运营审批</div></div>
+    <div class="stat"><div class="label">草稿 / 已驳回</div><div class="value" id="st-draft">0</div><div class="hint">可编辑后重新提审</div></div>
+    <div class="stat"><div class="label">平台商品镜像</div><div class="value" id="st-platform">0</div><div class="hint">免审 · 仅上下架</div></div>
   </div>
 
-  <!-- 顶部统计：微信小店商品（小店口径，取自 product/list/get 的 total_num） -->
-  <div class="grid-4" id="stats-wxshop" style="margin-bottom:16px;display:none">
-    <div class="stat"><div class="label">微信小店商品</div><div class="value">128</div><div class="hint">total_num · 不含从未上架草稿</div></div>
-    <div class="stat"><div class="label">上架中</div><div class="value">96</div><div class="hint">status = 5</div></div>
-    <div class="stat"><div class="label">已下架 / 回收站</div><div class="value">32</div><div class="hint">status = 11 / 6</div></div>
-    <div class="stat"><div class="label">未关联平台商品</div><div class="value">8</div><div class="hint">需关联后才能领取/交付权益</div></div>
-  </div>
-
-  <!-- 状态 Tab（商品类型由筛选「商品类型」与列表「类型」列承载） -->
-  <div class="tabs" id="gd-tabs">
-    <a class="active" href="#" data-tab="all">全部</a>
-    <a href="#" data-tab="wxshop">微信小店商品</a>
-  </div>
-
-  <div id="panel-all">
-
-  <!-- 筛选 -->
   <div class="card" style="margin-bottom:8px"><div class="card-bd">
     <div class="form-grid" style="grid-template-columns:repeat(6,minmax(0,1fr));gap:8px 12px">
       <input id="f-name" placeholder="商品名称 / ID" />
       <select id="f-type">
-        <option value="">商品类型</option>
-        <option>课程商品</option><option>定制化计划商品</option><option>直播商品</option>
+        <option value="">内容类型</option>
+        <option value="online_course">线上课</option>
+        <option value="offline">线下课</option>
+        <option value="article">文章</option>
+        <option value="plan">定制化计划</option>
+        <option value="live">直播</option>
       </select>
-      <select id="f-cat">
-        <option value="">商品分组</option>
-        <option>学科提分</option><option>家长课堂</option><option>教辅周边</option><option>未分组</option>
+      <select id="f-mode">
+        <option value="">创建方式</option>
+        <option value="from_content">通过内容创建</option>
+        <option value="from_platform">通过平台商品创建</option>
+      </select>
+      <select id="f-cat"><option value="">商品类目</option></select>
+      <select id="f-audit">
+        <option value="">审核状态</option>
+        <option value="draft">草稿</option>
+        <option value="pending">待平台审核</option>
+        <option value="approved">已通过</option>
+        <option value="rejected">已驳回</option>
       </select>
       <select id="f-status">
-        <option value="">状态</option>
-        <option>上架中</option><option>已下架</option><option>草稿</option>
+        <option value="">上架状态</option>
+        <option value="on_sale">上架中</option>
+        <option value="off">已下架</option>
+        <option value="draft">未上架</option>
       </select>
-      <input id="f-time1" type="datetime-local" />
-      <input id="f-time2" type="datetime-local" />
       <button class="btn btn-primary" id="btn-query">筛选</button>
       <button class="btn" id="btn-reset">重置</button>
     </div>
   </div></div>
 
-  <!-- 表格 -->
   <div class="card"><div class="card-bd" style="padding:0">
     <table class="data">
       <thead>
         <tr>
           <th style="width:36px"><input type="checkbox" id="ck-all" /></th>
           <th>商品</th>
-          <th>类型</th>
-          <th>分组</th>
+          <th>内容类型</th>
+          <th>创建方式</th>
+          <th>关联内容</th>
+          <th>类目</th>
           <th>价格</th>
-          <th>总销量</th>
-          <th>访问数据</th>
-          <th>状态</th>
-          <th>更新时间</th>
-          <th style="width:190px">操作</th>
+          <th>审核</th>
+          <th>上架</th>
+          <th style="width:220px">操作</th>
         </tr>
       </thead>
-      <tbody id="gd-tbody">
-        <tr>
-          <td><input type="checkbox" /></td>
-          <td><div class="gd-cell"><span class="thumb t-blue">课</span><div><a href="goods-edit.html" class="gd-name">春启 03 期家长必修课</a><br><span class="muted" style="font-size:12px">ID P2026030101</span></div></div></td>
-          <td><span class="tag tag-blue">课程商品</span></td>
-          <td>家长课堂</td>
-          <td><b>¥9.90</b></td>
-          <td>1,020</td>
-          <td>UV 8,431<br><span class="muted">PV 12,866</span></td>
-          <td><span class="badge badge-success">上架中</span></td>
-          <td>2026-09-07 16:20</td>
-          <td class="row-actions">
-            <a href="goods-edit.html">编辑</a>
-            <a href="#" data-row-act="off">下架</a>
-            <a href="#" data-row-act="share">分享</a>
-            <a href="#" data-row-act="sync">同步到微信小店</a>
-          </td>
-        </tr>
-        <tr>
-          <td><input type="checkbox" /></td>
-          <td><div class="gd-cell"><span class="thumb t-purple">计</span><div><b>亲子沟通 21 天定制化计划 · 第 4 期</b><br><span class="muted" style="font-size:12px">ID P2026070120 · 定制化计划</span></div></div></td>
-          <td><span class="tag tag-purple">定制化计划商品</span></td>
-          <td>家长课堂</td>
-          <td><b>¥199.00</b><br><span class="muted" style="font-size:12px">合 ¥249.00</span></td>
-          <td>32</td>
-          <td>UV 208<br><span class="muted">PV 299</span></td>
-          <td><span class="badge badge-warn">已下架</span></td>
-          <td>2026-08-12 18:07</td>
-          <td class="row-actions">
-            <a href="goods-edit.html">编辑</a>
-            <a href="#" data-row-act="on">上架</a>
-            <a href="#" data-row-act="share">分享</a>
-            <a href="#" data-row-act="sync">同步到微信小店</a>
-          </td>
-        </tr>
-        <tr>
-          <td><input type="checkbox" /></td>
-          <td><div class="gd-cell"><span class="thumb t-gray">草</span><div><b>青春期沟通专题课（草稿）</b><br><span class="muted" style="font-size:12px">ID P2026090105</span></div></div></td>
-          <td><span class="tag">课程商品</span></td>
-          <td>未分组</td>
-          <td><b>¥129.00</b></td>
-          <td>—</td>
-          <td>—</td>
-          <td><span class="badge">草稿</span></td>
-          <td>2026-09-05 22:11</td>
-          <td class="row-actions">
-            <a href="goods-edit.html">编辑</a>
-            <a href="#" data-row-act="publish">发布</a>
-          </td>
-        </tr>
-      </tbody>
+      <tbody id="gd-tbody"></tbody>
     </table>
   </div></div>
 
-  <!-- 分页 -->
   <div class="toolbar" style="margin-top:8px">
-    <span class="muted">共 <b>36</b> 个商品</span>
+    <span class="muted">共 <b id="gd-total">0</b> 个店铺商品</span>
     <div class="spacer"></div>
-    <select><option>10条/页</option><option>20条/页</option><option>50条/页</option></select>
-    <button class="btn btn-sm" disabled>上一页</button>
-    <button class="btn btn-sm">下一页</button>
+    <span class="muted" style="font-size:12px">内容创建商品须提审，运营后台通过后方可上架；平台商品镜像免审</span>
   </div>
 
   <div class="card" style="margin-top:16px"><div class="card-bd">
-    <p class="muted" style="font-size:12px;line-height:1.8">
-      <b>说明：</b>商品类型枚举为：课程商品、定制化计划商品、直播商品。课程商品取值于「内容」模块，交付内容可为系列课 / 线下课 / 视频 / 图文，购买后按内容形式交付；
-      定制化计划商品取值于「定制化计划」列表，按关卡与任务推进；直播商品对应直播场次，按场次售卖或预约（新建商品入口暂不开放）。
-      平台商品由平台统一下发，已移至「商品管理 · 平台商品」菜单，商家仅可上下架。<b>本平台不售卖实物商品，无库存与物流环节。</b>
+    <p class="muted" style="font-size:12px;line-height:1.8;margin:0">
+      <b>审核口径：</b>「通过内容创建」保存并选择立即上架 / 提审后进入运营后台「平台审核」队列；商家侧可撤回待审、查看驳回原因并修改后重新提审。
+      「通过平台商品创建」免平台审核，仅可上下架。微信小店审批走微信接口，见「微信小店商品」。
     </p>
   </div></div>
-  </div><!-- /panel-all -->
-
-  <!-- ==================== 微信小店商品 ==================== -->
-  <div id="panel-wxshop" style="display:none">
-
-    <!-- 小店上下文 + 同步 -->
-    <div class="card" style="margin-bottom:8px"><div class="card-bd wx-sync-bar">
-      <div class="wx-sync-left">
-        <span class="badge badge-success">已授权</span>
-        <b>赵老师的书塾</b>
-        <span class="mono muted">wx_store_8f21****</span>
-        <span class="muted" style="font-size:12px">授权于 2026-08-20 10:12 · 可多次授权不同小店分别管理</span>
-      </div>
-      <div class="wx-sync-right">
-        <span class="muted" style="font-size:12px" id="wx-last-sync">最后同步 2026-09-19 15:20 · 增量同步成功（新增 3 / 更新 12）</span>
-        <button class="btn btn-sm" id="btn-wx-shop">切换小店</button>
-        <button class="btn btn-primary btn-sm" id="btn-wx-sync">立即同步</button>
-      </div>
-    </div></div>
-
-    <!-- 同步方式提示 -->
-    <div class="alert alert-info" id="wx-alert" style="margin-bottom:8px">
-      本页商品来自已授权的<b>微信小店</b>，通过 <span class="mono">channels.ec.product.list.get</span> 拉取。
-      授权与同步为<b>部署配置</b>（E3：一期由平台部署同步），商家侧仅做<b>关联与查看</b>；小店商品不支持在平台侧编辑价格与库存。
-    </div>
-
-    <!-- 筛选（对齐接口入参 status） -->
-    <div class="card" style="margin-bottom:8px"><div class="card-bd">
-      <div class="form-grid" style="grid-template-columns:repeat(6,minmax(0,1fr));gap:8px 12px">
-        <input id="wx-f-key" placeholder="商品名称 / 微信小店商品ID" />
-        <select id="wx-f-status">
-          <option value="">微信小店状态</option>
-          <option value="5">上架（status=5）</option>
-          <option value="11">下架（status=11）</option>
-          <option value="6">回收站（status=6）</option>
-          <option value="0">初始值（status=0）</option>
-        </select>
-        <select id="wx-f-link">
-          <option value="">关联状态</option>
-          <option>已关联平台商品</option>
-          <option>未关联</option>
-        </select>
-        <select id="wx-f-sync">
-          <option value="">同步状态</option>
-          <option>已同步</option>
-          <option>待同步</option>
-          <option>同步失败</option>
-        </select>
-        <select id="wx-f-size">
-          <option value="30">30 条/页</option>
-          <option value="20">20 条/页</option>
-          <option value="10">10 条/页</option>
-        </select>
-        <button class="btn btn-primary" id="btn-wx-query">筛选</button>
-        <button class="btn" id="btn-wx-reset">重置</button>
-      </div>
-    </div></div>
-
-    <!-- 小店商品列表 -->
-    <div class="card"><div class="card-bd" style="padding:0">
-      <table class="data">
-        <thead>
-          <tr>
-            <th style="white-space:nowrap">微信小店商品ID</th>
-            <th>商品名称</th>
-            <th>微信小店状态</th>
-            <th>对应平台商品</th>
-            <th>同步状态</th>
-            <th>价格</th>
-            <th>总销量</th>
-            <th>小店更新时间</th>
-            <th style="width:150px">操作</th>
-          </tr>
-        </thead>
-        <tbody id="wx-tbody">
-          <tr>
-            <td><span class="mono">1234567001</span></td>
-            <td>春启 03 期家长必修课<br><span class="muted" style="font-size:12px">微信小店在售 · 视频号直播间可挂载</span></td>
-            <td><span class="badge badge-success">上架</span><br><span class="muted" style="font-size:11px">status = 5</span></td>
-            <td><a href="goods-edit.html" class="gd-name">春启 03 期家长必修课</a><br><span class="muted" style="font-size:12px">P2026030101</span></td>
-            <td><span class="badge badge-success">已同步</span><br><span class="muted" style="font-size:11px">2026-09-19 15:20</span></td>
-            <td><b>¥9.90</b></td>
-            <td>1,020</td>
-            <td>2026-09-19 14:52</td>
-            <td class="row-actions">
-              <a href="#" data-wx-act="link">改绑</a>
-              <a href="#" data-wx-act="sync">同步</a>
-            </td>
-          </tr>
-          <tr>
-            <td><span class="mono">1234567002</span></td>
-            <td>亲子沟通 21 天定制化计划 · 第 4 期<br><span class="muted" style="font-size:12px">微信小店在售</span></td>
-            <td><span class="badge badge-success">上架</span><br><span class="muted" style="font-size:11px">status = 5</span></td>
-            <td><a href="goods-edit.html" class="gd-name">亲子沟通 21 天定制化计划 · 第 4 期</a><br><span class="muted" style="font-size:12px">P2026070120</span></td>
-            <td><span class="badge badge-success">已同步</span><br><span class="muted" style="font-size:11px">2026-09-19 15:20</span></td>
-            <td><b>¥199.00</b></td>
-            <td>32</td>
-            <td>2026-09-18 18:07</td>
-            <td class="row-actions">
-              <a href="#" data-wx-act="link">改绑</a>
-              <a href="#" data-wx-act="sync">同步</a>
-            </td>
-          </tr>
-          <tr>
-            <td><span class="mono">1234567003</span></td>
-            <td>青春期沟通专题课<br><span class="muted" style="font-size:12px">小店已下架 · 平台侧仍在售</span></td>
-            <td><span class="badge">下架</span><br><span class="muted" style="font-size:11px">status = 11</span></td>
-            <td><a href="goods-edit.html" class="gd-name">青春期沟通训练营</a><br><span class="muted" style="font-size:12px">P2026090105</span></td>
-            <td><span class="badge badge-warn">待同步</span><br><span class="muted" style="font-size:11px">平台状态待回写</span></td>
-            <td><b>¥129.00</b></td>
-            <td>86</td>
-            <td>2026-09-17 09:31</td>
-            <td class="row-actions">
-              <a href="#" data-wx-act="link">改绑</a>
-              <a href="#" data-wx-act="sync">同步</a>
-            </td>
-          </tr>
-          <tr>
-            <td><span class="mono">1234567004</span></td>
-            <td>秋季家长成长营（线下 2 天）<br><span class="muted" style="font-size:12px">线下课商品 · 需线下核销</span></td>
-            <td><span class="badge badge-success">上架</span><br><span class="muted" style="font-size:11px">status = 5</span></td>
-            <td><span class="muted">未关联</span><br><span class="muted" style="font-size:12px">关联后可交付权益</span></td>
-            <td><span class="badge badge-danger">同步失败</span><br><span class="muted" style="font-size:11px">店铺无接口权限（10020177）</span></td>
-            <td><b>¥680.00</b></td>
-            <td>12</td>
-            <td>2026-09-16 20:14</td>
-            <td class="row-actions">
-              <a href="#" data-wx-act="link">关联平台商品</a>
-            </td>
-          </tr>
-          <tr>
-            <td><span class="mono">1234567005</span></td>
-            <td>某已删除商品<br><span class="muted" style="font-size:12px">小店回收站 · 30 天后自动清空</span></td>
-            <td><span class="badge">回收站</span><br><span class="muted" style="font-size:11px">status = 6</span></td>
-            <td><span class="muted">未关联</span></td>
-            <td><span class="muted">不同步</span></td>
-            <td><b>¥39.00</b></td>
-            <td>—</td>
-            <td>2026-09-10 11:02</td>
-            <td class="row-actions">
-              <a href="#" data-wx-act="restore">恢复</a>
-              <a href="#" data-wx-act="link">关联平台商品</a>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div></div>
-
-    <!-- 分页（对齐接口：page_size 上限 30、next_key 翻页、total_num 总数） -->
-    <div class="toolbar" style="margin-top:8px">
-      <span class="muted">共 <b>128</b> 条（<span class="mono">total_num</span>）· 每页上限 30 条（<span class="mono">page_size</span>）</span>
-      <div class="spacer"></div>
-      <span class="muted mono" style="font-size:12px" id="wx-next-key">next_key: THE_NEXT_KEY</span>
-      <button class="btn btn-sm" disabled>上一页</button>
-      <button class="btn btn-sm" id="btn-wx-next">下一页</button>
-    </div>
-
-    <!-- 接口口径说明 -->
-    <div class="card" style="margin-top:16px"><div class="card-bd">
-      <p class="muted" style="font-size:12px;line-height:1.8">
-        <b>接口口径（获取商品列表 <span class="mono">getproductlist</span>）：</b>
-        <span class="mono">POST https://api.weixin.qq.com/channels/ec/product/list/get?access_token=ACCESS_TOKEN</span>
-        （或云调用 <span class="mono">channels.ec.product.list.get</span>），须在服务器端调用、不可前端直调；
-        权限集 ID <b>129</b>，支持第三方服务商用 <span class="mono">authorizer_access_token</span> 代小店商家调用。
-      </p>
-      <p class="muted" style="font-size:12px;line-height:1.8">
-        <b>请求：</b><span class="mono">status</span>（否，商品状态，不填返回全部，<b>不含从未上架的草稿与回收站</b>）、
-        <span class="mono">page_size</span>（是，默认 10、<b>不超过 30</b>）、<span class="mono">next_key</span>（否，上次返回的翻页上下文，不传取第一页）。
-        <b>返回：</b><span class="mono">product_ids[]</span>（商品 ID 列表）、<span class="mono">next_key</span>、<span class="mono">total_num</span>、<span class="mono">errcode</span> / <span class="mono">errmsg</span>。
-      </p>
-      <p class="muted" style="font-size:12px;line-height:1.8">
-        <b>状态枚举（<span class="mono">status</span>）：</b>0 初始值 / 5 上架 / 6 回收站 / 11 下架。本页状态筛选即按该枚举对齐。
-        <b>错误码：</b>10020050 无权限调用该 api / 10020051 参数有误 / 10020177 店铺没有权限调用该接口（列表第 4 行的同步失败即演示此码）。
-      </p>
-      <p class="muted" style="font-size:12px;line-height:1.8">
-        <b>与本平台的关系：</b>该接口<b>只返回商品 ID 列表</b>，商品名称 / 价格 / 销量等字段由商品详情接口逐条拉取后落库为本平台的<b>同步快照</b>（只读）；
-        小店商品须先在本页<b>关联</b>到一个「我的商品」，其小店订单才能在平台侧领取 / 交付权益与计收（订单承接见 `orders.html` 渠道来源 = 视频号）。
-        小店侧商品不支持在本平台编辑价格与库存；本平台不售卖实物商品，无库存与物流环节。
-      </p>
-    </div></div>
-  </div><!-- /panel-wxshop -->
 </div>
 
-<!-- ===== 弹窗 ===== -->
-<div class="proto-mask" id="mask"></div>
-
-<!-- 批量操作弹窗 -->
-<div class="proto-modal" id="modal-batch" style="width:520px">
-  <div class="proto-modal-hd">
-    <h3 style="font-size:16px;font-weight:600">批量操作</h3>
-    <button class="btn btn-sm btn-ghost" data-close>×</button>
+<div class="create-mask" id="create-mask"></div>
+<div class="create-modal" id="create-modal">
+  <div style="padding:16px 20px;border-bottom:1px solid var(--color-border);display:flex;justify-content:space-between;align-items:center">
+    <h3 style="margin:0;font-size:16px">新建店铺商品</h3>
+    <button type="button" class="btn btn-sm btn-ghost" id="create-close">×</button>
   </div>
-  <div class="proto-modal-bd">
-    <div class="field" style="margin-bottom:10px"><label>选择操作</label>
-      <select style="width:100%;padding:7px 8px;border:1px solid var(--color-border);border-radius:6px">
-        <option>批量上架</option><option>批量下架</option><option>批量加入分组</option><option>批量删除（谨慎）</option>
-      </select>
-    </div>
-    <div class="field"><label>目标分组（加入分组时）</label>
-      <select style="width:100%;padding:7px 8px;border:1px solid var(--color-border);border-radius:6px">
-        <option>请选择分组</option><option>学科提分</option><option>家长课堂</option><option>亲子沟通</option>
-      </select>
-    </div>
-    <p class="muted" style="margin-top:8px">已选 <b id="batch-n">0</b> 个商品</p>
-  </div>
-  <div class="proto-drawer-ft" style="border-top:1px solid var(--color-border);padding:12px 20px;display:flex;gap:8px;justify-content:flex-end">
-    <button class="btn" data-close>取消</button>
-    <button class="btn btn-primary" id="batch-submit">确认执行</button>
+  <div class="create-choice">
+    <a href="goods-edit.html?create_mode=from_content">
+      <b>通过内容创建</b>
+      <span>填写后提审，运营审批通过方可上架；同一内容可建多个商品。</span>
+    </a>
+    <a href="goods-edit.html?create_mode=from_platform">
+      <b>通过平台商品创建</b>
+      <span>平台已审镜像，免审；不可编辑，仅可上下架。</span>
+    </a>
   </div>
 </div>
 
-<!-- 下架确认弹窗 -->
-<div class="proto-modal" id="modal-off" style="width:440px">
-  <div class="proto-modal-hd">
-    <h3 style="font-size:16px;font-weight:600">下架确认</h3>
-    <button class="btn btn-sm btn-ghost" data-close>×</button>
+<div class="proto-mask" id="reject-mask"></div>
+<div class="proto-modal" id="reject-modal" style="width:480px;flex-direction:column;background:#fff;border-radius:10px;z-index:1001;position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);max-width:92vw">
+  <div class="proto-modal-hd" style="display:flex;justify-content:space-between;align-items:center;padding:14px 18px;border-bottom:1px solid var(--color-border)">
+    <h3 style="margin:0;font-size:16px">驳回原因</h3>
+    <button type="button" class="btn btn-sm btn-ghost" id="reject-close">×</button>
   </div>
-  <div class="proto-modal-bd">
-    <p style="font-size:14px">下架后 C 端将不可购买该商品，已有订单与权益不受影响。是否继续？</p>
+  <div class="proto-modal-bd" style="padding:16px 18px">
+    <p style="margin:0 0 8px"><b id="rj-name">—</b></p>
+    <p class="muted" style="margin:0;font-size:13px;line-height:1.7" id="rj-text">—</p>
   </div>
-  <div class="proto-drawer-ft" style="border-top:1px solid var(--color-border);padding:12px 20px;display:flex;gap:8px;justify-content:flex-end">
-    <button class="btn" data-close>取消</button>
-    <button class="btn btn-primary" id="off-submit">确认下架</button>
-  </div>
-</div>
-
-<!-- 关联平台商品弹窗（微信小店商品 → 我的商品） -->
-<div class="proto-modal" id="modal-wx-link" style="width:520px">
-  <div class="proto-modal-hd">
-    <h3 style="font-size:16px;font-weight:600">关联平台商品</h3>
-    <button class="btn btn-sm btn-ghost" data-close>×</button>
-  </div>
-  <div class="proto-modal-bd">
-    <div class="form-grid">
-      <div class="field"><label>微信小店商品ID</label><div class="mono" id="wx-link-id">—</div></div>
-      <div class="field"><label>微信小店商品名称</label><div id="wx-link-name">—</div></div>
-      <div class="field" style="grid-column:1/-1"><label>关联「我的商品」*</label>
-        <select id="wx-link-target" style="width:100%;padding:7px 8px;border:1px solid var(--color-border);border-radius:6px">
-          <option value="">请选择</option>
-          <option value="P2026030101">春启 03 期家长必修课（P2026030101）</option>
-          <option value="P2026070120">亲子沟通 21 天定制化计划 · 第 4 期（P2026070120）</option>
-          <option value="P2026090105">青春期沟通专题课（P2026090105）</option>
-          <option value="P2026091200">秋季家长成长营（线下 2 天）（P2026091200）</option>
-        </select>
-      </div>
-    </div>
-    <p class="muted" style="margin:8px 0 0;font-size:12px">关联后，该小店商品产生的订单将按所选平台商品交付权益并纳入交易计收；<b>一个小店商品只能关联一个平台商品</b>，重复关联会覆盖原映射。</p>
-  </div>
-  <div class="proto-drawer-ft" style="border-top:1px solid var(--color-border);padding:12px 20px;display:flex;gap:8px;justify-content:flex-end">
-    <button class="btn" data-close>取消</button>
-    <button class="btn btn-primary" id="wx-link-submit">保存关联</button>
+  <div class="proto-modal-ft" style="padding:12px 18px;border-top:1px solid var(--color-border);display:flex;justify-content:flex-end;gap:8px">
+    <button class="btn" id="reject-close2">关闭</button>
+    <button class="btn btn-primary" id="rj-reedit">修改并重新提审</button>
   </div>
 </div>
-
-<style>
-.gd-cell { display:flex; align-items:center; gap:10px; }
-.thumb { width:40px; height:40px; border-radius:6px; flex:none; display:flex; align-items:center; justify-content:center; color:#fff; font-size:14px; }
-.t-blue{background:linear-gradient(135deg,#165dff,#4080ff)} .t-green{background:linear-gradient(135deg,#00b42a,#4ed679)}
-.t-orange{background:linear-gradient(135deg,#fa8c16,#ffc53d)} .t-purple{background:linear-gradient(135deg,#722ed1,#b577ff)}
-.t-gray{background:#c9cdd4} .t-cyan{background:linear-gradient(135deg,#13c2c2,#5cdbd3)}
-.gd-name { color:var(--color-primary); text-decoration:none; font-size:14px; }
-.gd-name:hover { text-decoration:underline; }
-.tag { display:inline-block; padding:2px 8px; border-radius:4px; font-size:12px; background:#f2f3f5; color:#4e5969; }
-.tag-blue{background:#e8f3ff;color:#165dff} .tag-green{background:#e8ffea;color:#009a29}
-.tag-orange{background:#fff3e0;color:#ad6800} .tag-purple{background:#f4f0ff;color:#722ed1}
-.mono { font-family:ui-monospace,Consolas,monospace; font-size:12px; }
-.wx-sync-bar { display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; }
-.wx-sync-left { display:flex; align-items:center; gap:8px; flex-wrap:wrap; font-size:13px; }
-.wx-sync-right { display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
-/* 多行说明型提示条：proto.css 的 .alert 是 flex（用于单行+图标），这里要覆盖为块级 */
-.alert { display:block; position:relative; padding:10px 14px; border-radius:8px; font-size:13px; line-height:1.8; }
-.alert-info { background:#e8f3ff; border:1px solid #a0cfff; color:#165dff; }
-</style>
 
 <script src="../assets/js/proto.js"></script>
-<script src="../assets/js/share-modal.js?v=1"></script>
+<script src="../assets/js/goods-taxonomy.js?v=1"></script>
+<script src="../assets/js/prototype-business-store.js"></script>
+<script src="../assets/js/share-modal.js"></script>
 <script src="../assets/js/admin-shell.js?v=16"></script>
 <script>
 (function () {
-  var mask = document.getElementById("mask");
-  function closeAll(){ mask.classList.remove("open"); document.querySelectorAll(".proto-modal,.proto-drawer").forEach(function(n){n.classList.remove("open");}); }
-  function open(node){ mask.classList.add("open"); node.classList.add("open"); }
-  mask.addEventListener("click", closeAll);
-  document.querySelectorAll("[data-close]").forEach(function(n){ n.addEventListener("click", closeAll); });
+  var Tax = window.GoodsTaxonomy;
+  var Biz = window.ProtoBiz;
+  var rows = [];
+  var rejectTarget = null;
 
-  // ===== Tab：全部 / 微信小店商品 =====
-  var TAB_PANELS = { all: "panel-all", wxshop: "panel-wxshop" };
-  var TAB_STATS = { all: "stats-all", wxshop: "stats-wxshop" };
-  document.querySelectorAll("#gd-tabs a").forEach(function(a){
-    a.addEventListener("click", function(e){
-      e.preventDefault();
-      var tab = a.getAttribute("data-tab");
-      document.querySelectorAll("#gd-tabs a").forEach(function(n){n.classList.remove("active");});
-      a.classList.add("active");
-      Object.keys(TAB_PANELS).forEach(function(k){
-        var on = k === tab;
-        document.getElementById(TAB_PANELS[k]).style.display = on ? "" : "none";
-        document.getElementById(TAB_STATS[k]).style.display = on ? "" : "none";
-      });
-      // 小店商品为外部同步所得，不提供「批量操作 / 新建商品」
-      var external = tab === "wxshop";
-      ["btn-batch", "btn-create"].forEach(function(id){
-        var b = document.getElementById(id);
-        if (b) b.style.display = external ? "none" : "";
-      });
-      Proto.toast("已切换到「" + a.textContent + "」");
-    });
-  });
-
-  var checked = 0;
-  function countChecked(){ checked = document.querySelectorAll("#gd-tbody input[type=checkbox]:checked").length; document.getElementById("batch-n").textContent = checked; }
-  document.querySelectorAll("#gd-tbody input[type=checkbox]").forEach(function(c){ c.addEventListener("change", countChecked); });
-  document.getElementById("ck-all").addEventListener("change", function(e){
-    document.querySelectorAll("#gd-tbody input[type=checkbox]").forEach(function(c){ c.checked = e.target.checked; });
-    countChecked();
-  });
-
-  // 取行内商品名与商品 ID（供分享弹窗使用）
-  function goodsOf(tr) {
-    var td = tr.querySelector("td:nth-of-type(2)");
-    var nameEl = td && (td.querySelector(".gd-name") || td.querySelector("b"));
-    var text = td ? td.textContent : "";
-    var m = /ID\s+([A-Za-z0-9]+)/.exec(text);
-    return {
-      id: m ? m[1] : "",
-      name: nameEl ? nameEl.textContent.trim() : "商品"
-    };
+  function persist() {
+    if (!Biz || !Biz.load || !Biz.save) return;
+    var data = Biz.load();
+    data.goodsDemo = rows.filter(function (r) { return !r.channel || r.channel === "store"; });
+    Biz.save(data);
   }
 
-  document.querySelectorAll("#gd-tbody tr").forEach(function(tr){
-    tr.querySelectorAll("[data-row-act]").forEach(function(a){
-      a.addEventListener("click", function(e){
-        e.preventDefault();
-        var act = a.getAttribute("data-row-act");
-        if(act==="off") open(document.getElementById("modal-off"));
-        else if(act==="on") Proto.toast("已上架（原型）");
-        else if(act==="publish") Proto.toast("草稿已发布上架（原型）");
-        else if(act==="share") openShare(goodsOf(tr));
-        else if(act==="sync") Proto.toast("已同步到微信小店，商品将在视频号小店展示（原型）");
-      });
-    });
-  });
-
-  // 分享商品：复用内容模块的通用分享弹窗（二维码 / 链接 / 海报 + 分享设置）
-  function openShare(g) {
-    XiboShare.open({
-      type: "商品",
-      url: "https://yibo.app/g/" + (g.id || ""),
-      cover: "../assets/img/covers/comm.jpg",
-      name: g.name,
-      desc: "艺博严选 · " + g.name
+  function loadRows() {
+    try {
+      if (Biz && typeof Biz.load === "function") {
+        var data = Biz.load();
+        rows = (data && data.goodsDemo) ? data.goodsDemo.slice() : [];
+      }
+    } catch (e) {}
+    if (!rows.length) {
+      rows = [
+        { goods_id: "G001", channel: "store", create_mode: "from_content", content_source: "self", content_type: "online_course", content_id: "C003", category_id: "GC02", tag_ids: ["GT01"], name: "AI 学习规划入门", status: "on_sale", audit_status: "approved", price: 199 },
+        { goods_id: "G002B", channel: "store", create_mode: "from_content", content_source: "self", content_type: "online_course", content_id: "C001", category_id: "GC08", tag_ids: [], name: "体验价商品", status: "draft", audit_status: "pending", submitted_at: "2026-09-19 16:40", price: 9.9 },
+        { goods_id: "G-DRAFT", channel: "store", create_mode: "from_content", content_source: "self", content_type: "article", content_id: "A001", category_id: "GC07", tag_ids: [], name: "草稿商品", status: "draft", audit_status: "draft", price: 129 },
+        { goods_id: "G-REJ01", channel: "store", create_mode: "from_content", content_source: "self", content_type: "plan", content_id: "PL001", category_id: "GC07", tag_ids: [], name: "已驳回商品", status: "draft", audit_status: "rejected", reject_reason: "宣传用语违规", price: 199 },
+        { goods_id: "G-PF01", channel: "store", create_mode: "from_platform", content_source: "platform", content_type: "online_course", content_id: "C-PF01", platform_goods_id: "PG001", category_id: "GC02", tag_ids: [], name: "平台精选课", status: "on_sale", audit_status: "approved", price: 39.9 }
+      ];
+    }
+    rows.forEach(function (r) {
+      if (!r.audit_status) r.audit_status = r.create_mode === "from_platform" || r.status === "on_sale" ? "approved" : "draft";
     });
   }
 
-  document.getElementById("btn-create").addEventListener("click", function(){ location.href="goods-edit.html"; });
-  document.getElementById("btn-batch").addEventListener("click", function(){ countChecked(); open(document.getElementById("modal-batch")); });
-  document.getElementById("batch-submit").addEventListener("click", function(){ closeAll(); Proto.toast("批量操作执行成功（原型）"); });
-  document.getElementById("off-submit").addEventListener("click", function(){ closeAll(); Proto.toast("商品已下架（原型）"); });
-  document.getElementById("btn-query").addEventListener("click", function(){ Proto.toast("已筛选（原型）"); });
-  document.getElementById("btn-reset").addEventListener("click", function(){
-    ["f-name"].forEach(function(id){document.getElementById(id).value="";});
-    ["f-type","f-cat","f-status"].forEach(function(id){document.getElementById(id).value="";});
-    document.getElementById("f-time1").value=""; document.getElementById("f-time2").value="";
-    Proto.toast("已重置");
-  });
-
-  // ===== 微信小店商品 =====
-  function wxOf(tr) {
-    var tds = tr.querySelectorAll("td");
-    var nameTd = tds[1];
-    return {
-      id: tds[0] ? tds[0].textContent.trim() : "",
-      name: nameTd ? (nameTd.childNodes[0] ? nameTd.childNodes[0].textContent.trim() : nameTd.textContent.trim()) : "商品"
-    };
+  function thumbClass(t) {
+    return ({ online_course: "t-blue", offline: "t-orange", article: "t-green", plan: "t-purple", live: "t-cyan" })[t] || "t-gray";
+  }
+  function thumbText(t) {
+    return ({ online_course: "课", offline: "线", article: "文", plan: "计", live: "播" })[t] || "商";
+  }
+  function shelfBadge(s) {
+    if (s === "on_sale") return '<span class="badge badge-success">上架中</span>';
+    if (s === "off") return '<span class="badge badge-warn">已下架</span>';
+    return '<span class="badge">未上架</span>';
+  }
+  function auditBadge(a) {
+    if (a === "pending") return '<span class="badge badge-warn">待平台审核</span>';
+    if (a === "approved") return '<span class="badge badge-success">已通过</span>';
+    if (a === "rejected") return '<span class="badge badge-danger">已驳回</span>';
+    return '<span class="badge">草稿</span>';
+  }
+  function modeLabel(m) { return m === "from_platform" ? "平台商品" : "内容创建"; }
+  function nowStr() {
+    var d = new Date();
+    function p(n) { return n < 10 ? "0" + n : "" + n; }
+    return d.getFullYear() + "-" + p(d.getMonth() + 1) + "-" + p(d.getDate()) + " " + p(d.getHours()) + ":" + p(d.getMinutes());
   }
 
-  document.querySelectorAll("#wx-tbody tr").forEach(function(tr){
-    tr.querySelectorAll("[data-wx-act]").forEach(function(a){
-      a.addEventListener("click", function(e){
-        e.preventDefault();
-        var act = a.getAttribute("data-wx-act");
-        if (act === "link") {
-          var g = wxOf(tr);
-          document.getElementById("wx-link-id").textContent = g.id || "—";
-          document.getElementById("wx-link-name").textContent = g.name || "—";
-          document.getElementById("wx-link-target").value = "";
-          open(document.getElementById("modal-wx-link"));
-        } else if (act === "sync") {
-          Proto.toast("已提交同步：按 product/get 拉取最新快照（原型）");
-        } else if (act === "restore") {
-          Proto.toast("已提交从回收站恢复（原型）");
-        }
-      });
+  document.getElementById("f-cat").innerHTML = '<option value="">商品类目</option>' + Tax.catOptionsHtml();
+
+  function filtered() {
+    var name = (document.getElementById("f-name").value || "").trim().toLowerCase();
+    var type = document.getElementById("f-type").value;
+    var mode = document.getElementById("f-mode").value;
+    var cat = document.getElementById("f-cat").value;
+    var audit = document.getElementById("f-audit").value;
+    var status = document.getElementById("f-status").value;
+    return rows.filter(function (r) {
+      if (r.channel && r.channel !== "store") return false;
+      if (name && String(r.name).toLowerCase().indexOf(name) < 0 && String(r.goods_id).toLowerCase().indexOf(name) < 0) return false;
+      if (type && r.content_type !== type) return false;
+      if (mode && r.create_mode !== mode) return false;
+      if (cat && r.category_id !== cat) return false;
+      if (audit && (r.audit_status || "draft") !== audit) return false;
+      if (status && r.status !== status) return false;
+      return true;
     });
+  }
+
+  function renderStats() {
+    var store = rows.filter(function (r) { return !r.channel || r.channel === "store"; });
+    document.getElementById("st-onsale").textContent = store.filter(function (r) { return r.status === "on_sale"; }).length;
+    document.getElementById("st-pending").textContent = store.filter(function (r) { return r.audit_status === "pending"; }).length;
+    document.getElementById("st-draft").textContent = store.filter(function (r) { return r.audit_status === "draft" || r.audit_status === "rejected"; }).length;
+    document.getElementById("st-platform").textContent = store.filter(function (r) { return r.create_mode === "from_platform"; }).length;
+  }
+
+  function buildActs(r) {
+    var locked = r.create_mode === "from_platform";
+    var editHref = locked
+      ? "goods-edit.html?create_mode=from_platform&goods_id=" + encodeURIComponent(r.goods_id) + "&readonly=1"
+      : "goods-edit.html?create_mode=from_content&goods_id=" + encodeURIComponent(r.goods_id) + "&content_type=" + encodeURIComponent(r.content_type || "") + "&content_id=" + encodeURIComponent(r.content_id || "");
+    var id = Tax.esc(r.goods_id);
+    var acts = [];
+    if (locked) {
+      acts.push('<a href="' + editHref + '">查看</a>');
+      acts.push('<a href="#" data-row-act="' + (r.status === "on_sale" ? "off" : "on") + '" data-id="' + id + '">' + (r.status === "on_sale" ? "下架" : "上架") + "</a>");
+      return acts.join(" ");
+    }
+    if (r.audit_status === "pending") {
+      acts.push('<a href="' + editHref + '">查看</a>');
+      acts.push('<a href="#" data-row-act="withdraw" data-id="' + id + '">撤回提审</a>');
+    } else if (r.audit_status === "rejected") {
+      acts.push('<a href="' + editHref + '">修改</a>');
+      acts.push('<a href="#" data-row-act="reason" data-id="' + id + '">驳回原因</a>');
+      acts.push('<a href="#" data-row-act="submit" data-id="' + id + '">重新提审</a>');
+    } else if (r.audit_status === "draft") {
+      acts.push('<a href="' + editHref + '">编辑</a>');
+      acts.push('<a href="#" data-row-act="submit" data-id="' + id + '">提审</a>');
+    } else {
+      acts.push('<a href="' + editHref + '">编辑</a>');
+      if (r.status === "on_sale") acts.push('<a href="#" data-row-act="off" data-id="' + id + '">下架</a>');
+      else acts.push('<a href="#" data-row-act="on" data-id="' + id + '">上架</a>');
+      acts.push('<a href="#" data-row-act="share" data-id="' + id + '">分享</a>');
+    }
+    return acts.join(" ");
+  }
+
+  function render() {
+    var list = filtered();
+    document.getElementById("gd-total").textContent = list.length;
+    document.getElementById("gd-tbody").innerHTML = list.map(function (r) {
+      var editHref = r.create_mode === "from_platform"
+        ? "goods-edit.html?create_mode=from_platform&goods_id=" + encodeURIComponent(r.goods_id) + "&readonly=1"
+        : "goods-edit.html?create_mode=from_content&goods_id=" + encodeURIComponent(r.goods_id) + "&content_type=" + encodeURIComponent(r.content_type || "") + "&content_id=" + encodeURIComponent(r.content_id || "");
+      var cat = Tax.catPathLabel(r.category_id) || "—";
+      var auditExtra = r.audit_status === "pending" && r.submitted_at
+        ? '<br><span class="muted" style="font-size:11px">提交 ' + Tax.esc(r.submitted_at) + "</span>"
+        : (r.audit_status === "rejected" ? '<br><a href="#" data-row-act="reason" data-id="' + Tax.esc(r.goods_id) + '" style="font-size:11px">查看原因</a>' : "");
+      return "<tr>" +
+        '<td><input type="checkbox" /></td>' +
+        '<td><div class="gd-cell"><span class="thumb ' + thumbClass(r.content_type) + '">' + thumbText(r.content_type) + '</span><div><a href="' + editHref + '">' + Tax.esc(r.name) + '</a><br><span class="muted mono">' + Tax.esc(r.goods_id) + "</span></div></div></td>" +
+        "<td>" + Tax.esc(Tax.contentTypeLabel(r.content_type)) + "</td>" +
+        "<td>" + modeLabel(r.create_mode) + "</td>" +
+        "<td class='mono'>" + Tax.esc(r.content_id || "—") + "</td>" +
+        "<td>" + Tax.esc(cat) + "</td>" +
+        "<td><b>¥" + (r.price != null ? Number(r.price).toFixed(2) : "—") + "</b></td>" +
+        "<td><div class='status-stack'>" + auditBadge(r.audit_status || "draft") + auditExtra + "</div></td>" +
+        "<td>" + shelfBadge(r.status) + "</td>" +
+        '<td class="row-actions">' + buildActs(r) + "</td>" +
+        "</tr>";
+    }).join("") || '<tr><td colspan="10" class="muted" style="text-align:center;padding:24px">暂无店铺商品</td></tr>';
+    renderStats();
+  }
+
+  function openCreate() {
+    document.getElementById("create-mask").classList.add("open");
+    document.getElementById("create-modal").classList.add("open");
+  }
+  function closeCreate() {
+    document.getElementById("create-mask").classList.remove("open");
+    document.getElementById("create-modal").classList.remove("open");
+  }
+  function openReject(row) {
+    rejectTarget = row;
+    document.getElementById("rj-name").textContent = row.name;
+    document.getElementById("rj-text").textContent = row.reject_reason || "（无驳回说明）";
+    document.getElementById("reject-mask").classList.add("open");
+    document.getElementById("reject-modal").classList.add("open");
+  }
+  function closeReject() {
+    document.getElementById("reject-mask").classList.remove("open");
+    document.getElementById("reject-modal").classList.remove("open");
+  }
+
+  document.getElementById("btn-create").addEventListener("click", openCreate);
+  document.getElementById("create-close").addEventListener("click", closeCreate);
+  document.getElementById("create-mask").addEventListener("click", closeCreate);
+  document.getElementById("reject-close").addEventListener("click", closeReject);
+  document.getElementById("reject-close2").addEventListener("click", closeReject);
+  document.getElementById("reject-mask").addEventListener("click", closeReject);
+  document.getElementById("rj-reedit").addEventListener("click", function () {
+    if (!rejectTarget) return;
+    location.href = "goods-edit.html?create_mode=from_content&goods_id=" + encodeURIComponent(rejectTarget.goods_id) +
+      "&content_type=" + encodeURIComponent(rejectTarget.content_type || "") +
+      "&content_id=" + encodeURIComponent(rejectTarget.content_id || "");
+  });
+  document.getElementById("btn-query").addEventListener("click", render);
+  document.getElementById("btn-reset").addEventListener("click", function () {
+    ["f-name", "f-type", "f-mode", "f-cat", "f-audit", "f-status"].forEach(function (id) {
+      document.getElementById(id).value = "";
+    });
+    render();
+  });
+  document.getElementById("btn-batch").addEventListener("click", function () {
+    Proto.toast("批量提审 / 上下架（原型）");
   });
 
-  document.getElementById("wx-link-submit").addEventListener("click", function(){
-    var v = document.getElementById("wx-link-target").value;
-    if (!v) { Proto.toast("请选择要关联的平台商品"); return; }
-    closeAll();
-    Proto.toast("已关联到 " + v + "（原型）");
+  document.getElementById("gd-tbody").addEventListener("click", function (e) {
+    var a = e.target.closest("[data-row-act]");
+    if (!a) return;
+    e.preventDefault();
+    var act = a.getAttribute("data-row-act");
+    var id = a.getAttribute("data-id");
+    var row = rows.find(function (r) { return r.goods_id === id; });
+    if (!row) return;
+    if (act === "share") {
+      if (window.ShareModal) ShareModal.open({ title: row.name, link: "https://yibo.app/g/" + id });
+      else Proto.toast("分享（原型）");
+      return;
+    }
+    if (act === "reason") { openReject(row); return; }
+    if (act === "submit") {
+      if (!confirm("确认提交平台审核？提交后运营后台将出现在待审队列。")) return;
+      row.audit_status = "pending";
+      row.status = "draft";
+      row.submitted_at = nowStr();
+      row.reject_reason = "";
+      persist();
+      Proto.toast("已提审，等待平台审批");
+      render();
+      return;
+    }
+    if (act === "withdraw") {
+      if (!confirm("确认撤回提审？商品将回到草稿，可修改后再次提审。")) return;
+      row.audit_status = "draft";
+      row.submitted_at = "";
+      persist();
+      Proto.toast("已撤回提审");
+      render();
+      return;
+    }
+    if (act === "on") {
+      if (row.create_mode !== "from_platform" && row.audit_status !== "approved") {
+        Proto.toast("须先通过平台审核方可上架");
+        return;
+      }
+      row.status = "on_sale";
+      persist();
+      Proto.toast("已上架");
+      render();
+      return;
+    }
+    if (act === "off") {
+      row.status = "off";
+      persist();
+      Proto.toast("已下架");
+      render();
+    }
   });
 
-  document.getElementById("btn-wx-sync").addEventListener("click", function(){
-    document.getElementById("wx-last-sync").textContent =
-      "最后同步 2026-09-19 15:36 · 增量同步成功（新增 1 / 更新 4）";
-    Proto.toast("已触发微信小店商品同步（原型）");
-  });
-  document.getElementById("btn-wx-shop").addEventListener("click", function(){ Proto.toast("切换微信小店（原型）"); });
-  document.getElementById("btn-wx-next").addEventListener("click", function(){
-    document.getElementById("wx-next-key").textContent = "next_key: THE_NEXT_KEY_NEW";
-    Proto.toast("已按 next_key 翻到下一页（原型）");
-  });
-  document.getElementById("btn-wx-query").addEventListener("click", function(){ Proto.toast("已按小店状态筛选（原型）"); });
-  document.getElementById("btn-wx-reset").addEventListener("click", function(){
-    document.getElementById("wx-f-key").value = "";
-    ["wx-f-status","wx-f-link","wx-f-sync"].forEach(function(id){ document.getElementById(id).value = ""; });
-    Proto.toast("已重置");
-  });
+  loadRows();
+  render();
 })();
 </script>
 </body>

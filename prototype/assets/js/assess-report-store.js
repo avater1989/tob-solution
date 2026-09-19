@@ -3,10 +3,10 @@
   var KEY = "tob_assess_report_v1";
 
   var AGENTS = [
-    { id: "AG01", name: "亲子沟通解读助手", capability: "报告生成", status: "启用" },
-    { id: "AG02", name: "家庭教育顾问", capability: "报告生成", status: "启用" },
-    { id: "AG05", name: "测评报告解读引擎", capability: "报告生成", status: "启用" },
-    { id: "AG03", name: "情绪识别助手", capability: "情绪分析", status: "启用" }
+    { id: "AG01", name: "亲子沟通解读助手", capability: "报告生成", status: "上架" },
+    { id: "AG02", name: "家庭教育顾问", capability: "报告生成", status: "上架" },
+    { id: "AG05", name: "测评报告解读引擎", capability: "报告生成", status: "上架" },
+    { id: "AG03", name: "情绪识别助手", capability: "情绪分析", status: "上架" }
   ];
 
   function clone(o) {
@@ -44,7 +44,7 @@
         copyVars: "{{ai_summary}}, {{advice}}",
         style: "theme: family-soft",
         html: defaultHtml(),
-        status: "启用",
+        status: "上架",
         updated: "2026-09-12"
       },
       {
@@ -56,7 +56,7 @@
         copyVars: "{{ai_summary}}, {{advice}}",
         style: "theme: warm",
         html: defaultHtml(),
-        status: "启用",
+        status: "上架",
         updated: "2026-09-01"
       },
       {
@@ -68,7 +68,7 @@
         copyVars: "{{ai_summary}}, {{advice}}",
         style: "theme: calm",
         html: defaultHtml(),
-        status: "启用",
+        status: "上架",
         updated: "2026-09-10"
       }
     ];
@@ -76,6 +76,24 @@
 
   function defaultDb() {
     return { templates: seedTemplates() };
+  }
+
+  function normalizeStatus(s) {
+    if (s === "启用" || s === "已启用" || s === "已上架" || s === "上架") return "上架";
+    if (s === "停用" || s === "已停用" || s === "已下架" || s === "下架" || s === "草稿") return "下架";
+    return s || "下架";
+  }
+
+  function migrateTemplates(list) {
+    var changed = false;
+    (list || []).forEach(function (t) {
+      var next = normalizeStatus(t.status);
+      if (t.status !== next) {
+        t.status = next;
+        changed = true;
+      }
+    });
+    return changed;
   }
 
   function readDb() {
@@ -92,6 +110,7 @@
         writeDb(d2);
         return d2;
       }
+      if (migrateTemplates(db.templates)) writeDb(db);
       return db;
     } catch (e) {
       var d3 = defaultDb();
@@ -106,7 +125,7 @@
 
   function listAgentsForReport() {
     return AGENTS.filter(function (a) {
-      return a.capability === "报告生成" && a.status === "启用";
+      return a.capability === "报告生成" && a.status === "上架";
     }).map(clone);
   }
 
@@ -128,6 +147,7 @@
     var db = readDb();
     var list = db.templates || [];
     if (!tpl.id) tpl.id = uid("RT");
+    tpl.status = normalizeStatus(tpl.status);
     tpl.updated = new Date().toISOString().slice(0, 10);
     var i = list.findIndex(function (x) { return x.id === tpl.id; });
     if (i >= 0) list[i] = clone(tpl);
@@ -135,6 +155,16 @@
     db.templates = list;
     writeDb(db);
     return clone(tpl);
+  }
+
+  function setTemplateStatus(id, status) {
+    var db = readDb();
+    var t = (db.templates || []).find(function (x) { return x.id === id; });
+    if (!t) return null;
+    t.status = normalizeStatus(status);
+    t.updated = new Date().toISOString().slice(0, 10);
+    writeDb(db);
+    return clone(t);
   }
 
   function mockAiContent(agentId, ctx) {
@@ -182,7 +212,7 @@
 
   function templateOptionsHtml(selectedId) {
     return '<option value="">请选择报告模板</option>' + listTemplates().filter(function (t) {
-      return t.status === "启用";
+      return t.status === "上架";
     }).map(function (t) {
       var ag = agentById(t.agentId);
       var label = t.name + " · " + t.ver + (ag ? " · " + ag.name : "");
@@ -202,6 +232,8 @@
     listTemplates: listTemplates,
     getTemplate: getTemplate,
     saveTemplate: saveTemplate,
+    setTemplateStatus: setTemplateStatus,
+    normalizeStatus: normalizeStatus,
     mockAiContent: mockAiContent,
     demoContext: demoContext,
     renderTemplate: renderTemplate,

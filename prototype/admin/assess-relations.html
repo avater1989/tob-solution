@@ -82,7 +82,7 @@
       <div class="form-grid" style="grid-template-columns:1fr 1fr">
         <div class="field"><label>优先级 *</label><input class="input" id="e-pri" type="number" value="10" min="1" max="99" /></div>
         <div class="field" style="padding-top:28px">
-          <label style="display:flex;align-items:center;gap:8px;font-weight:400"><input type="checkbox" id="e-on" checked> 保存后启用</label>
+          <label style="display:flex;align-items:center;gap:8px;font-weight:400"><input type="checkbox" id="e-on" checked> 保存后上架</label>
         </div>
       </div>
     </div>
@@ -200,8 +200,8 @@ function renderStats(){
   list.forEach(function(r){ r.tasks.forEach(function(t){ tasks[t]=1; }); });
   document.getElementById("stats").innerHTML =
     '<div class="as-stat accent"><div class="n">'+list.length+'</div><div class="l">规则数</div></div>' +
-    '<div class="as-stat ok"><div class="n">'+on+'</div><div class="l">已启用</div></div>' +
-    '<div class="as-stat warn"><div class="n">'+(list.length-on)+'</div><div class="l">已停用</div></div>' +
+    '<div class="as-stat ok"><div class="n">'+on+'</div><div class="l">已上架</div></div>' +
+    '<div class="as-stat warn"><div class="n">'+(list.length-on)+'</div><div class="l">已下架</div></div>' +
     '<div class="as-stat"><div class="n">'+Object.keys(tasks).length+'</div><div class="l">关联任务数</div></div>';
 }
 
@@ -216,7 +216,7 @@ function render(){
     } else {
       acts += '<button class="btn" data-edit="'+r.id+'">编辑</button>' +
         '<button class="btn" data-run="'+r.id+'">试运行</button>' +
-        '<button class="btn" data-toggle="'+r.id+'">'+(r.on?"停用":"启用")+'</button>' +
+        '<button class="btn" data-toggle="'+r.id+'">'+(r.on?"下架":"上架")+'</button>' +
         '<button class="btn" style="color:#f53f3f;border-color:#ffa39e" data-del="'+r.id+'">删除</button>';
     }
     return '<tr>' +
@@ -225,7 +225,7 @@ function render(){
       '<td>'+r.pri+'</td>' +
       '<td style="font-size:12px">'+esc(r.tasks.join("、"))+'</td>' +
       '<td style="font-size:12px;color:#8c8c8c">'+esc(r.time)+'</td>' +
-      '<td><span class="as-tag '+(r.on?"green":"gray")+'">'+(r.on?"已启用":"已停用")+'</span></td>' +
+      '<td><span class="as-tag '+(r.on?"green":"gray")+'">'+(r.on?"已上架":"已下架")+'</span></td>' +
       '<td><div class="as-acts">' + acts + '</div></td></tr>';
   }).join("") || '<tr><td colspan="7" style="text-align:center;color:#bfbfbf;padding:36px">暂无关联规则，点击右上角新建</td></tr>';
 }
@@ -315,7 +315,7 @@ document.addEventListener("click", function(e){
         '<div>触发条件：'+esc(r.cond)+'</div>' +
         '<div>优先级：'+r.pri+'</div>' +
         '<div>关联任务：'+esc(r.tasks.join("、"))+'</div>' +
-        '<div>状态：'+(r.on?"已启用":"已停用")+'</div>' +
+        '<div>状态：'+(r.on?"已上架":"已下架")+'</div>' +
         '<div>更新时间：'+esc(r.time)+'</div>' +
       '</div>';
     openM("modal-view"); return;
@@ -332,7 +332,7 @@ document.addEventListener("click", function(e){
   if (tg) {
     if (SYNC) { Proto.toast("平台同步内容的关联规则由平台维护"); return; }
     var r2 = list.find(function(x){return x.id===tg.getAttribute("data-toggle");});
-    r2.on = !r2.on; render(); Proto.toast(r2.on?"已启用":"已停用"); return;
+    r2.on = !r2.on; render(); Proto.toast(r2.on?"已上架":"已下架"); return;
   }
   var del = e.target.closest("[data-del]");
   if (del) {

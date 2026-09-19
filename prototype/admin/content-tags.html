@@ -46,7 +46,7 @@
       <div class="field"><label>标签名称 *</label><input class="input" id="f-name" placeholder="如：亲子沟通" /></div>
       <div class="field"><label>父标签</label><select class="input" id="f-parent"></select></div>
       <div class="field"><label>排序</label><input class="input" id="f-sort" type="number" value="1" /></div>
-      <div class="field"><label><input type="checkbox" id="f-enabled" checked> 启用</label></div>
+      <div class="field"><label><input type="checkbox" id="f-enabled" checked> 上架</label></div>
     </div>
     <div class="proto-modal-ft" style="justify-content:flex-end;gap:8px;padding:12px 16px;border-top:1px solid var(--color-border);display:flex">
       <button class="btn" data-close>取消</button>
@@ -82,7 +82,7 @@ function render() {
   Tags.list().forEach(function (t) { map[t.id] = t.name; });
   document.getElementById("tbody").innerHTML = flat.map(function (t) {
     var indent = t.depth ? '<span class="tg-indent">' + new Array(t.depth + 1).join("— ") + "</span>" : "";
-    var st = t.enabled ? '<span class="tg-status">启用</span>' : '<span class="tg-status off">停用</span>';
+    var st = t.enabled ? '<span class="tg-status">上架</span>' : '<span class="tg-status off">下架</span>';
     return "<tr>" +
       "<td>" + indent + "<b>" + esc(t.name) + "</b> <span class='muted' style='font-size:12px'>" + esc(t.id) + "</span></td>" +
       "<td>" + esc(t.parentId ? (map[t.parentId] || t.parentId) : "—") + "</td>" +
@@ -91,7 +91,7 @@ function render() {
       "<td>" +
         '<button class="btn btn-sm" data-act="edit" data-id="' + t.id + '">编辑</button> ' +
         '<button class="btn btn-sm" data-act="child" data-id="' + t.id + '">加子标签</button> ' +
-        '<button class="btn btn-sm" data-act="toggle" data-id="' + t.id + '">' + (t.enabled ? "停用" : "启用") + "</button> " +
+        '<button class="btn btn-sm" data-act="toggle" data-id="' + t.id + '">' + (t.enabled ? "下架" : "上架") + "</button> " +
         '<button class="btn btn-sm" data-act="del" data-id="' + t.id + '">删除</button>' +
       "</td></tr>";
   }).join("") || "<tr><td colspan='5' class='muted'>暂无标签</td></tr>";
@@ -138,7 +138,7 @@ document.getElementById("tbody").addEventListener("click", function (e) {
     openModal();
   } else if (act === "toggle") {
     Tags.setEnabled(id, !row.enabled);
-    Proto.toast(row.enabled ? "已停用" : "已启用");
+    Proto.toast(row.enabled ? "已下架" : "已上架");
     render();
   } else if (act === "del") {
     var r = Tags.remove(id);

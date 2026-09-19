@@ -135,7 +135,7 @@ if (locked) {
   lockEl.style.display = "block";
   lockEl.textContent = course.source === "platform"
     ? "平台下发内容，商家侧不可编辑。"
-    : (course.status === Store.STATUS.enabled ? "内容已启用，请先停用后再编辑。" : "审核中不可编辑。");
+    : (course.status === Store.STATUS.enabled ? "内容已上架，请先下架后再编辑。" : "审核中不可编辑。");
   document.querySelectorAll("#page-content input, #page-content textarea, #page-content select, #page-content [contenteditable]").forEach(function (el) {
     el.disabled = true;
     if (el.isContentEditable) el.contentEditable = "false";

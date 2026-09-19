@@ -18,9 +18,9 @@
   var STATUS_LABEL = {
     draft: "草稿",
     pending_audit: "待平台审核",
-    enabled: "已启用",
+    enabled: "已上架",
     rejected: "已驳回",
-    disabled: "已停用"
+    disabled: "已下架"
   };
 
   var STATUS_BADGE = {
@@ -89,6 +89,15 @@
     c.favorites = typeof c.favorites === "number" ? c.favorites : 0;
     c.commentList = Array.isArray(c.commentList) ? c.commentList : [];
     c.chapters = (c.chapters || []).map(function (ch) { return normalizeChapter(ch, c.id); });
+    /* 内容 ↔ 商品 1:N：兼容旧字段 goodsId */
+    if (Array.isArray(c.goodsIds)) {
+      c.goodsIds = c.goodsIds.filter(Boolean);
+    } else if (c.goodsId) {
+      c.goodsIds = [c.goodsId];
+    } else {
+      c.goodsIds = [];
+    }
+    c.goodsId = c.goodsIds[0] || "";
     return c;
   }
 
@@ -120,7 +129,7 @@
           { user: "家长小王", text: "孩子开始主动找绘本了，很实用。", at: "2026-09-10" },
           { user: "晨晨妈", text: "章节安排清晰，免费试看很友好。", at: "2026-09-12" }
         ],
-        goodsId: "G002",
+        goodsIds: ["G002"],
         updatedAt: "2026-09-01 10:00",
         submittedAt: "2026-08-28 09:00",
         rejectReason: "",
@@ -203,7 +212,7 @@
         badge: "premium",
         price: 0,
         cover: "../assets/img/covers/series.jpg",
-        intro: "平台下发的标准线上课，商家侧只读，可启停用于店铺售卖。",
+        intro: "平台下发的标准线上课，商家侧只读，可上下架用于店铺售卖。",
         outlineText: "沟通关键 + 情绪优先",
         detail: "",
         purchaseNotes: "平台统一定价与售后规则。",
@@ -391,7 +400,7 @@
       comments: 0,
       favorites: 0,
       commentList: [],
-      goodsId: "",
+      goodsIds: [],
       updatedAt: nowStr(),
       submittedAt: "",
       rejectReason: "",
@@ -466,7 +475,7 @@
   function enableDirect(id) {
     var c = get(id);
     if (!c) return { ok: false, msg: "课程不存在" };
-    if (!chapterCount(c)) return { ok: false, msg: "请先配置至少 1 个章节再启用" };
+    if (!chapterCount(c)) return { ok: false, msg: "请先配置至少 1 个章节再上架" };
     setStatus(id, STATUS.enabled);
     return { ok: true, course: get(id) };
   }
@@ -490,10 +499,20 @@
   }
 
   function setGoodsId(id, goodsId) {
+    return addGoodsId(id, goodsId);
+  }
+
+  function addGoodsId(id, goodsId) {
     var c = get(id);
-    if (!c) return null;
-    c.goodsId = goodsId || "";
+    if (!c || !goodsId) return null;
+    if (c.goodsIds.indexOf(goodsId) < 0) c.goodsIds.push(goodsId);
+    c.goodsId = c.goodsIds[0] || "";
     return save(c);
+  }
+
+  function listGoodsIds(id) {
+    var c = get(id);
+    return c ? (c.goodsIds || []).slice() : [];
   }
 
   function resetSeed() {
@@ -527,6 +546,8 @@
     rejectAudit: rejectAudit,
     listPendingAudit: listPendingAudit,
     setGoodsId: setGoodsId,
+    addGoodsId: addGoodsId,
+    listGoodsIds: listGoodsIds,
     chapterCount: chapterCount,
     durationSummary: durationSummary,
     teacherName: teacherName,

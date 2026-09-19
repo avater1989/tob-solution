@@ -40,7 +40,7 @@
       opts: (q.opts || []).map(normalizeOpt),
       defaultJump: q.defaultJump || JUMP_NEXT,
       parse: q.parse || "",
-      status: q.status || "启用",
+      status: q.status || "上架",
       source: q.source === "bank" ? "bank" : "manual",
       bankRefId: q.bankRefId || null
     };
@@ -253,12 +253,12 @@
           id: "Q01", text: "与孩子发生分歧时，你更常先讲道理还是先听感受？",
           dim: "倾听表达",
           opts: [{ id: "O1", t: "先讲道理", s: 0 }, { id: "O2", t: "先听感受", s: 2 }, { id: "O3", t: "看情况", s: 1 }],
-          parse: "先共情再讲道理更利于关系修复", status: "启用"
+          parse: "先共情再讲道理更利于关系修复", status: "上架"
         }, 0),
         normalizeQuestion({
           id: "Q02", text: "孩子向你倾诉时，你通常会？", dim: "倾听表达",
           opts: [{ id: "O1", t: "边听边给建议", s: 1 }, { id: "O2", t: "专注听完再回应", s: 2 }, { id: "O3", t: "忙时让他晚点说", s: 0 }],
-          status: "启用"
+          status: "上架"
         }, 1)
       ]
     };

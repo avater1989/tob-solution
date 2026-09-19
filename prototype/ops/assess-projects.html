@@ -78,16 +78,16 @@
 <div class="proto-mask" id="mask"></div>
 
 <script src="../assets/js/proto.js"></script>
-<script src="../assets/js/assess-report-store.js?v=1"></script>
+<script src="../assets/js/assess-report-store.js?v=2"></script>
 <script src="../assets/js/ops-shell.js?v=14"></script>
 <script>
 var ReportStore = window.AssessReportStore;
 var editingId = null;
 var PROJECTS = [
-  { id:"MP01", name:"亲子沟通能力测评", desc:"评估家长与孩子的沟通模式与冲突处理", questions:12, status:"已发布", shelf:"已上架", created:"2026-08-12", rules:2, reportTemplateId:"RT01" },
+  { id:"MP01", name:"亲子沟通能力测评", desc:"评估家长与孩子的沟通模式与冲突处理", questions:12, status:"已上架", shelf:"已上架", created:"2026-08-12", rules:2, reportTemplateId:"RT01" },
   { id:"MP02", name:"家庭教育风格测评", desc:"识别家庭教养风格与边界设定倾向", questions:8, status:"草稿", shelf:"已下架", created:"2026-09-02", rules:0, reportTemplateId:"RT02" },
-  { id:"PP01", name:"心理健康测评", desc:"综合心理健康评估", questions:1, status:"已发布", shelf:"已上架", created:"2024-11-15", rules:3, reportTemplateId:"RT03" },
-  { id:"PP02", name:"学习能力诊断", desc:"评估学习风格与能力结构", questions:12, status:"已发布", shelf:"已上架", created:"2026-08-20", rules:2, reportTemplateId:"RT01" },
+  { id:"PP01", name:"心理健康测评", desc:"综合心理健康评估", questions:1, status:"已上架", shelf:"已上架", created:"2024-11-15", rules:3, reportTemplateId:"RT03" },
+  { id:"PP02", name:"学习能力诊断", desc:"评估学习风格与能力结构", questions:12, status:"已上架", shelf:"已上架", created:"2026-08-20", rules:2, reportTemplateId:"RT01" },
   { id:"PP03", name:"情绪调节问卷", desc:"评估情绪调节能力与压力应对", questions:5, status:"草稿", shelf:"已下架", created:"2026-09-01", rules:0, reportTemplateId:"" }
 ];
 
@@ -116,15 +116,15 @@ function render() {
       '<a class="btn" href="goods-edit.html?content_id='+p.id+'&type=assess">创建商品</a>' +
       '<a class="btn" href="assess-plans.html?from=assess&id='+p.id+'">生成计划</a>' +
       (p.shelf==='已上架'
-        ? '<button class="btn" data-shelf="'+p.id+'">停用</button>'
-        : '<button class="btn btn-primary" data-shelf="'+p.id+'">发布</button>') +
+        ? '<button class="btn" data-shelf="'+p.id+'">下架</button>'
+        : '<button class="btn btn-primary" data-shelf="'+p.id+'">上架</button>') +
       '<button class="btn" style="color:#f53f3f;border-color:#ffa39e" data-del="'+p.id+'">删除</button>';
     return '<tr>' +
       '<td style="color:#8c8c8c">'+(i+1)+'</td>' +
       '<td><div class="as-name">'+esc(p.name)+'</div><div class="as-desc">'+esc(p.desc)+'</div></td>' +
       '<td>'+p.questions+'</td>' +
       '<td style="font-size:12px">'+esc(ReportStore.templateLabel(p.reportTemplateId))+'</td>' +
-      '<td><span class="as-tag '+(p.status==='已发布'?'green':'gray')+'">'+esc(p.status)+'</span></td>' +
+      '<td><span class="as-tag '+(p.status==='已上架'?'green':'gray')+'">'+esc(p.status)+'</span></td>' +
       '<td><span class="as-tag '+(p.shelf==='已上架'?'green':'orange')+'">'+esc(p.shelf)+'</span></td>' +
       '<td style="font-size:12px;color:#8c8c8c">'+esc(p.created)+'</td>' +
       '<td><div class="as-acts">' + acts + '</div></td></tr>';
@@ -194,7 +194,7 @@ document.addEventListener("click", function(e){
   if (shelf) {
     var p3 = PROJECTS.find(function(x){return x.id===shelf.getAttribute("data-shelf");});
     if (p3.shelf==="已上架") { p3.shelf="已下架"; Proto.toast("已下架"); }
-    else { p3.shelf="已上架"; p3.status="已发布"; Proto.toast("已上架"); }
+    else { p3.shelf="已上架"; p3.status="已上架"; Proto.toast("已上架"); }
     render(); return;
   }
   var del = e.target.closest("[data-del]");

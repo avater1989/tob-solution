@@ -42,7 +42,7 @@
 </div>
 
 <div id="page-content" style="display:none">
-  <div style="background:#f0f5ff;border:1px solid #bedaff;border-radius:8px;padding:10px 14px;margin-bottom:12px;font-size:13px">内容负责交付 · 商品负责售卖。下一步：提交审核 → 审核通过 → <a href="goods-edit.html">创建商品</a> → 上架。</div>
+  <div style="background:#f0f5ff;border:1px solid #bedaff;border-radius:8px;padding:10px 14px;margin-bottom:12px;font-size:13px">内容负责交付 · 商品负责售卖。下一步：提交审核 → 审核通过 → <a href="goods-edit.html?create_mode=from_content&content_type=article">创建店铺商品</a> → 上架。</div>
   <div class="card" style="margin-bottom:14px"><div class="card-bd" style="padding:12px 16px">
     <div class="toolbar" style="border:none;padding:0;background:transparent">
       <input class="input" type="text" id="ca-keyword" placeholder="搜索图文名称或简介..." style="width:240px" />
@@ -151,7 +151,7 @@ function renderList() {
           '<div class="ca-meta">' +
             '<span><b>ID:</b> ' + esc(a.id) + '</span>' +
             '<span><b>作者:</b> ' + esc(a.author) + '</span>' +
-            '<span><b>发布:</b> ' + esc(a.date) + '</span>' +
+            '<span><b>上架:</b> ' + esc(a.date) + '</span>' +
             '<span><b>阅读:</b> ' + a.reads.toLocaleString() + '</span>' +
             '<span><b>字数:</b> ' + a.words.toLocaleString() + '</span>' +
           '</div>' +

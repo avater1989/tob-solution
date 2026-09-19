@@ -34,6 +34,11 @@
           <option>测评任务</option>
           <option>智能体任务</option>
         </select>
+        <select class="input" id="f-shelf" style="width:120px">
+          <option value="">全部上下架</option>
+          <option>上架</option>
+          <option>下架</option>
+        </select>
         <button class="btn btn-primary" id="btn-query-def">查询</button>
       </div>
     </div></div>
@@ -111,11 +116,11 @@
 <script src="../assets/js/admin-shell.js?v=20"></script>
 <script>
 var DEFS = [
-  { id: "T001", name: "完成亲子沟通线上课", type: "线上课任务", ref: "C001 · 线上课", done: "进度≥80%", status: "启用" },
-  { id: "T002", name: "完成亲子沟通测评", type: "测评任务", ref: "AS001 · 测评", done: "提交答卷", status: "启用" },
-  { id: "T003", name: "与家庭教育顾问对话", type: "智能体任务", ref: "AG02 · 智能体", done: "完成 1 轮有效对话", status: "启用" },
-  { id: "T004", name: "阅读启蒙第 1 章学习", type: "线上课任务", ref: "C001 · 线上课", done: "章节完课", status: "启用" },
-  { id: "T005", name: "阅读新学期家长指南", type: "文章任务", ref: "A001 · 文章", done: "阅读完成", status: "启用" }
+  { id: "T001", name: "完成亲子沟通线上课", type: "线上课任务", ref: "C001 · 线上课", done: "进度≥80%", status: "上架" },
+  { id: "T002", name: "完成亲子沟通测评", type: "测评任务", ref: "AS001 · 测评", done: "提交答卷", status: "上架" },
+  { id: "T003", name: "与家庭教育顾问对话", type: "智能体任务", ref: "AG02 · 智能体", done: "完成 1 轮有效对话", status: "上架" },
+  { id: "T004", name: "阅读启蒙第 1 章学习", type: "线上课任务", ref: "C001 · 线上课", done: "章节完课", status: "上架" },
+  { id: "T005", name: "阅读新学期家长指南", type: "文章任务", ref: "A001 · 文章", done: "阅读完成", status: "上架" }
 ];
 var INST = [
   { user: "张女士", customer_id: "C1001", task: "T001 完成亲子沟通线上课", start: "2026-09-18 09:00", due: "2026-09-20 23:59", status: "进行中", doneAt: "—", result: "—" },
@@ -129,17 +134,21 @@ function esc(s){ return String(s==null?"":s).replace(/[&<>"']/g,function(c){retu
 function renderDef() {
   var q = (document.getElementById("f-q").value || "").trim();
   var t = document.getElementById("f-type").value;
+  var shelf = document.getElementById("f-shelf").value;
   var list = DEFS.filter(function (d) {
     if (t && d.type !== t) return false;
+    if (shelf && d.status !== shelf) return false;
     if (q && d.name.indexOf(q) < 0) return false;
     return true;
   });
   document.getElementById("tbody-def").innerHTML = list.map(function (d) {
+    var shelfBtn = d.status === "上架"
+      ? "<button class='btn' data-shelf='" + d.id + "'>下架</button>"
+      : "<button class='btn btn-primary' data-shelf='" + d.id + "'>上架</button>";
     return "<tr><td><b>" + esc(d.name) + "</b><br><span class='muted' style='font-size:12px'>" + esc(d.id) + "</span></td>" +
       "<td>" + esc(d.type) + "</td><td>" + esc(d.ref) + "</td><td>" + esc(d.done) + "</td>" +
-      "<td><span class='as-tag green'>" + esc(d.status) + "</span></td>" +
-      "<td class='row-actions'><a href='assess-plan-stages.html?task_id=" + d.id + "'>编入计划关卡</a>" +
-      "<a href='#' data-toast='已打开编辑（原型）'>编辑</a></td></tr>";
+      "<td><span class='as-tag " + (d.status === "上架" ? "green" : "gray") + "'>" + esc(d.status) + "</span></td>" +
+      "<td class='as-acts'><a class='btn' href='#' data-toast='已打开编辑（原型）'>编辑</a> " + shelfBtn + "</td></tr>";
   }).join("") || "<tr><td colspan='6' style='text-align:center;color:#bfbfbf;padding:24px'>暂无任务定义</td></tr>";
 }
 
@@ -173,6 +182,15 @@ document.querySelectorAll("#main-tabs a").forEach(function (a) {
 
 document.getElementById("btn-query-def").addEventListener("click", renderDef);
 document.getElementById("btn-query-inst").addEventListener("click", renderInst);
+document.getElementById("tbody-def").addEventListener("click", function (e) {
+  var btn = e.target.closest("[data-shelf]");
+  if (!btn) return;
+  var row = DEFS.find(function (x) { return x.id === btn.getAttribute("data-shelf"); });
+  if (!row) return;
+  row.status = row.status === "上架" ? "下架" : "上架";
+  renderDef();
+  Proto.toast(row.status === "上架" ? "已上架" : "已下架");
+});
 document.getElementById("btn-new").addEventListener("click", function () {
   document.getElementById("mask").classList.add("open");
   document.getElementById("modal-new").classList.add("open");
@@ -192,7 +210,7 @@ document.getElementById("btn-save-new").addEventListener("click", function () {
     type: document.getElementById("n-type").value,
     ref: document.getElementById("n-ref").value || "—",
     done: document.getElementById("n-done").value || "—",
-    status: "启用"
+    status: "上架"
   });
   document.getElementById("mask").classList.remove("open");
   document.getElementById("modal-new").classList.remove("open");

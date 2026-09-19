@@ -27,8 +27,8 @@
       </select>
       <select class="input" id="f-status" style="width:120px">
         <option value="">全部状态</option>
-        <option>启用</option>
-        <option>停用</option>
+        <option>上架</option>
+        <option>下架</option>
       </select>
       <button class="btn btn-primary" id="btn-query">查询</button>
     </div>
@@ -46,7 +46,7 @@
           <th>输入</th>
           <th>输出</th>
           <th>状态</th>
-          <th style="width:200px">操作</th>
+          <th style="width:240px">操作</th>
         </tr>
       </thead>
       <tbody id="tbody"></tbody>
@@ -58,11 +58,11 @@
 <script src="../assets/js/admin-shell.js?v=20"></script>
 <script>
 var AGENTS = [
-  { id: "AG01", name: "亲子沟通辅导助手", desc: "计划关卡对话辅导；亦可用于报告解读", capability: "对话辅导 / 报告生成", source: "智言", taskable: true, input: "用户画像+关卡目标/测评结果", output: "建议文本", status: "启用" },
-  { id: "AG02", name: "家庭教育顾问", desc: "关卡练习建议与报告解读", capability: "对话辅导 / 报告生成", source: "智言", taskable: true, input: "用户画像+关卡目标/测评结果", output: "建议文本", status: "启用" },
-  { id: "AG05", name: "测评报告解读引擎", desc: "专用于测评报告内容生成", capability: "报告生成", source: "智言", taskable: false, input: "测评结果+模板变量", output: "报告解读 HTML 片段", status: "启用" },
-  { id: "AG03", name: "情绪识别助手", desc: "关卡练习中识别情绪倾向", capability: "情绪分析", source: "智言", taskable: true, input: "用户文本", output: "标签+建议", status: "启用" },
-  { id: "AG04", name: "旧版闲聊助手", desc: "已停用，不可编入计划", capability: "闲聊", source: "智言", taskable: false, input: "文本", output: "回复", status: "停用" }
+  { id: "AG01", name: "亲子沟通辅导助手", desc: "计划关卡对话辅导；亦可用于报告解读", capability: "对话辅导 / 报告生成", source: "智言", taskable: true, input: "用户画像+关卡目标/测评结果", output: "建议文本", status: "上架" },
+  { id: "AG02", name: "家庭教育顾问", desc: "关卡练习建议与报告解读", capability: "对话辅导 / 报告生成", source: "智言", taskable: true, input: "用户画像+关卡目标/测评结果", output: "建议文本", status: "上架" },
+  { id: "AG05", name: "测评报告解读引擎", desc: "专用于测评报告内容生成", capability: "报告生成", source: "智言", taskable: false, input: "测评结果+模板变量", output: "报告解读 HTML 片段", status: "上架" },
+  { id: "AG03", name: "情绪识别助手", desc: "关卡练习中识别情绪倾向", capability: "情绪分析", source: "智言", taskable: true, input: "用户文本", output: "标签+建议", status: "上架" },
+  { id: "AG04", name: "旧版闲聊助手", desc: "已下架，不可编入计划", capability: "闲聊", source: "智言", taskable: false, input: "文本", output: "回复", status: "下架" }
 ];
 
 function esc(s){ return String(s==null?"":s).replace(/[&<>"']/g,function(c){return({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"})[c];}); }
@@ -82,6 +82,9 @@ function filtered() {
 
 function render() {
   document.getElementById("tbody").innerHTML = filtered().map(function (a) {
+    var shelfBtn = a.status === "上架"
+      ? "<button class='btn' data-shelf='" + a.id + "'>下架</button>"
+      : "<button class='btn btn-primary' data-shelf='" + a.id + "'>上架</button>";
     return "<tr>" +
       "<td><b>" + esc(a.name) + "</b><br><span class='muted' style='font-size:12px'>" + esc(a.id) + "</span></td>" +
       "<td style='max-width:200px;font-size:13px'>" + esc(a.desc) + "</td>" +
@@ -90,20 +93,26 @@ function render() {
       "<td>" + (a.taskable ? "<span class='badge badge-success'>是</span>" : "<span class='badge'>否</span>") + "</td>" +
       "<td style='font-size:12px'>" + esc(a.input) + "</td>" +
       "<td style='font-size:12px'>" + esc(a.output) + "</td>" +
-      "<td><span class='as-tag " + (a.status === "启用" ? "green" : "gray") + "'>" + esc(a.status) + "</span></td>" +
-      "<td class='row-actions'>" +
+      "<td><span class='as-tag " + (a.status === "上架" ? "green" : "gray") + "'>" + esc(a.status) + "</span></td>" +
+      "<td class='row-actions' style='display:flex;gap:6px;flex-wrap:wrap;align-items:center'>" +
         (a.taskable
-          ? "<a href='content-tasks.html?type=agent&agent_id=" + a.id + "'>生成任务</a>" +
-            "<a href='assess-plans.html?agent_id=" + a.id + "'>编入定制化计划</a>"
-          : "") +
-        (String(a.capability).indexOf("报告生成") >= 0
-          ? "<a href='assess-report-templates.html?agent_id=" + a.id + "'>用于报告模板</a>"
-          : (!a.taskable ? "<span class='muted' style='font-size:12px'>不可用</span>" : "")) +
+          ? "<a class='btn' href='content-tasks.html?type=agent&agent_id=" + a.id + "'>生成任务</a>"
+          : "<span class='muted' style='font-size:12px'>不可任务化</span>") +
+        shelfBtn +
       "</td></tr>";
   }).join("") || "<tr><td colspan='9' style='text-align:center;color:#bfbfbf;padding:28px'>暂无智能体</td></tr>";
 }
 
 document.getElementById("btn-query").addEventListener("click", render);
+document.getElementById("tbody").addEventListener("click", function (e) {
+  var btn = e.target.closest("[data-shelf]");
+  if (!btn) return;
+  var row = AGENTS.find(function (x) { return x.id === btn.getAttribute("data-shelf"); });
+  if (!row) return;
+  row.status = row.status === "上架" ? "下架" : "上架";
+  render();
+  Proto.toast(row.status === "上架" ? "已上架" : "已下架");
+});
 render();
 </script>
 </body>

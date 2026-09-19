@@ -96,9 +96,9 @@
       <tbody id="dt-rows"></tbody>
     </table>
     <div style="margin-top:10px;padding:8px 12px;border-radius:6px;background:#e8f3ff;border:1px solid #a0cfff;color:#165dff;font-size:12px">
-      审核范围：<b>直播（必审）</b>、<b>线上课 / 文章（上架前审核）</b>、<b>商品（服务类抽审）</b>。审核通过后内容发布到 C 端小程序。
+      审核范围：<b>直播（必审）</b>、<b>线上课 / 文章（上架前审核）</b>、<b>店铺商品（内容创建须审；平台商品镜像免审）</b>。审核通过后内容 / 商品可上架至 C 端。
     </div>
-    <p class="muted" style="margin:10px 0 0;font-size:12px">平台审核通过后可上架；驳回需填写原因并通知商家；驳回结果与申诉复核结论均写入本页「已通过 / 已驳回 / 商家申诉」Tab。</p>
+    <p class="muted" style="margin:10px 0 0;font-size:12px">平台审核通过后可上架；驳回需填写原因并通知商家；微信小店商品审批走微信接口，不在本队列。</p>
   </div>
   <div class="proto-modal-ft" style="border-top:1px solid var(--color-border);padding:12px 20px;display:flex;gap:8px;justify-content:flex-end">
     <button class="btn" data-close>关闭</button>
@@ -116,9 +116,9 @@
   <div class="proto-modal-bd">
     <p style="margin:0 0 10px">确定通过 <b id="ps-name">—</b> 的平台审核吗？</p>
     <ul style="margin:0 0 10px 18px;font-size:13px;color:var(--color-text-secondary);line-height:1.9">
-      <li>内容将<b>发布到 C 端小程序</b>，买家可见、可预约</li>
-      <li>商家后台状态同步变更为「审核通过 / 待开播」</li>
-      <li>操作将记入<b>本页「已通过」Tab</b>与操作日志</li>
+      <li>内容 / 商品将可在 C 端售卖或展示</li>
+      <li>商家后台审核状态同步为「已通过」；商品默认上架</li>
+      <li>操作将记入本页「已通过」Tab 与操作日志</li>
     </ul>
     <div class="field"><label>审核备注</label>
       <input id="ps-note" placeholder="选填，商家可见" />
@@ -168,6 +168,7 @@
 <script src="../assets/js/content-tags.js?v=2"></script>
 <script src="../assets/js/teachers-store.js?v=1"></script>
 <script src="../assets/js/course-store.js?v=1"></script>
+<script src="../assets/js/goods-taxonomy.js?v=1"></script>
 <script src="../assets/js/ops-shell.js?v=7"></script>
 <script>
 (function () {
@@ -176,19 +177,19 @@
   var currentId = null;
   var currentIsLive = false;
   var currentIsSeries = false;
+  var currentIsGoods = false;
   var rowMap = {};
   var currentTab = "pending";
 
-  // 视频 / 图文 / 商品 的待审示例（线上课来自 CourseStore；直播来自 ProtoBiz）
+  // 视频 / 图文 的待审示例（线上课来自 CourseStore；直播来自 ProtoBiz；商品来自 goodsDemo）
   var LOCAL_ITEMS = [
     { id: "VI2026090503", typeLabel: "视频", name: "写作业不吼不叫 · 方法拆解", merchantName: "晨光少儿成长", submittedAt: "2026-09-05 11:32",
       rows: [["视频标题","写作业不吼不叫 · 方法拆解"],["视频封面","video-cover.jpg（已预览）"],["视频时长","42 分 18 秒"],["售卖价格","¥69.00"],["试看设置","每节前 3 分钟"]] },
     { id: "AR2026090602", typeLabel: "图文", name: "青春期沟通家长手册（电子版）", merchantName: "星启家庭教育", submittedAt: "2026-09-06 15:04",
-      rows: [["图文标题","青春期沟通家长手册（电子版）"],["封面图","article-cover.jpg（已预览）"],["正文字数","约 8,600 字"],["售卖价格","¥39.00"],["内容摘要","青春期常见沟通场景与应对话术"]] },
-    { id: "GO2026090404", typeLabel: "商品", name: "家庭咨询 60 分钟服务卡", merchantName: "慧心教育", submittedAt: "2026-09-04 17:45",
-      rows: [["商品名称","家庭咨询 60 分钟服务卡"],["商品类型","定制化计划商品"],["售卖价格","¥199.00"],["服务说明","1v1 线上咨询 60 分钟"],["交付方式","支付后开通服务额度"]] }
+      rows: [["图文标题","青春期沟通家长手册（电子版）"],["封面图","article-cover.jpg（已预览）"],["正文字数","约 8,600 字"],["售卖价格","¥39.00"],["内容摘要","青春期常见沟通场景与应对话术"]] }
   ];
   var localDone = {};
+  var Tax = window.GoodsTaxonomy;
 
   // 审核留痕（原「平台审核记录」页的演示数据，已并入本页）
   var RECORDS = [
@@ -200,8 +201,40 @@
   ];
 
   function typeTag(t) {
-    var cls = t === "直播" ? "tag-purple" : (t === "线上课" ? "tag-blue" : "tag-orange");
+    var cls = t === "直播" ? "tag-purple" : (t === "线上课" ? "tag-blue" : (t === "商品" ? "tag-orange" : "tag-orange"));
     return '<span class="tag ' + cls + '">' + esc(t) + "</span>";
+  }
+
+  function pendingGoods() {
+    try {
+      var data = Biz.load ? Biz.load() : null;
+      var list = (data && data.goodsDemo) || [];
+      return list.filter(function (g) {
+        return (!g.channel || g.channel === "store") && g.audit_status === "pending" && g.create_mode !== "from_platform";
+      }).map(function (g) {
+        var typeLabel = (Tax && Tax.contentTypeLabel) ? Tax.contentTypeLabel(g.content_type) : (g.content_type || "商品");
+        return {
+          id: g.goods_id,
+          typeLabel: "商品",
+          name: g.name,
+          merchantName: "星启家庭教育",
+          submittedAt: g.submitted_at || "—",
+          isLive: false,
+          isSeries: false,
+          isGoods: true,
+          rows: [
+            ["商品名称", g.name],
+            ["内容类型", typeLabel],
+            ["关联内容", g.content_id || "—"],
+            ["创建方式", g.create_mode === "from_platform" ? "平台商品" : "内容创建"],
+            ["售卖价格", "¥" + (g.price != null ? Number(g.price).toFixed(2) : "—")],
+            ["内容来源", g.content_source === "platform" ? "平台" : "商家自建"]
+          ]
+        };
+      });
+    } catch (e) {
+      return [];
+    }
   }
 
   function pendingSeries() {
@@ -244,10 +277,11 @@
       };
     });
     var series = pendingSeries();
+    var goods = pendingGoods();
     var locals = LOCAL_ITEMS.filter(function (x) { return !localDone[x.id]; }).map(function (x) {
-      return { id: x.id, typeLabel: x.typeLabel, name: x.name, merchantName: x.merchantName, submittedAt: x.submittedAt, isLive: false, isSeries: false, rows: x.rows };
+      return { id: x.id, typeLabel: x.typeLabel, name: x.name, merchantName: x.merchantName, submittedAt: x.submittedAt, isLive: false, isSeries: false, isGoods: false, rows: x.rows };
     });
-    return lives.concat(series).concat(locals);
+    return lives.concat(series).concat(goods).concat(locals);
   }
 
   function esc(s) {
@@ -416,6 +450,10 @@
   document.querySelectorAll("[data-close]").forEach(function (n) { n.addEventListener("click", closeAll); });
 
   function openDetail(item) {
+    currentId = item.id;
+    currentIsLive = !!item.isLive;
+    currentIsSeries = !!item.isSeries;
+    currentIsGoods = !!item.isGoods;
     var isPending = !item.result;
     document.getElementById("dt-pass").style.display = isPending ? "" : "none";
     document.getElementById("dt-reject").style.display = isPending ? "" : "none";
@@ -436,6 +474,7 @@
     currentId = item.id;
     currentIsLive = !!item.isLive;
     currentIsSeries = !!item.isSeries;
+    currentIsGoods = !!item.isGoods;
     document.getElementById("ps-name").textContent = item.name;
     open(document.getElementById("modal-pass"));
   }
@@ -443,6 +482,7 @@
     currentId = item.id;
     currentIsLive = !!item.isLive;
     currentIsSeries = !!item.isSeries;
+    currentIsGoods = !!item.isGoods;
     document.getElementById("rj-name").textContent = item.name;
     document.getElementById("rj-note").value = "";
     open(document.getElementById("modal-reject"));
@@ -474,9 +514,34 @@
     if (item) openReject(item);
   });
 
-  function approve(id, isLive, isSeries, note) {
+  function setGoodsAudit(id, auditStatus, reason) {
+    if (!Biz.load || !Biz.save) return false;
+    var data = Biz.load();
+    var list = data.goodsDemo || [];
+    var g = list.find(function (x) { return x.goods_id === id; });
+    if (!g) return false;
+    g.audit_status = auditStatus;
+    if (auditStatus === "approved") {
+      g.status = "on_sale";
+      g.reject_reason = "";
+    } else if (auditStatus === "rejected") {
+      g.status = "draft";
+      g.reject_reason = reason || "";
+    }
+    Biz.save(data);
+    return true;
+  }
+
+  function approve(id, isLive, isSeries, note, isGoods) {
     var item = rowMap[id];
-    if (isLive && Biz.getLive(id)) {
+    if (isGoods || (item && item.isGoods)) {
+      setGoodsAudit(id, "approved");
+      RECORDS.unshift({
+        id: id, name: item ? item.name : id, typeLabel: "商品",
+        merchantName: item ? item.merchantName : "星启家庭教育",
+        result: "passed", remark: note || "—", by: "平台审核员", at: "刚刚"
+      });
+    } else if (isLive && Biz.getLive(id)) {
       Biz.setAuditStatus(id, "approved", { by: "平台审核员", side: "platform" });
     } else if (isSeries) {
       Store.approveAudit(id);
@@ -493,9 +558,16 @@
       }
     }
   }
-  function reject(id, reason, isLive, isSeries) {
+  function reject(id, reason, isLive, isSeries, isGoods) {
     var item = rowMap[id];
-    if (isLive && Biz.getLive(id)) {
+    if (isGoods || (item && item.isGoods)) {
+      setGoodsAudit(id, "rejected", reason);
+      RECORDS.unshift({
+        id: id, name: item ? item.name : id, typeLabel: "商品",
+        merchantName: item ? item.merchantName : "星启家庭教育",
+        result: "rejected", remark: reason, by: "平台审核员", at: "刚刚"
+      });
+    } else if (isLive && Biz.getLive(id)) {
       Biz.setAuditStatus(id, "platform_rejected", { reason: reason, by: "平台审核员", side: "platform" });
     } else if (isSeries) {
       Store.rejectAudit(id, reason);
@@ -517,9 +589,10 @@
     if (!currentId) return;
     var note = (document.getElementById("ps-note").value || "").trim();
     var wasSeries = currentIsSeries;
-    approve(currentId, currentIsLive, currentIsSeries, note);
+    var wasGoods = currentIsGoods;
+    approve(currentId, currentIsLive, currentIsSeries, note, currentIsGoods);
     closeAll();
-    Proto.toast(wasSeries ? "线上课已通过，商家侧已启用" : (note ? "平台已通过（备注已同步商家）" : "平台已通过，内容可上架"));
+    Proto.toast(wasGoods ? "商品已通过，商家侧可上架售卖" : (wasSeries ? "线上课已通过，商家侧已上架" : (note ? "平台已通过（备注已同步商家）" : "平台已通过，内容可上架")));
     render();
   });
   document.getElementById("rj-submit").addEventListener("click", function () {
@@ -527,7 +600,7 @@
     if (!note) { Proto.toast("请填写驳回说明"); return; }
     if (!currentId) return;
     var rule = document.getElementById("rj-reason").value;
-    reject(currentId, rule + "：" + note, currentIsLive, currentIsSeries);
+    reject(currentId, rule + "：" + note, currentIsLive, currentIsSeries, currentIsGoods);
     closeAll();
     Proto.toast("已平台驳回并通知商家");
     render();
@@ -541,7 +614,7 @@
     if (!ids.length) { Proto.toast("请先勾选待通过内容"); return; }
     ids.forEach(function (id) {
       var item = rowMap[id];
-      approve(id, item && item.isLive, item && item.isSeries);
+      approve(id, item && item.isLive, item && item.isSeries, "", item && item.isGoods);
     });
     Proto.toast("已批量平台通过 " + ids.length + " 条");
     render();
