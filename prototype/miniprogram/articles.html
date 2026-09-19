@@ -6,6 +6,12 @@
   <title>精选文章 · To-B 小程序</title>
   <link rel="stylesheet" href="../assets/css/proto.css" />
   <link rel="stylesheet" href="../assets/css/mp.css?v=16" />
+  <style>
+    .ar-pay { display:inline-block; font-size:11px; padding:1px 6px; border-radius:3px; background:#fff7e6; color:#d46b08; margin-right:4px; }
+    .ar-free { display:inline-block; font-size:11px; padding:1px 6px; border-radius:3px; background:#e8f3ff; color:#165dff; margin-right:4px; }
+    .ar-owned { background:#e8ffea; color:#00b42a; }
+    .ar-price { color:#f53f3f; font-weight:600; font-size:12px; }
+  </style>
 </head>
 <body class="mp-page" data-tabbar="0">
   <div class="mp-frame">
@@ -14,18 +20,20 @@
     <div class="mp-nav"><a class="back" href="home.html">←</a>精选文章</div>
     <div class="mp-body" style="padding:0 14px 16px" id="ar-list"></div>
   </div>
-  <p class="mp-hint">文章列表 · <a href="../admin/content-article.html">管理端文章</a></p>
+  <p class="mp-hint">文章列表 · 付费文展示价格与解锁态 · <a href="../admin/content-article.html">管理端文章</a></p>
 
   <script src="../assets/js/proto.js"></script>
   <script src="../assets/js/content-tags.js?v=2"></script>
   <script src="../assets/js/mp-shell.js"></script>
+  <script src="../assets/js/mp-commerce.js"></script>
   <script>
   var Tags = window.ContentTags;
+  var Mp = window.MpCommerce;
   var ARTICLES = [
-    { id: "A001", title: "9 月新学期家长指南", cover: "../assets/img/covers/term.jpg", author: "编辑部", tagIds: ["TG04"], date: "08-25", reads: 2340, intro: "开学前家长最关心的节奏、作息与沟通清单。" },
-    { id: "A002", title: "孩子注意力训练方法论", cover: "../assets/img/covers/focus.jpg", author: "张老师", tagIds: ["TG06"], date: "08-30", reads: 1560, intro: "用可落地的小练习，帮孩子把注意力练成习惯。" },
-    { id: "A004", title: "亲子沟通的三个黄金句式", cover: "../assets/img/covers/talk.jpg", author: "李老师", tagIds: ["TG02"], date: "09-05", reads: 980, intro: "少讲道理、多给反馈，三条句式立刻能用。" },
-    { id: "A005", title: "青春期边界：爱与规则怎么并存", cover: "../assets/img/covers/parent.jpg", author: "王博士", tagIds: ["TG01", "TG03"], date: "09-12", reads: 1120, intro: "边界不是对立，而是让关系更安全。" }
+    { id: "A001", title: "9 月新学期家长指南", cover: "../assets/img/covers/term.jpg", author: "编辑部", tagIds: ["TG04"], date: "08-25", reads: 2340, intro: "开学前家长最关心的节奏、作息与沟通清单。", paid: false, price: 0 },
+    { id: "A002", title: "孩子注意力训练方法论", cover: "../assets/img/covers/focus.jpg", author: "张老师", tagIds: ["TG06"], date: "08-30", reads: 1560, intro: "用可落地的小练习，帮孩子把注意力练成习惯。", paid: true, price: 9.9 },
+    { id: "A004", title: "亲子沟通的三个黄金句式", cover: "../assets/img/covers/talk.jpg", author: "李老师", tagIds: ["TG02"], date: "09-05", reads: 980, intro: "少讲道理、多给反馈，三条句式立刻能用。", paid: false, price: 0 },
+    { id: "A005", title: "青春期边界：爱与规则怎么并存", cover: "../assets/img/covers/parent.jpg", author: "王博士", tagIds: ["TG01", "TG03"], date: "09-12", reads: 1120, intro: "边界不是对立，而是让关系更安全。", paid: true, price: 6.9 }
   ];
 
   function esc(s) {
@@ -39,12 +47,19 @@
       var t = Tags.get(id);
       return t ? t.name : "";
     }).filter(Boolean)[0] || "文章";
+    var owned = a.paid && Mp.hasRights(a.id);
+    var payMark = !a.paid
+      ? '<span class="ar-free">免费</span>'
+      : (owned
+        ? '<span class="ar-pay ar-owned">已解锁</span>'
+        : '<span class="ar-pay">付费</span><span class="ar-price">¥' + a.price + "</span>");
     return (
       '<a class="mp-arow" href="article-detail.html?id=' + encodeURIComponent(a.id) + '">' +
         '<div class="mp-arow-cover"><img src="' + esc(a.cover) + '" alt="" /></div>' +
         '<div class="mp-arow-bd">' +
           '<div class="mp-arow-title">' + esc(a.title) + "</div>" +
-          '<div class="mp-arow-meta"><span>' + esc(tag) + "</span><span>" + esc(a.author) + "</span><span>" + a.reads + " 阅读</span></div>" +
+          '<div class="mp-arow-meta"><span>' + payMark + "</span><span>" + esc(tag) + "</span><span>" + esc(a.author) + "</span><span>" + a.reads + " 阅读</span></div>" +
+          '<div class="muted" style="font-size:12px;margin-top:4px;line-height:1.4">' + esc(a.intro) + "</div>" +
         "</div>" +
       "</a>"
     );

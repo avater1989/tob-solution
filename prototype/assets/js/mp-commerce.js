@@ -69,6 +69,19 @@
       include: "线上课全部章节视频",
       service: "可在「我的 → 账号与帮助」联系商家；售后按商家说明处理"
     },
+    article: {
+      id: "article",
+      title: "付费文章",
+      type: "article",
+      typeLabel: "文章",
+      price: "6.9",
+      access: "付费购买",
+      validity: "长期有效",
+      validityStart: "支付成功即日起算",
+      startHow: "支付成功后立即解锁全文阅读",
+      include: "本文全部正文内容（不含课程与直播权益）",
+      service: "可在「我的 → 账号与帮助」联系商家；售后按商家说明处理"
+    },
     trialClaim: {
       id: "trialClaim",
       title: "家庭教育入门 9.9",

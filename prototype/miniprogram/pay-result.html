@@ -59,6 +59,25 @@
         map[oid] = { valid: true, grantedAt: new Date().toISOString(), source: "pay" };
         localStorage.setItem(key, JSON.stringify(map));
       } catch (e) {}
+    } else if (from === "article") {
+      desc.textContent = "文章阅读权益已开通 · 可永久查看全文";
+      goLearn.style.display = "block";
+      goLearn.textContent = "阅读全文";
+      goLive.style.display = "none";
+      goOffline.style.display = "none";
+      goOfflineList.style.display = "none";
+      var aid = course && course !== "O001" ? course : "A002";
+      if (ret) {
+        var ma = ret.match(/[?&]id=([^&]+)/);
+        if (ma) aid = decodeURIComponent(ma[1]);
+      }
+      try {
+        var ak = "mp_course_rights_v1";
+        var amap = JSON.parse(localStorage.getItem(ak) || "{}") || {};
+        amap[aid] = { valid: true, grantedAt: new Date().toISOString(), source: "pay", kind: "article" };
+        localStorage.setItem(ak, JSON.stringify(amap));
+      } catch (eA) {}
+      goLearn.href = ret || ("article-detail.html?id=" + encodeURIComponent(aid) + "&bought=1");
     } else if (from === "live" || from === "ticket") {
       desc.textContent = "直播/课程权益已开通 · 可返回直播间继续观看";
       goLearn.style.display = from === "live" ? "block" : "none";

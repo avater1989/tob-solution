@@ -10,22 +10,45 @@
     .ad-body { background:#fff; padding:16px; font-size:14px; line-height:1.75; color:#1d2129; }
     .ad-body p { margin:0 0 12px; }
     .ad-meta { font-size:12px; color:#86909c; margin-top:8px; display:flex; gap:12px; flex-wrap:wrap; }
+    .ad-lock {
+      margin-top:8px; padding:28px 16px 20px; text-align:center;
+      background:linear-gradient(180deg, rgba(255,255,255,0) 0%, #fff 28%, #fff 100%);
+      border-top:1px dashed #e5e6eb;
+    }
+    .ad-lock-icon { font-size:28px; line-height:1; margin-bottom:8px; }
+    .ad-lock h4 { margin:0 0 6px; font-size:15px; color:#1d2129; }
+    .ad-lock p { margin:0; font-size:12px; color:#86909c; line-height:1.6; }
+    .ad-price { color:#f53f3f; font-weight:600; }
+    .ad-owned { background:#e8ffea; color:#00b42a; font-size:12px; padding:8px 12px; border-radius:8px; margin-top:10px; }
+    .ad-preview-fade {
+      max-height:120px; overflow:hidden; position:relative;
+    }
+    .ad-preview-fade::after {
+      content:""; position:absolute; left:0; right:0; bottom:0; height:64px;
+      background:linear-gradient(180deg, rgba(255,255,255,0), #fff);
+    }
   </style>
 </head>
 <body class="mp-page" data-tabbar="0">
-  <div class="mp-frame" style="padding-bottom:24px">
+  <div class="mp-frame" id="ad-frame" style="padding-bottom:24px">
     <div class="mp-top" style="height:190px"></div>
     <div class="mp-status"><span>9:41</span><span>文章</span><span>100%</span></div>
     <div class="mp-nav"><a class="back" href="articles.html">←</a>文章详情</div>
     <div class="mp-body" id="ad-root"></div>
+    <div class="mp-bottom-bar" id="ad-bar" style="display:none">
+      <button class="mp-btn mp-btn-outline" type="button" id="ad-fav" style="width:88px">收藏</button>
+      <button class="mp-btn" type="button" id="ad-cta" style="flex:1">立即购买</button>
+    </div>
   </div>
   <p class="mp-hint"><a href="articles.html">文章列表</a> · <a href="../admin/content-article.html">管理端</a></p>
 
   <script src="../assets/js/proto.js"></script>
   <script src="../assets/js/content-tags.js?v=2"></script>
   <script src="../assets/js/mp-shell.js"></script>
+  <script src="../assets/js/mp-commerce.js"></script>
   <script>
   var Tags = window.ContentTags;
+  var Mp = window.MpCommerce;
   var MAP = {
     A001: {
       title: "9 月新学期家长指南",
@@ -34,6 +57,10 @@
       tagIds: ["TG04"],
       date: "2026-08-25",
       reads: 2340,
+      paid: false,
+      price: 0,
+      goodsId: "",
+      preview: "",
       body: "<p>新学期开始前，建议先和孩子一起对齐三件事：作息、学习节奏、家庭沟通方式。</p><p>1. 提前一周回调作息，避免开学第一周硬着陆。<br>2. 用「本周一件小事」代替宏大目标，降低焦虑。<br>3. 每天留 10 分钟无评判倾听，让孩子感到被看见。</p><p>本文为免费精选内容，可分享给家人一起看。</p>"
     },
     A002: {
@@ -43,7 +70,11 @@
       tagIds: ["TG06"],
       date: "2026-08-30",
       reads: 1560,
-      body: "<p>注意力不是「逼」出来的，而是练出来的。可以从短时专注、环境减噪、任务切片三方面入手。</p><p>推荐练习：番茄钟 15 分钟 → 休息 5 分钟；书桌只留当前任务物品；完成后用具体表扬反馈。</p>"
+      paid: true,
+      price: 9.9,
+      goodsId: "G-ART-002",
+      preview: "<p>注意力不是「逼」出来的，而是练出来的。可以从短时专注、环境减噪、任务切片三方面入手。</p><p>以下为付费全文的系统方法与家庭练习清单……</p>",
+      body: "<p>注意力不是「逼」出来的，而是练出来的。可以从短时专注、环境减噪、任务切片三方面入手。</p><p><b>一、短时专注训练</b><br>推荐练习：番茄钟 15 分钟 → 休息 5 分钟；连续 3 天后可升到 20 分钟。关键是「完成一次」而不是「坐够时间」。</p><p><b>二、环境减噪</b><br>书桌只留当前任务物品；手机放到视线外；家庭约定专注时段不打断。</p><p><b>三、任务切片</b><br>把大作业拆成「可见的小块」：例如作文 = 选题 5 分钟 + 提纲 10 分钟 + 写一段 15 分钟。</p><p><b>四、具体表扬</b><br>完成后用「你刚才专注了 15 分钟，中间没有看手机」这类可观察反馈，而不是空泛的「真棒」。</p><p>付费全文还包含 7 天打卡表与亲子沟通话术示例。</p>"
     },
     A004: {
       title: "亲子沟通的三个黄金句式",
@@ -52,6 +83,10 @@
       tagIds: ["TG02"],
       date: "2026-09-05",
       reads: 980,
+      paid: false,
+      price: 0,
+      goodsId: "",
+      preview: "",
       body: "<p>句式一：「我看到你……」——先描述事实。<br>句式二：「你是不是觉得……」——确认感受。<br>句式三：「我们一起试试……」——邀请合作。</p><p>少用「你总是」「你从不」，多给可执行的下一步。</p>"
     },
     A005: {
@@ -61,7 +96,11 @@
       tagIds: ["TG01", "TG03"],
       date: "2026-09-12",
       reads: 1120,
-      body: "<p>边界的本质是：什么可以谈、什么不可谈、后果是什么。爱提供安全感，规则提供可预期性。</p><p>建议家庭会议共同约定 2–3 条底线，并写清违反后的自然后果，而不是临时发火。</p>"
+      paid: true,
+      price: 6.9,
+      goodsId: "G-ART-005",
+      preview: "<p>边界的本质是：什么可以谈、什么不可谈、后果是什么。爱提供安全感，规则提供可预期性。</p><p>解锁全文可获得家庭会议模板与 2–3 条底线约定范例……</p>",
+      body: "<p>边界的本质是：什么可以谈、什么不可谈、后果是什么。爱提供安全感，规则提供可预期性。</p><p><b>家庭会议怎么开</b><br>建议每周固定 20 分钟，共同约定 2–3 条底线，并写清违反后的自然后果，而不是临时发火。</p><p><b>底线范例</b><br>1. 晚上 10:30 前归寝（超时次日娱乐时间减半）<br>2. 作业未完成不刷短视频<br>3. 冲突时先暂停 10 分钟再谈</p><p><b>爱的表达</b><br>规则之外，每天至少一次「无条件的看见」：描述孩子做对的事，不立刻加要求。</p>"
     }
   };
 
@@ -71,23 +110,115 @@
     });
   }
 
-  var id = new URLSearchParams(location.search).get("id") || "A001";
+  var qs = new URLSearchParams(location.search);
+  var id = qs.get("id") || "A001";
   var a = MAP[id] || MAP.A001;
+
+  if (qs.get("bought") === "1" && a.paid) {
+    Mp.grantRights(a.id || id, { source: "pay", kind: "article" });
+  }
+
+  var articleKey = a.id || id;
+  var owned = !a.paid || Mp.hasRights(articleKey);
   var tags = (a.tagIds || []).map(function (tid) {
     var t = Tags.get(tid);
     return t ? '<span class="mp-crow-tag">' + esc(t.name) + "</span>" : "";
   }).join("");
+
+  var payBadge = a.paid
+    ? (owned
+      ? '<span class="mp-crow-tag" style="background:#e8ffea;color:#00b42a">已解锁</span>'
+      : '<span class="mp-crow-tag" style="background:#fff7e6;color:#d46b08">付费 ¥' + a.price + "</span>")
+    : '<span class="mp-crow-tag" style="background:#e8f3ff;color:#165dff">免费</span>';
+
+  var bodyHtml;
+  if (!a.paid || owned) {
+    bodyHtml = '<div class="ad-body">' + a.body + "</div>";
+  } else {
+    bodyHtml =
+      '<div class="ad-body">' +
+        '<div class="ad-preview-fade">' + (a.preview || a.body) + "</div>" +
+        '<div class="ad-lock">' +
+          '<div class="ad-lock-icon">🔒</div>' +
+          "<h4>全文需付费解锁</h4>" +
+          '<p>试看以上内容 · 购买后永久阅读<br><span class="ad-price">¥' + a.price + "</span>" +
+          (a.goodsId ? ' · 商品 ' + esc(a.goodsId) : "") + "</p>" +
+        "</div>" +
+      "</div>";
+  }
+
+  var ownedTip = owned && a.paid
+    ? '<div class="ad-owned">已获得本文阅读权益，可永久查看全文</div>'
+    : "";
 
   document.getElementById("ad-root").innerHTML =
     '<div style="height:160px;background:url(' + esc(a.cover) + ') center/cover"></div>' +
     '<div style="background:#fff;padding:14px 16px">' +
       '<h3 style="font-size:18px;line-height:1.4">' + esc(a.title) + "</h3>" +
       '<div class="ad-meta"><span>' + esc(a.author) + "</span><span>" + esc(a.date) + "</span><span>" + a.reads + " 阅读</span></div>" +
-      '<div class="mp-crow-tags" style="margin-top:10px">' + tags + '</div>' +
+      '<div class="mp-crow-tags" style="margin-top:10px">' + payBadge + tags + "</div>" +
+      ownedTip +
     "</div>" +
-    '<div class="ad-body">' + a.body + "</div>" +
-    '<div style="padding:16px"><button class="mp-btn" type="button" data-toast="已收藏本文（原型）">收藏文章</button>' +
-    '<a class="mp-btn mp-btn-outline" href="articles.html" style="margin-top:10px">更多精选文章</a></div>';
+    bodyHtml;
+
+  var frame = document.getElementById("ad-frame");
+  var bar = document.getElementById("ad-bar");
+  var cta = document.getElementById("ad-cta");
+  var fav = document.getElementById("ad-fav");
+
+  if (a.paid && !owned) {
+    frame.style.paddingBottom = "72px";
+    bar.style.display = "flex";
+    cta.textContent = "立即购买 ¥" + a.price;
+  } else if (a.paid && owned) {
+    frame.style.paddingBottom = "72px";
+    bar.style.display = "flex";
+    cta.textContent = "已解锁 · 继续阅读";
+  } else {
+    document.getElementById("ad-root").innerHTML +=
+      '<div style="padding:16px"><button class="mp-btn" type="button" id="ad-fav-free">收藏文章</button>' +
+      '<a class="mp-btn mp-btn-outline" href="articles.html" style="margin-top:10px">更多精选文章</a></div>';
+    var ff = document.getElementById("ad-fav-free");
+    if (ff) ff.addEventListener("click", function () { Proto.toast("已收藏本文（原型）"); });
+  }
+
+  if (fav) {
+    fav.addEventListener("click", function () { Proto.toast("已收藏本文（原型）"); });
+  }
+
+  function startBuy() {
+    Mp.openBuyNotice({
+      catalogId: "article",
+      from: "article",
+      price: String(a.price),
+      course: articleKey,
+      title: a.title,
+      include: "本文全部正文内容（购买关联商品后解锁全文）",
+      item: {
+        title: a.title,
+        typeLabel: "文章",
+        include: "本文全部正文 · 长期有效",
+        type: "article",
+        access: "付费购买",
+        validity: "长期有效",
+        validityStart: "支付成功即日起算",
+        startHow: "支付成功后立即解锁全文阅读",
+        service: "可在「我的 → 账号与帮助」联系商家"
+      },
+      returnUrl: "article-detail.html?id=" + encodeURIComponent(articleKey) + "&bought=1"
+    });
+  }
+
+  if (cta) {
+    cta.addEventListener("click", function () {
+      if (owned) {
+        var body = document.querySelector(".ad-body");
+        if (body) body.scrollIntoView({ behavior: "smooth", block: "start" });
+        return;
+      }
+      startBuy();
+    });
+  }
   </script>
 </body>
 </html>
