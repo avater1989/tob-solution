@@ -423,12 +423,12 @@
       var story = document.getElementById("as-story");
       story.style.display = "";
       story.innerHTML = "表达链路：订单已退款 → 退款处理完成 → 权益被回收 → 用户当前不能访问课程。";
-      document.getElementById("kv-addr").textContent = "系列课商品仅退款，无需退货";
+      document.getElementById("kv-addr").textContent = "课程商品仅退款，无需退货";
       document.getElementById("kv-deadline").textContent = "—";
       document.getElementById("kv-timeout-rule").textContent = "仅退款 · 无退货时效";
       var warn = document.querySelector("#as-found .alert.alert-warning");
       if (warn && warn.id !== "as-story") {
-        warn.innerHTML = "本单为<b>系列课商品仅退款</b>：退款完成后系统自动回收课程权益，买家无法再访问对应课程。";
+        warn.innerHTML = "本单为<b>课程商品仅退款</b>：退款完成后系统自动回收课程权益，买家无法再访问对应课程。";
       }
     } else {
       rightsCard.style.display = "none";

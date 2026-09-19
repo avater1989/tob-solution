@@ -157,7 +157,6 @@
       {
         group: "系统管理",
         links: [
-          { id: "sys-resources", href: "sys-resources.html", label: "资源管理" },
           { id: "sys-dict", href: "sys-dict.html", label: "数据字典" },
           { id: "channel-mgmt", href: "channel-mgmt.html", label: "渠道管理" },
         ],

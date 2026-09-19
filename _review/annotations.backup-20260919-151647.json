@@ -1,0 +1,63 @@
+{
+  "v": 1,
+  "updated": "2026-09-19T15:15:22",
+  "items": [
+    {
+      "id": "rmu817gaxzqol",
+      "page": "admin/goods.html",
+      "anchor": {
+        "selector": "#gd-tbody > tr:nth-of-type(1) > td:nth-of-type(10) > a:nth-of-type(3)",
+        "selectorIn": "#gd-tbody > tr:nth-of-type(1) > td:nth-of-type(10) > a:nth-of-type(3)",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "a",
+        "text": "分享",
+        "html": "<a href=\"#\" data-row-act=\"share\">分享</a>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "参考【内容】 - 【系列课】的分享弹窗，补充这里分享按钮的功能",
+      "status": "open",
+      "createdAt": "2026-09-19T06:53:56.937Z"
+    },
+    {
+      "id": "rmu81xqvpf7nf",
+      "page": "admin/dashboard.html",
+      "anchor": {
+        "selector": "#rt-unassigned",
+        "selectorIn": "#rt-unassigned",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "button#rt-unassigned.stat-card",
+        "text": "未分配线索 1 最长等待 21 小时 · 视频号",
+        "html": "<button type=\"button\" class=\"stat-card\" id=\"rt-unassigned\" data-todo-filter=\"lead\"> <div class=\"stat-label\">未分配线索</div> <div class=\"stat-value warn\" data-rt=\"unassigned\">1</div> <div class=\"stat-hint\" id=\"rt-unassigned-hint\">最长等待 21 小时 · 视频号</div> </button>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "放在上方，新增线索旁边",
+      "status": "open",
+      "createdAt": "2026-09-19T07:14:23.701Z"
+    },
+    {
+      "id": "rmu81yzt6l8ex",
+      "page": "admin/goods-edit.html",
+      "anchor": {
+        "selector": "#gd-type > label:nth-of-type(1) > b",
+        "selectorIn": "#gd-type > label:nth-of-type(1) > b",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "b",
+        "text": "系列课商品",
+        "html": "<b>系列课商品</b>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "改成「课程商品」，可以是系列课、线下课、视频、图文",
+      "status": "open",
+      "createdAt": "2026-09-19T07:15:21.931Z"
+    }
+  ]
+}

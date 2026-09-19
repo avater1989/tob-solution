@@ -143,7 +143,7 @@
     </div>
     <div class="acts">
       <button class="btn" id="btn-refresh">刷新</button>
-      <a class="btn btn-primary" href="/prototype/index.html">打开原型入口</a>
+      <a class="btn btn-primary" href="../prototype/index.html">打开原型入口</a>
     </div>
   </header>
 
@@ -196,8 +196,10 @@
       .replace(/"/g, "&quot;");
   }
 
+  /* 看板在 <root>/_review/ 下，页面前缀用相对路径拼：
+     这样经服务打开（http）或直接开文件（file://）都能跳到原型页。 */
   function pageUrl(page) {
-    return "/prototype/" + String(page || "").replace(/^\/+/, "");
+    return "../prototype/" + String(page || "").replace(/^\/+/, "");
   }
 
   function match(it) {

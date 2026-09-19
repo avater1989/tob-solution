@@ -1,5 +1,3 @@
-/* ⚠️ 已弃用：本文件已迁移到仓库根的 review-kit/annotate.js（通用版，支持 window.REVIEW_KIT 配置）。
- * 本副本仅作回滚备份，页面不再加载它；要改标注层请改 review-kit/ 下的文件。 */
 /* 原型评审标注层 · annotate.js
  * 用法：Alt+E 进入/退出标注模式 → 点击元素 → 写意见 → 保存。
  * 标注会记录三重锚点（页面路径 + CSS 选择器 + 元素文本/HTML 快照），
@@ -68,6 +66,17 @@
     var m = p.match(/(admin|ops|miniprogram)\/([^/]+\.html)$/);
     if (m) return m[1] + "/" + m[2];
     return p.split("/").pop() || "index.html";
+  }
+
+  /* 评审看板的地址：按当前页面深度算相对路径。
+     不能写死 "/_review/board.html"：直接用 file:// 打开原型页时，
+     绝对路径会被解析成 file:///_review/... ，一点就报「找不到文件」。
+     层级取自 pageKey —— index.html 是 1 层，admin/x.html 是 2 层。 */
+  function boardUrl() {
+    var depth = pageKey().split("/").length;
+    var up = "";
+    for (var i = 0; i < depth; i++) up += "../";
+    return up + "_review/board.html";
   }
 
   function isUI(el) {
@@ -180,7 +189,7 @@
 
   function writeLocal(items) {
     try {
-      localStorage.setItem(STORE_KEY, JSON.stringify({ v: 1, updated: new Date().toISOString(), items: items }));
+      localStorage.setItem(STORE_KEY, JSON.stringify({ v: 1, updated: new Date().toISOString(), items: cleanItems(items) }));
     } catch (e) {}
   }
 
@@ -195,47 +204,70 @@
       });
   }
 
+  /* 返回 null 表示「读取失败」，与「服务端确实没有标注（[]）」区分开：
+     读失败时页面不能把本地数据反向推回，否则会把损坏的文件覆盖成空。 */
   function loadRemote() {
-    if (!serverOK) return Promise.resolve([]);
+    if (!serverOK) return Promise.resolve(null);
     return fetch(SERVER + "/load?t=" + Date.now(), { cache: "no-store" })
       .then(function (r) {
+        if (!r.ok) throw new Error("HTTP " + r.status);
         return r.json();
       })
       .then(function (d) {
         return (d && d.items) || [];
       })
       .catch(function () {
-        return [];
+        return null;
       });
   }
 
+  /* 落盘的只有业务字段：_stale 这类运行时标记不能写进 annotations.json / localStorage，
+     否则会污染标注数据、也会让看板把内部字段当成标注内容显示。 */
+  function cleanItems(items) {
+    return (items || []).map(function (it) {
+      var o = {};
+      Object.keys(it).forEach(function (k) {
+        if (k.charAt(0) !== "_") o[k] = it[k];
+      });
+      return o;
+    });
+  }
+
+  function stampOf(it) {
+    return String((it && (it.updatedAt || it.createdAt)) || "");
+  }
+
+  /* 服务端与本地取并集。同一条标注两端都有时，取时间戳更新的那份：
+     否则离线期间的本地改动会被服务端旧值悄悄盖掉。 */
   function mergeItems(remote, local) {
     var byId = {};
     var out = [];
-    function push(it, prefer) {
+    function push(it) {
       if (!it || !it.id) return;
       var cur = byId[it.id];
       if (!cur) {
         byId[it.id] = it;
         out.push(it);
-      } else if (prefer) {
+        return;
+      }
+      if (stampOf(it) > stampOf(cur)) {
         out[out.indexOf(cur)] = it;
         byId[it.id] = it;
       }
     }
-    (remote || []).forEach(function (it) {
-      push(it, false);
-    });
-    (local || []).forEach(function (it) {
-      push(it, false);
-    });
+    (remote || []).forEach(push);
+    (local || []).forEach(push);
     out.sort(function (a, b) {
       return String(a.createdAt || "").localeCompare(String(b.createdAt || ""));
     });
     return out;
   }
 
-  function persist(quiet) {
+  /* 保存到服务端。
+     mode = "page"（默认）：服务端只替换本页面的标注，别的页面保持服务端现值，
+                           避免同时开了多个原型页时互相盖掉对方的标注。
+     mode = "replace"：整体覆盖，用于「清空全部标注」。 */
+  function persist(quiet, opts) {
     writeLocal(state.items);
     if (!serverOK) {
       setHint("error", "本地模式：标注只存在浏览器里，请用 _review/serve.py 启动服务后再标，否则文件不落盘");
@@ -244,7 +276,11 @@
     return fetch(SERVER + "/save", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ page: pageKey(), items: state.items })
+      body: JSON.stringify({
+        page: pageKey(),
+        mode: (opts && opts.mode) || "page",
+        items: cleanItems(state.items)
+      })
     })
       .then(function (r) {
         if (!r.ok) throw new Error("HTTP " + r.status);
@@ -347,7 +383,6 @@
       pin.className = "__ann_pin";
       pin.setAttribute("data-ann-ui", "1");
       pin.setAttribute("data-status", it.status || "open");
-      if (it._stale) pin.setAttribute("data-stale", "1");
       pin.style.left = p.left + "px";
       pin.style.top = p.top + "px";
       pin.textContent = String(idx + 1);
@@ -454,7 +489,9 @@
       setMode(!state.mode);
       return;
     }
-    if ((e.altKey || e.metaKey) && (e.key === "l" || e.key === "L")) {
+    /* macOS 上 Alt 是组合键前缀，e.key 会变成 "¬" 之类的字符，
+       所以必须用物理键位 e.code 兜底，否则 Alt+L 在 mac 上按了没反应。 */
+    if ((e.altKey || e.metaKey) && (e.key === "l" || e.key === "L" || e.code === "KeyL")) {
       e.preventDefault();
       state.listOpen = !state.listOpen;
       renderList();
@@ -667,7 +704,7 @@
     }
     state.items = [];
     closeComposer();
-    persist();
+    persist(true, { mode: "replace" });
     render();
     window.Proto && window.Proto.toast && window.Proto.toast("已清空全部标注（本地 + 服务端）");
   }
@@ -745,9 +782,17 @@
       state.dom.panel = d;
       d.addEventListener("click", onPanelClick);
     }
-    var stale = items.filter(function (i) {
-      return i._stale;
-    }).length;
+    /* _stale 由 render() 写入，但按 Alt+L 直接开列表时可能没走过 render，
+       这里实时重判一次，避免拿过期标记去提示用户。 */
+    var stale = 0;
+    items.forEach(function (it) {
+      var found = false;
+      try {
+        found = !!document.querySelector((it.anchor || {}).selector || "");
+      } catch (e) {}
+      it._stale = !found;
+      if (!found) stale++;
+    });
 
     d.innerHTML =
       '<div class="__ann_hd"><strong>本页标注 ' + items.length + " 条</strong>" +
@@ -836,7 +881,10 @@
     } else if (act === "export") {
       exportJson();
     } else if (act === "board") {
-      window.open("/_review/board.html", "_blank");
+      if (!serverOK) {
+        window.Proto && window.Proto.toast && window.Proto.toast("未连接标注服务，看板暂时读不到数据");
+      }
+      window.open(boardUrl(), "_blank");
     } else if (act === "clear-all") {
       clearAll();
     }
@@ -887,7 +935,7 @@
   }
 
   function exportJson() {
-    var blob = new Blob([JSON.stringify({ v: 1, exportedAt: new Date().toISOString(), items: state.items }, null, 2)], {
+    var blob = new Blob([JSON.stringify({ v: 1, exportedAt: new Date().toISOString(), items: cleanItems(state.items) }, null, 2)], {
       type: "application/json"
     });
     var a = document.createElement("a");
@@ -966,11 +1014,21 @@
       serverOK = ok;
       return loadRemote();
     }).then(function (remote) {
-      if (remote && remote.length) {
+      if (remote === null) {
+        /* 读不到服务端标注：只渲染本地副本，绝不反向写回覆盖服务端 */
+        render();
+        renderList();
+        if (serverOK) {
+          setHint("error", "读取服务端标注失败，已保留浏览器本地副本；请检查 _review/annotations.json");
+        }
+        return;
+      }
+      if (remote.length) {
         state.items = mergeItems(remote, state.items);
         writeLocal(state.items);
       } else if (serverOK && state.items.length) {
-        persist(true);
+        /* 服务端为空、本地仍有数据：整体推回一次，避免历史标注只留在浏览器里 */
+        persist(true, { mode: "replace" });
       }
       render();
       renderList();

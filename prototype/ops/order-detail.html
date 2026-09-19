@@ -8,8 +8,9 @@
 </head>
 <body class="admin-body" data-module="biz" data-nav="trade-orders" data-title="订单详情" data-crumb="运营后台 / 交易 / 订单管理 / 订单列表 / 订单详情">
 <div id="header-actions">
-  <button class="btn" id="btn-back-list" onclick="location.href='trade-orders.html'">返回订单列表</button>
+  <button class="btn" id="btn-back-list">返回订单列表</button>
   <button class="btn" id="btn-export">导出订单</button>
+  <button class="btn" id="btn-add-note">添加备注</button>
   <a class="btn btn-primary" id="btn-refund" href="aftersales.html">发起退款</a>
 </div>
 <div id="page-content" style="display:none">
@@ -21,17 +22,19 @@
 
   <div id="od-found" style="display:none">
 
-    <!-- 状态头 -->
+    <!-- 状态头：支付状态 + 单号 + 渠道 + 租户 + 四步流程 -->
     <div class="card" style="margin-bottom:8px"><div class="card-bd">
       <div class="order-status-bar">
         <div class="os-main">
           <span class="badge" id="od-pay-badge" style="font-size:13px">—</span>
           <b class="mono" id="od-no">—</b>
-          <span class="tag tag-blue" id="od-channel">—</span>
+          <span class="tag tag-green" id="od-channel">—</span>
+          <span class="tag tag-blue" id="od-tenant-tag">—</span>
           <span class="muted" id="od-created">—</span>
         </div>
-        <div class="os-side muted" id="od-status-side">—</div>
+        <div class="os-flow" id="od-flow"></div>
       </div>
+      <div class="alert alert-info" id="od-alert" style="margin-top:10px;font-size:13px"></div>
     </div></div>
 
     <!-- 订单信息 + 金额与结算 -->
@@ -42,10 +45,13 @@
             <div class="kv-row"><span>订单号</span><b class="mono" id="od-info-no">—</b></div>
             <div class="kv-row"><span>交易流水号</span><b class="mono" id="od-txn-no">—</b></div>
             <div class="kv-row"><span>渠道支付流水号</span><b class="mono" id="od-channel-txn">—</b></div>
+            <div class="kv-row"><span>通联支付交易单号</span><b class="mono" id="od-pay-txn">—</b></div>
             <div class="kv-row"><span>订单类型</span><b id="od-order-type">—</b></div>
-            <div class="kv-row"><span>渠道来源</span><b id="od-source">—</b></div>
+            <div class="kv-row"><span>商品类型</span><b id="od-goods-type-info">—</b></div>
+            <div class="kv-row"><span>下单渠道</span><b id="od-source">—</b></div>
+            <div class="kv-row" id="od-live-row" style="display:none"><span>关联直播</span><b id="od-live-text">—</b></div>
             <div class="kv-row"><span>订单来源租户</span><b id="od-tenant">—</b></div>
-            <div class="kv-row"><span>内容来源</span><b id="od-content-source">—</b></div>
+            <div class="kv-row"><span>内容归属</span><b id="od-content-source">—</b></div>
             <div class="kv-row"><span>结算模式</span><b id="od-settle-mode">—</b></div>
             <div class="kv-row"><span>推广人</span><b id="od-promoter">—</b></div>
             <div class="kv-row"><span>下单时间</span><b id="od-time">—</b></div>
@@ -54,17 +60,25 @@
           </div>
         </div>
       </div>
+
       <div class="card"><div class="card-hd"><h2>金额与结算</h2><span class="muted" style="font-size:12px">按支付时间口径</span></div>
         <div class="card-bd">
           <div class="kv">
             <div class="kv-row"><span>商品金额</span><b id="od-gross">—</b></div>
             <div class="kv-row"><span>优惠抵扣</span><b id="od-discount">—</b></div>
             <div class="kv-row"><span>实付金额</span><b id="od-paid">—</b></div>
-            <div class="kv-row"><span id="od-fee-label">平台佣金</span><b id="od-fee" class="danger">—</b></div>
-            <div class="kv-row"><span>商户应得</span><b id="od-net" style="color:#cb2634">—</b></div>
+            <div class="kv-row"><span>累计退款</span><b id="od-refunded-amt">—</b></div>
+            <div class="kv-row"><span>净计收（分账基数）</span><b id="od-base">—</b></div>
+            <div class="kv-row"><span>入金手续费（0.3%）</span><b id="od-channel-fee">—</b></div>
+            <div class="kv-row"><span>收款会员号</span><b class="mono" id="od-split-member">—</b></div>
+            <div class="kv-row"><span>平台商户号</span><b class="mono" id="od-split-merchant">—</b></div>
+            <div class="kv-row"><span id="od-plat-label">平台所得</span><b id="od-plat">—</b></div>
+            <div class="kv-row"><span id="od-mch-label">商家应得</span><b id="od-mch">—</b></div>
             <div class="kv-row"><span>分账状态</span><b id="od-split-status">—</b></div>
+            <div class="kv-row"><span>分账规则快照</span><b id="od-split-snapshot">—</b></div>
+            <div class="kv-row"><span>所属结算单</span><b><a class="link" id="od-settlement-link" href="settlements.html">—</a></b></div>
           </div>
-          <p class="muted" style="font-size:12px;margin:8px 0 0">资金由平台统一收单后按分账规则清分至各分账方，明细见「结算单」。</p>
+          <p class="muted" style="font-size:12px;margin:8px 0 0">平台统一收单后按分账规则清分至各分账方；入金手续费为渠道成本，从交易额中扣除、不参与分账。净计收 = 实付 − 累计退款，为分账基数。</p>
         </div>
       </div>
     </div>
@@ -74,8 +88,8 @@
       <div class="card"><div class="card-hd"><h2>商品信息</h2></div>
         <div class="card-bd" style="padding:0">
           <table class="data">
-            <thead><tr><th>商品名称</th><th>类型</th><th>规格</th><th>数量</th><th>单价</th><th>金额</th></tr></thead>
-            <tbody><tr id="od-goods-row">
+            <thead><tr><th>商品名称</th><th>商品类型</th><th>规格</th><th>数量</th><th>单价</th><th>金额</th></tr></thead>
+            <tbody><tr>
               <td id="od-goods-name">—</td>
               <td id="od-goods-type">—</td>
               <td id="od-goods-spec">—</td>
@@ -87,19 +101,50 @@
         </div>
         <div class="card-bd" style="border-top:1px solid var(--color-border)">
           <div class="kv">
+            <div class="kv-row"><span>交付方式</span><b id="od-deliver">—</b></div>
+            <div class="kv-row"><span>权益编号</span><b class="mono" id="od-benefit-id">—</b></div>
             <div class="kv-row"><span>权益状态</span><b id="od-benefit">—</b></div>
             <div class="kv-row"><span>权益开通时间</span><b id="od-benefit-time">—</b></div>
             <div class="kv-row"><span>关联权益记录</span><b><a class="link" href="entitlement.html" id="od-benefit-link">查看权益开通记录 →</a></b></div>
           </div>
         </div>
       </div>
+
       <div class="card"><div class="card-hd"><h2>买家信息</h2></div>
         <div class="card-bd">
           <div class="kv">
             <div class="kv-row"><span>买家</span><b id="od-buyer">—</b></div>
             <div class="kv-row"><span>手机号</span><b class="mono" id="od-phone">—</b></div>
             <div class="kv-row"><span>是否企微好友</span><b id="od-wecom">—</b></div>
-            <div class="kv-row"><span>所属用户</span><b><a class="link" href="user-detail.html" id="od-user-link">查看用户详情 →</a></b></div>
+            <div class="kv-row"><span>注册来源</span><b id="od-reg-source">—</b></div>
+            <div class="kv-row"><span>所属用户</span><b><a class="link" href="users.html" id="od-user-link">查看用户详情 →</a></b></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 租户与内容来源 + 对账信息 -->
+    <div class="detail-cols">
+      <div class="card"><div class="card-hd"><h2>租户与内容来源</h2></div>
+        <div class="card-bd">
+          <div class="kv">
+            <div class="kv-row"><span>订单来源租户</span><b><a class="link" id="od-tenant-link" href="tenants.html">—</a></b></div>
+            <div class="kv-row"><span>内容归属</span><b id="od-content-owner">—</b></div>
+            <div class="kv-row"><span>分账链路</span><b id="od-settle-channel">—</b></div>
+            <div class="kv-row"><span>推广人</span><b id="od-promoter-2">—</b></div>
+          </div>
+          <p class="muted" style="font-size:12px;margin:8px 0 0" id="od-settle-note">—</p>
+        </div>
+      </div>
+
+      <div class="card"><div class="card-hd"><h2>对账信息</h2><span class="muted" style="font-size:12px">渠道侧流水核对（T+1）</span></div>
+        <div class="card-bd">
+          <div class="kv">
+            <div class="kv-row"><span>对账批次</span><b id="od-recon-batch">—</b></div>
+            <div class="kv-row"><span>对账状态</span><b id="od-recon-status">—</b></div>
+            <div class="kv-row"><span>渠道流水核对</span><b id="od-recon-txn">—</b></div>
+            <div class="kv-row"><span>差异处理</span><b id="od-recon-diff">—</b></div>
+            <div class="kv-row"><span>关联对账单</span><b><a class="link" id="od-recon-link" href="recon.html">查看对账 →</a></b></div>
           </div>
         </div>
       </div>
@@ -107,24 +152,77 @@
 
     <!-- 退款信息（涉退款时显示） -->
     <div class="card" id="od-refund-card" style="display:none;margin-bottom:8px">
-      <div class="card-hd"><h2>退款信息</h2></div>
+      <div class="card-hd"><h2>退款信息</h2><a class="link" id="od-refund-detail-link" href="aftersales.html">查看售后单 →</a></div>
       <div class="card-bd">
-        <div class="kv-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:0 32px">
-          <div class="kv-row"><span>退款状态</span><b id="od-refund-status">—</b></div>
+        <div class="kv-grid">
+          <div class="kv-row"><span>退款单号</span><b class="mono" id="od-refund-id">—</b></div>
+          <div class="kv-row"><span>退款类型</span><b id="od-refund-type">—</b></div>
           <div class="kv-row"><span>退款金额</span><b id="od-refund-amount">—</b></div>
-          <div class="kv-row"><span>退款处理</span><b id="od-refund-note">—</b></div>
-          <div class="kv-row"><span>关联售后单</span><b><a class="link" href="aftersales.html" id="od-refund-link">去售后管理 →</a></b></div>
+          <div class="kv-row"><span>退款状态</span><b id="od-refund-status">—</b></div>
+          <div class="kv-row"><span>退款原因</span><b id="od-refund-reason">—</b></div>
+          <div class="kv-row"><span>申请时间</span><b id="od-refund-created">—</b></div>
+          <div class="kv-row"><span>权益回收</span><b id="od-refund-rights">—</b></div>
+          <div class="kv-row"><span>清分处理</span><b id="od-refund-split">—</b></div>
+          <div class="kv-row"><span>处理人</span><b id="od-refund-handler">—</b></div>
         </div>
+      </div>
+    </div>
+
+    <!-- 售后与退款关联 -->
+    <div class="card" style="margin-bottom:8px">
+      <div class="card-hd"><h2>售后与退款关联</h2><span class="muted" id="od-after-count" style="font-size:12px">—</span></div>
+      <div class="card-bd" style="padding:0">
+        <table class="data" id="od-after-table">
+          <thead>
+            <tr>
+              <th>关联单号</th><th>单据类型</th><th>售后/退款类型</th><th>金额</th>
+              <th>权益处理</th><th>状态</th><th>申请时间</th><th style="width:80px">操作</th>
+            </tr>
+          </thead>
+          <tbody id="od-after-list"></tbody>
+        </table>
+        <div class="muted" id="od-after-empty" style="display:none;padding:20px 16px;font-size:13px">本单暂无关联售后单或退款单。</div>
+      </div>
+    </div>
+
+    <!-- 订单备注 -->
+    <div class="card" style="margin-bottom:8px">
+      <div class="card-hd"><h2>订单备注</h2>
+        <button class="btn btn-sm" id="od-note-add" type="button">添加备注</button>
+      </div>
+      <div class="card-bd">
+        <ul class="note-list" id="od-note-list"></ul>
       </div>
     </div>
 
     <!-- 处理记录 -->
     <div class="card"><div class="card-hd"><h2>处理记录</h2></div>
       <div class="card-bd">
-        <ul class="muted" style="font-size:12px;padding-left:16px;line-height:1.9" id="od-logs"></ul>
+        <ul class="log-list" id="od-logs"></ul>
       </div>
     </div>
 
+  </div>
+</div>
+
+<!-- ============ 弹窗 ============ -->
+<div class="proto-mask" id="mask"></div>
+
+<!-- 添加备注弹窗 -->
+<div class="proto-modal" id="modal-note" style="width:520px">
+  <div class="proto-modal-hd">
+    <h3 style="font-size:16px;font-weight:600">添加订单备注</h3>
+    <button class="btn btn-sm btn-ghost" data-close type="button">×</button>
+  </div>
+  <div class="proto-modal-bd">
+    <div class="field" style="margin-bottom:8px"><label>备注内容</label>
+      <textarea id="od-note-input" rows="4" style="width:100%;padding:8px;border:1px solid var(--color-border);border-radius:6px" placeholder="填写平台侧处理备注，仅运营内部可见"></textarea>
+    </div>
+    <p class="muted" style="margin:0;font-size:12px">备注仅运营内部可见，会同步写入本单处理记录。</p>
+  </div>
+  <div class="proto-drawer-ft" style="border-top:1px solid var(--color-border);padding:12px 20px;display:flex;gap:8px;justify-content:flex-end">
+    <button class="btn" data-close type="button">取消</button>
+    <button class="btn btn-primary" id="od-note-save" type="button">保存备注</button>
   </div>
 </div>
 
@@ -140,71 +238,45 @@
 .link{color:var(--color-primary);font-size:12px;text-decoration:none}
 .order-status-bar{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
 .os-main{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.os-flow{display:flex;align-items:center;gap:0;flex-wrap:wrap;row-gap:4px}
+.os-step{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--color-text-muted)}
+.os-step i{font-style:normal;width:18px;height:18px;border-radius:50%;background:#e5e6eb;color:#86909c;font-size:11px;display:inline-flex;align-items:center;justify-content:center}
+.os-step.done{color:#009a29}
+.os-step.done i{background:#e8ffea;color:#009a29}
+.os-step.cur{color:#165dff}
+.os-step.cur i{background:#e8f3ff;color:#165dff}
+.os-step em{font-style:normal;font-size:11px;color:var(--color-text-muted);margin-left:2px}
+.os-step + .os-step{margin-left:4px;padding-left:14px;position:relative}
+.os-step + .os-step::before{content:"";position:absolute;left:0;top:50%;width:10px;height:1px;background:#e5e6eb}
+.alert{position:relative;padding:8px 14px;border-radius:8px;font-size:13px}
+.alert-info{background:#e8f3ff;border:1px solid #a0cfff;color:#165dff}
+.alert-warn{background:#fff7e8;border:1px solid #ffe1ba;color:#ad6800}
+.alert-danger{background:#ffece8;border:1px solid #fdcdc5;color:#cb2634}
+.log-list{list-style:none;margin:0;padding:0;font-size:13px}
+.log-list li{padding:8px 0;border-bottom:1px dashed var(--color-border)}
+.log-list li:last-child{border-bottom:none}
+.log-time{font-family:ui-monospace,Consolas,monospace;font-size:12px;color:var(--color-text-muted);margin-right:12px}
+.tag-green{background:#e8ffea;border-color:#aff0b5;color:#009a29}
+.tag-blue{background:#e8f3ff;border-color:#bedaff;color:#165dff}
+.tag-purple{background:#f4f0ff;border-color:#d8c7ff;color:#722ed1}
+.tag-orange{background:#fff7e8;border-color:#ffe1ba;color:#ad6800}
+.link-mono{font-family:ui-monospace,Consolas,monospace;font-size:12px;color:var(--color-primary);text-decoration:none}
+.link-mono:hover{text-decoration:underline}
+.note-list{list-style:none;margin:0;padding:0;font-size:13px}
+.note-list li{padding:9px 0;border-bottom:1px dashed var(--color-border)}
+.note-list li:last-child{border-bottom:none}
+.note-time{font-family:ui-monospace,Consolas,monospace;font-size:12px;color:var(--color-text-muted);margin-right:12px}
+.note-by{color:var(--color-primary);margin-right:8px}
 @media(max-width:1100px){.detail-cols{grid-template-columns:1fr}}
 </style>
 
 <script src="../assets/js/proto.js"></script>
+<script src="../assets/js/order-demo-store.js"></script>
 <script src="../assets/js/ops-shell.js?v=7"></script>
 <script>
 (function () {
-  /* 订单演示数据：与 trade-orders.html 列表一致 */
-  var ORDERS = {
-    YB20260907000331: {
-      goods: "春启 03 期家长必修课", type: "线上课", spec: "12 节 · 系列课商品",
-      buyer: "李***", phone: "138****2610", wecom: true,
-      gross: "¥9.90", discount: "—", paid: "¥9.90",
-      channel: "视频号", tenant: "星启家庭教育", contentSource: "星启家庭教育",
-      settleMode: "佣金 20%", promoter: "—",
-      payStatus: "已支付", benefit: "已开通", refundStatus: "",
-      time: "2026-09-07 14:22", channelTxn: "WX20260907140221", payTxn: "TL20260907000331XX"
-    },
-    YB20260329100456: {
-      goods: "今晚直播·家长公开课", type: "直播课", spec: "免费场次",
-      buyer: "陈***", phone: "186****4411", wecom: false,
-      gross: "¥0.00", discount: "—", paid: "¥0.00",
-      channel: "直播间", tenant: "晨光少儿成长", contentSource: "自建",
-      settleMode: "服务费 0.6%", promoter: "阮荣均",
-      payStatus: "已完成", benefit: "已开通", refundStatus: "",
-      time: "2026-03-28 20:18", channelTxn: "—", payTxn: "—"
-    },
-    YB20260327100789: {
-      goods: "9.9 引流课·亲子沟通", type: "线上课", spec: "限时 ¥9.9",
-      buyer: "刘***", phone: "137****0012", wecom: false,
-      gross: "¥9.90", discount: "—", paid: "¥9.90",
-      channel: "小程序", tenant: "晨光少儿成长", contentSource: "青藤家长学堂",
-      settleMode: "服务费 0.6%", promoter: "王助教",
-      payStatus: "待付款", benefit: "未开通", refundStatus: "",
-      time: "2026-03-27 15:30", channelTxn: "—", payTxn: "—"
-    },
-    YB20260325000666: {
-      goods: "9.9 引流课·亲子沟通", type: "线上课", spec: "限时 ¥9.9",
-      buyer: "赵***", phone: "186****2099", wecom: true,
-      gross: "¥9.90", discount: "—", paid: "¥9.90",
-      channel: "小程序", tenant: "星启家庭教育", contentSource: "自建",
-      settleMode: "服务费 0.6%", promoter: "赵老师",
-      payStatus: "已退款", benefit: "已回收", refundStatus: "已退款 ¥9.90",
-      time: "2026-03-25 14:22", channelTxn: "WX20260325140222", payTxn: "TL20260325140066XX"
-    },
-    YB20260325000901: {
-      goods: "视频号·春启 03 期家长课", type: "线上课", spec: "公域同步",
-      buyer: "张***", phone: "159****8832", wecom: false,
-      gross: "¥99.00", discount: "—", paid: "¥99.00",
-      channel: "视频号", tenant: "星启家庭教育", contentSource: "平台",
-      settleMode: "佣金 20%", promoter: "—",
-      payStatus: "已支付", benefit: "已开通", refundStatus: "",
-      time: "2026-03-25 11:05", channelTxn: "WX20260325110503", payTxn: "TL20260325110001XX"
-    },
-    YB20260324100231: {
-      goods: "青春期沟通训练营", type: "线上课", spec: "¥299 系列课",
-      buyer: "周***", phone: "133****7788", wecom: true,
-      gross: "¥299.00", discount: "—", paid: "¥299.00",
-      channel: "小程序", tenant: "星启家庭教育", contentSource: "自建",
-      settleMode: "服务费 0.6%", promoter: "赵老师",
-      payStatus: "已支付", benefit: "已开通", refundStatus: "退款中 ¥299.00",
-      time: "2026-03-24 18:47", channelTxn: "WX20260324184706", payTxn: "TL20260324180031XX"
-    }
-  };
-
+  /* 订单演示数据统一来自 assets/js/order-demo-store.js
+     —— 与 trade-orders.html 列表、商家端 order-detail.html 共用同一数据源，避免列表与详情口径分叉 */
   var BADGE = {
     "待付款": "badge-warn", "已支付": "badge-info", "已完成": "badge-success",
     "已退款": "badge-danger", "已关闭": "badge"
@@ -213,6 +285,13 @@
   function $(id) { return document.getElementById(id); }
   function setText(id, v) { var n = $(id); if (n) n.textContent = (v == null || v === "") ? "—" : v; }
   function money(s) { return parseFloat(String(s).replace(/[¥,]/g, "")) || 0; }
+  function fmt(n) { return "¥" + Number(n || 0).toFixed(2); }
+  function esc(s) {
+    return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) {
+      return ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c];
+    });
+  }
+  function money0(s) { return String(s).replace(/[¥,]/g, ""); }
 
   function query(key) {
     try { return new URLSearchParams(location.search).get(key) || ""; }
@@ -220,99 +299,387 @@
   }
 
   var no = query("no") || query("order_no") || "";
-  var d = ORDERS[no];
+  var rec = (no && window.OrderDemoStore) ? OrderDemoStore.find(no) : null;
 
-  if (!d) {
+  if (!rec) {
     $("od-empty").style.display = "";
     document.body.setAttribute("data-crumb", "运营后台 / 交易 / 订单管理 / 订单列表 / 订单详情");
     return;
   }
 
+  function yen(n) { return "¥" + Number(n || 0).toFixed(2); }
+
+  var o = rec.order;
+  var u = rec.user || {};
+  var rt = rec.right || {};
+  var notes = rec.notes || [];        /* 平台备注 */
+  var afterSales = rec.aftersales || []; /* 关联售后单 / 退款单 */
+  var isCommission = o.contentSource === "platform";
+
+  /* 归一到本页渲染使用的 d 结构 */
+  var d = {
+    goods: o.product, goodsType: o.goodsType, spec: o.spec,
+    buyer: u.name || "—", phone: u.phone || "—", wecom: !!u.wecom,
+    regSource: u.source || o.channel,
+    gross: yen(Number(o.amount) + Number(o.discount || 0)),
+    discount: Number(o.discount || 0) ? ("-" + yen(o.discount)) : "—",
+    paid: yen(o.amount),
+    channel: o.channel, tenant: o.tenant, contentOwner: o.contentOwner,
+    settleMode: isCommission
+      ? ("佣金 " + (o.commissionRate || 20) + "%")
+      : ("服务费 " + (o.serviceFeeRate || 0.6) + "%"),
+    promoter: o.promoter || "—",
+    payStatus: o.payStatus,
+    benefit: rt.status || o.rightStatus || "未开通",
+    benefitId: rt.id || "—",
+    refundStatus: (!o.refundStatus || o.refundStatus === "无") ? "" : o.refundStatus,
+    orderType: o.orderType, deliver: o.deliverType,
+    time: o.time, payTime: o.payTime,
+    channelTxn: o.channelTxn, payTxn: o.payTxn,
+    liveId: o.liveId, liveName: o.liveName,
+    settlementId: o.settlementId, reconBatch: o.reconBatch, reconMatched: o.reconMatched,
+    userId: u.id,
+    refund: rec.refund ? {
+      id: rec.refund.id, type: rec.refund.type, amount: yen(rec.refund.amount),
+      status: rec.refund.statusLabel || rec.refund.status,
+      reason: rec.refund.reason, createdAt: rec.refund.createdAt,
+      rightsRecycled: !!rec.refund.rightsRecycled,
+      splitRollback: rec.refund.splitRollback, handler: rec.refund.handler
+    } : null
+  };
+
   $("od-found").style.display = "";
 
-  /* 状态头 */
+  /* ===== 状态头 + 四步流程 + 异常提示 ===== */
+  var refunded = d.payStatus === "已退款";
+  var refunding = !refunded && String(d.refundStatus || "").indexOf("退款中") >= 0;
+  var unpaid = d.payStatus === "待付款";
+  var noChannelTxn = !d.channelTxn || d.channelTxn === "—";
+
   var badge = $("od-pay-badge");
-  badge.textContent = d.payStatus;
-  badge.className = "badge " + (BADGE[d.payStatus] || "badge-info");
+  badge.textContent = refunding ? "退款中" : d.payStatus;
+  badge.className = "badge " + (refunding ? "badge-warn" : (BADGE[d.payStatus] || "badge-info"));
   $("od-no").textContent = no;
   $("od-channel").textContent = d.channel;
+  $("od-tenant-tag").textContent = d.tenant;
   $("od-created").textContent = d.time;
-  $("od-status-side").textContent =
-    "权益：" + d.benefit + (d.refundStatus ? " · 退款：" + d.refundStatus : "");
 
-  /* 订单信息 */
+  function hhmm(s) {
+    var m = String(s || "").match(/(\d{1,2}:\d{2})/);
+    return m ? m[1] : "";
+  }
+  function osStep(cls, n, label, time) {
+    return '<div class="os-step ' + (cls || "") + '"><i>' + n + "</i>" + label +
+      (time ? "<em>" + esc(time) + "</em>" : "") + "</div>";
+  }
+  var refundAt = (d.refund && d.refund.createdAt) || "";
+  var flow = $("od-flow");
+  if (refunded) {
+    flow.innerHTML =
+      osStep("done", 1, "下单", hhmm(d.time)) +
+      osStep("done", 2, "支付成功", hhmm(d.time)) +
+      osStep("done", 3, "权益已开通", hhmm(d.time)) +
+      osStep("cur", 4, "已退款", hhmm(refundAt));
+  } else if (refunding) {
+    flow.innerHTML =
+      osStep("done", 1, "下单", hhmm(d.time)) +
+      osStep("done", 2, "支付成功", hhmm(d.time)) +
+      osStep("done", 3, "权益已开通", hhmm(d.time)) +
+      osStep("cur", 4, "退款处理中", hhmm(refundAt));
+  } else if (unpaid) {
+    flow.innerHTML =
+      osStep("cur", 1, "下单", hhmm(d.time)) +
+      osStep("", 2, "支付成功", "") +
+      osStep("", 3, "权益开通", "") +
+      osStep("", 4, "订单完成", "");
+  } else {
+    flow.innerHTML =
+      osStep("done", 1, "下单", hhmm(d.time)) +
+      osStep("done", 2, "支付成功", hhmm(d.time)) +
+      osStep("cur", 3, "权益已开通", hhmm(d.time)) +
+      osStep("", 4, "订单完成", "");
+  }
+
+  var alertEl = $("od-alert");
+  if (refunded) {
+    alertEl.className = "alert alert-danger";
+    alertEl.innerHTML = "本单已<b>退款完成</b>，关联权益已<b>回收</b>；分账资金已<b>冲正回退</b>，不进入本期结算。";
+  } else if (refunding) {
+    alertEl.className = "alert alert-warn";
+    alertEl.innerHTML = "本单<b>退款处理中</b>（" + esc(d.refund.type) + "）；退款完成后将自动回收权益并冲正分账，期间该笔资金<b>暂不结算</b>。";
+  } else if (unpaid) {
+    alertEl.className = "alert alert-warn";
+    alertEl.innerHTML = "买家<b>尚未支付</b>，超 30 分钟未支付订单将自动关闭；未支付订单不产生分账与结算。";
+  } else if (noChannelTxn) {
+    alertEl.className = "alert alert-warn";
+    alertEl.innerHTML = "本单为<b>免费场次</b>，无渠道支付流水号，<b>不参与对账与分账</b>。";
+  } else {
+    alertEl.className = "alert alert-info";
+    alertEl.innerHTML = "本单已完成支付与权益交付，分账按<b>" + esc(d.settleMode) + "</b>执行，结算与对账见下方对应区块。";
+  }
+
+  /* ===== 订单信息 ===== */
+  var rate = isCommission ? 20 : 0.6;
+
   setText("od-info-no", no);
-  setText("od-txn-no", "TXN" + no.replace(/\D/g, "").slice(-14));
+  setText("od-txn-no", unpaid ? "—" : ("TXN" + no.replace(/\D/g, "").slice(-14)));
   setText("od-channel-txn", d.channelTxn);
-  setText("od-order-type", "普通订单（" + d.type + " 1 件）");
+  setText("od-pay-txn", unpaid ? "—" : d.payTxn);
+  setText("od-order-type", d.orderType + "（" + d.goodsType + " × 1）");
+  setText("od-goods-type-info", d.goodsType);
   setText("od-source", d.channel);
   setText("od-tenant", d.tenant);
-  setText("od-content-source", d.contentSource);
+  setText("od-content-source", d.contentOwner);
   setText("od-settle-mode", d.settleMode);
   setText("od-promoter", d.promoter);
+  setText("od-promoter-2", d.promoter);
   setText("od-time", d.time);
-  setText("od-pay-time", d.payStatus === "待付款" ? "—" : d.time);
-  setText("od-pay-method", d.payStatus === "待付款" ? "—" : "通联支付（" + d.channel + "内）");
+  setText("od-pay-time", (unpaid || !d.payTime) ? "—" : d.payTime);
+  setText("od-pay-method", unpaid ? "—" : "通联支付（" + d.channel + "内）");
 
-  /* 金额与结算 */
+  if (d.liveId) {
+    $("od-live-row").style.display = "";
+    setText("od-live-text", (d.liveName || d.liveId) + "（" + d.liveId + "）");
+  }
+
+  /* ===== 金额与结算（双链路按费率口径） ===== */
   var paid = money(d.paid);
-  var isCommission = d.settleMode.indexOf("佣金") >= 0;
-  var fee = isCommission ? paid * 0.2 : paid * 0.006;
+  var refundedAmt = refunded ? money((d.refund && d.refund.amount) || d.paid) : 0;
+  var base = unpaid ? 0 : (paid - refundedAmt);
+  var channelFee = Math.round(paid * 0.3) / 100;
+  var cutAmount = Math.round(base * rate) / 100;
+  /* 链路 A（平台内容·佣金模式）：商家拿佣金 = base × 佣金率；链路 B（自建·服务费）：平台收服务费 = base × 费率 */
+  var mch = isCommission ? cutAmount : Math.round((base - cutAmount) * 100) / 100;
+  var plat = Math.round((base - mch) * 100) / 100;
+
   setText("od-gross", d.gross);
   setText("od-discount", d.discount);
-  setText("od-paid", d.paid);
-  $("od-fee-label").textContent = isCommission ? "平台佣金（20%）" : "平台服务费（0.6%）";
-  setText("od-fee", paid ? "-¥" + fee.toFixed(2) : "—");
-  setText("od-net", paid ? "¥" + (paid - fee).toFixed(2) : "—");
-  setText("od-split-status", d.payStatus === "待付款" ? "—" : (d.payStatus === "已退款" ? "已退回" : "已分账"));
+  setText("od-paid", unpaid ? "待支付 " + d.paid : d.paid);
+  setText("od-refunded-amt", refundedAmt ? fmt(refundedAmt) : "¥0.00");
+  setText("od-base", fmt(base));
+  $("od-plat-label").textContent = isCommission
+    ? "平台留存（" + (100 - rate) + "%）"
+    : "平台服务费（" + rate + "%）";
+  $("od-mch-label").textContent = isCommission
+    ? "商家佣金（" + rate + "%）"
+    : "商家应结（" + (100 - rate).toFixed(1) + "%）";
+  if (unpaid || noChannelTxn) {
+    setText("od-channel-fee", "—");
+    setText("od-split-member", "—");
+    setText("od-split-merchant", "—");
+    setText("od-plat", "—");
+    setText("od-mch", "—");
+  } else {
+    setText("od-channel-fee", fmt(channelFee));
+    setText("od-split-member", isCommission ? "MEM-100208（艺博自营）" : ("MEM-1001" + String(d.userId || "").replace(/\D/g, "").slice(-2) + "（商家小B会员）"));
+    setText("od-split-merchant", "TL-MCH-88010233（艺博入金收款主体）");
+    setText("od-plat", fmt(plat));
+    setText("od-mch", fmt(mch));
+  }
+  $("od-split-snapshot").innerHTML = (unpaid || noChannelTxn)
+    ? '<span class="muted">' + (unpaid ? "未支付 · 未固化分账快照" : "免费场次 · 无分账规则快照") + "</span>"
+    : '<span class="mono">' + esc(isCommission
+      ? '[{"payee_member_id":"MEM-100208","ratio":"' + (100 - rate) + '%"},{"payee_member_id":"MEM-1001XX","ratio":"' + rate + '%"}]'
+      : '[{"payee_member_id":"MEM-1001XX","ratio":"' + (100 - rate).toFixed(1) + '%"},{"payee_member_id":"MEM-100208","ratio":"' + rate + '%"}]') + "</span>";
+  setText("od-split-status", unpaid
+    ? "未支付 · 不产生分账"
+    : (noChannelTxn ? "无分账金额（免费场次）"
+      : (refunded ? "已冲正 · 退款后清分回退"
+        : (refunding ? "已冻结 · 退款处理中暂缓分账" : "已分账 · T+1 自动清分"))));
+  if (d.settlementId && d.settlementId !== "—") {
+    var sl = $("od-settlement-link");
+    sl.textContent = d.settlementId + " →";
+    sl.href = "settlement-detail.html";
+  } else {
+    $("od-settlement-link").textContent = unpaid
+      ? "未支付 · 无结算单"
+      : (noChannelTxn ? "免费场次 · 无结算单" : "未入结算单");
+    $("od-settlement-link").removeAttribute("href");
+  }
 
-  /* 商品信息 */
+  /* ===== 商品信息 ===== */
   setText("od-goods-name", d.goods);
-  setText("od-goods-type", d.type);
+  setText("od-goods-type", d.goodsType);
   setText("od-goods-spec", d.spec);
   setText("od-goods-price", d.paid);
   setText("od-goods-amount", d.paid);
+  setText("od-deliver", d.deliver);
+  setText("od-benefit-id", d.benefitId);
   setText("od-benefit", d.benefit);
   setText("od-benefit-time", d.benefit === "已开通" ? d.time : "—");
+  $("od-benefit-link").textContent = d.benefitId && d.benefitId !== "—"
+    ? "查看权益开通记录（" + d.benefitId + "）→"
+    : "查看权益开通记录 →";
 
-  /* 买家信息 */
+  /* ===== 买家信息 ===== */
   setText("od-buyer", d.buyer);
   setText("od-phone", d.phone);
   setText("od-wecom", d.wecom ? "是" : "否");
+  setText("od-reg-source", d.regSource);
 
-  /* 退款信息 */
+  /* ===== 租户与内容来源 ===== */
+  var tl = $("od-tenant-link");
+  tl.textContent = d.tenant + " →";
+  tl.href = "tenants.html";
+  setText("od-content-owner", d.contentOwner);
+  setText("od-settle-channel", isCommission ? "链路 A · 平台内容（商家拿佣金）" : "链路 B · 商家自建内容（平台收服务费）");
+  setText("od-settle-note", isCommission
+    ? "链路 A：课程金额留存艺博账户，商家按佣金率结算；退款从艺博账户资金退回，权益由平台主导回收。"
+    : "链路 B：商家拿课程金额并按服务费率支付服务费；退款从商家账户资金退回（受余额约束），权益由商家主导回收。");
+
+  /* ===== 对账信息 ===== */
+  if (unpaid) {
+    setText("od-recon-batch", "—");
+    setText("od-recon-status", "未支付 · 不参与对账");
+    setText("od-recon-txn", "—");
+    setText("od-recon-diff", "—");
+  } else if (noChannelTxn) {
+    setText("od-recon-batch", "—");
+    setText("od-recon-status", "不参与对账");
+    setText("od-recon-txn", "无渠道支付流水号");
+    setText("od-recon-diff", "无（免费场次）");
+  } else {
+    setText("od-recon-batch", d.reconBatch);
+    $("od-recon-status").innerHTML = refunded
+      ? '<span class="badge badge-danger">已冲正</span>'
+      : (refunding ? '<span class="badge badge-warn">待退款完成后冲正</span>' : '<span class="badge badge-success">已对账 · 无差异</span>');
+    setText("od-recon-txn", d.channelTxn + " · 与平台流水一致");
+    setText("od-recon-diff", refunded ? "退款已同步渠道，差异已核销" : "—");
+  }
+
+  /* ===== 退款信息 ===== */
   if (d.refundStatus) {
+    var rf = d.refund || {};
     $("od-refund-card").style.display = "";
-    setText("od-refund-status", d.refundStatus);
-    setText("od-refund-amount", d.paid);
-    setText("od-refund-note", "通过通联支付原路退回买家；已分账订单同步回退分账资金。");
-  } else {
-    $("od-refund-card").style.display = "none";
+    setText("od-refund-id", rf.id || "—");
+    setText("od-refund-type", rf.type || "退款并回收权益");
+    setText("od-refund-amount", rf.amount || d.paid);
+    $("od-refund-status").innerHTML =
+      '<span class="badge ' + (refunded ? "badge-danger" : "badge-warn") + '">' +
+      esc(rf.status || d.refundStatus) + "</span>";
+    setText("od-refund-reason", rf.reason || "—");
+    setText("od-refund-created", rf.createdAt || "—");
+    setText("od-refund-rights", rf.rightsRecycled
+      ? "已回收（" + (d.benefitId || "—") + "）"
+      : (refunded ? "已回收" : "待退款完成后回收"));
+    setText("od-refund-split", rf.splitRollback || "—");
+    setText("od-refund-handler", rf.handler || "—");
   }
 
-  /* 处理记录 */
+  /* ===== 售后与退款关联 ===== */
+  setText("od-after-count", "共 " + afterSales.length + " 条");
+  if (afterSales.length) {
+    $("od-after-table").style.display = "";
+    $("od-after-empty").style.display = "none";
+    $("od-after-list").innerHTML = afterSales.map(function (a) {
+      return "<tr>" +
+        '<td><a href="' + esc(a.href || "#") + '" class="link-mono">' + esc(a.id) + "</a></td>" +
+        "<td>" + esc(a.kind || "退款单") + "</td>" +
+        "<td>" + esc(a.type || "—") + "</td>" +
+        "<td><b>" + fmt(a.amount) + "</b></td>" +
+        "<td>" + esc(a.rights || "—") + "</td>" +
+        '<td><span class="badge ' + esc(a.statusClass || "badge-info") + '">' + esc(a.status || "—") + "</span></td>" +
+        "<td>" + esc(a.createdAt || "—") + "</td>" +
+        '<td class="row-actions"><a href="' + esc(a.href || "#") + '">查看</a></td>' +
+        "</tr>";
+    }).join("");
+  } else {
+    $("od-after-table").style.display = "none";
+    $("od-after-empty").style.display = "";
+  }
+
+  /* ===== 订单备注 ===== */
+  function renderNotes() {
+    var box = $("od-note-list");
+    if (!notes.length) {
+      box.innerHTML = '<li class="muted">暂无备注，可点击「添加备注」补充平台侧处理说明。</li>';
+      return;
+    }
+    box.innerHTML = notes.map(function (n) {
+      return "<li><span class=\"note-time\">" + esc(n.at) + "</span>" +
+        '<span class="note-by">' + esc(n.by || "运营管理员") + "</span>" +
+        esc(n.text) + "</li>";
+    }).join("");
+  }
+  renderNotes();
+
+  /* ===== 处理记录 ===== */
   var logs = [];
-  logs.push(d.time + " 买家在" + d.channel + "下单，订单创建");
-  if (d.payStatus === "待付款") {
-    logs.push("等待买家付款，超 30 分钟未支付将自动关闭");
+  logs.push({ at: d.time, text: "买家在「" + d.channel + "」下单，订单创建", by: d.channel + "渠道" });
+  if (unpaid) {
+    logs.push({ at: d.time, text: "等待买家付款，超 30 分钟未支付将自动关闭", by: "交易系统" });
   } else {
-    logs.push(d.time + " 通联支付回调成功，实付 " + d.paid);
-    logs.push(d.time + " 权益" + d.benefit + "，结算模式：" + d.settleMode);
+    logs.push({ at: d.payTime || d.time, text: "通联支付回调成功，实付 " + d.paid, by: "支付系统" });
+    if (noChannelTxn) {
+      logs.push({ at: d.time, text: "免费场次：无渠道支付流水，不参与对账与分账", by: "支付系统" });
+    }
+    logs.push({ at: d.time, text: "权益" + d.benefit + "（" + d.benefitId + "），结算模式：" + d.settleMode, by: "权益系统" });
+    if (!noChannelTxn && !refunded) {
+      logs.push({
+        at: d.time,
+        text: (refunding ? "按「" + d.settleMode + "」应清分：" : "按「" + d.settleMode + "」清分：") +
+          "平台 " + fmt(plat) + " / 商家 " + fmt(mch) + (refunding ? "（退款处理中，暂缓分账）" : ""),
+        by: "分账系统"
+      });
+    }
+    if (d.reconMatched) {
+      var rc = String(d.reconBatch || "").match(/^T(\d{4})(\d{2})(\d{2})$/);
+      var reconAt = rc ? (rc[1] + "-" + rc[2] + "-" + rc[3]) : d.reconBatch;
+      logs.push({ at: reconAt, text: "渠道流水对账完成，与平台流水一致，无差异", by: "对账系统" });
+    }
   }
-  if (d.refundStatus) {
-    logs.push(d.time + " 买家提交退款申请（" + d.refundStatus + "），处理见「退款与权益回收」");
+  if (d.refund) {
+    logs.push({ at: d.refund.createdAt, text: "买家提交退款申请（" + d.refund.type + "）：" + d.refund.reason, by: d.buyer });
+    if (refunded) {
+      logs.push({ at: d.refund.createdAt, text: "退款 " + d.refund.amount + " 已原路退回买家，权益已回收，分账资金已冲正", by: d.refund.handler });
+    } else {
+      logs.push({ at: d.refund.createdAt, text: "退款处理中，待审核通过后原路退回并回收权益，期间该笔资金暂缓结算", by: d.refund.handler });
+    }
   }
-  if (!d.channelTxn || d.channelTxn === "—") {
-    logs.push("该订单无渠道支付流水号（未产生渠道侧支付）");
-  }
-  $("od-logs").innerHTML = logs.map(function (t) { return "<li>" + t + "</li>"; }).join("");
+  notes.forEach(function (n) {
+    logs.push({ at: n.at, text: "平台备注：" + n.text, by: n.by || "运营管理员" });
+  });
+  logs.sort(function (a, b) { return String(a.at).localeCompare(String(b.at)); });
+  $("od-logs").innerHTML = logs.map(function (l) {
+    return '<li><span class="log-time">' + esc(l.at) + "</span>" + esc(l.text) +
+      '<span class="muted"> · ' + esc(l.by || "") + "</span></li>";
+  }).join("");
 
-  /* 待付款订单不显示发起退款 */
-  if (d.payStatus === "待付款" || d.payStatus === "已完成" && d.gross === "¥0.00") {
+  /* ===== 备注弹窗 ===== */
+  var mask = $("mask");
+  var noteModal = $("modal-note");
+  function closeNote() {
+    mask.classList.remove("open");
+    noteModal.classList.remove("open");
+  }
+  function openNote() {
+    $("od-note-input").value = "";
+    mask.classList.add("open");
+    noteModal.classList.add("open");
+    $("od-note-input").focus();
+  }
+  mask.addEventListener("click", closeNote);
+  document.querySelectorAll("[data-close]").forEach(function (n) {
+    n.addEventListener("click", closeNote);
+  });
+  $("od-note-add").addEventListener("click", openNote);
+  $("btn-add-note").addEventListener("click", openNote);
+  $("od-note-save").addEventListener("click", function () {
+    var text = $("od-note-input").value.trim();
+    if (!text) { Proto.toast("请输入备注内容"); return; }
+    var saved = OrderDemoStore.addNote(no, text, "运营管理员");
+    if (saved) notes.unshift(saved);
+    renderNotes();
+    closeNote();
+    Proto.toast("备注已保存（原型）");
+  });
+
+  /* ===== 交互 ===== */
+  $("btn-back-list").addEventListener("click", function () { location.href = "trade-orders.html"; });
+  $("btn-export").addEventListener("click", function () { Proto.toast("已导出订单 " + no + "（原型）"); });
+  if (unpaid || noChannelTxn || refunded || refunding) {
     $("btn-refund").style.display = "none";
   }
-
-  $("btn-export").addEventListener("click", function () { Proto.toast("已导出订单 " + no + "（原型）"); });
 })();
 </script>
 </body>

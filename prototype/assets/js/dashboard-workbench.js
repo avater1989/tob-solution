@@ -373,7 +373,7 @@
 
   function setTypeFilter(key) {
     state.typeFilter = key || "";
-    document.querySelectorAll("#realtime-stats .stat-card").forEach(function (c) {
+    document.querySelectorAll("[data-todo-filter]").forEach(function (c) {
       c.classList.toggle("is-active", c.getAttribute("data-todo-filter") === state.typeFilter);
     });
     var sel = $("todo-type-filter");
@@ -406,7 +406,6 @@
   function renderResults() {
     var data = getRangeBundle(state.range);
     var r = data.results;
-    $("range-label").textContent = data.titleSuffix;
     document.querySelector('[data-field="leads.value"]').textContent = r.leads.value;
     document.querySelector('[data-field="leads.hint"]').innerHTML = formatHint(r.leads, data.compareLabel);
     document.querySelector('[data-field="orders.value"]').textContent = r.orders.value;
@@ -421,7 +420,7 @@
     $("metric-gmv").href = "orders.html?range=" + rp + "&status=paid";
     $("metric-refund").href = "refunds.html?range=" + rp + "&status=refund";
     var ov = $("link-board-overview");
-    if (ov) ov.href = withRange("board-overview.html", state.range);
+    if (ov) ov.href = withRange("board-term-review.html", state.range);
   }
 
   function renderRealtime() {
@@ -552,8 +551,9 @@
 
   function renderTodos() {
     renderTypeFilterOptions();
-    var list = visibleTodos();
     var body = $("todo-body");
+    if (!body) return; /* 待办中心已下线，仅保留实时待处理卡片 */
+    var list = visibleTodos();
     var mustN = mustCount();
     var sugN = suggestCount();
     $("todo-count").textContent = String(mustN);
@@ -739,7 +739,8 @@
   function setUpdatedNow() {
     var d = new Date();
     var pad = function (n) { return n < 10 ? "0" + n : "" + n; };
-    $("last-updated").textContent = "最后更新 " + pad(d.getHours()) + ":" + pad(d.getMinutes()) + ":" + pad(d.getSeconds());
+    var el = $("last-updated");
+    if (el) el.textContent = "最后更新 " + pad(d.getHours()) + ":" + pad(d.getMinutes()) + ":" + pad(d.getSeconds());
   }
 
   function renderAll() {
@@ -1031,7 +1032,8 @@
       renderResults();
     });
 
-    $("todo-tabs").addEventListener("click", function (e) {
+    var todoTabs = $("todo-tabs");
+    if (todoTabs) todoTabs.addEventListener("click", function (e) {
       var btn = e.target.closest("button[data-filter]");
       if (!btn) return;
       state.todoFilter = btn.getAttribute("data-filter");
@@ -1044,7 +1046,7 @@
         var sugKeys = { follow: 1, content: 1, remind: 1 };
         if (state.todoFilter === "must" && !mustKeys[state.typeFilter]) state.typeFilter = "";
         if (state.todoFilter === "suggest" && !sugKeys[state.typeFilter]) state.typeFilter = "";
-        document.querySelectorAll("#realtime-stats .stat-card").forEach(function (c) {
+        document.querySelectorAll("[data-todo-filter]").forEach(function (c) {
           c.classList.toggle("is-active", c.getAttribute("data-todo-filter") === state.typeFilter);
         });
       }
@@ -1052,16 +1054,19 @@
       saveCtx();
     });
 
-    $("todo-type-filter").addEventListener("change", function () {
+    var typeFilterSel = $("todo-type-filter");
+    if (typeFilterSel) typeFilterSel.addEventListener("change", function () {
       setTypeFilter(this.value);
       if (this.value) scrollToTodo();
     });
-    $("todo-owner-filter").addEventListener("change", function () {
+    var ownerFilterSel = $("todo-owner-filter");
+    if (ownerFilterSel) ownerFilterSel.addEventListener("change", function () {
       state.ownerFilter = this.value;
       renderTodos();
       saveCtx();
     });
-    $("btn-clear-todo-filter").addEventListener("click", function () {
+    var clearFilterBtn = $("btn-clear-todo-filter");
+    if (clearFilterBtn) clearFilterBtn.addEventListener("click", function () {
       state.ownerFilter = "";
       setTypeFilter("");
       renderOwnerFilter();
@@ -1075,19 +1080,28 @@
       });
     }
 
-    $("realtime-stats").addEventListener("click", function (e) {
-      var card = e.target.closest("[data-todo-filter]");
-      if (!card) return;
-      var key = card.getAttribute("data-todo-filter");
-      state.todoFilter = "must";
-      document.querySelectorAll("#todo-tabs button").forEach(function (b) {
-        b.classList.toggle("active", b.getAttribute("data-filter") === "must");
+    /* 实时待处理卡片（按业务域分组）：点击跳转对应列表页 */
+    var RT_GOTO = {
+      lead: "leads.html?focus=unassigned&from=dashboard",
+      audit: "lives.html?from=dashboard",
+      urge: "live-booking.html?from=dashboard",
+      aftersale: "aftersales.html?from=dashboard"
+    };
+    /* 待处理售后卡片已并入「经营结果 · 交易」分组，容器 id 为 result-stats */
+    /* 未分配线索卡片已并入「经营结果 · SCRM · 线索」分组，容器 id 为 result-stats-scrm */
+    ["result-stats", "result-stats-scrm", "realtime-stats-live"].forEach(function (id) {
+      var box = document.getElementById(id);
+      if (!box) return;
+      box.addEventListener("click", function (e) {
+        var card = e.target.closest("[data-todo-filter]");
+        if (!card) return;
+        var href = RT_GOTO[card.getAttribute("data-todo-filter")];
+        if (href) location.href = href;
       });
-      setTypeFilter(state.typeFilter === key ? "" : key);
-      scrollToTodo();
     });
 
-    $("todo-body").addEventListener("click", function (e) {
+    var todoBody = $("todo-body");
+    if (todoBody) todoBody.addEventListener("click", function (e) {
       var btn = e.target.closest("[data-todo-act]");
       if (!btn) return;
       e.preventDefault();
@@ -1156,7 +1170,7 @@
       state.typeFilter = "";
       state.ownerFilter = "";
       state.todoFilter = "must";
-      document.querySelectorAll("#realtime-stats .stat-card").forEach(function (c) {
+      document.querySelectorAll("[data-todo-filter]").forEach(function (c) {
         c.classList.remove("is-active");
       });
       renderAll();

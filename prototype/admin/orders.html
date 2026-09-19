@@ -85,10 +85,12 @@
           <th style="width:170px">操作</th>
         </tr>
       </thead>
+      <!-- 本表 6 行与 assets/js/order-demo-store.js 中同名订单一一对应，
+           行内「详情」跳转 order-detail.html?id=<订单号> 即从该 store 读取，改行数据请同步该文件 -->
       <tbody id="ord-tbody">
         <tr>
-          <td><a href="order-detail.html" class="link-mono">YB20260907000331</a></td>
-          <td>春启 03 期家长必修课<br><span class="muted">线上课 · 12 节 · 系列课商品</span></td>
+          <td><a href="order-detail.html?id=YB20260907000331" class="link-mono">YB20260907000331</a></td>
+          <td>春启 03 期家长必修课<br><span class="muted">线上课 · 12 节 · 课程商品</span></td>
           <td>李***<br><span class="muted">U0001</span></td>
           <td><b>¥9.90</b></td>
           <td><span class="tag tag-green">视频号</span></td>
@@ -100,13 +102,13 @@
           <td><span class="muted">—</span></td>
           <td>2026-09-07 14:22</td>
           <td class="row-actions">
-            <a href="order-detail.html">详情</a>
+            <a href="order-detail.html?id=YB20260907000331">详情</a>
             <a href="entitlement.html">权益记录</a>
             <a href="aftersales.html">退款</a>
           </td>
         </tr>
         <tr>
-          <td><a href="order-detail.html" class="link-mono">YB20260329100456</a></td>
+          <td><a href="order-detail.html?id=YB20260329100456" class="link-mono">YB20260329100456</a></td>
           <td>今晚直播·家长公开课<br><span class="muted">直播课 · ¥0 免费</span></td>
           <td>陈***<br><span class="muted">U0010</span></td>
           <td><b>¥0.00</b></td>
@@ -119,12 +121,12 @@
           <td><span class="muted">—</span></td>
           <td>2026-03-28 20:18</td>
           <td class="row-actions">
-            <a href="order-detail.html">详情</a>
+            <a href="order-detail.html?id=YB20260329100456">详情</a>
             <a href="#" data-row-act="note">备注</a>
           </td>
         </tr>
         <tr>
-          <td><a href="order-detail.html" class="link-mono">YB20260327100789</a></td>
+          <td><a href="order-detail.html?id=YB20260327100789" class="link-mono">YB20260327100789</a></td>
           <td>9.9 引流课·亲子沟通<br><span class="muted">线上课 · ¥9.9 限时</span></td>
           <td>刘***<br><span class="muted">U0004</span></td>
           <td><b>¥9.90</b></td>
@@ -137,12 +139,12 @@
           <td><span class="muted">—</span></td>
           <td>2026-03-27 15:30</td>
           <td class="row-actions">
-            <a href="order-detail.html">详情</a>
+            <a href="order-detail.html?id=YB20260327100789">详情</a>
             <a href="#" data-row-act="close">关闭订单</a>
           </td>
         </tr>
         <tr>
-          <td><a href="order-detail.html" class="link-mono">YB20260325000666</a></td>
+          <td><a href="order-detail.html?id=YB20260325000666" class="link-mono">YB20260325000666</a></td>
           <td>9.9 引流课·亲子沟通<br><span class="muted">线上课 · ¥9.9 限时</span></td>
           <td>赵***<br><span class="muted">U0008</span></td>
           <td><b>¥9.90</b></td>
@@ -155,12 +157,12 @@
           <td><span class="badge badge-danger">已退款 ¥9.90</span></td>
           <td>2026-03-25 14:22</td>
           <td class="row-actions">
-            <a href="order-detail.html">详情</a>
+            <a href="order-detail.html?id=YB20260325000666">详情</a>
             <a href="refunds.html">退款单</a>
           </td>
         </tr>
         <tr>
-          <td><a href="order-detail.html" class="link-mono">YB20260325000901</a></td>
+          <td><a href="order-detail.html?id=YB20260325000901" class="link-mono">YB20260325000901</a></td>
           <td>视频号·春启 03 期家长课<br><span class="muted">线上课 · 公域同步</span></td>
           <td>张***<br><span class="muted">U0011</span></td>
           <td><b>¥99.00</b></td>
@@ -173,13 +175,13 @@
           <td><span class="muted">—</span></td>
           <td>2026-03-25 11:05</td>
           <td class="row-actions">
-            <a href="order-detail.html">详情</a>
+            <a href="order-detail.html?id=YB20260325000901">详情</a>
             <a href="#" data-row-act="refund">退款</a>
             <a href="#" data-row-act="note">备注</a>
           </td>
         </tr>
         <tr>
-          <td><a href="order-detail.html" class="link-mono">YB20260324100231</a></td>
+          <td><a href="order-detail.html?id=YB20260324100231" class="link-mono">YB20260324100231</a></td>
           <td>青春期沟通训练营<br><span class="muted">线上课 · ¥299</span></td>
           <td>周***<br><span class="muted">U0006</span></td>
           <td><b>¥299.00</b></td>
@@ -192,7 +194,7 @@
           <td><span class="badge badge-warn">退款中</span></td>
           <td>2026-03-24 18:47</td>
           <td class="row-actions">
-            <a href="order-detail.html">详情</a>
+            <a href="order-detail.html?id=YB20260324100231">详情</a>
             <a href="refunds.html">退款单</a>
           </td>
         </tr>
@@ -279,6 +281,7 @@
 </style>
 
 <script src="../assets/js/proto.js"></script>
+<script src="../assets/js/order-demo-store.js"></script>
 <script src="../assets/js/board-data.js?v=6"></script>
 <script src="../assets/js/board-metrics.js?v=11"></script>
 <script src="../assets/js/board-insights.js?v=4"></script>
@@ -319,6 +322,7 @@
   }
 
   // ===== Row actions =====
+  var noteOrder = "";
   document.querySelectorAll("#ord-tbody tr").forEach(function (tr) {
     tr.querySelectorAll("[data-row-act]").forEach(function (a) {
       a.addEventListener("click", function (e) {
@@ -331,6 +335,8 @@
           document.getElementById("ref-paid").textContent = d.paid;
           open(document.getElementById("modal-refund"));
         } else if (act === "note") {
+          noteOrder = d.orderNo;
+          document.getElementById("note-input").value = "";
           open(document.getElementById("modal-note"));
         } else if (act === "close") {
           Proto.toast("待付款订单已关闭（原型）");
@@ -345,7 +351,11 @@
     closeAll(); Proto.toast("退款申请已提交，等待审核（原型）");
   });
   document.getElementById("note-save").addEventListener("click", function () {
-    closeAll(); Proto.toast("备注已保存（原型）");
+    var text = document.getElementById("note-input").value.trim();
+    if (!text) { Proto.toast("请输入备注内容"); return; }
+    if (noteOrder && window.OrderDemoStore) OrderDemoStore.addNote(noteOrder, text, "商家管理员");
+    closeAll();
+    Proto.toast("备注已保存，可在订单详情查看（原型）");
   });
 
   // ===== Header buttons =====

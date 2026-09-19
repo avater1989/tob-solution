@@ -20,7 +20,7 @@
         </a>
         <a class="hub-card" href="ops/dashboard.html">
           <h2>运营后台</h2>
-          <p>平台侧：租户开通与套餐管理、商家发布到 C 端的内容审核、交易与结算（对账 / 结算 / 提现 / 发票 / 资金风控）、全局经营数据、操作日志留痕。</p>
+          <p>平台侧：租户开通与套餐管理、商家发布到 C 端的内容审核、交易与结算（对账 / 结算 / 提现 / 发票 / 资金风控）、数据看板。</p>
           <span class="go">进入运营后台 →</span>
         </a>
         <a class="hub-card" href="miniprogram/home.html">
@@ -36,7 +36,7 @@
           <li><strong>内容售卖</strong>：管理端 <code>内容课程</code> → 创建课 → 切 C 端首页购买 → 我的可学</li>
           <li><strong>直播转化</strong>：管理端 <code>直播</code> → 创建/审核态 → C 端直播间购课</li>
           <li><strong>私域运营</strong>：SCRM <code>线索池</code>（分配/渠道对接）→ <code>跟进管理</code> / <code>直播提醒</code> → 看板</li>
-          <li><strong>数据看板</strong>：总览 / 获客 / 私域 / 直播 / 商品</li>
+          <li><strong>数据看板</strong>：经营分析 / 获客渠道 / 跟进 / 直播 / 商品</li>
         </ol>
       </div>
 
@@ -46,22 +46,8 @@
       </p>
     </div>
   </div>
-  <!-- 评审标注层：review-kit（通用工具，位于仓库根 review-kit/） -->
-  <script>
-  window.REVIEW_KIT = {
-    serverBase: "/__review",
-    storeKey: "proto:review:v1",
-    pageRoot: "/prototype/",
-    roots: [
-      { sel: "#page-content", region: "content" },
-      { sel: "#header-actions", region: "header-actions" }
-    ],
-    shells: [
-      { name: "admin-shell.js", hints: ["admin-topbar", "admin-brand", "admin-modules", "sidebar"], container: "admin-app" }
-    ]
-  };
-  </script>
-  <link rel="stylesheet" href="../review-kit/annotate.css?v=1" />
-  <script src="../review-kit/annotate.js?v=1" defer></script>
+  <!-- 评审标注层：本仓库自有实现，数据落盘到 _review/annotations.json -->
+  <link rel="stylesheet" href="assets/css/annotate.css?v=2" />
+  <script src="assets/js/annotate.js?v=2" defer></script>
 </body>
 </html>

@@ -10,6 +10,7 @@
 <div id="header-actions">
   <button class="btn" id="btn-back-list" type="button">返回订单列表</button>
   <button class="btn" id="btn-copy" type="button">复制订单号</button>
+  <button class="btn" id="btn-add-note" type="button">添加备注</button>
   <button class="btn btn-primary" id="btn-refund" type="button">发起退款</button>
 </div>
 <div id="page-content" style="display:none">
@@ -32,7 +33,7 @@
         <span class="badge" id="od-status-badge" style="font-size:13px">—</span>
         <b class="mono" id="od-no">—</b>
         <span class="tag tag-green" id="od-channel-tag">视频号</span>
-        <span class="tag tag-blue">系列课商品</span>
+        <span class="tag tag-blue" id="od-goods-tag">课程商品</span>
       </div>
       <div class="os-flow" id="od-flow"></div>
     </div>
@@ -47,16 +48,21 @@
           <div class="thumb thumb-course"><img src="../assets/img/covers/comm.jpg" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:inherit;display:block" /></div>
           <div>
             <b id="od-product">—</b>
-            <div class="muted" style="font-size:12px;margin-top:2px" id="od-product-sub">系列课商品</div>
+            <div class="muted" style="font-size:12px;margin-top:2px" id="od-product-sub">课程商品</div>
           </div>
           <div class="prod-price"><b id="od-product-price">—</b></div>
         </div>
         <div class="kv" style="margin-top:12px">
-          <div class="kv-row"><span>商品类型</span><b>系列课商品（虚拟）</b></div>
-          <div class="kv-row"><span>交付方式</span><b>支付后自动开通</b></div>
+          <div class="kv-row"><span>商品类型</span><b id="od-goods-type">—</b></div>
+          <div class="kv-row"><span>商品来源</span><b id="od-goods-source">—</b></div>
+          <div class="kv-row"><span>商品规格</span><b id="od-goods-spec">—</b></div>
+          <div class="kv-row"><span>单价 × 数量</span><b id="od-goods-qty">—</b></div>
+          <div class="kv-row"><span>交付方式</span><b id="od-deliver-type">—</b></div>
+          <div class="kv-row"><span>权益类型</span><b id="od-right-type">—</b></div>
           <div class="kv-row"><span>权益状态</span><b id="od-right-status">—</b></div>
           <div class="kv-row"><span>开通时间</span><b id="od-right-acquire">—</b></div>
           <div class="kv-row"><span>有效期</span><b id="od-right-validity">—</b></div>
+          <div class="kv-row" id="od-goods-extra-row" style="display:none"><span id="od-goods-extra-label">—</span><b id="od-goods-extra">—</b></div>
         </div>
       </div>
     </div>
@@ -64,7 +70,12 @@
     <div class="card"><div class="card-hd"><h2>权益与售后</h2></div>
       <div class="card-bd">
         <div class="kv">
+          <div class="kv-row"><span>权益编号</span><b class="mono" id="od-right-id">—</b></div>
+          <div class="kv-row"><span>权益类型</span><b id="od-right-type-2">—</b></div>
+          <div class="kv-row"><span>权益来源</span><b id="od-right-acquire-method">—</b></div>
+          <div class="kv-row"><span>课程状态</span><b id="od-right-course-status">—</b></div>
           <div class="kv-row"><span>学习进度</span><b id="od-learn">—</b></div>
+          <div class="kv-row"><span>最近变更</span><b id="od-right-last-change">—</b></div>
           <div class="kv-row"><span>权益回收状态</span><b id="od-recycle">—</b></div>
           <div class="kv-row"><span>退款状态</span><b id="od-refund-status">—</b></div>
           <div class="kv-row"><span>退款与权益回收</span><b id="od-refund-link">—</b></div>
@@ -81,14 +92,18 @@
         <div class="kv-row"><span>订单号</span><b class="mono" id="od-info-no">—</b></div>
         <div class="kv-row"><span>交易流水号</span><b class="mono" id="od-txn-no">—</b></div>
         <div class="kv-row"><span>通联支付交易单号</span><b class="mono" id="od-pay-txn">—</b></div>
-        <div class="kv-row"><span>订单类型</span><b>普通订单（系列课商品 1 件）</b></div>
+        <div class="kv-row"><span>渠道支付流水号</span><b class="mono" id="od-channel-txn">—</b></div>
+        <div class="kv-row"><span>订单类型</span><b id="od-order-type">—</b></div>
+        <div class="kv-row"><span>下单渠道</span><b id="od-order-channel">—</b></div>
+        <div class="kv-row" id="od-live-row" style="display:none"><span>关联直播</span><b><a class="link" id="od-live-link" href="lives.html">—</a></b></div>
         <div class="kv-row"><span>渠道来源</span><b id="od-source">—</b></div>
         <div class="kv-row"><span>商品来源</span><b id="od-content-source">—</b></div>
         <div class="kv-row"><span>结算模式</span><b id="od-settle-mode">—</b></div>
-        <div class="kv-row"><span>推广人</span><b>—</b></div>
+        <div class="kv-row"><span>关联顾问</span><b id="od-consultant">—</b></div>
+        <div class="kv-row"><span>归属销售</span><b id="od-promoter">—</b></div>
         <div class="kv-row"><span>下单时间</span><b id="od-time">—</b></div>
         <div class="kv-row"><span>支付时间</span><b id="od-pay-time">—</b></div>
-        <div class="kv-row"><span>支付方式</span><b>通联支付（微信小程序内）</b></div>
+        <div class="kv-row"><span>支付方式</span><b id="od-pay-channel">—</b></div>
       </div>
     </div>
   </div>
@@ -102,6 +117,8 @@
           <div class="kv-row"><span>手机号</span><b id="od-phone">—</b></div>
           <div class="kv-row"><span>是否企微好友</span><b id="od-wecom">—</b></div>
           <div class="kv-row"><span>归属销售</span><b id="od-owner">—</b></div>
+          <div class="kv-row"><span>注册来源</span><b id="od-reg-source">—</b></div>
+          <div class="kv-row"><span>用户标签</span><b id="od-user-tags">—</b></div>
         </div>
       </div>
     </div>
@@ -110,9 +127,12 @@
       <div class="card-bd">
         <div class="kv">
           <div class="kv-row"><span>商品总额</span><b id="od-amount-total">—</b></div>
-          <div class="kv-row"><span>优惠券</span><b>-¥0.00</b></div>
+          <div class="kv-row"><span>优惠抵扣</span><b id="od-amount-discount">-¥0.00</b></div>
           <div class="kv-row"><span>实付金额</span><b class="price" id="od-amount-pay">—</b></div>
+          <div class="kv-row"><span>累计退款</span><b id="od-amount-refund">¥0.00</b></div>
+          <div class="kv-row"><span>净计收</span><b id="od-amount-net">—</b></div>
         </div>
+        <p class="muted" style="font-size:12px;margin:8px 0 0">净计收 = 实付金额 − 累计退款，为参与分账的基数。</p>
       </div>
     </div>
   </div>
@@ -123,6 +143,8 @@
       <div class="card-bd">
         <div class="kv">
           <div class="kv-row"><span>支付状态</span><b id="od-pay-status">—</b></div>
+          <div class="kv-row"><span>支付渠道</span><b id="od-pay-gateway">—</b></div>
+          <div class="kv-row"><span>支付账户</span><b id="od-pay-account">—</b></div>
           <div class="kv-row"><span>退款状态</span><b id="od-pay-refund">—</b></div>
           <div class="kv-row"><span>累计退款金额</span><b id="od-refund-amount">¥0.00</b></div>
         </div>
@@ -138,14 +160,62 @@
       <div class="card-bd">
         <div class="kv">
           <div class="kv-row"><span>收单主体</span><b>艺博入金收款主体（通联支付）</b></div>
+          <div class="kv-row"><span>收款会员号</span><b class="mono" id="od-split-member">—</b></div>
+          <div class="kv-row"><span>平台商户号</span><b class="mono" id="od-split-merchant">—</b></div>
           <div class="kv-row"><span>分账状态</span><b id="od-split-status">—</b></div>
           <div class="kv-row"><span id="od-split-plat-label">平台所得</span><b id="od-split-plat">—</b></div>
           <div class="kv-row"><span id="od-split-mch-label">商家所得</span><b id="od-split-mch">—</b></div>
           <div class="kv-row"><span>入金手续费（0.3%）</span><b id="od-split-channel">—</b></div>
-          <div class="kv-row"><span>分账规则</span><b><span class="muted">由平台统一配置（运营后台 · 结算规则配置）</span></b></div>
-          <div class="kv-row"><span>所属结算单</span><b><a href="settlement.html" class="link">查看结算 →</a></b></div>
+          <div class="kv-row"><span>分账规则快照</span><b id="od-split-snapshot">—</b></div>
+          <div class="kv-row"><span>所属结算单</span><b><a href="settlement.html" class="link" id="od-settlement-link">—</a></b></div>
         </div>
       </div>
+    </div>
+  </div>
+
+  <!-- 退款详情（订单有退款时显示） -->
+  <div class="card" id="od-refund-card" style="display:none;margin-bottom:8px">
+    <div class="card-hd"><h2>退款详情</h2><a class="link" id="od-rf-detail-link" href="refunds.html">查看退款单 →</a></div>
+    <div class="card-bd">
+      <div class="kv-grid">
+        <div class="kv-row"><span>退款单号</span><b class="mono" id="od-rf-id">—</b></div>
+        <div class="kv-row"><span>退款类型</span><b id="od-rf-type">—</b></div>
+        <div class="kv-row"><span>退款金额</span><b class="price" id="od-rf-amount">—</b></div>
+        <div class="kv-row"><span>退款状态</span><b id="od-rf-status">—</b></div>
+        <div class="kv-row"><span>退款原因</span><b id="od-rf-reason">—</b></div>
+        <div class="kv-row"><span>申请时间</span><b id="od-rf-created">—</b></div>
+        <div class="kv-row"><span>权益回收</span><b id="od-rf-rights">—</b></div>
+        <div class="kv-row"><span>课程访问</span><b id="od-rf-access">—</b></div>
+        <div class="kv-row"><span>清分处理</span><b id="od-rf-split">—</b></div>
+        <div class="kv-row"><span>处理人</span><b id="od-rf-handler">—</b></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 售后与退款关联 -->
+  <div class="card" style="margin-bottom:8px">
+    <div class="card-hd"><h2>售后与退款关联</h2><span class="muted" id="od-after-count" style="font-size:12px">—</span></div>
+    <div class="card-bd" style="padding:0">
+      <table class="data" id="od-after-table">
+        <thead>
+          <tr>
+            <th>关联单号</th><th>单据类型</th><th>售后/退款类型</th><th>金额</th>
+            <th>权益处理</th><th>状态</th><th>申请时间</th><th style="width:80px">操作</th>
+          </tr>
+        </thead>
+        <tbody id="od-after-list"></tbody>
+      </table>
+      <div class="muted" id="od-after-empty" style="display:none;padding:20px 16px;font-size:13px">本单暂无关联售后单或退款单。</div>
+    </div>
+  </div>
+
+  <!-- 订单备注 -->
+  <div class="card" style="margin-bottom:8px">
+    <div class="card-hd"><h2>订单备注</h2>
+      <button class="btn btn-sm" id="od-note-add" type="button">添加备注</button>
+    </div>
+    <div class="card-bd">
+      <ul class="note-list" id="od-note-list"></ul>
     </div>
   </div>
 
@@ -162,11 +232,33 @@
   </div>
 </div>
 
+<!-- ============ 弹窗 ============ -->
+<div class="proto-mask" id="mask"></div>
+
+<!-- 添加备注弹窗 -->
+<div class="proto-modal" id="modal-note" style="width:520px">
+  <div class="proto-modal-hd">
+    <h3 style="font-size:16px;font-weight:600">添加订单备注</h3>
+    <button class="btn btn-sm btn-ghost" data-close type="button">×</button>
+  </div>
+  <div class="proto-modal-bd">
+    <div class="field" style="margin-bottom:8px"><label>备注内容</label>
+      <textarea id="od-note-input" rows="4" style="width:100%;padding:8px;border:1px solid var(--color-border);border-radius:6px" placeholder="填写订单备注，仅商家内部可见"></textarea>
+    </div>
+    <p class="muted" style="margin:0;font-size:12px">备注仅商家内部可见，会同步写入本单操作日志。</p>
+  </div>
+  <div class="proto-drawer-ft" style="border-top:1px solid var(--color-border);padding:12px 20px;display:flex;gap:8px;justify-content:flex-end">
+    <button class="btn" data-close type="button">取消</button>
+    <button class="btn btn-primary" id="od-note-save" type="button">保存备注</button>
+  </div>
+</div>
+
 <style>
 .order-status-bar { display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; }
 .os-main { display:flex; align-items:center; gap:10px; font-size:14px; }
-.os-flow { display:flex; align-items:center; gap:0; }
+.os-flow { display:flex; align-items:center; gap:0; flex-wrap:wrap; row-gap:4px; }
 .os-step { display:flex; align-items:center; gap:6px; font-size:12px; color:var(--color-text-muted); }
+.os-step em { font-style:normal; font-size:11px; color:var(--color-text-muted); margin-left:2px; }
 .os-step i { font-style:normal; width:18px; height:18px; border-radius:50%; background:#e5e6eb; color:#86909c; font-size:11px; display:inline-flex; align-items:center; justify-content:center; }
 .os-step.done { color:#009a29; }
 .os-step.done i { background:#e8ffea; color:#009a29; }
@@ -190,9 +282,16 @@
 .log-list li { padding:8px 0; border-bottom:1px dashed var(--color-border); }
 .log-list li:last-child { border-bottom:none; }
 .log-time { font-family:ui-monospace,Consolas,monospace; font-size:12px; color:var(--color-text-muted); margin-right:12px; }
+.note-list { list-style:none; margin:0; padding:0; font-size:13px; }
+.note-list li { padding:9px 0; border-bottom:1px dashed var(--color-border); }
+.note-list li:last-child { border-bottom:none; }
+.note-time { font-family:ui-monospace,Consolas,monospace; font-size:12px; color:var(--color-text-muted); margin-right:12px; }
+.note-by { color:var(--color-primary); margin-right:8px; }
 .tag { display:inline-block; padding:2px 8px; border-radius:4px; font-size:12px; }
 .tag-green { background:#e8ffea; color:#009a29; }
 .tag-blue { background:#e8f3ff; color:#165dff; }
+.tag-purple { background:#f4f0ff; color:#722ed1; }
+.tag-orange { background:#fff7e8; color:#ad6800; }
 .alert { position:relative; padding:8px 14px; border-radius:8px; font-size:13px; }
 .alert-info { background:#e8f3ff; border:1px solid #a0cfff; color:#165dff; }
 .alert-warn { background:#fff7e8; border:1px solid #ffe1ba; color:#ad6800; }
@@ -201,6 +300,7 @@
 </style>
 
 <script src="../assets/js/proto.js"></script>
+<script src="../assets/js/order-demo-store.js"></script>
 <script src="../assets/js/user-store.js?v=3"></script>
 <script src="../assets/js/admin-shell.js?v=14"></script>
 <script>
@@ -250,7 +350,9 @@
   document.getElementById("btn-back-list").addEventListener("click", goOrdersList);
   document.getElementById("btn-back-bottom").addEventListener("click", goOrdersList);
 
-  var hit = (oid && US && US.findOrder) ? US.findOrder(oid, uidParam) : null;
+  /* B 端演示订单（订单列表跳转入口）优先；用户档案链路回落到 UserStore */
+  var demo = (oid && window.OrderDemoStore) ? OrderDemoStore.find(oid) : null;
+  var hit = demo || ((oid && US && US.findOrder) ? US.findOrder(oid, uidParam) : null);
   var empty = document.getElementById("od-empty");
   var found = document.getElementById("od-found");
 
@@ -259,6 +361,7 @@
     found.style.display = "none";
     document.getElementById("btn-copy").style.display = "none";
     document.getElementById("btn-refund").style.display = "none";
+    document.getElementById("btn-add-note").style.display = "none";
     if (from === "user" || uidParam) {
       var emptyBack = document.getElementById("btn-empty-back");
       emptyBack.textContent = "返回用户权益";
@@ -273,13 +376,36 @@
   var user = hit.user;
   var order = hit.order;
   var right = hit.right;
+  var demoRefund = hit.refund || null;   /* 订单列表演示订单自带退款单 */
+  var afterSales = hit.aftersales || []; /* 关联售后单 / 退款单 */
+  var notes = hit.notes || [];           /* 商家备注 */
+  var isDemo = !!demo;
+  /* 演示订单的买家不在用户档案库中，跳转回列表页对应模块 */
+  var viewUserHref = isDemo ? "users.html" : buildUserDetailHref(uid, "overview");
+  var viewRightsHref = isDemo ? "entitlement.html" : buildUserDetailHref(uid, "rights");
+  var viewRefundHref = isDemo ? "refunds.html" : "";
   var uid = user.id;
   var amount = Number(order.amount || 0);
+  var unpaid = order.payStatus === "待付款";
   var refunded = order.payStatus === "已退款" || order.refundStatus === "已退款" ||
     (right && right.status === "已退款回收");
+  var refunding = !unpaid && !refunded && String(order.refundStatus || "").indexOf("退款中") >= 0;
   var rightStatus = (right && right.status) || order.rightStatus || "—";
   var failOpen = rightStatus === "开通失败";
   var expired = rightStatus === "已到期";
+
+  /* ===== 订单情况：商品类型 / 订单类型 / 交付方式（按订单差异化展示） ===== */
+  var GOODS_TYPES = ["课程商品", "定制化计划商品", "直播商品", "线下门票"];
+  var goodsType = GOODS_TYPES.indexOf(order.goodsType) >= 0 ? order.goodsType : "课程商品";
+  var orderType = order.orderType || "普通订单";
+  var orderChannel = order.channel || user.source || "视频号";
+  var deliverType = order.deliverType || (
+    goodsType === "定制化计划商品" ? "人工开通（顾问对接）" :
+    goodsType === "线下门票" ? "线下核销（凭订单二维码）" : "支付后自动开通"
+  );
+  var payChannel = unpaid ? "—" : (order.payChannel || "通联支付（微信小程序内）");
+  var refundHit = (order.refundId && US && US.findRefund) ? US.findRefund(order.refundId, uid) : null;
+  var refund = demoRefund || (refundHit ? refundHit.refund : null);
 
   /* from-user banner */
   var showFromUser = from === "user" || !!uidParam;
@@ -295,7 +421,39 @@
   var badge = document.getElementById("od-status-badge");
   var alertEl = document.getElementById("od-alert");
   var flow = document.getElementById("od-flow");
-  if (refunded) {
+
+  /* ===== 状态流转：步骤带发生时间，按订单情况分支 ===== */
+  var hhmm = function (s) {
+    var m = String(s || "").match(/(\d{1,2}:\d{2})/);
+    return m ? m[1] : "";
+  };
+  var openAt = (right && right.acquireAt) || "";
+  var refundAt = (refund && refund.createdAt) || "";
+  function osStep(cls, n, label, time) {
+    return '<div class="os-step ' + (cls || "") + '"><i>' + n + "</i>" + label +
+      (time ? "<em>" + esc(time) + "</em>" : "") + "</div>";
+  }
+  /* 交付说明按商品类型差异 */
+  var deliverAlert = {
+    "课程商品": "支付成功后已<b>自动开通课程权益</b>，无物流发货环节",
+    "定制化计划商品": "支付成功后由<b>顾问人工开通</b>定制化计划权益，服务周期按计划排期执行",
+    "直播商品": "支付成功后已<b>自动开通</b>，并与对应直播场次关联",
+    "线下门票": "支付成功后生成<b>门票二维码</b>，活动当天线下核销入场，不发放线上课程权益"
+  }[goodsType];
+
+  if (unpaid) {
+    badge.className = "badge badge-warn";
+    badge.textContent = "待付款";
+    alertEl.className = "alert alert-warn";
+    alertEl.style.marginTop = "10px";
+    alertEl.style.fontSize = "13px";
+    alertEl.innerHTML = "买家<b>尚未支付</b>，超 30 分钟未支付订单将自动关闭；未支付订单<b>不产生分账与结算</b>，暂无权益开通记录。";
+    flow.innerHTML =
+      osStep("cur", 1, "确认订单", hhmm(order.time)) +
+      osStep("", 2, "支付成功", "") +
+      osStep("", 3, "权益开通", "") +
+      osStep("", 4, "订单完成", "");
+  } else if (refunded) {
     badge.className = "badge badge-danger";
     badge.textContent = "已退款 · 权益已回收";
     alertEl.className = "alert alert-danger";
@@ -303,55 +461,125 @@
     alertEl.style.fontSize = "13px";
     alertEl.innerHTML = "本单已<b>退款完成</b>，关联课程权益已<b>回收</b>，用户当前不可访问课程。";
     flow.innerHTML =
-      '<div class="os-step done"><i>1</i>确认订单</div>' +
-      '<div class="os-step done"><i>2</i>支付成功</div>' +
-      '<div class="os-step done"><i>3</i>权益已开通</div>' +
-      '<div class="os-step cur"><i>4</i>已退款回收</div>';
+      osStep("done", 1, "确认订单", hhmm(order.time)) +
+      osStep("done", 2, "支付成功", hhmm(order.time)) +
+      osStep("done", 3, "权益已开通", hhmm(openAt)) +
+      osStep("cur", 4, "已退款回收", hhmm(refundAt));
+  } else if (refunding) {
+    badge.className = "badge badge-warn";
+    badge.textContent = "已支付 · 退款处理中";
+    alertEl.className = "alert alert-warn";
+    alertEl.style.marginTop = "10px";
+    alertEl.style.fontSize = "13px";
+    alertEl.innerHTML = "本单<b>退款处理中</b>（" + esc((refund && refund.type) || "退款并回收权益") +
+      "）；退款完成后将自动回收权益并冲正分账，期间该笔资金<b>暂不结算</b>。";
+    flow.innerHTML =
+      osStep("done", 1, "确认订单", hhmm(order.time)) +
+      osStep("done", 2, "支付成功", hhmm(order.time)) +
+      osStep("done", 3, "权益已开通", hhmm(openAt)) +
+      osStep("cur", 4, "退款处理中", hhmm(refundAt));
   } else if (failOpen) {
     badge.className = "badge badge-warn";
     badge.textContent = "已支付 · 权益开通失败";
     alertEl.className = "alert alert-warn";
     alertEl.style.marginTop = "10px";
     alertEl.style.fontSize = "13px";
-    alertEl.innerHTML = "本单已支付，但<b>课程权益开通失败</b>，可在用户详情「课程与权益」中重新开通。";
+    alertEl.innerHTML = "本单已支付，但<b>权益开通失败</b>（" + esc(goodsType) + " · " + esc(deliverType) +
+      "），可在用户详情「课程与权益」中重新开通。";
     flow.innerHTML =
-      '<div class="os-step done"><i>1</i>确认订单</div>' +
-      '<div class="os-step done"><i>2</i>支付成功</div>' +
-      '<div class="os-step cur"><i>3</i>开通失败</div>' +
-      '<div class="os-step"><i>4</i>订单完成</div>';
+      osStep("done", 1, "确认订单", hhmm(order.time)) +
+      osStep("done", 2, "支付成功", hhmm(order.time)) +
+      osStep("cur", 3, "开通失败", hhmm(openAt)) +
+      osStep("", 4, "订单完成", "");
   } else if (expired) {
     badge.className = "badge badge-warn";
     badge.textContent = "已支付 · 权益已到期";
     alertEl.className = "alert alert-warn";
     alertEl.style.marginTop = "10px";
     alertEl.style.fontSize = "13px";
-    alertEl.innerHTML = "本单权益已<b>到期</b>，用户当前不可访问课程；可延长有效期或引导复购。";
+    alertEl.innerHTML = "本单权益已<b>到期</b>（有效期至 " + esc((right && right.endAt) || "—") +
+      "），用户当前不可访问课程；可延长有效期或引导复购。";
     flow.innerHTML =
-      '<div class="os-step done"><i>1</i>确认订单</div>' +
-      '<div class="os-step done"><i>2</i>支付成功</div>' +
-      '<div class="os-step done"><i>3</i>权益已开通</div>' +
-      '<div class="os-step cur"><i>4</i>已到期</div>';
+      osStep("done", 1, "确认订单", hhmm(order.time)) +
+      osStep("done", 2, "支付成功", hhmm(order.time)) +
+      osStep("done", 3, "权益已开通", hhmm(openAt)) +
+      osStep("cur", 4, "已到期", (right && right.endAt) ? String(right.endAt).slice(5) : "");
   } else {
     badge.className = "badge badge-info";
-    badge.textContent = "已支付 · 权益已开通";
+    badge.textContent = (order.payStatus === "已完成" ? "已完成" : "已支付") + " · 权益已开通";
     alertEl.className = "alert alert-info";
     alertEl.style.marginTop = "10px";
     alertEl.style.fontSize = "13px";
-    alertEl.innerHTML = "本单为<b>系列课商品订单</b>，支付成功后已<b>自动开通课程权益</b>，无物流发货环节；权益开通与回收记录可在「交易-订单管理-权益开通记录」查看。";
+    alertEl.innerHTML = "本单为<b>" + esc(goodsType) + "订单</b>，" + deliverAlert +
+      "；权益开通与回收记录可在「交易-订单管理-权益开通记录」查看。";
     flow.innerHTML =
-      '<div class="os-step done"><i>1</i>确认订单</div>' +
-      '<div class="os-step done"><i>2</i>支付成功</div>' +
-      '<div class="os-step cur"><i>3</i>权益已开通</div>' +
-      '<div class="os-step"><i>4</i>订单完成</div>';
+      osStep("done", 1, "确认订单", hhmm(order.time)) +
+      osStep("done", 2, "支付成功", hhmm(order.time)) +
+      osStep("cur", 3, "权益已开通", hhmm(openAt)) +
+      osStep("", 4, "订单完成", "");
   }
 
   document.getElementById("od-no").textContent = order.id;
   document.getElementById("od-info-no").textContent = order.id;
-  document.getElementById("od-channel-tag").textContent = user.source || "视频号";
+  document.getElementById("od-channel-tag").textContent = orderChannel;
+  var goodsTagEl = document.getElementById("od-goods-tag");
+  goodsTagEl.textContent = goodsType;
+  goodsTagEl.className = "tag " + (goodsType === "直播商品" ? "tag-orange" :
+    goodsType === "定制化计划商品" ? "tag-purple" :
+      goodsType === "线下门票" ? "tag-green" : "tag-blue");
   document.getElementById("od-product").textContent = order.product || (right && right.course) || "—";
   document.getElementById("od-product-sub").textContent =
-    "线上课 · " + ((right && right.chapters) ? right.chapters + " 节 · " : "") + "系列课商品";
+    (goodsType === "线下门票" ? "线下活动 · " :
+      goodsType === "定制化计划商品" ? "定制服务 · " :
+        goodsType === "直播商品" ? "直播商品 · " : "线上课 · ") +
+    ((right && right.chapters) ? right.chapters + " 节 · " : "") + goodsType;
   document.getElementById("od-product-price").textContent = money(amount);
+
+  /* ===== 商品明细字段（按商品类型差异化） ===== */
+  document.getElementById("od-goods-type").textContent = goodsType;
+  document.getElementById("od-goods-spec").textContent = order.spec ||
+    ((right && right.chapters) ? right.chapters + " 节" : "—");
+  document.getElementById("od-goods-qty").textContent = money(amount) + " × 1";
+  document.getElementById("od-deliver-type").textContent = deliverType;
+  document.getElementById("od-right-type").textContent = (right && right.rightType) || goodsType;
+  document.getElementById("od-right-id").textContent = (right && right.id) || "—";
+  document.getElementById("od-right-type-2").textContent = (right && right.rightType) || "—";
+  document.getElementById("od-right-acquire-method").textContent =
+    (right && (right.acquireMethod || right.acquire)) || "—";
+  document.getElementById("od-right-course-status").textContent = (right && right.courseStatus) || "—";
+  document.getElementById("od-right-last-change").textContent = (right && right.lastChange) || "—";
+
+  var extraRow = document.getElementById("od-goods-extra-row");
+  var extraLabel = document.getElementById("od-goods-extra-label");
+  var extraVal = document.getElementById("od-goods-extra");
+  if (goodsType === "直播商品" && (order.liveName || order.liveId)) {
+    extraLabel.textContent = "关联直播";
+    extraVal.textContent = order.liveName || order.liveId;
+    extraRow.style.display = "";
+  } else if (goodsType === "线下门票") {
+    extraLabel.textContent = "门票编号";
+    extraVal.textContent = order.ticketNo || (right && right.ticketNo) || "—";
+    extraRow.style.display = "";
+  } else if (goodsType === "定制化计划商品") {
+    extraLabel.textContent = "服务周期";
+    extraVal.textContent = ((right && right.startAt) || "—") + " ~ " + ((right && right.endAt) || "—");
+    extraRow.style.display = "";
+  } else {
+    extraRow.style.display = "none";
+  }
+
+  /* ===== 订单信息字段 ===== */
+  document.getElementById("od-order-type").textContent = orderType + "（" + goodsType + " × 1）";
+  document.getElementById("od-order-channel").textContent = orderChannel;
+  document.getElementById("od-pay-channel").textContent = payChannel;
+  document.getElementById("od-consultant").textContent =
+    order.consultant || (goodsType === "定制化计划商品" ? (user.owner || "—") : "—");
+  document.getElementById("od-promoter").textContent = order.promoter || user.owner || "—";
+  if (goodsType === "直播商品" && (order.liveName || order.liveId)) {
+    document.getElementById("od-live-link").textContent = order.liveName || order.liveId;
+    document.getElementById("od-live-link").href = "live-detail.html?id=" + encodeURIComponent(order.liveId || "");
+    document.getElementById("od-live-row").style.display = "";
+  }
 
   var rightBadgeClass = "badge-info";
   if (refunded || failOpen || expired) rightBadgeClass = "badge-warn";
@@ -371,7 +599,11 @@
 
   var learn = "—";
   if (right) {
-    if (right.learnStatus === "学习中") learn = "学习中 · 共 " + (right.chapters || "—") + " 节";
+    if (goodsType === "线下门票") {
+      learn = "待核销 · 活动 " + ((right.startAt || "—") + " ~ " + (right.endAt || "—"));
+    } else if (goodsType === "定制化计划商品") {
+      learn = (right.learnStatus || "—") + " · 共 " + (right.chapters || "—") + " 次服务";
+    } else if (right.learnStatus === "学习中") learn = "学习中 · 共 " + (right.chapters || "—") + " 节";
     else if (right.learnStatus === "已学完") learn = "已学完 · 共 " + (right.chapters || "—") + " 节";
     else if (right.learnStatus === "未学习") learn = "未学习 · 共 " + (right.chapters || "—") + " 节";
     else learn = right.learnStatus || "—";
@@ -393,10 +625,11 @@
   var refundLinkEl = document.getElementById("od-refund-link");
   var refundsBtn = document.getElementById("od-refunds-btn");
   if (order.refundId) {
-    refundLinkEl.innerHTML = '<a href="' + esc(buildAftersaleHref(order.refundId, uid)) +
+    var rfHref = viewRefundHref || buildAftersaleHref(order.refundId, uid);
+    refundLinkEl.innerHTML = '<a href="' + esc(rfHref) +
       '" class="link">查看退款单 ' + esc(order.refundId) + " →</a>";
     if (refundsBtn) {
-      refundsBtn.href = buildAftersaleHref(order.refundId, uid);
+      refundsBtn.href = rfHref;
       refundsBtn.textContent = "查看退款单";
       refundsBtn.style.display = "";
     }
@@ -405,15 +638,21 @@
     if (refundsBtn) refundsBtn.style.display = "none";
   }
 
-  document.getElementById("od-txn-no").textContent =
-    "TXN" + String(order.id).replace(/\D/g, "").slice(-14);
-  document.getElementById("od-pay-txn").textContent =
-    "TL" + String(order.id).replace(/\D/g, "").slice(-14) + "XX";
-  document.getElementById("od-source").textContent = (user.source || "视频号") + "带货";
+  var txnTail = String(order.id).replace(/\D/g, "").slice(-14);
+  document.getElementById("od-txn-no").textContent = unpaid ? "—" : ("TXN" + txnTail);
+  document.getElementById("od-pay-txn").textContent = unpaid ? "—" : (order.payTxn || ("TL" + txnTail + "XX"));
+  document.getElementById("od-channel-txn").textContent =
+    unpaid ? "—" : (order.channelTxn || ("WX" + txnTail));
+  document.getElementById("od-source").textContent =
+    orderChannel === "视频号" ? "视频号带货" :
+      orderChannel === "直播间" ? "直播间" :
+        orderChannel === "小程序" ? "小程序商城" : (orderChannel + "带货");
   document.getElementById("od-time").textContent = order.time || "—";
-  document.getElementById("od-pay-time").textContent = order.time || "—";
+  document.getElementById("od-pay-time").textContent = (unpaid || !order.payTime) ? "—" : order.payTime;
+  document.getElementById("od-pay-gateway").textContent = unpaid ? "—" : "通联云商通 · 小程序收银台";
+  document.getElementById("od-pay-account").textContent = unpaid ? "—" : "微信支付（买家微信账户）";
 
-  var userHref = buildUserDetailHref(uid, "overview");
+  var userHref = viewUserHref;
   document.getElementById("od-buyer").innerHTML =
     esc(user.name || order.owner || "—") +
     ' <a href="' + esc(userHref) + '" class="link">查看用户 →</a>';
@@ -423,18 +662,31 @@
   document.getElementById("od-wecom").textContent =
     user.wecom ? ("是（" + (user.owner || "—") + "好友）") : "否";
   document.getElementById("od-owner").textContent = user.owner || "—";
+  document.getElementById("od-reg-source").textContent = user.source || "—";
+  document.getElementById("od-user-tags").textContent =
+    (user.tags && user.tags.length) ? user.tags.map(function (t) { return t.name; }).join("、") : "—";
 
-  document.getElementById("od-amount-total").textContent = money(amount);
+  var discountAmt = Number(order.discount || 0);
+  var refundAmount = refunded ? Number((refund && refund.amount) || amount) : 0;
+  document.getElementById("od-amount-total").textContent = money(amount + discountAmt);
   document.getElementById("od-amount-pay").textContent = money(amount);
+  document.getElementById("od-amount-discount").textContent = discountAmt ? ("-" + money(discountAmt)) : "-¥0.00";
+  document.getElementById("od-amount-refund").textContent = money(refundAmount);
+  document.getElementById("od-amount-net").textContent = money(unpaid ? 0 : (amount - refundAmount));
 
-  var payStatusHtml = refunded
-    ? '<span class="badge badge-danger">已退款</span>'
-    : '<span class="badge badge-success">支付成功</span>';
+  var payStatusHtml = unpaid
+    ? '<span class="badge badge-warn">待付款</span>'
+    : refunded
+      ? '<span class="badge badge-danger">已退款</span>'
+      : refunding
+        ? '<span class="badge badge-warn">退款处理中</span>'
+        : '<span class="badge badge-success">支付成功</span>';
   document.getElementById("od-pay-status").innerHTML = payStatusHtml;
-  document.getElementById("od-pay-refund").textContent = refundLabel === "无" ? "无退款" : refundLabel;
-  document.getElementById("od-refund-amount").textContent = refunded ? money(amount) : "¥0.00";
+  document.getElementById("od-pay-refund").textContent =
+    unpaid ? "未支付" : (refundLabel === "无" ? "无退款" : refundLabel);
+  document.getElementById("od-refund-amount").textContent = money(refundAmount);
 
-  document.getElementById("od-rights-link").href = buildUserDetailHref(uid, "rights");
+  document.getElementById("od-rights-link").href = viewRightsHref;
 
   // ===== 分账：按商品来源走两条链路 =====
   // 链路 A（平台内容）→ 佣金模式：商家拿佣金（默认 20%），课程金额留存艺博账户
@@ -445,12 +697,20 @@
   var rate = isPlatform
     ? (order.commissionRate != null ? order.commissionRate : 20)
     : (order.serviceFeeRate != null ? order.serviceFeeRate : 0.6);
-  var base = amount - (refunded ? amount : 0);
-  var plat = Math.round(base * rate) / 100;
-  var mch = Math.round((base - plat) * 100) / 100;
+  /* 未支付 或 免费场次（0 元且无渠道支付流水）→ 不产生分账 */
+  var noTxn = !order.channelTxn || order.channelTxn === "—";
+  var freeSession = noTxn && amount === 0;
+  var noSplit = unpaid || freeSession;
+  var base = noSplit ? 0 : (amount - refundAmount);
   var channelFee = Math.round(amount * 0.3) / 100;
+  /* 按费率算出的「对方」金额：链路 A 算商家佣金，链路 B 算平台服务费 */
+  var cutAmount = Math.round(base * rate) / 100;
+  var mch = isPlatform ? cutAmount : Math.round((base - cutAmount) * 100) / 100;
+  var plat = Math.round((base - mch) * 100) / 100;
 
-  document.getElementById("od-content-source").textContent = isPlatform ? "平台内容（运营后台下发）" : "商家自建内容";
+  var sourceLabel = order.contentOwner || (isPlatform ? "平台内容（运营后台下发）" : "商家自建内容");
+  document.getElementById("od-content-source").textContent = sourceLabel;
+  document.getElementById("od-goods-source").textContent = sourceLabel;
   document.getElementById("od-settle-mode").textContent = isPlatform
     ? "佣金模式（商家拿佣金 " + rate + "%）"
     : "服务费模式（平台收服务费 " + rate + "%）";
@@ -460,43 +720,211 @@
   document.getElementById("od-split-mch-label").textContent = isPlatform
     ? "商家佣金（" + rate + "%）"
     : "商家应结（" + (100 - rate).toFixed(1) + "%）";
-  document.getElementById("od-split-plat").textContent = money(plat);
-  document.getElementById("od-split-mch").textContent = money(mch);
-  document.getElementById("od-split-channel").textContent = money(channelFee);
-  document.getElementById("od-split-status").innerHTML = refunded
-    ? '<span class="badge badge-danger">已冲正</span> 退款后清分回退'
-    : '<span class="badge badge-warn">待分账</span> 支付成功后 T+1 自动分账';
+  /* 收款会员号 / 平台商户号：演示口径，按链路给出收款方 */
+  document.getElementById("od-split-member").textContent =
+    noSplit ? "—" : (isPlatform ? "MEM-100208（艺博自营）" : "MEM-1001" + String(uid).replace(/\D/g, "").slice(-2) + "（商家小B会员）");
+  document.getElementById("od-split-merchant").textContent =
+    noSplit ? "—" : "TL-MCH-88010233（艺博入金收款主体）";
+  document.getElementById("od-split-snapshot").innerHTML = noSplit
+    ? '<span class="muted">' + (unpaid ? "未支付 · 未固化管理快照" : "免费场次 · 无分账规则快照") + "</span>"
+    : '<span class="mono">' + esc(isPlatform
+      ? '[{"payee_member_id":"MEM-100208","ratio":"' + (100 - rate) + '%"},{"payee_member_id":"MEM-1001XX","ratio":"' + rate + '%"}]'
+      : '[{"payee_member_id":"MEM-1001XX","ratio":"' + (100 - rate).toFixed(1) + '%"},{"payee_member_id":"MEM-100208","ratio":"' + rate + '%"}]') + "</span>";
+  document.getElementById("od-split-plat").textContent = noSplit ? "—" : money(plat);
+  document.getElementById("od-split-mch").textContent = noSplit ? "—" : money(mch);
+  document.getElementById("od-split-channel").textContent = noSplit ? "—" : money(channelFee);
+  document.getElementById("od-split-status").innerHTML = unpaid
+    ? '<span class="badge">未支付</span> 不产生分账'
+    : freeSession
+      ? '<span class="badge">免费场次</span> 无渠道支付流水 · 不参与分账'
+      : refunded
+        ? '<span class="badge badge-danger">已冲正</span> 退款后清分回退'
+        : refunding
+          ? '<span class="badge badge-warn">已冻结</span> 退款处理中暂缓分账'
+          : '<span class="badge badge-warn">待分账</span> 支付成功后 T+1 自动分账';
 
+  /* 所属结算单 */
+  var settlementLink = document.getElementById("od-settlement-link");
+  if (noSplit || !order.settlementId || order.settlementId === "—") {
+    settlementLink.textContent = unpaid ? "未支付 · 无结算单" : (freeSession ? "免费场次 · 无结算单" : "未入结算单");
+    settlementLink.removeAttribute("href");
+  } else {
+    settlementLink.textContent = order.settlementId + " →";
+    settlementLink.href = "settlement.html";
+  }
+
+  /* ===== 退款详情（订单有退款单时显示，含退款处理中） ===== */
+  if (refunded || refunding) {
+    document.getElementById("od-refund-card").style.display = "";
+    document.getElementById("od-rf-id").textContent = order.refundId || (refund && refund.id) || "—";
+    document.getElementById("od-rf-type").textContent = (refund && refund.type) || "仅退款";
+    document.getElementById("od-rf-amount").textContent = money((refund && refund.amount) || amount);
+    document.getElementById("od-rf-status").innerHTML =
+      '<span class="badge ' + (refunded ? "badge-danger" : "badge-warn") + '">' +
+      esc((refund && (refund.statusLabel || refund.status)) || (refunded ? "已退款" : "退款中")) + "</span>";
+    document.getElementById("od-rf-reason").textContent = (refund && refund.reason) || "—";
+    document.getElementById("od-rf-created").textContent = (refund && refund.createdAt) || "—";
+    document.getElementById("od-rf-rights").textContent = (refund && refund.rightsRecycled)
+      ? "已回收（" + ((right && right.id) || "—") + "）"
+      : ((right && right.status === "已退款回收") ? "已回收" : "未回收");
+    document.getElementById("od-rf-access").textContent =
+      (refund && refund.courseAccess) || (right && right.access) || "不可访问";
+    document.getElementById("od-rf-split").textContent =
+      (refund && refund.splitRollback) || (refunded ? "已冲正 · 退款金额不计入结算" : "待退款完成后冲正");
+    document.getElementById("od-rf-handler").textContent =
+      (refund && refund.handler) || user.owner || "客服中心";
+    if (order.refundId) {
+      document.getElementById("od-rf-detail-link").href = isDemo
+        ? "refunds.html" : buildAftersaleHref(order.refundId, uid);
+    }
+  }
+
+  /* ===== 售后与退款关联 ===== */
+  var afterList = document.getElementById("od-after-list");
+  var afterTable = document.getElementById("od-after-table");
+  document.getElementById("od-after-count").textContent = "共 " + afterSales.length + " 条";
+  if (afterSales.length) {
+    afterTable.style.display = "";
+    document.getElementById("od-after-empty").style.display = "none";
+    afterList.innerHTML = afterSales.map(function (a) {
+      return "<tr>" +
+        '<td><a href="' + esc(a.href || "#") + '" class="link-mono">' + esc(a.id) + "</a></td>" +
+        "<td>" + esc(a.kind || "退款单") + "</td>" +
+        "<td>" + esc(a.type || "—") + "</td>" +
+        "<td><b>" + money(a.amount) + "</b></td>" +
+        "<td>" + esc(a.rights || "—") + "</td>" +
+        '<td><span class="badge ' + esc(a.statusClass || "badge-info") + '">' + esc(a.status || "—") + "</span></td>" +
+        "<td>" + esc(a.createdAt || "—") + "</td>" +
+        '<td class="row-actions"><a href="' + esc(a.href || "#") + '">查看</a></td>' +
+        "</tr>";
+    }).join("");
+  } else {
+    afterTable.style.display = "none";
+    document.getElementById("od-after-empty").style.display = "";
+  }
+
+  /* ===== 商家备注 ===== */
+  function renderNotes() {
+    var box = document.getElementById("od-note-list");
+    if (!notes.length) {
+      box.innerHTML = '<li class="muted">暂无备注，可点击「添加备注」补充本单内部说明。</li>';
+      return;
+    }
+    box.innerHTML = notes.map(function (n) {
+      return "<li><span class=\"note-time\">" + esc(n.at) + "</span>" +
+        '<span class="note-by">' + esc(n.by || "商家管理员") + "</span>" +
+        esc(n.text) + "</li>";
+    }).join("");
+  }
+  renderNotes();
+
+  /* ===== 操作日志 ===== */
   var logs = [];
   if (order.time) {
-    logs.push({ at: order.time, text: "买家通过" + (user.source || "视频号") + "下单「" + (order.product || "") + "」", by: user.source || "渠道" });
-    logs.push({ at: order.time, text: "通联支付回调成功，实付 " + money(amount), by: "支付系统" });
+    logs.push({
+      at: order.time,
+      text: "买家通过" + orderChannel + "下单「" + (order.product || "") + "」",
+      by: orderChannel + "渠道"
+    });
+  }
+  if (unpaid) {
+    logs.push({ at: order.time, text: "等待买家付款，超 30 分钟未支付将自动关闭", by: "交易系统" });
+  } else {
+    logs.push({
+      at: order.payTime || order.time,
+      text: "通联支付回调成功，实付 " + money(amount),
+      by: "支付系统"
+    });
   }
   if (right && right.acquireAt) {
     logs.push({
       at: right.acquireAt,
       text: failOpen
-        ? ("课程权益开通失败：" + (right.failReason || right.lastChange || "发放失败"))
-        : ("系统自动开通课程权益「" + (right.course || order.product || "") + "」"),
+        ? ("权益开通失败：" + (right.failReason || right.lastChange || "发放失败"))
+        : (goodsType === "线下门票"
+          ? ("系统生成线下门票「" + (right.course || order.product || "") + "」，待核销")
+          : deliverType.indexOf("人工") === 0
+            ? ("顾问人工开通权益「" + (right.course || order.product || "") + "」")
+            : ("系统自动开通权益「" + (right.course || order.product || "") + "」")),
       by: "系统"
     });
   }
   if (expired && right && right.lastChange) {
     logs.push({ at: right.endAt ? right.endAt + " 00:05" : order.time, text: right.lastChange, by: "系统" });
   }
-  if (refunded) {
-    var rfAt = (user.refunds && user.refunds[0] && user.refunds[0].createdAt) || "2026-09-09 14:28:00";
-    logs.push({ at: rfAt, text: "订单已退款，退款单 " + (order.refundId || ""), by: "系统" });
-    logs.push({ at: rfAt, text: "课程权益已回收，用户当前不可访问", by: "系统" });
+  if (refunded || refunding) {
+    var rfAt = (refund && refund.createdAt) ||
+      (user.refunds && user.refunds[0] && user.refunds[0].createdAt) || "";
+    logs.push({
+      at: rfAt,
+      text: "退款申请已受理（" + ((refund && refund.type) || "退款并回收权益") + "）：" +
+        ((refund && refund.reason) || "用户申请退款"),
+      by: (refund && refund.handler) || "客服中心"
+    });
+    if (refunded) {
+      logs.push({
+        at: rfAt,
+        text: "订单退款 " + money((refund && refund.amount) || amount) +
+          " 已原路退回买家，退款单 " + (order.refundId || "—"),
+        by: "支付系统"
+      });
+      logs.push({ at: rfAt, text: "课程权益已回收，用户当前不可访问", by: "系统" });
+      logs.push({ at: rfAt, text: "分账资金已冲正，退款金额不计入本期结算", by: "分账系统" });
+    } else {
+      logs.push({
+        at: rfAt,
+        text: "退款处理中，退款完成后原路退回并自动回收权益；期间该笔资金暂缓分账",
+        by: "支付系统"
+      });
+    }
   }
+  notes.forEach(function (n) {
+    logs.push({ at: n.at, text: "商家备注：" + n.text, by: n.by || "商家管理员" });
+  });
   logs.sort(function (a, b) { return String(b.at).localeCompare(String(a.at)); });
   document.getElementById("od-logs").innerHTML = logs.map(function (l) {
     return "<li><span class=\"log-time\">" + esc(l.at) + "</span>" + esc(l.text) +
       '<span class="muted"> · ' + esc(l.by || "") + "</span></li>";
   }).join("") || "<li class=\"muted\">暂无记录</li>";
 
+  /* ===== 备注弹窗 ===== */
+  var mask = document.getElementById("mask");
+  var noteModal = document.getElementById("modal-note");
+  function closeNote() {
+    mask.classList.remove("open");
+    noteModal.classList.remove("open");
+  }
+  function openNote() {
+    document.getElementById("od-note-input").value = "";
+    mask.classList.add("open");
+    noteModal.classList.add("open");
+    document.getElementById("od-note-input").focus();
+  }
+  mask.addEventListener("click", closeNote);
+  document.querySelectorAll("[data-close]").forEach(function (n) {
+    n.addEventListener("click", closeNote);
+  });
+  document.getElementById("od-note-add").addEventListener("click", openNote);
+  document.getElementById("btn-add-note").addEventListener("click", openNote);
+  document.getElementById("od-note-save").addEventListener("click", function () {
+    var input = document.getElementById("od-note-input");
+    var text = input.value.trim();
+    if (!text) { Proto.toast("请输入备注内容"); return; }
+    if (isDemo && window.OrderDemoStore) {
+      var saved = OrderDemoStore.addNote(order.id, text);
+      if (saved) notes.unshift(saved);
+    } else {
+      notes.unshift({ at: OrderDemoStore.nowText(), by: "商家管理员", text: text });
+    }
+    renderNotes();
+    closeNote();
+    Proto.toast("备注已保存（原型）");
+  });
+
   function toastRefund() {
     if (refunded) Proto.toast("本单已退款，无需再次发起");
+    else if (refunding) Proto.toast("本单退款处理中，请勿重复发起");
+    else if (unpaid) Proto.toast("待付款订单无需发起退款");
     else Proto.toast("打开发起退款（原型）");
   }
   document.getElementById("btn-copy").addEventListener("click", function () {
@@ -504,7 +932,10 @@
   });
   document.getElementById("btn-refund").addEventListener("click", toastRefund);
   document.getElementById("btn-refund-inline").addEventListener("click", toastRefund);
-  if (refunded) document.getElementById("btn-refund").style.display = "none";
+  if (refunded || refunding || unpaid) {
+    document.getElementById("btn-refund").style.display = "none";
+    document.getElementById("btn-refund-inline").style.display = "none";
+  }
 })();
 </script>
 </body>

@@ -17,9 +17,9 @@
 
   <!-- 商品类型 -->
   <div class="cm-section">
-    <div class="cm-section-hd"><h3>商品类型</h3><span class="muted">系列课与定制化计划商品可由「内容」模块一键创建；直播商品由「直播」模块创建</span></div>
+    <div class="cm-section-hd"><h3>商品类型</h3><span class="muted">课程商品取值于「内容」模块（系列课 / 线下课 / 视频 / 图文）；定制化计划商品由「定制化计划」创建；直播商品由「直播」模块创建</span></div>
     <div class="cm-choice" id="gd-type">
-      <label class="cm-choice-item active"><input type="radio" name="gtype" value="series" checked /><b>系列课商品</b><span>由系列课创建，购买后按目录解锁学习</span></label>
+      <label class="cm-choice-item active"><input type="radio" name="gtype" value="course" checked /><b>课程商品</b><span>交付内容可为系列课 / 线下课 / 视频 / 图文，购买后按内容形式交付</span></label>
       <label class="cm-choice-item"><input type="radio" name="gtype" value="plan" /><b>定制化计划商品</b><span>由定制化计划创建，按关卡与任务推进</span></label>
       <label class="cm-choice-item"><input type="radio" name="gtype" value="live" /><b>直播商品</b><span>由付费直播创建，购买后交付该场观看资格</span></label>
     </div>
@@ -90,8 +90,11 @@
     <div class="cm-section-hd"><h3>交付与售后</h3><span class="muted">虚拟商品无物流，支付成功后自动开通</span></div>
     <div class="form-grid" style="grid-template-columns:1fr 1fr;gap:12px 16px">
       <div class="field" style="grid-column:1/-1"><label>交付内容 *</label>
-        <select id="f-deliver" style="width:100%;padding:7px 8px;border:1px solid var(--color-border);border-radius:6px"></select>
-        <div class="muted" style="font-size:12px;margin-top:4px" id="f-deliver-hint">取值于「系列课」列表：购买后交付所选系列课内容</div>
+        <div style="display:grid;grid-template-columns:180px 1fr;gap:8px">
+          <select id="f-form" style="width:100%;padding:7px 8px;border:1px solid var(--color-border);border-radius:6px"></select>
+          <select id="f-deliver" style="width:100%;padding:7px 8px;border:1px solid var(--color-border);border-radius:6px"></select>
+        </div>
+        <div class="muted" style="font-size:12px;margin-top:4px" id="f-deliver-hint">取值于「系列课」已启用列表：购买后按目录解锁学习</div>
       </div>
       <div class="field"><label>交付方式</label>
         <select style="width:100%;padding:7px 8px;border:1px solid var(--color-border);border-radius:6px">
@@ -180,36 +183,67 @@
     }
   } catch (ePre) {}
 
-  // 交付内容：系列课取值于 SeriesStore 已启用列表
+  // 交付内容：先选「内容形式」（系列课 / 线下课 / 视频 / 图文），再取该形式下的具体内容
   function enabledSeriesNames() {
     return Store.list({ status: Store.STATUS.enabled }).map(function (c) {
       return { id: c.id, name: c.name };
     });
   }
 
-  var DELIVER = {
-    series: enabledSeriesNames(),
-    plan:   [{ id: "", name: "亲子沟通 21 天定制化计划 · 第 4 期" }, { id: "", name: "开学季学习习惯养成计划" }, { id: "", name: "青春期沟通家长共学计划" }],
-    live:   [{ id: "", name: "午间答疑 · 直播中（付费直播）" }, { id: "", name: "春启 03 期家长公开课（付费直播）" }]
+  var CONTENT_FORMS = [
+    { key: "series",  label: "系列课", hint: "取值于「系列课」已启用列表：购买后按目录解锁学习" },
+    { key: "offline", label: "线下课", hint: "取值于「线下课」已上架场次：购买后生成门票，活动当天凭订单二维码线下核销" },
+    { key: "video",   label: "视频",   hint: "取值于「视频」已上架内容：购买后交付观看资格" },
+    { key: "article", label: "图文",   hint: "取值于「图文」已上架内容：购买后交付阅读权限" }
+  ];
+  var FORM_DELIVER = {
+    series:  enabledSeriesNames(),
+    offline: [{ id: "O001", name: "卓越家族培养计划 · 线下工作坊" }, { id: "O002", name: "亲子沟通实战 · 线下沙龙" }, { id: "O003", name: "学习习惯养成 · 线下营（筹备中）" }],
+    video:   [{ id: "V001", name: "如何让孩子爱上阅读" }, { id: "V002", name: "亲子沟通的 5 个关键" }, { id: "V003", name: "AI 助力学习规划" }],
+    article: [{ id: "A001", name: "9 月新学期家长指南" }, { id: "A002", name: "孩子注意力训练方法论" }, { id: "A003", name: "家庭情绪急救指南" }]
   };
-  var DELIVER_HINT = {
-    series: "取值于「系列课」已启用列表：购买后交付所选系列课内容",
-    plan:   "取值于「定制化计划」列表：购买后按关卡与任务开通计划",
-    live:   "取值于「直播列表」中的「付费直播」：购买后交付该场观看资格"
+  var TYPE_DELIVER = {
+    plan: [{ id: "", name: "亲子沟通 21 天定制化计划 · 第 4 期" }, { id: "", name: "开学季学习习惯养成计划" }, { id: "", name: "青春期沟通家长共学计划" }],
+    live: [{ id: "", name: "午间答疑 · 直播中（付费直播）" }, { id: "", name: "春启 03 期家长公开课（付费直播）" }]
   };
+
   var deliverSel = document.getElementById("f-deliver");
+  var formSel = document.getElementById("f-form");
+  formSel.innerHTML = CONTENT_FORMS.map(function (f, i) {
+    return '<option value="' + f.key + '"' + (i === 0 ? " selected" : "") + ">" + f.label + "</option>";
+  }).join("");
+
+  function selectedForm() { return formSel.value || "series"; }
+
+  /* 只有「课程商品」有内容形式维度；定制化计划 / 直播商品来源唯一，隐藏内容形式 */
   function renderDeliver(type) {
-    var list = DELIVER[type] || [];
-    if (type === "series") list = enabledSeriesNames();
+    var isCourse = type === "course";
+    formSel.style.display = isCourse ? "" : "none";
+    var list, hint;
+    if (isCourse) {
+      var form = selectedForm();
+      list = form === "series" ? enabledSeriesNames() : (FORM_DELIVER[form] || []);
+      hint = (CONTENT_FORMS.filter(function (f) { return f.key === form; })[0] || {}).hint || "";
+    } else {
+      list = TYPE_DELIVER[type] || [];
+      hint = type === "plan"
+        ? "取值于「定制化计划」列表：购买后按关卡与任务开通计划"
+        : "取值于「直播列表」中的「付费直播」：购买后交付该场观看资格";
+    }
     deliverSel.innerHTML = list.map(function (n) {
       var id = typeof n === "object" ? n.id : "";
       var name = typeof n === "object" ? n.name : n;
       var sel = boundSeriesId && id === boundSeriesId ? " selected" : "";
       return '<option value="' + (id || name) + '"' + sel + ">" + name + (id ? "（" + id + "）" : "") + "</option>";
-    }).join("");
-    document.getElementById("f-deliver-hint").textContent = DELIVER_HINT[type] || "";
+    }).join("") || '<option value="">暂无可选内容</option>';
+    document.getElementById("f-deliver-hint").textContent = hint;
   }
-  renderDeliver("series");
+  renderDeliver("course");
+
+  formSel.addEventListener("change", function () {
+    renderDeliver("course");
+    Proto.toast("内容形式切换为「" + formSel.options[formSel.selectedIndex].text + "」，交付内容已联动更新（原型）");
+  });
 
   document.querySelectorAll("#gd-type input[name=gtype]").forEach(function(r){
     r.addEventListener("change", function(){

@@ -24,10 +24,14 @@
   border: 1px solid var(--color-border); background: #fff; border-radius: 8px; padding: 16px;
 }
 .wb-stats button.stat-card.is-active { border-color: var(--color-primary); box-shadow: 0 0 0 2px rgba(22,93,255,.12); }
-.wb-stats.realtime .stat-value.warn { color: #ff7d00; }
-.wb-stats.realtime .stat-value.danger { color: #f53f3f; }
+.wb-stats .stat-value.warn { color: #ff7d00; }
+.wb-stats .stat-value.danger { color: #f53f3f; }
+.wb-group-label {
+  font-size: 12px; font-weight: 600; color: var(--color-text-secondary);
+  margin: 0 0 8px 2px; letter-spacing: .5px;
+}
 @media (max-width: 1100px) {
-  #realtime-stats { grid-template-columns: repeat(2, 1fr) !important; }
+  .wb-stats.realtime { grid-template-columns: repeat(2, 1fr) !important; }
 }
 .wb-filter-bar {
   display: flex; align-items: center; justify-content: space-between; gap: 12px;
@@ -143,20 +147,22 @@
     <button type="button" class="btn btn-sm" id="btn-error-retry">重试</button>
   </div>
 
-  <!-- 一、经营结果（受时间筛选） -->
-  <div class="wb-meta">
-    <h2>经营结果 <span class="muted" id="range-label">· 今日</span></h2>
-    <div style="display:flex;align-items:center;gap:12px">
-      <span class="wb-updated" id="last-updated">最后更新 —</span>
-      <a id="link-board-overview" href="board-overview.html" style="font-size:13px;color:var(--color-primary);text-decoration:none">查看数据看板 →</a>
-    </div>
-  </div>
-  <div class="stat-cards wb-stats" id="result-stats">
+  <!-- 一、经营结果（受时间筛选，按业务域分组） -->
+  <div class="wb-group-label">SCRM · 线索</div>
+  <div class="stat-cards wb-stats" id="result-stats-scrm">
     <a class="stat-card" id="metric-leads" href="leads.html">
       <div class="stat-label">新增线索</div>
       <div class="stat-value" data-field="leads.value">86</div>
       <div class="stat-hint" data-field="leads.hint"><span class="up">+12%</span> 较昨日</div>
     </a>
+    <button type="button" class="stat-card" id="rt-unassigned" data-todo-filter="lead">
+      <div class="stat-label">未分配线索</div>
+      <div class="stat-value warn" data-rt="unassigned">0</div>
+      <div class="stat-hint" id="rt-unassigned-hint">—</div>
+    </button>
+  </div>
+  <div class="wb-group-label">交易</div>
+  <div class="stat-cards wb-stats" id="result-stats">
     <a class="stat-card" id="metric-orders" href="orders.html">
       <div class="stat-label">支付订单</div>
       <div class="stat-value" data-field="orders.value">42</div>
@@ -172,18 +178,16 @@
       <div class="stat-value" data-field="refund.value">2.1%</div>
       <div class="stat-hint" data-field="refund.hint"><span class="down">-0.3pp</span> 较昨日 · 退款 1 笔</div>
     </a>
+    <button type="button" class="stat-card" id="rt-aftersale" data-todo-filter="aftersale">
+      <div class="stat-label">待处理售后</div>
+      <div class="stat-value danger" data-rt="aftersale">0</div>
+      <div class="stat-hint" id="rt-aftersale-hint">—</div>
+    </button>
   </div>
 
-  <!-- 实时待处理（不受时间筛选）→ 点击筛选待办中心 -->
-  <div class="wb-meta wb-section-gap" id="anchor-realtime">
-    <h2>实时待处理 <span class="muted" style="font-weight:400">· 点击卡片筛选待办中心</span></h2>
-  </div>
-  <div class="stat-cards wb-stats realtime" id="realtime-stats" style="grid-template-columns:repeat(4,1fr)">
-    <button type="button" class="stat-card" id="rt-unassigned" data-todo-filter="lead">
-      <div class="stat-label">未分配线索</div>
-      <div class="stat-value warn" data-rt="unassigned">0</div>
-      <div class="stat-hint" id="rt-unassigned-hint">—</div>
-    </button>
+  <!-- 实时待处理（不受时间筛选，按业务域分组）→ 点击卡片跳转对应列表 -->
+  <div class="wb-group-label">直播</div>
+  <div class="stat-cards wb-stats realtime" id="realtime-stats-live">
     <button type="button" class="stat-card" id="rt-audit" data-todo-filter="audit">
       <div class="stat-label">直播待提交／待修改</div>
       <div class="stat-value warn" data-rt="audit">0</div>
@@ -194,56 +198,6 @@
       <div class="stat-value warn" data-rt="urgeTasks">0</div>
       <div class="stat-hint" id="rt-urge-hint">—</div>
     </button>
-    <button type="button" class="stat-card" id="rt-aftersale" data-todo-filter="aftersale">
-      <div class="stat-label">待处理售后</div>
-      <div class="stat-value danger" data-rt="aftersale">0</div>
-      <div class="stat-hint" id="rt-aftersale-hint">—</div>
-    </button>
-  </div>
-
-  <!-- 待办中心（紧跟实时待处理） -->
-  <div class="card" id="block-todo" style="margin-bottom:16px">
-    <div class="card-hd" style="flex-wrap:wrap;gap:8px">
-      <h2>待办中心 <span class="badge badge-danger" id="todo-count" style="margin-left:6px;font-weight:500">0</span></h2>
-      <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-left:auto">
-        <div class="wb-todo-tabs" id="todo-tabs">
-          <button type="button" class="active" data-filter="must">必须处理</button>
-          <button type="button" data-filter="suggest" id="tab-suggest">运营建议</button>
-        </div>
-        <select id="todo-type-filter" class="wb-role-select" aria-label="类型筛选" style="margin:0">
-          <option value="">全部类型</option>
-        </select>
-        <select id="todo-owner-filter" class="wb-role-select" aria-label="负责人筛选" style="margin:0">
-          <option value="">全部负责人</option>
-        </select>
-      </div>
-    </div>
-    <div class="wb-filter-bar wb-hidden" id="todo-filter-bar">
-      <span id="todo-filter-text">已筛选</span>
-      <button type="button" class="btn btn-sm" id="btn-clear-todo-filter">清除筛选</button>
-    </div>
-    <div class="card-bd" style="padding:0;overflow-x:auto">
-      <table class="data" id="todo-table">
-        <thead>
-          <tr>
-            <th style="width:72px">类型</th>
-            <th style="min-width:180px">事项</th>
-            <th style="min-width:160px">处理原因</th>
-            <th style="width:72px">负责人</th>
-            <th style="width:110px">截止/开播</th>
-            <th style="width:72px">紧急程度</th>
-            <th style="width:88px">状态</th>
-            <th style="width:180px">操作</th>
-          </tr>
-        </thead>
-        <tbody id="todo-body"></tbody>
-      </table>
-      <div class="wb-empty wb-hidden" id="todo-empty">
-        <div class="wb-empty-title" id="todo-empty-title">当前没有需要处理的事项</div>
-        <div class="wb-empty-desc" id="todo-empty-desc">新的审核、售后或异常任务会显示在这里。</div>
-        <button type="button" class="btn btn-sm wb-hidden" id="todo-empty-clear">清除筛选</button>
-      </div>
-    </div>
   </div>
 
   <!-- 快捷创建 -->

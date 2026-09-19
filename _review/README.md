@@ -13,6 +13,7 @@ python3 _review/serve.py          # 默认 8090，端口被占用可直接跟参
 打开 **http://127.0.0.1:8090/prototype/index.html**，页面右下角出现「标注」按钮即就绪。
 
 > 必须用这个服务启动。若用自己的静态服务打开，页面仍能标注，但数据只留在浏览器里、不落盘。
+> 标注服务、看板、标注数据都在本目录（`_review/`），全站只此一套，不依赖任何外部工具目录。
 
 | 页面 | 地址 |
 |---|---|
@@ -57,8 +58,8 @@ python3 _review/serve.py          # 默认 8090，端口被占用可直接跟参
 ## 五、几个约定
 
 - 标注层不改动原型页面 DOM，只读不改；角标与高亮都画在独立图层里，删掉 `annotate.js` 即完全复原。
-- 页面通过 `assets/js/proto.js` 自动加载标注层（覆盖 170 个页面），`prototype/index.html` 单独引入。
-- 标注层已抽成通用件 **`review-kit/`**（可移植到其他项目，配置见 `review-kit/README.md`）；本仓库的标注层实现以 `review-kit/` 为准，`prototype/assets/js/annotate.js` 仅作回滚备份。
+- 标注层就在本仓库内：`prototype/assets/js/annotate.js` + `prototype/assets/css/annotate.css`，不依赖任何外部工具目录。
+- 页面通过 `assets/js/proto.js` 自动加载标注层（覆盖 190+ 个页面），`prototype/index.html` 单独引入。
 - 临时隐藏标注层：控制台执行 `localStorage.setItem('proto:review','off')`，恢复用 `localStorage.removeItem('proto:review')`。
 - 重定向桩页（如 `admin/courses.html`、`admin/live-audit.html`）会自动跳转到真实页面，不需要也无需标注。
 
@@ -69,23 +70,25 @@ python3 _review/serve.py          # 默认 8090，端口被占用可直接跟参
 这一下会把**浏览器本地和服务端同时清掉**，不用碰控制台。按钮带二次确认，会告诉你清几条。
 
 > 为什么必须两端一起清：`annotate.js` 启动时会把服务端数据与浏览器 `localStorage` 做**并集**（`boot()` 里的 `mergeItems(remote, local)`）。
-> 若只清服务端、本地还留着旧条目，它发现服务端为空会走 `persist(true)`，把本地数据**反向推回服务端**，标注就复活了。
+> 若只清服务端、本地还留着旧条目，它发现服务端为空会走 `persist(true, { mode: 'replace' })`，把本地数据**反向推回服务端**，标注就复活了。
+
+> 服务端每次保存前都会自动留一份 `annotations.backup-<时间戳>.json`（保留最近 12 份），
+> 误清空或写坏可以直接从备份文件还原。
 
 ### 如果非要手敲
 
-1. 备份：`cp _review/annotations.json _review/annotations.backup-$(date +%Y%m%d-%H%M%S).json`
-2. 清服务端：
+清服务端（`mode` 省略且不带 `page` 时按整体覆盖处理，效果就是清空全部）：
 
-   ```bash
-   curl -X POST http://127.0.0.1:8090/__review/save \
-     -H 'Content-Type: application/json' -d '{"items": []}'
-   ```
+```bash
+curl -X POST http://127.0.0.1:8090/__review/save \
+  -H 'Content-Type: application/json' -d '{"items": []}'
+```
 
-3. 清浏览器端（在任意原型页 F12 控制台执行，注意键名）：
+再清浏览器端（在任意原型页 F12 控制台执行，注意键名）：
 
-   ```js
-   localStorage.removeItem('proto:review:v1'); location.reload();
-   ```
+```js
+localStorage.removeItem('proto:review:v1'); location.reload();
+```
 
 > 键名是 `proto:review:v1`。上面第五节的 `proto:review` 是另一个「隐藏标注层」的开关键，别混。
 > 顺序很重要：**先清浏览器端再刷新**，否则刷新时会把本地旧数据推回服务端。

@@ -47,7 +47,7 @@
         <tbody>
           <tr class="grp"><td colspan="5">应用范围</td></tr>
           <tr>
-            <td class="name"><b>商家管理后台</b><p class="muted">内容发布 / 直播管理 / SCRM / 交易与用户</p></td>
+            <td class="name"><b>SCRM</b><p class="muted">线索跟进 / 客户管理 / 企微侧边栏与群运营</p></td>
             <td class="ok">✓</td><td class="ok">✓</td><td class="ok">✓</td><td class="ok">✓</td>
           </tr>
           <tr>
@@ -55,16 +55,20 @@
             <td class="ok">✓</td><td class="ok">✓</td><td class="ok">✓</td><td class="ok">✓</td>
           </tr>
           <tr>
-            <td class="name"><b>视频号助手</b><p class="muted">公域订单同步与推广链接管理</p></td>
+            <td class="name"><b>直播</b><p class="muted">直播管理 / 公域订单同步与推广链接</p></td>
             <td class="no">—</td><td class="no">—</td><td class="ok">✓</td><td class="ok">✓</td>
           </tr>
           <tr>
-            <td class="name"><b>开放接口（OpenAPI）</b><p class="muted">商品 / 订单 / 用户数据开放</p></td>
+            <td class="name"><b>内容</b><p class="muted">系列课 / 视频 / 图文内容管理与发布</p></td>
             <td class="no">—</td><td class="no">—</td><td class="ok">✓</td><td class="ok">✓</td>
           </tr>
           <tr>
-            <td class="name"><b>企微 SCRM 连接器</b><p class="muted">企业微信侧边栏与群运营</p></td>
-            <td class="no">—</td><td class="no">—</td><td class="ok">✓ <span class="tag">规划中</span></td><td class="ok">✓ <span class="tag">规划中</span></td>
+            <td class="name"><b>交易</b><p class="muted">商品 / 订单 / 结算与售后</p></td>
+            <td class="no">—</td><td class="no">—</td><td class="ok">✓</td><td class="ok">✓</td>
+          </tr>
+          <tr>
+            <td class="name"><b>数据看板</b><p class="muted">经营总览 / 获客 / 跟进 / 直播 / 商品分析</p></td>
+            <td class="no">—</td><td class="no">—</td><td class="ok">✓</td><td class="ok">✓</td>
           </tr>
           <tr class="grp"><td colspan="5">容量与权益</td></tr>
           <tr>
@@ -78,10 +82,6 @@
           <tr>
             <td class="name"><b>直播场次</b><p class="muted">按自然月统计</p></td>
             <td>1</td><td>3</td><td>10</td><td>30</td>
-          </tr>
-          <tr>
-            <td class="name"><b>SCRM 线索池容量</b><p class="muted">线索与客户档案总量上限</p></td>
-            <td>100</td><td>1,000</td><td>5,000</td><td>20,000</td>
           </tr>
           <tr>
             <td class="name"><b>服务费率策略</b><p class="muted">统一 0.6%（链路 B 商家自建内容），战略合同可签 0.3%</p></td>
@@ -104,7 +104,6 @@
             <th>套餐版本</th>
             <th>售卖模式</th>
             <th>建议零售价</th>
-            <th>渠道可调范围</th>
             <th>服务费率</th>
             <th>说明</th>
             <th style="width:120px">操作</th>
@@ -115,7 +114,6 @@
             <td><b>试用版</b><br /><span class="muted" style="font-size:12px">14 天免费试用</span></td>
             <td><span class="tag">免费试用</span></td>
             <td><b>¥0</b></td>
-            <td>—</td>
             <td>不收费</td>
             <td>试用期到期自动进入只读，转正按目标版本补差定价</td>
             <td class="row-actions"><a href="#" class="edit-price">编辑</a></td>
@@ -124,7 +122,6 @@
             <td><b>标准版</b><br /><span class="muted" style="font-size:12px">个人讲师 / 个体起步</span></td>
             <td>年付 / 续费</td>
             <td><b>¥4,980 / 年</b></td>
-            <td>8.5 ~ 10 折</td>
             <td>0.6%（默认）</td>
             <td>含商家管理后台与 C 端小程序，满足单 IP 内容售卖</td>
             <td class="row-actions"><a href="#" class="edit-price">编辑</a></td>
@@ -133,63 +130,21 @@
             <td><b>专业版</b><br /><span class="muted" style="font-size:12px">中小机构标配</span></td>
             <td>年付 / 续费</td>
             <td><b>¥9,800 / 年</b></td>
-            <td>8.5 ~ 10 折</td>
             <td>0.6%（默认），战略可签 0.3%</td>
-            <td>解锁视频号助手与开放接口（OpenAPI），内容容量提升</td>
+            <td>解锁直播、内容、交易与数据看板，内容容量提升</td>
             <td class="row-actions"><a href="#" class="edit-price">编辑</a></td>
           </tr>
           <tr>
             <td><b>旗舰版</b><br /><span class="muted" style="font-size:12px">连锁 / 集团机构</span></td>
             <td>年付 / 续费</td>
             <td><b>¥19,800 / 年</b></td>
-            <td>8.5 ~ 10 折</td>
             <td>0.3% ~ 0.6%</td>
-            <td>内容不限量、账号与线索容量最大；可加购子账号与存储包</td>
+            <td>内容不限量、账号容量最大；可加购子账号与存储包</td>
             <td class="row-actions"><a href="#" class="edit-price">编辑</a></td>
           </tr>
         </tbody>
       </table>
-      <p class="muted" style="padding:10px 16px;border-top:1px solid var(--color-border);margin:0">价格口径：年付为对外建议零售价，渠道折扣与战略费率需在合同审批中确认；租户续费 / 转正按当前生效定价快照计费。</p>
-    </div>
-  </div>
-
-  <!-- ===== 操作日志 ===== -->
-  <div class="card" style="margin-top:16px">
-    <div class="card-hd">
-      <h2>操作日志</h2>
-      <span class="muted" style="font-size:12px">套餐范围 / 容量权益 / 定价的增改记录</span>
-    </div>
-    <div class="card-bd" style="padding:0">
-      <table class="data">
-        <thead>
-          <tr>
-            <th>时间</th>
-            <th>操作人</th>
-            <th>操作类型</th>
-            <th>对象</th>
-            <th>操作内容</th>
-            <th>结果</th>
-          </tr>
-        </thead>
-        <tbody id="oplog-tbody">
-          <tr><td>今天 10:18</td><td>王顾问</td><td>定价编辑</td><td>旗舰版</td><td>建议零售价 ¥19,800 / 年，渠道折扣 8.5 ~ 10 折</td><td><span class="badge badge-success">成功</span></td></tr>
-          <tr><td>今天 09:52</td><td>王顾问</td><td>新增套餐版本</td><td>新套餐（草稿）</td><td>新建套餐版本草稿，待补充范围与定价</td><td><span class="badge badge-warn">待提交</span></td></tr>
-          <tr><td>昨天 17:40</td><td>平台运营</td><td>编辑套餐范围</td><td>试用版</td><td>容量调整：直播场次 1 → 2 / 月，线索池 100 → 500</td><td><span class="badge badge-success">成功</span></td></tr>
-          <tr><td>昨天 11:22</td><td>平台运营</td><td>编辑套餐范围</td><td>专业版</td><td>解锁开放接口（OpenAPI），企微 SCRM 连接器标记「规划中」</td><td><span class="badge badge-success">成功</span></td></tr>
-          <tr><td>2026-09-05 15:04</td><td>王顾问</td><td>定价编辑</td><td>标准版</td><td>建议零售价 ¥4,980 / 年，服务费率 0.6%（默认）</td><td><span class="badge badge-success">成功</span></td></tr>
-          <tr><td>2026-09-04 16:30</td><td>王顾问</td><td>定价编辑</td><td>试用版</td><td>定价策略调整：免费试用 14 天，到期转只读</td><td><span class="badge badge-success">成功</span></td></tr>
-          <tr><td>2026-09-04 10:12</td><td>平台运营</td><td>编辑套餐范围</td><td>旗舰版</td><td>线上课 / 图文发布上限 50 → 不限</td><td><span class="badge badge-success">成功</span></td></tr>
-          <tr><td>2026-09-03 18:45</td><td>王顾问</td><td>定价编辑</td><td>专业版</td><td>建议零售价 ¥9,800 / 年，费率支持 0.6%（战略 0.3%）</td><td><span class="badge badge-success">成功</span></td></tr>
-          <tr><td>2026-09-03 09:20</td><td>平台运营</td><td>新增套餐版本</td><td>旗舰版</td><td>创建「旗舰版」，补充应用范围与容量权益</td><td><span class="badge badge-success">成功</span></td></tr>
-          <tr><td>2026-09-02 16:08</td><td>平台运营</td><td>编辑套餐范围</td><td>标准版</td><td>SCRM 线索池容量 500 → 1,000</td><td><span class="badge badge-success">成功</span></td></tr>
-          <tr><td>2026-09-02 11:33</td><td>王顾问</td><td>定价编辑</td><td>标准版</td><td>渠道可调范围下限 9 折 → 8.5 折</td><td><span class="badge badge-success">成功</span></td></tr>
-          <tr><td>2026-09-01 15:50</td><td>平台运营</td><td>编辑套餐范围</td><td>专业版</td><td>商家账号数 8 → 10</td><td><span class="badge badge-success">成功</span></td></tr>
-        </tbody>
-      </table>
-      <div class="ua-pagination" id="oplog-pager" style="border-top:1px solid var(--color-border)">
-        <span class="muted">共 <b id="oplog-total">12</b> 条</span>
-        <div class="ua-pages" id="oplog-pages"></div>
-      </div>
+      <p class="muted" style="padding:10px 16px;border-top:1px solid var(--color-border);margin:0">价格口径：年付为对外建议零售价，战略费率需在合同审批中确认；租户续费 / 转正按当前生效定价快照计费。</p>
     </div>
   </div>
 
@@ -213,7 +168,6 @@
         </select>
       </div>
       <div class="field"><label>建议零售价</label><input id="price-amount" placeholder="例：¥4,980 / 年" /></div>
-      <div class="field"><label>渠道可调范围</label><input id="price-channel" placeholder="例：8.5 ~ 10 折" /></div>
       <div class="field"><label>服务费率</label><input id="price-fee" placeholder="例：0.6%（默认）" /></div>
       <div class="field" style="grid-column:1/-1"><label>说明</label>
         <textarea id="price-desc" rows="2" style="width:100%;padding:8px;border:1px solid var(--color-border);border-radius:6px"></textarea>
@@ -294,44 +248,12 @@
       Array.prototype.forEach.call(modeSel.options, function (o) { if (o.textContent === modeText) { o.selected = true; hit = true; } });
       if (!hit) { modeSel.selectedIndex = 1; }
       document.getElementById("price-amount").value = cells[2].textContent.trim();
-      document.getElementById("price-channel").value = cells[3].textContent.trim();
-      document.getElementById("price-fee").value = cells[4].textContent.trim();
-      document.getElementById("price-desc").value = cells[5].textContent.trim();
+      document.getElementById("price-fee").value = cells[3].textContent.trim();
+      document.getElementById("price-desc").value = cells[4].textContent.trim();
       open(document.getElementById("modal-price"));
     });
   });
 
-  // 操作日志分页（10 条 / 页）
-  var logRows = Array.prototype.slice.call(document.querySelectorAll("#oplog-tbody tr"));
-  var PER_PAGE = 10;
-  var pageWrap = document.getElementById("oplog-pages");
-  var curPage = 0;
-
-  function renderLog() {
-    var pages = Math.max(1, Math.ceil(logRows.length / PER_PAGE));
-    if (curPage > pages - 1) curPage = pages - 1;
-    logRows.forEach(function (r, i) {
-      r.style.display = (i >= curPage * PER_PAGE && i < curPage * PER_PAGE + PER_PAGE) ? "" : "none";
-    });
-    pageWrap.innerHTML = "";
-    function btn(label, page, isActive, disabled) {
-      var b = document.createElement("button");
-      b.type = "button";
-      b.className = "ua-page" + (isActive ? " active" : "");
-      b.textContent = label;
-      b.disabled = !!disabled;
-      if (!disabled && !isActive) {
-        b.addEventListener("click", function () { curPage = page; renderLog(); });
-      }
-      return b;
-    }
-    pageWrap.appendChild(btn("‹", curPage - 1, false, curPage === 0));
-    for (var p = 0; p < pages; p++) {
-      pageWrap.appendChild(btn(String(p + 1), p, p === curPage, false));
-    }
-    pageWrap.appendChild(btn("›", curPage + 1, false, curPage >= pages - 1));
-  }
-  renderLog();
 })();
 </script>
 </body>

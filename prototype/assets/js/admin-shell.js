@@ -41,7 +41,7 @@
     { id: "live", label: "直播", href: "lives.html" },
     { id: "content", label: "内容", href: "content-series.html" },
     { id: "trade", label: "交易", href: "orders.html" },
-    { id: "data", label: "数据看板", href: "board-overview.html" },
+    { id: "data", label: "数据看板", href: "board-term-review.html" },
     { id: "sys", label: "系统管理", href: "sys-users.html" },
   ];
 
@@ -235,12 +235,11 @@
       {
         group: "数据看板",
         links: [
-          { id: "board-o", href: "board-overview.html", label: "总览" },
-          { id: "board-t", href: "board-term-review.html", label: "期次经营复盘" },
-          { id: "board-a", href: "board-acquire.html", label: "获客" },
-          { id: "board-p", href: "board-private.html", label: "私域转化" },
-          { id: "board-l", href: "board-live.html", label: "直播" },
-          { id: "board-c", href: "board-convert.html", label: "商品" },
+          { id: "board-t", href: "board-term-review.html", label: "经营分析" },
+          { id: "board-a", href: "board-acquire.html", label: "获客渠道分析" },
+          { id: "board-p", href: "board-private.html", label: "跟进分析" },
+          { id: "board-l", href: "board-live.html", label: "直播分析" },
+          { id: "board-c", href: "board-convert.html", label: "商品分析" },
         ],
       },
     ],

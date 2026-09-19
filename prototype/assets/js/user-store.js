@@ -1,6 +1,6 @@
 /* 用户档案 / 订单 / 课程权益 — 列表与详情共用（localStorage 持久化处理结果） */
 (function (global) {
-  var KEY = "merchant_user_store_v3";
+  var KEY = "merchant_user_store_v4";
   var ROLE_KEY = "merchant_proto_role";
   var COURSE_IDS = {
     "训练营主课": "S002",
@@ -25,12 +25,28 @@
       registeredAt: "2026-08-21",
       tags: [{ name: "高意向", color: "blue" }, { name: "已购引流课", color: "green" }, { name: "训练营学员", color: "green" }],
       marketingStopped: false,
-      orders30: 2,
-      gmv30: 320,
+      orders30: 4,
+      gmv30: 2288,
       balance: 0,
       segments: ["high_value", "S4"],
-      courses: ["训练营主课", "引流体验课"],
+      courses: ["训练营主课", "引流体验课", "秋季训练营", "秋季家长成长营（线下）"],
       orders: [
+        {
+          id: "YB202609120006", type: "消费", product: "秋季家长成长营（线下 2 天）", amount: 680,
+          time: "2026-09-12 10:15", payStatus: "已支付", refundStatus: "无",
+          rightId: "R001-4", rightStatus: "有效", owner: "学员7576",
+          goodsType: "线下门票", orderType: "普通订单", channel: "视频号",
+          deliverType: "线下核销（凭订单二维码）", payChannel: "通联支付（微信小程序内）",
+          ticketNo: "TK202609120006"
+        },
+        {
+          id: "YB202609100009", type: "消费", product: "直播间专享·秋季训练营", amount: 1299,
+          time: "2026-09-10 20:42", payStatus: "已支付", refundStatus: "无",
+          rightId: "R001-3", rightStatus: "有效", owner: "学员7576",
+          goodsType: "直播商品", orderType: "直播订单", channel: "直播间",
+          deliverType: "支付后自动开通", payChannel: "通联支付（微信小程序内）",
+          liveId: "L005", liveName: "秋季训练营转化专场"
+        },
         {
           id: "YB202609050003", type: "消费", product: "引流体验课", amount: 9.9,
           time: "2026-09-05 15:32", payStatus: "已支付", refundStatus: "无",
@@ -43,6 +59,38 @@
         }
       ],
       rights: [
+        {
+          id: "R001-4", course: "秋季家长成长营（线下）", product: "秋季家长成长营（线下 2 天）", chapters: 0,
+          rightType: "线下门票", acquire: "订单购买", acquireMethod: "订单购买",
+          sourceRef: "YB202609120006", courseId: "O001",
+          orderId: "YB202609120006", orderStatus: "已支付",
+          owner: "学员7576", startAt: "2026-10-18", endAt: "2026-10-19",
+          status: "有效", learnStatus: "待核销", access: "待核销（凭订单二维码入场）",
+          courseStatus: "上架", lastChange: "2026-09-12 门票生成，待线下核销",
+          acquireAt: "2026-09-12 10:15", ticketNo: "TK202609120006",
+          checks: { paid: "正常", generated: "正常", bound: "正常", effective: "正常", validity: "正常", course: "不适用" },
+          diagnose: {
+            ok: true, title: "门票待核销",
+            rootCause: "—", impact: "—", action: "查看门票",
+            desc: "线下门票已生成，活动当天凭订单二维码核销入场。"
+          }
+        },
+        {
+          id: "R001-3", course: "秋季训练营", product: "直播间专享·秋季训练营", chapters: 16,
+          rightType: "正式课", acquire: "订单购买", acquireMethod: "订单购买",
+          sourceRef: "YB202609100009", courseId: "S005",
+          orderId: "YB202609100009", orderStatus: "已支付",
+          owner: "学员7576", startAt: "2026-09-10", endAt: "2027-09-10",
+          status: "有效", learnStatus: "未学习", access: "可访问",
+          courseStatus: "上架", lastChange: "2026-09-10 直播下单后自动开通",
+          acquireAt: "2026-09-10 20:43",
+          checks: { paid: "正常", generated: "正常", bound: "正常", effective: "正常", validity: "正常", course: "正常" },
+          diagnose: {
+            ok: true, title: "当前可以正常观看",
+            rootCause: "—", impact: "—", action: "查看课程配置",
+            desc: "直播商品支付成功后自动开通，权益有效。"
+          }
+        },
         {
           id: "R001-1", course: "训练营主课", product: "训练营主课", chapters: 12,
           rightType: "正式课", acquire: "订单购买", acquireMethod: "订单购买",
@@ -77,6 +125,11 @@
         }
       ],
       lives: [
+        {
+          id: "L005", name: "秋季训练营转化专场", booked: true, attended: true,
+          firstEnter: "2026-09-10 20:30", watchMin: 62, interact: 9,
+          ordered: true, orderId: "YB202609100009"
+        },
         {
           id: "L001", name: "春启 03 期家长公开课", booked: true, attended: true,
           firstEnter: "2026-09-09 20:12", watchMin: 48, interact: 6,
@@ -206,15 +259,23 @@
       tags: [{ name: "老客复购", color: "purple" }, { name: "训练营学员", color: "green" }],
       marketingStopped: false,
       orders30: 3,
-      gmv30: 1280,
+      gmv30: 5270,
       balance: 0,
       segments: ["high_value", "S4"],
-      courses: ["训练营主课", "引流体验课"],
+      courses: ["训练营主课", "引流体验课", "1v1 定制提分计划"],
       orders: [
         {
           id: "YB202603150021", type: "消费", product: "训练营主课", amount: 1999,
           time: "2026-03-15 11:08", payStatus: "已支付", refundStatus: "无",
           rightId: "R004-1", rightStatus: "已到期", owner: "学员7553"
+        },
+        {
+          id: "YB202608200011", type: "消费", product: "1v1 定制提分计划（8 周）", amount: 3980,
+          time: "2026-08-20 14:05", payStatus: "已支付", refundStatus: "无",
+          rightId: "R004-3", rightStatus: "有效", owner: "学员7553",
+          goodsType: "定制化计划商品", orderType: "普通订单", channel: "企微",
+          deliverType: "人工开通（顾问对接）", payChannel: "通联支付（微信小程序内）",
+          consultant: "王助教"
         },
         {
           id: "YB202609010044", type: "消费", product: "引流体验课", amount: 9.9,
@@ -255,6 +316,22 @@
             ok: true, title: "当前可以正常观看",
             rootCause: "—", impact: "—", action: "查看课程配置",
             desc: "课程权益有效，当前账号具备访问权限。"
+          }
+        },
+        {
+          id: "R004-3", course: "1v1 定制提分计划", product: "1v1 定制提分计划（8 周）", chapters: 8,
+          rightType: "定制服务", acquire: "订单购买", acquireMethod: "人工开通",
+          sourceRef: "YB202608200011", courseId: "C001",
+          orderId: "YB202608200011", orderStatus: "已支付",
+          owner: "学员7553", startAt: "2026-08-20", endAt: "2026-10-15",
+          status: "有效", learnStatus: "学习中", access: "可访问",
+          courseStatus: "上架", lastChange: "2026-08-20 顾问人工开通",
+          acquireAt: "2026-08-20 15:20", consultant: "王助教",
+          checks: { paid: "正常", generated: "正常", bound: "正常", effective: "正常", validity: "正常", course: "正常" },
+          diagnose: {
+            ok: true, title: "当前可以正常观看",
+            rootCause: "—", impact: "—", action: "查看服务排期",
+            desc: "定制化计划商品由顾问人工开通，当前服务进行中。"
           }
         }
       ],

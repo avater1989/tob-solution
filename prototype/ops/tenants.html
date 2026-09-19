@@ -67,7 +67,6 @@
   <!-- 操作条 -->
   <div class="toolbar" style="margin-bottom:12px">
     <button class="btn btn-primary" id="btn-add">新增租户</button>
-    <button class="btn" id="btn-sync-member">同步通联会员</button>
     <div class="spacer"></div>
     <span class="muted" style="font-size:12px">商家在注册页留资后自动进入「待开通」队列；收款会员（通联）信息已并入本列表，点击会员号查看详情</span>
   </div>
@@ -82,7 +81,6 @@
           <th>联系人</th>
           <th>手机号码</th>
           <th>套餐版本</th>
-          <th>商家账号数</th>
           <th>服务费率</th>
           <th>收款会员（通联）</th>
           <th>到期时间</th>
@@ -100,7 +98,6 @@
           <td>赵老师</td>
           <td>138****2610</td>
           <td><span class="tag tag-blue">专业版</span></td>
-          <td>6</td>
           <td>1%（默认）</td>
           <td><a href="#" data-row-act="member" class="mono">MEM-1001XX</a><br><span class="badge badge-success">已通过</span> <span class="badge badge-success">已签约</span></td>
           <td>2027-03-12</td>
@@ -122,7 +119,6 @@
           <td>阮荣均</td>
           <td>139****8811</td>
           <td><span class="tag tag-blue">标准版</span></td>
-          <td>3</td>
           <td>1%（默认）</td>
           <td><a href="#" data-row-act="member" class="mono">MEM-1002AY</a><br><span class="badge badge-success">已通过</span> <span class="badge badge-success">已签约</span></td>
           <td>2026-12-01</td>
@@ -144,7 +140,6 @@
           <td>孙校长</td>
           <td>136****3305</td>
           <td><span class="tag">试用版（14 天）</span></td>
-          <td>2</td>
           <td>1%（默认）</td>
           <td><a href="#" data-row-act="member" class="mono">MEM-1003XX</a><br><span class="badge badge-warn">审核中</span> <span class="badge badge">未签约</span></td>
           <td>2026-09-08</td>
@@ -165,7 +160,6 @@
           <td>137****2210</td>
           <td><span class="muted">—</span></td>
           <td>—</td>
-          <td>—</td>
           <td><span class="muted">—</span></td>
           <td>—</td>
           <td>注册留资</td>
@@ -183,7 +177,6 @@
           <td>周老师</td>
           <td>135****7788</td>
           <td><span class="tag tag-blue">标准版</span></td>
-          <td>2</td>
           <td>1%（默认）</td>
           <td><a href="#" data-row-act="member" class="mono">MEM-1005BZ</a><br><span class="badge badge-success">已通过</span> <span class="badge badge">未签约</span></td>
           <td>2026-09-25</td>
@@ -203,7 +196,6 @@
           <td>吴主管</td>
           <td>188****4506</td>
           <td><span class="tag tag-blue">标准版</span></td>
-          <td>4</td>
           <td>1%（默认）</td>
           <td><span class="muted">—</span></td>
           <td>2026-08-30</td>
@@ -223,7 +215,6 @@
           <td>钱财务</td>
           <td>135****9933</td>
           <td><span class="tag">标准版</span></td>
-          <td>3</td>
           <td>0.6%（战略合作）</td>
           <td><a href="#" data-row-act="member" class="mono">MEM-1007XX</a><br><span class="badge badge-danger">已驳回</span> <span class="badge badge">未签约</span></td>
           <td>2026-06-30</td>
@@ -241,7 +232,6 @@
           <td>郑老师</td>
           <td>150****6621</td>
           <td><span class="tag tag-blue">旗舰版</span></td>
-          <td>5</td>
           <td>0.6%（战略合作）</td>
           <td><a href="#" data-row-act="member" class="mono">MEM-1005XX</a><br><span class="badge badge-warn">审核中</span> <span class="badge badge">未签约</span></td>
           <td>2027-06-18</td>
@@ -499,7 +489,7 @@
         } else if (act === "edit") {
           document.getElementById("ed-name").value = name;
           document.getElementById("ed-company").value = tr.children[1].textContent.replace(/（\d+）$/, "有限公司");
-          var rate = (tr.children[6] ? tr.children[6].textContent.trim() : "");
+          var rate = (tr.children[5] ? tr.children[5].textContent.trim() : "");
           var rateSel = document.getElementById("ed-rate");
           Array.prototype.forEach.call(rateSel.options, function (o) { o.selected = (o.textContent === rate); });
           open(document.getElementById("modal-edit"));
@@ -566,7 +556,6 @@
     "MEM-1007XX": { name: "某旧商户", type: "企业", phone: "—", onboard: "已驳回", sign: "未签约", contract: "—", card: "—" },
     "MEM-1005XX": { name: "知行家研习社", type: "个人", phone: "137****0012", onboard: "审核中", sign: "未签约", contract: "—", card: "—" }
   };
-  document.getElementById("btn-sync-member").addEventListener("click", function () { Proto.toast("已同步通联会员状态（原型）"); });
   document.getElementById("md-export").addEventListener("click", function () { Proto.toast("已导出会员详情（原型）"); });
 
   document.getElementById("btn-query").addEventListener("click", function () { Proto.toast("已按条件查询（原型）"); });

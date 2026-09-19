@@ -9,7 +9,6 @@
 <body class="admin-body" data-module="trade" data-nav="entitlement" data-title="权益开通记录" data-crumb="交易 / 订单管理 / 权益开通记录">
 <div id="header-actions">
   <button class="btn" id="btn-export">导出记录</button>
-  <button class="btn btn-primary" id="btn-manual">手动开通权益</button>
 </div>
 <div id="page-content" style="display:none">
 
@@ -34,7 +33,7 @@
     <div class="form-grid" style="grid-template-columns:repeat(6,minmax(0,1fr));gap:8px 12px">
       <input id="f-key" placeholder="订单号 / 学员手机号" />
       <select id="f-type">
-        <option value="">商品类型</option><option>系列课商品</option><option>定制化计划商品</option><option>直播商品</option><option>平台商品</option>
+        <option value="">商品类型</option><option>课程商品</option><option>定制化计划商品</option><option>直播商品</option><option>平台商品</option>
       </select>
       <select id="f-status">
         <option value="">权益状态</option><option>已开通</option><option>待开通</option><option>已回收</option>
@@ -68,8 +67,8 @@
       <tbody id="et-tbody">
         <tr>
           <td><input type="checkbox" /></td>
-          <td><a href="order-detail.html" class="link-mono">YB20260907000331</a></td>
-          <td>春启 03 期家长必修课<br><span class="muted" style="font-size:12px">系列课商品 · 全部 12 节</span></td>
+          <td><a href="order-detail.html?id=YB20260907000331" class="link-mono">YB20260907000331</a></td>
+          <td>春启 03 期家长必修课<br><span class="muted" style="font-size:12px">课程商品 · 全部 12 节</span></td>
           <td>李女士<br><span class="muted" style="font-size:12px">U0001</span></td>
           <td>视频号</td>
           <td><span class="badge badge-success">已开通</span></td>
@@ -133,7 +132,7 @@
 
   <div class="card" style="margin-top:16px"><div class="card-bd">
     <p class="muted" style="font-size:12px;line-height:1.8">
-      <b>权益规则：</b>系列课商品、定制化计划商品、直播商品与平台商品均为虚拟商品，支付成功后自动开通权益，退款成功同步回收。
+      <b>权益规则：</b>课程商品、定制化计划商品、直播商品与平台商品均为虚拟商品，支付成功后自动开通权益，退款成功同步回收。
       支付回调异常时订单进入「待开通」，可在此页手动开通；已回收权益可人工恢复（用于客诉安抚场景）。
       开通与回收通知可在「系统管理-消息推送」中配置。
     </p>
@@ -204,12 +203,6 @@
   });
 
   document.getElementById("mm-submit").addEventListener("click", function(){ closeAll(); Proto.toast("权益已手动开通，学员 C 端即时可见（原型）"); });
-  document.getElementById("btn-manual").addEventListener("click", function(){
-    document.getElementById("mm-order").textContent = "（请先在列表选择订单）";
-    document.getElementById("mm-user").textContent = "—";
-    document.getElementById("mm-goods").textContent = "—";
-    open(document.getElementById("modal-manual"));
-  });
   document.getElementById("btn-export").addEventListener("click", function(){ Proto.toast("权益开通记录导出任务已创建（原型）"); });
   document.getElementById("btn-query").addEventListener("click", function(){ Proto.toast("已筛选（原型）"); });
   document.getElementById("btn-reset").addEventListener("click", function(){
