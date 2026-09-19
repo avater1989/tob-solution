@@ -3,40 +3,234 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>课程详情 · To-B 小程序</title>
+  <title>线上课详情 · To-B 小程序</title>
   <link rel="stylesheet" href="../assets/css/proto.css" />
-  <link rel="stylesheet" href="../assets/css/mp.css?v=10" />
+  <link rel="stylesheet" href="../assets/css/mp.css?v=15" />
+  <style>
+    .cd-badge { font-size:11px;padding:1px 6px;border-radius:3px;background:#fff7e6;color:#d46b08;margin-left:6px;vertical-align:middle; }
+    .cd-badge.premium { background:#f9f0ff;color:#722ed1; }
+    .cd-stats { display:flex;gap:14px;font-size:12px;color:#86909c;margin-top:8px;flex-wrap:wrap; }
+    .cd-stats b { color:#1d2129;font-weight:600; }
+    .cd-row { display:flex;justify-content:space-between;gap:12px;padding:10px 0;border-bottom:1px solid #f3f4f6;font-size:13px; }
+    .cd-row:last-child { border-bottom:0; }
+    .cd-k { color:#888;flex-shrink:0; }
+    .cd-v { color:#1d2129;text-align:right; }
+    .cd-ch { display:flex;align-items:center;gap:10px;padding:12px 14px;border-bottom:1px solid #f3f4f6;font-size:13px; }
+    .cd-ch:last-child { border-bottom:0; }
+    .cd-ch.locked { color:#999; }
+    .cd-ch .idx { width:20px;color:#86909c;flex-shrink:0; }
+    .cd-ch .ttl { flex:1;min-width:0; }
+    .cd-ch .dur { color:#86909c;font-size:12px;flex-shrink:0; }
+    .cd-owned { background:#e8ffea;color:#00b42a;font-size:12px;padding:8px 12px;border-radius:8px;margin-top:10px; }
+    .cd-tabs { display:flex;gap:0;background:#fff;border-bottom:1px solid #f0f0f0; }
+    .cd-tabs button { flex:1;border:0;background:transparent;padding:12px;font-size:14px;color:#86909c;position:relative; }
+    .cd-tabs button.active { color:#165dff;font-weight:600; }
+    .cd-tabs button.active::after { content:"";position:absolute;left:30%;right:30%;bottom:0;height:2px;background:#165dff;border-radius:1px; }
+    .cd-panel { display:none; }
+    .cd-panel.active { display:block; }
+    .cd-cmt { padding:12px 0;border-bottom:1px solid #f3f4f6;font-size:13px; }
+    .cd-cmt .u { font-weight:600;color:#1d2129; }
+    .cd-cmt .t { color:#4e5969;margin-top:4px;line-height:1.5; }
+    .cd-cmt .at { color:#c0c4cc;font-size:11px;margin-top:4px; }
+  </style>
 </head>
 <body class="mp-page" data-tabbar="0">
-  <div class="mp-frame" style="padding-bottom:64px">
+  <div class="mp-frame" style="padding-bottom:72px">
     <div class="mp-top" style="height:190px"></div>
-    <div class="mp-status"><span>9:41</span><span>课程</span><span>100%</span></div>
-    <div class="mp-nav"><a class="back" href="home.html">←</a>课程详情</div>
-    <div class="mp-body">
-      <div style="height:160px;background:linear-gradient(135deg,#99f6e4,#0f766e);display:grid;place-items:center;color:#fff;font-weight:650">
-        试看封面 · 第 1 节可试看
-      </div>
-      <div style="background:#fff;padding:14px 16px">
-        <h3 style="font-size:18px">亲子沟通基础</h3>
-        <p style="font-size:12px;color:#888;margin-top:6px">8 节视频 · 312 人已学</p>
-        <div style="color:#dc2626;font-size:22px;font-weight:700;margin-top:8px">¥199 <s style="font-size:13px;color:#aaa;font-weight:400">¥299</s></div>
-      </div>
-      <div class="mp-section">
-        <div class="mp-section-title">目录</div>
-        <div style="background:#fff;border-radius:10px;overflow:hidden">
-          <div style="padding:12px;border-bottom:1px solid #f3f4f6;font-size:13px">1. 为什么孩子不听你说话 <span class="badge badge-teal">试看</span></div>
-          <div style="padding:12px;border-bottom:1px solid #f3f4f6;font-size:13px;color:#999">2. 情绪先于道理 🔒</div>
-          <div style="padding:12px;border-bottom:1px solid #f3f4f6;font-size:13px;color:#999">3. 边界与规则 🔒</div>
-          <div style="padding:12px;font-size:13px;color:#999">… 共 8 节</div>
-        </div>
-      </div>
-    </div>
+    <div class="mp-status"><span>9:41</span><span>线上课</span><span>100%</span></div>
+    <div class="mp-nav"><a class="back" href="courses.html" id="nav-back">←</a>课程详情</div>
+    <div class="mp-body" id="cd-root"></div>
     <div class="mp-bottom-bar">
-      <a class="mp-btn" href="pay-result.html?from=course" style="flex:1">立即购买</a>
+      <button class="mp-btn mp-btn-outline" type="button" id="cd-fav" style="width:88px">收藏</button>
+      <button class="mp-btn" type="button" id="cd-cta" style="flex:1">立即购买</button>
     </div>
   </div>
-  <p class="mp-hint"><a href="home.html">返回首页</a> · <a href="../admin/course-edit.html">管理端编辑</a></p>
+  <p class="mp-hint"><a href="home.html">首页</a> · <a href="courses.html">线上课列表</a> · <a href="../admin/content-video.html">管理端</a></p>
+
   <script src="../assets/js/proto.js"></script>
+  <script src="../assets/js/content-tags.js?v=2"></script>
+  <script src="../assets/js/teachers-store.js?v=2"></script>
+  <script src="../assets/js/course-store.js?v=1"></script>
   <script src="../assets/js/mp-shell.js"></script>
+  <script src="../assets/js/mp-commerce.js"></script>
+  <script>
+  var Store = window.CourseStore;
+  var Tags = window.ContentTags;
+  var Teachers = window.Teachers;
+  var Mp = window.MpCommerce;
+
+  var id = new URLSearchParams(location.search).get("id") || "C001";
+  var from = new URLSearchParams(location.search).get("from") || "";
+  if (from === "home") document.getElementById("nav-back").href = "home.html";
+
+  var course = Store.get(id) || Store.list({ status: "enabled" })[0];
+  if (!course) {
+    document.getElementById("cd-root").innerHTML = '<p style="padding:40px;text-align:center;color:#86909c">未找到课程</p>';
+    document.getElementById("cd-cta").disabled = true;
+    throw new Error("no course");
+  }
+
+  if (new URLSearchParams(location.search).get("bought") === "1") {
+    Mp.grantRights(course.id, { source: "pay" });
+  }
+
+  var owned = Mp.hasRights(course.id) || course.price <= 0;
+  var teacherName = Teachers.nameOf(course.teacherId) || course.teacher || "讲师";
+  var chapters = course.chapters || [];
+  var firstFree = chapters.findIndex(function (ch) { return ch.free; });
+  if (firstFree < 0) firstFree = 0;
+
+  function esc(s) {
+    return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) {
+      return ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c];
+    });
+  }
+
+  function badgeHtml() {
+    if (course.badge === "hot") return '<span class="cd-badge">热门课</span>';
+    if (course.badge === "premium") return '<span class="cd-badge premium">精品课</span>';
+    return "";
+  }
+
+  function tagLine() {
+    return (course.tagIds || []).map(function (tid) {
+      var t = Tags.get(tid);
+      return t ? '<span class="mp-crow-tag">' + esc(t.name) + "</span>" : "";
+    }).join("");
+  }
+
+  function chapterRows() {
+    return chapters.map(function (ch, i) {
+      var can = owned || ch.free;
+      var lock = can ? "" : " 🔒";
+      var trial = !owned && ch.free ? ' <span class="badge badge-teal">试看</span>' : "";
+      var href = can
+        ? ('learn.html?id=' + encodeURIComponent(course.id) + "&ch=" + encodeURIComponent(ch.id))
+        : "#";
+      return (
+        '<a class="cd-ch' + (can ? "" : " locked") + '" href="' + href + '" data-ch="' + esc(ch.id) + '" data-can="' + (can ? "1" : "0") + '" data-idx="' + i + '">' +
+          '<span class="idx">' + (i + 1) + "</span>" +
+          '<span class="ttl">' + esc(ch.title) + trial + lock + "</span>" +
+          '<span class="dur">' + esc(ch.duration || "") + "</span>" +
+        "</a>"
+      );
+    }).join("") || '<div style="padding:16px;color:#86909c;font-size:13px">暂无章节</div>';
+  }
+
+  function commentsHtml() {
+    var list = course.commentList || [];
+    if (!list.length) return '<div style="padding:16px;color:#86909c;font-size:13px">暂无评论</div>';
+    return list.map(function (c) {
+      return '<div class="cd-cmt"><div class="u">' + esc(c.user) + '</div><div class="t">' + esc(c.text) + '</div><div class="at">' + esc(c.at) + "</div></div>";
+    }).join("");
+  }
+
+  var priceHtml = course.price > 0
+    ? '<div style="color:#dc2626;font-size:22px;font-weight:700;margin-top:8px">¥' + course.price + "</div>"
+    : '<div style="color:#00b42a;font-size:18px;font-weight:700;margin-top:8px">免费学习</div>';
+
+  document.getElementById("cd-root").innerHTML =
+    '<div style="height:180px;background:url(' + esc(course.cover) + ') center/cover"></div>' +
+    '<div style="background:#fff;padding:14px 16px">' +
+      '<h3 style="font-size:18px;line-height:1.4">' + esc(course.name) + badgeHtml() + "</h3>" +
+      '<p style="font-size:12px;color:#888;margin-top:6px">' +
+        Teachers.avatarHtml(course.teacherId, { size: 20 }) + " " + esc(teacherName) +
+        (course.term ? " · " + esc(course.term) : "") +
+        " · " + chapters.length + " 讲</p>" +
+      '<div class="mp-crow-tags" style="margin-top:8px">' + tagLine() + "</div>" +
+      priceHtml +
+      '<div class="cd-stats"><span>观看 <b>' + (course.views || 0) + '</b></span><span>评论 <b>' + (course.comments || 0) + '</b></span><span>收藏 <b>' + (course.favorites || 0) + "</b></span></div>" +
+      (owned && course.price > 0 ? '<div class="cd-owned">你已获得本课学习权益</div>' : "") +
+    "</div>" +
+    '<div class="cd-tabs" id="cd-tabs">' +
+      '<button type="button" class="active" data-panel="p-ch">目录</button>' +
+      '<button type="button" data-panel="p-intro">详情</button>' +
+      '<button type="button" data-panel="p-cmt">评论</button>' +
+    "</div>" +
+    '<div class="cd-panel active" id="p-ch"><div style="background:#fff">' + chapterRows() + "</div></div>" +
+    '<div class="cd-panel" id="p-intro">' +
+      '<div class="mp-section" style="padding-top:12px">' +
+        '<div class="mp-section-title">课程简介</div>' +
+        '<div style="background:#fff;border-radius:10px;padding:14px;font-size:13px;line-height:1.6;color:#4e5969">' + esc(course.intro || "—") + "</div>" +
+      "</div>" +
+      '<div class="mp-section">' +
+        '<div class="mp-section-title">课程大纲</div>' +
+        '<div style="background:#fff;border-radius:10px;padding:14px;font-size:13px;line-height:1.6;color:#4e5969;white-space:pre-wrap">' + esc(course.outlineText || "—") + "</div>" +
+      "</div>" +
+      '<div class="mp-section">' +
+        '<div class="mp-section-title">购买须知</div>' +
+        '<div style="background:#fff;border-radius:10px;padding:14px;font-size:13px;line-height:1.6;color:#4e5969;white-space:pre-wrap">' + esc(course.purchaseNotes || "—") + "</div>" +
+      "</div>" +
+      (course.detail
+        ? ('<div class="mp-section"><div class="mp-section-title">课程详情</div><div style="background:#fff;border-radius:10px;padding:14px;font-size:13px;line-height:1.7">' + course.detail + "</div></div>")
+        : "") +
+    "</div>" +
+    '<div class="cd-panel" id="p-cmt"><div style="background:#fff;padding:4px 16px">' + commentsHtml() + "</div></div>";
+
+  document.getElementById("cd-tabs").addEventListener("click", function (e) {
+    var b = e.target.closest("[data-panel]");
+    if (!b) return;
+    document.querySelectorAll("#cd-tabs button").forEach(function (x) { x.classList.remove("active"); });
+    b.classList.add("active");
+    document.querySelectorAll(".cd-panel").forEach(function (p) {
+      p.classList.toggle("active", p.id === b.getAttribute("data-panel"));
+    });
+  });
+
+  document.getElementById("p-ch").addEventListener("click", function (e) {
+    var a = e.target.closest("[data-ch]");
+    if (!a) return;
+    if (a.getAttribute("data-can") === "1") return;
+    e.preventDefault();
+    Proto.toast("该章节需购买后学习");
+    startBuy();
+  });
+
+  var cta = document.getElementById("cd-cta");
+  if (owned) {
+    cta.textContent = "开始学习";
+  } else {
+    cta.textContent = course.price > 0 ? ("立即购买 ¥" + course.price) : "立即学习";
+  }
+
+  function startBuy() {
+    Mp.openBuyNotice({
+      catalogId: "comm",
+      from: "course",
+      price: String(course.price),
+      course: course.id,
+      title: course.name,
+      include: "线上课全部章节视频（共 " + chapters.length + " 讲）",
+      item: {
+        title: course.name,
+        typeLabel: "线上课",
+        include: "线上课全部章节视频（共 " + chapters.length + " 讲）",
+        purchaseNotes: course.purchaseNotes
+      },
+      returnUrl: "course.html?id=" + encodeURIComponent(course.id) + "&bought=1"
+    });
+  }
+
+  cta.addEventListener("click", function () {
+    if (owned) {
+      var ch = chapters[firstFree] || chapters[0];
+      location.href = "learn.html?id=" + encodeURIComponent(course.id) + (ch ? "&ch=" + encodeURIComponent(ch.id) : "");
+      return;
+    }
+    if (course.price <= 0) {
+      Mp.grantRights(course.id, { source: "free" });
+      Proto.toast("已开通学习权益");
+      setTimeout(function () {
+        location.href = "learn.html?id=" + encodeURIComponent(course.id);
+      }, 400);
+      return;
+    }
+    startBuy();
+  });
+
+  document.getElementById("cd-fav").addEventListener("click", function () {
+    Proto.toast("已收藏（原型）");
+  });
+  </script>
 </body>
 </html>

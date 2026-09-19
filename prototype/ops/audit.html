@@ -6,7 +6,7 @@
 <title>平台审核工作台 · 运营后台</title>
 <link rel="stylesheet" href="../assets/css/proto.css?v=4" />
 </head>
-<body class="admin-body" data-module="content" data-nav="audit" data-title="平台审核工作台" data-crumb="运营后台 / 内容 / 平台审核（待办 + 审核记录）" data-assist="1">
+<body class="admin-body" data-module="content" data-nav="audit" data-title="内容审核" data-crumb="运营后台 / 内容与审核 / 审核 / 内容审核" data-assist="1">
 <div id="header-actions">
   <button class="btn" id="btn-export">导出记录</button>
   <button class="btn" id="btn-batch-pass">批量通过</button>
@@ -16,7 +16,7 @@
 
   <!-- 统计卡（合并原「审核记录」的累计 / 通过率口径） -->
   <div class="grid-4" style="margin-bottom:16px">
-    <div class="stat"><div class="label">待平台审核</div><div class="value" id="st-pending">0</div><div class="hint">直播 / 系列课 / 视频 / 图文 / 商品</div></div>
+    <div class="stat"><div class="label">待平台审核</div><div class="value" id="st-pending">0</div><div class="hint">直播 / 线上课 / 文章 / 商品</div></div>
     <div class="stat"><div class="label">累计审核</div><div class="value" id="st-total">0</div><div class="hint">全部租户</div></div>
     <div class="stat"><div class="label">通过率</div><div class="value" id="st-rate-pass">—</div><div class="hint" id="st-rate-hint">通过 0 · 驳回 0</div></div>
     <div class="stat"><div class="label">平均审核时长</div><div class="value">3.2 小时</div><div class="hint">SLA 目标 4 小时</div></div>
@@ -40,7 +40,7 @@
       </select>
       <select id="f-type">
         <option value="">内容类型</option>
-        <option>直播</option><option>系列课</option><option>视频</option><option>图文</option><option>商品</option>
+        <option>直播</option><option>线上课</option><option>文章</option><option>商品</option>
       </select>
       <select id="f-result">
         <option value="">审核结果</option>
@@ -96,7 +96,7 @@
       <tbody id="dt-rows"></tbody>
     </table>
     <div style="margin-top:10px;padding:8px 12px;border-radius:6px;background:#e8f3ff;border:1px solid #a0cfff;color:#165dff;font-size:12px">
-      审核范围：<b>直播（必审）</b>、<b>系列课 / 视频 / 图文（上架前审核）</b>、<b>商品（服务类抽审）</b>。审核通过后内容发布到 C 端小程序。
+      审核范围：<b>直播（必审）</b>、<b>线上课 / 文章（上架前审核）</b>、<b>商品（服务类抽审）</b>。审核通过后内容发布到 C 端小程序。
     </div>
     <p class="muted" style="margin:10px 0 0;font-size:12px">平台审核通过后可上架；驳回需填写原因并通知商家；驳回结果与申诉复核结论均写入本页「已通过 / 已驳回 / 商家申诉」Tab。</p>
   </div>
@@ -165,19 +165,21 @@
 
 <script src="../assets/js/proto.js"></script>
 <script src="../assets/js/prototype-business-store.js"></script>
-<script src="../assets/js/series-store.js?v=1"></script>
+<script src="../assets/js/content-tags.js?v=2"></script>
+<script src="../assets/js/teachers-store.js?v=1"></script>
+<script src="../assets/js/course-store.js?v=1"></script>
 <script src="../assets/js/ops-shell.js?v=7"></script>
 <script>
 (function () {
   var Biz = window.ProtoBiz;
-  var Store = window.SeriesStore;
+  var Store = window.CourseStore || window.SeriesStore;
   var currentId = null;
   var currentIsLive = false;
   var currentIsSeries = false;
   var rowMap = {};
   var currentTab = "pending";
 
-  // 视频 / 图文 / 商品 的待审示例（系列课来自 SeriesStore；直播来自 ProtoBiz）
+  // 视频 / 图文 / 商品 的待审示例（线上课来自 CourseStore；直播来自 ProtoBiz）
   var LOCAL_ITEMS = [
     { id: "VI2026090503", typeLabel: "视频", name: "写作业不吼不叫 · 方法拆解", merchantName: "晨光少儿成长", submittedAt: "2026-09-05 11:32",
       rows: [["视频标题","写作业不吼不叫 · 方法拆解"],["视频封面","video-cover.jpg（已预览）"],["视频时长","42 分 18 秒"],["售卖价格","¥69.00"],["试看设置","每节前 3 分钟"]] },
@@ -190,15 +192,15 @@
 
   // 审核留痕（原「平台审核记录」页的演示数据，已并入本页）
   var RECORDS = [
-    { id: "RC2026091801", name: "少儿专注力训练营", typeLabel: "系列课", merchantName: "晨光少儿成长", result: "passed", remark: "—", by: "平台运营", at: "今天 11:02" },
-    { id: "RC2026091802", name: "家庭教育 21 天打卡营", typeLabel: "系列课", merchantName: "慧心教育", result: "rejected", remark: "A-03 宣传用语含绝对化承诺（\"100% 提升成绩\"）", by: "平台运营", at: "今天 09:48", appeal: true },
+    { id: "RC2026091801", name: "少儿专注力训练营", typeLabel: "线上课", merchantName: "晨光少儿成长", result: "passed", remark: "—", by: "平台运营", at: "今天 11:02" },
+    { id: "RC2026091802", name: "家庭教育 21 天打卡营", typeLabel: "线上课", merchantName: "慧心教育", result: "rejected", remark: "A-03 宣传用语含绝对化承诺（\"100% 提升成绩\"）", by: "平台运营", at: "今天 09:48", appeal: true },
     { id: "RC2026091703", name: "家长情绪管理直播", typeLabel: "直播", merchantName: "青藤家长学堂", result: "passed", remark: "备注：直播全程需录像留痕", by: "平台运营", at: "昨天 18:20" },
-    { id: "RC2026090204", name: "春启 03 期家长必修课", typeLabel: "系列课", merchantName: "星启家庭教育", result: "passed", remark: "—", by: "平台运营", at: "09-02 14:31" },
-    { id: "RC2026090105", name: "儿童时间管理课", typeLabel: "系列课", merchantName: "晨光少儿成长", result: "rejected", remark: "C-02 封面图与课程内容不符", by: "平台运营", at: "09-01 10:15" }
+    { id: "RC2026090204", name: "春启 03 期家长必修课", typeLabel: "线上课", merchantName: "星启家庭教育", result: "passed", remark: "—", by: "平台运营", at: "09-02 14:31" },
+    { id: "RC2026090105", name: "儿童时间管理课", typeLabel: "线上课", merchantName: "晨光少儿成长", result: "rejected", remark: "C-02 封面图与课程内容不符", by: "平台运营", at: "09-01 10:15" }
   ];
 
   function typeTag(t) {
-    var cls = t === "直播" ? "tag-purple" : (t === "系列课" || t === "视频" ? "tag-blue" : "tag-orange");
+    var cls = t === "直播" ? "tag-purple" : (t === "线上课" ? "tag-blue" : "tag-orange");
     return '<span class="tag ' + cls + '">' + esc(t) + "</span>";
   }
 
@@ -207,7 +209,7 @@
       var trialN = (c.chapters || []).filter(function (ch) { return ch.trial; }).length;
       return {
         id: c.id,
-        typeLabel: "系列课",
+        typeLabel: "线上课",
         name: c.name,
         merchantName: c.merchantName || "星启家庭教育",
         submittedAt: c.submittedAt || c.updatedAt || "—",
@@ -215,7 +217,7 @@
         isSeries: true,
         rows: [
           ["课程标题", c.name],
-          ["内容分类", c.cat || "—"],
+          ["内容标签", (c.tagIds && c.tagIds.length && window.ContentTags) ? window.ContentTags.namesByIds(c.tagIds).join("、") : (c.cat || "—")],
           ["课程目录", Store.chapterCount(c) + " 章 · 试看 " + trialN + " 节"],
           ["讲师", c.teacher || "—"],
           ["课程简介", c.intro || "—"]
@@ -254,7 +256,7 @@
     });
   }
 
-  // 审核日志 → 记录行（平台侧通过 / 驳回；系列课按 SeriesStore 还原类型）
+  // 审核日志 → 记录行（平台侧通过 / 驳回；线上课按 CourseStore 还原类型）
   function logRecords() {
     return (Biz.getReviewLogs() || []).filter(function (r) {
       return r.side === "platform" && (r.status === "approved" || r.status === "platform_rejected");
@@ -517,7 +519,7 @@
     var wasSeries = currentIsSeries;
     approve(currentId, currentIsLive, currentIsSeries, note);
     closeAll();
-    Proto.toast(wasSeries ? "系列课已通过，商家侧已启用" : (note ? "平台已通过（备注已同步商家）" : "平台已通过，内容可上架"));
+    Proto.toast(wasSeries ? "线上课已通过，商家侧已启用" : (note ? "平台已通过（备注已同步商家）" : "平台已通过，内容可上架"));
     render();
   });
   document.getElementById("rj-submit").addEventListener("click", function () {

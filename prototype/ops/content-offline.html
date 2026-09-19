@@ -6,107 +6,123 @@
 <title>线下课 · 运营后台</title>
 <link rel="stylesheet" href="../assets/css/proto.css?v=9" />
 <style>
-.ca-list { background: #fff; border: 1px solid #e8e8e8; border-radius: 8px; overflow: hidden; }
-.ca-row {
-  display: flex; align-items: center; gap: 14px;
-  padding: 14px 16px; border-bottom: 1px solid #f0f0f0;
-  transition: background .12s;
-}
-.ca-row:last-child { border-bottom: 0; }
-.ca-row:hover { background: #fafbff; }
-.ca-cover {
-  width: 96px; height: 64px; border-radius: 6px; flex-shrink: 0;
-  background: #f2f3f5; overflow: hidden;
-}
-.ca-cover img { width: 100%; height: 100%; object-fit: cover; display: block; }
-.ca-info { flex: 1; min-width: 0; }
-.ca-title {
-  font-size: 14px; font-weight: 500; color: #1d2129;
-  margin-bottom: 4px;
-  display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
-}
-.ca-meta { font-size: 12px; color: #8c8c8c; display: flex; gap: 14px; flex-wrap: wrap; }
-.ca-meta b { color: #595959; font-weight: 500; }
-.ca-actions { display: flex; gap: 6px; flex-wrap: wrap; }
-.ca-cat { font-size: 11px; padding: 1px 6px; border-radius: 3px; background: #e8f3ff; color: #165dff; font-weight: 500; flex-shrink: 0; }
-.phase-pill {
-  font-size: 11px; padding: 1px 6px; border-radius: 3px; font-weight: 500; flex-shrink: 0;
-  background: #f2f3f5; color: #4e5969;
-}
-.phase-pill.open { background: #e8ffea; color: #00b42a; }
-.phase-pill.soon { background: #fff7e6; color: #d48806; }
-.phase-pill.ended { background: #f2f3f5; color: #86909c; }
-.phase-pill.live { background: #fff1f0; color: #f53f3f; }
+.cs-row { background:#fff;border:1px solid #e8e8e8;border-radius:8px;margin-bottom:12px;padding:14px 16px;display:flex;align-items:center;gap:14px; }
+.cs-row:hover { border-color:#165dff; box-shadow:0 4px 14px rgba(22,93,255,.1); }
+.cs-cover { width:128px;height:80px;border-radius:6px;background:#f2f3f5;overflow:hidden;flex-shrink:0; }
+.cs-cover img { width:100%;height:100%;object-fit:cover;display:block; }
+.cs-info { flex:1;min-width:0; }
+.cs-title { font-size:15px;font-weight:600;color:#1d2129;display:flex;align-items:center;gap:8px;margin-bottom:6px;flex-wrap:wrap; }
+.cs-desc { font-size:12px;color:#8c8c8c;line-height:1.6;margin-bottom:8px; }
+.cs-stats { display:flex;gap:14px;font-size:12px;color:#595959;flex-wrap:wrap; }
+.cs-stats b { color:#165dff;font-weight:600; }
+.cs-badge { font-size:11px;padding:1px 6px;border-radius:3px;background:#fff7e6;color:#d46b08;font-weight:500; }
+.cs-badge.premium { background:#f9f0ff;color:#722ed1; }
+.cs-actions { display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end;max-width:360px; }
+.phase-pill { font-size:11px;padding:1px 6px;border-radius:3px;font-weight:500;background:#f2f3f5;color:#4e5969; }
+.phase-pill.open { background:#e8ffea;color:#00b42a; }
+.phase-pill.soon { background:#fff7e6;color:#d48806; }
+.phase-pill.ended { background:#f2f3f5;color:#86909c; }
+.phase-pill.live { background:#fff1f0;color:#f53f3f; }
 </style>
 </head>
-<body class="admin-body" data-module="content" data-nav="content-offline" data-title="线下课" data-crumb="运营后台 / 内容 / 内容管理 / 线下课">
+<body class="admin-body" data-module="content" data-nav="content-offline" data-title="线下课" data-crumb="运营后台 / 内容与审核 / 内容资产 / 线下课">
 
 <div id="header-actions">
-  <button class="btn" data-toast="批量操作待完善（原型）">批量删除</button>
-  <button class="btn btn-primary" data-toast="平台标准库新建走内容审核流（原型）">+ 新增标准线下课</button>
+  <a class="btn btn-primary" href="content-offline-edit.html">+ 新建线下课</a>
 </div>
 
 <div id="page-content" style="display:none">
-  <div class="card" style="margin-bottom:14px;border-color:#d3adf7;background:#f9f0ff"><div class="card-bd" style="padding:10px 16px;font-size:13px;color:#531dab">
-    平台内容中台 · 线下课标准库；与商家后台「线下课」双轨。商家侧已支持报名窗 / 门票商品化 / 报名名单；编辑与名单以商家端为准。
-  </div></div>
-  <div class="card" style="margin-bottom:14px;border-color:#b7eb8f;background:#f6ffed"><div class="card-bd" style="padding:10px 16px;font-size:13px;color:#389e0d">
-    <b>一期已对齐商家侧字段</b>：报名窗、开课时间、获取方式、报名进度。到店核销与场地排课仍为后续能力。
-  </div></div>
-
   <div class="card" style="margin-bottom:14px"><div class="card-bd" style="padding:12px 16px">
-    <div class="toolbar" style="border:none;padding:0;background:transparent">
-      <input class="input" type="text" id="co-keyword" placeholder="搜索线下课名称或简介..." style="width:240px" />
-      <select class="input" id="co-cat" style="width:160px">
-        <option value="">全部内容分类</option>
+    <div class="toolbar" style="border:none;padding:0;background:transparent;flex-wrap:wrap">
+      <input class="input" id="f-kw" placeholder="搜索课程名称 / 讲师 / 期数 / 地址" style="width:240px" />
+      <div id="f-tag" style="width:200px;display:inline-block;vertical-align:middle"></div>
+      <select class="input" id="f-teacher" style="width:150px"><option value="">全部讲师</option></select>
+      <select class="input" id="f-badge" style="width:120px">
+        <option value="">全部角标</option>
+        <option value="hot">热门课</option>
+        <option value="premium">精品课</option>
       </select>
-      <select class="input" id="co-status" style="width:140px">
-        <option value="">全部上下架</option><option>已上架</option><option>已下架</option>
+      <select class="input" id="f-status" style="width:140px">
+        <option value="">全部状态</option>
+        <option value="已上架">已上架</option>
+        <option value="已下架">已下架</option>
+        <option value="草稿">草稿</option>
       </select>
-      <button class="btn btn-primary">查询</button>
-      <button class="btn">重置</button>
+      <button class="btn btn-primary" id="btn-query">查询</button>
+      <button class="btn" id="btn-reset">重置</button>
     </div>
   </div></div>
+  <p style="font-size:12px;color:#8c8c8c;margin:0 0 12px">线下课字段与线上课对齐，无章节；额外维护报名 / 课程 / 签到时间、预计人数、名额与上课地址。</p>
+  <div id="list"></div>
+  <div style="margin-top:12px;font-size:12px;color:#8c8c8c">共 <b id="count">0</b> 条</div>
+</div>
 
-  <div class="ca-list" id="co-list"></div>
-
-  <div style="display:flex;align-items:center;gap:8px;margin-top:16px">
-    <span style="color:#8c8c8c;font-size:12px">共 <b id="co-count">3</b> 条</span>
-    <div style="margin-left:auto;display:flex;gap:6px">
-      <button class="btn" disabled>上一页</button>
-      <button class="btn btn-primary">1</button>
-      <button class="btn" disabled>下一页</button>
-    </div>
+<div class="proto-mask" id="mask"></div>
+<div class="proto-modal" id="modal-del" style="width:440px">
+  <div class="proto-modal-hd"><h3 style="font-size:16px;font-weight:600">删除线下课</h3><button class="btn btn-sm btn-ghost" data-close>×</button></div>
+  <div class="proto-modal-bd"><p>确定删除《<b id="del-name"></b>》？删除后无法恢复。</p></div>
+  <div style="border-top:1px solid var(--color-border);padding:12px 20px;display:flex;gap:8px;justify-content:flex-end">
+    <button class="btn" data-close>取消</button>
+    <button class="btn btn-primary" id="del-confirm" style="background:#f53f3f;border-color:#f53f3f">确认删除</button>
   </div>
 </div>
 
 <script src="../assets/js/proto.js"></script>
-<script src="../assets/js/content-cats.js?v=1"></script>
-<script src="../assets/js/ops-shell.js?v=8"></script>
+<script src="../assets/js/content-tags.js?v=2"></script>
+<script src="../assets/js/teachers-store.js?v=2"></script>
+<script src="../assets/js/ops-shell.js?v=16"></script>
 <script>
+var Tags = window.ContentTags;
+var Teachers = window.Teachers;
+
+document.getElementById("f-teacher").insertAdjacentHTML("beforeend", Teachers.optionsHtml());
+var tagFilter = Tags.mountTreeSelect("#f-tag", {
+  placeholder: "内容标签（可多选）",
+  compact: true,
+  width: "200px"
+});
+
 var OFFLINES = [
-  { id: "O001", title: "卓越家族培养计划 · 线下工作坊", cover: "../assets/img/covers/classroom.jpg",
-    tenant: "星启家庭教育", cat: "家庭教育", city: "上海",
+  {
+    id: "O001", name: "卓越家族培养计划 · 线下工作坊", term: "秋启 01 期",
+    teacherId: "TCH02", tagIds: ["TG01", "TG02"], badge: "hot", price: 299,
+    cover: "../assets/img/covers/classroom.jpg",
+    intro: "两天沉浸式工作坊，聚焦家族沟通与边界。",
+    address: "上海市浦东新区陆家嘴环路 1000 号 3F",
     signupStart: "2026-09-01 10:00", signupEnd: "2026-09-25 23:59",
     courseStart: "2026-09-28 09:30", courseEnd: "2026-09-29 17:00",
-    capacity: 100, signed: 86, access: "paid", price: 299,
-    status: "已上架", statusType: "pass", onShelf: true },
-  { id: "O002", title: "亲子沟通实战 · 线下沙龙", cover: "../assets/img/covers/talk.jpg",
-    tenant: "晨光少儿成长", cat: "K12 教育", city: "深圳",
+    checkinStart: "2026-09-28 08:30", checkinEnd: "2026-09-28 09:20",
+    expected: 80, capacity: 100, signed: 86,
+    status: "已上架", onShelf: true
+  },
+  {
+    id: "O002", name: "亲子沟通实战 · 线下沙龙", term: "周末场",
+    teacherId: "TCH01", tagIds: ["TG02", "TG04"], badge: "premium", price: 0,
+    cover: "../assets/img/covers/talk.jpg",
+    intro: "半天沙龙，现场演练亲子对话。",
+    address: "深圳市南山区科技园南路 8 号活动厅",
     signupStart: "2026-09-10 09:00", signupEnd: "2026-10-05 18:00",
     courseStart: "2026-10-12 14:00", courseEnd: "2026-10-12 17:30",
-    capacity: 40, signed: 32, access: "free", price: 0,
-    status: "已上架", statusType: "pass", onShelf: true },
-  { id: "O003", title: "学习习惯养成 · 线下营（筹备中）", cover: "../assets/img/covers/parent.jpg",
-    tenant: "慧心教育", cat: "K12 教育", city: "北京",
+    checkinStart: "2026-10-12 13:30", checkinEnd: "2026-10-12 13:55",
+    expected: 35, capacity: 40, signed: 32,
+    status: "已上架", onShelf: true
+  },
+  {
+    id: "O003", name: "学习习惯养成 · 线下营", term: "冬令营",
+    teacherId: "TCH03", tagIds: ["TG06", "TG04"], badge: "", price: 999,
+    cover: "../assets/img/covers/parent.jpg",
+    intro: "三天两夜集训，培养自主学习习惯。",
+    address: "北京市海淀区中关村大街 1 号营地",
     signupStart: "2026-11-01 10:00", signupEnd: "2026-11-20 23:59",
     courseStart: "2026-11-28 09:00", courseEnd: "2026-11-30 16:00",
-    capacity: 30, signed: 0, access: "paid", price: 999,
-    status: "已下架", statusType: "review", onShelf: false }
+    checkinStart: "2026-11-28 08:00", checkinEnd: "2026-11-28 08:50",
+    expected: 25, capacity: 30, signed: 0,
+    status: "已下架", onShelf: false
+  }
 ];
 
 function esc(s) {
-  return String(s).replace(/[&<>"']/g, function(c) {
+  return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) {
     return ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c];
   });
 }
@@ -126,83 +142,117 @@ function derivePhase(o) {
   return { label: "已结束", cls: "ended" };
 }
 
-function accessLabel(o) {
-  return o.access === "paid" ? ("¥" + o.price) : "免费";
+function filtered() {
+  var kw = document.getElementById("f-kw").value.trim().toLowerCase();
+  var tags = tagFilter.getSelected();
+  var teacherId = document.getElementById("f-teacher").value;
+  var badge = document.getElementById("f-badge").value;
+  var status = document.getElementById("f-status").value;
+  return OFFLINES.filter(function (o) {
+    if (status && o.status !== status) return false;
+    if (teacherId && o.teacherId !== teacherId) return false;
+    if (badge && (o.badge || "") !== badge) return false;
+    if (tags.length && !tags.some(function (t) { return (o.tagIds || []).indexOf(t) >= 0; })) return false;
+    if (kw) {
+      var blob = (o.name + " " + Teachers.nameOf(o.teacherId) + " " + (o.term || "") + " " + (o.address || "") + " " + (o.intro || "")).toLowerCase();
+      if (blob.indexOf(kw) < 0) return false;
+    }
+    return true;
+  });
 }
 
-function renderList() {
-  var html = OFFLINES.map(function(o) {
+function render() {
+  var rows = filtered();
+  document.getElementById("count").textContent = rows.length;
+  document.getElementById("list").innerHTML = rows.map(function (o) {
+    var badge = "";
+    if (o.badge === "hot") badge = '<span class="cs-badge">热门课</span>';
+    else if (o.badge === "premium") badge = '<span class="cs-badge premium">精品课</span>';
     var phase = derivePhase(o);
-    var cap = o.capacity ? (o.signed + "/" + o.capacity) : String(o.signed);
-    return '' +
-      '<div class="ca-row">' +
-        '<div class="ca-cover"><img src="' + o.cover + '" alt="" /></div>' +
-        '<div class="ca-info">' +
-          '<div class="ca-title">' + esc(o.title) +
-            '<span class="ca-cat">' + esc(o.cat) + '</span>' +
-            '<span class="phase-pill ' + phase.cls + '">' + phase.label + '</span>' +
-            '<span class="audit-badge ' + o.statusType + '">' + esc(o.status) + '</span>' +
-          '</div>' +
-          '<div class="ca-meta">' +
-            '<span><b>ID:</b> ' + esc(o.id) + '</span>' +
-            '<span><b>租户:</b> ' + esc(o.tenant) + '</span>' +
-            '<span><b>城市:</b> ' + esc(o.city) + '</span>' +
-            '<span><b>报名窗:</b> ' + esc(o.signupStart) + ' ~ ' + esc(o.signupEnd) + '</span>' +
-            '<span><b>开课:</b> ' + esc(o.courseStart) + ' ~ ' + esc(o.courseEnd) + '</span>' +
-            '<span><b>获取:</b> ' + accessLabel(o) + '</span>' +
-            '<span><b>报名:</b> ' + cap + '</span>' +
-          '</div>' +
-        '</div>' +
-        '<div class="ca-actions">' +
-          '<button class="btn" data-toast="分享待完善（原型）"' + (o.onShelf ? '' : ' disabled') + '>分享</button>' +
-          '<a class="btn" href="../admin/content-offline-edit.html?id=' + o.id + '">查看商家编辑</a>' +
-          '<a class="btn" href="../admin/content-offline-signups.html?id=' + o.id + '">报名记录</a>' +
-          (o.onShelf
-            ? '<button class="btn" data-shelf-off="' + o.id + '">下架</button>'
-            : '<button class="btn" data-shelf-on="' + o.id + '">上架</button>') +
-          '<button class="btn" style="color:#f53f3f;border-color:#ffa39e" data-del="' + o.id + '">删除</button>' +
-        '</div>' +
-      '</div>';
-  }).join("");
-  document.getElementById("co-list").innerHTML = html ||
-    '<div style="padding:32px;text-align:center;color:#8c8c8c;font-size:13px">暂无线下课</div>';
-  document.getElementById("co-count").textContent = OFFLINES.length;
+    var priceTxt = o.price > 0 ? ("¥" + o.price) : "免费";
+    var acts =
+      '<a class="btn" href="content-offline-signups.html?id=' + encodeURIComponent(o.id) + '">报名记录</a>' +
+      '<a class="btn" href="content-offline-edit.html?id=' + encodeURIComponent(o.id) + '">编辑</a>' +
+      (o.onShelf
+        ? '<button class="btn" data-shelf-off="' + o.id + '">下架</button>'
+        : '<button class="btn" data-shelf-on="' + o.id + '">上架</button>') +
+      '<button class="btn" style="color:#f53f3f;border-color:#ffa39e" data-del="' + o.id + '">删除</button>';
+    return '<div class="cs-row">' +
+      '<div class="cs-cover"><img src="' + esc(o.cover) + '" alt="" /></div>' +
+      '<div class="cs-info">' +
+        '<div class="cs-title">' + esc(o.name) + badge +
+          ' <span class="muted" style="font-size:12px;font-weight:400">' + esc(o.term || "") + "</span>" +
+          ' <span class="phase-pill ' + phase.cls + '">' + phase.label + "</span>" +
+          ' <span class="tag">' + esc(o.status) + "</span></div>" +
+        '<div class="cs-desc">' + esc(o.intro || "") + "</div>" +
+        '<div class="cs-stats">' +
+          "<span>讲师 " + Teachers.avatarHtml(o.teacherId, { size: 22 }) + " <b>" + esc(Teachers.nameOf(o.teacherId)) + "</b></span>" +
+          "<span>标签 " + Tags.labelsHtml(o.tagIds) + "</span>" +
+          "<span>价格 <b>" + priceTxt + "</b></span>" +
+          "<span>报名 <b>" + esc(o.signupStart) + " ~ " + esc(o.signupEnd) + "</b></span>" +
+          "<span>课程 <b>" + esc(o.courseStart) + " ~ " + esc(o.courseEnd) + "</b></span>" +
+          "<span>签到 <b>" + esc(o.checkinStart) + " ~ " + esc(o.checkinEnd) + "</b></span>" +
+          "<span>预计 <b>" + (o.expected || 0) + "</b> / 名额 <b>" + (o.capacity || "不限") + "</b>（已报 " + (o.signed || 0) + "）</span>" +
+          "<span>地址 <b>" + esc(o.address || "—") + "</b></span>" +
+        "</div>" +
+      "</div>" +
+      '<div class="cs-actions">' + acts + "</div>" +
+    "</div>";
+  }).join("") || '<div class="muted" style="padding:32px;text-align:center;border:1px dashed #e8e8e8;border-radius:8px">暂无线下课</div>';
 }
 
-document.addEventListener("click", function(e) {
+document.getElementById("btn-query").addEventListener("click", render);
+document.getElementById("btn-reset").addEventListener("click", function () {
+  document.getElementById("f-kw").value = "";
+  document.getElementById("f-teacher").value = "";
+  document.getElementById("f-badge").value = "";
+  document.getElementById("f-status").value = "";
+  tagFilter.clear();
+  render();
+});
+
+var pendingDelId = null;
+var mask = document.getElementById("mask");
+function closeAll() {
+  mask.classList.remove("open");
+  document.getElementById("modal-del").classList.remove("open");
+}
+document.querySelectorAll("[data-close]").forEach(function (b) { b.addEventListener("click", closeAll); });
+mask.addEventListener("click", closeAll);
+
+document.getElementById("list").addEventListener("click", function (e) {
   var off = e.target.closest("[data-shelf-off]");
   if (off) {
-    var o = OFFLINES.find(function(x){ return x.id === off.getAttribute("data-shelf-off"); });
-    if (o) { o.onShelf = false; o.status = "已下架"; o.statusType = "review"; renderList(); Proto.toast("已下架"); }
+    var o = OFFLINES.find(function (x) { return x.id === off.getAttribute("data-shelf-off"); });
+    if (o) { o.onShelf = false; o.status = "已下架"; render(); Proto.toast("已下架"); }
     return;
   }
   var on = e.target.closest("[data-shelf-on]");
   if (on) {
-    var o2 = OFFLINES.find(function(x){ return x.id === on.getAttribute("data-shelf-on"); });
-    if (o2) { o2.onShelf = true; o2.status = "已上架"; o2.statusType = "pass"; renderList(); Proto.toast("已上架"); }
+    var o2 = OFFLINES.find(function (x) { return x.id === on.getAttribute("data-shelf-on"); });
+    if (o2) { o2.onShelf = true; o2.status = "已上架"; render(); Proto.toast("已上架"); }
     return;
   }
   var del = e.target.closest("[data-del]");
   if (del) {
-    var id = del.getAttribute("data-del");
-    var d = OFFLINES.find(function(x){ return x.id === id; });
-    if (confirm("确定删除《" + (d ? d.title : id) + "》？删除后学员端将不再展示，且无法恢复。")) {
-      OFFLINES = OFFLINES.filter(function(x){ return x.id !== id; });
-      renderList();
-      Proto.toast("已删除");
-    }
-    return;
+    pendingDelId = del.getAttribute("data-del");
+    var da = OFFLINES.find(function (x) { return x.id === pendingDelId; });
+    document.getElementById("del-name").textContent = da ? da.name : pendingDelId;
+    mask.classList.add("open");
+    document.getElementById("modal-del").classList.add("open");
   }
 });
 
-document.getElementById("co-cat").insertAdjacentHTML("beforeend", window.ContentCats.optionsHtml());
+document.getElementById("del-confirm").addEventListener("click", function () {
+  if (!pendingDelId) return;
+  OFFLINES = OFFLINES.filter(function (x) { return x.id !== pendingDelId; });
+  pendingDelId = null;
+  closeAll();
+  Proto.toast("已删除");
+  render();
+});
 
-function tryRender() {
-  if (document.getElementById("page-content").style.display !== "none") renderList();
-  else setTimeout(tryRender, 80);
-}
-if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", tryRender);
-else tryRender();
+render();
 </script>
 </body>
 </html>

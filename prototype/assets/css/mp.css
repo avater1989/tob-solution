@@ -175,10 +175,10 @@
 /* ===== 首页金刚位 ===== */
 .mp-king {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 8px;
-  margin: 14px 14px 0;
-  padding: 14px 8px 12px;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 4px;
+  margin: 12px 14px 0;
+  padding: 14px 4px 12px;
   background: var(--mp-card);
   border-radius: var(--mp-radius);
   box-shadow: var(--mp-shadow);
@@ -187,21 +187,21 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   color: var(--mp-ink);
   text-decoration: none;
-  font-size: 12.5px;
+  font-size: 11.5px;
   font-weight: 600;
 }
 .mp-king a:hover { text-decoration: none; opacity: .88; }
 .mp-king-ico {
-  width: 48px;
-  height: 48px;
-  border-radius: 16px;
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 800;
   color: #fff;
   box-shadow: 0 6px 14px rgba(29, 33, 41, .1);
@@ -209,6 +209,51 @@
 .mp-king-ico.k1 { background: linear-gradient(135deg, #ffb020, #ff7a45); }
 .mp-king-ico.k2 { background: linear-gradient(135deg, #5b8cff, #3b6ef5); }
 .mp-king-ico.k3 { background: linear-gradient(135deg, #34c759, #1faa4a); }
+.mp-king-ico.k4 { background: linear-gradient(135deg, #a78bfa, #7c3aed); }
+.mp-king-ico.k5 { background: linear-gradient(135deg, #fb7185, #e11d48); }
+
+/* ===== 精选文章卡片 ===== */
+.mp-arow {
+  display: flex;
+  gap: 12px;
+  align-items: stretch;
+  padding: 12px;
+  margin-bottom: 10px;
+  background: var(--mp-card);
+  border-radius: var(--mp-radius);
+  box-shadow: var(--mp-shadow);
+  color: inherit;
+  text-decoration: none;
+}
+.mp-arow:hover { text-decoration: none; transform: translateY(-1px); }
+.mp-arow-cover {
+  width: 96px;
+  height: 72px;
+  border-radius: 8px;
+  overflow: hidden;
+  flex-shrink: 0;
+  background: #f2f3f5;
+}
+.mp-arow-cover img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.mp-arow-bd { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+.mp-arow-title {
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.4;
+  color: var(--mp-ink);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.mp-arow-meta {
+  margin-top: auto;
+  font-size: 11.5px;
+  color: var(--mp-sub);
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
 
 /* ===== 区块标题 ===== */
 .mp-section { padding: 0 14px 14px; }

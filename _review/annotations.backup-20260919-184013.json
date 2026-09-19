@@ -1,0 +1,44 @@
+{
+  "v": 1,
+  "updated": "2026-09-19T15:48:23",
+  "items": [
+    {
+      "id": "rmu8351tiage3",
+      "page": "admin/goods.html",
+      "anchor": {
+        "selector": "#panel-wxshop > div:nth-of-type(6) > div",
+        "selectorIn": "#panel-wxshop > div:nth-of-type(6) > div",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "div.card-bd",
+        "text": "接口口径（获取商品列表 getproductlist）： POST https://api.weixin.qq.com/channels/ec/product/list/get?access_token=ACCESS_TOKEN （或云调用 channels.ec.product.list.get），须在服务器端调用、",
+        "html": "<div class=\"card-bd\"> <p class=\"muted\" style=\"font-size:12px;line-height:1.8\"> <b>接口口径（获取商品列表 <span class=\"mono\">getproductlist</span>）：</b> <span class=\"mono\">POST https://api.weixin.qq.com/channels/ec/product/list/get?access_token=ACCESS_TOKEN</span> （或云调用 <span class=\"mono\">ch"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "去掉",
+      "status": "open",
+      "createdAt": "2026-09-19T07:48:04.086Z"
+    },
+    {
+      "id": "rmu835h3e3o75",
+      "page": "admin/goods.html",
+      "anchor": {
+        "selector": "#wx-next-key",
+        "selectorIn": "#wx-next-key",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "span#wx-next-key.muted.mono",
+        "text": "next_key: THE_NEXT_KEY",
+        "html": "<span class=\"muted mono\" style=\"font-size:12px\" id=\"wx-next-key\">next_key: THE_NEXT_KEY</span>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "去掉",
+      "status": "open",
+      "createdAt": "2026-09-19T07:48:23.882Z"
+    }
+  ]
+}

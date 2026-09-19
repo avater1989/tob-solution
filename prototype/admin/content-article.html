@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>图文 · 艺博 To-B</title>
+<title>文章 · 艺博 To-B</title>
 <link rel="stylesheet" href="../assets/css/proto.css?v=9" />
 <style>
 .ca-list { background: #fff; border: 1px solid #e8e8e8; border-radius: 8px; overflow: hidden; }
@@ -34,7 +34,7 @@
 .ca-cat { font-size: 11px; padding: 1px 6px; border-radius: 3px; background: #e8f3ff; color: #165dff; font-weight: 500; flex-shrink: 0; }
 </style>
 </head>
-<body class="admin-body" data-module="content" data-nav="content-article" data-title="图文" data-crumb="内容 / 内容管理 / 图文">
+<body class="admin-body" data-module="content" data-nav="content-article" data-title="文章" data-crumb="内容 / 内容资产 / 文章">
 
 <div id="header-actions">
   <button class="btn">批量删除</button>
@@ -42,12 +42,11 @@
 </div>
 
 <div id="page-content" style="display:none">
+  <div style="background:#f0f5ff;border:1px solid #bedaff;border-radius:8px;padding:10px 14px;margin-bottom:12px;font-size:13px">内容负责交付 · 商品负责售卖。下一步：提交审核 → 审核通过 → <a href="goods-edit.html">创建商品</a> → 上架。</div>
   <div class="card" style="margin-bottom:14px"><div class="card-bd" style="padding:12px 16px">
     <div class="toolbar" style="border:none;padding:0;background:transparent">
       <input class="input" type="text" id="ca-keyword" placeholder="搜索图文名称或简介..." style="width:240px" />
-      <select class="input" id="ca-cat" style="width:160px">
-        <option value="">全部内容分类</option>
-      </select>
+      <div id="ca-tag" style="width:200px;display:inline-block;vertical-align:middle"></div>
       <select class="input" id="ca-status" style="width:140px">
         <option value="">全部上下架</option><option>已上架</option><option>已下架</option>
       </select>
@@ -84,9 +83,9 @@
 </div>
 
 <script src="../assets/js/proto.js"></script>
-<script src="../assets/js/content-cats.js?v=1"></script>
+<script src="../assets/js/content-tags.js?v=2"></script>
 <script src="../assets/js/share-modal.js?v=1"></script>
-<script src="../assets/js/admin-shell.js?v=14"></script>
+<script src="../assets/js/admin-shell.js?v=16"></script>
 <script>
 setTimeout(function() {
   if (document.documentElement.getAttribute('data-shell-ready') === '1') return;
@@ -99,19 +98,26 @@ setTimeout(function() {
 
 var ARTICLES = [
   { id: "A001", title: "9 月新学期家长指南", cover: "../assets/img/covers/term.jpg",
-    author: "编辑部", cat: "K12 教育", date: "2026-08-25", reads: 2340, words: 1280,
-    status: "已上架", statusType: "pass", onShelf: true },
+    author: "编辑部", tagIds: ["TG04"], date: "2026-08-25", reads: 2340, words: 1280,
+    status: "已上架", statusType: "pass", onShelf: true, payMode: "free" },
   { id: "A002", title: "孩子注意力训练方法论", cover: "../assets/img/covers/focus.jpg",
-    author: "张老师", cat: "K12 教育", date: "2026-08-30", reads: 1560, words: 980,
-    status: "已上架", statusType: "pass", onShelf: true },
+    author: "张老师", tagIds: ["TG06", "TG04"], date: "2026-08-30", reads: 1560, words: 980,
+    status: "已上架", statusType: "pass", onShelf: true, payMode: "free" },
   { id: "A003", title: "家庭情绪急救指南", cover: "../assets/img/covers/emotion.jpg",
-    author: "李老师", cat: "家庭教育", date: "—", reads: 0, words: 320,
-    status: "已下架", statusType: "review", onShelf: false }
+    author: "李老师", tagIds: ["TG03", "TG01"], date: "—", reads: 0, words: 320,
+    status: "已下架", statusType: "review", onShelf: false, payMode: "free" }
 ];
 
-var filterCat = "";
+var filterTagIds = [];
 var filterStatus = "";
 var filterKeyword = "";
+var Tags = window.ContentTags;
+var tagFilter = Tags.mountTreeSelect("#ca-tag", {
+  placeholder: "内容标签（可多选）",
+  compact: true,
+  width: "200px",
+  onChange: function (ids) { filterTagIds = ids; renderList(); }
+});
 
 function esc(s) {
   return String(s).replace(/[&<>"']/g, function(c) {
@@ -121,7 +127,10 @@ function esc(s) {
 
 function filteredArticles() {
   return ARTICLES.filter(function(a) {
-    if (filterCat && a.cat !== filterCat) return false;
+    if (filterTagIds.length) {
+      var ids = a.tagIds || [];
+      if (!filterTagIds.some(function (t) { return ids.indexOf(t) >= 0; })) return false;
+    }
     if (filterStatus && a.status !== filterStatus) return false;
     if (filterKeyword && a.title.toLowerCase().indexOf(filterKeyword.toLowerCase()) === -1) return false;
     return true;
@@ -135,7 +144,8 @@ function renderList() {
         '<div class="ca-cover"><img src="' + a.cover + '" alt="" /></div>' +
         '<div class="ca-info">' +
           '<div class="ca-title">' + esc(a.title) +
-            '<span class="ca-cat">' + esc(a.cat) + '</span>' +
+            Tags.labelsHtml(a.tagIds) +
+            '<span class="ca-cat" style="background:#f6ffed;color:#389e0d">' + (a.payMode === "paid" ? "付费" : "免费") + '</span>' +
             '<span class="audit-badge ' + a.statusType + '">' + esc(a.status) + '</span>' +
           '</div>' +
           '<div class="ca-meta">' +
@@ -149,6 +159,7 @@ function renderList() {
         '<div class="ca-actions">' +
           '<button class="btn" data-share="' + a.id + '"' + (a.onShelf ? '' : ' disabled') + '>分享</button>' +
           '<a class="btn" href="content-article-detail.html?id=' + a.id + '">查看图文</a>' +
+          '<a class="btn" href="content-tasks.html?type=article&ref=' + a.id + '">设为任务</a>' +
           (a.onShelf
             ? '<button class="btn" data-shelf-off="' + a.id + '">下架</button>'
             : '<a class="btn btn-primary" href="content-article-edit.html?id=' + a.id + '">编辑</a>' +
@@ -216,11 +227,11 @@ document.addEventListener("click", function(e) {
 mask && mask.addEventListener("click", closeAll);
 document.querySelectorAll("[data-close]").forEach(function(b) { b.addEventListener("click", closeAll); });
 
-// 内容分类下拉取值于「内容分类」页面列表
-document.getElementById("ca-cat").insertAdjacentHTML("beforeend", window.ContentCats.optionsHtml());
-document.getElementById("ca-cat").addEventListener("change", function(){ filterCat = this.value; renderList(); });
+// 内容标签树状多选筛选
 document.getElementById("ca-status").addEventListener("change", function(){ filterStatus = this.value; renderList(); });
 document.getElementById("ca-keyword").addEventListener("input", function(){ filterKeyword = this.value.trim(); renderList(); });
+var caQuery = document.getElementById("ca-query");
+if (caQuery) caQuery.addEventListener("click", renderList);
 
 function tryRender() {
   if (document.getElementById("page-content").style.display !== "none") renderList();

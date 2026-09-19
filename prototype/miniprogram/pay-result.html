@@ -42,7 +42,7 @@
     var goOfflineList = document.getElementById("go-offline-list");
 
     if (from === "offline") {
-      desc.textContent = "本场线下课报名资格已开通 · 请按课程时间到场";
+      desc.textContent = "本场线下课报名资格已开通 · 请按签到时间到场";
       goLearn.style.display = "none";
       goLive.style.display = "none";
       goOffline.style.display = "block";
@@ -68,6 +68,19 @@
       goLive.style.display = "none";
       goOffline.style.display = "none";
       goOfflineList.style.display = "none";
+      desc.textContent = "线上课学习权益已开通 · 可立即开始学习";
+      var cid = course && course !== "O001" ? course : "C001";
+      if (ret) {
+        var m2 = ret.match(/[?&]id=([^&]+)/);
+        if (m2) cid = decodeURIComponent(m2[1]);
+      }
+      try {
+        var ck = "mp_course_rights_v1";
+        var cmap = JSON.parse(localStorage.getItem(ck) || "{}") || {};
+        cmap[cid] = { valid: true, grantedAt: new Date().toISOString(), source: "pay" };
+        localStorage.setItem(ck, JSON.stringify(cmap));
+      } catch (e2) {}
+      goLearn.href = ret || ("learn.html?id=" + encodeURIComponent(cid));
     }
   </script>
 </body>

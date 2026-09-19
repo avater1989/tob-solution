@@ -136,8 +136,8 @@ var OWNERS = {
     PP02: { name: "学习能力诊断（平台同步）", sub: "该测评由运营后台同步，关联规则由平台维护", source: "platform" }
   },
   series: {
-    MS1: { name: "家庭教育入门测评包", sub: "配置系列测评完成后的任务关联规则", source: "self" },
-    MS2: { name: "青春期亲子关系测评系列", sub: "配置系列测评完成后的任务关联规则", source: "self" },
+    MS1: { name: "家庭教育入门测评包", sub: "配置测评包完成后的任务关联规则", source: "self" },
+    MS2: { name: "青春期亲子关系测评包", sub: "配置测评包完成后的任务关联规则", source: "self" },
     PS1: { name: "新生入学心理系列（平台同步）", sub: "该系列由运营后台同步，关联规则由平台维护", source: "platform" }
   }
 };
@@ -149,7 +149,7 @@ document.getElementById("owner-sub").textContent = META.sub;
 document.title = META.name + " · 关联规则 · 商家管理后台";
 document.body.setAttribute("data-nav", from === "series" ? "assess-series" : "assess-projects");
 document.body.setAttribute("data-crumb", from === "series"
-  ? "商家管理后台 / 内容 / 测评管理 / 系列关联规则"
+  ? "商家管理后台 / 内容 / 测评管理 / 测评包关联规则"
   : "商家管理后台 / 内容 / 测评管理 / 关联规则");
 if (SYNC) {
   document.getElementById("sync-banner").style.display = "";
@@ -159,7 +159,7 @@ if (SYNC) {
 }
 
 var backHref = from === "series" ? "assess-series.html" : "assess-projects.html";
-var backLabel = from === "series" ? "返回系列测评管理" : "返回测评项目管理";
+var backLabel = from === "series" ? "返回测评包管理" : "返回测评项目管理";
 document.getElementById("btn-back").href = backHref;
 document.getElementById("btn-back").textContent = backLabel;
 document.getElementById("link-back").href = backHref;

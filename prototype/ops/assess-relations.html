@@ -7,7 +7,7 @@
 <link rel="stylesheet" href="../assets/css/proto.css?v=4" />
 <link rel="stylesheet" href="../assets/css/assess.css?v=3" />
 </head>
-<body class="admin-body" data-module="content" data-nav="assess-projects" data-title="关联规则" data-crumb="运营后台 / 内容 / 测评管理 / 关联规则">
+<body class="admin-body" data-module="content" data-nav="assess-projects" data-title="关联规则" data-crumb="运营后台 / 内容与审核 / 测评中心 / 关联规则">
 
 <div id="header-actions">
   <a class="btn" id="btn-back" href="assess-projects.html">返回测评项目管理</a>
@@ -132,8 +132,8 @@ var OWNERS = {
     P003: { name: "情绪调节问卷", sub: "配置该测评结果到任务的下发规则" }
   },
   series: {
-    S1: { name: "新生入学心理系列", sub: "配置系列测评完成后的任务关联规则" },
-    S2: { name: "学习力提升测评包", sub: "配置系列测评完成后的任务关联规则" }
+    S1: { name: "新生入学心理测评包", sub: "配置测评包完成后的任务关联规则" },
+    S2: { name: "学习力提升测评包", sub: "配置测评包完成后的任务关联规则" }
   }
 };
 
@@ -143,13 +143,13 @@ document.getElementById("owner-sub").textContent = META.sub;
 document.title = META.name + " · 关联规则 · 运营后台";
 document.body.setAttribute("data-nav", from === "series" ? "assess-series" : "assess-projects");
 document.body.setAttribute("data-crumb", from === "series"
-  ? "运营后台 / 内容 / 测评管理 / 系列关联规则"
-  : "运营后台 / 内容 / 测评管理 / 关联规则");
+  ? "运营后台 / 内容 / 测评中心 / 测评包关联规则"
+  : "运营后台 / 内容 / 测评中心 / 关联规则");
 
 var backHref = from === "series" ? "assess-series.html" : "assess-projects.html";
-var backLabel = from === "series" ? "返回系列测评管理" : "返回测评项目管理";
+var backLabel = from === "series" ? "返回测评包管理" : "返回测评项目管理";
 document.getElementById("btn-back").href = backHref;
-document.getElementById("btn-back").textContent = "返回" + (from === "series" ? "系列测评管理" : "测评项目管理");
+document.getElementById("btn-back").textContent = "返回" + (from === "series" ? "测评包管理" : "测评项目管理");
 document.getElementById("link-back").href = backHref;
 document.getElementById("link-back").textContent = "← " + backLabel;
 

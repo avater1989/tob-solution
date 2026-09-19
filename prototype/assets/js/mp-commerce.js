@@ -6,8 +6,8 @@
     comm: {
       id: "comm",
       title: "亲子沟通基础",
-      type: "series",
-      typeLabel: "系列课",
+      type: "online_course",
+      typeLabel: "线上课",
       price: "199",
       lessons: 8,
       trialLesson: 1,
@@ -16,7 +16,7 @@
       validity: "长期有效",
       validityStart: "支付成功即日起算",
       startHow: "支付成功后立即开通，可在「我的」进入学习",
-      include: "系列课全部 8 节视频课",
+      include: "线上课全部章节视频",
       service: "可在「我的 → 账号与帮助」联系商家；售后按商家说明处理",
       cover: "../assets/img/covers/comm.jpg",
       outline: [
@@ -40,7 +40,7 @@
       validity: "本场有效",
       validityStart: "开播时生效，含结束后 48 小时回放（示意）",
       startHow: "支付成功后可进入直播间观看",
-      include: "本场直播观看权（不含系列课正式课权益）",
+      include: "本场直播观看权（不含线上课正式课权益）",
       service: "可在「我的 → 账号与帮助」联系商家；直播门票售后以商家说明为准"
     },
     offlineTicket: {
@@ -59,14 +59,14 @@
     liveGoods: {
       id: "liveGoods",
       title: "亲子沟通基础",
-      type: "series",
-      typeLabel: "系列课",
+      type: "online_course",
+      typeLabel: "线上课",
       price: "199",
       access: "付费购买",
       validity: "长期有效",
       validityStart: "支付成功即日起算",
       startHow: "支付成功后立即开通，可返回直播间或前往学习",
-      include: "系列课全部 8 节视频课",
+      include: "线上课全部章节视频",
       service: "可在「我的 → 账号与帮助」联系商家；售后按商家说明处理"
     },
     trialClaim: {
@@ -149,12 +149,15 @@
 
   function openBuyNotice(opts) {
     opts = opts || {};
-    var item = CATALOG[opts.catalogId] || CATALOG.comm;
+    var item = Object.assign({}, CATALOG[opts.catalogId] || CATALOG.comm, opts.item || {});
+    if (opts.title) item.title = opts.title;
+    if (opts.include) item.include = opts.include;
+    if (opts.price != null && opts.price !== "") item.price = String(opts.price);
     var isClaim = item.type === "trial";
     var title = isClaim ? "领取须知" : "购买须知";
     var cta = isClaim
       ? "确认领取"
-      : "确认购买 ¥" + (opts.price || item.price);
+      : "确认购买 ¥" + (opts.price != null && opts.price !== "" ? opts.price : item.price);
     var sheetId = "mp-buy-notice";
     var sheet = document.getElementById(sheetId);
     if (!sheet) {

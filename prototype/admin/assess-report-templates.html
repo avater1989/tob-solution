@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>报告模板 · 商家管理后台</title>
+<link rel="stylesheet" href="../assets/css/proto.css?v=9" />
+<link rel="stylesheet" href="../assets/css/assess.css?v=3" />
+</head>
+<body class="admin-body" data-module="content" data-nav="assess-report-templates" data-title="报告模板" data-crumb="内容 / 测评中心 / 报告模板">
+
+<div id="header-actions">
+  <button class="btn btn-primary" id="btn-new">+ 新建模板</button>
+</div>
+
+<div id="page-content" style="display:none">
+  <div class="as-banner" style="background:#fff7e8;border:1px solid #ffe4a8;border-radius:8px;padding:12px 14px;margin-bottom:14px;font-size:13px">
+    <b>报告模板 = 生成规则</b>（HTML / 样式 / 数据变量 / 文案变量 / 智能体 / 版本）。
+    <b>测评报告 = 用户生成结果</b>，见 <a href="assess-results.html">测评报告</a>。
+  </div>
+
+  <table class="as-table">
+    <thead>
+      <tr>
+        <th>模板名称</th>
+        <th>版本</th>
+        <th>智能体</th>
+        <th>关联测评</th>
+        <th>状态</th>
+        <th>更新时间</th>
+        <th style="width:240px">操作</th>
+      </tr>
+    </thead>
+    <tbody id="tbody"></tbody>
+  </table>
+</div>
+
+<div class="proto-modal" id="modal-edit">
+  <div style="background:#fff;border-radius:10px;width:640px;max-width:96vw;max-height:90vh;overflow:auto">
+    <div class="proto-modal-hd"><h3 style="margin:0;font-size:16px" id="m-title">编辑报告模板</h3><button class="ctrl-icon-btn" data-close>×</button></div>
+    <div class="proto-modal-bd">
+      <div class="field"><label>模板名称 *</label><input class="input" id="t-name" /></div>
+      <div class="form-grid" style="grid-template-columns:1fr 1fr">
+        <div class="field"><label>版本</label><input class="input" id="t-ver" value="v1.0" /></div>
+        <div class="field"><label>智能体配置</label>
+          <select class="input" id="t-agent">
+            <option value="AG01">亲子沟通解读助手</option>
+            <option value="AG03">报告润色引擎</option>
+            <option value="">不使用智能体</option>
+          </select>
+        </div>
+      </div>
+      <div class="field"><label>数据变量</label><input class="input" id="t-data" value="{{user_name}}, {{total_score}}, {{segment_label}}" /></div>
+      <div class="field"><label>文案变量</label><input class="input" id="t-copy" value="{{ai_summary}}, {{advice}}" /></div>
+      <div class="field"><label>样式</label><input class="input" id="t-style" value="theme: family-soft; font: system" /></div>
+      <div class="field"><label>HTML 模板</label>
+        <textarea class="input" id="t-html" rows="8">&lt;section class="report"&gt;
+  &lt;h1&gt;{{user_name}} 的测评报告&lt;/h1&gt;
+  &lt;p&gt;总分：{{total_score}}（{{segment_label}}）&lt;/p&gt;
+  &lt;div class="ai"&gt;{{ai_summary}}&lt;/div&gt;
+  &lt;div class="advice"&gt;{{advice}}&lt;/div&gt;
+&lt;/section&gt;</textarea>
+      </div>
+    </div>
+    <div class="proto-modal-ft" style="justify-content:flex-end;gap:8px">
+      <button class="btn" data-close>取消</button>
+      <button class="btn btn-primary" id="btn-save">保存模板</button>
+    </div>
+  </div>
+</div>
+<div class="proto-mask" id="mask"></div>
+
+<script src="../assets/js/proto.js"></script>
+<script src="../assets/js/admin-shell.js?v=20"></script>
+<script>
+var TPLS = [
+  { id: "RT01", name: "亲子沟通标准报告", ver: "v1.2", agent: "AG01 亲子沟通解读助手", assess: "AS001", status: "启用", updated: "2026-09-12" },
+  { id: "RT02", name: "家庭教育风格报告", ver: "v1.0", agent: "AG03 报告润色引擎", assess: "AS002", status: "启用", updated: "2026-09-01" },
+  { id: "RT03", name: "简易分数报告", ver: "v0.9", agent: "—", assess: "—", status: "草稿", updated: "2026-08-20" }
+];
+
+function esc(s){ return String(s==null?"":s).replace(/[&<>"']/g,function(c){return({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"})[c];}); }
+
+function render() {
+  document.getElementById("tbody").innerHTML = TPLS.map(function (t) {
+    return "<tr><td><b>" + esc(t.name) + "</b><br><span class='muted' style='font-size:12px'>" + esc(t.id) + "</span></td>" +
+      "<td>" + esc(t.ver) + "</td><td>" + esc(t.agent) + "</td>" +
+      "<td>" + (t.assess !== "—" ? "<a href='assess-projects.html?id=" + t.assess + "'>" + esc(t.assess) + "</a>" : "—") + "</td>" +
+      "<td><span class='as-tag " + (t.status === "启用" ? "green" : "gray") + "'>" + esc(t.status) + "</span></td>" +
+      "<td style='font-size:12px'>" + esc(t.updated) + "</td>" +
+      "<td class='row-actions'><a href='#' data-edit='" + t.id + "'>编辑</a>" +
+      "<a href='assess-results.html?template_id=" + t.id + "'>查看生成报告</a>" +
+      "<a href='assess-projects.html'>关联测评</a></td></tr>";
+  }).join("");
+}
+
+function openModal() {
+  document.getElementById("mask").classList.add("open");
+  document.getElementById("modal-edit").classList.add("open");
+}
+function closeModal() {
+  document.getElementById("mask").classList.remove("open");
+  document.getElementById("modal-edit").classList.remove("open");
+}
+
+document.getElementById("btn-new").addEventListener("click", function () {
+  document.getElementById("m-title").textContent = "新建报告模板";
+  document.getElementById("t-name").value = "";
+  openModal();
+});
+document.getElementById("tbody").addEventListener("click", function (e) {
+  var id = e.target.getAttribute("data-edit");
+  if (!id) return;
+  e.preventDefault();
+  var t = TPLS.find(function (x) { return x.id === id; });
+  if (!t) return;
+  document.getElementById("m-title").textContent = "编辑报告模板";
+  document.getElementById("t-name").value = t.name;
+  document.getElementById("t-ver").value = t.ver;
+  openModal();
+});
+document.querySelectorAll("[data-close]").forEach(function (el) {
+  el.addEventListener("click", closeModal);
+});
+document.getElementById("btn-save").addEventListener("click", function () {
+  if (!document.getElementById("t-name").value.trim()) { Proto.toast("请填写模板名称"); return; }
+  closeModal();
+  Proto.toast("模板已保存 · 可在测评中引用");
+});
+
+var aid = new URLSearchParams(location.search).get("agent_id");
+if (aid) document.getElementById("t-agent").value = aid;
+
+render();
+</script>
+</body>
+</html>

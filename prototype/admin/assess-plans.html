@@ -7,14 +7,14 @@
 <link rel="stylesheet" href="../assets/css/proto.css?v=9" />
 <link rel="stylesheet" href="../assets/css/assess.css?v=3" />
 </head>
-<body class="admin-body" data-module="content" data-nav="assess-plans" data-title="定制化计划" data-crumb="商家管理后台 / 内容 / 计划管理 / 定制化计划">
+<body class="admin-body" data-module="content" data-nav="assess-plans" data-title="定制化计划" data-crumb="商家管理后台 / 内容 / 学习服务 / 定制化计划">
 
 <div id="header-actions">
   <button class="btn btn-primary" id="btn-new">+ 新建计划</button>
 </div>
 
 <div id="page-content" style="display:none">
-  <div class="as-banner">创建和管理面向本店铺学员的定制化执行计划。计划发布后，可将计划内容一键「创建商品」进行售卖。</div>
+  <div class="as-banner">统一结构：<b>计划 → 关卡 → 任务</b>（任务可含线上课 / 测评 / <b>智能体</b>；智能体不单独售卖，只出现在关卡任务中）。两种创建方式写入同一数据结构。下一步：配置关卡 → 配置任务 → 发布 → 创建计划商品。</div>
 
   <div class="card" style="margin-bottom:14px"><div class="card-bd" style="padding:12px 16px">
     <div class="toolbar" style="border:none;padding:0;background:transparent">
@@ -52,8 +52,8 @@
       <div class="field">
         <label>创建方式 *</label>
         <div>
-          <label style="margin-right:14px"><input type="radio" name="m-mode" value="关联测评" checked> 关联测评</label>
-          <label><input type="radio" name="m-mode" value="直接选择任务"> 直接选择任务</label>
+          <label style="margin-right:14px"><input type="radio" name="m-mode" value="关联测评" checked> 通过测评创建（结果→任务规则→任务集合→关卡→计划）</label>
+          <label><input type="radio" name="m-mode" value="直接选择任务"> 直接配置（创建计划→关卡→选择任务→完成条件→发布）</label>
         </div>
       </div>
       <div class="field" id="wrap-assess">

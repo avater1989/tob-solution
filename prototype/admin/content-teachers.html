@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>讲师管理 · 商家管理后台</title>
+<link rel="stylesheet" href="../assets/css/proto.css?v=9" />
+<style>
+.tg-status { display:inline-flex; padding:1px 8px; border-radius:999px; font-size:11px; border:1px solid #b7eb8f; color:#389e0d; background:#f6ffed; }
+.tg-status.off { border-color:#d9d9d9; color:#8c8c8c; background:#fafafa; }
+.tch-up { display:flex; align-items:center; gap:14px; }
+.tch-up-preview { width:72px; height:72px; border-radius:50%; object-fit:cover; background:#f2f3f5; border:1px solid #e8e8e8; }
+.tch-name-cell { display:flex; align-items:center; gap:10px; }
+</style>
+</head>
+<body class="admin-body" data-module="content" data-nav="content-teachers" data-title="讲师管理" data-crumb="内容 / 内容资产 / 讲师管理">
+
+<div id="header-actions">
+  <button class="btn btn-primary" id="btn-new">+ 新建讲师</button>
+</div>
+
+<div id="page-content" style="display:none">
+  <div class="card" style="margin-bottom:12px"><div class="card-bd" style="padding:12px 16px">
+    <div class="toolbar" style="border:none;padding:0;background:transparent">
+      <input class="input" id="f-q" placeholder="搜索姓名 / 头衔" style="width:240px" />
+      <button class="btn btn-primary" id="btn-query">查询</button>
+    </div>
+  </div></div>
+  <div class="card"><div class="card-bd" style="padding:0">
+    <table class="data">
+      <thead>
+        <tr>
+          <th style="width:220px">讲师</th>
+          <th>头衔</th>
+          <th>简介</th>
+          <th style="width:90px">状态</th>
+          <th style="width:200px">操作</th>
+        </tr>
+      </thead>
+      <tbody id="tbody"></tbody>
+    </table>
+  </div></div>
+</div>
+
+<div class="proto-mask" id="mask"></div>
+<div class="proto-modal" id="modal">
+  <div style="background:#fff;border-radius:10px;width:480px;max-width:92vw;overflow:hidden">
+    <div class="proto-modal-hd">
+      <h3 style="margin:0;font-size:16px" id="modal-title">新建讲师</h3>
+      <button type="button" class="btn btn-sm btn-ghost" data-close>×</button>
+    </div>
+    <div class="proto-modal-bd">
+      <div class="field">
+        <label>讲师头像 *</label>
+        <div class="tch-up">
+          <img class="tch-up-preview" id="f-avatar-img" src="../assets/img/mp-home/av-1.png" alt="头像预览" />
+          <div>
+            <input type="file" id="f-avatar-file" accept="image/*" style="display:none" />
+            <button type="button" class="btn" id="btn-avatar">上传头像</button>
+            <p class="muted" style="font-size:12px;margin:6px 0 0">支持 JPG / PNG，建议正方形；上传后即时预览</p>
+          </div>
+        </div>
+        <input type="hidden" id="f-avatar" value="../assets/img/mp-home/av-1.png" />
+      </div>
+      <div class="field"><label>姓名 *</label><input class="input" id="f-name" /></div>
+      <div class="field"><label>头衔</label><input class="input" id="f-title" placeholder="如：资深阅读启蒙导师" /></div>
+      <div class="field"><label>简介</label><textarea class="input" id="f-intro" rows="3"></textarea></div>
+      <div class="field"><label><input type="checkbox" id="f-enabled" checked> 启用</label></div>
+    </div>
+    <div class="proto-modal-ft" style="justify-content:flex-end;gap:8px;padding:12px 16px;border-top:1px solid var(--color-border);display:flex">
+      <button class="btn" data-close>取消</button>
+      <button class="btn btn-primary" id="btn-save">保存</button>
+    </div>
+  </div>
+</div>
+
+<script src="../assets/js/proto.js"></script>
+<script src="../assets/js/teachers-store.js?v=2"></script>
+<script src="../assets/js/admin-shell.js?v=16"></script>
+<script>
+var Teachers = window.Teachers;
+var editingId = null;
+var esc = Teachers.esc;
+
+function setAvatarPreview(src) {
+  var url = src || Teachers.DEFAULT_AVATAR;
+  document.getElementById("f-avatar").value = url;
+  document.getElementById("f-avatar-img").src = url;
+}
+
+function openModal() {
+  document.getElementById("mask").classList.add("open");
+  document.getElementById("modal").classList.add("open");
+}
+function closeModal() {
+  document.getElementById("mask").classList.remove("open");
+  document.getElementById("modal").classList.remove("open");
+}
+document.querySelectorAll("[data-close]").forEach(function (b) {
+  b.addEventListener("click", closeModal);
+});
+document.getElementById("mask").addEventListener("click", closeModal);
+
+document.getElementById("btn-avatar").addEventListener("click", function () {
+  document.getElementById("f-avatar-file").click();
+});
+document.getElementById("f-avatar-file").addEventListener("change", function () {
+  var file = this.files && this.files[0];
+  if (!file) return;
+  if (!/^image\//.test(file.type)) {
+    Proto.toast("请选择图片文件");
+    return;
+  }
+  var reader = new FileReader();
+  reader.onload = function () {
+    setAvatarPreview(String(reader.result || ""));
+    Proto.toast("头像已上传（原型本地预览）");
+  };
+  reader.readAsDataURL(file);
+  this.value = "";
+});
+
+function render() {
+  var q = document.getElementById("f-q").value.trim();
+  var rows = Teachers.list({ keyword: q });
+  document.getElementById("tbody").innerHTML = rows.map(function (t) {
+    var st = t.enabled ? '<span class="tg-status">启用</span>' : '<span class="tg-status off">停用</span>';
+    return "<tr>" +
+      '<td><div class="tch-name-cell">' + Teachers.avatarHtml(t, { size: 40 }) +
+        "<div><b>" + esc(t.name) + "</b><br><span class='muted' style='font-size:12px'>" + esc(t.id) + "</span></div></div></td>" +
+      "<td>" + esc(t.title || "—") + "</td>" +
+      "<td style='max-width:320px'>" + esc(t.intro || "—") + "</td>" +
+      "<td>" + st + "</td>" +
+      "<td>" +
+        '<button class="btn btn-sm" data-act="edit" data-id="' + t.id + '">编辑</button> ' +
+        '<button class="btn btn-sm" data-act="toggle" data-id="' + t.id + '">' + (t.enabled ? "停用" : "启用") + "</button> " +
+        '<button class="btn btn-sm" data-act="del" data-id="' + t.id + '">删除</button>' +
+      "</td></tr>";
+  }).join("") || "<tr><td colspan='5' class='muted'>暂无讲师</td></tr>";
+}
+
+document.getElementById("btn-query").addEventListener("click", render);
+document.getElementById("btn-new").addEventListener("click", function () {
+  editingId = null;
+  document.getElementById("modal-title").textContent = "新建讲师";
+  document.getElementById("f-name").value = "";
+  document.getElementById("f-title").value = "";
+  document.getElementById("f-intro").value = "";
+  document.getElementById("f-enabled").checked = true;
+  setAvatarPreview(Teachers.DEFAULT_AVATAR);
+  openModal();
+});
+
+document.getElementById("tbody").addEventListener("click", function (e) {
+  var btn = e.target.closest("[data-act]");
+  if (!btn) return;
+  var id = btn.getAttribute("data-id");
+  var act = btn.getAttribute("data-act");
+  var row = Teachers.get(id);
+  if (!row) return;
+  if (act === "edit") {
+    editingId = id;
+    document.getElementById("modal-title").textContent = "编辑讲师";
+    document.getElementById("f-name").value = row.name;
+    document.getElementById("f-title").value = row.title || "";
+    document.getElementById("f-intro").value = row.intro || "";
+    document.getElementById("f-enabled").checked = !!row.enabled;
+    setAvatarPreview(row.avatar);
+    openModal();
+  } else if (act === "toggle") {
+    Teachers.setEnabled(id, !row.enabled);
+    Proto.toast(row.enabled ? "已停用" : "已启用");
+    render();
+  } else if (act === "del") {
+    Teachers.remove(id);
+    Proto.toast("已删除");
+    render();
+  }
+});
+
+document.getElementById("btn-save").addEventListener("click", function () {
+  var name = document.getElementById("f-name").value.trim();
+  if (!name) { Proto.toast("请填写姓名"); return; }
+  var avatar = document.getElementById("f-avatar").value.trim();
+  if (!avatar) { Proto.toast("请上传讲师头像"); return; }
+  Teachers.save({
+    id: editingId || undefined,
+    name: name,
+    avatar: avatar,
+    title: document.getElementById("f-title").value.trim(),
+    intro: document.getElementById("f-intro").value.trim(),
+    enabled: document.getElementById("f-enabled").checked
+  });
+  closeModal();
+  Proto.toast("已保存");
+  render();
+});
+
+render();
+</script>
+</body>
+</html>

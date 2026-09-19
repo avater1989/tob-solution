@@ -3,238 +3,162 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>视频 · 艺博 To-B</title>
+<title>线上课 · 商家管理后台</title>
 <link rel="stylesheet" href="../assets/css/proto.css?v=9" />
 <style>
-.cv-list { background: #fff; border: 1px solid #e8e8e8; border-radius: 8px; overflow: hidden; }
-.cv-row {
-  display: flex; align-items: center; gap: 14px;
-  padding: 12px 16px; border-bottom: 1px solid #f0f0f0;
-  transition: background .12s;
-}
-.cv-row:last-child { border-bottom: 0; }
-.cv-row:hover { background: #fafbff; }
-.cv-thumb {
-  width: 120px; height: 70px; border-radius: 6px; flex-shrink: 0;
-  background: #f2f3f5;
-  position: relative; cursor: pointer;
-  overflow: hidden;
-}
-.cv-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
-.cv-thumb::after {
-  content: "▶"; position: absolute; inset: 0;
-  display: flex; align-items: center; justify-content: center;
-  background: rgba(0,0,0,.3); border-radius: 6px; opacity: 0;
-  transition: opacity .15s; font-size: 20px; color: #fff;
-}
-.cv-thumb:hover::after { opacity: 1; }
-.cv-duration {
-  position: absolute; bottom: 4px; right: 4px;
-  background: rgba(0,0,0,.7); color: #fff;
-  padding: 1px 5px; border-radius: 3px; font-size: 11px;
-  font-family: monospace;
-}
-.cv-info { flex: 1; min-width: 0; }
-.cv-title {
-  font-size: 14px; font-weight: 500; color: #1d2129;
-  margin-bottom: 4px;
-  display: flex; align-items: center; gap: 10px;
-}
-.cv-meta {
-  font-size: 12px; color: #8c8c8c;
-  display: flex; gap: 14px; flex-wrap: wrap;
-}
-.cv-meta b { color: #595959; font-weight: 500; }
-.cv-progress {
-  margin-top: 6px; display: flex; align-items: center; gap: 8px;
-  font-size: 11px; color: #fa8c16;
-}
-.cv-progress-bar {
-  flex: 0 0 80px; height: 4px; background: #f0f0f0; border-radius: 2px; overflow: hidden;
-}
-.cv-progress-bar i { display: block; height: 100%; background: #fa8c16; }
-
-.cv-actions { display: flex; gap: 6px; }
-.cv-cat { font-size: 11px; padding: 1px 6px; border-radius: 3px; background: #e8f3ff; color: #165dff; font-weight: 500; flex-shrink: 0; }
-
-/* 上传区 */
-.cv-upload {
-  border: 2px dashed #d9d9d9; border-radius: 8px;
-  padding: 28px; text-align: center; cursor: pointer;
-  background: #fafafa; color: #8c8c8c;
-  transition: all .15s;
-}
-.cv-upload:hover { border-color: #165dff; background: #f0f5ff; color: #165dff; }
-.cv-upload-icon { font-size: 36px; margin-bottom: 6px; }
-.cv-upload-hint { font-size: 11px; margin-top: 4px; }
+.cs-row { background:#fff;border:1px solid #e8e8e8;border-radius:8px;margin-bottom:12px;padding:14px 16px;display:flex;align-items:center;gap:14px; }
+.cs-row:hover { border-color:#165dff; box-shadow:0 4px 14px rgba(22,93,255,.1); }
+.cs-cover { width:128px;height:80px;border-radius:6px;background:#f2f3f5;overflow:hidden;flex-shrink:0; }
+.cs-cover img { width:100%;height:100%;object-fit:cover;display:block; }
+.cs-info { flex:1;min-width:0; }
+.cs-title { font-size:15px;font-weight:600;color:#1d2129;display:flex;align-items:center;gap:8px;margin-bottom:6px;flex-wrap:wrap; }
+.cs-desc { font-size:12px;color:#8c8c8c;line-height:1.6;margin-bottom:8px; }
+.cs-stats { display:flex;gap:14px;font-size:12px;color:#595959;flex-wrap:wrap; }
+.cs-stats b { color:#165dff;font-weight:600; }
+.cs-badge { font-size:11px;padding:1px 6px;border-radius:3px;background:#fff7e6;color:#d46b08;font-weight:500; }
+.cs-badge.premium { background:#f9f0ff;color:#722ed1; }
+.cs-actions { display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end;max-width:400px; }
 </style>
 </head>
-<body class="admin-body" data-module="content" data-nav="content-video" data-title="视频" data-crumb="内容 / 内容管理 / 视频">
+<body class="admin-body" data-module="content" data-nav="content-video" data-title="线上课" data-crumb="内容 / 内容资产 / 线上课">
 
 <div id="header-actions">
-  <button class="btn">批量删除</button>
-  <a class="btn btn-primary" href="content-video-edit.html">+ 新增视频</a>
+  <a class="btn btn-primary" href="content-video-edit.html">+ 新建线上课</a>
 </div>
 
 <div id="page-content" style="display:none">
-
-  <!-- 筛选 -->
   <div class="card" style="margin-bottom:14px"><div class="card-bd" style="padding:12px 16px">
-    <div class="toolbar" style="border:none;padding:0;background:transparent">
-      <input class="input" type="text" id="cv-keyword" placeholder="搜索视频标题" style="width:220px" />
-      <select class="input" id="cv-cat" style="width:160px">
-        <option value="">全部内容分类</option>
+    <div class="toolbar" style="border:none;padding:0;background:transparent;flex-wrap:wrap">
+      <input class="input" id="f-kw" placeholder="搜索课程名称 / 讲师 / 期数" style="width:220px" />
+      <div id="f-tag" style="width:200px;display:inline-block;vertical-align:middle"></div>
+      <select class="input" id="f-teacher" style="width:150px"><option value="">全部讲师</option></select>
+      <select class="input" id="f-badge" style="width:120px">
+        <option value="">全部角标</option>
+        <option value="hot">热门课</option>
+        <option value="premium">精品课</option>
       </select>
-      <select class="input" id="cv-status" style="width:140px">
-        <option value="">全部状态</option><option>已上架</option><option>转码中</option><option>草稿</option>
+      <select class="input" id="f-status" style="width:140px">
+        <option value="">全部状态</option>
+        <option value="draft">草稿</option>
+        <option value="pending_audit">待平台审核</option>
+        <option value="enabled">已启用</option>
+        <option value="disabled">已停用</option>
+        <option value="rejected">已驳回</option>
       </select>
-      <select class="input" style="width:140px">
-        <option>全部讲师</option><option>张老师</option><option>李老师</option><option>王博士</option>
-      </select>
-      <button class="btn btn-primary">查询</button>
-      <button class="btn">重置</button>
+      <button class="btn btn-primary" id="btn-query">查询</button>
+      <button class="btn" id="btn-reset">重置</button>
     </div>
   </div></div>
-
-  <!-- 视频列表 -->
-  <div class="cv-list" id="cv-list"></div>
-
-  <!-- 分页 -->
-  <div style="display:flex;align-items:center;gap:8px;margin-top:16px">
-    <span style="color:#8c8c8c;font-size:12px">共 <b id="cv-count">3</b> 条</span>
-    <div style="margin-left:auto;display:flex;gap:6px">
-      <button class="btn" disabled>上一页</button>
-      <button class="btn btn-primary">1</button>
-      <button class="btn" disabled>下一页</button>
-    </div>
-  </div>
-
-</div><!-- /#page-content -->
-
-<!-- 弹窗遮罩 -->
-<div class="proto-mask" id="mask"></div>
+  <p style="font-size:12px;color:#8c8c8c;margin:0 0 12px">系列课已并入线上课。启用后可绑定商品；已启用时章节锁定，须先停用再改。</p>
+  <div id="list"></div>
+  <div style="margin-top:12px;font-size:12px;color:#8c8c8c">共 <b id="count">0</b> 条</div>
+</div>
 
 <script src="../assets/js/proto.js"></script>
-<script src="../assets/js/content-cats.js?v=1"></script>
+<script src="../assets/js/content-tags.js?v=2"></script>
+<script src="../assets/js/teachers-store.js?v=2"></script>
+<script src="../assets/js/course-store.js?v=1"></script>
 <script src="../assets/js/share-modal.js?v=1"></script>
-<script src="../assets/js/admin-shell.js?v=14"></script>
+<script src="../assets/js/admin-shell.js?v=16"></script>
 <script>
-setTimeout(function() {
-  if (document.documentElement.getAttribute('data-shell-ready') === '1') return;
-  if (document.querySelector('aside.sidebar')) return;
-  var err = document.createElement('div');
-  err.style.cssText = 'position:fixed;top:0;left:0;right:0;background:#fff1f0;color:#f53f3f;padding:12px 20px;border-bottom:1px solid #ffa39e;z-index:99999;font-size:13px;font-family:system-ui;';
-  err.innerHTML = '<b>⚠ 页面初始化失败</b>：请按 <kbd style="background:#fff;padding:2px 6px;border-radius:3px;border:1px solid #ffa39e;font-family:monospace;">Ctrl+Shift+R</kbd> 强制刷新，或 <button onclick="location.reload();" style="background:#165dff;color:#fff;border:none;padding:4px 12px;border-radius:4px;cursor:pointer;margin-left:8px;">点击重试</button>';
-  document.body.appendChild(err);
-}, 1500);
+var Store = window.CourseStore;
+var Tags = window.ContentTags;
+var Teachers = window.Teachers;
 
-var VIDEOS = [
-  { id: "V001", title: "如何让孩子爱上阅读", cover: "../assets/img/covers/reading.jpg",
-    teacher: "张老师", cat: "K12 教育", duration: "8:24", size: "156 MB", date: "2026-09-01",
-    status: "已上架", statusType: "pass", encoding: null, onShelf: true },
-  { id: "V002", title: "亲子沟通的5 个关键", cover: "../assets/img/covers/comm.jpg",
-    teacher: "李老师", cat: "家庭教育", duration: "12:35", size: "245 MB", date: "2026-08-28",
-    status: "已上架", statusType: "pass", encoding: null, onShelf: true },
-  { id: "V003", title: "AI 助力学习规划", cover: "../assets/img/covers/ai.jpg",
-    teacher: "王博士", cat: "学习能力", duration: "15:20", size: "312 MB", date: "2026-09-04",
-    status: "转码中", statusType: "review", encoding: 68, onShelf: false }
-];
-
-var filterCat = "";
-var filterStatus = "";
-var filterKeyword = "";
+document.getElementById("f-teacher").insertAdjacentHTML("beforeend", Teachers.optionsHtml());
+var tagFilter = Tags.mountTreeSelect("#f-tag", {
+  placeholder: "内容标签（可多选）",
+  compact: true,
+  width: "200px",
+  onChange: function () { /* 点查询生效 */ }
+});
 
 function esc(s) {
-  return String(s).replace(/[&<>"']/g, function(c) {
+  return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) {
     return ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c];
   });
 }
 
-function filteredVideos() {
-  return VIDEOS.filter(function(v) {
-    if (filterCat && v.cat !== filterCat) return false;
-    if (filterStatus && v.status !== filterStatus) return false;
-    if (filterKeyword && v.title.toLowerCase().indexOf(filterKeyword.toLowerCase()) === -1) return false;
-    return true;
+function render() {
+  var rows = Store.list({
+    keyword: document.getElementById("f-kw").value.trim() || undefined,
+    tagIds: tagFilter.getSelected().length ? tagFilter.getSelected() : undefined,
+    teacherId: document.getElementById("f-teacher").value || undefined,
+    badge: document.getElementById("f-badge").value || undefined,
+    status: document.getElementById("f-status").value || undefined
   });
-}
-
-function renderList() {
-  var html = filteredVideos().map(function(v) {
-    var enc = "";
-    if (v.encoding !== null) {
-      enc = '<div class="cv-progress">转码中 <div class="cv-progress-bar"><i style="width:' + v.encoding + '%"></i></div> ' + v.encoding + '%</div>';
+  document.getElementById("count").textContent = rows.length;
+  document.getElementById("list").innerHTML = rows.map(function (c) {
+    var badge = "";
+    if (c.badge === "hot") badge = '<span class="cs-badge">热门课</span>';
+    else if (c.badge === "premium") badge = '<span class="cs-badge premium">精品课</span>';
+    var st = Store.STATUS_LABEL[c.status] || c.status;
+    var acts = "";
+    acts += '<a class="btn" href="content-video-detail.html?id=' + encodeURIComponent(c.id) + '">查看</a>';
+    acts += '<a class="btn" href="content-video-outline.html?id=' + encodeURIComponent(c.id) + '">章节</a>';
+    if (c.source !== "platform" && c.status !== Store.STATUS.enabled && c.status !== Store.STATUS.pending_audit) {
+      acts += '<a class="btn" href="content-video-edit.html?id=' + encodeURIComponent(c.id) + '">编辑</a>';
     }
-    return '' +
-      '<div class="cv-row">' +
-        '<div class="cv-thumb"><img src="' + v.cover + '" alt="" />' +
-          '<span class="cv-duration">' + esc(v.duration) + '</span>' +
-        '</div>' +
-        '<div class="cv-info">' +
-          '<div class="cv-title">' + esc(v.title) +
-            '<span class="cv-cat">' + esc(v.cat) + '</span>' +
-            '<span class="audit-badge ' + v.statusType + '">' + esc(v.status) + '</span>' +
-          '</div>' +
-          '<div class="cv-meta">' +
-            '<span><b>ID:</b> ' + esc(v.id) + '</span>' +
-            '<span><b>讲师:</b> ' + esc(v.teacher) + '</span>' +
-            '<span><b>大小:</b> ' + esc(v.size) + '</span>' +
-            '<span><b>上传:</b> ' + esc(v.date) + '</span>' +
-          '</div>' +
-          enc +
-        '</div>' +
-        '<div class="cv-actions">' +
-          '<button class="btn" data-share="' + v.id + '"' + (v.onShelf ? '' : ' disabled') + '>分享</button>' +
-          '<a class="btn" href="content-video-detail.html?id=' + v.id + '">查看视频</a>' +
-          (v.onShelf
-            ? '<button class="btn" data-shelf-off="' + v.id + '">下架</button>'
-            : '<a class="btn btn-primary" href="content-video-edit.html?id=' + v.id + '">编辑</a>') +
-          '<button class="btn" data-copy="' + v.id + '">复制</button>' +
-        '</div>' +
-      '</div>';
-  }).join("");
-  document.getElementById("cv-list").innerHTML = html;
-  document.getElementById("cv-count").textContent = filteredVideos().length;
+    if (c.status === Store.STATUS.enabled) {
+      acts += '<button class="btn" data-act="disable" data-id="' + c.id + '">停用</button>';
+      if (Store.canCreateGoods(c)) acts += '<a class="btn btn-primary" href="goods-edit.html?type=online_course&content_id=' + encodeURIComponent(c.id) + '">建商品</a>';
+    } else if (Store.canSubmitAudit(c)) {
+      acts += '<button class="btn btn-primary" data-act="submit" data-id="' + c.id + '">提交审核</button>';
+    }
+    if (c.status === Store.STATUS.disabled || c.status === Store.STATUS.rejected) {
+      acts += '<button class="btn" data-act="enable-draft" data-id="' + c.id + '">恢复草稿</button>';
+    }
+    return '<div class="cs-row">' +
+      '<div class="cs-cover"><img src="' + esc(c.cover) + '" alt="" /></div>' +
+      '<div class="cs-info">' +
+        '<div class="cs-title">' + esc(c.name) + badge +
+          ' <span class="muted" style="font-size:12px;font-weight:400">' + esc(c.term || "") + "</span>" +
+          ' <span class="tag">' + esc(st) + "</span></div>" +
+        '<div class="cs-desc">' + esc(c.intro || "") + "</div>" +
+        '<div class="cs-stats">' +
+          "<span>讲师 " + Teachers.avatarHtml(c.teacherId, { size: 22 }) + " <b>" + esc(Store.teacherName(c)) + "</b></span>" +
+          "<span>标签 " + Tags.labelsHtml(c.tagIds) + "</span>" +
+          "<span>价格 <b>¥" + (c.price || 0) + "</b></span>" +
+          "<span>章节 <b>" + Store.chapterCount(c) + "</b></span>" +
+          "<span>观看 <b>" + (c.views || 0) + "</b></span>" +
+          "<span>评论 <b>" + (c.comments || 0) + "</b></span>" +
+          "<span>收藏 <b>" + (c.favorites || 0) + "</b></span>" +
+        "</div>" +
+      "</div>" +
+      '<div class="cs-actions">' + acts + "</div>" +
+    "</div>";
+  }).join("") || '<div class="muted" style="padding:32px;text-align:center;border:1px dashed #e8e8e8;border-radius:8px">暂无线上课</div>';
 }
 
-var mask = document.getElementById("mask");
-function closeAll() {
-  mask.classList.remove("open");
-  document.querySelectorAll(".proto-modal, .proto-drawer").forEach(function(n) { n.classList.remove("open"); });
-}
-function openShare(id) {
-  var v = VIDEOS.find(function(x){ return x.id === id; });
-  XiboShare.open({ type: "视频", url: "https://yibo.app/v/" + id, cover: v ? v.cover : "", name: v ? v.title : "", desc: "" });
-}
-document.addEventListener("click", function(e) {
-  var share = e.target.closest("[data-share]");
-  if (share && !share.disabled) {
-    openShare(share.getAttribute("data-share"));
-    return;
-  }
-  var off = e.target.closest("[data-shelf-off]");
-  if (off) {
-    var v = VIDEOS.find(function(x){ return x.id === off.getAttribute("data-shelf-off"); });
-    if (v) { v.onShelf = false; v.status = "已下架"; v.statusType = "review"; renderList(); Proto.toast("已下架"); }
-    return;
-  }
-  if (e.target.closest("[data-copy]")) Proto.toast("已复制视频（演示）");
+document.getElementById("btn-query").addEventListener("click", render);
+document.getElementById("btn-reset").addEventListener("click", function () {
+  document.getElementById("f-kw").value = "";
+  document.getElementById("f-teacher").value = "";
+  document.getElementById("f-badge").value = "";
+  document.getElementById("f-status").value = "";
+  tagFilter.clear();
+  render();
 });
-mask && mask.addEventListener("click", closeAll);
-document.querySelectorAll("[data-close]").forEach(function(b) { b.addEventListener("click", closeAll); });
 
-// 内容分类下拉取值于「内容分类」页面列表
-document.getElementById("cv-cat").insertAdjacentHTML("beforeend", window.ContentCats.optionsHtml());
-document.getElementById("cv-cat").addEventListener("change", function(){ filterCat = this.value; renderList(); });
-document.getElementById("cv-status").addEventListener("change", function(){ filterStatus = this.value; renderList(); });
-document.getElementById("cv-keyword").addEventListener("input", function(){ filterKeyword = this.value.trim(); renderList(); });
+document.getElementById("list").addEventListener("click", function (e) {
+  var btn = e.target.closest("[data-act]");
+  if (!btn) return;
+  var id = btn.getAttribute("data-id");
+  var act = btn.getAttribute("data-act");
+  if (act === "submit") {
+    var r = Store.submitAudit(id);
+    Proto.toast(r.ok ? "已提交平台审核" : r.msg);
+  } else if (act === "disable") {
+    Store.setStatus(id, Store.STATUS.disabled);
+    Proto.toast("已停用");
+  } else if (act === "enable-draft") {
+    Store.setStatus(id, Store.STATUS.draft);
+    Proto.toast("已恢复为草稿");
+  }
+  render();
+});
 
-function tryRender() {
-  if (document.getElementById("page-content").style.display !== "none") renderList();
-  else setTimeout(tryRender, 80);
-}
-if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", tryRender);
-else tryRender();
+render();
 </script>
 </body>
 </html>

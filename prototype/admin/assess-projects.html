@@ -3,11 +3,11 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>测评项目管理 · 商家管理后台</title>
+<title>测评 · 商家管理后台</title>
 <link rel="stylesheet" href="../assets/css/proto.css?v=9" />
 <link rel="stylesheet" href="../assets/css/assess.css?v=3" />
 </head>
-<body class="admin-body" data-module="content" data-nav="assess-projects" data-title="测评项目管理" data-crumb="商家管理后台 / 内容 / 测评管理 / 测评项目">
+<body class="admin-body" data-module="content" data-nav="assess-projects" data-title="测评" data-crumb="内容 / 测评中心 / 测评">
 
 <div id="header-actions">
   <button class="btn btn-primary" id="btn-new">+ 新建项目</button>
@@ -100,14 +100,19 @@ function render() {
   document.getElementById("cnt").textContent = list.length;
   document.getElementById("tbody").innerHTML = list.map(function(p,i){
     var acts = '<button class="btn" data-view="'+p.id+'">查看详情</button>' +
-      '<button class="btn" data-move="'+p.id+'" data-dir="-1"'+(i===0?' disabled':'')+'>上移</button>' +
-      '<button class="btn" data-move="'+p.id+'" data-dir="1"'+(i===list.length-1?' disabled':'')+'>下移</button>' +
+      '<a class="btn" href="assess-flow.html?id=' + p.id + '">流程配置</a>' +
+      '<a class="btn" href="assess-questions.html?bank=1">从题库选题</a>' +
       '<a class="btn" href="assess-questions.html?id='+p.id+'">配置题目</a>' +
-      '<a class="btn" href="assess-scoring.html?id='+p.id+'">评分规则</a>' +
-      '<a class="btn" href="assess-relations.html?from=project&id='+p.id+'">关联规则'+(p.rules?' ('+p.rules+')':'')+'</a>' +
+      '<a class="btn" href="assess-scoring.html?id='+p.id+'">计分规则</a>' +
+      '<a class="btn" href="assess-task-rules.html?id='+p.id+'">任务触发规则</a>' +
+      '<a class="btn" href="assess-report-templates.html?assess_id='+p.id+'">报告模板</a>' +
+      '<a class="btn" href="assess-results.html?assess_id='+p.id+'">测评报告</a>' +
+      '<a class="btn" href="assess-series.html">加入测评包</a>' +
+      '<a class="btn" href="goods-edit.html?content_id='+p.id+'&type=assess">创建商品</a>' +
+      '<a class="btn" href="assess-plans.html?from=assess&id='+p.id+'">生成计划</a>' +
       (p.shelf==='已上架'
-        ? '<button class="btn" data-shelf="'+p.id+'">下架</button>'
-        : '<button class="btn btn-primary" data-shelf="'+p.id+'">上架</button>') +
+        ? '<button class="btn" data-shelf="'+p.id+'">停用</button>'
+        : '<button class="btn btn-primary" data-shelf="'+p.id+'">发布</button>') +
       '<button class="btn" style="color:#f53f3f;border-color:#ffa39e" data-del="'+p.id+'">删除</button>';
     return '<tr>' +
       '<td style="color:#8c8c8c">'+(i+1)+'</td>' +
@@ -166,13 +171,6 @@ document.addEventListener("click", function(e){
   if (del) {
     var pd = PROJECTS.find(function(x){return x.id===del.getAttribute("data-del");});
     PROJECTS = PROJECTS.filter(function(x){return x.id!==pd.id;}); render(); Proto.toast("已删除"); return;
-  }
-  var mv = e.target.closest("[data-move]");
-  if (mv) {
-    var mid = mv.getAttribute("data-move"), dir = +mv.getAttribute("data-dir");
-    var i = PROJECTS.findIndex(function(x){return x.id===mid;}), j = i+dir;
-    if (j<0||j>=PROJECTS.length) return;
-    var t = PROJECTS[i]; PROJECTS[i]=PROJECTS[j]; PROJECTS[j]=t; render();
   }
 });
 

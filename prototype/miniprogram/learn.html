@@ -5,35 +5,123 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>学习 · To-B 小程序</title>
   <link rel="stylesheet" href="../assets/css/proto.css" />
-  <link rel="stylesheet" href="../assets/css/mp.css?v=10" />
+  <link rel="stylesheet" href="../assets/css/mp.css?v=15" />
+  <style>
+    .ln-ch { padding:10px 0;border-bottom:1px solid #f3f4f6;font-size:13px;display:flex;gap:8px;align-items:flex-start; }
+    .ln-ch.active { color:#0f766e;font-weight:600; }
+    .ln-ch.locked { color:#999; }
+    .ln-ch .n { width:18px;flex-shrink:0;color:#86909c; }
+  </style>
 </head>
 <body class="mp-page" data-tabbar="0">
-  <div class="mp-frame">
+  <div class="mp-frame" style="padding-bottom:24px">
     <div class="mp-top" style="height:190px"></div>
     <div class="mp-status"><span>9:41</span><span>学习</span><span>100%</span></div>
-    <div class="mp-nav"><a class="back" href="mine.html">←</a>亲子沟通基础</div>
-    <div class="mp-body">
-      <div style="height:200px;background:#111827;color:#fff;display:grid;place-items:center;font-size:13px">
-        视频播放器占位<br /><span style="opacity:.5;font-size:11px">第 2 节 · 情绪先于道理</span>
-      </div>
-      <div style="background:#fff;padding:14px 16px">
-        <div style="font-size:15px;font-weight:650">目录</div>
-        <div style="margin-top:10px;font-size:13px;line-height:2">
-          <div>1. 为什么孩子不听你说话 ✅</div>
-          <div style="color:#0f766e;font-weight:600">2. 情绪先于道理 ◉ 学习中</div>
-          <div>3. 边界与规则</div>
-          <div>4. 家庭会议怎么开</div>
-          <div style="color:#999">…</div>
-        </div>
-      </div>
-      <div style="padding:16px">
-        <button class="mp-btn" data-toast="进度已记录，下次继续（原型）">标记本节完成</button>
-        <a class="mp-btn mp-btn-outline" href="mine.html" style="margin-top:10px">返回我的</a>
-      </div>
-    </div>
+    <div class="mp-nav"><a class="back" href="#" id="ln-back">←</a><span id="ln-nav">线上课</span></div>
+    <div class="mp-body" id="ln-root"></div>
   </div>
-  <p class="mp-hint">已购权益用户学习路径</p>
+  <p class="mp-hint">已购 / 试看章节学习路径</p>
   <script src="../assets/js/proto.js"></script>
+  <script src="../assets/js/teachers-store.js?v=2"></script>
+  <script src="../assets/js/course-store.js?v=1"></script>
   <script src="../assets/js/mp-shell.js"></script>
+  <script src="../assets/js/mp-commerce.js"></script>
+  <script>
+  var Store = window.CourseStore;
+  var Mp = window.MpCommerce;
+  var qs = new URLSearchParams(location.search);
+  var id = qs.get("id") || qs.get("course") || "C001";
+  var chId = qs.get("ch") || "";
+  var course = Store.get(id) || Store.list({ status: "enabled" })[0];
+
+  document.getElementById("ln-back").href = "course.html?id=" + encodeURIComponent(id);
+
+  if (!course) {
+    document.getElementById("ln-root").innerHTML = '<p style="padding:40px;text-align:center;color:#86909c">未找到课程</p>';
+    throw new Error("no course");
+  }
+
+  document.getElementById("ln-nav").textContent = course.name;
+
+  var owned = Mp.hasRights(course.id) || course.price <= 0;
+  var chapters = course.chapters || [];
+  var idx = chapters.findIndex(function (c) { return c.id === chId; });
+  if (idx < 0) {
+    idx = chapters.findIndex(function (c) { return owned || c.free; });
+    if (idx < 0) idx = 0;
+  }
+  var cur = chapters[idx];
+
+  if (cur && !owned && !cur.free) {
+    location.replace("course.html?id=" + encodeURIComponent(course.id));
+    throw new Error("locked");
+  }
+
+  function esc(s) {
+    return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) {
+      return ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c];
+    });
+  }
+
+  function listHtml() {
+    return chapters.map(function (ch, i) {
+      var can = owned || ch.free;
+      var cls = "ln-ch" + (i === idx ? " active" : "") + (can ? "" : " locked");
+      var mark = i === idx ? "◉ " : (can ? "" : "🔒 ");
+      var href = can
+        ? ("learn.html?id=" + encodeURIComponent(course.id) + "&ch=" + encodeURIComponent(ch.id))
+        : "#";
+      return '<a class="' + cls + '" href="' + href + '" data-can="' + (can ? "1" : "0") + '"><span class="n">' + (i + 1) + "</span><span>" + mark + esc(ch.title) + (ch.free && !owned ? " · 试看" : "") + "</span></a>";
+    }).join("");
+  }
+
+  document.getElementById("ln-root").innerHTML =
+    '<div style="height:200px;background:#111827;color:#fff;display:grid;place-items:center;font-size:13px;text-align:center;padding:16px">' +
+      "视频播放器占位<br /><span style=\"opacity:.5;font-size:11px\">" + esc(cur ? cur.title : "") +
+      (cur && cur.duration ? " · " + esc(cur.duration) : "") + "</span>" +
+      (!owned && cur && cur.free ? '<div style="margin-top:10px;font-size:11px;opacity:.7">试看章节 · 购买后解锁全部</div>' : "") +
+    "</div>" +
+    '<div style="background:#fff;padding:14px 16px">' +
+      '<div style="font-size:15px;font-weight:650">目录 · 共 ' + chapters.length + " 讲</div>" +
+      '<div style="margin-top:6px">' + listHtml() + "</div>" +
+    "</div>" +
+    '<div style="padding:16px">' +
+      (!owned && cur && cur.free
+        ? '<button class="mp-btn" type="button" id="ln-buy">试看结束？立即购买</button>'
+        : '<button class="mp-btn" type="button" id="ln-done" data-toast="进度已记录，下次继续（原型）">标记本节完成</button>') +
+      '<a class="mp-btn mp-btn-outline" href="course.html?id=' + encodeURIComponent(course.id) + '" style="margin-top:10px">返回详情</a>' +
+    "</div>";
+
+  document.getElementById("ln-root").addEventListener("click", function (e) {
+    var a = e.target.closest("[data-can=\"0\"]");
+    if (!a) return;
+    e.preventDefault();
+    Proto.toast("请先购买后学习该章节");
+  });
+
+  var buyBtn = document.getElementById("ln-buy");
+  if (buyBtn) {
+    buyBtn.addEventListener("click", function () {
+      Mp.openBuyNotice({
+        catalogId: "comm",
+        from: "course",
+        price: String(course.price),
+        course: course.id,
+        title: course.name,
+        item: {
+          title: course.name,
+          typeLabel: "线上课",
+          include: "线上课全部章节视频（共 " + chapters.length + " 讲）"
+        },
+        returnUrl: "learn.html?id=" + encodeURIComponent(course.id) + (cur ? "&ch=" + encodeURIComponent(cur.id) : "")
+      });
+    });
+  }
+
+  // pay return may land here — grant rights
+  if (qs.get("bought") === "1" || (qs.get("from") === "course" && qs.get("status") === "success")) {
+    Mp.grantRights(course.id, { source: "pay" });
+  }
+  </script>
 </body>
 </html>

@@ -5,63 +5,103 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>线下课 · To-B 小程序</title>
   <link rel="stylesheet" href="../assets/css/proto.css" />
-  <link rel="stylesheet" href="../assets/css/mp.css?v=11" />
+  <link rel="stylesheet" href="../assets/css/mp.css?v=15" />
 </head>
 <body class="mp-page" data-tabbar="0">
   <div class="mp-frame">
     <div class="mp-top" style="height:170px"></div>
     <div class="mp-status"><span>9:41</span><span>线下课</span><span>100%</span></div>
     <div class="mp-nav"><a class="back" href="home.html">←</a>线下课</div>
-    <div class="mp-body" style="padding:0 14px" id="off-list"></div>
+    <div class="mp-body" style="padding:0 14px 16px" id="off-list"></div>
   </div>
   <p class="mp-hint">线下课列表 · <a href="../admin/content-offline.html">管理端线下课</a></p>
 
   <script src="../assets/js/proto.js"></script>
+  <script src="../assets/js/teachers-store.js?v=2"></script>
   <script src="../assets/js/mp-shell.js"></script>
   <script>
+  var Teachers = window.Teachers;
   var ITEMS = [
     {
       id: "O001",
-      title: "卓越家族培养计划 · 线下工作坊",
-      teacher: "赵老师",
+      name: "卓越家族培养计划 · 线下工作坊",
+      term: "秋启 01 期",
+      teacherId: "TCH02",
       city: "上海",
+      address: "浦东新区陆家嘴环路 1000 号 3F",
+      signup: "09-01 ~ 09-25",
       courseStart: "09-28 09:30",
+      checkin: "09-28 08:30",
+      expected: 80,
+      capacity: 100,
+      signed: 86,
       access: "paid",
       price: 299,
-      signed: 86,
-      capacity: 100,
       cover: "../assets/img/covers/classroom.jpg",
       badge: "报名中"
     },
     {
       id: "O002",
-      title: "亲子沟通实战 · 线下沙龙",
-      teacher: "阮荣均",
+      name: "亲子沟通实战 · 线下沙龙",
+      term: "周末场",
+      teacherId: "TCH01",
       city: "深圳",
+      address: "南山区科技园南路 8 号活动厅",
+      signup: "09-10 ~ 10-05",
       courseStart: "10-12 14:00",
+      checkin: "10-12 13:30",
+      expected: 35,
+      capacity: 40,
+      signed: 32,
       access: "free",
       price: 0,
-      signed: 32,
-      capacity: 40,
       cover: "../assets/img/covers/talk.jpg",
       badge: "免费报名"
+    },
+    {
+      id: "O003",
+      name: "学习习惯养成 · 线下营",
+      term: "冬令营",
+      teacherId: "TCH03",
+      city: "北京",
+      address: "海淀区中关村大街 1 号营地",
+      signup: "11-01 ~ 11-20",
+      courseStart: "11-28 09:00",
+      checkin: "11-28 08:00",
+      expected: 25,
+      capacity: 30,
+      signed: 0,
+      access: "paid",
+      price: 999,
+      cover: "../assets/img/covers/parent.jpg",
+      badge: "即将开放"
     }
   ];
 
+  function esc(s) {
+    return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) {
+      return ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c];
+    });
+  }
+
   document.getElementById("off-list").innerHTML = ITEMS.map(function (o) {
     var price = o.access === "paid" ? ("¥" + o.price) : "免费";
-    var progress = o.signed + "/" + o.capacity + " 人";
     return (
       '<div class="mp-live-card" style="margin-top:12px">' +
         '<a href="offline-detail.html?id=' + o.id + '" style="color:inherit">' +
-          '<div class="mp-live-cover" style="background:url(' + o.cover + ') center/cover;min-height:120px">' +
-            '<span class="mp-live-badge">' + o.badge + "</span>" +
-            "<h3>" + o.title + "</h3>" +
-            "<p>" + o.teacher + " · " + o.city + " · " + o.courseStart + "</p>" +
+          '<div class="mp-live-cover" style="background:url(' + esc(o.cover) + ') center/cover;min-height:120px">' +
+            '<span class="mp-live-badge">' + esc(o.badge) + "</span>" +
+            "<h3>" + esc(o.name) + "</h3>" +
+            "<p>" + esc(Teachers.nameOf(o.teacherId)) + " · " + esc(o.term) + " · " + esc(o.city) + "</p>" +
           "</div>" +
         "</a>" +
+        '<div style="padding:10px 12px;font-size:12px;color:#4e5969;line-height:1.7;background:#fff">' +
+          "<div>报名 " + esc(o.signup) + " · 开课 " + esc(o.courseStart) + "</div>" +
+          "<div>签到 " + esc(o.checkin) + " · 预计 " + o.expected + " / 名额 " + o.capacity + "（已报 " + o.signed + "）</div>" +
+          "<div>地址 " + esc(o.address) + "</div>" +
+        "</div>" +
         '<div class="mp-live-ft">' +
-          '<div class="mp-live-ft-l">' + price + " · 已报 " + progress + "</div>" +
+          '<div class="mp-live-ft-l">' + price + "</div>" +
           '<a class="mp-live-ft-btn" href="offline-detail.html?id=' + o.id + '">查看详情</a>' +
         "</div>" +
       "</div>"

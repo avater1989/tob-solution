@@ -5,8 +5,8 @@
  * - 兼容旧参数：liveId / spring03 / live-spring-03 等
  */
 (function (global) {
-  var STORE_KEY = "proto_biz_store_v9";
-  var VERSION = 9;
+  var STORE_KEY = "proto_biz_store_v10";
+  var VERSION = 10;
   var DEMO_NOW = "2026-09-09 16:00:00";
 
   var LIVE_ALIASES = {
@@ -29,6 +29,40 @@
       version: VERSION,
       demoNow: DEMO_NOW,
       merchant: { id: "M001", name: "星启家庭教育" },
+      /* IA 重构：统一业务对象演示 ID */
+      contents: [
+        { content_id: "C001", type: "online_course", title: "小学语文阅读启蒙", status: "published", goods_id: "G002" },
+        { content_id: "C003", type: "online_course", title: "AI 学习规划入门", status: "published", goods_id: "G001" },
+        { content_id: "A001", type: "article", title: "9 月新学期家长指南", status: "published", goods_id: "", paid: false }
+      ],
+      assessments: [
+        { assessment_id: "AS001", name: "亲子沟通能力测评", status: "published", question_ids: ["Q01","Q02","Q03"], report_template_id: "RT01" }
+      ],
+      assessmentSeries: [
+        { series_id: "MS1", name: "家庭教育入门测评包", assessment_ids: ["AS001","AS002"], auto_next: true, status: "published" }
+      ],
+      questions: [
+        { question_id: "Q01", text: "分歧时先讲道理还是先听感受？", type: "single", status: "active" },
+        { question_id: "Q02", text: "孩子倾诉时你会？", type: "single", status: "active" },
+        { question_id: "Q03", text: "家庭规则由谁决定？", type: "single", status: "active" }
+      ],
+      taskRules: [
+        { id: "R1", assessment_id: "AS001", scope: "question", question_id: "Q03", op: "gte", value: 4, then_task_ids: ["T001"] },
+        { id: "R3", assessment_id: "AS001", scope: "total", op: "between", value: 0, max: 39, then_task_ids: ["T003","T001"] }
+      ],
+      tasks: [
+        { task_id: "T001", name: "完成亲子沟通线上课", type: "course", ref_id: "C001" },
+        { task_id: "T003", name: "与家庭教育顾问对话", type: "agent", ref_id: "AG02" },
+        { task_id: "T005", name: "阅读新学期家长指南", type: "article", ref_id: "A001" }
+      ],
+      plans: [
+        { plan_id: "PL001", name: "亲子沟通 21 天计划", status: "published", stage_ids: ["ST1","ST2"] }
+      ],
+      goodsDemo: [
+        { goods_id: "G001", content_id: "C003", name: "AI 学习规划入门", status: "on_sale" },
+        { goods_id: "G002", content_id: "C001", name: "小学语文阅读启蒙", status: "on_sale" }
+      ],
+
       lives: [
         {
           id: "L001",
@@ -387,7 +421,7 @@
           typeLabel: "建议",
           completeMode: "manual",
           kind: "suggestion",
-          title: "系列课《边界感训练营》草稿未上架",
+          title: "线上课《边界感训练营》草稿未上架",
           reason: "内容检查建议 · 草稿超过 3 天",
           owner: "内容小周",
           mine: false,
@@ -401,7 +435,7 @@
           statusLabel: "待处理",
           action: "view",
           actionLabel: "去查看",
-          href: "content-series-edit.html?id=boundary&from=dashboard",
+          href: "content-video-edit.html?id=boundary&from=dashboard",
           roles: ["admin", "content"]
         }
       ],

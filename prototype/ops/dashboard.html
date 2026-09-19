@@ -6,107 +6,65 @@
 <title>运营工作台 · 运营后台</title>
 <link rel="stylesheet" href="../assets/css/proto.css?v=4" />
 <style>
-/* 工作台页内样式：业务域分组 + 快捷入口（对齐商家端工作台） */
-.dash-group { margin-bottom: 16px; }
-.dash-group:last-child { margin-bottom: 0; }
-.dash-group-hd { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
-.dash-group-hd h2 { margin: 0; font-size: 14px; font-weight: 600; }
-.dash-group-hd .muted { font-size: 12px; font-weight: 400; }
-.dash-quick { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
-@media (max-width: 900px) { .dash-quick { grid-template-columns: repeat(2, 1fr); } }
-.dash-quick a {
-  display: block; padding: 16px 18px;
-  background: #fff; border: 1px solid var(--color-border); border-radius: 8px;
-  text-decoration: none; color: inherit; transition: border-color .15s, box-shadow .15s;
+.wb-sec { margin-bottom: 20px; scroll-margin-top: 72px; }
+.wb-sec h2 { margin: 0 0 4px; font-size: 16px; font-weight: 600; }
+.wb-sec .sub { margin: 0 0 12px; font-size: 13px; color: var(--color-text-muted); }
+.wb-kpis { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+.wb-kpis a, .wb-item {
+  display: block; padding: 14px 16px; background: #fff; border: 1px solid var(--color-border);
+  border-radius: 8px; text-decoration: none; color: inherit;
 }
-.dash-quick a:hover { border-color: #94bfff; box-shadow: 0 2px 8px rgba(22,93,255,.08); text-decoration: none; }
-.dash-quick .q-tag {
-  display: inline-block; font-size: 11px; color: var(--color-primary);
-  background: var(--color-primary-soft); padding: 2px 8px; border-radius: 4px; margin-bottom: 8px;
-}
-.dash-quick .q-tag.create { color: #009a29; background: #e8ffea; }
-.dash-quick .q-title { font-size: 15px; font-weight: 600; color: var(--color-text); }
-.dash-quick .q-desc { font-size: 12px; color: var(--color-text-muted); margin-top: 4px; line-height: 1.5; }
+.wb-kpis .label { font-size: 12px; color: var(--color-text-muted); }
+.wb-kpis .value { font-size: 22px; font-weight: 700; margin-top: 6px; }
+.wb-todo { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+.wb-item { display: flex; justify-content: space-between; align-items: center; }
+.wb-item .n { min-width: 36px; height: 36px; border-radius: 18px; background: #e8f3ff; color: #165dff; font-weight: 700; display:flex; align-items:center; justify-content:center; }
 </style>
 </head>
 <body class="admin-body" data-module="workbench" data-nav="dashboard" data-title="运营工作台" data-crumb="运营后台 / 工作台" data-assist="1">
 <div id="header-actions">
-  <select id="range-sel" class="btn" style="padding:6px 10px">
-    <option>近 7 天</option><option>近 30 天</option><option>本月</option><option>本季度</option>
-  </select>
   <button class="btn" data-toast="已刷新（原型）">刷新</button>
 </div>
 <div id="page-content" style="display:none">
 
-  <!-- 经营概览：按业务域分组 -->
-  <div class="dash-group">
-    <div class="dash-group-hd"><h2>平台</h2><span class="muted">租户规模</span></div>
-    <div class="grid-4" style="margin-bottom:0">
-      <div class="stat"><div class="label">接入租户</div><div class="value">18</div><div class="hint">正式 12 · 试用 6</div></div>
+  <section class="wb-sec" id="today">
+    <h2>今日经营</h2>
+    <p class="sub">平台侧经营概览</p>
+    <div class="wb-kpis">
+      <a href="tenants.html"><div class="label">接入商家</div><div class="value">18</div></a>
+      <a href="orders.html"><div class="label">全局成交订单</div><div class="value">326</div></a>
+      <a href="settlements.html"><div class="label">待复核结算</div><div class="value">5</div></a>
+      <a href="audit.html"><div class="label">待审内容</div><div class="value">12</div></a>
     </div>
-  </div>
+  </section>
 
-  <div class="dash-group">
-    <div class="dash-group-hd"><h2>交易</h2><span class="muted">今日 · 已支付口径</span></div>
-    <div class="grid-4" style="margin-bottom:0">
-      <div class="stat"><div class="label">今日新增订单</div><div class="value">462</div><div class="hint">全部已支付</div></div>
-      <div class="stat"><div class="label">今日平台 GMV</div><div class="value">¥48,213.60</div><div class="hint">462 笔已支付</div></div>
+  <section class="wb-sec" id="todo">
+    <h2>我的待办</h2>
+    <p class="sub">数字跳转处理页</p>
+    <div class="wb-todo">
+      <a class="wb-item" href="tenants.html?tab=apply"><span>开通申请</span><div class="n">3</div></a>
+      <a class="wb-item" href="audit.html"><span>内容审核</span><div class="n">8</div></a>
+      <a class="wb-item" href="audit.html?type=live"><span>直播审核</span><div class="n">2</div></a>
+      <a class="wb-item" href="audit.html?type=goods"><span>商品审核</span><div class="n">4</div></a>
+      <a class="wb-item" href="settlements.html"><span>结算复核</span><div class="n">5</div></a>
+      <a class="wb-item" href="payouts.html"><span>提现审核</span><div class="n">2</div></a>
     </div>
-  </div>
+  </section>
 
-  <div class="dash-group">
-    <div class="dash-group-hd"><h2>内容</h2><span class="muted">审核与直播</span></div>
-    <div class="grid-4" style="margin-bottom:0">
-      <div class="stat"><div class="label">待审核内容</div><div class="value">12</div><div class="hint"><a href="audit.html" style="color:inherit">去审核 →</a> · 线上课 7 · 直播 5</div></div>
-      <div class="stat"><div class="label">进行中直播</div><div class="value">3</div><div class="hint">观礼 1,284 人</div></div>
+  <section class="wb-sec" id="alert">
+    <h2>异常提醒</h2>
+    <div class="wb-todo">
+      <a class="wb-item" href="recon.html"><span>对账异常</span><div class="n">3</div></a>
+      <a class="wb-item" href="entitlement.html?filter=exception"><span>权益异常</span><div class="n">2</div></a>
+      <a class="wb-item" href="aftersales.html"><span>售后积压</span><div class="n">4</div></a>
+      <a class="wb-item" href="audit.html?tab=appeal"><span>申诉处理</span><div class="n">1</div></a>
+      <a class="wb-item" href="onboard-audit.html"><span>进件异常</span><div class="n">1</div></a>
+      <a class="wb-item" href="data.html?view=health"><span>商家健康度告警</span><div class="n">2</div></a>
     </div>
-  </div>
+  </section>
 
-  <div class="dash-group">
-    <div class="dash-group-hd"><h2>财务</h2><span class="muted">结算与差异</span></div>
-    <div class="grid-4" style="margin-bottom:0">
-      <div class="stat"><div class="label">待处理结算</div><div class="value">5</div><div class="hint">差异待确认 2</div></div>
-    </div>
-  </div>
-
-  <!-- 快捷入口（对齐商家端工作台「快捷创建」样式） -->
-  <div class="card" style="margin-top:16px">
-    <div class="card-hd"><h2>快捷入口</h2></div>
-    <div class="card-bd">
-      <div class="dash-quick">
-        <a href="tenants.html">
-          <span class="q-tag create">开通</span>
-          <div class="q-title">开通租户</div>
-          <div class="q-desc">处理注册留资的开通申请，创建租户并分配管理员账号</div>
-        </a>
-        <a href="audit.html">
-          <span class="q-tag">审核</span>
-          <div class="q-title">平台审核</div>
-          <div class="q-desc">处理商家提交上架的线上课与直播内容</div>
-        </a>
-        <a href="settlements.html">
-          <span class="q-tag">财务</span>
-          <div class="q-title">结算管理</div>
-          <div class="q-desc">跟进对账差异与结算单复核</div>
-        </a>
-        <a href="orders.html">
-          <span class="q-tag">交易</span>
-          <div class="q-title">全局订单</div>
-          <div class="q-desc">查看全平台订单与退款情况</div>
-        </a>
-      </div>
-    </div>
-  </div>
 </div>
-
 <script src="../assets/js/proto.js"></script>
-<script src="../assets/js/ops-shell.js?v=7"></script>
-<script>
-(function () {
-  document.getElementById("range-sel").addEventListener("change", function () {
-    Proto.toast("已切换时间范围：" + this.value + "（原型）");
-  });
-})();
-</script>
+<script src="../assets/js/ops-shell.js?v=20"></script>
 </body>
 </html>

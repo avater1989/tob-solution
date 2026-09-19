@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>文章详情 · To-B 小程序</title>
+  <link rel="stylesheet" href="../assets/css/proto.css" />
+  <link rel="stylesheet" href="../assets/css/mp.css?v=16" />
+  <style>
+    .ad-body { background:#fff; padding:16px; font-size:14px; line-height:1.75; color:#1d2129; }
+    .ad-body p { margin:0 0 12px; }
+    .ad-meta { font-size:12px; color:#86909c; margin-top:8px; display:flex; gap:12px; flex-wrap:wrap; }
+  </style>
+</head>
+<body class="mp-page" data-tabbar="0">
+  <div class="mp-frame" style="padding-bottom:24px">
+    <div class="mp-top" style="height:190px"></div>
+    <div class="mp-status"><span>9:41</span><span>文章</span><span>100%</span></div>
+    <div class="mp-nav"><a class="back" href="articles.html">←</a>文章详情</div>
+    <div class="mp-body" id="ad-root"></div>
+  </div>
+  <p class="mp-hint"><a href="articles.html">文章列表</a> · <a href="../admin/content-article.html">管理端</a></p>
+
+  <script src="../assets/js/proto.js"></script>
+  <script src="../assets/js/content-tags.js?v=2"></script>
+  <script src="../assets/js/mp-shell.js"></script>
+  <script>
+  var Tags = window.ContentTags;
+  var MAP = {
+    A001: {
+      title: "9 月新学期家长指南",
+      cover: "../assets/img/covers/term.jpg",
+      author: "编辑部",
+      tagIds: ["TG04"],
+      date: "2026-08-25",
+      reads: 2340,
+      body: "<p>新学期开始前，建议先和孩子一起对齐三件事：作息、学习节奏、家庭沟通方式。</p><p>1. 提前一周回调作息，避免开学第一周硬着陆。<br>2. 用「本周一件小事」代替宏大目标，降低焦虑。<br>3. 每天留 10 分钟无评判倾听，让孩子感到被看见。</p><p>本文为免费精选内容，可分享给家人一起看。</p>"
+    },
+    A002: {
+      title: "孩子注意力训练方法论",
+      cover: "../assets/img/covers/focus.jpg",
+      author: "张老师",
+      tagIds: ["TG06"],
+      date: "2026-08-30",
+      reads: 1560,
+      body: "<p>注意力不是「逼」出来的，而是练出来的。可以从短时专注、环境减噪、任务切片三方面入手。</p><p>推荐练习：番茄钟 15 分钟 → 休息 5 分钟；书桌只留当前任务物品；完成后用具体表扬反馈。</p>"
+    },
+    A004: {
+      title: "亲子沟通的三个黄金句式",
+      cover: "../assets/img/covers/talk.jpg",
+      author: "李老师",
+      tagIds: ["TG02"],
+      date: "2026-09-05",
+      reads: 980,
+      body: "<p>句式一：「我看到你……」——先描述事实。<br>句式二：「你是不是觉得……」——确认感受。<br>句式三：「我们一起试试……」——邀请合作。</p><p>少用「你总是」「你从不」，多给可执行的下一步。</p>"
+    },
+    A005: {
+      title: "青春期边界：爱与规则怎么并存",
+      cover: "../assets/img/covers/parent.jpg",
+      author: "王博士",
+      tagIds: ["TG01", "TG03"],
+      date: "2026-09-12",
+      reads: 1120,
+      body: "<p>边界的本质是：什么可以谈、什么不可谈、后果是什么。爱提供安全感，规则提供可预期性。</p><p>建议家庭会议共同约定 2–3 条底线，并写清违反后的自然后果，而不是临时发火。</p>"
+    }
+  };
+
+  function esc(s) {
+    return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) {
+      return ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c];
+    });
+  }
+
+  var id = new URLSearchParams(location.search).get("id") || "A001";
+  var a = MAP[id] || MAP.A001;
+  var tags = (a.tagIds || []).map(function (tid) {
+    var t = Tags.get(tid);
+    return t ? '<span class="mp-crow-tag">' + esc(t.name) + "</span>" : "";
+  }).join("");
+
+  document.getElementById("ad-root").innerHTML =
+    '<div style="height:160px;background:url(' + esc(a.cover) + ') center/cover"></div>' +
+    '<div style="background:#fff;padding:14px 16px">' +
+      '<h3 style="font-size:18px;line-height:1.4">' + esc(a.title) + "</h3>" +
+      '<div class="ad-meta"><span>' + esc(a.author) + "</span><span>" + esc(a.date) + "</span><span>" + a.reads + " 阅读</span></div>" +
+      '<div class="mp-crow-tags" style="margin-top:10px">' + tags + '</div>' +
+    "</div>" +
+    '<div class="ad-body">' + a.body + "</div>" +
+    '<div style="padding:16px"><button class="mp-btn" type="button" data-toast="已收藏本文（原型）">收藏文章</button>' +
+    '<a class="mp-btn mp-btn-outline" href="articles.html" style="margin-top:10px">更多精选文章</a></div>';
+  </script>
+</body>
+</html>

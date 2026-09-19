@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>流程配置 · 商家管理后台</title>
+<link rel="stylesheet" href="../assets/css/proto.css?v=9" />
+<link rel="stylesheet" href="../assets/css/assess.css?v=4" />
+</head>
+<body class="admin-body" data-module="content" data-nav="assess-projects" data-title="流程配置" data-crumb="内容 / 测评中心 / 流程配置">
+
+<div id="header-actions">
+  <a class="btn" id="btn-back" href="assess-projects.html">返回</a>
+  <button class="btn" id="btn-validate">校验</button>
+  <button class="btn" id="btn-trial">路径试跑</button>
+  <button class="btn btn-primary" id="btn-save">保存流程</button>
+</div>
+
+<div id="page-content" style="display:none">
+  <div class="as-flow-toolbar">
+    <div>
+      <b id="flow-title">—</b>
+      <span class="muted" id="flow-sub" style="margin-left:8px;font-size:12px"></span>
+    </div>
+    <span class="muted" style="font-size:12px" id="flow-hint">从左侧添加节点；从选项圆点拖到目标节点左侧入口完成连线</span>
+  </div>
+  <div class="as-flow-layout">
+    <div class="as-flow-panel">
+      <h3 id="left-title">添加节点</h3>
+      <div id="left-list"></div>
+      <button class="btn" id="btn-add-end" style="width:100%;margin-top:8px">+ 结束节点</button>
+      <button class="btn" id="btn-add-risk" style="width:100%;margin-top:6px;display:none">+ 高风险结束</button>
+    </div>
+    <div class="as-flow-canvas-wrap">
+      <div class="as-flow-canvas" id="canvas">
+        <svg class="as-flow-svg" id="edges-svg"></svg>
+        <div id="nodes-layer"></div>
+      </div>
+    </div>
+    <div class="as-flow-panel as-flow-prop">
+      <h3>属性</h3>
+      <div id="prop-box"><p class="muted" style="font-size:12px">选中节点或连线进行编辑</p></div>
+      <div class="as-flow-trial" id="trial-box" style="display:none"></div>
+    </div>
+  </div>
+</div>
+
+<script src="../assets/js/proto.js"></script>
+<script src="../assets/js/assess-flow-store.js?v=1"></script>
+<script src="../assets/js/admin-shell.js?v=16"></script>
+<script>
+var Store = window.AssessFlowStore;
+var qs = new URLSearchParams(location.search);
+var scope = qs.get("scope") === "package" ? "package" : "assessment";
+var ownerId = qs.get("id") || (scope === "package" ? "MS1" : "MP01");
+
+var ASSESS_CATALOG = {
+  MP01: "亲子沟通能力测评",
+  MP02: "家庭规则与边界测评",
+  PP01: "情绪健康筛查",
+  P001: "情绪健康筛查（运营）"
+};
+
+var flow = scope === "package"
+  ? (Store.getPackageFlow(ownerId) || Store.getPackageFlow("MS1"))
+  : (Store.getAssessmentFlow(ownerId) || Store.ensureAssessment(ownerId, { name: ASSESS_CATALOG[ownerId] || ownerId }));
+
+if (scope === "package") {
+  document.body.setAttribute("data-nav", "assess-series");
+  document.body.setAttribute("data-title", "测评包流程");
+  document.body.setAttribute("data-crumb", "内容 / 测评中心 / 测评包 / 流程配置");
+  document.getElementById("btn-back").href = "assess-series.html";
+  document.getElementById("btn-add-risk").style.display = "none";
+} else {
+  document.getElementById("btn-back").href = "assess-questions.html?id=" + encodeURIComponent(ownerId);
+  document.getElementById("btn-add-risk").style.display = "block";
+}
+
+document.getElementById("flow-title").textContent = flow.name || ownerId;
+document.getElementById("flow-sub").textContent = scope === "package"
+  ? "测评包 · 选项 → 问题 / 测评 / 结束"
+  : "测评项目 · 选项 → 题目 / 题组 / 结束";
+
+var selectedNodeId = null;
+var selectedEdgeId = null;
+var linkFrom = null; // { nodeId, optId }
+var dragState = null;
+
+function esc(s) {
+  return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) {
+    return ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c];
+  });
+}
+
+function qOf(qid) { return Store.questionById(flow, qid); }
+
+function renderLeft() {
+  var box = document.getElementById("left-list");
+  var html = "";
+  if (scope === "package") {
+    html += '<div class="muted" style="font-size:11px;margin-bottom:6px">问题</div>';
+    (flow.questions || []).forEach(function (q) {
+      html += '<button type="button" class="as-flow-item" data-add-q="' + esc(q.id) + '">' +
+        esc(q.text.slice(0, 28) || q.id) +
+        '<div class="muted">' + (q.opts || []).length + " 选项</div></button>";
+    });
+    html += '<button type="button" class="btn" id="btn-new-pq" style="width:100%;margin:4px 0 12px">+ 新建分流题</button>';
+    html += '<div class="muted" style="font-size:11px;margin-bottom:6px">测评项目</div>';
+    Object.keys(ASSESS_CATALOG).forEach(function (aid) {
+      html += '<button type="button" class="as-flow-item" data-add-a="' + esc(aid) + '">' +
+        esc(ASSESS_CATALOG[aid]) +
+        '<div class="muted">' + esc(aid) + "</div></button>";
+    });
+  } else {
+    html += '<div class="muted" style="font-size:11px;margin-bottom:6px">本题库题目</div>';
+    (flow.questions || []).forEach(function (q) {
+      html += '<button type="button" class="as-flow-item" data-add-q="' + esc(q.id) + '">' +
+        esc(q.text.slice(0, 28) || q.id) +
+        '<div class="muted">' + (q.opts || []).length + " 选项</div></button>";
+    });
+    (flow.groups || []).forEach(function (g) {
+      html += '<button type="button" class="as-flow-item" data-add-g="' + esc(g.id) + '">题组 · ' +
+        esc(g.name) + '<div class="muted">' + g.questionIds.length + " 题</div></button>";
+    });
+  }
+  box.innerHTML = html;
+}
+
+function nodeTitle(n) {
+  if (n.type === "start") return "开始";
+  if (n.type === "end") return n.endKind === "high_risk" ? "结束·高风险" : "结束";
+  if (n.type === "question") {
+    var q = qOf(n.questionId);
+    return "问题";
+  }
+  if (n.type === "group") {
+    var g = (flow.groups || []).find(function (x) { return x.id === n.groupId; });
+    return "题组 · " + (g ? g.name : n.groupId);
+  }
+  if (n.type === "assessment") return "测评 · " + (ASSESS_CATALOG[n.assessmentId] || n.assessmentId);
+  return n.type;
+}
+
+function nodeBody(n) {
+  if (n.type === "question") {
+    var q = qOf(n.questionId);
+    return q ? q.text : n.questionId;
+  }
+  if (n.type === "assessment") return n.assessmentId;
+  if (n.type === "group") {
+    var g = (flow.groups || []).find(function (x) { return x.id === n.groupId; });
+    return g ? g.questionIds.join(" → ") : "";
+  }
+  if (n.type === "end") return n.endKind === "high_risk" ? "标记高风险并结束" : "正常结束";
+  return "流程入口";
+}
+
+function portsHtml(n) {
+  if (n.type === "start") {
+    return '<div class="as-flow-ports"><div class="as-flow-port"><span>默认出口</span><span class="as-flow-dot" data-out="' + n.id + '" data-opt=""></span></div></div>';
+  }
+  if (n.type === "end") return "";
+  if (n.type === "assessment") {
+    return '<div class="as-flow-ports"><div class="as-flow-port"><span>完成后</span><span class="as-flow-dot" data-out="' + n.id + '" data-opt="' + Store.COMPLETE + '"></span></div></div>';
+  }
+  if (n.type === "group") {
+    return '<div class="as-flow-ports"><div class="as-flow-port"><span>组末默认</span><span class="as-flow-dot" data-out="' + n.id + '" data-opt=""></span></div></div>';
+  }
+  if (n.type === "question") {
+    var q = qOf(n.questionId);
+    var opts = (q && q.opts) || [];
+    var rows = opts.map(function (o) {
+      return '<div class="as-flow-port"><span>' + esc(o.t) + '</span><span class="as-flow-dot" data-out="' + n.id + '" data-opt="' + esc(o.id) + '"></span></div>';
+    }).join("");
+    rows += '<div class="as-flow-port"><span>默认</span><span class="as-flow-dot" data-out="' + n.id + '" data-opt=""></span></div>';
+    return '<div class="as-flow-ports">' + rows + "</div>";
+  }
+  return "";
+}
+
+function renderNodes() {
+  var layer = document.getElementById("nodes-layer");
+  layer.innerHTML = (flow.nodes || []).map(function (n) {
+    return '<div class="as-flow-node type-' + n.type + (selectedNodeId === n.id ? " selected" : "") +
+      '" data-node="' + n.id + '" style="left:' + n.x + "px;top:" + n.y + 'px">' +
+      '<div class="as-flow-node-hd"><span>' + esc(nodeTitle(n)) + '</span>' +
+      (n.type !== "start" ? '<button type="button" class="btn btn-sm" data-del-node="' + n.id + '" style="padding:0 6px">×</button>' : "") +
+      "</div>" +
+      '<div class="as-flow-node-bd">' + esc(nodeBody(n)).slice(0, 60) + "</div>" +
+      '<div style="position:absolute;left:-6px;top:28px"><span class="as-flow-dot in" data-in="' + n.id + '"></span></div>' +
+      portsHtml(n) +
+      "</div>";
+  }).join("");
+}
+
+function portCenter(el) {
+  var canvas = document.getElementById("canvas");
+  var cr = canvas.getBoundingClientRect();
+  var r = el.getBoundingClientRect();
+  return { x: r.left - cr.left + canvas.scrollLeft + r.width / 2, y: r.top - cr.top + canvas.scrollTop + r.height / 2 };
+}
+
+function renderEdges() {
+  var svg = document.getElementById("edges-svg");
+  var paths = [];
+  (flow.edges || []).forEach(function (e) {
+    var fromEl = document.querySelector('.as-flow-dot[data-out="' + e.fromNodeId + '"][data-opt="' + (e.fromOptId || "") + '"]');
+    if (!fromEl && e.isDefault) {
+      fromEl = document.querySelector('.as-flow-dot[data-out="' + e.fromNodeId + '"][data-opt=""]');
+    }
+    var toEl = document.querySelector('.as-flow-dot[data-in="' + e.toNodeId + '"]');
+    if (!fromEl || !toEl) return;
+    var a = portCenter(fromEl);
+    var b = portCenter(toEl);
+    var mx = (a.x + b.x) / 2;
+    var d = "M" + a.x + "," + a.y + " C" + mx + "," + a.y + " " + mx + "," + b.y + " " + b.x + "," + b.y;
+    var col = selectedEdgeId === e.id ? "#165dff" : "#86909c";
+    paths.push('<path d="' + d + '" stroke="' + col + '" stroke-width="2" fill="none" marker-end="url(#arrow)" data-edge="' + e.id + '" style="pointer-events:stroke;cursor:pointer" />');
+  });
+  svg.innerHTML = '<defs><marker id="arrow" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#86909c"/></marker></defs>' + paths.join("");
+}
+
+function renderProp() {
+  var box = document.getElementById("prop-box");
+  if (selectedEdgeId) {
+    var e = (flow.edges || []).find(function (x) { return x.id === selectedEdgeId; });
+    if (!e) { box.innerHTML = "<p class='muted'>连线不存在</p>"; return; }
+    box.innerHTML =
+      '<div class="field"><label>连线</label><div style="font-size:12px">' + esc(e.fromNodeId) + " → " + esc(e.toNodeId) + "</div></div>" +
+      '<div class="field"><label>选项口</label><div style="font-size:12px">' + esc(e.fromOptId || "默认") + "</div></div>" +
+      '<button class="btn" id="btn-del-edge" style="color:#f53f3f;border-color:#ffa39e;width:100%">删除连线</button>';
+    return;
+  }
+  if (!selectedNodeId) {
+    box.innerHTML = '<p class="muted" style="font-size:12px">选中节点或连线进行编辑</p>';
+    return;
+  }
+  var n = Store.nodeById(flow, selectedNodeId);
+  if (!n) return;
+  var extra = "";
+  if (n.type === "end") {
+    extra = '<div class="field"><label>结束类型</label><select class="input" id="p-endkind">' +
+      '<option value="normal"' + (n.endKind !== "high_risk" ? " selected" : "") + ">正常结束</option>" +
+      '<option value="high_risk"' + (n.endKind === "high_risk" ? " selected" : "") + ">高风险结束</option></select></div>";
+  }
+  box.innerHTML =
+    '<div class="field"><label>类型</label><div style="font-size:13px">' + esc(nodeTitle(n)) + "</div></div>" +
+    '<div class="field"><label>说明</label><div style="font-size:12px;color:#4e5969">' + esc(nodeBody(n)) + "</div></div>" +
+    extra +
+    (n.type !== "start" ? '<button class="btn" id="btn-del-sel" style="color:#f53f3f;border-color:#ffa39e;width:100%;margin-top:8px">删除节点</button>' : "");
+}
+
+function redraw() {
+  renderLeft();
+  renderNodes();
+  renderEdges();
+  renderProp();
+}
+
+function addNode(partial) {
+  var n = Object.assign({
+    id: Store.uid("N"),
+    x: 80 + Math.random() * 200,
+    y: 80 + Math.random() * 200
+  }, partial);
+  flow.nodes = flow.nodes || [];
+  flow.nodes.push(n);
+  selectedNodeId = n.id;
+  redraw();
+}
+
+document.getElementById("left-list").addEventListener("click", function (e) {
+  var q = e.target.closest("[data-add-q]");
+  if (q) {
+    var qid = q.getAttribute("data-add-q");
+    var exists = (flow.nodes || []).some(function (n) { return n.type === "question" && n.questionId === qid; });
+    if (exists) { Proto.toast("画布上已有该问题节点"); return; }
+    addNode({ type: "question", questionId: qid });
+    return;
+  }
+  var a = e.target.closest("[data-add-a]");
+  if (a) {
+    addNode({ type: "assessment", assessmentId: a.getAttribute("data-add-a") });
+    return;
+  }
+  var g = e.target.closest("[data-add-g]");
+  if (g) {
+    addNode({ type: "group", groupId: g.getAttribute("data-add-g") });
+    return;
+  }
+  if (e.target.id === "btn-new-pq") {
+    var nq = Store.normalizeQuestion({
+      id: Store.uid("PQ"),
+      text: "新分流题（点击编辑文案请到列表新建后刷新）",
+      opts: [
+        { id: "O_a", t: "选项A", s: 0 },
+        { id: "O_b", t: "选项B", s: 0 }
+      ]
+    }, (flow.questions || []).length);
+    flow.questions = flow.questions || [];
+    flow.questions.push(nq);
+    addNode({ type: "question", questionId: nq.id });
+    Proto.toast("已添加分流题节点（可在属性区查看）");
+  }
+});
+
+document.getElementById("btn-add-end").onclick = function () {
+  addNode({ type: "end", endKind: "normal" });
+};
+document.getElementById("btn-add-risk").onclick = function () {
+  addNode({ type: "end", endKind: "high_risk" });
+};
+
+document.getElementById("canvas").addEventListener("mousedown", function (e) {
+  var del = e.target.closest("[data-del-node]");
+  if (del) {
+    var did = del.getAttribute("data-del-node");
+    flow.nodes = flow.nodes.filter(function (n) { return n.id !== did; });
+    flow.edges = (flow.edges || []).filter(function (ed) { return ed.fromNodeId !== did && ed.toNodeId !== did; });
+    if (selectedNodeId === did) selectedNodeId = null;
+    redraw();
+    return;
+  }
+  var out = e.target.closest("[data-out]");
+  if (out) {
+    linkFrom = { nodeId: out.getAttribute("data-out"), optId: out.getAttribute("data-opt") || null };
+    e.preventDefault();
+    return;
+  }
+  var inn = e.target.closest("[data-in]");
+  if (inn && linkFrom) {
+    var toId = inn.getAttribute("data-in");
+    if (toId === linkFrom.nodeId) { linkFrom = null; return; }
+    if (scope === "package") {
+      var toNode = Store.nodeById(flow, toId);
+      var fromNode = Store.nodeById(flow, linkFrom.nodeId);
+      if (fromNode && fromNode.type === "question" && toNode && !(toNode.type === "question" || toNode.type === "assessment" || toNode.type === "end")) {
+        Proto.toast("测评包中问题选项只能连到问题 / 测评 / 结束");
+        linkFrom = null;
+        return;
+      }
+    }
+    flow.edges = flow.edges || [];
+    flow.edges = flow.edges.filter(function (ed) {
+      return !(ed.fromNodeId === linkFrom.nodeId && String(ed.fromOptId || "") === String(linkFrom.optId || ""));
+    });
+    flow.edges.push({
+      id: Store.uid("E"),
+      fromNodeId: linkFrom.nodeId,
+      fromOptId: linkFrom.optId || null,
+      toNodeId: toId,
+      isDefault: !linkFrom.optId
+    });
+    linkFrom = null;
+    redraw();
+    Proto.toast("已连线");
+    return;
+  }
+  var edgePath = e.target.closest("[data-edge]");
+  if (edgePath) {
+    selectedEdgeId = edgePath.getAttribute("data-edge");
+    selectedNodeId = null;
+    renderProp();
+    renderEdges();
+    return;
+  }
+  var node = e.target.closest("[data-node]");
+  if (node) {
+    selectedNodeId = node.getAttribute("data-node");
+    selectedEdgeId = null;
+    renderProp();
+    Array.prototype.forEach.call(document.querySelectorAll(".as-flow-node"), function (el) {
+      el.classList.toggle("selected", el.getAttribute("data-node") === selectedNodeId);
+    });
+    dragState = {
+      id: selectedNodeId,
+      ox: e.clientX,
+      oy: e.clientY,
+      nx: Store.nodeById(flow, selectedNodeId).x,
+      ny: Store.nodeById(flow, selectedNodeId).y
+    };
+  }
+});
+
+document.addEventListener("mousemove", function (e) {
+  if (!dragState) return;
+  var n = Store.nodeById(flow, dragState.id);
+  if (!n) return;
+  n.x = Math.max(0, dragState.nx + (e.clientX - dragState.ox));
+  n.y = Math.max(0, dragState.ny + (e.clientY - dragState.oy));
+  var el = document.querySelector('.as-flow-node[data-node="' + n.id + '"]');
+  if (el) { el.style.left = n.x + "px"; el.style.top = n.y + "px"; }
+  renderEdges();
+});
+document.addEventListener("mouseup", function () { dragState = null; });
+
+document.getElementById("prop-box").addEventListener("click", function (e) {
+  if (e.target.id === "btn-del-edge" && selectedEdgeId) {
+    flow.edges = flow.edges.filter(function (ed) { return ed.id !== selectedEdgeId; });
+    selectedEdgeId = null;
+    redraw();
+  }
+  if (e.target.id === "btn-del-sel" && selectedNodeId) {
+    var did = selectedNodeId;
+    flow.nodes = flow.nodes.filter(function (n) { return n.id !== did; });
+    flow.edges = (flow.edges || []).filter(function (ed) { return ed.fromNodeId !== did && ed.toNodeId !== did; });
+    selectedNodeId = null;
+    redraw();
+  }
+});
+document.getElementById("prop-box").addEventListener("change", function (e) {
+  if (e.target.id === "p-endkind" && selectedNodeId) {
+    var n = Store.nodeById(flow, selectedNodeId);
+    if (n) { n.endKind = e.target.value; redraw(); }
+  }
+});
+
+document.getElementById("btn-validate").onclick = function () {
+  var issues = Store.validateFlow(flow);
+  if (!issues.length) Proto.toast("校验通过");
+  else Proto.toast(issues[0] + (issues.length > 1 ? "（共 " + issues.length + " 项）" : ""));
+  document.getElementById("trial-box").style.display = "block";
+  document.getElementById("trial-box").innerHTML = issues.length
+    ? ("<b>校验问题</b><br>" + issues.map(esc).join("<br>"))
+    : "<b>校验通过</b>：路径完整";
+};
+
+document.getElementById("btn-trial").onclick = function () {
+  var box = document.getElementById("trial-box");
+  box.style.display = "block";
+  if (scope === "package") {
+    var sess = Store.createPackageSession(ownerId);
+    if (!sess) { box.textContent = "无法启动试跑"; return; }
+    // reload from current unsaved? use in-memory: temporarily save
+    Store.savePackageFlow(flow);
+    sess = Store.createPackageSession(ownerId);
+    var step = sess.start();
+    var lines = ["<b>路径试跑</b>"];
+    var guard = 0;
+    while (step && !step.done && guard++ < 12) {
+      if (step.mode === "package_question" || step.question) {
+        var q = step.question;
+        var opt = (q.opts && q.opts[0]) ? q.opts[0] : null;
+        lines.push("问：" + esc(q.text.slice(0, 24)) + " → 选「" + esc(opt ? opt.t : "?") + "」");
+        step = sess.answer(opt ? opt.id : null);
+      } else break;
+    }
+    if (step && step.done) lines.push("结束：" + (step.endKind || "normal"));
+    box.innerHTML = lines.join("<br>");
+    return;
+  }
+  Store.saveAssessmentFlow(flow);
+  var s2 = Store.createAssessmentSession(ownerId);
+  var st = s2.start();
+  var lines2 = ["<b>路径试跑（每题选第一项）</b>"];
+  var g2 = 0;
+  while (st && !st.done && g2++ < 12) {
+    var qq = st.question;
+    if (!qq) break;
+    var oo = (qq.opts && qq.opts[0]) || null;
+    lines2.push((g2) + ". " + esc(qq.text.slice(0, 28)) + " → " + esc(oo ? oo.t : "默认"));
+    st = s2.answer(oo ? oo.id : null);
+  }
+  if (st && st.done) lines2.push("结束：" + (st.endKind || "normal"));
+  box.innerHTML = lines2.join("<br>");
+};
+
+document.getElementById("btn-save").onclick = function () {
+  if (scope === "package") Store.savePackageFlow(flow);
+  else Store.saveAssessmentFlow(flow);
+  Proto.toast("流程已保存");
+};
+
+redraw();
+</script>
+</body>
+</html>

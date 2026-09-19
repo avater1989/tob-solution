@@ -3,200 +3,240 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>编辑视频 · 艺博 To-B</title>
+<title>编辑线上课 · 商家管理后台</title>
 <link rel="stylesheet" href="../assets/css/proto.css?v=9" />
 <link rel="stylesheet" href="../assets/css/content-mgmt.css?v=4" />
 </head>
-<body class="admin-body" data-module="content" data-nav="content-video" data-title="编辑视频" data-crumb="内容 / 内容管理 / 视频 / 编辑">
+<body class="admin-body" data-module="content" data-nav="content-video" data-title="编辑线上课" data-crumb="内容 / 内容资产 / 线上课 / 编辑">
 
 <div id="header-actions">
   <a class="btn" href="content-video.html">返回列表</a>
   <button class="btn" id="btn-draft">保存草稿</button>
-  <button class="btn btn-primary" id="btn-publish">保存并启用</button>
+  <button class="btn btn-primary" id="btn-save-chapters">保存并配置章节</button>
 </div>
 
 <div id="page-content" style="display:none">
-  <a class="cm-back" href="content-video.html">← 返回视频列表</a>
+  <a class="cm-back" href="content-video.html">← 返回线上课列表</a>
+  <div id="edit-lock" class="cm-alert" style="display:none;margin-bottom:12px"></div>
 
-  <div class="cm-anchor" id="anchors">
-    <button class="btn active" data-goto="sec-content">内容信息</button>
-    <button class="btn" data-goto="sec-video">视频内容</button>
-    <button class="btn" data-goto="sec-status">状态设置</button>
-    <button class="btn" data-goto="sec-share">分享设置</button>
+  <div class="cm-tabs" id="anchors">
+    <button class="btn active" data-tab="sec-base">基础信息</button>
+    <button class="btn" data-tab="sec-status">状态与分享</button>
   </div>
 
-  <div class="cm-section" id="sec-content">
-    <div class="cm-section-hd"><h2>内容信息 <span class="hint">配置学员在详情页看到的基础内容</span></h2></div>
+  <div class="cm-section tab-panel active" id="sec-base">
+    <div class="cm-section-hd"><h2>基础信息 <span class="hint">配置完基础字段后继续配置章节</span></h2></div>
     <div class="form-grid" style="grid-template-columns:1fr 1fr">
       <div class="field" style="grid-column:1/-1">
-        <label>视频名称 * <span style="float:right;color:#8c8c8c;font-weight:400" id="name-cnt">0/45</span></label>
-        <input class="input" id="f-name" maxlength="45" placeholder="建议14字内" />
+        <label>课程名称 * <span style="float:right;color:#8c8c8c;font-weight:400" id="name-cnt">0/45</span></label>
+        <input class="input" id="f-name" maxlength="45" placeholder="建议 14 字内" />
       </div>
       <div class="field">
-        <label>内容分类 <span style="float:right;color:#8c8c8c;font-weight:400">取值于「内容分类」</span></label>
-        <select class="input" id="f-cat"></select>
+        <label>期数</label>
+        <input class="input" id="f-term" placeholder="如：春启 03 期" />
       </div>
-      <div class="field"><label>封面</label><div class="cm-cover-up has-img"><img src="../assets/img/covers/comm.jpg" alt="" /><span class="cm-cover-tip">更换封面</span></div></div>
-      <div class="field" style="grid-column:1/-1">
-        <label>视频简介</label>
-        <textarea class="input" id="f-intro" rows="3" maxlength="256" placeholder="建议256字内"></textarea>
+      <div class="field">
+        <label>讲师 *</label>
+        <select class="input" id="f-teacher"></select>
       </div>
       <div class="field" style="grid-column:1/-1">
-        <label>视频详情</label>
+        <label>内容标签 <span style="float:right;color:#8c8c8c;font-weight:400">树状多选，取值于「内容标签」</span></label>
+        <div id="f-tags"></div>
+      </div>
+      <div class="field">
+        <label>课程角标</label>
+        <select class="input" id="f-badge">
+          <option value="">无</option>
+          <option value="hot">热门课</option>
+          <option value="premium">精品课</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>课程费（元）</label>
+        <input class="input" id="f-price" type="number" min="0" step="0.01" placeholder="0" />
+      </div>
+      <div class="field">
+        <label>封面图</label>
+        <div class="cm-cover-up has-img" id="f-cover-box"><img id="f-cover-img" src="../assets/img/covers/reading.jpg" alt="" /><span class="cm-cover-tip">更换封面</span></div>
+      </div>
+      <div class="field" style="grid-column:1/-1">
+        <label>课程简介 <span style="float:right;color:#8c8c8c;font-weight:400" id="intro-cnt">0/256</span></label>
+        <textarea class="input" id="f-intro" rows="3" maxlength="256"></textarea>
+      </div>
+      <div class="field" style="grid-column:1/-1">
+        <label>课程大纲（概要）</label>
+        <textarea class="input" id="f-outline" rows="2" placeholder="课程结构概要，与下方章节列表互补"></textarea>
+      </div>
+      <div class="field" style="grid-column:1/-1">
+        <label>课程详情</label>
         <div class="rt-editor">
           <div class="rt-toolbar">
-            <button type="button" class="rt-btn">⊕ 插入</button><button type="button" class="rt-btn">↶</button><button type="button" class="rt-btn">↷</button>
-            <div class="rt-divider"></div>
-            <button type="button" class="rt-btn"><b>B</b></button><button type="button" class="rt-btn"><i>I</i></button><button type="button" class="rt-btn"><u>U</u></button>
+            <button type="button" class="rt-btn"><b>B</b></button>
+            <button type="button" class="rt-btn"><i>I</i></button>
           </div>
-          <div class="rt-body" contenteditable="true"><span class="rt-placeholder">输入视频详情，支持粘贴富文本内容</span></div>
+          <div class="rt-body" id="f-detail" contenteditable="true"><span class="rt-placeholder">输入课程详情（富文本）</span></div>
         </div>
+      </div>
+      <div class="field" style="grid-column:1/-1">
+        <label>购买须知</label>
+        <textarea class="input" id="f-notes" rows="2" placeholder="如：购买后永久观看；不支持转让"></textarea>
       </div>
     </div>
   </div>
 
-  <div class="cm-section" id="sec-video">
-    <div class="cm-section-hd"><h2>视频内容 <span class="hint">配置这个单一视频的播放来源与观看权限</span></h2></div>
-    <div class="form-grid" style="grid-template-columns:1fr 1fr">
-      <div class="field"><label>视频名称 *</label><input class="input" id="f-vname" placeholder="请输入视频名称" /></div>
-      <div class="field"><label>预计观看时长</label><input class="input" id="f-dur" placeholder="如：15分钟" /></div>
-      <div class="field" style="grid-column:1/-1">
-        <label>视频来源 *</label>
-        <input class="input" id="f-src" placeholder="填写视频素材名称或播放地址" />
-        <div class="cv-upload" style="margin-top:10px;border:2px dashed #d9d9d9;border-radius:8px;padding:22px;text-align:center;color:#8c8c8c;cursor:pointer;background:#fafafa">
-          <div style="font-size:28px;margin-bottom:4px">⬆️</div>
-          拖拽视频到此处或 <b style="color:#165dff">点击上传</b>
-          <div style="font-size:11px;margin-top:4px">支持 mp4 / mov，最大 2GB · 也可仅填写来源引用</div>
-        </div>
-      </div>
-      <div class="field" style="grid-column:1/-1">
-        <label class="cm-check"><input type="checkbox" checked> 设为必看视频</label>
-      </div>
-    </div>
-  </div>
-
-  <div class="cm-section" id="sec-status">
-    <div class="cm-section-hd"><h2>状态设置 <span class="hint">配置内容在店铺内的展示状态</span></h2></div>
-    <div class="field">
-      <label>启用设置</label>
-      <div class="cm-choice col">
-        <label><input type="radio" name="shelf" checked> 立即启用（保存后提交内容审核队列）</label>
-        <label><input type="radio" name="shelf"> 定时启用 <input type="datetime-local" class="input" style="width:200px;margin-left:8px" /></label>
-        <label><input type="radio" name="shelf"> 暂存草稿</label>
-      </div>
-    </div>
+  <div class="cm-section tab-panel" id="sec-status">
+    <div class="cm-section-hd"><h2>状态与分享</h2></div>
     <div class="field">
       <label>店铺显示</label>
       <div class="cm-choice">
-        <label><input type="radio" name="store" checked> 显示</label>
-        <label><input type="radio" name="store"> 隐藏（仅可通过链接访问）</label>
+        <label><input type="radio" name="store" value="1" checked> 显示</label>
+        <label><input type="radio" name="store" value="0"> 隐藏</label>
       </div>
     </div>
-  </div>
-
-  <div class="cm-section" id="sec-share">
-    <div class="cm-section-hd"><h2>分享设置 <span class="hint">自定义学员端分享卡片的标题、描述与封面；列表页「分享」弹窗（链接 / 二维码 / 海报）默认使用以上内容</span></h2></div>
     <div class="form-grid" style="grid-template-columns:1fr 1fr">
       <div class="field">
-        <label>分享标题 <span style="float:right;color:#8c8c8c;font-weight:400" id="share-title-cnt">0/30</span></label>
-        <input class="input" id="f-share-title" maxlength="30" placeholder="默认使用视频名称" />
-      </div>
-      <div class="field">
-        <label>分享封面</label>
-        <div class="cm-choice">
-          <label><input type="radio" name="share-cover" checked> 使用视频封面</label>
-          <label><input type="radio" name="share-cover"> 自定义上传</label>
-        </div>
+        <label>分享标题</label>
+        <input class="input" id="f-share-title" maxlength="30" />
       </div>
       <div class="field" style="grid-column:1/-1">
-        <label>分享描述 <span style="float:right;color:#8c8c8c;font-weight:400" id="share-desc-cnt">0/60</span></label>
-        <textarea class="input" id="f-share-desc" rows="2" maxlength="60" placeholder="默认使用视频简介，建议60字内"></textarea>
+        <label>分享描述</label>
+        <textarea class="input" id="f-share-desc" rows="2" maxlength="60"></textarea>
       </div>
     </div>
-    <p style="font-size:12px;color:#8c8c8c;margin:8px 0 0">草稿阶段可预览分享卡片；正式启用后生成可用短链和二维码。</p>
-    <button class="btn" style="margin-top:10px" id="btn-share-preview">预览分享卡片</button>
-  </div>
-
-  <div class="cm-sticky-ft">
-    <a class="btn" href="content-video.html">取消</a>
-    <button class="btn" id="btn-draft2">保存草稿</button>
-    <button class="btn btn-primary" id="btn-publish2">保存并启用</button>
   </div>
 </div>
 
 <script src="../assets/js/proto.js"></script>
-<script src="../assets/js/content-cats.js?v=1"></script>
-<script src="../assets/js/share-modal.js?v=1"></script>
-<script src="../assets/js/admin-shell.js?v=15"></script>
+<script src="../assets/js/content-tags.js?v=2"></script>
+<script src="../assets/js/teachers-store.js?v=2"></script>
+<script src="../assets/js/course-store.js?v=1"></script>
+<script src="../assets/js/admin-shell.js?v=16"></script>
 <script>
-var PRESET = {
-  V001: { name:"如何让孩子爱上阅读", cat:"K12 教育", intro:"通过一个短视频掌握亲子阅读引导方法。", src:"reading.mp4", dur:"8分钟" },
-  V002: { name:"亲子沟通的5 个关键", cat:"家庭教育", intro:"五个可落地的亲子沟通关键。", src:"talk.mp4", dur:"12分钟" },
-  V003: { name:"AI 助力学习规划", cat:"学习能力", intro:"用 AI 工具帮孩子做一周学习计划。", src:"ai-plan.mp4", dur:"15分钟" }
-};
-// 内容分类下拉：取值于「内容分类」页面列表
-var catSel = document.getElementById("f-cat");
-catSel.insertAdjacentHTML("beforeend", window.ContentCats.optionsHtml({ emptyLabel: "未分类" }));
+var Store = window.CourseStore;
+var Tags = window.ContentTags;
+var Teachers = window.Teachers;
 
 var id = new URLSearchParams(location.search).get("id") || "";
-var isNew = !id || !PRESET[id];
-if (!isNew) {
-  var p = PRESET[id];
-  document.getElementById("f-name").value = p.name;
-  document.getElementById("f-vname").value = p.name;
-  document.getElementById("f-intro").value = p.intro;
-  document.getElementById("f-src").value = p.src;
-  document.getElementById("f-dur").value = p.dur;
-  catSel.value = p.cat;
-  if (catSel.selectedIndex < 0) catSel.selectedIndex = 0;
+var course = id ? Store.get(id) : null;
+if (!course) {
+  course = Store.createBlank({ source: "self" });
+  id = course.id;
 }
 
-// 分享设置
-var fShareTitle = document.getElementById("f-share-title");
-var fShareDesc = document.getElementById("f-share-desc");
-function updShareCnt(){
-  document.getElementById("share-title-cnt").textContent = (fShareTitle.value||"").length + "/30";
-  document.getElementById("share-desc-cnt").textContent = (fShareDesc.value||"").length + "/60";
+document.getElementById("f-teacher").innerHTML = Teachers.optionsHtml({ emptyLabel: "请选择讲师" });
+var tagPicker = Tags.mountTreeSelect("#f-tags", {
+  selectedIds: course.tagIds || [],
+  placeholder: "请选择内容标签（可多选）"
+});
+
+var locked = !Store.canEditContent(course);
+var lockEl = document.getElementById("edit-lock");
+if (locked) {
+  lockEl.style.display = "block";
+  lockEl.textContent = course.source === "platform"
+    ? "平台下发内容，商家侧不可编辑。"
+    : (course.status === Store.STATUS.enabled ? "内容已启用，请先停用后再编辑。" : "审核中不可编辑。");
+  document.querySelectorAll("#page-content input, #page-content textarea, #page-content select, #page-content [contenteditable]").forEach(function (el) {
+    el.disabled = true;
+    if (el.isContentEditable) el.contentEditable = "false";
+  });
+  document.getElementById("btn-draft").disabled = true;
+  document.getElementById("btn-save-chapters").textContent = "查看章节";
 }
-fShareTitle.addEventListener("input", updShareCnt);
-fShareDesc.addEventListener("input", updShareCnt);
-if (!isNew) {
-  fShareTitle.placeholder = PRESET[id].name;
-  fShareDesc.placeholder = PRESET[id].intro;
+
+document.getElementById("f-name").value = course.name || "";
+document.getElementById("f-term").value = course.term || "";
+document.getElementById("f-teacher").value = course.teacherId || "";
+document.getElementById("f-badge").value = course.badge || "";
+document.getElementById("f-price").value = course.price || 0;
+document.getElementById("f-cover-img").src = course.cover || "../assets/img/covers/reading.jpg";
+document.getElementById("f-intro").value = course.intro || "";
+document.getElementById("f-outline").value = course.outlineText || "";
+document.getElementById("f-notes").value = course.purchaseNotes || "";
+document.getElementById("f-share-title").value = course.shareTitle || "";
+document.getElementById("f-share-desc").value = course.shareDesc || "";
+if (course.detail) {
+  document.getElementById("f-detail").innerHTML = course.detail;
 }
-updShareCnt();
-document.getElementById("btn-share-preview").addEventListener("click", function(){
-  var p = !isNew ? PRESET[id] : null;
-  XiboShare.open({
-    type: "视频",
-    url: "https://yibo.app/v/" + (id || "NEW"),
-    cover: "../assets/img/covers/" + (id === "V001" ? "reading" : id === "V002" ? "comm" : "ai") + ".jpg",
-    name: fShareTitle.value || (p ? p.name : document.getElementById("f-name").value) || "未命名视频",
-    desc: fShareDesc.value || (p ? p.intro : "") || ""
+if (course.storeVisible === false) {
+  document.querySelector('input[name="store"][value="0"]').checked = true;
+}
+
+function updCnt() {
+  document.getElementById("name-cnt").textContent = (document.getElementById("f-name").value || "").length + "/45";
+  document.getElementById("intro-cnt").textContent = (document.getElementById("f-intro").value || "").length + "/256";
+}
+["f-name", "f-intro"].forEach(function (fid) {
+  document.getElementById(fid).addEventListener("input", updCnt);
+});
+updCnt();
+
+document.getElementById("anchors").addEventListener("click", function (e) {
+  var b = e.target.closest("[data-tab]");
+  if (!b) return;
+  document.querySelectorAll("#anchors .btn").forEach(function (x) { x.classList.remove("active"); });
+  b.classList.add("active");
+  document.querySelectorAll(".tab-panel").forEach(function (p) {
+    p.classList.toggle("active", p.id === b.getAttribute("data-tab"));
   });
 });
-document.getElementById("f-name").addEventListener("input", function(){
-  document.getElementById("name-cnt").textContent = this.value.length + "/45";
-  if (!document.getElementById("f-vname").value || document.getElementById("f-vname").dataset.synced !== "0") {
-    document.getElementById("f-vname").value = this.value;
+
+document.getElementById("f-cover-box").addEventListener("click", function () {
+  if (locked) return;
+  Proto.toast("已选择封面（原型）");
+});
+
+function selectedTagIds() {
+  return tagPicker.getSelected();
+}
+
+function collect() {
+  var name = document.getElementById("f-name").value.trim();
+  if (!name) { Proto.toast("请填写课程名称"); return null; }
+  var teacherId = document.getElementById("f-teacher").value;
+  if (!teacherId) { Proto.toast("请选择讲师"); return null; }
+  var detailEl = document.getElementById("f-detail");
+  var detailHtml = detailEl.querySelector(".rt-placeholder") ? "" : detailEl.innerHTML;
+  course.name = name;
+  course.term = document.getElementById("f-term").value.trim();
+  course.teacherId = teacherId;
+  course.teacher = Teachers.nameOf(teacherId);
+  course.tagIds = selectedTagIds();
+  course.badge = document.getElementById("f-badge").value;
+  course.price = parseFloat(document.getElementById("f-price").value) || 0;
+  course.cover = document.getElementById("f-cover-img").src;
+  course.intro = document.getElementById("f-intro").value.trim();
+  course.outlineText = document.getElementById("f-outline").value.trim();
+  course.detail = detailHtml;
+  course.purchaseNotes = document.getElementById("f-notes").value.trim();
+  course.shareTitle = document.getElementById("f-share-title").value.trim();
+  course.shareDesc = document.getElementById("f-share-desc").value.trim();
+  course.storeVisible = document.querySelector('input[name="store"]:checked').value === "1";
+  if (course.status !== Store.STATUS.enabled && course.status !== Store.STATUS.pending_audit) {
+    course.status = Store.STATUS.draft;
   }
-});
-document.getElementById("f-vname").addEventListener("input", function(){ this.dataset.synced = "0"; });
-document.getElementById("name-cnt").textContent = (document.getElementById("f-name").value||"").length + "/45";
+  return course;
+}
 
-document.getElementById("anchors").addEventListener("click", function(e){
-  var b = e.target.closest("[data-goto]"); if (!b) return;
-  document.querySelectorAll("#anchors .btn").forEach(function(x){ x.classList.remove("active"); });
-  b.classList.add("active");
-  var el = document.getElementById(b.getAttribute("data-goto"));
-  if (el) el.scrollIntoView({ behavior:"smooth", block:"start" });
+document.getElementById("btn-draft").addEventListener("click", function () {
+  if (locked) return;
+  var c = collect();
+  if (!c) return;
+  Store.save(c);
+  Proto.toast("草稿已保存");
+  history.replaceState(null, "", "content-video-edit.html?id=" + encodeURIComponent(c.id));
 });
 
-function draft(){ Proto.toast("草稿已保存"); }
-function publish(){ Proto.toast("已保存并启用"); setTimeout(function(){ location.href = "content-video.html"; }, 500); }
-["btn-draft","btn-draft2"].forEach(function(id){ document.getElementById(id).onclick = draft; });
-["btn-publish","btn-publish2"].forEach(function(id){ document.getElementById(id).onclick = publish; });
-document.querySelector(".rt-body").addEventListener("focus", function(){ var ph=this.querySelector(".rt-placeholder"); if(ph) ph.remove(); });
+document.getElementById("btn-save-chapters").addEventListener("click", function () {
+  if (locked) {
+    location.href = "content-video-outline.html?id=" + encodeURIComponent(id);
+    return;
+  }
+  var c = collect();
+  if (!c) return;
+  Store.save(c);
+  location.href = "content-video-outline.html?id=" + encodeURIComponent(c.id);
+});
 </script>
 </body>
 </html>

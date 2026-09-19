@@ -7,7 +7,7 @@
 <link rel="stylesheet" href="../assets/css/proto.css?v=4" />
 <link rel="stylesheet" href="../assets/css/assess.css?v=3" />
 </head>
-<body class="admin-body" data-module="content" data-nav="assess-projects" data-title="测评项目管理" data-crumb="运营后台 / 内容 / 测评管理 / 测评项目">
+<body class="admin-body" data-module="content" data-nav="assess-projects" data-title="测评" data-crumb="运营后台 / 内容与审核 / 测评中心 / 测评">
 
 <div id="header-actions">
   <button class="btn btn-primary" id="btn-new">+ 新建项目</button>
@@ -142,8 +142,7 @@ function render() {
       '<td style="font-size:12px">'+esc(p.report)+'</td>' +
       '<td style="font-size:12px;color:#8c8c8c">'+esc(p.created)+'</td>' +
       '<td><div class="as-acts">' +
-        '<button class="btn" data-move="'+p.id+'" data-dir="-1"'+(i===0?' disabled':'')+'>上移</button>' +
-        '<button class="btn" data-move="'+p.id+'" data-dir="1"'+(i===list.length-1?' disabled':'')+'>下移</button>' +
+        '<a class="btn" href="assess-flow.html?id='+p.id+'">流程配置</a>' +
         '<a class="btn" href="assess-questions.html?id='+p.id+'">配置题目</a>' +
         '<a class="btn" href="assess-scoring.html?id='+p.id+'">评分规则</a>' +
         '<a class="btn" href="assess-relations.html?from=project&id='+p.id+'">关联规则'+(p.rules?' ('+p.rules+')':'')+'</a>' +
@@ -217,13 +216,6 @@ document.addEventListener("click", function(e){
     if (p3.shelf==="已上架") { p3.shelf="已下架"; Proto.toast("已下架"); }
     else { p3.shelf="已上架"; p3.status="已发布"; Proto.toast("已上架"); }
     render(); return;
-  }
-  var mv = e.target.closest("[data-move]");
-  if (mv) {
-    var mid = mv.getAttribute("data-move"), dir = +mv.getAttribute("data-dir");
-    var i = PROJECTS.findIndex(function(x){return x.id===mid;}), j = i+dir;
-    if (j<0||j>=PROJECTS.length) return;
-    var t = PROJECTS[i]; PROJECTS[i]=PROJECTS[j]; PROJECTS[j]=t; render();
   }
 });
 

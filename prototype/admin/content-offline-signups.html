@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>线下课报名记录 · 商家管理后台</title>
+<title>线下课参与记录 · 商家管理后台</title>
 <link rel="stylesheet" href="../assets/css/proto.css?v=9" />
 <style>
 .user-cell { display: flex; align-items: center; gap: 8px; }
@@ -39,7 +39,7 @@
 .st-cancelled { background: rgba(134,144,156,.15); color: #4e5969; }
 </style>
 </head>
-<body class="admin-body" data-module="content" data-nav="content-offline" data-title="报名记录" data-crumb="内容 / 内容管理 / 线下课 / 报名记录">
+<body class="admin-body" data-module="content" data-nav="content-offline" data-title="参与记录" data-crumb="内容 / 内容资产 / 线下课 / 参与记录">
 
 <div id="header-actions">
   <button class="btn" type="button" id="btn-export">导出</button>
@@ -165,7 +165,7 @@ function render() {
   });
   var tbody = document.getElementById("sg-tbody");
   if (!rows.length) {
-    tbody.innerHTML = '<tr><td colspan="7" class="muted" style="text-align:center;padding:36px">暂无报名记录</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="7" class="muted" style="text-align:center;padding:36px">暂无参与记录</td></tr>';
   } else {
     tbody.innerHTML = rows.map(function (r) {
       return "<tr>" +
@@ -197,7 +197,7 @@ document.getElementById("btn-reset").addEventListener("click", function () {
   render();
 });
 document.getElementById("btn-export").addEventListener("click", function () {
-  Proto.toast("已导出报名记录（原型示意）");
+  Proto.toast("已导出参与记录（原型示意）");
 });
 
 updateMeta();

@@ -233,7 +233,6 @@ function renderItems(){
       '<td style="font-size:12px">'+esc(it.meta)+'</td>' +
       '<td>'+stTag(it.on)+'</td>' +
       '<td class="row-actions">' +
-        (i === 0 ? '<span class="muted">—</span>' : '<a href="javascript:;" data-i-up="'+it.id+'">上移</a>') +
         '<a href="javascript:;" data-i-toggle="'+it.id+'">'+(it.on ? "隐藏" : "展示")+'</a>' +
         '<a href="javascript:;" class="row-more" data-i-del="'+it.id+'">移除</a>' +
       '</td></tr>';
@@ -307,12 +306,6 @@ function openItem(){
   mask.classList.add("open"); document.getElementById("modal-item").classList.add("open");
 }
 
-function moveItem(id){
-  var i = ITEMS.findIndex(function(x){ return x.id === id; });
-  if (i <= 0) return;
-  var t = ITEMS[i-1]; ITEMS[i-1] = ITEMS[i]; ITEMS[i] = t;
-  renderItems(); renderSectionPv();
-}
 
 document.addEventListener("change", function(e){
   var el;
@@ -332,7 +325,6 @@ document.addEventListener("input", function(e){
 
 document.addEventListener("click", function(e){
   var el;
-  if ((el = e.target.closest("[data-i-up]"))) { moveItem(el.getAttribute("data-i-up")); return; }
   if ((el = e.target.closest("[data-i-toggle]"))) {
     var id = el.getAttribute("data-i-toggle");
     var it = ITEMS.filter(function(x){ return x.id === id; })[0];

@@ -6,251 +6,99 @@
 <title>工作台 · 商家管理后台</title>
 <link rel="stylesheet" href="../assets/css/proto.css?v=10" />
 <style>
-/* 工作台页内样式：沿用现有卡片/指标语言，仅补布局与状态 */
-.wb-meta {
+.wb-sec { margin-bottom: 20px; scroll-margin-top: 72px; }
+.wb-sec h2 { margin: 0 0 4px; font-size: 16px; font-weight: 600; }
+.wb-sec .sub { margin: 0 0 12px; font-size: 13px; color: var(--color-text-muted); }
+.wb-kpis { display: grid; grid-template-columns: repeat(6, 1fr); gap: 12px; }
+@media (max-width: 1200px) { .wb-kpis { grid-template-columns: repeat(3, 1fr); } }
+.wb-kpis a {
+  display: block; padding: 14px 16px; background: #fff; border: 1px solid var(--color-border);
+  border-radius: 8px; text-decoration: none; color: inherit; transition: border-color .15s, box-shadow .15s;
+}
+.wb-kpis a:hover { border-color: #94bfff; box-shadow: 0 2px 8px rgba(22,93,255,.08); text-decoration: none; }
+.wb-kpis .label { font-size: 12px; color: var(--color-text-muted); }
+.wb-kpis .value { font-size: 22px; font-weight: 700; margin-top: 6px; color: var(--color-text); }
+.wb-kpis .hint { font-size: 11px; color: var(--color-text-muted); margin-top: 4px; }
+.wb-todo, .wb-alert { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+@media (max-width: 900px) { .wb-todo, .wb-alert { grid-template-columns: 1fr; } }
+.wb-item {
   display: flex; align-items: center; justify-content: space-between; gap: 12px;
-  margin-bottom: 12px; flex-wrap: wrap;
+  padding: 14px 16px; background: #fff; border: 1px solid var(--color-border); border-radius: 8px;
+  text-decoration: none; color: inherit;
 }
-.wb-meta h2 { margin: 0; font-size: 14px; font-weight: 600; }
-.wb-meta .muted { font-weight: 400; }
-.wb-updated { font-size: 12px; color: var(--color-text-muted); }
-.wb-stats { grid-template-columns: repeat(4, 1fr); margin-bottom: 16px; }
-@media (max-width: 1100px) { .wb-stats { grid-template-columns: repeat(2, 1fr); } }
-.wb-stats .stat-card { cursor: pointer; transition: border-color .15s, box-shadow .15s; }
-.wb-stats .stat-card:hover { border-color: #94bfff; box-shadow: 0 2px 8px rgba(22,93,255,.08); }
-.wb-stats a.stat-card { text-decoration: none; color: inherit; display: block; }
-.wb-stats button.stat-card {
-  text-align: left; font: inherit; width: 100%;
-  border: 1px solid var(--color-border); background: #fff; border-radius: 8px; padding: 16px;
+.wb-item:hover { border-color: #94bfff; text-decoration: none; }
+.wb-item .t { font-size: 14px; font-weight: 600; }
+.wb-item .d { font-size: 12px; color: var(--color-text-muted); margin-top: 4px; }
+.wb-item .n {
+  min-width: 36px; height: 36px; border-radius: 18px; background: var(--color-primary-soft);
+  color: var(--color-primary); font-weight: 700; display: flex; align-items: center; justify-content: center;
 }
-.wb-stats button.stat-card.is-active { border-color: var(--color-primary); box-shadow: 0 0 0 2px rgba(22,93,255,.12); }
-.wb-stats .stat-value.warn { color: #ff7d00; }
-.wb-stats .stat-value.danger { color: #f53f3f; }
-.wb-group-label {
-  font-size: 12px; font-weight: 600; color: var(--color-text-secondary);
-  margin: 0 0 8px 2px; letter-spacing: .5px;
+.wb-item.warn .n { background: #fff7e8; color: #d48806; }
+.wb-item.danger .n { background: #fff1f0; color: #f53f3f; }
+.wb-flow {
+  margin-top: 8px; padding: 12px 14px; background: #f7f8fa; border-radius: 8px; font-size: 12px; color: var(--color-text-secondary);
 }
-@media (max-width: 1100px) {
-  .wb-stats.realtime { grid-template-columns: repeat(2, 1fr) !important; }
-}
-.wb-filter-bar {
-  display: flex; align-items: center; justify-content: space-between; gap: 12px;
-  padding: 10px 16px; background: #f0f5ff; border-bottom: 1px solid var(--color-border);
-  font-size: 13px; color: var(--color-text-secondary);
-}
-.wb-urgency-over { color: #f53f3f; font-weight: 600; }
-.wb-urgency-near { color: #ff7d00; }
-.wb-urgency-ok { color: #00b42a; }
-.wb-todo-reason { font-size: 12px; color: var(--color-text-secondary); line-height: 1.45; max-width: 280px; }
-.wb-busy { opacity: .65; pointer-events: none; }
-.wb-section-gap { margin-top: 4px; }
-.wb-quick-block { margin-bottom: 16px; }
-.wb-quick-block .wb-meta { margin-bottom: 8px; }
-.wb-quick {
-  display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px;
-}
-@media (max-width: 900px) { .wb-quick { grid-template-columns: repeat(2, 1fr); } }
-.wb-quick a {
-  display: block; padding: 16px 18px;
-  background: #fff; border: 1px solid var(--color-border); border-radius: 8px;
-  text-decoration: none; color: inherit; transition: border-color .15s, box-shadow .15s;
-}
-.wb-quick a:hover { border-color: #94bfff; box-shadow: 0 2px 8px rgba(22,93,255,.08); text-decoration: none; }
-.wb-quick .q-tag {
-  display: inline-block; font-size: 11px; color: var(--color-primary);
-  background: var(--color-primary-soft); padding: 2px 8px; border-radius: 4px; margin-bottom: 8px;
-}
-.wb-quick .q-tag.create { color: #009a29; background: #e8ffea; }
-.wb-quick .q-title { font-size: 15px; font-weight: 600; color: var(--color-text); }
-.wb-quick .q-desc { font-size: 12px; color: var(--color-text-muted); margin-top: 4px; line-height: 1.5; }
-.wb-grid {
-  display: grid; grid-template-columns: 1.45fr 1fr; gap: 16px; margin-bottom: 16px;
-}
-@media (max-width: 1100px) { .wb-grid { grid-template-columns: 1fr; } }
-.wb-todo-tabs { display: flex; gap: 4px; }
-.wb-todo-tabs button {
-  border: none; background: transparent; padding: 4px 10px; border-radius: 4px;
-  font-size: 12px; color: var(--color-text-secondary); cursor: pointer;
-}
-.wb-todo-tabs button.active { background: var(--color-primary-soft); color: var(--color-primary); font-weight: 600; }
-.sla-ok { color: #00b42a; }
-.sla-near { color: #ff7d00; }
-.sla-over { color: #f53f3f; font-weight: 600; }
-.wb-live-list { display: flex; flex-direction: column; gap: 10px; }
-.wb-live-item {
-  display: grid; grid-template-columns: 1fr auto; gap: 8px 16px;
-  padding: 12px 14px; border: 1px solid var(--color-border); border-radius: 8px; background: #fff;
-}
-.wb-live-item .title { font-size: 14px; font-weight: 600; }
-.wb-live-item .meta { font-size: 12px; color: var(--color-text-secondary); margin-top: 4px; line-height: 1.6; }
-.wb-live-item .actions { display: flex; align-items: center; gap: 8px; align-self: center; }
-.wb-live-item .prog {
-  height: 6px; background: #f2f3f5; border-radius: 3px; margin-top: 8px; overflow: hidden; max-width: 220px;
-}
-.wb-live-item .prog > i { display: block; height: 100%; background: var(--color-primary); border-radius: 3px; }
-.wb-role-select {
-  height: 32px; border: 1px solid var(--color-border); border-radius: 6px;
-  padding: 0 8px; font-size: 13px; margin-right: 8px; background: #fff;
-}
-#btn-refresh.is-loading { opacity: .65; pointer-events: none; }
-.wb-empty {
-  padding: 28px 16px; text-align: center; color: var(--color-text-muted); font-size: 13px;
-}
-.wb-empty .wb-empty-title { font-size: 14px; color: var(--color-text-secondary); margin-bottom: 6px; }
-.wb-empty .wb-empty-desc { font-size: 12px; color: var(--color-text-muted); margin-bottom: 12px; }
-.wb-sop-detail {
-  margin-top: 6px; padding: 8px 10px; background: #f7f8fa; border-radius: 6px;
-  font-size: 12px; color: var(--color-text-secondary); line-height: 1.6;
-}
-.wb-sop-detail .kv-row { display: flex; gap: 8px; }
-.wb-sop-detail .kv-row span { color: var(--color-text-muted); min-width: 72px; }
-.wb-link-detail {
-  border: none; background: none; color: var(--color-primary); font-size: 12px;
-  padding: 0; cursor: pointer; margin-left: 6px;
-}
-.wb-error {
-  display: none; padding: 10px 14px; margin-bottom: 16px;
-  background: #fff1f0; border: 1px solid #ffa39e; border-radius: 8px;
-  color: #cb2634; font-size: 13px;
-}
-.wb-error.show { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
-.wb-flash { animation: wbFlash .6s ease; }
-@keyframes wbFlash {
-  0% { background: #e8f3ff; }
-  100% { background: transparent; }
-}
-.wb-hidden { display: none !important; }
 </style>
 </head>
-<body class="admin-body" data-module="workbench" data-nav="dashboard" data-title="工作台" data-crumb="工作台" data-assist="0" data-notice="1">
-<!-- 原型配置：data-review="0" / data-notice="0" 可隐藏评审路径与公告（见 admin-shell） -->
+<body class="admin-body" data-module="workbench" data-nav="dashboard" data-title="工作台" data-crumb="工作台 · 经营任务中心" data-assist="0" data-notice="1">
 <div id="header-actions">
-  <label class="muted" style="font-size:12px;margin-right:4px">角色</label>
-  <select class="wb-role-select" id="role-select" title="原型角色切换" aria-label="原型角色切换">
-    <option value="admin">商户管理员</option>
-    <option value="sales">助教/销售</option>
-    <option value="content">内容运营</option>
-  </select>
-  <div class="segmented" id="range-seg" style="margin-right:8px">
-    <button type="button" class="active" data-range="today">今日</button>
-    <button type="button" data-range="yesterday">昨日</button>
-    <button type="button" data-range="7d">近7日</button>
-  </div>
-  <button class="btn" id="btn-refresh" type="button">刷新</button>
-  <button class="btn btn-ghost" id="btn-reset-demo" type="button" title="恢复 ProtoBiz 演示种子数据" style="font-size:12px;color:var(--color-text-muted)">重置演示数据</button>
+  <button class="btn" type="button" onclick="location.reload()">刷新</button>
 </div>
 
 <div id="page-content" style="display:none">
 
-  <div class="wb-error" id="wb-error" role="alert">
-    <span>数据加载失败（原型示意）。请重试或检查网络。</span>
-    <button type="button" class="btn btn-sm" id="btn-error-retry">重试</button>
-  </div>
-
-  <!-- 一、经营结果（受时间筛选，按业务域分组） -->
-  <div class="wb-group-label">SCRM · 线索</div>
-  <div class="stat-cards wb-stats" id="result-stats-scrm">
-    <a class="stat-card" id="metric-leads" href="leads.html">
-      <div class="stat-label">新增线索</div>
-      <div class="stat-value" data-field="leads.value">86</div>
-      <div class="stat-hint" data-field="leads.hint"><span class="up">+12%</span> 较昨日</div>
-    </a>
-    <button type="button" class="stat-card" id="rt-unassigned" data-todo-filter="lead">
-      <div class="stat-label">未分配线索</div>
-      <div class="stat-value warn" data-rt="unassigned">0</div>
-      <div class="stat-hint" id="rt-unassigned-hint">—</div>
-    </button>
-  </div>
-  <div class="wb-group-label">交易</div>
-  <div class="stat-cards wb-stats" id="result-stats">
-    <a class="stat-card" id="metric-orders" href="orders.html">
-      <div class="stat-label">支付订单</div>
-      <div class="stat-value" data-field="orders.value">42</div>
-      <div class="stat-hint" data-field="orders.hint"><span class="up">+8%</span> 较昨日 · 实收 ¥18,620</div>
-    </a>
-    <a class="stat-card" id="metric-gmv" href="orders.html">
-      <div class="stat-label">成交 GMV</div>
-      <div class="stat-value" style="font-size:22px" data-field="gmv.value">¥18,620</div>
-      <div class="stat-hint" data-field="gmv.hint"><span class="up">+15%</span> 较昨日 · 42 笔</div>
-    </a>
-    <a class="stat-card" id="metric-refund" href="aftersales.html">
-      <div class="stat-label">退款率</div>
-      <div class="stat-value" data-field="refund.value">2.1%</div>
-      <div class="stat-hint" data-field="refund.hint"><span class="down">-0.3pp</span> 较昨日 · 退款 1 笔</div>
-    </a>
-    <button type="button" class="stat-card" id="rt-aftersale" data-todo-filter="aftersale">
-      <div class="stat-label">待处理售后</div>
-      <div class="stat-value danger" data-rt="aftersale">0</div>
-      <div class="stat-hint" id="rt-aftersale-hint">—</div>
-    </button>
-  </div>
-
-  <!-- 实时待处理（不受时间筛选，按业务域分组）→ 点击卡片跳转对应列表 -->
-  <div class="wb-group-label">直播</div>
-  <div class="stat-cards wb-stats realtime" id="realtime-stats-live">
-    <button type="button" class="stat-card" id="rt-audit" data-todo-filter="audit">
-      <div class="stat-label">直播待提交／待修改</div>
-      <div class="stat-value warn" data-rt="audit">0</div>
-      <div class="stat-hint" id="rt-audit-hint">—</div>
-    </button>
-    <button type="button" class="stat-card" id="rt-urge" data-todo-filter="urge">
-      <div class="stat-label">直播提醒异常</div>
-      <div class="stat-value warn" data-rt="urgeTasks">0</div>
-      <div class="stat-hint" id="rt-urge-hint">—</div>
-    </button>
-  </div>
-
-  <!-- 快捷创建 -->
-  <div class="wb-quick-block" id="block-create">
-    <div class="wb-meta"><h2>快捷创建</h2></div>
-    <div class="wb-quick" id="quick-create"></div>
-  </div>
-
-</div>
-
-<!-- 分配线索弹窗 -->
-<div class="proto-mask" id="wb-mask"></div>
-<div class="proto-modal" id="modal-assign-lead" style="width:520px">
-  <div class="proto-modal-hd"><h3 style="margin:0;font-size:16px">分配线索</h3><button type="button" class="btn btn-ghost" data-wb-close>×</button></div>
-  <div class="proto-modal-bd">
-    <div class="kv" id="assign-lead-info"></div>
-    <div class="field" style="margin-top:12px">
-      <label>选择负责人</label>
-      <select id="assign-owner" style="width:100%;height:36px"></select>
+  <section class="wb-sec" id="today">
+    <h2>今日经营</h2>
+    <p class="sub">经营结果一览，点击指标进入对应业务页</p>
+    <div class="wb-kpis">
+      <a href="users.html"><div class="label">新增客户</div><div class="value">28</div><div class="hint">较昨日 +6</div></a>
+      <a href="orders.html"><div class="label">成交订单</div><div class="value">46</div><div class="hint">已支付口径</div></a>
+      <a href="orders.html"><div class="label">成交金额</div><div class="value">¥18,620</div><div class="hint">含退款冲减前</div></a>
+      <a href="lives.html"><div class="label">直播场次</div><div class="value">2</div><div class="hint">进行中 1</div></a>
+      <a href="aftersales.html"><div class="label">退款金额</div><div class="value">¥1,280</div><div class="hint">4 笔售后</div></a>
+      <a href="settlement.html"><div class="label">待结算金额</div><div class="value">¥12,335</div><div class="hint">待确认结算单</div></a>
     </div>
-    <label class="tp-item" style="margin-top:12px;display:inline-flex">
-      <input type="checkbox" id="assign-follow" checked /> 分配并创建首次跟进待办
-    </label>
-  </div>
-  <div class="proto-modal-ft">
-    <button type="button" class="btn" data-wb-close>取消</button>
-    <button type="button" class="btn btn-primary" id="btn-assign-confirm">确认分配</button>
-  </div>
-</div>
+  </section>
 
-<!-- 提交平台审核确认 -->
-<div class="proto-modal" id="modal-submit-platform" style="width:480px">
-  <div class="proto-modal-hd"><h3 style="margin:0;font-size:16px">提交平台审核</h3><button type="button" class="btn btn-ghost" data-wb-close>×</button></div>
-  <div class="proto-modal-bd" id="submit-platform-info"></div>
-  <div class="proto-modal-ft">
-    <button type="button" class="btn" data-wb-close>取消</button>
-    <button type="button" class="btn btn-primary" id="btn-submit-platform-confirm">确认提交</button>
-  </div>
-</div>
+  <section class="wb-sec" id="todo">
+    <h2>我的待办</h2>
+    <p class="sub">数字可直接跳到对应处理页</p>
+    <div class="wb-todo">
+      <a class="wb-item" href="content-series.html?status=pending_review"><div><div class="t">待审核内容</div><div class="d">提交平台审核中的课程/文章</div></div><div class="n">5</div></a>
+      <a class="wb-item" href="goods.html?status=draft"><div><div class="t">待上架商品</div><div class="d">草稿 / 待上架</div></div><div class="n">3</div></a>
+      <a class="wb-item warn" href="aftersales.html?status=pending"><div><div class="t">待处理售后</div><div class="d">待商家处理</div></div><div class="n">4</div></a>
+      <a class="wb-item warn" href="settlement.html?status=pending_confirm"><div><div class="t">待确认结算</div><div class="d">平台已生成结算单</div></div><div class="n">2</div></a>
+      <a class="wb-item" href="follow-ups.html"><div><div class="t">待跟进客户</div><div class="d">今日应跟进线索</div></div><div class="n">12</div></a>
+      <a class="wb-item" href="lives.html?filter=pending"><div><div class="t">直播待处理</div><div class="d">待开播 / 待回放</div></div><div class="n">1</div></a>
+    </div>
+  </section>
 
-<!-- 消息失败处理抽屉 -->
-<div class="proto-drawer" id="drawer-sms" style="width:480px">
-  <div class="proto-drawer-hd"><h3 style="margin:0;font-size:16px">消息发送失败</h3><button type="button" class="btn btn-ghost" data-wb-close>×</button></div>
-  <div class="proto-drawer-bd" id="sms-drawer-body"></div>
-  <div class="proto-drawer-ft" id="sms-drawer-ft" style="display:flex;gap:8px;flex-wrap:wrap"></div>
+  <section class="wb-sec" id="alert">
+    <h2>异常提醒</h2>
+    <p class="sub">仅展示需处理的异常；权益异常从订单主流程拆出</p>
+    <div class="wb-alert">
+      <a class="wb-item danger" href="orders.html?filter=exception"><div><div class="t">订单异常</div><div class="d">支付成功权益未生效等</div></div><div class="n">2</div></a>
+      <a class="wb-item danger" href="entitlement.html?filter=exception"><div><div class="t">权益异常</div><div class="d">待开通 / 开通失败 / 回收失败</div></div><div class="n">2</div></a>
+      <a class="wb-item warn" href="aftersales.html?filter=refund_exception"><div><div class="t">退款异常</div><div class="d">退款中断或渠道失败</div></div><div class="n">1</div></a>
+      <a class="wb-item warn" href="recon.html?filter=diff"><div><div class="t">对账异常</div><div class="d">T+1 差异待处理</div></div><div class="n">2</div></a>
+      <a class="wb-item" href="settlement.html?filter=dispute"><div><div class="t">结算异常</div><div class="d">异议 / 复核中</div></div><div class="n">1</div></a>
+      <a class="wb-item" href="withdraw.html?filter=exception"><div><div class="t">提现异常</div><div class="d">打款失败或驳回</div></div><div class="n">0</div></a>
+    </div>
+    <div class="wb-flow">主闭环：内容资产 → 商品 → 订单 → 权益履约 → 财务结算 → 数据复盘 · 学习闭环：测评 → 任务规则 → 任务 → 计划</div>
+  </section>
+
 </div>
 
 <script src="../assets/js/proto.js"></script>
-<script src="../assets/js/prototype-business-store.js?v=11"></script>
-<script src="../assets/js/live-ops.js?v=9"></script>
-<script src="../assets/js/board-data.js?v=5"></script>
-<script src="../assets/js/board-metrics.js?v=10"></script>
-<script src="../assets/js/admin-shell.js?v=19"></script>
-<script src="../assets/js/dashboard-workbench.js?v=10"></script>
+<script src="../assets/js/admin-shell.js?v=20"></script>
+<script>
+(function () {
+  var hash = location.hash.replace("#", "");
+  if (hash === "todo" || hash === "alert" || hash === "today") {
+    var el = document.getElementById(hash);
+    if (el) setTimeout(function () { el.scrollIntoView({ behavior: "smooth", block: "start" }); }, 80);
+  }
+})();
+</script>
 </body>
 </html>

@@ -1,39 +1,41 @@
-/* 内容分类共享数据源
- * 「内容分类」页（content-category.html）为唯一维护入口，
- * 系列课 / 视频 / 图文 等内容列表筛选与编辑页的「内容分类」取值均来源于此。
- * 原型阶段为内存数据，各页面刷新后回到初始值。
- */
+/* 兼容层：内容分类已由「内容标签」替代；保留 ContentCats API 以免旧页报错 */
 (function () {
-  var CATS = [
-    { id: "C1", name: "默认分类", count: 2, enabled: true },
-    { id: "C2", name: "K12 教育", count: 2, enabled: true },
-    { id: "C3", name: "家庭教育", count: 0, enabled: true },
-    { id: "C4", name: "学习能力", count: 0, enabled: true }
-  ];
-
-  function esc(s) {
-    return String(s).replace(/[&<>"']/g, function (c) {
-      return ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c];
-    });
+  function ensureTags() {
+    if (window.ContentTags) return;
+    try {
+      var cur = document.currentScript;
+      var src = (cur && cur.src)
+        ? cur.src.replace(/content-cats\.js[^/]*$/, "content-tags.js")
+        : "../assets/js/content-tags.js";
+      var xhr = new XMLHttpRequest();
+      xhr.open("GET", src, false);
+      xhr.send(null);
+      if (xhr.status >= 200 && xhr.status < 300 && xhr.responseText) {
+        (0, eval)(xhr.responseText);
+      }
+    } catch (e) {}
   }
-
+  ensureTags();
+  var Tags = window.ContentTags;
   window.ContentCats = {
-    list: function () { return CATS; },
-    /* 启用中的分类名称数组 */
-    names: function () {
-      return CATS.filter(function (c) { return c.enabled; }).map(function (c) { return c.name; });
+    list: function () {
+      return (Tags ? Tags.treeFlat() : []).map(function (t) {
+        return { id: t.id, name: t.pathLabel || t.name, count: 0, enabled: t.enabled };
+      });
     },
-    /* 生成 <option> 片段
-     * opts.allLabel  ：首位「全部xx」筛选项（value=""）
-     * opts.emptyLabel：首位「请选择/未分类」占位项（value=""）
-     */
+    names: function () {
+      return (Tags ? Tags.treeFlat({ enabledOnly: true }) : []).map(function (t) { return t.name; });
+    },
     optionsHtml: function (opts) {
       opts = opts || {};
+      if (!Tags) return opts.allLabel ? '<option value="">' + opts.allLabel + "</option>" : "";
+      /* 旧 API 用 name 作 value；新标签用 id。过渡期同时输出 pathLabel 为展示、id 为 value */
       var html = "";
-      if (opts.allLabel) html += '<option value="">' + esc(opts.allLabel) + "</option>";
-      else if (opts.emptyLabel) html += '<option value="">' + esc(opts.emptyLabel) + "</option>";
-      CATS.filter(function (c) { return c.enabled; }).forEach(function (c) {
-        html += '<option value="' + esc(c.name) + '">' + esc(c.name) + "</option>";
+      if (opts.allLabel) html += '<option value="">' + Tags.esc(opts.allLabel) + "</option>";
+      else if (opts.emptyLabel) html += '<option value="">' + Tags.esc(opts.emptyLabel) + "</option>";
+      Tags.treeFlat({ enabledOnly: true }).forEach(function (t) {
+        var prefix = t.depth ? new Array(t.depth + 1).join("—") + " " : "";
+        html += '<option value="' + Tags.esc(t.id) + '">' + Tags.esc(prefix + t.name) + "</option>";
       });
       return html;
     }

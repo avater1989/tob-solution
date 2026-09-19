@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>首页 · To-B 小程序</title>
   <link rel="stylesheet" href="../assets/css/proto.css" />
-  <link rel="stylesheet" href="../assets/css/mp.css?v=15" />
+  <link rel="stylesheet" href="../assets/css/mp.css?v=16" />
 </head>
 <body class="mp-page" data-tab="home">
   <div class="mp-frame">
@@ -28,7 +28,16 @@
         </a>
       </div>
 
-      <!-- 艺博士欢迎卡（UI 稿整卡切图，保证还原度） -->
+      <!-- 金刚区 -->
+      <nav class="mp-king" aria-label="快捷入口">
+        <a href="plan.html"><span class="mp-king-ico k1">定</span>定制化</a>
+        <a href="courses.html"><span class="mp-king-ico k2">课</span>线上课</a>
+        <a href="offline.html"><span class="mp-king-ico k3">线</span>线下课</a>
+        <a href="articles.html"><span class="mp-king-ico k4">文</span>精选文章</a>
+        <a href="assess.html"><span class="mp-king-ico k5">测</span>测评</a>
+      </nav>
+
+      <!-- 艺博士欢迎卡 -->
       <a class="mp-doc mp-doc--shot" href="ai.html">
         <img src="../assets/img/mp-home/doc-card-full.png?v=2" alt="您好，我是艺博士。您的专属家庭成长顾问。您可以问：孩子辍学、青春期孩子叛逆、亲子沟通" />
       </a>
@@ -99,81 +108,31 @@
         </div>
       </div>
 
+      <!-- 线上课（原精选课程，排在线下课前） -->
+      <div class="mp-section mp-section--courses" style="padding-top:8px">
+        <div class="mp-section-head">
+          <div class="mp-section-title">线上课</div>
+          <a class="mp-section-more" href="courses.html">更多 ›</a>
+        </div>
+        <div id="home-online"></div>
+      </div>
+
       <!-- 线下课 -->
-      <div class="mp-section" style="padding-top:8px">
+      <div class="mp-section" style="padding-top:4px">
         <div class="mp-section-head">
           <div class="mp-section-title">线下课</div>
           <a class="mp-section-more" href="offline.html">更多 ›</a>
         </div>
-        <a class="mp-crow" href="offline-detail.html?id=O001">
-          <div class="mp-crow-cover">
-            <img src="../assets/img/covers/classroom.jpg" alt="线下课封面" />
-          </div>
-          <div class="mp-crow-bd">
-            <div class="mp-crow-title">卓越家族培养计划 · 线下工作坊</div>
-            <div class="mp-crow-tags">
-              <span class="mp-crow-tag">上海</span>
-              <span class="mp-crow-tag">报名中</span>
-            </div>
-            <div class="mp-crow-meta">赵老师 · 09-28 开课</div>
-            <div class="mp-crow-num">86/100 人已报名</div>
-          </div>
-          <span class="mp-crow-btn">¥299</span>
-        </a>
-        <a class="mp-crow" href="offline-detail.html?id=O002">
-          <div class="mp-crow-cover">
-            <img src="../assets/img/covers/talk.jpg" alt="线下课封面" />
-          </div>
-          <div class="mp-crow-bd">
-            <div class="mp-crow-title">亲子沟通实战 · 线下沙龙</div>
-            <div class="mp-crow-tags">
-              <span class="mp-crow-tag">深圳</span>
-              <span class="mp-crow-tag">免费</span>
-            </div>
-            <div class="mp-crow-meta">阮荣均 · 10-12 开课</div>
-            <div class="mp-crow-num">32/40 人已报名</div>
-          </div>
-          <span class="mp-crow-btn">报名</span>
-        </a>
+        <div id="home-offline"></div>
       </div>
 
-      <!-- 精选课程 -->
-      <div class="mp-section mp-section--courses">
+      <!-- 精选文章（内容推荐） -->
+      <div class="mp-section" style="padding-top:4px;padding-bottom:20px">
         <div class="mp-section-head">
-          <div class="mp-section-title">精选课程</div>
-          <a class="mp-section-more" href="learn.html">更多 ›</a>
+          <div class="mp-section-title">精选文章</div>
+          <a class="mp-section-more" href="articles.html">更多 ›</a>
         </div>
-
-        <a class="mp-crow" href="course.html">
-          <div class="mp-crow-cover">
-            <img src="../assets/img/mp-home/course-1.png" alt="课程封面" />
-          </div>
-          <div class="mp-crow-bd">
-            <div class="mp-crow-title">如何培养孩子的六大关键社会能力</div>
-            <div class="mp-crow-tags">
-              <span class="mp-crow-tag">养育规律</span>
-              <span class="mp-crow-tag">学前准备</span>
-            </div>
-            <div class="mp-crow-meta">秦红英 | 共12讲</div>
-            <div class="mp-crow-num">55497人学过</div>
-          </div>
-          <span class="mp-crow-btn">立即学习</span>
-        </a>
-
-        <a class="mp-crow" href="course.html">
-          <div class="mp-crow-cover">
-            <img src="../assets/img/mp-home/course-2.png" alt="课程封面" />
-          </div>
-          <div class="mp-crow-bd">
-            <div class="mp-crow-title">能量智慧站桩（初级）课程</div>
-            <div class="mp-crow-tags">
-              <span class="mp-crow-tag">生命实修</span>
-            </div>
-            <div class="mp-crow-meta">戴东 | 共16讲</div>
-            <div class="mp-crow-num">162851人学过</div>
-          </div>
-          <span class="mp-crow-btn">立即学习</span>
-        </a>
+        <div id="home-articles"></div>
       </div>
 
     </div>
@@ -183,20 +142,134 @@
       <span>顶部</span>
     </a>
   </div>
-  <p class="mp-hint">首页 = 搜索 + 艺博士欢迎卡 + 直播横滑 + 线下课 + 精选课程 · <a href="ai.html">艺博士</a> · <a href="../admin/mp-home.html">管理端装修</a></p>
+  <p class="mp-hint">首页 = 搜索 + 金刚区 + 艺博士 + 直播 + 线上课 + 线下课 + 精选文章 · <a href="ai.html">艺博士</a> · <a href="../admin/mp-home.html">管理端装修</a></p>
 
   <script src="../assets/js/proto.js"></script>
+  <script src="../assets/js/content-tags.js?v=2"></script>
+  <script src="../assets/js/teachers-store.js?v=2"></script>
+  <script src="../assets/js/course-store.js?v=1"></script>
   <script src="../assets/js/mp-shell.js"></script>
   <script>
-    (function () {
-      var body = document.getElementById("mpHomeBody");
-      var fab = document.getElementById("mpFloatTop");
-      if (!body || !fab) return;
+  (function () {
+    var Store = window.CourseStore;
+    var Tags = window.ContentTags;
+    var Teachers = window.Teachers;
+
+    function esc(s) {
+      return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) {
+        return ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c];
+      });
+    }
+
+    function tagNames(ids) {
+      return (ids || []).map(function (id) {
+        var t = Tags.get(id);
+        return t ? t.name : "";
+      }).filter(Boolean).slice(0, 2);
+    }
+
+    function renderOnline() {
+      var list = Store.list({ status: "enabled" }).filter(function (c) {
+        return c.storeVisible !== false;
+      }).slice(0, 3);
+      document.getElementById("home-online").innerHTML = list.map(function (c) {
+        var tags = tagNames(c.tagIds);
+        var priceBtn = c.price > 0 ? ("¥" + c.price) : "免费学";
+        var ch = Store.chapterCount(c);
+        return (
+          '<a class="mp-crow" href="course.html?id=' + encodeURIComponent(c.id) + '">' +
+            '<div class="mp-crow-cover"><img src="' + esc(c.cover) + '" alt="" /></div>' +
+            '<div class="mp-crow-bd">' +
+              '<div class="mp-crow-title">' + esc(c.name) + "</div>" +
+              '<div class="mp-crow-tags">' +
+                tags.map(function (n) { return '<span class="mp-crow-tag">' + esc(n) + "</span>"; }).join("") +
+                (c.badge === "hot" ? '<span class="mp-crow-tag">热门</span>' : "") +
+                (c.badge === "premium" ? '<span class="mp-crow-tag">精品</span>' : "") +
+              "</div>" +
+              '<div class="mp-crow-meta">' + esc(Teachers.nameOf(c.teacherId) || c.teacher || "讲师") +
+                (c.term ? " · " + esc(c.term) : "") + " · 共" + ch + "讲</div>" +
+              '<div class="mp-crow-num">' + (c.views || 0) + "人学过</div>" +
+            "</div>" +
+            '<span class="mp-crow-btn">' + priceBtn + "</span>" +
+          "</a>"
+        );
+      }).join("") || '<p style="padding:12px;color:#8c8c8c;font-size:13px">暂无线上课</p>';
+    }
+
+    var OFFLINES = [
+      {
+        id: "O001", name: "卓越家族培养计划 · 线下工作坊", teacherId: "TCH02",
+        city: "上海", courseStart: "09-28 09:30", price: 299, signed: 86, capacity: 100,
+        cover: "../assets/img/covers/classroom.jpg", phase: "报名中", tagIds: ["TG01", "TG02"]
+      },
+      {
+        id: "O002", name: "亲子沟通实战 · 线下沙龙", teacherId: "TCH01",
+        city: "深圳", courseStart: "10-12 14:00", price: 0, signed: 32, capacity: 40,
+        cover: "../assets/img/covers/talk.jpg", phase: "免费", tagIds: ["TG02"]
+      }
+    ];
+
+    function renderOffline() {
+      document.getElementById("home-offline").innerHTML = OFFLINES.map(function (o) {
+        var tags = tagNames(o.tagIds);
+        var btn = o.price > 0 ? ("¥" + o.price) : "报名";
+        return (
+          '<a class="mp-crow" href="offline-detail.html?id=' + encodeURIComponent(o.id) + '">' +
+            '<div class="mp-crow-cover"><img src="' + esc(o.cover) + '" alt="" /></div>' +
+            '<div class="mp-crow-bd">' +
+              '<div class="mp-crow-title">' + esc(o.name) + "</div>" +
+              '<div class="mp-crow-tags">' +
+                '<span class="mp-crow-tag">' + esc(o.city) + "</span>" +
+                '<span class="mp-crow-tag">' + esc(o.phase) + "</span>" +
+                tags.map(function (n) { return '<span class="mp-crow-tag">' + esc(n) + "</span>"; }).join("") +
+              "</div>" +
+              '<div class="mp-crow-meta">' + esc(Teachers.nameOf(o.teacherId)) + " · " + esc(o.courseStart) + " 开课</div>" +
+              '<div class="mp-crow-num">' + o.signed + "/" + o.capacity + " 人已报名</div>" +
+            "</div>" +
+            '<span class="mp-crow-btn">' + btn + "</span>" +
+          "</a>"
+        );
+      }).join("");
+    }
+
+    var ARTICLES = [
+      { id: "A001", title: "9 月新学期家长指南", cover: "../assets/img/covers/term.jpg", author: "编辑部", tagIds: ["TG04"], reads: 2340 },
+      { id: "A002", title: "孩子注意力训练方法论", cover: "../assets/img/covers/focus.jpg", author: "张老师", tagIds: ["TG06"], reads: 1560 },
+      { id: "A004", title: "亲子沟通的三个黄金句式", cover: "../assets/img/covers/talk.jpg", author: "李老师", tagIds: ["TG02"], reads: 980 }
+    ];
+
+    function renderArticles() {
+      document.getElementById("home-articles").innerHTML = ARTICLES.map(function (a) {
+        var tags = tagNames(a.tagIds);
+        return (
+          '<a class="mp-arow" href="article-detail.html?id=' + encodeURIComponent(a.id) + '">' +
+            '<div class="mp-arow-cover"><img src="' + esc(a.cover) + '" alt="" /></div>' +
+            '<div class="mp-arow-bd">' +
+              '<div class="mp-arow-title">' + esc(a.title) + "</div>" +
+              '<div class="mp-arow-meta">' +
+                (tags[0] ? "<span>" + esc(tags[0]) + "</span>" : "") +
+                "<span>" + esc(a.author) + "</span>" +
+                "<span>" + a.reads + " 阅读</span>" +
+              "</div>" +
+            "</div>" +
+          "</a>"
+        );
+      }).join("");
+    }
+
+    renderOnline();
+    renderOffline();
+    renderArticles();
+
+    var body = document.getElementById("mpHomeBody");
+    var fab = document.getElementById("mpFloatTop");
+    if (body && fab) {
       fab.addEventListener("click", function (e) {
         e.preventDefault();
         body.scrollTo({ top: 0, behavior: "smooth" });
       });
-    })();
+    }
+  })();
   </script>
 </body>
 </html>

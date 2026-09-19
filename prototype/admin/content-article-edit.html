@@ -3,11 +3,11 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>编辑图文 · 艺博 To-B</title>
+<title>编辑文章 · 艺博 To-B</title>
 <link rel="stylesheet" href="../assets/css/proto.css?v=9" />
 <link rel="stylesheet" href="../assets/css/content-mgmt.css?v=3" />
 </head>
-<body class="admin-body" data-module="content" data-nav="content-article" data-title="编辑图文" data-crumb="内容 / 内容管理 / 图文 / 编辑">
+<body class="admin-body" data-module="content" data-nav="content-article" data-title="编辑文章" data-crumb="内容 / 内容资产 / 文章 / 编辑">
 
 <div id="header-actions">
   <a class="btn" href="content-article.html">返回列表</a>
@@ -29,6 +29,7 @@
     <button class="btn active" data-goto="sec-content">内容信息</button>
     <button class="btn" data-goto="sec-body">图文正文</button>
     <button class="btn" data-goto="sec-status">状态设置</button>
+    <button class="btn" data-goto="sec-pay">付费解锁</button>
     <button class="btn" data-goto="sec-share">分享设置</button>
   </div>
 
@@ -39,9 +40,9 @@
         <label>图文名称 * <span style="float:right;color:#8c8c8c;font-weight:400" id="name-cnt">0/45</span></label>
         <input class="input" id="f-name" maxlength="45" placeholder="建议14字内" />
       </div>
-      <div class="field">
-        <label>内容分类 <span style="float:right;color:#8c8c8c;font-weight:400">取值于「内容分类」</span></label>
-        <select class="input" id="f-cat"></select>
+      <div class="field" style="grid-column:1/-1">
+        <label>内容标签 <span style="float:right;color:#8c8c8c;font-weight:400">树状多选，取值于「内容标签」</span></label>
+        <div id="f-tags"></div>
       </div>
       <div class="field">
         <label>作者</label>
@@ -102,6 +103,50 @@
     </div>
   </div>
 
+  <div class="cm-section" id="sec-pay">
+    <div class="cm-section-hd"><h2>付费解锁</h2></div>
+    <div class="form-grid" style="grid-template-columns:1fr 1fr">
+      <div class="field">
+        <label>免费 / 付费 * <span style="font-weight:400;color:#8c8c8c">默认免费，也可任务化编入学习计划</span></label>
+        <div class="cm-choice">
+          <label><input type="radio" name="pay-mode" value="free" checked> 免费（默认）</label>
+          <label><input type="radio" name="pay-mode" value="paid" id="pay-paid"> 付费解锁</label>
+        </div>
+      </div>
+      <div class="field">
+        <label>解锁条件</label>
+        <select class="input" id="f-unlock">
+          <option>购买关联商品后解锁全文</option>
+          <option>购买任意课程商品解锁</option>
+          <option>完成指定测评后解锁</option>
+        </select>
+      </div>
+      <div class="field" style="grid-column:1/-1">
+        <label>试看内容</label>
+        <textarea class="input" id="f-preview" rows="2" placeholder="付费文章的免费试看段落（未解锁用户可见）"></textarea>
+      </div>
+      <div class="field">
+        <label>关联商品</label>
+        <div style="display:flex;gap:8px;align-items:center">
+          <input class="input" id="f-goods" placeholder="goods_id，如 G-ART-001" style="flex:1" />
+          <a class="btn" href="goods-edit.html?type=article&content_id=A001">创建商品</a>
+          <a class="btn" href="goods.html?content_id=A001">查看关联商品</a>
+        </div>
+      </div>
+      <div class="field">
+        <label>发布状态</label>
+        <select class="input" id="f-pub">
+          <option>草稿</option><option>待审核</option><option>已发布</option><option>已下架</option>
+        </select>
+      </div>
+      <div class="field" style="grid-column:1/-1">
+        <label>阅读数据（示意）</label>
+        <div class="muted" style="font-size:13px">阅读 UV 1,286 · 付费解锁 328 · 转化率 25.5% · <a href="board-convert.html">查看交易分析</a></div>
+      </div>
+    </div>
+    <p class="muted" style="font-size:12px;margin:10px 0 0">默认免费可直接阅读；也可<a id="link-taskify" href="content-tasks.html?type=article">设为学习任务</a>。付费时闭环：文章 → 商品 → 订单 → 阅读权益。</p>
+  </div>
+
   <div class="cm-section" id="sec-share">
     <div class="cm-section-hd"><h2>分享设置 <span class="hint">自定义学员端分享卡片的标题、描述与封面；列表页「分享」弹窗（链接 / 二维码 / 海报）默认使用以上内容</span></h2></div>
     <div class="form-grid" style="grid-template-columns:1fr 1fr">
@@ -134,29 +179,31 @@
 </div>
 
 <script src="../assets/js/proto.js"></script>
-<script src="../assets/js/content-cats.js?v=1"></script>
+<script src="../assets/js/content-tags.js?v=2"></script>
 <script src="../assets/js/share-modal.js?v=1"></script>
-<script src="../assets/js/admin-shell.js?v=14"></script>
+<script src="../assets/js/admin-shell.js?v=16"></script>
 <script>
 var PRESET = {
-  A001: { name:"9 月新学期家长指南", cat:"K12 教育", author:"编辑部", intro:"用一篇图文快速了解新学期家长准备事项。", body:"新学期开始，家长可以从作息、书包整理、情绪陪伴三个维度做准备。" },
-  A002: { name:"孩子注意力训练方法论", cat:"学习能力", author:"张老师", intro:"可操作的注意力训练方法合集。", body:"注意力训练建议每天固定 10 分钟，从视觉追踪开始……" },
-  A003: { name:"家庭情绪急救指南", cat:"家庭教育", author:"李老师", intro:"冲突场景下的情绪急救步骤。", body:"先暂停、再命名情绪、最后再谈规则。" }
+  A001: { name:"9 月新学期家长指南", tagIds:["TG04"], author:"编辑部", intro:"用一篇图文快速了解新学期家长准备事项。", body:"新学期开始，家长可以从作息、书包整理、情绪陪伴三个维度做准备。" },
+  A002: { name:"孩子注意力训练方法论", tagIds:["TG06","TG04"], author:"张老师", intro:"可操作的注意力训练方法合集。", body:"注意力训练建议每天固定 10 分钟，从视觉追踪开始……" },
+  A003: { name:"家庭情绪急救指南", tagIds:["TG03","TG01"], author:"李老师", intro:"冲突场景下的情绪急救步骤。", body:"先暂停、再命名情绪、最后再谈规则。" }
 };
-// 内容分类下拉：取值于「内容分类」页面列表
-var catSel = document.getElementById("f-cat");
-catSel.insertAdjacentHTML("beforeend", window.ContentCats.optionsHtml({ emptyLabel: "未分类" }));
-
+var Tags = window.ContentTags;
 var id = new URLSearchParams(location.search).get("id") || "";
 var isNew = !id || !PRESET[id];
-document.getElementById("e-title").textContent = isNew ? "新建图文" : "编辑图文";
+document.getElementById("e-title").textContent = isNew ? "新建图文" : "编辑文章";
+var taskLink = document.getElementById("link-taskify");
+if (taskLink) taskLink.href = "content-tasks.html?type=article&ref=" + encodeURIComponent(id || "A001");
+var initTags = !isNew ? (PRESET[id].tagIds || []) : [];
+var tagPicker = Tags.mountTreeSelect("#f-tags", {
+  selectedIds: initTags,
+  placeholder: "请选择内容标签（可多选）"
+});
 if (!isNew) {
   var p = PRESET[id];
   document.getElementById("f-name").value = p.name;
   document.getElementById("f-intro").value = p.intro;
   document.getElementById("f-body").innerHTML = "<p>" + p.body + "</p>";
-  catSel.value = p.cat;
-  if (catSel.selectedIndex < 0) catSel.selectedIndex = 0;
   var au = document.getElementById("f-author");
   for (var j=0;j<au.options.length;j++) if (au.options[j].text === p.author) au.selectedIndex = j;
 }

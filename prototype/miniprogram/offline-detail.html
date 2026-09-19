@@ -5,14 +5,20 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>线下课详情 · To-B 小程序</title>
   <link rel="stylesheet" href="../assets/css/proto.css" />
-  <link rel="stylesheet" href="../assets/css/mp.css?v=11" />
+  <link rel="stylesheet" href="../assets/css/mp.css?v=15" />
   <style>
     .od-row { display:flex; justify-content:space-between; gap:12px; padding:10px 0; border-bottom:1px solid #f3f4f6; font-size:13px; }
     .od-row:last-child { border-bottom:0; }
     .od-k { color:#888; flex-shrink:0; }
-    .od-v { color:#1d2129; text-align:right; }
+    .od-v { color:#1d2129; text-align:right; max-width:68%; }
     .od-owned { background:#e8ffea; color:#00b42a; font-size:12px; padding:8px 12px; border-radius:8px; margin-top:10px; }
-    .od-reason { font-size:12px; color:#86909c; text-align:center; margin-top:6px; }
+    .od-reason { font-size:12px; color:#86909c; text-align:center; margin-top:6px; padding:0 16px 8px; }
+    .od-badge { font-size:11px;padding:1px 6px;border-radius:3px;background:#fff7e6;color:#d46b08;margin-left:6px; }
+    .od-badge.premium { background:#f9f0ff;color:#722ed1; }
+    .od-phase { font-size:11px;padding:1px 6px;border-radius:3px;background:#e8ffea;color:#00b42a;margin-left:6px; }
+    .od-phase.soon { background:#fff7e6;color:#d48806; }
+    .od-phase.ended { background:#f2f3f5;color:#86909c; }
+    .od-phase.live { background:#fff1f0;color:#f53f3f; }
     .mp-btn[disabled] { opacity:.45; pointer-events:none; }
   </style>
 </head>
@@ -20,7 +26,7 @@
   <div class="mp-frame" style="padding-bottom:72px">
     <div class="mp-top" style="height:190px"></div>
     <div class="mp-status"><span>9:41</span><span>线下课</span><span>100%</span></div>
-    <div class="mp-nav"><a class="back" href="offline.html">←</a>课程详情</div>
+    <div class="mp-nav"><a class="back" href="offline.html" id="od-back">←</a>课程详情</div>
     <div class="mp-body" id="od-root"></div>
     <div class="mp-bottom-bar">
       <button class="mp-btn" type="button" id="od-cta" style="flex:1">立即报名</button>
@@ -29,21 +35,34 @@
   <p class="mp-hint"><a href="offline.html">线下课列表</a> · <a href="../admin/content-offline-signups.html">管理端报名记录</a></p>
 
   <script src="../assets/js/proto.js"></script>
+  <script src="../assets/js/content-tags.js?v=2"></script>
+  <script src="../assets/js/teachers-store.js?v=2"></script>
   <script src="../assets/js/mp-shell.js"></script>
   <script src="../assets/js/mp-commerce.js"></script>
   <script>
+  var Tags = window.ContentTags;
+  var Teachers = window.Teachers;
+
   var COURSES = {
     O001: {
       id: "O001",
-      title: "卓越家族培养计划 · 线下工作坊",
-      teacher: "赵老师",
-      city: "上海",
-      address: "浦东新区陆家嘴环路 1000 号 3F 会议室",
+      name: "卓越家族培养计划 · 线下工作坊",
+      term: "秋启 01 期",
+      teacherId: "TCH02",
+      tagIds: ["TG01", "TG02"],
+      badge: "hot",
+      address: "上海市浦东新区陆家嘴环路 1000 号 3F",
       intro: "两天沉浸式工作坊，聚焦家族沟通与边界。",
+      outlineText: "Day1 家庭系统觉察；Day2 沟通实操与复盘",
+      detail: "<p>请提前 15 分钟到场签到。建议着装舒适，便于互动练习。</p>",
+      purchaseNotes: "未开课可退；开课后不支持退款。",
       signupStart: "2026-09-01T10:00:00",
       signupEnd: "2026-09-25T23:59:00",
       courseStart: "2026-09-28T09:30:00",
       courseEnd: "2026-09-29T17:00:00",
+      checkinStart: "2026-09-28T08:30:00",
+      checkinEnd: "2026-09-28T09:20:00",
+      expected: 80,
       capacity: 100,
       signed: 86,
       access: "paid",
@@ -52,15 +71,23 @@
     },
     O002: {
       id: "O002",
-      title: "亲子沟通实战 · 线下沙龙",
-      teacher: "阮荣均",
-      city: "深圳",
-      address: "南山区科技园南路 8 号活动厅",
+      name: "亲子沟通实战 · 线下沙龙",
+      term: "周末场",
+      teacherId: "TCH01",
+      tagIds: ["TG02", "TG04"],
+      badge: "premium",
+      address: "深圳市南山区科技园南路 8 号活动厅",
       intro: "半天沙龙，现场演练亲子对话。",
+      outlineText: "破冰 → 案例演练 → 答疑",
+      detail: "",
+      purchaseNotes: "免费名额，报满即止。",
       signupStart: "2026-09-10T09:00:00",
       signupEnd: "2026-10-05T18:00:00",
       courseStart: "2026-10-12T14:00:00",
       courseEnd: "2026-10-12T17:30:00",
+      checkinStart: "2026-10-12T13:30:00",
+      checkinEnd: "2026-10-12T13:55:00",
+      expected: 35,
       capacity: 40,
       signed: 32,
       access: "free",
@@ -69,15 +96,23 @@
     },
     O003: {
       id: "O003",
-      title: "学习习惯养成 · 线下营（筹备中）",
-      teacher: "王助教",
-      city: "北京",
-      address: "朝阳区望京街道待定",
-      intro: "三日营，筹备中。",
+      name: "学习习惯养成 · 线下营",
+      term: "冬令营",
+      teacherId: "TCH03",
+      tagIds: ["TG06", "TG04"],
+      badge: "",
+      address: "北京市海淀区中关村大街 1 号营地",
+      intro: "三天两夜集训，培养自主学习习惯。",
+      outlineText: "三天两夜日程",
+      detail: "",
+      purchaseNotes: "含食宿；开营前 7 天可退。",
       signupStart: "2026-11-01T10:00:00",
       signupEnd: "2026-11-20T23:59:00",
       courseStart: "2026-11-28T09:00:00",
       courseEnd: "2026-11-30T16:00:00",
+      checkinStart: "2026-11-28T08:00:00",
+      checkinEnd: "2026-11-28T08:50:00",
+      expected: 25,
       capacity: 30,
       signed: 0,
       access: "paid",
@@ -91,14 +126,20 @@
     try { return JSON.parse(localStorage.getItem(RIGHTS_KEY) || "{}") || {}; }
     catch (e) { return {}; }
   }
-  function hasRights(id) {
+  function hasRights(cid) {
     var m = readRights();
-    return !!(m[id] && m[id].valid);
+    return !!(m[cid] && m[cid].valid);
   }
-  function grantRights(id) {
+  function grantRights(cid) {
     var m = readRights();
-    m[id] = { valid: true, grantedAt: new Date().toISOString() };
+    m[cid] = { valid: true, grantedAt: new Date().toISOString() };
     localStorage.setItem(RIGHTS_KEY, JSON.stringify(m));
+  }
+
+  function esc(s) {
+    return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) {
+      return ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c];
+    });
   }
 
   function fmt(iso) {
@@ -110,6 +151,19 @@
     return m + "-" + day + " " + hh + ":" + mm;
   }
 
+  function derivePhase(o) {
+    var now = Date.now();
+    var ss = new Date(o.signupStart).getTime();
+    var se = new Date(o.signupEnd).getTime();
+    var cs = new Date(o.courseStart).getTime();
+    var ce = new Date(o.courseEnd).getTime();
+    if (now < ss) return { label: "报名未开始", cls: "soon" };
+    if (now <= se) return { label: "报名中", cls: "" };
+    if (now < cs) return { label: "报名截止", cls: "ended" };
+    if (now <= ce) return { label: "开课中", cls: "live" };
+    return { label: "已结束", cls: "ended" };
+  }
+
   function gateState(o) {
     var now = Date.now();
     var ss = new Date(o.signupStart).getTime();
@@ -117,61 +171,83 @@
     var ce = new Date(o.courseEnd).getTime();
     if (hasRights(o.id)) return { ok: false, owned: true, reason: "", label: "已报名" };
     if (now > ce) return { ok: false, owned: false, reason: "课程已结束", label: "已结束" };
-    if (now < ss) return { ok: false, owned: false, reason: "报名尚未开始", label: "报名未开始" };
+    if (now < ss) return { ok: false, owned: false, reason: "报名尚未开始（" + fmt(o.signupStart) + " 起）", label: "报名未开始" };
     if (now > se) return { ok: false, owned: false, reason: "报名已截止", label: "报名截止" };
     if (o.capacity && o.signed >= o.capacity) return { ok: false, owned: false, reason: "名额已满", label: "已满员" };
     if (o.access === "paid") return { ok: true, owned: false, reason: "", label: "立即购票 ¥" + o.price };
     return { ok: true, owned: false, reason: "", label: "立即报名" };
   }
 
-  var id = new URLSearchParams(location.search).get("id") || "O001";
+  var qs = new URLSearchParams(location.search);
+  var id = qs.get("id") || "O001";
   var o = COURSES[id] || COURSES.O001;
-  var demoPast = new URLSearchParams(location.search).get("demo") === "past";
-  if (demoPast) {
+  if (qs.get("from") === "home") document.getElementById("od-back").href = "home.html";
+
+  if (qs.get("demo") === "past") {
     o = Object.assign({}, o, {
       signupStart: "2026-08-01T10:00:00",
       signupEnd: "2026-08-10T23:59:00"
     });
   }
-
-  // If returned from pay success, grant rights
-  if (new URLSearchParams(location.search).get("signed") === "1") {
-    grantRights(o.id);
-  }
+  if (qs.get("signed") === "1") grantRights(o.id);
 
   var gate = gateState(o);
+  var phase = derivePhase(o);
+  var teacherName = Teachers.nameOf(o.teacherId) || "讲师";
+  var badge = o.badge === "hot" ? '<span class="od-badge">热门课</span>'
+    : (o.badge === "premium" ? '<span class="od-badge premium">精品课</span>' : "");
+  var tags = (o.tagIds || []).map(function (tid) {
+    var t = Tags.get(tid);
+    return t ? '<span class="mp-crow-tag">' + esc(t.name) + "</span>" : "";
+  }).join("");
+
   var priceHtml = o.access === "paid"
-    ? '<div style="color:#dc2626;font-size:22px;font-weight:700;margin-top:8px">¥' + o.price + '</div>'
+    ? '<div style="color:#dc2626;font-size:22px;font-weight:700;margin-top:8px">¥' + o.price + "</div>"
     : '<div style="color:#00b42a;font-size:18px;font-weight:700;margin-top:8px">免费报名</div>';
 
   document.getElementById("od-root").innerHTML =
-    '<div style="height:160px;background:url(' + o.cover + ') center/cover"></div>' +
+    '<div style="height:160px;background:url(' + esc(o.cover) + ') center/cover"></div>' +
     '<div style="background:#fff;padding:14px 16px">' +
-      '<h3 style="font-size:18px">' + o.title + "</h3>" +
-      '<p style="font-size:12px;color:#888;margin-top:6px">' + o.teacher + " · " + o.city + "</p>" +
+      '<h3 style="font-size:18px;line-height:1.4">' + esc(o.name) + badge +
+        ' <span class="od-phase ' + phase.cls + '">' + phase.label + "</span></h3>" +
+      '<p style="font-size:12px;color:#888;margin-top:6px">' +
+        Teachers.avatarHtml(o.teacherId, { size: 20 }) + " " + esc(teacherName) +
+        (o.term ? " · " + esc(o.term) : "") + "</p>" +
+      '<div class="mp-crow-tags" style="margin-top:8px">' + tags + "</div>" +
       priceHtml +
-      (gate.owned ? '<div class="od-owned">你已获得本场报名资格</div>' : "") +
+      (gate.owned ? '<div class="od-owned">你已获得本场报名资格 · 请按签到时间到场</div>' : "") +
     "</div>" +
     '<div class="mp-section">' +
-      '<div class="mp-section-title">场次信息</div>' +
+      '<div class="mp-section-title">时间与名额</div>' +
       '<div style="background:#fff;border-radius:10px;padding:4px 14px">' +
-        '<div class="od-row"><span class="od-k">报名窗口</span><span class="od-v">' + fmt(o.signupStart) + " ~ " + fmt(o.signupEnd) + "</span></div>" +
+        '<div class="od-row"><span class="od-k">报名时间</span><span class="od-v">' + fmt(o.signupStart) + " ~ " + fmt(o.signupEnd) + "</span></div>" +
         '<div class="od-row"><span class="od-k">课程时间</span><span class="od-v">' + fmt(o.courseStart) + " ~ " + fmt(o.courseEnd) + "</span></div>" +
-        '<div class="od-row"><span class="od-k">地址</span><span class="od-v">' + o.address + "</span></div>" +
-        '<div class="od-row"><span class="od-k">名额</span><span class="od-v">' + o.signed + "/" + o.capacity + "</span></div>" +
+        '<div class="od-row"><span class="od-k">签到时间</span><span class="od-v">' + fmt(o.checkinStart) + " ~ " + fmt(o.checkinEnd) + "</span></div>" +
+        '<div class="od-row"><span class="od-k">预计人数</span><span class="od-v">' + (o.expected || "—") + "</span></div>" +
+        '<div class="od-row"><span class="od-k">名额限制</span><span class="od-v">' + o.signed + " / " + (o.capacity || "不限") + "</span></div>" +
+        '<div class="od-row"><span class="od-k">上课地址</span><span class="od-v">' + esc(o.address) + "</span></div>" +
       "</div>" +
     "</div>" +
     '<div class="mp-section">' +
-      '<div class="mp-section-title">简介</div>' +
-      '<div style="background:#fff;border-radius:10px;padding:14px;font-size:13px;line-height:1.6;color:#4e5969">' + o.intro + "</div>" +
+      '<div class="mp-section-title">课程简介</div>' +
+      '<div style="background:#fff;border-radius:10px;padding:14px;font-size:13px;line-height:1.6;color:#4e5969">' + esc(o.intro) + "</div>" +
     "</div>" +
-    (gate.reason ? '<p class="od-reason" id="od-reason">' + gate.reason + "</p>" : '<p class="od-reason" id="od-reason" style="display:none"></p>');
+    '<div class="mp-section">' +
+      '<div class="mp-section-title">课程大纲</div>' +
+      '<div style="background:#fff;border-radius:10px;padding:14px;font-size:13px;line-height:1.6;color:#4e5969;white-space:pre-wrap">' + esc(o.outlineText || "—") + "</div>" +
+    "</div>" +
+    '<div class="mp-section">' +
+      '<div class="mp-section-title">购买须知</div>' +
+      '<div style="background:#fff;border-radius:10px;padding:14px;font-size:13px;line-height:1.6;color:#4e5969;white-space:pre-wrap">' + esc(o.purchaseNotes || "—") + "</div>" +
+    "</div>" +
+    (o.detail
+      ? ('<div class="mp-section"><div class="mp-section-title">课程详情</div><div style="background:#fff;border-radius:10px;padding:14px;font-size:13px;line-height:1.7">' + o.detail + "</div></div>")
+      : "") +
+    (gate.reason ? '<p class="od-reason">' + esc(gate.reason) + "</p>" : "");
 
   var cta = document.getElementById("od-cta");
   cta.textContent = gate.label;
-  if (!gate.ok) {
-    cta.disabled = true;
-  }
+  if (!gate.ok) cta.disabled = true;
 
   cta.addEventListener("click", function () {
     if (!gate.ok) return;
@@ -187,8 +263,16 @@
       catalogId: "offlineTicket",
       from: "offline",
       price: String(o.price),
-      returnUrl: "offline-detail.html?id=" + encodeURIComponent(o.id) + "&signed=1",
-      course: o.id
+      course: o.id,
+      title: o.name + " · 门票",
+      item: {
+        title: o.name + " · 门票",
+        typeLabel: "线下门票",
+        include: "本场线下课报名资格（含签到入场）",
+        startHow: "支付成功后可在详情页查看报名状态；请于签到时间到场",
+        validityStart: "支付成功即获得本场报名资格"
+      },
+      returnUrl: "offline-detail.html?id=" + encodeURIComponent(o.id) + "&signed=1"
     });
   });
   </script>

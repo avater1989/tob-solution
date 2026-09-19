@@ -17,9 +17,9 @@
 
   <!-- 商品类型 -->
   <div class="cm-section">
-    <div class="cm-section-hd"><h3>商品类型</h3><span class="muted">课程商品取值于「内容」模块（系列课 / 线下课 / 视频 / 图文）；定制化计划商品由「定制化计划」创建；直播商品由「直播」模块创建</span></div>
+    <div class="cm-section-hd"><h3>商品类型</h3><span class="muted">课程商品取值于「内容」模块（线上课 / 线下课 / 文章）；定制化计划商品由「定制化计划」创建；直播商品由「直播」模块创建</span></div>
     <div class="cm-choice" id="gd-type">
-      <label class="cm-choice-item active"><input type="radio" name="gtype" value="course" checked /><b>课程商品</b><span>交付内容可为系列课 / 线下课 / 视频 / 图文，购买后按内容形式交付</span></label>
+      <label class="cm-choice-item active"><input type="radio" name="gtype" value="course" checked /><b>课程商品</b><span>交付内容可为线上课 / 线下课 / 文章，购买后按内容形式交付</span></label>
       <label class="cm-choice-item"><input type="radio" name="gtype" value="plan" /><b>定制化计划商品</b><span>由定制化计划创建，按关卡与任务推进</span></label>
       <label class="cm-choice-item"><input type="radio" name="gtype" value="live" /><b>直播商品</b><span>由付费直播创建，购买后交付该场观看资格</span></label>
     </div>
@@ -94,7 +94,7 @@
           <select id="f-form" style="width:100%;padding:7px 8px;border:1px solid var(--color-border);border-radius:6px"></select>
           <select id="f-deliver" style="width:100%;padding:7px 8px;border:1px solid var(--color-border);border-radius:6px"></select>
         </div>
-        <div class="muted" style="font-size:12px;margin-top:4px" id="f-deliver-hint">取值于「系列课」已启用列表：购买后按目录解锁学习</div>
+        <div class="muted" style="font-size:12px;margin-top:4px" id="f-deliver-hint">取值于「线上课」已启用列表：购买后按章节解锁学习</div>
       </div>
       <div class="field"><label>交付方式</label>
         <select style="width:100%;padding:7px 8px;border:1px solid var(--color-border);border-radius:6px">
@@ -146,61 +146,59 @@
 </style>
 
 <script src="../assets/js/proto.js"></script>
-<script src="../assets/js/series-store.js?v=1"></script>
-<script src="../assets/js/admin-shell.js?v=15"></script>
+<script src="../assets/js/teachers-store.js?v=1"></script>
+<script src="../assets/js/course-store.js?v=1"></script>
+<script src="../assets/js/admin-shell.js?v=16"></script>
 <script>
 (function () {
-  var Store = window.SeriesStore;
+  var Store = window.CourseStore;
   var boundSeriesId = "";
 
-  // 支持 ?from=series|plan&id=xxx&title=商品名称&desc=简介
+  // 支持 ?from=series|online_course|plan&id=xxx 或 ?type=online_course&content_id=
   try {
     var q = new URLSearchParams(location.search);
-    var from = q.get("from") || "";
-    var sid = q.get("id") || "";
+    var from = q.get("from") || q.get("type") || "";
+    var sid = q.get("id") || q.get("content_id") || "";
     var title = q.get("title") || "";
     var desc = q.get("desc") || "";
 
-    if (from === "series" && sid) {
+    if ((from === "series" || from === "online_course") && sid) {
       var course = Store.get(sid);
       if (!course) {
-        Proto.toast("未找到系列课 " + sid);
+        Proto.toast("未找到线上课 " + sid);
       } else if (!Store.canCreateGoods(course)) {
-        Proto.toast("该系列课未启用，无法创建商品");
+        Proto.toast("该线上课未启用，无法创建商品");
       } else {
         boundSeriesId = course.id;
         document.getElementById("f-gname").value = title || course.name;
         if (desc || course.intro) {
           document.getElementById("f-gdetail").value = desc || course.intro;
         }
-        Proto.toast("已带入系列课「" + course.name + "」，保存后将绑定交付内容");
+        Proto.toast("已带入线上课「" + course.name + "」，保存后将绑定交付内容");
       }
     } else if (title) {
       document.getElementById("f-gname").value = title;
       if (desc) document.getElementById("f-gdetail").value = desc;
-      var srcName = from === "plan" ? "定制化计划" : "系列课";
+      var srcName = from === "plan" ? "定制化计划" : "线上课";
       Proto.toast("已带入" + srcName + "「" + title + "」的内容，请继续完善商品信息与价格（原型）");
     }
   } catch (ePre) {}
 
-  // 交付内容：先选「内容形式」（系列课 / 线下课 / 视频 / 图文），再取该形式下的具体内容
-  function enabledSeriesNames() {
+  function enabledCourseNames() {
     return Store.list({ status: Store.STATUS.enabled }).map(function (c) {
       return { id: c.id, name: c.name };
     });
   }
 
   var CONTENT_FORMS = [
-    { key: "series",  label: "系列课", hint: "取值于「系列课」已启用列表：购买后按目录解锁学习" },
-    { key: "offline", label: "线下课", hint: "取值于「线下课」已上架场次：购买后生成门票，活动当天凭订单二维码线下核销" },
-    { key: "video",   label: "视频",   hint: "取值于「视频」已上架内容：购买后交付观看资格" },
-    { key: "article", label: "图文",   hint: "取值于「图文」已上架内容：购买后交付阅读权限" }
+    { key: "online_course", label: "线上课", hint: "取值于「线上课」已启用列表：购买后按章节解锁学习" },
+    { key: "offline", label: "线下课", hint: "取值于「线下课」已上架场次：购买后生成门票" },
+    { key: "article", label: "文章", hint: "仅付费文章需建商品；默认免费文章无需商品" }
   ];
   var FORM_DELIVER = {
-    series:  enabledSeriesNames(),
+    online_course: enabledCourseNames(),
     offline: [{ id: "O001", name: "卓越家族培养计划 · 线下工作坊" }, { id: "O002", name: "亲子沟通实战 · 线下沙龙" }, { id: "O003", name: "学习习惯养成 · 线下营（筹备中）" }],
-    video:   [{ id: "V001", name: "如何让孩子爱上阅读" }, { id: "V002", name: "亲子沟通的 5 个关键" }, { id: "V003", name: "AI 助力学习规划" }],
-    article: [{ id: "A001", name: "9 月新学期家长指南" }, { id: "A002", name: "孩子注意力训练方法论" }, { id: "A003", name: "家庭情绪急救指南" }]
+    article: [{ id: "A001", name: "9 月新学期家长指南（若设为付费）" }, { id: "A002", name: "孩子注意力训练方法论" }]
   };
   var TYPE_DELIVER = {
     plan: [{ id: "", name: "亲子沟通 21 天定制化计划 · 第 4 期" }, { id: "", name: "开学季学习习惯养成计划" }, { id: "", name: "青春期沟通家长共学计划" }],
@@ -213,7 +211,7 @@
     return '<option value="' + f.key + '"' + (i === 0 ? " selected" : "") + ">" + f.label + "</option>";
   }).join("");
 
-  function selectedForm() { return formSel.value || "series"; }
+  function selectedForm() { return formSel.value || "online_course"; }
 
   /* 只有「课程商品」有内容形式维度；定制化计划 / 直播商品来源唯一，隐藏内容形式 */
   function renderDeliver(type) {
@@ -222,7 +220,7 @@
     var list, hint;
     if (isCourse) {
       var form = selectedForm();
-      list = form === "series" ? enabledSeriesNames() : (FORM_DELIVER[form] || []);
+      list = form === "online_course" ? enabledCourseNames() : (FORM_DELIVER[form] || []);
       hint = (CONTENT_FORMS.filter(function (f) { return f.key === form; })[0] || {}).hint || "";
     } else {
       list = TYPE_DELIVER[type] || [];
@@ -261,7 +259,7 @@
     var seriesId = boundSeriesId || (deliverVal && Store.get(deliverVal) ? deliverVal : "");
     if (seriesId) {
       Store.setGoodsId(seriesId, goodsId);
-      Proto.toast("商品 " + goodsId + " 已绑定系列课 " + seriesId + "，已提交审核队列（原型）");
+      Proto.toast("商品 " + goodsId + " 已绑定线上课 " + seriesId + "，已提交审核队列（原型）");
     } else {
       Proto.toast("保存成功，已提交内容审核队列（原型）");
     }
