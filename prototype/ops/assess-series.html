@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>测评包 · 运营后台</title>
 <link rel="stylesheet" href="../assets/css/proto.css?v=9" />
-<link rel="stylesheet" href="../assets/css/assess.css?v=4" />
+<link rel="stylesheet" href="../assets/css/assess.css?v=5" />
 </head>
 <body class="admin-body" data-module="content" data-nav="assess-series" data-title="测评包" data-crumb="运营后台 / 内容与审核 / 测评中心 / 测评包">
 
@@ -16,7 +16,7 @@
 
 <div id="page-content" style="display:none">
   <div class="as-banner" style="background:#f0f5ff;border:1px solid #bedaff;border-radius:8px;padding:12px 14px;margin-bottom:14px;font-size:13px">
-    <b>测评包</b> = 用<strong>分支流程</strong>组合「分流问题」与「测评项目」。用户先答题，按选项进入下一问题或整份测评（非线性串联）。
+    <b>测评包</b> = 用 <strong>LogicFlow</strong> 编排「分流问题」与「测评项目」。单测评内部跳转在题目选项上配置；包级只负责把用户路由到哪一份测评。
   </div>
 
   <div class="card" style="margin-bottom:14px"><div class="card-bd" style="padding:12px 16px">
@@ -35,6 +35,7 @@
         <th style="width:48px">序号</th>
         <th>测评包</th>
         <th style="width:160px">流程摘要</th>
+        <th style="width:160px">报告模板</th>
         <th style="width:80px">状态</th>
         <th style="width:80px">上下架</th>
         <th style="width:320px">操作</th>
@@ -51,8 +52,12 @@
     <div class="proto-modal-bd">
       <div class="field"><label>测评包名称 *</label><input class="input" id="m-name" placeholder="如：家庭教育入门测评包" /></div>
       <div class="field"><label>描述</label><textarea class="input" id="m-desc" rows="2" placeholder="说明适用对象与分流逻辑"></textarea></div>
+      <div class="field"><label>报告模板 * <span class="muted" style="font-weight:400">每个测评包仅可关联一份</span></label>
+        <select class="input" id="m-tpl"></select>
+        <p class="muted" style="font-size:12px;margin:6px 0 0">包级报告在用户完成包流程后按此模板 + 智能体生成。</p>
+      </div>
       <div class="field"><label style="display:flex;align-items:center;gap:8px;font-weight:400"><input type="checkbox" id="m-enabled" checked> 启用该测评包</label></div>
-      <p class="muted" style="font-size:12px;margin:0">保存后请进入「流程配置」：添加分流题与测评节点，并用选项连线。</p>
+      <p class="muted" style="font-size:12px;margin:0">保存后进入 LogicFlow 编排：添加分流题 / 测评节点并连线。</p>
     </div>
     <div class="proto-modal-ft" style="justify-content:flex-end;gap:8px">
       <button class="btn" data-close>取消</button>
@@ -75,10 +80,12 @@
 <div class="proto-mask" id="mask"></div>
 
 <script src="../assets/js/proto.js"></script>
-<script src="../assets/js/assess-flow-store.js?v=1"></script>
+<script src="../assets/js/assess-flow-store.js?v=2"></script>
+<script src="../assets/js/assess-report-store.js?v=1"></script>
 <script src="../assets/js/ops-shell.js?v=16"></script>
 <script>
 var Store = window.AssessFlowStore;
+var ReportStore = window.AssessReportStore;
 var editing = null;
 
 function esc(s) {
@@ -113,10 +120,11 @@ function render() {
       "<td><div class=\"as-name\">" + esc(s.name) + "</div>" +
       "<div class=\"as-desc\">" + esc(s.desc || "") + "</div></td>" +
       "<td style=\"font-size:12px\">" + esc(Store.packageSummary(s)) + "</td>" +
+      "<td style=\"font-size:12px\">" + esc(ReportStore.templateLabel(s.reportTemplateId)) + "</td>" +
       '<td><span class="as-tag ' + (s.enabled !== false ? "green" : "gray") + '">' + (s.enabled !== false ? "已启用" : "已停用") + "</span></td>" +
       '<td><span class="as-tag ' + (s.shelf === "已上架" ? "green" : "orange") + '">' + esc(s.shelf || "已下架") + "</span></td>" +
       '<td><div class="as-acts">' + acts + "</div></td></tr>";
-  }).join("") || '<tr><td colspan="6" style="text-align:center;color:#bfbfbf;padding:28px">暂无测评包</td></tr>';
+  }).join("") || '<tr><td colspan="7" style="text-align:center;color:#bfbfbf;padding:28px">暂无测评包</td></tr>';
 }
 
 var mask = document.getElementById("mask");
@@ -136,6 +144,7 @@ function openEdit(sid) {
   document.getElementById("m-name").value = s ? s.name : "";
   document.getElementById("m-desc").value = s ? (s.desc || "") : "";
   document.getElementById("m-enabled").checked = s ? s.enabled !== false : true;
+  document.getElementById("m-tpl").innerHTML = ReportStore.templateOptionsHtml(s ? s.reportTemplateId : "RT01");
   openM("modal-edit");
 }
 
@@ -144,7 +153,9 @@ document.getElementById("btn-query").onclick = render;
 
 document.getElementById("btn-save").onclick = function () {
   var name = document.getElementById("m-name").value.trim();
+  var tpl = document.getElementById("m-tpl").value;
   if (!name) { Proto.toast("请填写测评包名称"); return; }
+  if (!tpl) { Proto.toast("请选择报告模板"); return; }
   var id = editing || ("MS" + Date.now().toString().slice(-4));
   var prev = Store.getPackageFlow(id);
   var flow = prev || {
@@ -159,6 +170,7 @@ document.getElementById("btn-save").onclick = function () {
   flow.name = name;
   flow.desc = document.getElementById("m-desc").value.trim();
   flow.enabled = document.getElementById("m-enabled").checked;
+  flow.reportTemplateId = tpl;
   flow.shelf = prev ? (prev.shelf || "已下架") : "已下架";
   Store.savePackageFlow(flow);
   closeAll();
@@ -173,6 +185,7 @@ document.addEventListener("click", function (e) {
       '<div class="as-name" style="font-size:16px;margin-bottom:6px">' + esc(s.name) + "</div>" +
       '<div class="as-desc" style="margin-bottom:12px">' + esc(s.desc || "") + "</div>" +
       "<div style=\"font-size:13px\">" + esc(Store.packageSummary(s)) + " · " + esc(s.shelf || "") + "</div>" +
+      "<div style=\"font-size:13px;margin-top:8px\">报告模板：" + esc(ReportStore.templateLabel(s.reportTemplateId)) + "</div>" +
       '<p class="muted" style="font-size:12px;margin-top:12px">在流程画布中配置：分流问题选项 → 问题或测评。</p>';
     document.getElementById("view-flow").href = "assess-flow.html?scope=package&id=" + encodeURIComponent(s.ownerId);
     openM("modal-view");

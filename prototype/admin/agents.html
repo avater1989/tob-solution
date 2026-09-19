@@ -14,7 +14,7 @@
 
 <div id="page-content" style="display:none">
   <div class="as-banner" style="background:#f0f5ff;border:1px solid #bedaff;border-radius:8px;padding:12px 14px;margin-bottom:14px;font-size:13px;color:#1d2129">
-    智能体是能力资产（对接智言），<strong>不可单独商品化售卖</strong>。业务上仅以<strong>任务</strong>形式编入<a href="assess-plans.html">定制化计划</a>（计划 → 关卡 → 智能体任务）。报告模板可引用其解读能力，但不构成商品。
+    智能体是能力资产（对接智言），<strong>不可单独商品化售卖</strong>。可编入<a href="assess-plans.html">定制化计划</a>任务；具备「报告生成」能力的智能体可被<a href="assess-report-templates.html">报告模板</a>关联，用于生成测评报告解读。
   </div>
 
   <div class="card" style="margin-bottom:14px"><div class="card-bd" style="padding:12px 16px">
@@ -58,8 +58,9 @@
 <script src="../assets/js/admin-shell.js?v=20"></script>
 <script>
 var AGENTS = [
-  { id: "AG01", name: "亲子沟通辅导助手", desc: "在计划关卡中与家长对话辅导", capability: "对话辅导", source: "智言", taskable: true, input: "用户画像+关卡目标", output: "建议文本", status: "启用" },
-  { id: "AG02", name: "家庭教育顾问", desc: "按关卡目标给出每日练习建议", capability: "对话辅导", source: "智言", taskable: true, input: "用户画像+关卡目标", output: "建议文本", status: "启用" },
+  { id: "AG01", name: "亲子沟通辅导助手", desc: "计划关卡对话辅导；亦可用于报告解读", capability: "对话辅导 / 报告生成", source: "智言", taskable: true, input: "用户画像+关卡目标/测评结果", output: "建议文本", status: "启用" },
+  { id: "AG02", name: "家庭教育顾问", desc: "关卡练习建议与报告解读", capability: "对话辅导 / 报告生成", source: "智言", taskable: true, input: "用户画像+关卡目标/测评结果", output: "建议文本", status: "启用" },
+  { id: "AG05", name: "测评报告解读引擎", desc: "专用于测评报告内容生成", capability: "报告生成", source: "智言", taskable: false, input: "测评结果+模板变量", output: "报告解读 HTML 片段", status: "启用" },
   { id: "AG03", name: "情绪识别助手", desc: "关卡练习中识别情绪倾向", capability: "情绪分析", source: "智言", taskable: true, input: "用户文本", output: "标签+建议", status: "启用" },
   { id: "AG04", name: "旧版闲聊助手", desc: "已停用，不可编入计划", capability: "闲聊", source: "智言", taskable: false, input: "文本", output: "回复", status: "停用" }
 ];
@@ -94,7 +95,10 @@ function render() {
         (a.taskable
           ? "<a href='content-tasks.html?type=agent&agent_id=" + a.id + "'>生成任务</a>" +
             "<a href='assess-plans.html?agent_id=" + a.id + "'>编入定制化计划</a>"
-          : "<span class='muted' style='font-size:12px'>不可用</span>") +
+          : "") +
+        (String(a.capability).indexOf("报告生成") >= 0
+          ? "<a href='assess-report-templates.html?agent_id=" + a.id + "'>用于报告模板</a>"
+          : (!a.taskable ? "<span class='muted' style='font-size:12px'>不可用</span>" : "")) +
       "</td></tr>";
   }).join("") || "<tr><td colspan='9' style='text-align:center;color:#bfbfbf;padding:28px'>暂无智能体</td></tr>";
 }

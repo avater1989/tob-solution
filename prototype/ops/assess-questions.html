@@ -5,19 +5,20 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>配置题目 · 运营后台</title>
 <link rel="stylesheet" href="../assets/css/proto.css?v=9" />
-<link rel="stylesheet" href="../assets/css/assess.css?v=4" />
+<link rel="stylesheet" href="../assets/css/assess.css?v=6" />
 </head>
 <body class="admin-body" data-module="content" data-nav="assess-questions" data-title="题库" data-crumb="运营后台 / 内容与审核 / 测评中心 / 题库">
 
 <div id="header-actions">
   <a class="btn" id="btn-back-assess" href="assess-projects.html" style="display:none">返回测评</a>
-  <a class="btn" id="btn-flow" href="#" style="display:none">打开流程画布</a>
-  <button class="btn btn-primary" id="btn-new-q">+ 新建题目</button>
+  <button class="btn" id="btn-preview" style="display:none">流程预览</button>
+  <button class="btn" id="btn-from-bank" style="display:none">+ 引用题库</button>
+  <button class="btn btn-primary" id="btn-new-q">+ 手动新建</button>
 </div>
 
 <div id="page-content" style="display:none">
   <div id="bank-banner" class="as-banner" style="background:#f0f5ff;border:1px solid #bedaff;border-radius:8px;padding:12px 14px;margin-bottom:14px;font-size:13px">
-    题库为可复用基础资产。测评项目内的作答顺序与分支请在「流程画布」配置（选项 → 下一题 / 题组 / 结束）。
+    题库为可复用基础资产，供各测评「引用」。配置具体测评时，每道题可在本页<strong>手动填写</strong>或<strong>引用题库</strong>，无需跳离测评。
   </div>
   <a class="cm-back" id="back-link" href="assess-projects.html" style="display:none;color:#165dff;font-size:13px;margin-bottom:12px;text-decoration:none">← 返回测评列表</a>
   <div id="sync-banner" style="display:none"></div>
@@ -26,7 +27,7 @@
     <div style="width:56px;height:56px;border-radius:12px;background:linear-gradient(135deg,#165dff,#4080ff);color:#fff;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:700" id="av">亲</div>
     <div style="flex:1">
       <div style="font-size:16px;font-weight:600" id="p-name">—</div>
-      <div style="font-size:13px;color:#8c8c8c;margin-top:4px"><span id="p-desc">—</span> · <b id="p-cnt" style="color:#165dff">0</b> 道题目 · 分支在流程画布</div>
+      <div style="font-size:13px;color:#8c8c8c;margin-top:4px"><span id="p-desc">—</span> · <b id="p-cnt" style="color:#165dff">0</b> 道题目 · 手动填写或引用题库 · 选项级跳转</div>
     </div>
     <span class="as-tag gray" id="p-status">草稿</span>
   </div>
@@ -38,10 +39,11 @@
 </div>
 
 <div class="proto-modal" id="modal-q">
-  <div style="background:#fff;border-radius:10px;width:560px;max-width:94vw;max-height:88vh;overflow:auto">
+  <div style="background:#fff;border-radius:10px;width:640px;max-width:94vw;max-height:88vh;overflow:auto">
     <div class="proto-modal-hd"><h3 style="margin:0;font-size:16px" id="q-modal-title">新建题目</h3><button class="ctrl-icon-btn" data-close>×</button></div>
     <div class="proto-modal-bd">
-      <p class="muted" style="margin:0 0 12px;font-size:12px">配置题目内容与选项；跳转分支请到流程画布</p>
+      <p class="muted" id="q-modal-hint" style="margin:0 0 12px;font-size:12px">配置题目内容与选项</p>
+      <div id="q-ref-tip" class="as-banner" style="display:none;margin-bottom:12px;padding:8px 12px;font-size:12px"></div>
       <div class="field"><label>题目内容 *</label><input class="input" id="q-text" placeholder="请输入题目内容" /></div>
       <div class="form-grid" style="grid-template-columns:1fr 1fr">
         <div class="field"><label>题目类型 *</label>
@@ -57,7 +59,7 @@
       </div>
       <div class="field" id="opts-field">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
-          <label style="margin:0">选项与分值</label>
+          <label style="margin:0">选项 · 分值 · 跳转到</label>
           <button type="button" class="btn" id="btn-add-opt">+ 添加选项</button>
         </div>
         <div id="opt-rows"></div>
@@ -70,10 +72,41 @@
   </div>
 </div>
 
+<div class="proto-modal" id="modal-bank">
+  <div style="background:#fff;border-radius:10px;width:640px;max-width:94vw;max-height:88vh;overflow:hidden;display:flex;flex-direction:column">
+    <div class="proto-modal-hd"><h3 style="margin:0;font-size:16px">引用题库题目</h3><button class="ctrl-icon-btn" data-close>×</button></div>
+    <div class="proto-modal-bd" style="overflow:auto;flex:1">
+      <p class="muted" style="margin:0 0 12px;font-size:12px">勾选后将内容复制到本测评（可再改跳转）；不离开当前页。</p>
+      <input class="input" id="bank-q" placeholder="搜索题干…" style="margin-bottom:12px" />
+      <div id="bank-list"></div>
+    </div>
+    <div class="proto-modal-ft" style="justify-content:space-between;gap:8px">
+      <span class="muted" style="font-size:12px">已选 <b id="bank-sel-cnt">0</b> 题</span>
+      <div style="display:flex;gap:8px">
+        <button class="btn" data-close>取消</button>
+        <button class="btn btn-primary" id="btn-import-bank">引用到本测评</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="proto-modal" id="modal-preview">
+  <div class="as-wide-modal" style="background:#fff;border-radius:10px;width:min(960px,96vw);max-height:90vh;overflow:hidden;display:flex;flex-direction:column">
+    <div class="proto-modal-hd"><h3 style="margin:0;font-size:16px">流程预览</h3><button class="ctrl-icon-btn" data-close>×</button></div>
+    <div class="proto-modal-bd" style="padding:0;overflow:auto;flex:1;background:#f7f8fa">
+      <p class="muted" style="margin:12px 16px 0;font-size:12px">只读关系图：题目 → 选项跳转 → 下一题 / 结束。不在此编辑。</p>
+      <div id="preview-graph" style="min-height:420px;padding:12px 16px 20px;overflow:auto"></div>
+    </div>
+    <div class="proto-modal-ft" style="justify-content:flex-end">
+      <button class="btn" data-close>关闭</button>
+    </div>
+  </div>
+</div>
+
 <div class="proto-mask" id="mask"></div>
 
 <script src="../assets/js/proto.js"></script>
-<script src="../assets/js/assess-flow-store.js?v=1"></script>
+<script src="../assets/js/assess-flow-store.js?v=3"></script>
 <script src="../assets/js/ops-shell.js?v=16"></script>
 <script>
 var Store = window.AssessFlowStore;
@@ -91,10 +124,14 @@ var SYNC = meta.source === "platform" || qs.get("sync") === "1";
 var flow = null;
 var list = [];
 var editIdx = -1;
+var editSource = "manual";
+var editBankRef = null;
+var bankSel = {};
 
 if (bankMode) {
   document.getElementById("project-hero").style.display = "none";
   document.getElementById("list-title").textContent = "题目资产列表（可被多测评引用）";
+  document.getElementById("btn-new-q").textContent = "+ 新建题库题目";
   document.title = "题库 · 运营后台";
   list = Store.getBank();
 } else {
@@ -102,12 +139,13 @@ if (bankMode) {
   document.getElementById("bank-banner").style.display = "none";
   document.getElementById("back-link").style.display = "inline-flex";
   document.getElementById("btn-back-assess").style.display = "";
-  document.getElementById("btn-flow").style.display = "";
-  document.getElementById("btn-flow").href = "assess-flow.html?id=" + encodeURIComponent(id);
-  document.getElementById("list-title").textContent = "本测评题目（内容）";
+  document.getElementById("btn-preview").style.display = "";
+  document.getElementById("btn-from-bank").style.display = "";
+  document.getElementById("list-title").textContent = "本测评题目与跳转";
+  document.getElementById("q-modal-hint").textContent = "手动填写内容；每个选项可配置跳转到下一题 / 指定题 / 结束";
   document.body.setAttribute("data-nav", "assess-projects");
   document.body.setAttribute("data-title", "配置题目");
-  document.body.setAttribute("data-crumb", "内容 / 测评中心 / 测评项目 / 配置题目");
+  document.body.setAttribute("data-crumb", "运营后台 / 内容与审核 / 测评中心 / 测评项目 / 配置题目");
   flow = Store.getAssessmentFlow(id) || Store.ensureAssessment(id, meta);
   list = flow.questions || [];
   document.getElementById("p-name").textContent = flow.name || meta.name;
@@ -119,9 +157,11 @@ if (bankMode) {
 if (SYNC && !bankMode) {
   document.getElementById("sync-banner").style.display = "";
   document.getElementById("sync-banner").innerHTML =
-    '<div class="as-banner" style="background:#f9f0ff;border-color:#d3adf7;color:#531dab">平台同步测评，题目只读；流程由平台维护。</div>';
+    '<div class="as-banner" style="background:#f9f0ff;border-color:#d3adf7;color:#531dab">平台同步测评，题目与跳转只读。</div>';
   document.getElementById("btn-new-q").disabled = true;
   document.getElementById("btn-new-q").style.opacity = ".5";
+  document.getElementById("btn-from-bank").disabled = true;
+  document.getElementById("btn-from-bank").style.opacity = ".5";
 }
 
 function esc(s) {
@@ -130,19 +170,31 @@ function esc(s) {
   });
 }
 
-function edgeCount(qid) {
-  if (!flow) return 0;
-  var node = (flow.nodes || []).find(function (n) { return n.type === "question" && n.questionId === qid; });
-  if (!node) return 0;
-  return (flow.edges || []).filter(function (e) { return e.fromNodeId === node.id; }).length;
+function jumpOptionsHtml(selected, excludeId) {
+  var opts = [
+    { v: Store.JUMP_NEXT, t: "下一题（顺序）" },
+    { v: Store.JUMP_END, t: "结束测评" },
+    { v: Store.JUMP_RISK, t: "结束并标记高风险" }
+  ];
+  list.forEach(function (q) {
+    if (q.id === excludeId) return;
+    opts.push({ v: q.id, t: "跳至 Q" + (list.indexOf(q) + 1) + "：" + (q.text || q.id).slice(0, 18) });
+  });
+  return opts.map(function (o) {
+    return '<option value="' + esc(o.v) + '"' + (o.v === selected ? " selected" : "") + ">" + esc(o.t) + "</option>";
+  }).join("");
 }
 
-function renderOptRows(opts) {
-  opts = opts && opts.length ? opts : [{ id: "O1", t: "选项1", s: 0 }, { id: "O2", t: "选项2", s: 1 }];
+function renderOptRows(opts, excludeId) {
+  opts = opts && opts.length ? opts : [{ id: "O1", t: "选项1", s: 0, jumpTo: Store.JUMP_NEXT }, { id: "O2", t: "选项2", s: 1, jumpTo: Store.JUMP_NEXT }];
   document.getElementById("opt-rows").innerHTML = opts.map(function (o, i) {
-    return '<div class="as-opt-row">' +
+    var jumpCell = bankMode
+      ? '<input type="hidden" data-oj="' + i + '" value="' + esc(o.jumpTo || Store.JUMP_NEXT) + '" />'
+      : '<select class="input" data-oj="' + i + '" style="min-width:160px">' + jumpOptionsHtml(o.jumpTo || Store.JUMP_NEXT, excludeId) + "</select>";
+    return '<div class="as-opt-row" style="grid-template-columns:' + (bankMode ? "1fr 72px 40px" : "1fr 72px 1fr 40px") + '">' +
       '<input class="input" data-ot="' + i + '" value="' + esc(o.t) + '" placeholder="选项内容" />' +
       '<input class="input score" data-os="' + i + '" type="number" value="' + o.s + '" placeholder="分数" />' +
+      jumpCell +
       '<input type="hidden" data-oid="' + i + '" value="' + esc(o.id || "") + '" />' +
       '<button type="button" class="btn" data-rm-opt="' + i + '" style="color:#f53f3f">删</button></div>';
   }).join("");
@@ -152,6 +204,7 @@ function readOptRows() {
   var texts = document.querySelectorAll("[data-ot]");
   var scores = document.querySelectorAll("[data-os]");
   var ids = document.querySelectorAll("[data-oid]");
+  var jumps = document.querySelectorAll("[data-oj]");
   var out = [];
   texts.forEach(function (inp, i) {
     var t = inp.value.trim();
@@ -159,14 +212,18 @@ function readOptRows() {
     out.push(Store.normalizeOpt({
       id: ids[i] && ids[i].value,
       t: t,
-      s: +(scores[i] && scores[i].value) || 0
+      s: +(scores[i] && scores[i].value) || 0,
+      jumpTo: jumps[i] ? jumps[i].value : Store.JUMP_NEXT
     }, i));
   });
   return out.length ? out : [Store.normalizeOpt({ t: "选项A", s: 0 }, 0), Store.normalizeOpt({ t: "选项B", s: 1 }, 1)];
 }
 
 function persist() {
-  if (bankMode) return;
+  if (bankMode) {
+    Store.saveBank(list);
+    return;
+  }
   flow.questions = list;
   Store.saveAssessmentFlow(flow);
 }
@@ -175,10 +232,15 @@ function render() {
   if (!bankMode) document.getElementById("p-cnt").textContent = list.length;
   document.getElementById("q-list").innerHTML = list.map(function (q, i) {
     var opts = q.opts || [];
-    var ec = edgeCount(q.id);
+    var jumpSummary = !bankMode
+      ? opts.map(function (o) { return o.t + "→" + Store.jumpLabel(o.jumpTo, list); }).join("；")
+      : "";
+    var srcTag = !bankMode && q.source === "bank"
+      ? '<span class="as-tag purple">引用题库' + (q.bankRefId ? " · " + q.bankRefId : "") + "</span>"
+      : (!bankMode ? '<span class="as-tag gray">手动</span>' : "");
     var acts = SYNC
       ? '<span class="as-tag gray">只读</span>'
-      : '<button class="btn" data-edit="' + i + '">编辑题目</button>' +
+      : '<button class="btn" data-edit="' + i + '">编辑</button>' +
         '<button class="btn" style="color:#f53f3f;border-color:#ffa39e" data-del="' + i + '">删除</button>';
     return '<div class="as-q-card">' +
       '<div class="as-q-ord"><div class="as-q-num">' + (i + 1) + "</div></div>" +
@@ -189,12 +251,13 @@ function render() {
           (q.req ? '<span class="as-tag red">必答</span>' : "") +
           '<span class="as-tag gray">' + esc(q.dim || "未分类") + "</span>" +
           '<span class="as-tag blue">权重: ' + (q.weight || 1) + "</span>" +
-          (!bankMode ? '<span class="as-tag purple">流程出边 ' + ec + "</span>" : "") +
+          srcTag +
         "</div>" +
         '<div class="as-q-opts">选项：' + esc(opts.map(function (o) { return o.t + "(" + o.s + "分)"; }).join(" / ")) + "</div>" +
+        (jumpSummary ? '<div class="as-q-opts" style="color:#165dff">跳转：' + esc(jumpSummary) + "</div>" : "") +
       "</div>" +
       '<div class="as-acts">' + acts + "</div></div>";
-  }).join("") || '<div class="card"><div class="card-bd" style="text-align:center;color:#bfbfbf;padding:32px">暂无题目</div></div>';
+  }).join("") || '<div class="card"><div class="card-bd" style="text-align:center;color:#bfbfbf;padding:32px">暂无题目，可「手动新建」或「引用题库」</div></div>';
 }
 
 var mask = document.getElementById("mask");
@@ -207,25 +270,67 @@ function openM(el) { mask.classList.add("open"); el.classList.add("open"); }
 function openEditor(idx) {
   if (SYNC) { Proto.toast("只读"); return; }
   editIdx = idx;
-  document.getElementById("q-modal-title").textContent = idx < 0 ? "新建题目" : "编辑题目";
+  document.getElementById("q-modal-title").textContent = idx < 0 ? "手动新建题目" : "编辑题目";
+  var excludeId = idx >= 0 ? list[idx].id : null;
+  var tip = document.getElementById("q-ref-tip");
   if (idx < 0) {
+    editSource = "manual";
+    editBankRef = null;
+    tip.style.display = "none";
     document.getElementById("q-text").value = "";
     document.getElementById("q-type").value = "单选题";
     document.getElementById("q-dim").value = "";
     document.getElementById("q-weight").value = "1";
     document.getElementById("q-req").checked = true;
-    renderOptRows(null);
+    renderOptRows(null, excludeId);
   } else {
     var q = list[idx];
+    editSource = q.source === "bank" ? "bank" : "manual";
+    editBankRef = q.bankRefId || null;
+    if (editSource === "bank") {
+      tip.style.display = "";
+      tip.textContent = "本题引用自题库" + (editBankRef ? "（" + editBankRef + "）" : "") + "，内容已快照到本测评，可改跳转与文案。";
+    } else tip.style.display = "none";
     document.getElementById("q-text").value = q.text;
     document.getElementById("q-type").value = q.type || "单选题";
     document.getElementById("q-dim").value = q.dim || "";
     document.getElementById("q-weight").value = q.weight || 1;
     document.getElementById("q-req").checked = !!q.req;
-    renderOptRows(q.opts);
+    renderOptRows(q.opts, excludeId);
   }
   document.getElementById("opts-field").style.display = document.getElementById("q-type").value === "文本题" ? "none" : "";
   openM(document.getElementById("modal-q"));
+}
+
+function renderBankPicker() {
+  var q = (document.getElementById("bank-q").value || "").trim();
+  var bank = Store.getBank();
+  var used = {};
+  list.forEach(function (item) {
+    if (item.bankRefId) used[item.bankRefId] = true;
+  });
+  document.getElementById("bank-list").innerHTML = bank.filter(function (b) {
+    return !q || (b.text || "").indexOf(q) >= 0 || (b.dim || "").indexOf(q) >= 0;
+  }).map(function (b) {
+    var checked = !!bankSel[b.id];
+    var already = used[b.id] ? ' <span class="as-tag gray">本测评已引用</span>' : "";
+    return '<label style="display:flex;gap:10px;align-items:flex-start;padding:10px 0;border-bottom:1px solid #f0f0f0;cursor:pointer">' +
+      '<input type="checkbox" data-bank-id="' + esc(b.id) + '"' + (checked ? " checked" : "") + ' style="margin-top:4px" />' +
+      '<div style="flex:1;min-width:0">' +
+        '<div style="font-size:13px;font-weight:600">' + esc(b.text) + already + "</div>" +
+        '<div style="font-size:12px;color:#8c8c8c;margin-top:4px">' + esc(b.type || "单选题") + " · " + esc(b.dim || "未分类") +
+          " · " + esc((b.opts || []).map(function (o) { return o.t; }).join(" / ")) +
+        "</div></div></label>";
+  }).join("") || '<p class="muted" style="padding:24px;text-align:center">题库为空</p>';
+  document.getElementById("bank-sel-cnt").textContent = Object.keys(bankSel).length;
+}
+
+function openBankPicker() {
+  if (SYNC) { Proto.toast("只读"); return; }
+  bankSel = {};
+  document.getElementById("bank-q").value = "";
+  renderBankPicker();
+  openM(document.getElementById("modal-bank"));
 }
 
 document.getElementById("q-type").onchange = function () {
@@ -233,17 +338,46 @@ document.getElementById("q-type").onchange = function () {
 };
 document.getElementById("btn-add-opt").onclick = function () {
   var cur = readOptRows();
-  cur.push(Store.normalizeOpt({ t: "选项" + (cur.length + 1), s: cur.length }, cur.length));
-  renderOptRows(cur);
+  cur.push(Store.normalizeOpt({ t: "选项" + (cur.length + 1), s: cur.length, jumpTo: Store.JUMP_NEXT }, cur.length));
+  renderOptRows(cur, editIdx >= 0 ? list[editIdx].id : null);
 };
 document.getElementById("opt-rows").addEventListener("click", function (e) {
   var rm = e.target.closest("[data-rm-opt]");
   if (!rm) return;
   var cur = readOptRows();
   cur.splice(+rm.getAttribute("data-rm-opt"), 1);
-  renderOptRows(cur);
+  renderOptRows(cur, editIdx >= 0 ? list[editIdx].id : null);
 });
 document.getElementById("btn-new-q").onclick = function () { openEditor(-1); };
+if (document.getElementById("btn-from-bank")) {
+  document.getElementById("btn-from-bank").onclick = openBankPicker;
+}
+document.getElementById("bank-q").oninput = renderBankPicker;
+document.getElementById("bank-list").addEventListener("change", function (e) {
+  var cb = e.target.closest("[data-bank-id]");
+  if (!cb) return;
+  var bid = cb.getAttribute("data-bank-id");
+  if (cb.checked) bankSel[bid] = true;
+  else delete bankSel[bid];
+  document.getElementById("bank-sel-cnt").textContent = Object.keys(bankSel).length;
+});
+document.getElementById("btn-import-bank").onclick = function () {
+  var ids = Object.keys(bankSel);
+  if (!ids.length) { Proto.toast("请先勾选题目"); return; }
+  var bank = Store.getBank();
+  var n = 0;
+  ids.forEach(function (bid) {
+    var src = bank.find(function (b) { return b.id === bid; });
+    if (!src) return;
+    list.push(Store.cloneFromBank(src, list.length));
+    n++;
+  });
+  persist();
+  closeAll();
+  render();
+  Proto.toast("已引用 " + n + " 题到本测评");
+};
+
 document.getElementById("btn-save-q").onclick = function () {
   var text = document.getElementById("q-text").value.trim();
   if (!text) { Proto.toast("请填写题目内容"); return; }
@@ -255,7 +389,9 @@ document.getElementById("btn-save-q").onclick = function () {
     dim: document.getElementById("q-dim").value.trim() || "未分类",
     weight: +document.getElementById("q-weight").value || 1,
     req: document.getElementById("q-req").checked,
-    opts: type === "文本题" ? [] : readOptRows()
+    opts: type === "文本题" ? [] : readOptRows(),
+    source: bankMode ? "manual" : editSource,
+    bankRefId: bankMode ? null : editBankRef
   }, editIdx >= 0 ? editIdx : list.length);
   if (editIdx < 0) list.push(item);
   else list[editIdx] = item;
@@ -264,6 +400,143 @@ document.getElementById("btn-save-q").onclick = function () {
   render();
   Proto.toast("题目已保存");
 };
+
+function openFlowPreview() {
+  var box = document.getElementById("preview-graph");
+  if (!list.length) {
+    box.innerHTML = '<p class="muted" style="padding:48px;text-align:center">暂无题目，请先添加后再预览</p>';
+    openM(document.getElementById("modal-preview"));
+    return;
+  }
+
+  var NODE_W = 168;
+  var NODE_H = 64;
+  var GAP_X = 220;
+  var GAP_Y = 110;
+  var PAD = 40;
+  var END = "__end__";
+  var RISK = "__end_high_risk__";
+  var NEXT = Store.JUMP_NEXT;
+
+  function resolveTarget(fromIdx, jump) {
+    jump = jump || NEXT;
+    if (jump === Store.JUMP_END || jump === END) return END;
+    if (jump === Store.JUMP_RISK || jump === RISK) return RISK;
+    if (jump === NEXT) {
+      if (fromIdx + 1 >= list.length) return END;
+      return list[fromIdx + 1].id;
+    }
+    return jump;
+  }
+
+  var pos = {};
+  list.forEach(function (q, i) {
+    pos[q.id] = { x: PAD + i * GAP_X, y: PAD + 40, label: "Q" + (i + 1), sub: (q.text || "").slice(0, 18), kind: "q" };
+  });
+  var needEnd = false;
+  var needRisk = false;
+  var edges = [];
+  list.forEach(function (q, i) {
+    var opts = q.opts || [];
+    if (!opts.length) {
+      var t0 = resolveTarget(i, q.defaultJump || NEXT);
+      if (t0 === END) needEnd = true;
+      if (t0 === RISK) needRisk = true;
+      edges.push({ from: q.id, to: t0, label: "默认" });
+      return;
+    }
+    var grouped = {};
+    opts.forEach(function (o) {
+      var t = resolveTarget(i, o.jumpTo);
+      if (t === END) needEnd = true;
+      if (t === RISK) needRisk = true;
+      if (!grouped[t]) grouped[t] = [];
+      grouped[t].push(o.t || o.id);
+    });
+    Object.keys(grouped).forEach(function (t) {
+      edges.push({ from: q.id, to: t, label: grouped[t].join(" / ").slice(0, 28) });
+    });
+  });
+
+  var endX = PAD + list.length * GAP_X;
+  if (needEnd) pos[END] = { x: endX, y: PAD + 40, label: "结束", sub: "完成测评", kind: "end" };
+  if (needRisk) pos[RISK] = { x: endX, y: PAD + 40 + GAP_Y, label: "结束·高风险", sub: "标记高风险", kind: "risk" };
+
+  /* 将指向同一目标的多条边纵向错开，避免重叠 */
+  var lane = {};
+  edges.forEach(function (e) {
+    var key = e.from + "->" + e.to;
+    lane[key] = (lane[key] || 0) + 1;
+  });
+  var laneUsed = {};
+
+  var maxX = endX + NODE_W + PAD;
+  var maxY = PAD + 40 + (needRisk ? GAP_Y : 0) + NODE_H + PAD;
+  edges.forEach(function (e) {
+    if (!pos[e.to] && e.to !== END && e.to !== RISK) {
+      /* 跳转到不存在的题：落个占位 */
+      pos[e.to] = { x: endX, y: PAD + GAP_Y * 2, label: "?", sub: e.to, kind: "miss" };
+      maxY = Math.max(maxY, PAD + GAP_Y * 2 + NODE_H + PAD);
+    }
+  });
+
+  var svgEdges = edges.map(function (e) {
+    var a = pos[e.from];
+    var b = pos[e.to];
+    if (!a || !b) return "";
+    var key = e.from + "->" + e.to;
+    var n = lane[key] || 1;
+    var used = laneUsed[key] || 0;
+    laneUsed[key] = used + 1;
+    var bend = (used - (n - 1) / 2) * 18;
+    var x1 = a.x + NODE_W;
+    var y1 = a.y + NODE_H / 2 + bend;
+    var x2 = b.x;
+    var y2 = b.y + NODE_H / 2 + bend;
+    var mx = (x1 + x2) / 2;
+    var path = "M" + x1 + " " + y1 + " C" + mx + " " + y1 + "," + mx + " " + y2 + "," + x2 + " " + y2;
+    var midX = mx;
+    var midY = (y1 + y2) / 2 - 6;
+    return '<path d="' + path + '" fill="none" stroke="#94bfff" stroke-width="2" marker-end="url(#arrow)" />' +
+      '<rect x="' + (midX - 4) + '" y="' + (midY - 10) + '" width="' + Math.min(120, e.label.length * 7 + 12) + '" height="18" rx="4" fill="#fff" opacity=".92" />' +
+      '<text x="' + midX + '" y="' + (midY + 3) + '" font-size="10" fill="#4e5969">' + esc(e.label) + "</text>";
+  }).join("");
+
+  var svgNodes = Object.keys(pos).map(function (nid) {
+    var p = pos[nid];
+    var fill = p.kind === "end" ? "#f6ffed" : p.kind === "risk" ? "#fff1f0" : p.kind === "miss" ? "#fff7e6" : "#fff";
+    var stroke = p.kind === "end" ? "#52c41a" : p.kind === "risk" ? "#f53f3f" : p.kind === "miss" ? "#fa8c16" : "#165dff";
+    return '<g transform="translate(' + p.x + "," + p.y + ')">' +
+      '<rect width="' + NODE_W + '" height="' + NODE_H + '" rx="10" fill="' + fill + '" stroke="' + stroke + '" stroke-width="1.5" />' +
+      '<text x="12" y="24" font-size="12" font-weight="700" fill="#1d2129">' + esc(p.label) + "</text>" +
+      '<text x="12" y="46" font-size="11" fill="#86909c">' + esc(p.sub) + "</text></g>";
+  }).join("");
+
+  /* 开始 → 第一题 */
+  var first = list[0] && pos[list[0].id];
+  var startG = "";
+  if (first) {
+    var sx = PAD - 100;
+    var sy = first.y + NODE_H / 2;
+    startG =
+      '<circle cx="' + (sx + 28) + '" cy="' + sy + '" r="22" fill="#e8ffea" stroke="#00b42a" stroke-width="1.5" />' +
+      '<text x="' + (sx + 28) + '" y="' + (sy + 4) + '" text-anchor="middle" font-size="12" font-weight="700" fill="#00b42a">开始</text>' +
+      '<path d="M' + (sx + 50) + " " + sy + " L" + first.x + " " + sy + '" fill="none" stroke="#94bfff" stroke-width="2" marker-end="url(#arrow)" />';
+    maxX = Math.max(maxX, first.x + NODE_W + PAD);
+  }
+
+  box.innerHTML =
+    '<svg width="' + Math.max(maxX, 720) + '" height="' + Math.max(maxY, 360) + '" xmlns="http://www.w3.org/2000/svg">' +
+      "<defs><marker id=\"arrow\" markerWidth=\"8\" markerHeight=\"8\" refX=\"6\" refY=\"3\" orient=\"auto\">" +
+      '<path d="M0,0 L6,3 L0,6 Z" fill="#94bfff" /></marker></defs>' +
+      startG + svgEdges + svgNodes +
+    "</svg>";
+  openM(document.getElementById("modal-preview"));
+}
+
+if (document.getElementById("btn-preview")) {
+  document.getElementById("btn-preview").onclick = openFlowPreview;
+}
 
 document.addEventListener("click", function (e) {
   var ed = e.target.closest("[data-edit]");

@@ -35,7 +35,8 @@
 
   // 兼容旧页 data-module
   if (moduleId === "audit") moduleId = "content";
-  if (moduleId === "tenant") moduleId = "merchant";
+  // 「租户管理 / 商家」板块归入「系统管理」（页面未改动，此处做归属映射）
+  if (moduleId === "tenant" || moduleId === "merchant") moduleId = "sys";
   // 全局订单曾挂在数据下
   if (moduleId === "data" && active === "orders") moduleId = "biz";
   // 历史交易页用 trade 模块名 → 现归 biz；财务页仍用 trade
@@ -49,7 +50,6 @@
 
   var modules = [
     { id: "workbench", label: "工作台", href: "dashboard.html" },
-    { id: "merchant", label: "商家", href: "tenants.html" },
     { id: "content", label: "内容与审核", href: "content-video.html" },
     { id: "biz", label: "交易", href: "trade-orders.html" },
     { id: "trade", label: "财务", href: "settlements.html" },
@@ -65,18 +65,6 @@
           { id: "dashboard", href: "dashboard.html#today", label: "今日经营" },
           { id: "dashboard-todo", href: "dashboard.html#todo", label: "我的待办" },
           { id: "dashboard-alert", href: "dashboard.html#alert", label: "异常提醒" },
-        ],
-      },
-    ],
-    merchant: [
-      {
-        group: "商家",
-        links: [
-          { id: "tenants", href: "tenants.html", label: "商家列表" },
-          { id: "onboard-apply", href: "tenants.html?tab=apply", label: "开通申请" },
-          { id: "plans", href: "plans.html", label: "套餐管理" },
-          { id: "pay-members", href: "pay-members.html", label: "收款账户" },
-          { id: "tenant-service", href: "tenants.html?tab=service", label: "服务状态" },
         ],
       },
     ],
@@ -224,10 +212,7 @@
     workbench:
       "<div class='assist-block'><h3>运营职责</h3><ol>" +
       "<li>审核商家入驻开通申请</li><li>审核商家发布到 C 端的内容</li>" +
-      "<li>全局查看各商家经营数据</li><li>处理结算与风控异常</li></ol></div>",
-    merchant:
-      "<div class='assist-block'><h3>商家</h3><ul>" +
-      "<li>商家列表 / 开通申请 / 套餐 / 收款账户 / 服务状态</li></ul></div>",
+      "<li>全局查看各租户经营数据</li><li>处理结算与风控异常</li></ol></div>",
     content:
       "<div class='assist-block'><h3>内容与审核</h3><ul>" +
       "<li>平台内容管理与商家端对齐：内容资产 / 测评中心 / 学习服务</li>" +
@@ -294,12 +279,12 @@
   var review =
     '<div class="review-bar">' +
     "<strong>评审路径</strong>" +
-    '<a href="tenants.html">①商家开通</a><span class="sep">·</span>' +
+    '<a href="tenants.html">①租户开通</a><span class="sep">·</span>' +
     '<a href="content-video.html">②平台内容</a><span class="sep">·</span>' +
     '<a href="audit.html">③内容审核</a><span class="sep">·</span>' +
-    '<a href="settlements.html">③对账结算</a><span class="sep">·</span>' +
-    '<a href="orders.html">④全局订单</a><span class="sep">·</span>' +
-    '<a href="data.html">⑤数据</a><span class="sep">|</span>' +
+    '<a href="settlements.html">④对账结算</a><span class="sep">·</span>' +
+    '<a href="orders.html">⑤全局订单</a><span class="sep">·</span>' +
+    '<a href="data.html">⑥数据</a><span class="sep">|</span>' +
     '<a href="../admin/dashboard.html">切商家后台</a><span class="sep">·</span>' +
     '<a href="../miniprogram/home.html">切 C 端</a><span class="sep">·</span>' +
     '<a href="../index.html">导航</a>' +
@@ -307,7 +292,7 @@
 
   var notice = showNotice
     ? '<div class="notice-bar" id="notice-bar">' +
-      "<span>运营后台 · 商家 / 内容与审核 / 交易 / 财务 / 数据 / 系统管理</span>" +
+      "<span>运营后台 · 内容与审核 / 交易 / 财务 / 数据 / 系统管理（含租户管理）</span>" +
       '<button type="button" class="close-notice" id="close-notice" aria-label="关闭">×</button>' +
       "</div>"
     : "";
