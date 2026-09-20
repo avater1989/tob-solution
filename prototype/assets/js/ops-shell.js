@@ -33,53 +33,77 @@
   var showAssist = false; // 操作助手已隐藏（原 data-assist="1" 开关）
   var showNotice = document.body.getAttribute("data-notice") !== "0";
 
-  // 兼容旧页 data-module="audit" → 归入「内容」
+  // 兼容旧页 data-module
   if (moduleId === "audit") moduleId = "content";
-  // 「租户管理」板块已并入「系统管理」（页面未改动，此处做归属映射）
-  if (moduleId === "tenant") moduleId = "sys";
+  // 「租户管理 / 商家」板块归入「系统管理」（页面未改动，此处做归属映射）
+  if (moduleId === "tenant" || moduleId === "merchant") moduleId = "sys";
+  // 全局订单曾挂在数据下
+  if (moduleId === "data" && active === "orders") moduleId = "biz";
+  // 历史交易页用 trade 模块名 → 现归 biz；财务页仍用 trade
+  if (moduleId === "trade" && /^(trade-orders|entitlement|platform-goods|goods-edit|aftersales|orders)$/.test(active)) {
+    moduleId = "biz";
+  }
+  // 内容审核页导航高亮
+  if (moduleId === "content" && /^content-/.test(active)) {
+    /* keep content; platform-content highlight via crumb pages */
+  }
 
   var modules = [
     { id: "workbench", label: "工作台", href: "dashboard.html" },
-    { id: "content", label: "内容", href: "content-series.html" },
+    { id: "content", label: "内容与审核", href: "content-video.html" },
     { id: "biz", label: "交易", href: "trade-orders.html" },
     { id: "trade", label: "财务", href: "settlements.html" },
+    { id: "data", label: "数据", href: "data.html" },
     { id: "sys", label: "系统管理", href: "sys-users.html" },
-    { id: "data", label: "数据看板", href: "data.html" },
   ];
 
   var sidebars = {
     workbench: [
-      { group: "概览", links: [{ id: "dashboard", href: "dashboard.html", label: "运营工作台" }] },
+      {
+        group: "经营任务中心",
+        links: [
+          { id: "dashboard", href: "dashboard.html#today", label: "今日经营" },
+          { id: "dashboard-todo", href: "dashboard.html#todo", label: "我的待办" },
+          { id: "dashboard-alert", href: "dashboard.html#alert", label: "异常提醒" },
+        ],
+      },
     ],
     content: [
       {
-        group: "内容管理",
+        group: "内容资产",
         links: [
-          { id: "content-series", href: "content-series.html", label: "系列课" },
+          { id: "content-video", href: "content-video.html", label: "线上课" },
           { id: "content-offline", href: "content-offline.html", label: "线下课" },
-          { id: "content-video", href: "content-video.html", label: "视频" },
-          { id: "content-article", href: "content-article.html", label: "图文" },
-          { id: "content-category", href: "content-category.html", label: "内容分类" },
+          { id: "content-article", href: "content-article.html", label: "文章" },
+          { id: "content-tags", href: "content-tags.html", label: "内容标签" },
+          { id: "content-teachers", href: "content-teachers.html", label: "讲师管理" },
         ],
       },
       {
-        group: "测评管理",
+        group: "测评中心",
         links: [
-          { id: "assess-projects", href: "assess-projects.html", label: "测评项目" },
-          { id: "assess-series", href: "assess-series.html", label: "系列测评" },
-          { id: "assess-results", href: "assess-results.html", label: "测评结果" },
+          { id: "assess-projects", href: "assess-projects.html", label: "测评" },
+          { id: "assess-series", href: "assess-series.html", label: "测评包" },
+          { id: "assess-questions", href: "assess-questions.html", label: "题库" },
+          { id: "assess-results", href: "assess-results.html", label: "测评报告" },
+          { id: "assess-report-templates", href: "assess-report-templates.html", label: "报告模板" },
         ],
       },
       {
-        group: "计划管理",
+        group: "学习服务",
         links: [
+          { id: "agents", href: "agents.html", label: "智能体" },
+          { id: "content-tasks", href: "content-tasks.html", label: "任务" },
           { id: "assess-plans", href: "assess-plans.html", label: "定制化计划" },
         ],
       },
       {
-        group: "平台审核",
+        group: "审核",
         links: [
-          { id: "audit", href: "audit.html", label: "平台审核工作台", badge: 0 },
+          { id: "audit", href: "audit.html", label: "内容审核", badge: 0 },
+          { id: "audit-live", href: "audit.html?type=live", label: "直播审核" },
+          { id: "audit-goods", href: "audit.html?type=goods", label: "商品审核" },
+          { id: "audit-appeal", href: "audit.html?tab=appeal", label: "申诉处理" },
         ],
       },
     ],
@@ -137,12 +161,14 @@
     ],
     data: [
       {
-        group: "全局看板",
-        links: [{ id: "data", href: "data.html", label: "经营总览" }],
-      },
-      {
-        group: "全局交易",
-        links: [{ id: "orders", href: "orders.html", label: "全局订单" }],
+        group: "数据分析",
+        links: [
+          { id: "data", href: "data.html", label: "平台经营" },
+          { id: "data-merchant", href: "data.html?view=merchant", label: "商家经营" },
+          { id: "data-trade", href: "data.html?view=trade", label: "交易分析" },
+          { id: "data-content", href: "data.html?view=content", label: "内容分析" },
+          { id: "data-health", href: "data.html?view=health", label: "商家健康度" },
+        ],
       },
     ],
     sys: [
@@ -186,34 +212,11 @@
     workbench:
       "<div class='assist-block'><h3>运营职责</h3><ol>" +
       "<li>审核商家入驻开通申请</li><li>审核商家发布到 C 端的内容</li>" +
-      "<li>全局查看各租户经营数据</li><li>处理结算与风控异常</li></ol></div>" +
-      "<div class='assist-block'><h3>评审路径</h3><ul>" +
-      "<li><a href='tenants.html'>① 租户开通</a></li>" +
-      "<li><a href='content-series.html'>② 内容中台</a></li>" +
-      "<li><a href='data.html'>③ 数据看板</a></li>" +
-      "<li><a href='orders.html'>④ 全局订单</a></li></ul></div>",
-    tenant:
-      "<div class='assist-block'><h3>租户与配置</h3><ul>" +
-      "<li>商家在注册页留资后成为开通线索</li>" +
-      "<li>开通即创建租户并分配商户管理员账号</li>" +
-      "<li>列表「配置」进入租户配置页，五个分页统一维护</li>" +
-      "<li>分页：租户 / 组织架构 / 岗位 / 租户用户 / 应用授权</li>" +
-      "<li>停用后商家后台只读，C 端内容下架</li></ul></div>" +
-      "<div class='assist-block'><h3>应用与权限</h3><ul>" +
-      "<li>应用管理维护平台应用；「资源配置」「角色管理」进入应用配置页</li>" +
-      "<li>资源树按应用隔离，类型区分菜单 / 按钮</li>" +
-      "<li>平台为该应用定义内置角色，随租户开通下发</li>" +
-      "<li>商家自建角色仍在商家后台，此处可见</li>" +
-      "<li>应用按套餐授权，可对租户单独覆盖</li></ul></div>",
+      "<li>全局查看各租户经营数据</li><li>处理结算与风控异常</li></ol></div>",
     content:
-      "<div class='assist-block'><h3>内容中台</h3><ul>" +
-      "<li>内容管理：平台标准系列课 / 视频 / 图文 / 内容分类</li>" +
-      "<li>测评与计划：测评项目、系列测评、结果与定制化计划（后续迭代）</li>" +
-      "<li>内容审核：商家提交上架的内容进入审核队列</li>" +
-      "<li>与商家后台「内容」双轨：此处为平台侧，商家侧为租户售卖</li></ul></div>" +
-      "<div class='assist-block'><h3>审核规则</h3><ul>" +
-      "<li>审核通过后内容才会发布到 C 端小程序</li>" +
-      "<li>驳回需填写原因，商家可在后台查看并修改重提</li></ul></div>",
+      "<div class='assist-block'><h3>内容与审核</h3><ul>" +
+      "<li>平台内容管理与商家端对齐：内容资产 / 测评中心 / 学习服务</li>" +
+      "<li>审核：内容 / 直播 / 商品 + 申诉（待审→通过，或待审→驳回→重提）</li></ul></div>",
     trade:
       "<div class='assist-block'><h3>资金闭环</h3><ol>" +
       "<li>结算规则：费率 / 账期 / 门槛，按租户合同覆盖</li>" +
@@ -224,11 +227,13 @@
       "<li>服务费口径 1% 与 10% 待统一（见详细设计）</li>" +
       "<li>打款为敏感操作，需双人复核并留痕</li>" +
       "<li>风控预警统一汇入运营工作台待办</li></ul></div>",
+    biz:
+      "<div class='assist-block'><h3>交易提示</h3><ul>" +
+      "<li>支付成功开通权益，退款成功回收权益</li>" +
+      "<li>平台侧查看全局订单与商品</li></ul></div>",
     data:
       "<div class='assist-block'><h3>数据口径</h3><ul>" +
-      "<li>数据来自各租户商家后台上报</li>" +
-      "<li>GMV 为已支付口径（含退款冲减）</li>" +
-      "<li>租户排行支持按交易/内容/直播切换</li></ul></div>",
+      "<li>只做分析，不含订单/售后等业务管理页</li></ul></div>",
     sys:
       "<div class='assist-block'><h3>系统用户</h3><ul>" +
       "<li>管理运营后台自身的登录账号</li>" +
@@ -275,10 +280,11 @@
     '<div class="review-bar">' +
     "<strong>评审路径</strong>" +
     '<a href="tenants.html">①租户开通</a><span class="sep">·</span>' +
-    '<a href="content-series.html">②内容</a><span class="sep">·</span>' +
-    '<a href="settlements.html">③对账结算</a><span class="sep">·</span>' +
-    '<a href="data.html">④数据看板</a><span class="sep">·</span>' +
-    '<a href="orders.html">⑤全局订单</a><span class="sep">|</span>' +
+    '<a href="content-video.html">②平台内容</a><span class="sep">·</span>' +
+    '<a href="audit.html">③内容审核</a><span class="sep">·</span>' +
+    '<a href="settlements.html">④对账结算</a><span class="sep">·</span>' +
+    '<a href="orders.html">⑤全局订单</a><span class="sep">·</span>' +
+    '<a href="data.html">⑥数据</a><span class="sep">|</span>' +
     '<a href="../admin/dashboard.html">切商家后台</a><span class="sep">·</span>' +
     '<a href="../miniprogram/home.html">切 C 端</a><span class="sep">·</span>' +
     '<a href="../index.html">导航</a>' +
@@ -286,7 +292,7 @@
 
   var notice = showNotice
     ? '<div class="notice-bar" id="notice-bar">' +
-      "<span>运营后台 · 平台侧演示原型（v1.2）· 租户开通、内容中台（管理+审核）、交易与结算（对账 / 结算 / 提现 / 发票 / 风控）与数据看板</span>" +
+      "<span>运营后台 · 内容与审核 / 交易 / 财务 / 数据 / 系统管理（含租户管理）</span>" +
       '<button type="button" class="close-notice" id="close-notice" aria-label="关闭">×</button>' +
       "</div>"
     : "";

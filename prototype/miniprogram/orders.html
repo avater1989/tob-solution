@@ -106,7 +106,7 @@
         e.preventDefault();
         var act = a.getAttribute("data-act");
         if (act === "pay") { location.href = "pay-result.html?from=course"; return; }
-        if (act === "learn") { location.href = "learn.html"; return; }
+        if (act === "learn") { location.href = "learn.html?id=C001"; return; }
         if (act === "replay") { location.href = "live-room.html"; return; }
         Proto.toast(a.textContent.trim() + "（原型）");
       });

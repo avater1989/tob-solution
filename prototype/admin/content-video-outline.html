@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>章节管理 · 商家管理后台</title>
+<link rel="stylesheet" href="../assets/css/proto.css?v=9" />
+<link rel="stylesheet" href="../assets/css/content-mgmt.css?v=4" />
+</head>
+<body class="admin-body" data-module="content" data-nav="content-video" data-title="章节管理" data-crumb="内容 / 内容资产 / 线上课 / 章节管理">
+
+<div id="header-actions">
+  <button class="btn" id="btn-new-ch" style="display:none">+ 新建章节</button>
+  <button class="btn btn-primary" id="btn-publish" style="display:none">完成并提交审核</button>
+  <a class="btn" href="content-video.html">返回列表</a>
+</div>
+
+<div id="page-content" style="display:none">
+  <a class="cm-back" href="content-video.html">← 返回线上课列表</a>
+  <div class="cm-page-hd">
+    <div>
+      <h1 id="o-name">—</h1>
+      <p class="sub" id="o-sub">—</p>
+    </div>
+  </div>
+  <div class="cm-hero">
+    <div class="cm-avatar" id="o-avatar">课</div>
+    <div class="cm-hero-bd">
+      <div class="cm-hero-title">
+        <span id="o-name2">—</span>
+        <span class="cm-pill" id="o-shelf">—</span>
+      </div>
+      <div class="cm-hero-desc" id="o-desc">—</div>
+      <div class="cm-hero-meta">
+        <span><b id="o-ch-count">0</b> 章节</span>
+        <span id="o-source-label"></span>
+      </div>
+    </div>
+  </div>
+  <div class="cm-alert" id="o-readonly" style="display:none"></div>
+  <div id="o-chapters"></div>
+</div>
+
+<div class="proto-mask" id="mask"></div>
+<div class="proto-modal" id="modal-chapter">
+  <div style="background:#fff;border-radius:10px;width:560px;max-width:94vw;max-height:86vh;overflow:auto;display:flex;flex-direction:column">
+    <div class="proto-modal-hd">
+      <h3 style="margin:0;font-size:16px" id="ch-modal-title">编辑章节</h3>
+      <button type="button" class="btn btn-sm btn-ghost" data-close>×</button>
+    </div>
+    <div class="proto-modal-bd">
+      <div class="field"><label>章节名称 *</label><input class="input" id="ch-name" placeholder="如：第一章 认识情绪" /></div>
+      <div class="field">
+        <label style="display:flex;align-items:center;gap:8px;font-weight:400"><input type="checkbox" id="ch-free"> 是否免费</label>
+      </div>
+      <div class="field">
+        <label>内容标签</label>
+        <div id="ch-tags"></div>
+      </div>
+      <div class="field">
+        <label>上传视频 *</label>
+        <div style="display:flex;gap:8px;align-items:center">
+          <input class="input" id="ch-video" placeholder="未选择文件" readonly style="flex:1" />
+          <button type="button" class="btn" id="btn-up-video">选择视频</button>
+        </div>
+        <div class="field" style="margin-top:8px"><label>时长</label><input class="input" id="ch-dur" placeholder="如：15分钟" /></div>
+      </div>
+      <div class="field">
+        <label>上传思维导图</label>
+        <div style="display:flex;gap:8px;align-items:center">
+          <input class="input" id="ch-mind" placeholder="未选择文件" readonly style="flex:1" />
+          <button type="button" class="btn" id="btn-up-mind">选择文件</button>
+        </div>
+      </div>
+      <div class="field">
+        <label>上传课件 PPT</label>
+        <div style="display:flex;gap:8px;align-items:center">
+          <input class="input" id="ch-ppt" placeholder="未选择文件" readonly style="flex:1" />
+          <button type="button" class="btn" id="btn-up-ppt">选择文件</button>
+        </div>
+      </div>
+    </div>
+    <div class="proto-modal-ft" style="justify-content:flex-end;gap:8px;padding:12px 16px;border-top:1px solid var(--color-border);display:flex">
+      <button class="btn" data-close>取消</button>
+      <button class="btn btn-primary" id="btn-save-ch">保存章节</button>
+    </div>
+  </div>
+</div>
+
+<script src="../assets/js/proto.js"></script>
+<script src="../assets/js/content-tags.js?v=2"></script>
+<script src="../assets/js/teachers-store.js?v=2"></script>
+<script src="../assets/js/course-store.js?v=1"></script>
+<script src="../assets/js/admin-shell.js?v=16"></script>
+<script>
+var Store = window.CourseStore;
+var Tags = window.ContentTags;
+var id = new URLSearchParams(location.search).get("id") || "";
+var course = Store.get(id);
+var editingIdx = -1;
+var chTagPicker = null;
+
+function esc(s) {
+  return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) {
+    return ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c];
+  });
+}
+
+if (!course) {
+  document.getElementById("page-content").innerHTML =
+    '<div class="card"><div class="card-bd" style="padding:48px;text-align:center"><p>未找到课程</p><a class="btn" href="content-video.html">返回列表</a></div></div>';
+}
+
+function isReadonly() {
+  return !Store.canEditOutline(course);
+}
+
+function render() {
+  if (!course) return;
+  course = Store.get(id) || course;
+  var readonly = isReadonly();
+  var label = Store.STATUS_LABEL[course.status] || course.status;
+  document.getElementById("o-name").textContent = course.name;
+  document.getElementById("o-name2").textContent = course.name;
+  document.getElementById("o-sub").textContent = (course.term || "") + " · 线上课";
+  document.getElementById("o-desc").textContent = course.intro || "";
+  document.getElementById("o-avatar").textContent = (course.name || "课").charAt(0);
+  document.getElementById("o-shelf").textContent = label;
+  document.getElementById("o-source-label").textContent = course.source === "platform" ? "来源：平台" : "来源：自建";
+
+  var alertEl = document.getElementById("o-readonly");
+  if (readonly) {
+    alertEl.style.display = "block";
+    alertEl.textContent = course.status === Store.STATUS.enabled
+      ? "内容已上架，章节锁定。请先返回列表下架后再调整。"
+      : (course.status === Store.STATUS.pending_audit ? "审核中，章节锁定。" : "当前只读。");
+  } else {
+    alertEl.style.display = "none";
+  }
+  document.getElementById("btn-new-ch").style.display = readonly ? "none" : "";
+  document.getElementById("btn-publish").style.display = readonly ? "none" : "";
+  document.getElementById("btn-publish").textContent =
+    course.source === "platform" ? "完成并上架" : "完成并提交审核";
+  document.getElementById("o-ch-count").textContent = Store.chapterCount(course);
+
+  document.getElementById("o-chapters").innerHTML = (course.chapters || []).map(function (ch, i) {
+    var acts = !readonly
+      ? '<div class="cm-chapter-acts">' +
+          '<button class="btn" data-move="' + i + '" data-dir="-1"' + (i === 0 ? " disabled" : "") + ">上移</button>" +
+          '<button class="btn" data-move="' + i + '" data-dir="1"' + (i === course.chapters.length - 1 ? " disabled" : "") + ">下移</button>" +
+          '<button class="btn" data-edit-ch="' + i + '">编辑</button>' +
+          '<button class="btn" style="color:#f53f3f;border-color:#ffa39e" data-del-ch="' + i + '">删除</button>' +
+        "</div>"
+      : "";
+    var tags = ch.free ? '<span class="req" style="background:#e8f3ff;color:#165dff;margin-left:4px">免费</span>' : "";
+    return '<div class="cm-chapter">' +
+      '<div class="cm-chapter-hd">' +
+        '<div class="cm-chapter-num">' + (i + 1) + "</div>" +
+        '<div class="cm-chapter-title">' + esc(ch.title) + tags + "</div>" +
+        acts +
+      "</div>" +
+      '<div class="cm-lesson">' +
+        '<span class="cm-lesson-idx">▶</span>' +
+        '<div class="cm-lesson-bd">' +
+          '<div class="cm-lesson-title">' + esc(ch.videoName || "未上传视频") + "</div>" +
+          '<div class="cm-lesson-meta">' + esc(ch.duration || "—") +
+            " · 观看 <b>" + (ch.views || 0) + "</b>" +
+            " · 导图 " + esc(ch.mindmapName || "无") +
+            " · PPT " + esc(ch.pptName || "无") +
+            " · 标签 " + Tags.namesByIds(ch.tagIds || []).join("、") +
+          "</div>" +
+        "</div>" +
+      "</div>" +
+    "</div>";
+  }).join("") ||
+    '<div class="cm-section" style="text-align:center;color:#bfbfbf">暂无章节，点击「新建章节」开始编排</div>';
+}
+
+if (course) render();
+
+var mask = document.getElementById("mask");
+function closeAll() {
+  mask.classList.remove("open");
+  document.getElementById("modal-chapter").classList.remove("open");
+}
+function openModal() {
+  mask.classList.add("open");
+  document.getElementById("modal-chapter").classList.add("open");
+}
+document.querySelectorAll("[data-close]").forEach(function (b) {
+  b.addEventListener("click", closeAll);
+});
+mask.addEventListener("click", closeAll);
+
+function openChapterModal(idx) {
+  editingIdx = idx;
+  var isNew = idx < 0;
+  document.getElementById("ch-modal-title").textContent = isNew ? "新建章节" : "编辑章节";
+  var ch = isNew ? { title: "", free: false, tagIds: [], videoName: "", duration: "", mindmapName: "", pptName: "", views: 0 } : course.chapters[idx];
+  document.getElementById("ch-name").value = ch.title || "";
+  document.getElementById("ch-free").checked = !!ch.free;
+  document.getElementById("ch-video").value = ch.videoName || "";
+  document.getElementById("ch-dur").value = ch.duration || "";
+  document.getElementById("ch-mind").value = ch.mindmapName || "";
+  document.getElementById("ch-ppt").value = ch.pptName || "";
+  chTagPicker = Tags.mountTreeSelect("#ch-tags", {
+    selectedIds: ch.tagIds || [],
+    placeholder: "请选择内容标签（可多选）"
+  });
+  openModal();
+}
+
+document.getElementById("btn-new-ch").addEventListener("click", function () { openChapterModal(-1); });
+document.getElementById("btn-up-video").addEventListener("click", function () {
+  document.getElementById("ch-video").value = "章节视频_" + Date.now() + ".mp4";
+  if (!document.getElementById("ch-dur").value) document.getElementById("ch-dur").value = "10分钟";
+  Proto.toast("已选择视频（原型）");
+});
+document.getElementById("btn-up-mind").addEventListener("click", function () {
+  document.getElementById("ch-mind").value = "思维导图_" + Date.now() + ".png";
+  Proto.toast("已选择思维导图（原型）");
+});
+document.getElementById("btn-up-ppt").addEventListener("click", function () {
+  document.getElementById("ch-ppt").value = "课件_" + Date.now() + ".pptx";
+  Proto.toast("已选择课件（原型）");
+});
+
+document.getElementById("btn-save-ch").addEventListener("click", function () {
+  var title = document.getElementById("ch-name").value.trim();
+  if (!title) { Proto.toast("请填写章节名称"); return; }
+  var videoName = document.getElementById("ch-video").value.trim();
+  if (!videoName) { Proto.toast("请上传视频"); return; }
+  var tagIds = chTagPicker ? chTagPicker.getSelected() : [];
+  var payload = {
+    title: title,
+    free: document.getElementById("ch-free").checked,
+    tagIds: tagIds,
+    videoName: videoName,
+    duration: document.getElementById("ch-dur").value.trim(),
+    mindmapName: document.getElementById("ch-mind").value.trim(),
+    pptName: document.getElementById("ch-ppt").value.trim(),
+    views: editingIdx >= 0 ? (course.chapters[editingIdx].views || 0) : 0
+  };
+  if (editingIdx >= 0) payload.id = course.chapters[editingIdx].id;
+  Store.upsertChapter(id, payload, editingIdx >= 0 ? editingIdx : undefined);
+  closeAll();
+  Proto.toast("章节已保存");
+  render();
+});
+
+document.getElementById("o-chapters").addEventListener("click", function (e) {
+  var edit = e.target.closest("[data-edit-ch]");
+  if (edit) { openChapterModal(parseInt(edit.getAttribute("data-edit-ch"), 10)); return; }
+  var del = e.target.closest("[data-del-ch]");
+  if (del) {
+    Store.removeChapter(id, parseInt(del.getAttribute("data-del-ch"), 10));
+    Proto.toast("已删除");
+    render();
+    return;
+  }
+  var move = e.target.closest("[data-move]");
+  if (move) {
+    Store.reorderChapter(id, parseInt(move.getAttribute("data-move"), 10), parseInt(move.getAttribute("data-dir"), 10));
+    render();
+  }
+});
+
+document.getElementById("btn-publish").addEventListener("click", function () {
+  var r = course.source === "platform" ? Store.enableDirect(id) : Store.submitAudit(id);
+  Proto.toast(r.ok ? (course.source === "platform" ? "已上架" : "已提交审核") : r.msg);
+  if (r.ok) setTimeout(function () { location.href = "content-video.html"; }, 600);
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>报告模板 · 商家管理后台</title>
+<link rel="stylesheet" href="../assets/css/proto.css?v=9" />
+<link rel="stylesheet" href="../assets/css/assess.css?v=6" />
+<style>
+.rt-edit-layout {
+  display:grid; grid-template-columns:1fr 1fr; gap:16px; min-height:520px;
+}
+@media (max-width:960px){ .rt-edit-layout { grid-template-columns:1fr; } }
+.rt-preview-pane {
+  background:#f7f8fa; border:1px solid #e8e8e8; border-radius:10px;
+  padding:16px; overflow:auto; min-height:420px;
+}
+.rt-preview-pane .rpt { background:#fff; border-radius:10px; padding:20px; border:1px solid #e5e6eb; }
+.rt-preview-pane .rpt-hd h1 { margin:0 0 6px; font-size:18px; }
+.rt-preview-pane .meta { color:#86909c; font-size:12px; margin:0 0 14px; }
+.rt-preview-pane .rpt-score { background:#f0f5ff; color:#165dff; padding:10px 12px; border-radius:8px; margin-bottom:16px; font-size:14px; }
+.rt-preview-pane .rpt-ai, .rt-preview-pane .rpt-advice {
+  background:#fafafa; border-radius:8px; padding:12px; font-size:13px; line-height:1.6; white-space:pre-wrap; margin-bottom:12px;
+}
+.rt-preview-pane h2 { font-size:14px; margin:0 0 8px; }
+.rt-agent-tip { font-size:12px; color:#722ed1; margin-top:4px; }
+</style>
+</head>
+<body class="admin-body" data-module="content" data-nav="assess-report-templates" data-title="报告模板" data-crumb="内容 / 测评中心 / 报告模板">
+
+<div id="header-actions">
+  <button class="btn btn-primary" id="btn-new">+ 新建模板</button>
+</div>
+
+<div id="page-content" style="display:none">
+  <div class="as-banner" style="background:#fff7e8;border:1px solid #ffe4a8;border-radius:8px;padding:12px 14px;margin-bottom:14px;font-size:13px">
+    <b>报告模板</b>定义结构与变量，并<strong>关联智能体</strong>生成解读文案。测评 / 测评包在新建或编辑时各绑定<strong>唯一</strong>一份模板（不在列表单独挂按钮）。
+    用户结果见 <a href="assess-results.html">测评报告</a>。
+  </div>
+
+  <table class="as-table">
+    <thead>
+      <tr>
+        <th>模板名称</th>
+        <th>版本</th>
+        <th>关联智能体</th>
+        <th>状态</th>
+        <th>更新时间</th>
+        <th style="width:200px">操作</th>
+      </tr>
+    </thead>
+    <tbody id="tbody"></tbody>
+  </table>
+</div>
+
+<div class="proto-modal" id="modal-edit">
+  <div style="background:#fff;border-radius:10px;width:min(1080px,96vw);max-height:92vh;overflow:hidden;display:flex;flex-direction:column">
+    <div class="proto-modal-hd"><h3 style="margin:0;font-size:16px" id="m-title">编辑报告模板</h3><button class="ctrl-icon-btn" data-close>×</button></div>
+    <div class="proto-modal-bd" style="overflow:auto;flex:1">
+      <div class="rt-edit-layout">
+        <div>
+          <div class="field"><label>模板名称 *</label><input class="input" id="t-name" placeholder="如：亲子沟通标准报告" /></div>
+          <div class="form-grid" style="grid-template-columns:1fr 1fr">
+            <div class="field"><label>版本</label><input class="input" id="t-ver" value="v1.0" /></div>
+            <div class="field"><label>状态</label>
+              <select class="input" id="t-status"><option>上架</option><option>下架</option></select>
+            </div>
+          </div>
+          <div class="field"><label>关联智能体 * <span class="muted" style="font-weight:400">用于生成报告解读内容</span></label>
+            <select class="input" id="t-agent"></select>
+            <div class="rt-agent-tip" id="t-agent-tip">选择具备「报告生成」能力的智能体</div>
+          </div>
+          <div class="field"><label>数据变量</label><input class="input" id="t-data" /></div>
+          <div class="field"><label>文案变量（由智能体填充）</label><input class="input" id="t-copy" /></div>
+          <div class="field"><label>样式</label><input class="input" id="t-style" /></div>
+          <div class="field"><label>HTML 模板</label>
+            <textarea class="input" id="t-html" rows="12" style="font-family:ui-monospace,Consolas,monospace;font-size:12px"></textarea>
+          </div>
+        </div>
+        <div>
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+            <b style="font-size:13px">实时预览</b>
+            <button type="button" class="btn" id="btn-refresh-preview">刷新预览</button>
+          </div>
+          <div class="rt-preview-pane" id="preview-pane">
+            <p class="muted" style="font-size:12px">填写左侧并关联智能体后，此处展示样例报告。</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="proto-modal-ft" style="justify-content:flex-end;gap:8px">
+      <button class="btn" data-close>取消</button>
+      <button class="btn btn-primary" id="btn-save">保存模板</button>
+    </div>
+  </div>
+</div>
+<div class="proto-mask" id="mask"></div>
+
+<script src="../assets/js/proto.js"></script>
+<script src="../assets/js/assess-report-store.js?v=2"></script>
+<script src="../assets/js/admin-shell.js?v=20"></script>
+<script>
+var Store = window.AssessReportStore;
+var editingId = null;
+
+function esc(s) {
+  return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) {
+    return ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c];
+  });
+}
+
+function fillAgentSelect(selected) {
+  var agents = Store.listAgentsForReport();
+  document.getElementById("t-agent").innerHTML =
+    '<option value="">请选择智能体</option>' +
+    agents.map(function (a) {
+      return '<option value="' + esc(a.id) + '"' + (a.id === selected ? " selected" : "") + ">" +
+        esc(a.name) + "（" + esc(a.capability) + "）</option>";
+    }).join("");
+}
+
+function currentDraft() {
+  return {
+    id: editingId || undefined,
+    name: document.getElementById("t-name").value.trim(),
+    ver: document.getElementById("t-ver").value.trim() || "v1.0",
+    agentId: document.getElementById("t-agent").value,
+    dataVars: document.getElementById("t-data").value.trim(),
+    copyVars: document.getElementById("t-copy").value.trim(),
+    style: document.getElementById("t-style").value.trim(),
+    html: document.getElementById("t-html").value,
+    status: document.getElementById("t-status").value
+  };
+}
+
+function refreshPreview() {
+  var draft = currentDraft();
+  var pane = document.getElementById("preview-pane");
+  if (!draft.agentId) {
+    pane.innerHTML = '<p class="muted" style="font-size:12px">请先关联智能体，预览将展示其生成的解读内容。</p>';
+    document.getElementById("t-agent-tip").textContent = "未选择智能体：无法生成报告解读";
+    return;
+  }
+  var ag = Store.agentById(draft.agentId);
+  document.getElementById("t-agent-tip").textContent = "将由「" + ((ag && ag.name) || draft.agentId) + "」生成 {{ai_summary}} / {{advice}}";
+  var rendered = Store.renderTemplate(draft, Store.demoContext());
+  pane.innerHTML =
+    '<div class="muted" style="font-size:11px;margin-bottom:10px">样例数据 · 智能体：' + esc(rendered.agentName) + "</div>" +
+    rendered.html;
+}
+
+function render() {
+  document.getElementById("tbody").innerHTML = Store.listTemplates().map(function (t) {
+    var ag = Store.agentById(t.agentId);
+    var st = Store.normalizeStatus(t.status);
+    var shelfBtn = st === "上架"
+      ? "<button class='btn' data-shelf='" + t.id + "' data-to='下架'>下架</button>"
+      : "<button class='btn btn-primary' data-shelf='" + t.id + "' data-to='上架'>上架</button>";
+    return "<tr><td><b>" + esc(t.name) + "</b><br><span class='muted' style='font-size:12px'>" + esc(t.id) + "</span></td>" +
+      "<td>" + esc(t.ver) + "</td>" +
+      "<td>" + esc(ag ? ag.name : "未关联") + "</td>" +
+      "<td><span class='as-tag " + (st === "上架" ? "green" : "gray") + "'>" + esc(st) + "</span></td>" +
+      "<td style='font-size:12px'>" + esc(t.updated) + "</td>" +
+      "<td class='as-acts'><button class='btn' data-edit='" + t.id + "'>编辑 / 预览</button> " + shelfBtn + "</td></tr>";
+  }).join("") || "<tr><td colspan='6' style='text-align:center;color:#bfbfbf;padding:28px'>暂无模板</td></tr>";
+}
+
+function openModal() {
+  document.getElementById("mask").classList.add("open");
+  document.getElementById("modal-edit").classList.add("open");
+  refreshPreview();
+}
+function closeModal() {
+  document.getElementById("mask").classList.remove("open");
+  document.getElementById("modal-edit").classList.remove("open");
+}
+
+function openEditor(id) {
+  editingId = id;
+  fillAgentSelect("");
+  if (!id) {
+    document.getElementById("m-title").textContent = "新建报告模板";
+    document.getElementById("t-name").value = "";
+    document.getElementById("t-ver").value = "v1.0";
+    document.getElementById("t-status").value = "上架";
+    document.getElementById("t-data").value = "{{user_name}}, {{assess_name}}, {{total_score}}, {{segment_label}}, {{finish_time}}";
+    document.getElementById("t-copy").value = "{{ai_summary}}, {{advice}}";
+    document.getElementById("t-style").value = "theme: family-soft";
+    document.getElementById("t-html").value = Store.defaultHtml();
+    fillAgentSelect("");
+  } else {
+    var t = Store.getTemplate(id);
+    if (!t) return;
+    document.getElementById("m-title").textContent = "编辑报告模板";
+    document.getElementById("t-name").value = t.name;
+    document.getElementById("t-ver").value = t.ver;
+    document.getElementById("t-status").value = Store.normalizeStatus(t.status || "上架");
+    document.getElementById("t-data").value = t.dataVars || "";
+    document.getElementById("t-copy").value = t.copyVars || "";
+    document.getElementById("t-style").value = t.style || "";
+    document.getElementById("t-html").value = t.html || Store.defaultHtml();
+    fillAgentSelect(t.agentId || "");
+  }
+  openModal();
+}
+
+document.getElementById("btn-new").onclick = function () { openEditor(null); };
+document.getElementById("btn-refresh-preview").onclick = refreshPreview;
+["t-name", "t-html", "t-agent", "t-ver"].forEach(function (id) {
+  document.getElementById(id).addEventListener("input", refreshPreview);
+  document.getElementById(id).addEventListener("change", refreshPreview);
+});
+document.getElementById("tbody").addEventListener("click", function (e) {
+  var shelf = e.target.closest("[data-shelf]");
+  if (shelf) {
+    var to = shelf.getAttribute("data-to");
+    Store.setTemplateStatus(shelf.getAttribute("data-shelf"), to);
+    render();
+    Proto.toast(to === "上架" ? "已上架" : "已下架");
+    return;
+  }
+  var btn = e.target.closest("[data-edit]");
+  if (btn) openEditor(btn.getAttribute("data-edit"));
+});
+document.querySelectorAll("[data-close]").forEach(function (el) {
+  el.addEventListener("click", closeModal);
+});
+document.getElementById("mask").addEventListener("click", closeModal);
+document.getElementById("btn-save").onclick = function () {
+  var draft = currentDraft();
+  if (!draft.name) { Proto.toast("请填写模板名称"); return; }
+  if (!draft.agentId) { Proto.toast("请关联智能体以生成报告内容"); return; }
+  Store.saveTemplate(draft);
+  closeModal();
+  render();
+  Proto.toast("模板已保存");
+};
+
+var aid = new URLSearchParams(location.search).get("agent_id");
+render();
+if (aid) {
+  openEditor(null);
+  fillAgentSelect(aid);
+  refreshPreview();
+}
+</script>
+</body>
+</html>

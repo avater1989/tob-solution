@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>线上课 · To-B 小程序</title>
+  <link rel="stylesheet" href="../assets/css/proto.css" />
+  <link rel="stylesheet" href="../assets/css/mp.css?v=15" />
+</head>
+<body class="mp-page" data-tabbar="0">
+  <div class="mp-frame">
+    <div class="mp-top" style="height:170px"></div>
+    <div class="mp-status"><span>9:41</span><span>线上课</span><span>100%</span></div>
+    <div class="mp-nav"><a class="back" href="home.html">←</a>线上课</div>
+    <div class="mp-body" style="padding:0 14px 16px" id="cs-list"></div>
+  </div>
+  <p class="mp-hint">线上课列表 · <a href="../admin/content-video.html">管理端线上课</a></p>
+
+  <script src="../assets/js/proto.js"></script>
+  <script src="../assets/js/content-tags.js?v=2"></script>
+  <script src="../assets/js/teachers-store.js?v=2"></script>
+  <script src="../assets/js/course-store.js?v=1"></script>
+  <script src="../assets/js/mp-shell.js"></script>
+  <script>
+  var Store = window.CourseStore;
+  var Tags = window.ContentTags;
+  var Teachers = window.Teachers;
+
+  function esc(s) {
+    return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) {
+      return ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c];
+    });
+  }
+
+  var list = Store.list({ status: "enabled" }).filter(function (c) {
+    return c.storeVisible !== false;
+  });
+
+  document.getElementById("cs-list").innerHTML = list.map(function (c) {
+    var tags = (c.tagIds || []).slice(0, 2).map(function (id) {
+      var t = Tags.get(id);
+      return t ? t.name : "";
+    }).filter(Boolean);
+    var price = c.price > 0 ? ("¥" + c.price) : "免费";
+    return (
+      '<div class="mp-live-card" style="margin-top:12px">' +
+        '<a href="course.html?id=' + encodeURIComponent(c.id) + '" style="color:inherit">' +
+          '<div class="mp-live-cover" style="background:url(' + esc(c.cover) + ') center/cover;min-height:120px">' +
+            (c.badge === "hot" ? '<span class="mp-live-badge">热门</span>' : "") +
+            (c.badge === "premium" ? '<span class="mp-live-badge">精品</span>' : "") +
+            "<h3>" + esc(c.name) + "</h3>" +
+            "<p>" + esc(Teachers.nameOf(c.teacherId) || c.teacher) +
+              (c.term ? " · " + esc(c.term) : "") +
+              " · " + Store.chapterCount(c) + " 讲</p>" +
+          "</div>" +
+        "</a>" +
+        '<div class="mp-live-ft">' +
+          '<div class="mp-live-ft-l">' + price + " · " + (c.views || 0) + " 人学过" +
+            (tags.length ? " · " + esc(tags.join(" / ")) : "") + "</div>" +
+          '<a class="mp-live-ft-btn" href="course.html?id=' + encodeURIComponent(c.id) + '">查看详情</a>' +
+        "</div>" +
+      "</div>"
+    );
+  }).join("") || '<p style="padding:32px;text-align:center;color:#8c8c8c">暂无线上课</p>';
+  </script>
+</body>
+</html>

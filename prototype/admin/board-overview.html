@@ -1,10 +1,37 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-  <meta charset="UTF-8" />
-  <meta http-equiv="refresh" content="0;url=board-term-review.html" />
-  <script>location.replace("board-term-review.html" + location.search + location.hash);</script>
-  <title>经营总览（已并入经营分析）</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>经营总览 · 商家管理后台</title>
+<link rel="stylesheet" href="../assets/css/proto.css?v=9" />
 </head>
-<body></body>
+<body class="admin-body" data-module="data" data-nav="board-overview" data-title="经营总览" data-crumb="数据 / 经营总览" data-assist="1">
+<div id="header-actions">
+  <a class="btn" href="board-term-review.html">期次复盘</a>
+</div>
+<div id="page-content" style="display:none">
+  <div style="background:#f7f8fa;border:1px solid #e8e8e8;border-radius:8px;padding:12px 14px;margin-bottom:14px;font-size:13px">
+    数据页只做分析：<b>指标 → 趋势 → 维度拆解 → 明细 → 业务对象</b>。不在此管理订单/售后明细。
+  </div>
+  <div class="grid-4" style="margin-bottom:16px">
+    <a class="stat" href="board-acquire.html" style="text-decoration:none;color:inherit"><div class="label">获客与转化</div><div class="value">1,286</div><div class="hint">入池 → 加微 → 支付</div></a>
+    <a class="stat" href="board-live.html" style="text-decoration:none;color:inherit"><div class="label">内容经营</div><div class="value">68%</div><div class="hint">完课率 · 下钻直播/课程</div></a>
+    <a class="stat" href="board-convert.html" style="text-decoration:none;color:inherit"><div class="label">商品与交易</div><div class="value">¥186k</div><div class="hint">GMV · 下钻商品/订单</div></a>
+    <a class="stat" href="board-private.html" style="text-decoration:none;color:inherit"><div class="label">客户经营</div><div class="value">42%</div><div class="hint">跟进完成率</div></a>
+  </div>
+  <div class="card"><div class="card-bd">
+    <h3 style="margin:0 0 10px;font-size:14px">异常下钻示例</h3>
+    <p class="muted" style="font-size:13px;margin:0 0 12px">成交下降 → 期次分析 → 直播分析 → 查看直播</p>
+    <div style="display:flex;flex-wrap:wrap;gap:8px">
+      <a class="btn" href="board-term-review.html">期次复盘</a>
+      <a class="btn" href="board-live.html">内容/直播分析</a>
+      <a class="btn btn-primary" href="lives.html">查看直播</a>
+      <a class="btn" href="orders.html">查看订单（交易模块）</a>
+    </div>
+  </div></div>
+</div>
+<script src="../assets/js/proto.js"></script>
+<script src="../assets/js/admin-shell.js?v=20"></script>
+</body>
 </html>

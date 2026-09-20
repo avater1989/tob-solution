@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>任务触发规则 · 商家管理后台</title>
+<link rel="stylesheet" href="../assets/css/proto.css?v=9" />
+<link rel="stylesheet" href="../assets/css/assess.css?v=3" />
+</head>
+<body class="admin-body" data-module="content" data-nav="assess-projects" data-title="任务触发规则" data-crumb="内容 / 测评中心 / 测评 / 任务触发规则">
+
+<div id="header-actions">
+  <a class="btn" href="assess-projects.html">返回测评</a>
+  <button class="btn btn-primary" id="btn-save">保存规则</button>
+</div>
+
+<div id="page-content" style="display:none">
+  <a href="assess-projects.html" style="display:inline-flex;color:#165dff;font-size:13px;margin-bottom:12px;text-decoration:none">← 返回测评列表</a>
+
+  <div style="margin-bottom:14px">
+    <h1 style="margin:0 0 4px;font-size:20px">任务触发规则</h1>
+    <p class="muted" style="margin:0;font-size:13px">测评：<b id="p-name">亲子沟通能力测评</b>（AS001）· 统一模型 <code>测评结果 → 任务触发规则 → 任务</code></p>
+  </div>
+
+  <div class="as-banner" style="background:#f0f5ff;border:1px solid #bedaff;border-radius:8px;padding:12px 14px;margin-bottom:14px;font-size:13px">
+    <b>一套规则模型</b>：每条规则含 <code>scope</code>（question | total）、比较条件、触发任务列表。单题分数与总分共用同一结构，禁止两套系统。
+  </div>
+
+  <div class="card" style="margin-bottom:14px"><div class="card-bd">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+      <div>
+        <div style="font-weight:600">规则列表</div>
+        <div class="muted" style="font-size:12px">命中多条时按顺序触发，任务去重后进入任务集合 / 可生成计划关卡</div>
+      </div>
+      <button class="btn" id="btn-add">+ 添加规则</button>
+    </div>
+    <div id="rule-list"></div>
+  </div></div>
+
+  <div class="card"><div class="card-bd">
+    <div style="font-weight:600;margin-bottom:8px">下一步</div>
+    <div style="display:flex;flex-wrap:wrap;gap:8px">
+      <a class="btn" href="assess-questions.html?id=AS001">配置题目</a>
+      <a class="btn" href="assess-scoring.html?id=AS001">计分/结果规则</a>
+      <a class="btn" href="assess-report-templates.html">管理报告模板</a>
+      <a class="btn btn-primary" href="assess-plans.html?from=assess&id=AS001">由测评生成计划</a>
+      <a class="btn" href="content-tasks.html">查看任务定义</a>
+    </div>
+  </div></div>
+</div>
+
+<script src="../assets/js/proto.js"></script>
+<script src="../assets/js/admin-shell.js?v=20"></script>
+<script>
+/** 统一规则模型：scope = question | total */
+var RULES = [
+  { id: "R1", scope: "question", question_id: "Q03", op: "gte", value: 4, max: null, then_task_ids: ["T001"], label: "倾听题得分 ≥ 4 → 线上课任务" },
+  { id: "R2", scope: "question", question_id: "Q03", op: "lte", value: 2, max: null, then_task_ids: ["T003"], label: "倾听题得分 ≤ 2 → 智能体辅导任务" },
+  { id: "R3", scope: "total", question_id: null, op: "between", value: 0, max: 39, then_task_ids: ["T003", "T001"], label: "总分 0～39 → 任务集合 A" },
+  { id: "R4", scope: "total", question_id: null, op: "between", value: 40, max: 69, then_task_ids: ["T001", "T004"], label: "总分 40～69 → 任务集合 B" },
+  { id: "R5", scope: "total", question_id: null, op: "between", value: 70, max: 100, then_task_ids: ["T004"], label: "总分 70～100 → 任务集合 C" }
+];
+
+var TASKS = [
+  { id: "T001", name: "完成亲子沟通线上课" },
+  { id: "T002", name: "完成亲子沟通测评" },
+  { id: "T003", name: "与家庭教育顾问对话" },
+  { id: "T004", name: "系列课第 1 章学习" }
+];
+
+function esc(s){ return String(s==null?"":s).replace(/[&<>"']/g,function(c){return({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"})[c];}); }
+
+function taskOpts(selected) {
+  selected = selected || [];
+  return TASKS.map(function (t) {
+    return "<option value='" + t.id + "'" + (selected.indexOf(t.id) >= 0 ? " selected" : "") + ">" + esc(t.id + " · " + t.name) + "</option>";
+  }).join("");
+}
+
+function render() {
+  document.getElementById("rule-list").innerHTML = RULES.map(function (r, idx) {
+    return "<div class='card' style='margin-bottom:10px;border:1px solid #e8e8e8' data-rid='" + r.id + "'><div class='card-bd'>" +
+      "<div style='display:flex;justify-content:space-between;align-items:center;margin-bottom:10px'>" +
+      "<b>规则 " + (idx + 1) + "</b>" +
+      "<button class='btn' style='color:#f53f3f;border-color:#ffa39e' data-del='" + r.id + "'>删除</button></div>" +
+      "<div class='form-grid' style='grid-template-columns:140px 1fr 100px 100px 1fr'>" +
+      "<div class='field'><label>scope</label><select class='input' data-f='scope'>" +
+        "<option value='question'" + (r.scope === "question" ? " selected" : "") + ">单题分数</option>" +
+        "<option value='total'" + (r.scope === "total" ? " selected" : "") + ">测评总分</option>" +
+      "</select></div>" +
+      "<div class='field'><label>题目 ID</label><input class='input' data-f='question_id' value='" + esc(r.question_id || "") + "' placeholder='仅 question 需要' " + (r.scope === "total" ? "disabled" : "") + " /></div>" +
+      "<div class='field'><label>运算符</label><select class='input' data-f='op'>" +
+        ["gte","lte","eq","between"].map(function (op) {
+          return "<option value='" + op + "'" + (r.op === op ? " selected" : "") + ">" + op + "</option>";
+        }).join("") +
+      "</select></div>" +
+      "<div class='field'><label>值 / 下限</label><input class='input' type='number' data-f='value' value='" + r.value + "' /></div>" +
+      "<div class='field'><label>上限 (between)</label><input class='input' type='number' data-f='max' value='" + (r.max == null ? "" : r.max) + "' /></div>" +
+      "</div>" +
+      "<div class='field'><label>触发任务 then_task_ids（可多选）</label>" +
+      "<select class='input' multiple size='3' data-f='tasks' style='height:auto'>" + taskOpts(r.then_task_ids) + "</select></div>" +
+      "<p class='muted' style='font-size:12px;margin:0'>" + esc(r.label || "") + "</p>" +
+      "</div></div>";
+  }).join("") || "<p class='muted'>暂无规则，请添加</p>";
+
+  document.querySelectorAll("[data-del]").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      var id = btn.getAttribute("data-del");
+      RULES = RULES.filter(function (r) { return r.id !== id; });
+      render();
+    });
+  });
+}
+
+document.getElementById("btn-add").addEventListener("click", function () {
+  RULES.push({
+    id: "R" + (RULES.length + 10),
+    scope: "total",
+    question_id: null,
+    op: "between",
+    value: 0,
+    max: 100,
+    then_task_ids: ["T001"],
+    label: "新规则"
+  });
+  render();
+});
+
+document.getElementById("btn-save").addEventListener("click", function () {
+  Proto.toast("规则已保存 · 用户完成测评后将触发任务集合");
+});
+
+var params = new URLSearchParams(location.search);
+if (params.get("id") === "AS002") {
+  document.getElementById("p-name").textContent = "家庭教育风格测评";
+}
+
+render();
+</script>
+</body>
+</html>

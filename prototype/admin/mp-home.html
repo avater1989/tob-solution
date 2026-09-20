@@ -5,20 +5,30 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>首页装修 · 商家管理后台</title>
 <link rel="stylesheet" href="../assets/css/proto.css?v=9" />
-<link rel="stylesheet" href="../assets/css/assess.css?v=3" />
+<link rel="stylesheet" href="../assets/css/assess.css?v=6" />
 <style>
-  .deco-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
-  .deco-item { border: 1px solid var(--color-border); border-radius: 8px; padding: 10px; display: flex; flex-direction: column; gap: 6px; background: #fff; }
-  .deco-cover { height: 64px; border-radius: 6px; background: linear-gradient(135deg, #4d7cfe, #7db3ff); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 12px; text-align: center; padding: 0 8px; }
+  .deco-cover {
+    height: 48px; border-radius: 6px; background: linear-gradient(135deg, #4d7cfe, #7db3ff);
+    color: #fff; display: flex; align-items: center; justify-content: center; font-size: 12px; text-align: center; padding: 0 8px;
+  }
   .deco-cover.c2 { background: linear-gradient(135deg, #ff8a3d, #ffb37a); }
   .deco-cover.c3 { background: linear-gradient(135deg, #2fbf71, #6fdcad); }
-  .mp-strip-pv { display: flex; align-items: center; gap: 8px; border: 1px solid var(--color-border); border-radius: 10px; background: #fff; padding: 10px 12px; max-width: 420px; }
-  .mp-strip-pv .dot { width: 26px; height: 26px; border-radius: 50%; background: linear-gradient(135deg, #ffb020, #ff7a45); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 12px; flex-shrink: 0; }
-  .mp-strip-pv .txt { flex: 1; min-width: 0; font-size: 13px; color: #1d2129; }
-  .mp-strip-pv .go { font-size: 12px; color: #165dff; flex-shrink: 0; }
+  .deco-anchor { scroll-margin-top: 80px; }
+  .deco-sec-nav {
+    display:flex; flex-wrap:wrap; gap:8px; margin-bottom:14px; position:sticky; top:0; z-index:5;
+    background:rgba(247,248,250,.92); backdrop-filter:blur(6px); padding:8px 0;
+  }
+  .deco-sec-nav a {
+    font-size:12px; padding:6px 12px; border-radius:16px; border:1px solid #e5e6eb;
+    color:#4e5969; text-decoration:none; background:#fff;
+  }
+  .deco-sec-nav a:hover { border-color:#165dff; color:#165dff; }
+  .lv-status-live   { font-size: 12px; padding: 2px 10px; border-radius: 999px; background: #fff1f0; color: #f53f3f; font-weight: 500; }
+  .lv-status-will   { font-size: 12px; padding: 2px 10px; border-radius: 999px; background: #e8f3ff; color: #165dff; font-weight: 500; }
+  .lv-status-replay { font-size: 12px; padding: 2px 10px; border-radius: 999px; background: #f2f3f5; color: #8c8c8c; font-weight: 500; }
 </style>
 </head>
-<body class="admin-body" data-module="mp" data-nav="mp-home" data-title="首页装修" data-crumb="商家管理后台 / 小程序 / 店铺装修 / 首页装修">
+<body class="admin-body" data-module="trade" data-nav="mp-home" data-title="首页装修" data-crumb="交易 / 店铺运营 / 首页装修">
 
 <div id="header-actions">
   <button class="btn" id="btn-preview">预览 C 端首页</button>
@@ -26,107 +36,139 @@
 </div>
 
 <div id="page-content" style="display:none">
-  <div class="as-banner">按 C 端首页的真实结构配置装修。C 端首页固定为三段：<b>主推 Banner</b> → <b>金刚位</b>（测评 / 定制化 / 艺博士，原型仅入口示意、不做详情页）→ <b>精选课程</b>。</div>
+  <div class="as-banner">配置 C 端首页各区块展示内容：Banner → 直播 → 线上课 → 线下课 → 精选文章。内容资产在「内容」模块维护，此处只决定首页露出与顺序。</div>
 
-  <!-- 主推 Banner -->
-  <div class="card" style="margin-bottom:14px">
-    <div class="card-hd"><h2>主推 Banner</h2><span class="muted" style="margin-left:10px">对应 C 端首页顶部大卡，最多 3 条轮播，第一条为默认展示</span></div>
+  <div class="deco-sec-nav">
+    <a href="#sec-banner">Banner</a>
+    <a href="#sec-live">直播</a>
+    <a href="#sec-online">线上课</a>
+    <a href="#sec-offline">线下课</a>
+    <a href="#sec-article">精选文章</a>
+  </div>
+
+  <!-- Banner -->
+  <div class="card deco-anchor" id="sec-banner" style="margin-bottom:14px">
+    <div class="card-hd"><h2>Banner</h2><span class="muted" style="margin-left:10px">顶部轮播，最多 3 条，第一条为默认主推</span></div>
     <div class="card-bd">
       <table class="as-table">
         <thead>
           <tr>
-            <th>预览</th>
+            <th style="width:140px">预览</th>
             <th>标题 / 副标题</th>
-            <th style="width:180px">左上角胶囊</th>
-            <th style="width:150px">点击跳转</th>
+            <th style="width:160px">跳转</th>
             <th style="width:90px">状态</th>
-            <th style="width:170px">操作</th>
+            <th style="width:200px">操作</th>
           </tr>
         </thead>
         <tbody id="banner-tbody"></tbody>
       </table>
-      <div style="margin-top:10px"><button class="btn btn-sm" id="btn-banner-add">+ 新增 Banner</button></div>
+      <div style="margin-top:10px"><button class="btn" id="btn-banner-add">+ 新增 Banner</button></div>
     </div>
   </div>
 
-  <!-- 金刚位 -->
-  <div class="card" style="margin-bottom:14px">
-    <div class="card-hd"><h2>金刚位</h2><span class="muted" style="margin-left:10px">Banner 下方固定三入口；本原型不做测评 / 定制化 / 艺博士详情页，评审时口头讲解</span></div>
+  <!-- 直播 -->
+  <div class="card deco-anchor" id="sec-live" style="margin-bottom:14px">
+    <div class="card-hd"><h2>直播展示</h2><span class="muted" style="margin-left:10px">控制首页 / 直播 Tab 露出的场次；场次数据来自「直播」模块</span></div>
     <div class="card-bd">
       <table class="as-table">
         <thead>
-          <tr><th style="width:80px">图标</th><th>名称</th><th>跳转</th><th style="width:90px">状态</th></tr>
+          <tr><th>直播场次</th><th style="width:120px">开播时间</th><th style="width:90px">状态</th><th style="width:90px">C 端展示</th><th style="width:180px">操作</th></tr>
         </thead>
-        <tbody>
-          <tr>
-            <td><div class="deco-cover" style="width:48px;height:48px;border-radius:14px;background:linear-gradient(135deg,#ffb020,#ff7a45)">测</div></td>
-            <td><div class="as-name">测评</div><div class="as-desc">入口示意</div></td>
-            <td style="font-size:12px">无详情页（讲解）</td>
-            <td><span class="as-tag green">展示中</span></td>
-          </tr>
-          <tr>
-            <td><div class="deco-cover c2" style="width:48px;height:48px;border-radius:14px;background:linear-gradient(135deg,#5b8cff,#3b6ef5)">定</div></td>
-            <td><div class="as-name">定制化</div><div class="as-desc">入口示意</div></td>
-            <td style="font-size:12px">无详情页（讲解）</td>
-            <td><span class="as-tag green">展示中</span></td>
-          </tr>
-          <tr>
-            <td><div class="deco-cover c3" style="width:48px;height:48px;border-radius:14px;background:linear-gradient(135deg,#34c759,#1faa4a)">博</div></td>
-            <td><div class="as-name">艺博士</div><div class="as-desc">入口示意</div></td>
-            <td style="font-size:12px">无详情页（讲解）</td>
-            <td><span class="as-tag green">展示中</span></td>
-          </tr>
-        </tbody>
+        <tbody id="live-tbody"></tbody>
       </table>
+      <p class="muted" style="font-size:12px;margin:10px 0 0">创建与审核请前往 <a href="lives.html">直播列表</a>；通过审核的场次默认可展示。</p>
     </div>
   </div>
 
-  <!-- 精选课程 -->
-  <div class="card" style="margin-bottom:14px">
-    <div class="card-hd"><h2>精选课程</h2><span class="muted" style="margin-left:10px">C 端首页课程列表区，最多 6 门</span></div>
+  <!-- 线上课 -->
+  <div class="card deco-anchor" id="sec-online" style="margin-bottom:14px">
+    <div class="card-hd"><h2>线上课</h2><span class="muted" style="margin-left:10px">首页线上课区，最多 6 门</span></div>
     <div class="card-bd">
-      <div class="form-grid" style="max-width:640px;margin-bottom:12px">
-        <div class="field"><label>区块标题</label><input class="input" id="sec-title" value="精选课程" maxlength="10" /></div>
-        <div class="field"><label>右上角「更多」跳转</label>
-          <select class="input" id="sec-more">
-            <option value="lives" selected>直播列表页</option>
+      <div class="form-grid" style="max-width:640px;margin-bottom:12px;grid-template-columns:1fr 1fr">
+        <div class="field"><label>区块标题</label><input class="input" id="online-title" value="线上课" maxlength="10" /></div>
+        <div class="field"><label>「更多」跳转</label>
+          <select class="input" id="online-more">
+            <option value="courses" selected>线上课列表</option>
             <option value="none">不展示「更多」</option>
           </select>
         </div>
       </div>
       <table class="as-table">
         <thead>
-          <tr><th style="width:60px">排序</th><th>课程</th><th style="width:210px">卡片副标题</th><th style="width:140px">价格</th><th style="width:140px">操作</th></tr>
+          <tr><th style="width:56px">排序</th><th>课程</th><th style="width:200px">副标题</th><th style="width:100px">价格</th><th style="width:120px">操作</th></tr>
         </thead>
-        <tbody id="course-tbody"></tbody>
+        <tbody id="online-tbody"></tbody>
       </table>
-      <div style="margin-top:10px;display:flex;gap:8px">
-        <button class="btn btn-sm" id="btn-course-add">+ 添加课程</button>
+      <div style="margin-top:10px"><button class="btn" id="btn-online-add">+ 添加线上课</button></div>
+    </div>
+  </div>
+
+  <!-- 线下课 -->
+  <div class="card deco-anchor" id="sec-offline" style="margin-bottom:14px">
+    <div class="card-hd"><h2>线下课</h2><span class="muted" style="margin-left:10px">首页线下课区，最多 6 场</span></div>
+    <div class="card-bd">
+      <div class="form-grid" style="max-width:640px;margin-bottom:12px;grid-template-columns:1fr 1fr">
+        <div class="field"><label>区块标题</label><input class="input" id="offline-title" value="线下课" maxlength="10" /></div>
+        <div class="field"><label>「更多」跳转</label>
+          <select class="input" id="offline-more">
+            <option value="offline" selected>线下课列表</option>
+            <option value="none">不展示「更多」</option>
+          </select>
+        </div>
       </div>
+      <table class="as-table">
+        <thead>
+          <tr><th style="width:56px">排序</th><th>场次</th><th style="width:160px">时间 / 地点</th><th style="width:100px">价格</th><th style="width:120px">操作</th></tr>
+        </thead>
+        <tbody id="offline-tbody"></tbody>
+      </table>
+      <div style="margin-top:10px"><button class="btn" id="btn-offline-add">+ 添加线下课</button></div>
+    </div>
+  </div>
+
+  <!-- 精选文章 -->
+  <div class="card deco-anchor" id="sec-article" style="margin-bottom:14px">
+    <div class="card-hd"><h2>精选文章</h2><span class="muted" style="margin-left:10px">首页精选文章区，最多 6 篇</span></div>
+    <div class="card-bd">
+      <div class="form-grid" style="max-width:640px;margin-bottom:12px;grid-template-columns:1fr 1fr">
+        <div class="field"><label>区块标题</label><input class="input" id="article-title" value="精选文章" maxlength="10" /></div>
+        <div class="field"><label>「更多」跳转</label>
+          <select class="input" id="article-more">
+            <option value="articles" selected>文章列表</option>
+            <option value="none">不展示「更多」</option>
+          </select>
+        </div>
+      </div>
+      <table class="as-table">
+        <thead>
+          <tr><th style="width:56px">排序</th><th>文章</th><th style="width:140px">分类</th><th style="width:120px">操作</th></tr>
+        </thead>
+        <tbody id="article-tbody"></tbody>
+      </table>
+      <div style="margin-top:10px"><button class="btn" id="btn-article-add">+ 添加文章</button></div>
     </div>
   </div>
 </div>
 
-<!-- Banner 编辑弹窗 -->
+<!-- Banner 弹窗 -->
 <div class="proto-modal" id="modal-banner" style="width:520px">
   <div class="proto-modal-hd"><h3 id="banner-modal-title" style="margin:0;font-size:16px">新增 Banner</h3><button class="ctrl-icon-btn" data-close>×</button></div>
   <div class="proto-modal-bd">
     <div class="form-grid">
-      <div class="field"><label>标题 *</label><input class="input" id="b-title" placeholder="如：亲子沟通，从听懂开始" maxlength="16" /></div>
-      <div class="field"><label>副标题</label><input class="input" id="b-sub" placeholder="如：8 节体系课 · 陪学营老师全程答疑" maxlength="24" /></div>
-      <div class="field"><label>左上角胶囊文案</label><input class="input" id="b-pill" placeholder="如：今晚 20:00 公开课 · 预约即可" maxlength="20" /></div>
+      <div class="field"><label>标题 *</label><input class="input" id="b-title" maxlength="16" placeholder="如：亲子沟通，从听懂开始" /></div>
+      <div class="field"><label>副标题</label><input class="input" id="b-sub" maxlength="24" placeholder="补充说明" /></div>
       <div class="field"><label>点击跳转 *</label>
-        <div style="display:grid;grid-template-columns:150px 1fr;gap:8px">
+        <div style="display:grid;grid-template-columns:140px 1fr;gap:8px">
           <select class="input" id="b-link-type">
-            <option value="course">课程详情</option>
+            <option value="course">线上课</option>
+            <option value="offline">线下课</option>
             <option value="live">直播间</option>
-            <option value="lives">直播列表页</option>
+            <option value="article">文章</option>
           </select>
           <select class="input" id="b-link"></select>
         </div>
-        <div class="muted" style="margin-top:4px">可选 C 端真实存在的页面或内容，点击后在端上跳转</div>
       </div>
-      <div class="field"><label>主图</label><input type="file" accept="image/*" /><div class="muted">建议 750×300px，JPG/PNG，≤500KB</div></div>
+      <div class="field"><label>主图</label><input type="file" accept="image/*" /><div class="muted">建议 750×300px</div></div>
     </div>
   </div>
   <div class="proto-modal-ft" style="justify-content:flex-end;gap:8px">
@@ -135,48 +177,90 @@
   </div>
 </div>
 
-<!-- 选课弹窗 -->
-<div class="proto-modal" id="modal-course" style="width:560px">
-  <div class="proto-modal-hd"><h3 id="course-modal-title" style="margin:0;font-size:16px">添加课程</h3><button class="ctrl-icon-btn" data-close>×</button></div>
+<!-- 通用多选池 -->
+<div class="proto-modal" id="modal-pick" style="width:560px">
+  <div class="proto-modal-hd"><h3 id="pick-title" style="margin:0;font-size:16px">添加内容</h3><button class="ctrl-icon-btn" data-close>×</button></div>
   <div class="proto-modal-bd">
-    <div class="muted" style="margin-bottom:10px">勾选要展示在首页的课程，最多 6 门；保存后按勾选顺序在 C 端依次展示。</div>
-    <div id="course-pool-list"></div>
+    <p class="muted" id="pick-hint" style="margin:0 0 10px;font-size:12px">最多 6 条</p>
+    <div id="pick-list"></div>
   </div>
   <div class="proto-modal-ft" style="justify-content:flex-end;gap:8px">
     <button class="btn" data-close>取消</button>
-    <button class="btn btn-primary" id="course-ok">确定</button>
+    <button class="btn btn-primary" id="pick-ok">确定</button>
   </div>
 </div>
 
 <div class="proto-mask" id="mask"></div>
 
 <script src="../assets/js/proto.js"></script>
-<script src="../assets/js/admin-shell.js?v=14"></script>
+<script src="../assets/js/admin-shell.js?v=21"></script>
 <script>
-function esc(s){ return String(s).replace(/[&<>"']/g,function(c){return({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"})[c];}); }
+function esc(s){ return String(s==null?"":s).replace(/[&<>"']/g,function(c){return({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"})[c];}); }
 function stTag(on){ return on ? '<span class="as-tag green">展示中</span>' : '<span class="as-tag gray">已隐藏</span>'; }
 
-/* Banner 跳转：只保留 C 端真实存在的落地页 */
-var LINK_TYPE_LABEL = { course:"课程详情", live:"直播间", lives:"直播列表页" };
+var LINK_TYPE_LABEL = { course:"线上课", offline:"线下课", live:"直播间", article:"文章" };
 var LINK_OPTIONS = {
   course: ["亲子沟通基础", "家庭教育入门系列", "9.9 引流体验课"],
-  live:   ["亲子沟通 90 分钟", "开学第一课 · 家长专场"],
-  lives:  ["直播列表页"]
+  offline: ["周末家庭工作坊 · 上海场", "亲子沟通公开课 · 杭州"],
+  live: ["开学第一课 · 家长专场", "非暴力沟通 · 案例答疑"],
+  article: ["如何听懂孩子的情绪", "家庭会议怎么开"]
 };
 
 var BANNERS = [
-  { id:"B1", title:"亲子沟通，从听懂开始", sub:"8 节体系课 · 陪学营老师全程答疑", pill:"今晚 20:00 公开课 · 预约即可", linkType:"course", link:"亲子沟通基础", on:true, cls:"" },
-  { id:"B2", title:"家庭教育风格测评免费测", sub:"3 分钟了解你的教养风格", pill:"限时免费", linkType:"course", link:"家庭教育入门系列", on:true, cls:"c2" },
-  { id:"B3", title:"开学第一课 · 家长专场直播", sub:"9 月 12 日 20:00 开播", pill:"预约即可", linkType:"live", link:"开学第一课 · 家长专场", on:false, cls:"c3" }
+  { id:"B1", title:"亲子沟通，从听懂开始", sub:"8 节体系课 · 陪学营老师全程答疑", linkType:"course", link:"亲子沟通基础", on:true, cls:"" },
+  { id:"B2", title:"家庭教育风格测评免费测", sub:"3 分钟了解你的教养风格", linkType:"article", link:"如何听懂孩子的情绪", on:true, cls:"c2" },
+  { id:"B3", title:"开学第一课 · 家长专场", sub:"9 月 12 日 20:00 开播", linkType:"live", link:"开学第一课 · 家长专场", on:false, cls:"c3" }
 ];
 
-/* 精选课程：顺序即 C 端展示顺序 */
-var SELECTED = [
-  { id:"S1", title:"亲子沟通基础", sub:"8 节 · 适合 3–12 岁家庭", price:"¥199", origin:"¥299" },
-  { id:"S2", title:"家庭教育入门系列", sub:"3 门组合 · 系统学习", price:"¥399", origin:"" },
-  { id:"S3", title:"9.9 引流体验课", sub:"视频号同款 · 体验入门", price:"¥9.9", origin:"" }
+var LIVES = [
+  { id: "L001", name: "开学第一课 · 家长专场", time: "09-12 20:00", status: "live", cshow: true },
+  { id: "L002", name: "非暴力沟通 · 案例答疑", time: "09-15 20:00", status: "will", cshow: true },
+  { id: "L003", name: "写作业不吼不叫 · 方法拆解", time: "09-20 19:30", status: "will", cshow: false },
+  { id: "L004", name: "亲子沟通 21 天训练营 · 第 4 期", time: "09-05 20:00", status: "replay", cshow: true }
 ];
-var COURSE_POOL = ["亲子沟通基础","家庭教育入门系列","9.9 引流体验课","青春期沟通 21 天营","亲子情绪管理音频课","非暴力沟通父母工作坊","家庭会议实践指南","写作业不吼不叫"];
+var STATUS_TEXT = { live: "直播中", will: "预告", replay: "回放" };
+var STATUS_CLS  = { live: "lv-status-live", will: "lv-status-will", replay: "lv-status-replay" };
+
+var ONLINE = [
+  { id:"O1", title:"亲子沟通基础", sub:"8 节 · 适合 3–12 岁家庭", price:"¥199" },
+  { id:"O2", title:"家庭教育入门系列", sub:"3 门组合 · 系统学习", price:"¥399" },
+  { id:"O3", title:"9.9 引流体验课", sub:"视频号同款 · 体验入门", price:"¥9.9" }
+];
+var ONLINE_POOL = ["亲子沟通基础","家庭教育入门系列","9.9 引流体验课","青春期沟通 21 天营","亲子情绪管理音频课","非暴力沟通父母工作坊"];
+
+var OFFLINE = [
+  { id:"F1", title:"周末家庭工作坊 · 上海场", meta:"09-28 14:00 · 浦东", price:"¥299" },
+  { id:"F2", title:"亲子沟通公开课 · 杭州", meta:"10-05 09:30 · 西湖", price:"免费" }
+];
+var OFFLINE_POOL = [
+  { title:"周末家庭工作坊 · 上海场", meta:"09-28 14:00 · 浦东", price:"¥299" },
+  { title:"亲子沟通公开课 · 杭州", meta:"10-05 09:30 · 西湖", price:"免费" },
+  { title:"家庭教育沙龙 · 深圳场", meta:"10-12 15:00 · 南山", price:"¥199" },
+  { title:"亲子读书会 · 北京场", meta:"10-19 10:00 · 朝阳", price:"¥99" }
+];
+
+var ARTICLES = [
+  { id:"A1", title:"如何听懂孩子的情绪", cat:"亲子沟通" },
+  { id:"A2", title:"家庭会议怎么开", cat:"家庭规则" },
+  { id:"A3", title:"写作业不吼不叫的 5 个方法", cat:"学习陪伴" }
+];
+var ARTICLE_POOL = [
+  { title:"如何听懂孩子的情绪", cat:"亲子沟通" },
+  { title:"家庭会议怎么开", cat:"家庭规则" },
+  { title:"写作业不吼不叫的 5 个方法", cat:"学习陪伴" },
+  { title:"青春期沟通避坑指南", cat:"亲子沟通" },
+  { title:"给孩子立边界的正确姿势", cat:"家庭规则" }
+];
+
+var pickKind = null;
+var editBanner = null;
+var mask = document.getElementById("mask");
+
+function closeAll(){
+  mask.classList.remove("open");
+  document.querySelectorAll(".proto-modal").forEach(function(n){ n.classList.remove("open"); });
+}
+function openM(id){ mask.classList.add("open"); document.getElementById(id).classList.add("open"); }
 
 function linkLabel(b){
   var t = LINK_TYPE_LABEL[b.linkType] || "";
@@ -190,132 +274,193 @@ function fillLinkOptions(type, selected){
   }).join("");
 }
 
-var mask = document.getElementById("mask");
-var modals = ["modal-banner","modal-course"];
-function closeAll(){ mask.classList.remove("open"); modals.forEach(function(id){ document.getElementById(id).classList.remove("open"); }); }
-var editCtx = {};
+function moveUp(arr, id){
+  var i = arr.findIndex(function(x){ return x.id === id; });
+  if (i <= 0) return;
+  var t = arr[i-1]; arr[i-1] = arr[i]; arr[i] = t;
+}
 
 function renderBanners(){
   document.getElementById("banner-tbody").innerHTML = BANNERS.map(function(b,i){
     return '<tr>' +
-      '<td><div class="deco-cover '+b.cls+'" style="width:120px;height:44px;font-size:11px">'+esc(b.title)+'</div></td>' +
+      '<td><div class="deco-cover '+esc(b.cls||"")+'" style="width:120px;height:44px;font-size:11px">'+esc(b.title)+'</div></td>' +
       '<td><div class="as-name">'+esc(b.title)+'</div><div class="as-desc">'+esc(b.sub)+'</div></td>' +
-      '<td style="font-size:12px">'+esc(b.pill || "—")+'</td>' +
       '<td style="font-size:12px">'+esc(linkLabel(b))+'</td>' +
       '<td>'+stTag(b.on)+'</td>' +
-      '<td class="row-actions">' +
-        '<a href="javascript:;" data-b-move="'+b.id+'">'+(i===0?"—" : "上移")+'</a>' +
-        '<a href="javascript:;" data-b-edit="'+b.id+'">编辑</a>' +
-        '<a href="javascript:;" data-b-toggle="'+b.id+'">'+(b.on?"隐藏":"展示")+'</a>' +
-        (BANNERS.length>1 ? '<a href="javascript:;" class="row-more" data-b-del="'+b.id+'">删除</a>' : '') +
+      '<td class="as-acts">' +
+        '<button class="btn" data-b-move="'+b.id+'"'+(i===0?' disabled':'')+'>上移</button>' +
+        '<button class="btn" data-b-edit="'+b.id+'">编辑</button>' +
+        '<button class="btn" data-b-toggle="'+b.id+'">'+(b.on?'隐藏':'展示')+'</button>' +
+        (BANNERS.length>1 ? '<button class="btn" style="color:#f53f3f" data-b-del="'+b.id+'">删除</button>' : '') +
       '</td></tr>';
   }).join("");
 }
-function renderCourses(){
-  document.getElementById("course-tbody").innerHTML = SELECTED.length ? SELECTED.map(function(c,i){
+
+function renderLives(){
+  document.getElementById("live-tbody").innerHTML = LIVES.map(function(l,i){
+    return '<tr>' +
+      '<td><div class="as-name">'+esc(l.name)+'</div></td>' +
+      '<td style="font-size:13px">'+esc(l.time)+'</td>' +
+      '<td><span class="'+STATUS_CLS[l.status]+'">'+STATUS_TEXT[l.status]+'</span></td>' +
+      '<td>'+stTag(l.cshow)+'</td>' +
+      '<td class="as-acts">' +
+        '<button class="btn" data-l-toggle="'+i+'">'+(l.cshow?'从首页隐藏':'在首页展示')+'</button>' +
+      '</td></tr>';
+  }).join("");
+}
+
+function renderList(tbodyId, rows, kind){
+  var empty = { online:'线上课', offline:'线下课', article:'文章' }[kind];
+  document.getElementById(tbodyId).innerHTML = rows.length ? rows.map(function(r,i){
+    var mid = kind === 'offline'
+      ? '<td style="font-size:12px">'+esc(r.meta)+'</td><td style="font-size:12px"><b>'+esc(r.price)+'</b></td>'
+      : kind === 'article'
+        ? '<td style="font-size:12px">'+esc(r.cat)+'</td>'
+        : '<td style="font-size:12px">'+esc(r.sub)+'</td><td style="font-size:12px"><b style="color:#f04438">'+esc(r.price)+'</b></td>';
     return '<tr>' +
       '<td style="text-align:center">'+(i+1)+'</td>' +
-      '<td><div class="as-name">'+esc(c.title)+'</div></td>' +
-      '<td style="font-size:12px">'+esc(c.sub)+'</td>' +
-      '<td style="font-size:12px"><b style="color:#f04438">'+esc(c.price)+'</b>' +
-        (c.origin ? ' <s style="color:#bbb">'+esc(c.origin)+'</s>' : '') + '</td>' +
-      '<td class="row-actions">' +
-        '<a href="javascript:;" data-s-move="'+c.id+'">'+(i===0?"—" : "上移")+'</a>' +
-        '<a href="javascript:;" class="row-more" data-s-del="'+c.id+'">移除</a>' +
+      '<td><div class="as-name">'+esc(r.title)+'</div></td>' + mid +
+      '<td class="as-acts">' +
+        '<button class="btn" data-move="'+kind+':'+r.id+'"'+(i===0?' disabled':'')+'>上移</button>' +
+        '<button class="btn" style="color:#f53f3f" data-rm="'+kind+':'+r.id+'">移除</button>' +
       '</td></tr>';
-  }).join("") : '<tr><td colspan="5" style="text-align:center;color:#bfbfbf;padding:20px 0">还没有添加课程，点下方「添加课程」选择</td></tr>';
+  }).join("") : '<tr><td colspan="5" style="text-align:center;color:#bfbfbf;padding:20px">暂无内容，点击下方添加'+esc(empty)+'</td></tr>';
 }
-function renderAll(){ renderBanners(); renderCourses(); }
 
-function move(arr, id){
-  var i = arr.findIndex(function(x){return x.id===id;});
-  if (i<=0) return;
-  var t = arr[i-1]; arr[i-1]=arr[i]; arr[i]=t;
-  renderAll();
+function renderAll(){
+  renderBanners();
+  renderLives();
+  renderList("online-tbody", ONLINE, "online");
+  renderList("offline-tbody", OFFLINE, "offline");
+  renderList("article-tbody", ARTICLES, "article");
 }
 
 function openBanner(b){
-  editCtx.banner = b || null;
+  editBanner = b || null;
   document.getElementById("banner-modal-title").textContent = b ? "编辑 Banner" : "新增 Banner";
   document.getElementById("b-title").value = b ? b.title : "";
   document.getElementById("b-sub").value = b ? b.sub : "";
-  document.getElementById("b-pill").value = b ? (b.pill || "") : "";
   var type = b ? (b.linkType || "course") : "course";
   document.getElementById("b-link-type").value = type;
   fillLinkOptions(type, b ? b.link : "");
-  mask.classList.add("open"); document.getElementById("modal-banner").classList.add("open");
+  openM("modal-banner");
 }
-function openCourse(){
-  document.getElementById("course-pool-list").innerHTML = COURSE_POOL.map(function(n){
-    var checked = SELECTED.some(function(c){ return c.title===n; }) ? "checked" : "";
-    return '<div class="as-task"><label style="display:flex;align-items:center;gap:8px;cursor:pointer">' +
-      '<input type="checkbox" data-cp="'+esc(n)+'" '+checked+' /> <span style="flex:1">'+esc(n)+'</span></label></div>';
+
+function openPick(kind){
+  pickKind = kind;
+  var cfg = {
+    online: { title:"添加线上课", hint:"勾选要展示在首页的线上课，最多 6 门", pool: ONLINE_POOL, selected: ONLINE, key:"title" },
+    offline: { title:"添加线下课", hint:"勾选要展示在首页的线下课，最多 6 场", pool: OFFLINE_POOL, selected: OFFLINE, key:"title" },
+    article: { title:"添加精选文章", hint:"勾选要展示在首页的文章，最多 6 篇", pool: ARTICLE_POOL, selected: ARTICLES, key:"title" }
+  }[kind];
+  document.getElementById("pick-title").textContent = cfg.title;
+  document.getElementById("pick-hint").textContent = cfg.hint;
+  document.getElementById("pick-list").innerHTML = cfg.pool.map(function(item){
+    var title = typeof item === "string" ? item : item.title;
+    var checked = cfg.selected.some(function(s){ return s.title === title; }) ? "checked" : "";
+    var sub = typeof item === "string" ? "" : (item.meta || item.cat || "");
+    return '<label style="display:flex;gap:10px;align-items:flex-start;padding:10px 0;border-bottom:1px solid #f0f0f0;cursor:pointer">' +
+      '<input type="checkbox" data-pick="'+esc(title)+'" '+checked+' style="margin-top:3px" />' +
+      '<div><div style="font-size:13px;font-weight:600">'+esc(title)+'</div>' +
+      (sub ? '<div class="muted" style="font-size:12px;margin-top:2px">'+esc(sub)+'</div>' : '') +
+      '</div></label>';
   }).join("");
-  mask.classList.add("open"); document.getElementById("modal-course").classList.add("open");
+  openM("modal-pick");
 }
 
-document.addEventListener("click", function(e){
-  var el;
-  if ((el = e.target.closest("[data-b-move]"))) { move(BANNERS, el.getAttribute("data-b-move")); return; }
-  if ((el = e.target.closest("[data-s-move]"))) { move(SELECTED, el.getAttribute("data-s-move")); return; }
-  if ((el = e.target.closest("[data-b-edit]"))) { openBanner(BANNERS.find(function(x){return x.id===el.getAttribute("data-b-edit");})); return; }
-  if ((el = e.target.closest("[data-b-toggle]"))) { var b=BANNERS.find(function(x){return x.id===el.getAttribute("data-b-toggle");}); b.on=!b.on; renderAll(); Proto.toast(b.on?"Banner 已展示":"Banner 已隐藏"); return; }
-  if ((el = e.target.closest("[data-s-del]"))) {
-    var sid = el.getAttribute("data-s-del");
-    if (confirm("确认从首页移除该课程？")) { SELECTED = SELECTED.filter(function(x){return x.id!==sid;}); renderAll(); Proto.toast("已移除"); }
-    return;
-  }
-  if ((el = e.target.closest("[data-b-del]"))) {
-    var id = el.getAttribute("data-b-del");
-    if (confirm("确认删除该 Banner？")) { BANNERS = BANNERS.filter(function(x){return x.id!==id;}); renderAll(); Proto.toast("已删除"); }
-    return;
-  }
-});
-
-document.getElementById("b-link-type").addEventListener("change", function(){ fillLinkOptions(this.value, ""); });
-
+document.getElementById("b-link-type").onchange = function(){ fillLinkOptions(this.value, ""); };
 document.getElementById("btn-banner-add").onclick = function(){ openBanner(null); };
-document.getElementById("btn-course-add").onclick = openCourse;
+document.getElementById("btn-online-add").onclick = function(){ openPick("online"); };
+document.getElementById("btn-offline-add").onclick = function(){ openPick("offline"); };
+document.getElementById("btn-article-add").onclick = function(){ openPick("article"); };
 
 document.getElementById("banner-ok").onclick = function(){
   var title = document.getElementById("b-title").value.trim();
   if (!title) { Proto.toast("请填写 Banner 标题"); return; }
-  var linkSel = document.getElementById("b-link");
-  if (!linkSel.value) { Proto.toast("请选择跳转目标"); return; }
+  var link = document.getElementById("b-link").value;
+  if (!link) { Proto.toast("请选择跳转目标"); return; }
   var data = {
     title: title,
     sub: document.getElementById("b-sub").value.trim(),
-    pill: document.getElementById("b-pill").value.trim(),
     linkType: document.getElementById("b-link-type").value,
-    link: linkSel.value,
+    link: link,
     cls: "c2"
   };
-  if (editCtx.banner) { Object.assign(editCtx.banner, data); }
+  if (editBanner) Object.assign(editBanner, data);
   else {
-    if (BANNERS.length>=3) { Proto.toast("最多 3 条 Banner"); return; }
+    if (BANNERS.length >= 3) { Proto.toast("最多 3 条 Banner"); return; }
     BANNERS.push(Object.assign({ id:"B"+Date.now(), on:true }, data));
   }
-  closeAll(); renderAll();
-  Proto.toast("Banner 已保存，跳转至「" + linkLabel(data) + "」（演示）");
+  closeAll(); renderAll(); Proto.toast("Banner 已保存");
 };
-document.getElementById("course-ok").onclick = function(){
+
+document.getElementById("pick-ok").onclick = function(){
   var picked = [];
-  document.querySelectorAll("[data-cp]").forEach(function(cb){ if (cb.checked) picked.push(cb.getAttribute("data-cp")); });
-  if (picked.length > 6) { Proto.toast("最多选择 6 门课程"); return; }
-  SELECTED = picked.map(function(n, i){
-    var old = SELECTED.filter(function(c){ return c.title===n; })[0];
-    return old || { id:"S"+Date.now()+i, title:n, sub:"待补充副标题", price:"¥0", origin:"" };
-  });
-  closeAll(); renderAll();
-  Proto.toast(picked.length ? "已保存 "+picked.length+" 门课程（演示）" : "已清空精选课程");
+  document.querySelectorAll("[data-pick]").forEach(function(cb){ if (cb.checked) picked.push(cb.getAttribute("data-pick")); });
+  if (picked.length > 6) { Proto.toast("最多选择 6 条"); return; }
+  if (pickKind === "online") {
+    ONLINE = picked.map(function(n,i){
+      var old = ONLINE.find(function(x){ return x.title===n; });
+      return old || { id:"O"+Date.now()+i, title:n, sub:"待补充", price:"¥0" };
+    });
+  } else if (pickKind === "offline") {
+    OFFLINE = picked.map(function(n,i){
+      var old = OFFLINE.find(function(x){ return x.title===n; });
+      var pool = OFFLINE_POOL.find(function(x){ return x.title===n; }) || {};
+      return old || { id:"F"+Date.now()+i, title:n, meta:pool.meta||"—", price:pool.price||"—" };
+    });
+  } else if (pickKind === "article") {
+    ARTICLES = picked.map(function(n,i){
+      var old = ARTICLES.find(function(x){ return x.title===n; });
+      var pool = ARTICLE_POOL.find(function(x){ return x.title===n; }) || {};
+      return old || { id:"A"+Date.now()+i, title:n, cat:pool.cat||"未分类" };
+    });
+  }
+  closeAll(); renderAll(); Proto.toast("已更新首页展示");
 };
+
+document.addEventListener("click", function(e){
+  var el;
+  if ((el = e.target.closest("[data-b-move]"))) { moveUp(BANNERS, el.getAttribute("data-b-move")); renderAll(); return; }
+  if ((el = e.target.closest("[data-b-edit]"))) { openBanner(BANNERS.find(function(x){return x.id===el.getAttribute("data-b-edit");})); return; }
+  if ((el = e.target.closest("[data-b-toggle]"))) {
+    var b = BANNERS.find(function(x){return x.id===el.getAttribute("data-b-toggle");});
+    b.on = !b.on; renderAll(); Proto.toast(b.on ? "已展示" : "已隐藏"); return;
+  }
+  if ((el = e.target.closest("[data-b-del]"))) {
+    if (!confirm("确认删除该 Banner？")) return;
+    BANNERS = BANNERS.filter(function(x){ return x.id !== el.getAttribute("data-b-del"); });
+    renderAll(); Proto.toast("已删除"); return;
+  }
+  if ((el = e.target.closest("[data-l-toggle]"))) {
+    var i = +el.getAttribute("data-l-toggle");
+    LIVES[i].cshow = !LIVES[i].cshow;
+    renderAll(); Proto.toast(LIVES[i].cshow ? "已在首页展示" : "已从首页隐藏"); return;
+  }
+  if ((el = e.target.closest("[data-move]"))) {
+    var parts = el.getAttribute("data-move").split(":");
+    var arr = parts[0]==="online"?ONLINE:parts[0]==="offline"?OFFLINE:ARTICLES;
+    moveUp(arr, parts[1]); renderAll(); return;
+  }
+  if ((el = e.target.closest("[data-rm]"))) {
+    var p2 = el.getAttribute("data-rm").split(":");
+    if (p2[0]==="online") ONLINE = ONLINE.filter(function(x){return x.id!==p2[1];});
+    if (p2[0]==="offline") OFFLINE = OFFLINE.filter(function(x){return x.id!==p2[1];});
+    if (p2[0]==="article") ARTICLES = ARTICLES.filter(function(x){return x.id!==p2[1];});
+    renderAll(); Proto.toast("已移除"); return;
+  }
+});
 
 document.getElementById("btn-preview").onclick = function(){ window.open("../miniprogram/home.html","_blank"); };
-document.getElementById("btn-save").onclick = function(){ Proto.toast("首页装修已保存，C 端即时生效（演示）"); };
-
+document.getElementById("btn-save").onclick = function(){ Proto.toast("首页装修已保存（演示）"); };
 mask.addEventListener("click", closeAll);
 document.querySelectorAll("[data-close]").forEach(function(b){ b.addEventListener("click", closeAll); });
+
 renderAll();
+if (location.hash) {
+  var t = document.querySelector(location.hash);
+  if (t) setTimeout(function(){ t.scrollIntoView({ behavior:"smooth", block:"start" }); }, 200);
+}
 </script>
 </body>
 </html>

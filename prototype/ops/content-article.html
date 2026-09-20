@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>图文 · 运营后台</title>
-<link rel="stylesheet" href="../assets/css/proto.css?v=4" />
+<title>文章 · 艺博 To-B</title>
+<link rel="stylesheet" href="../assets/css/proto.css?v=9" />
 <style>
 .ca-list { background: #fff; border: 1px solid #e8e8e8; border-radius: 8px; overflow: hidden; }
 .ca-row {
@@ -31,9 +31,10 @@
 }
 .ca-meta b { color: #595959; font-weight: 500; }
 .ca-actions { display: flex; gap: 6px; flex-wrap: wrap; }
+.ca-cat { font-size: 11px; padding: 1px 6px; border-radius: 3px; background: #e8f3ff; color: #165dff; font-weight: 500; flex-shrink: 0; }
 </style>
 </head>
-<body class="admin-body" data-module="content" data-nav="content-article" data-title="图文" data-crumb="运营后台 / 内容 / 内容管理 / 图文">
+<body class="admin-body" data-module="content" data-nav="content-article" data-title="文章" data-crumb="运营后台 / 内容与审核 / 内容资产 / 文章">
 
 <div id="header-actions">
   <button class="btn">批量删除</button>
@@ -41,17 +42,13 @@
 </div>
 
 <div id="page-content" style="display:none">
-  <div class="card" style="margin-bottom:14px;border-color:#d3adf7;background:#f9f0ff"><div class="card-bd" style="padding:10px 16px;font-size:13px;color:#531dab">
-    平台内容中台 · 图文标准库；与商家后台「图文」双轨，审核入口见侧栏「内容审核」。
-  </div></div>
+  <div style="background:#f0f5ff;border:1px solid #bedaff;border-radius:8px;padding:10px 14px;margin-bottom:12px;font-size:13px">内容负责交付 · 商品负责售卖。下一步：提交审核 → 审核通过 → <a href="goods-edit.html">创建商品</a> → 上架。</div>
   <div class="card" style="margin-bottom:14px"><div class="card-bd" style="padding:12px 16px">
     <div class="toolbar" style="border:none;padding:0;background:transparent">
-      <input class="input" type="text" placeholder="搜索图文名称或简介..." style="width:240px" />
-      <select class="input" style="width:140px">
-        <option>全部分类</option><option>K12 教育</option><option>家庭教育</option>
-      </select>
-      <select class="input" style="width:140px">
-        <option>全部上下架</option><option>已上架</option><option>已下架</option>
+      <input class="input" type="text" id="ca-keyword" placeholder="搜索图文名称或简介..." style="width:240px" />
+      <div id="ca-tag" style="width:200px;display:inline-block;vertical-align:middle"></div>
+      <select class="input" id="ca-status" style="width:140px">
+        <option value="">全部上下架</option><option>已上架</option><option>已下架</option>
       </select>
       <button class="btn btn-primary">查询</button>
       <button class="btn">重置</button>
@@ -70,21 +67,25 @@
   </div>
 </div>
 
-<div class="proto-modal" id="modal-share">
-  <div style="background:#fff;border-radius:10px;width:420px;max-width:92vw;overflow:hidden">
-    <div class="proto-modal-hd"><h3 style="margin:0;font-size:16px">分享图文</h3><button class="ctrl-icon-btn" data-close>×</button></div>
-    <div class="proto-modal-bd">
-      <div id="share-url" style="font-family:monospace;font-size:12px;background:#f7f8fa;border:1px solid #e8e8e8;border-radius:6px;padding:8px 10px;word-break:break-all"></div>
-      <div style="margin-top:12px"><button class="btn btn-primary" id="btn-copy-link">复制链接</button></div>
-    </div>
+<!-- 弹窗遮罩 -->
+<div class="proto-mask" id="mask"></div>
+
+<!-- 删除图文二次确认 -->
+<div class="proto-modal" id="modal-del" style="width:440px">
+  <div class="proto-modal-hd"><h3 style="font-size:16px;font-weight:600">删除图文</h3><button class="btn btn-sm btn-ghost" data-close>×</button></div>
+  <div class="proto-modal-bd">
+    <p>确定删除《<b id="del-name"></b>》？删除后学员端将不再展示，且无法恢复。</p>
+  </div>
+  <div class="proto-drawer-ft" style="border-top:1px solid var(--color-border);padding:12px 20px;display:flex;gap:8px;justify-content:flex-end">
+    <button class="btn" data-close>取消</button>
+    <button class="btn btn-primary" id="del-confirm" style="background:#f53f3f;border-color:#f53f3f">确认删除</button>
   </div>
 </div>
 
-<!-- 弹窗遮罩：页面脚本通过 #mask 控制弹窗开关，缺失会导致点击弹窗时报错 -->
-<div class="proto-mask" id="mask"></div>
-
 <script src="../assets/js/proto.js"></script>
-<script src="../assets/js/ops-shell.js?v=7"></script>
+<script src="../assets/js/content-tags.js?v=2"></script>
+<script src="../assets/js/share-modal.js?v=1"></script>
+<script src="../assets/js/ops-shell.js?v=16"></script>
 <script>
 setTimeout(function() {
   if (document.documentElement.getAttribute('data-shell-ready') === '1') return;
@@ -97,15 +98,26 @@ setTimeout(function() {
 
 var ARTICLES = [
   { id: "A001", title: "9 月新学期家长指南", cover: "../assets/img/covers/term.jpg",
-    author: "编辑部", date: "2026-08-25", reads: 2340, words: 1280,
-    status: "已上架", statusType: "pass", onShelf: true },
+    author: "编辑部", tagIds: ["TG04"], date: "2026-08-25", reads: 2340, words: 1280,
+    status: "已上架", statusType: "pass", onShelf: true, payMode: "free" },
   { id: "A002", title: "孩子注意力训练方法论", cover: "../assets/img/covers/focus.jpg",
-    author: "张老师", date: "2026-08-30", reads: 1560, words: 980,
-    status: "已上架", statusType: "pass", onShelf: true },
+    author: "张老师", tagIds: ["TG06", "TG04"], date: "2026-08-30", reads: 1560, words: 980,
+    status: "已上架", statusType: "pass", onShelf: true, payMode: "free" },
   { id: "A003", title: "家庭情绪急救指南", cover: "../assets/img/covers/emotion.jpg",
-    author: "李老师", date: "—", reads: 0, words: 320,
-    status: "已下架", statusType: "review", onShelf: false }
+    author: "李老师", tagIds: ["TG03", "TG01"], date: "—", reads: 0, words: 320,
+    status: "已下架", statusType: "review", onShelf: false, payMode: "free" }
 ];
+
+var filterTagIds = [];
+var filterStatus = "";
+var filterKeyword = "";
+var Tags = window.ContentTags;
+var tagFilter = Tags.mountTreeSelect("#ca-tag", {
+  placeholder: "内容标签（可多选）",
+  compact: true,
+  width: "200px",
+  onChange: function (ids) { filterTagIds = ids; renderList(); }
+});
 
 function esc(s) {
   return String(s).replace(/[&<>"']/g, function(c) {
@@ -113,19 +125,33 @@ function esc(s) {
   });
 }
 
+function filteredArticles() {
+  return ARTICLES.filter(function(a) {
+    if (filterTagIds.length) {
+      var ids = a.tagIds || [];
+      if (!filterTagIds.some(function (t) { return ids.indexOf(t) >= 0; })) return false;
+    }
+    if (filterStatus && a.status !== filterStatus) return false;
+    if (filterKeyword && a.title.toLowerCase().indexOf(filterKeyword.toLowerCase()) === -1) return false;
+    return true;
+  });
+}
+
 function renderList() {
-  var html = ARTICLES.map(function(a) {
+  var html = filteredArticles().map(function(a) {
     return '' +
       '<div class="ca-row">' +
         '<div class="ca-cover"><img src="' + a.cover + '" alt="" /></div>' +
         '<div class="ca-info">' +
           '<div class="ca-title">' + esc(a.title) +
+            Tags.labelsHtml(a.tagIds) +
+            '<span class="ca-cat" style="background:#f6ffed;color:#389e0d">' + (a.payMode === "paid" ? "付费" : "免费") + '</span>' +
             '<span class="audit-badge ' + a.statusType + '">' + esc(a.status) + '</span>' +
           '</div>' +
           '<div class="ca-meta">' +
             '<span><b>ID:</b> ' + esc(a.id) + '</span>' +
             '<span><b>作者:</b> ' + esc(a.author) + '</span>' +
-            '<span><b>发布:</b> ' + esc(a.date) + '</span>' +
+            '<span><b>上架:</b> ' + esc(a.date) + '</span>' +
             '<span><b>阅读:</b> ' + a.reads.toLocaleString() + '</span>' +
             '<span><b>字数:</b> ' + a.words.toLocaleString() + '</span>' +
           '</div>' +
@@ -133,16 +159,18 @@ function renderList() {
         '<div class="ca-actions">' +
           '<button class="btn" data-share="' + a.id + '"' + (a.onShelf ? '' : ' disabled') + '>分享</button>' +
           '<a class="btn" href="content-article-detail.html?id=' + a.id + '">查看图文</a>' +
+          '<a class="btn" href="content-tasks.html?type=article&ref=' + a.id + '">设为任务</a>' +
           (a.onShelf
             ? '<button class="btn" data-shelf-off="' + a.id + '">下架</button>'
             : '<a class="btn btn-primary" href="content-article-edit.html?id=' + a.id + '">编辑</a>' +
               '<button class="btn" data-shelf-on="' + a.id + '">上架</button>') +
+          '<button class="btn" style="color:#f53f3f;border-color:#ffa39e" data-del="' + a.id + '">删除</button>' +
           '<button class="btn" data-copy="' + a.id + '">复制</button>' +
         '</div>' +
       '</div>';
   }).join("");
   document.getElementById("ca-list").innerHTML = html;
-  document.getElementById("ca-count").textContent = ARTICLES.length;
+  document.getElementById("ca-count").textContent = filteredArticles().length;
 }
 
 var mask = document.getElementById("mask");
@@ -150,12 +178,28 @@ function closeAll() {
   mask.classList.remove("open");
   document.querySelectorAll(".proto-modal").forEach(function(n) { n.classList.remove("open"); });
 }
+function openModal(el) {
+  if (!el) return;
+  mask.classList.add("open");
+  el.classList.add("open");
+}
+var pendingDelId = null;
+document.getElementById("del-confirm").addEventListener("click", function () {
+  if (!pendingDelId) return;
+  ARTICLES = ARTICLES.filter(function (x) { return x.id !== pendingDelId; });
+  pendingDelId = null;
+  closeAll();
+  renderList();
+  Proto.toast("已删除");
+});
+function openShare(id) {
+  var a = ARTICLES.find(function(x){ return x.id === id; });
+  XiboShare.open({ type: "图文", url: "https://yibo.app/a/" + id, cover: a ? a.cover : "", name: a ? a.title : "", desc: "" });
+}
 document.addEventListener("click", function(e) {
   var share = e.target.closest("[data-share]");
   if (share && !share.disabled) {
-    document.getElementById("share-url").textContent = "https://yibo.app/a/" + share.getAttribute("data-share");
-    mask.classList.add("open");
-    document.getElementById("modal-share").classList.add("open");
+    openShare(share.getAttribute("data-share"));
     return;
   }
   var off = e.target.closest("[data-shelf-off]");
@@ -170,11 +214,24 @@ document.addEventListener("click", function(e) {
     if (a2) { a2.onShelf = true; a2.status = "已上架"; a2.statusType = "pass"; renderList(); Proto.toast("已上架"); }
     return;
   }
+  var del = e.target.closest("[data-del]");
+  if (del) {
+    pendingDelId = del.getAttribute("data-del");
+    var da = ARTICLES.find(function (x) { return x.id === pendingDelId; });
+    document.getElementById("del-name").textContent = da ? da.title : pendingDelId;
+    openModal(document.getElementById("modal-del"));
+    return;
+  }
   if (e.target.closest("[data-copy]")) Proto.toast("已复制图文（演示）");
 });
-document.getElementById("btn-copy-link").addEventListener("click", function(){ Proto.toast("链接已复制"); });
 mask && mask.addEventListener("click", closeAll);
 document.querySelectorAll("[data-close]").forEach(function(b) { b.addEventListener("click", closeAll); });
+
+// 内容标签树状多选筛选
+document.getElementById("ca-status").addEventListener("change", function(){ filterStatus = this.value; renderList(); });
+document.getElementById("ca-keyword").addEventListener("input", function(){ filterKeyword = this.value.trim(); renderList(); });
+var caQuery = document.getElementById("ca-query");
+if (caQuery) caQuery.addEventListener("click", renderList);
 
 function tryRender() {
   if (document.getElementById("page-content").style.display !== "none") renderList();

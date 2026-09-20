@@ -39,15 +39,22 @@
     { id: "workbench", label: "工作台", href: "dashboard.html" },
     { id: "scrm", label: "SCRM", href: "leads.html" },
     { id: "live", label: "直播", href: "lives.html" },
-    { id: "content", label: "内容", href: "content-series.html" },
+    { id: "content", label: "内容", href: "content-video.html" },
     { id: "trade", label: "交易", href: "orders.html" },
-    { id: "data", label: "数据看板", href: "board-term-review.html" },
+    { id: "data", label: "数据", href: "board-overview.html" },
     { id: "sys", label: "系统管理", href: "sys-users.html" },
   ];
 
   var sidebars = {
     workbench: [
-      { group: "概览", links: [{ id: "dashboard", href: "dashboard.html", label: "工作台" }] },
+      {
+        group: "经营任务中心",
+        links: [
+          { id: "dashboard", href: "dashboard.html#today", label: "今日经营" },
+          { id: "dashboard-todo", href: "dashboard.html#todo", label: "我的待办" },
+          { id: "dashboard-alert", href: "dashboard.html#alert", label: "异常提醒" },
+        ],
+      },
     ],
     scrm: [
       {
@@ -118,35 +125,31 @@
     ],
     content: [
       {
-        group: "内容管理",
+        group: "内容资产",
         links: [
-          { id: "content-series",   href: "content-series.html",   label: "系列课" },
-          { id: "content-offline",  href: "content-offline.html",  label: "线下课" },
-          { id: "content-video",    href: "content-video.html",    label: "视频" },
-          { id: "content-article",  href: "content-article.html",  label: "图文" },
-          { id: "content-category", href: "content-category.html", label: "内容分类" },
+          { id: "content-video", href: "content-video.html", label: "线上课" },
+          { id: "content-offline", href: "content-offline.html", label: "线下课" },
+          { id: "content-article", href: "content-article.html", label: "文章" },
+          { id: "content-tags", href: "content-tags.html", label: "内容标签" },
+          { id: "content-teachers", href: "content-teachers.html", label: "讲师管理" },
         ],
       },
       {
-        group: "测评管理",
+        group: "测评中心",
         links: [
-          { id: "assess-projects", href: "assess-projects.html", label: "测评项目" },
-          { id: "assess-series",   href: "assess-series.html",   label: "系列测评" },
-          { id: "assess-results",  href: "assess-results.html",  label: "测评结果" },
+          { id: "assess-projects", href: "assess-projects.html", label: "测评" },
+          { id: "assess-series", href: "assess-series.html", label: "测评包" },
+          { id: "assess-questions", href: "assess-questions.html", label: "题库" },
+          { id: "assess-results", href: "assess-results.html", label: "测评报告" },
+          { id: "assess-report-templates", href: "assess-report-templates.html", label: "报告模板" },
         ],
       },
       {
-        group: "计划管理",
+        group: "学习服务",
         links: [
+          { id: "agents", href: "agents.html", label: "智能体" },
+          { id: "content-tasks", href: "content-tasks.html", label: "任务" },
           { id: "assess-plans", href: "assess-plans.html", label: "定制化计划" },
-        ],
-      },
-      {
-        group: "小程序管理",
-        links: [
-          { id: "mp-banner",    href: "mp-banner.html",   label: "Banner管理" },
-          { id: "mp-featured",  href: "mp-featured.html", label: "精选课程" },
-          { id: "mp-live-nav",  href: "mp-live.html",     label: "直播展示" },
         ],
       },
     ],
@@ -154,8 +157,7 @@
       {
         group: "店铺装修",
         links: [
-          { id: "mp-home",     href: "mp-home.html",     label: "首页装修" },
-          { id: "mp-mine",     href: "mp-mine.html",     label: "我的页装修" },
+          { id: "mp-home", href: "mp-home.html", label: "首页装修" },
           { id: "mp-settings", href: "mp-settings.html", label: "店铺设置" },
         ],
       },
@@ -163,9 +165,9 @@
         group: "页面配置",
         links: [
           { id: "mp-course", href: "mp-course.html", label: "课程与学习页" },
-          { id: "mp-order",  href: "mp-order.html",  label: "订单页" },
-          { id: "mp-pay",    href: "mp-pay.html",    label: "支付结果页" },
-          { id: "mp-live",   href: "mp-live.html",   label: "直播页" },
+          { id: "mp-order", href: "mp-order.html", label: "订单页" },
+          { id: "mp-pay", href: "mp-pay.html", label: "支付结果页" },
+          { id: "mp-live", href: "mp-home.html#sec-live", label: "直播展示" },
         ],
       },
       {
@@ -186,9 +188,10 @@
       {
         group: "商品管理",
         links: [
-          { id: "goods", href: "goods.html", label: "我的商品" },
-          { id: "platform-goods", href: "platform-goods.html", label: "平台商品" },
-          { id: "goods-edit", href: "goods-edit.html", label: "新建商品" },
+          { id: "goods", href: "goods.html", label: "店铺商品" },
+          { id: "wxshop-goods", href: "wxshop-goods.html", label: "微信小店商品" },
+          { id: "goods-category", href: "goods-category.html", label: "商品类目" },
+          { id: "goods-tags", href: "goods-tags.html", label: "商品标签" },
         ],
       },
       {
@@ -205,6 +208,13 @@
           { id: "recon", href: "recon.html", label: "对账管理", badge: 2 },
           { id: "settlement", href: "settlement.html", label: "结算单", badge: 2 },
           { id: "withdraw", href: "withdraw.html", label: "提现管理" },
+        ],
+      },
+      {
+        group: "店铺运营",
+        links: [
+          { id: "mp-home", href: "mp-home.html", label: "首页装修" },
+          { id: "mp-settings", href: "mp-settings.html", label: "店铺设置" },
         ],
       },
     ],
@@ -233,13 +243,14 @@
     ],
     data: [
       {
-        group: "数据看板",
+        group: "数据分析",
         links: [
-          { id: "board-t", href: "board-term-review.html", label: "经营分析" },
-          { id: "board-a", href: "board-acquire.html", label: "获客渠道分析" },
-          { id: "board-p", href: "board-private.html", label: "跟进分析" },
-          { id: "board-l", href: "board-live.html", label: "直播分析" },
-          { id: "board-c", href: "board-convert.html", label: "商品分析" },
+          { id: "board-overview", href: "board-overview.html", label: "经营总览" },
+          { id: "board-a", href: "board-acquire.html", label: "获客与转化" },
+          { id: "board-content", href: "board-live.html", label: "内容经营" },
+          { id: "board-c", href: "board-convert.html", label: "商品与交易" },
+          { id: "board-p", href: "board-private.html", label: "客户经营" },
+          { id: "board-t", href: "board-term-review.html", label: "期次复盘" },
         ],
       },
     ],
@@ -251,7 +262,7 @@
       "<li>创建并上架线上课</li><li>创建直播并提交审核</li>" +
       "<li>关联视频号商品</li><li>配置期次与促到</li></ol></div>" +
       "<div class='assist-block'><h3>评审路径</h3><ul>" +
-      "<li><a href='content-series.html'>① 内容售卖</a></li>" +
+      "<li><a href='content-video.html'>① 内容售卖</a></li>" +
       "<li><a href='lives.html'>② 直播转化</a></li>" +
       "<li><a href='orders.html'>③ 订单管理</a></li>" +
       "<li><a href='leads.html'>④ 私域运营</a></li></ul></div>",
@@ -277,26 +288,23 @@
       "<li>多商户场景需审核与录像留痕</li>" +
       "<li>MVP 为小程序直播方案</li></ul></div>",
     content:
-      "<div class='assist-block'><h3>内容提示</h3><ul>" +
-      "<li>本期仅线上课</li>" +
-      "<li>C 端页面展示形态由「小程序」模块统一配置</li>" +
-      "<li>不做艺博士</li></ul></div>",
+      "<div class='assist-block'><h3>内容闭环</h3><ul>" +
+      "<li>内容资产 → 商品化 → 销售 → 履约</li>" +
+      "<li>测评 → 任务规则 → 任务 → 定制化计划</li>" +
+      "<li>智能体不可单独售卖，仅以任务编入定制化计划</li>" +
+      "<li>C 端首页露出在「交易 · 店铺运营 · 首页装修」配置</li></ul></div>",
     mp:
-      "<div class='assist-block'><h3>小程序提示</h3><ul>" +
-      "<li>本模块只配置 C 端展示形态，不做业务处理</li>" +
-      "<li>C 端共 10 页：首页 / 我的 / 课程详情 / 学习 / 我的订单 / 支付结果 / 测评与计划 / 领课 / 直播 / 数据</li>" +
-      "<li>每个后台页面右上角可一键预览对应 C 端页面</li></ul></div>" +
-      "<div class='assist-block'><h3>评审路径</h3><ul>" +
-      "<li><a href='mp-home.html'>首页装修</a></li>" +
-      "<li><a href='mp-mine.html'>我的页装修</a></li>" +
-      "<li><a href='mp-course.html'>课程与学习页</a></li>" +
-      "<li><a href='mp-order.html'>订单页</a></li>" +
-      "<li><a href='mp-pay.html'>支付结果页</a></li></ul></div>",
+      "<div class='assist-block'><h3>店铺运营提示</h3><ul>" +
+      "<li>店铺运营已并入交易模块</li>" +
+      "<li>首页装修统一配置 Banner / 直播 / 线上课 / 线下课 / 精选文章</li></ul></div>",
     trade:
       "<div class='assist-block'><h3>交易提示</h3><ul>" +
       "<li>支付成功开通权益，退款成功回收权益</li>" +
       "<li>资金：备付金分账示意（服务费 1% + 商户 99%）</li>" +
       "<li>T+1 自动对账，差异处理后才可结算</li></ul></div>" +
+      "<div class='assist-block'><h3>店铺运营</h3><ul>" +
+      "<li><a href='mp-home.html'>首页装修</a>（Banner / 直播 / 线上课 / 线下课 / 精选文章）</li>" +
+      "<li><a href='mp-settings.html'>店铺设置</a></li></ul></div>" +
       "<div class='assist-block'><h3>交易路径</h3><ul>" +
       "<li><a href='orders.html'>① 订单列表</a></li>" +
       "<li><a href='goods.html'>② 商品管理</a></li>" +
@@ -304,10 +312,9 @@
       "<li><a href='assets.html'>④ 资产管理</a></li>" +
       "<li><a href='trade-settings.html'>⑤ 交易设置</a></li></ul></div>",
     data:
-      "<div class='assist-block'><h3>链路看板</h3><ul>" +
-      "<li>业务主链：获客→承接→跟进→直播→转化</li>" +
-      "<li>主漏斗：入池→分配→加微→支付</li>" +
-      "<li>到课/跟进为旁路，详见口径文档</li></ul></div>",
+      "<div class='assist-block'><h3>数据口径</h3><ul>" +
+      "<li>只做分析，不做业务明细管理</li>" +
+      "<li>路径：指标 → 趋势 → 维度 → 明细 → 业务对象</li></ul></div>",
   };
 
   function modulesHtml() {
@@ -333,7 +340,9 @@
     groups.forEach(function (g) {
       html += '<div class="nav-group"><div class="nav-label">' + g.group + "</div>";
       g.links.forEach(function (l) {
-        var cls = "nav-item" + (l.id === active ? " active" : "");
+        var isActive = l.id === active;
+        if (moduleId === "workbench" && active === "dashboard" && /^dashboard/.test(l.id)) isActive = true;
+        var cls = "nav-item" + (isActive ? " active" : "");
         var badgeVal = l.badge;
         if (l.id === "aftersales" && window.ProtoBiz) badgeVal = pendingAs || 0;
         var badge = badgeVal ? '<span class="nav-badge">' + badgeVal + "</span>" : "";
@@ -351,7 +360,7 @@
   var review =
     '<div class="review-bar">' +
     "<strong>评审路径</strong>" +
-    '<a href="content-series.html">①内容售卖</a><span class="sep">·</span>' +
+    '<a href="content-video.html">①内容售卖</a><span class="sep">·</span>' +
     '<a href="lives.html">②直播转化</a><span class="sep">·</span>' +
     '<a href="orders.html">③订单管理</a><span class="sep">·</span>' +
     '<a href="leads.html">④私域运营</a><span class="sep">|</span>' +

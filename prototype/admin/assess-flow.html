@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>测评包编排 · 商家管理后台</title>
+<link rel="stylesheet" href="../assets/css/proto.css?v=9" />
+<link rel="stylesheet" href="../assets/css/assess.css?v=6" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@logicflow/core@1.2.27/dist/index.css" />
+</head>
+<body class="admin-body" data-module="content" data-nav="assess-series" data-title="测评包编排" data-crumb="内容 / 测评中心 / 测评包 / LogicFlow 编排">
+
+<div id="header-actions">
+  <a class="btn" href="assess-series.html">返回测评包</a>
+  <button class="btn" id="btn-validate">校验</button>
+  <button class="btn" id="btn-trial">路径试跑</button>
+  <button class="btn btn-primary" id="btn-save">保存编排</button>
+</div>
+
+<div id="page-content" style="display:none">
+  <div class="as-flow-toolbar">
+    <div>
+      <b id="flow-title">—</b>
+      <span class="muted" style="margin-left:8px;font-size:12px">基于 LogicFlow：分流题 → 测评项目 → 结束</span>
+    </div>
+    <div style="display:flex;gap:8px;align-items:center">
+      <button class="btn" type="button" id="btn-fit">适应画布</button>
+      <span class="muted" style="font-size:12px">滚轮缩放 · 拖动画布 · 锚点连线</span>
+    </div>
+  </div>
+  <div class="as-flow-layout">
+    <div class="as-flow-panel">
+      <h3>添加节点</h3>
+      <button class="as-flow-item" type="button" id="btn-add-q">+ 分流问题</button>
+      <div id="assess-list"></div>
+      <button class="btn" id="btn-add-end" style="width:100%;margin-top:8px">+ 结束节点</button>
+      <p class="muted" style="font-size:11px;margin-top:12px;line-height:1.5">单测评内部跳转请在「配置题目」里用选项「跳转到」设置，不在本画布配置。</p>
+    </div>
+    <div class="as-flow-canvas-wrap" id="lf-wrap">
+      <div id="lf-container" class="as-flow-lf"></div>
+    </div>
+    <div class="as-flow-panel as-flow-prop">
+      <h3>属性</h3>
+      <div id="prop-box"><p class="muted" style="font-size:12px">选中节点或连线进行编辑</p></div>
+      <div class="as-flow-trial" id="trial-box" style="display:none"></div>
+    </div>
+  </div>
+</div>
+
+<script src="../assets/js/proto.js"></script>
+<script src="../assets/js/assess-flow-store.js?v=2"></script>
+<script src="https://cdn.jsdelivr.net/npm/@logicflow/core@1.2.27/dist/logic-flow.js"></script>
+<script src="../assets/js/admin-shell.js?v=16"></script>
+<script>
+var Store = window.AssessFlowStore;
+var qs = new URLSearchParams(location.search);
+var ownerId = qs.get("id") || "MS1";
+
+/* 本页仅编排测评包；单测评跳转请去配置题目 */
+var pack = Store.getPackageFlow(ownerId);
+if (!pack) {
+  location.replace("assess-questions.html?id=" + encodeURIComponent(ownerId));
+} else {
+
+var ASSESS_CATALOG = [
+  { id: "MP01", name: "亲子沟通能力测评" },
+  { id: "MP02", name: "家庭规则与边界测评" },
+  { id: "PP01", name: "情绪健康筛查" }
+];
+
+ownerId = pack.ownerId;
+document.getElementById("flow-title").textContent = pack.name || ownerId;
+
+var lf = null;
+var selected = null;
+
+function esc(s) {
+  return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) {
+    return ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c];
+  });
+}
+
+function syncPackFromLf() {
+  if (!lf || !pack) return;
+  var raw = lf.getGraphRawData();
+  pack = Store.fromLogicFlowData(pack, raw);
+}
+
+function renderAssessList() {
+  document.getElementById("assess-list").innerHTML = ASSESS_CATALOG.map(function (a) {
+    return '<button class="as-flow-item" type="button" data-add-assess="' + a.id + '">' +
+      '<b>+ 测评</b><div class="muted">' + esc(a.name) + "</div></button>";
+  }).join("");
+}
+
+function edgeOptSelect(edge) {
+  var srcId = edge.sourceNodeId;
+  var src = (pack.nodes || []).find(function (n) { return n.id === srcId; });
+  if (!src) return "<p class='muted'>未知源节点</p>";
+  if (src.type === "assessment") {
+    return '<div class="field"><label>完成出口</label>' +
+      '<select class="input" id="prop-opt"><option value="' + Store.COMPLETE + '" selected>测评完成后</option></select></div>';
+  }
+  if (src.type === "start" || src.type === "end") {
+    return '<div class="field"><label>出边</label><select class="input" id="prop-opt"><option value="" selected>默认</option></select></div>';
+  }
+  if (src.type === "question") {
+    var q = Store.questionById(pack, src.questionId);
+    var opts = (q && q.opts) || [];
+    var cur = (edge.properties && edge.properties.fromOptId) || "";
+    var html = '<div class="field"><label>绑定选项</label><select class="input" id="prop-opt">';
+    html += '<option value="">默认（未匹配时）</option>';
+    opts.forEach(function (o) {
+      html += '<option value="' + esc(o.id) + '"' + (cur === o.id ? " selected" : "") + ">" + esc(o.t) + "</option>";
+    });
+    html += "</select></div>";
+    return html;
+  }
+  return "";
+}
+
+function renderProp() {
+  var box = document.getElementById("prop-box");
+  if (!selected) {
+    box.innerHTML = '<p class="muted" style="font-size:12px">选中节点或连线进行编辑</p>';
+    return;
+  }
+  if (selected.kind === "edge") {
+    box.innerHTML = '<p style="font-size:13px;margin:0 0 8px"><b>连线</b></p>' + edgeOptSelect(selected.data) +
+      '<button class="btn" id="btn-del-el" style="margin-top:8px;color:#f53f3f">删除连线</button>';
+    var sel = document.getElementById("prop-opt");
+    if (sel) {
+      sel.onchange = function () {
+        var v = sel.value;
+        var props = Object.assign({}, selected.data.properties || {}, {
+          fromOptId: v === "" ? null : v,
+          isDefault: v === ""
+        });
+        var label = sel.options[sel.selectedIndex].text;
+        lf.setProperties(selected.data.id, props);
+        lf.updateText(selected.data.id, label);
+        syncPackFromLf();
+      };
+    }
+  } else {
+    var p = selected.data.properties || {};
+    var tip = p.bizType === "assessment" ? ("测评：" + (p.assessmentId || ""))
+      : p.bizType === "question" ? ("分流题：" + (p.questionId || ""))
+      : (p.bizType || selected.data.type);
+    box.innerHTML = '<p style="font-size:13px;margin:0 0 8px"><b>' + esc(tip) + "</b></p>" +
+      '<p class="muted" style="font-size:12px">拖动节点调整位置；从锚点拖出连线。</p>' +
+      (p.bizType !== "start"
+        ? '<button class="btn" id="btn-del-el" style="margin-top:8px;color:#f53f3f">删除节点</button>'
+        : "");
+  }
+  var del = document.getElementById("btn-del-el");
+  if (del) {
+    del.onclick = function () {
+      if (selected.kind === "edge") lf.deleteEdge(selected.data.id);
+      else lf.deleteNode(selected.data.id);
+      selected = null;
+      syncPackFromLf();
+      renderProp();
+    };
+  }
+}
+
+function addNode(bizType, extra) {
+  syncPackFromLf();
+  var x = 200 + Math.random() * 200;
+  var y = 120 + Math.random() * 200;
+  var id = Store.uid("N");
+  var text = "节点";
+  var lfType = "rect";
+  var properties = { bizType: bizType, questionId: null, assessmentId: null, endKind: "normal" };
+  if (bizType === "end") {
+    text = "结束"; lfType = "circle";
+  } else if (bizType === "question") {
+    var q = Store.normalizeQuestion({
+      id: Store.uid("PQ"),
+      text: "新分流问题？",
+      opts: [
+        { id: "O_a", t: "选项A", s: 0 },
+        { id: "O_b", t: "选项B", s: 0 }
+      ]
+    }, (pack.questions || []).length);
+    pack.questions = (pack.questions || []).concat([q]);
+    properties.questionId = q.id;
+    text = "分流：" + q.text.slice(0, 14);
+  } else if (bizType === "assessment") {
+    properties.assessmentId = extra;
+    var name = (ASSESS_CATALOG.find(function (a) { return a.id === extra; }) || {}).name || extra;
+    text = "测评：" + String(name).slice(0, 14);
+  }
+  lf.addNode({ id: id, type: lfType, x: x, y: y, text: text, properties: properties });
+  syncPackFromLf();
+}
+
+function fitCanvas() {
+  if (!lf) return;
+  try { lf.resize(); } catch (e) {}
+  try {
+    if (typeof lf.fitView === "function") lf.fitView(48);
+    else if (lf.graphModel && typeof lf.graphModel.fitView === "function") lf.graphModel.fitView(48);
+  } catch (e2) {}
+}
+
+function initLf() {
+  var LF = window.LogicFlow;
+  if (!LF) {
+    document.getElementById("lf-container").innerHTML =
+      '<p style="padding:24px;color:#f53f3f">LogicFlow 加载失败，请检查 CDN 网络。</p>';
+    return;
+  }
+  var container = document.getElementById("lf-container");
+  if (!container.clientWidth || !container.clientHeight) {
+    /* 布局未就绪时推迟，避免画布按 0 尺寸渲染导致显示不全 */
+    setTimeout(initLf, 50);
+    return;
+  }
+  if (lf) return;
+  lf = new LF({
+    container: container,
+    grid: true,
+    keyboard: { enabled: true },
+    edgeType: "polyline",
+    stopScrollGraph: false,
+    stopZoomGraph: false
+  });
+  lf.render(Store.toLogicFlowData(pack));
+  fitCanvas();
+  setTimeout(fitCanvas, 100);
+  setTimeout(fitCanvas, 400);
+  window.addEventListener("resize", fitCanvas);
+  lf.on("node:click", function (e) {
+    selected = { kind: "node", data: e.data };
+    renderProp();
+  });
+  lf.on("edge:click", function (e) {
+    selected = { kind: "edge", data: e.data };
+    syncPackFromLf();
+    renderProp();
+  });
+  lf.on("blank:click", function () {
+    selected = null;
+    renderProp();
+  });
+  lf.on("node:drop", function () { syncPackFromLf(); });
+  lf.on("edge:add", function () { syncPackFromLf(); });
+}
+
+document.getElementById("btn-add-q").onclick = function () { addNode("question"); };
+document.getElementById("btn-add-end").onclick = function () { addNode("end"); };
+document.getElementById("assess-list").addEventListener("click", function (e) {
+  var b = e.target.closest("[data-add-assess]");
+  if (b) addNode("assessment", b.getAttribute("data-add-assess"));
+});
+
+document.getElementById("btn-save").onclick = function () {
+  syncPackFromLf();
+  Store.savePackageFlow(pack);
+  Proto.toast("测评包编排已保存");
+};
+document.getElementById("btn-validate").onclick = function () {
+  syncPackFromLf();
+  var issues = Store.validateFlow(pack);
+  if (!issues.length) Proto.toast("校验通过");
+  else Proto.toast(issues[0] + (issues.length > 1 ? " 等 " + issues.length + " 项" : ""));
+};
+document.getElementById("btn-trial").onclick = function () {
+  syncPackFromLf();
+  var box = document.getElementById("trial-box");
+  box.style.display = "block";
+  var sess = Store.createPackageSession(pack.ownerId);
+  Store.savePackageFlow(pack);
+  sess = Store.createPackageSession(pack.ownerId);
+  if (!sess) { box.innerHTML = "无法试跑"; return; }
+  var lines = [];
+  var step = sess.start();
+  var guard = 0;
+  while (!step.done && guard < 12) {
+    guard++;
+    var q = step.question;
+    var opt = q && q.opts && q.opts[0];
+    lines.push((step.mode === "assessment" ? "[测评]" : "[分流]") + " " + ((q && q.text) || "").slice(0, 20) +
+      " → " + (opt ? opt.t : "?"));
+    if (!opt) break;
+    step = sess.answer(opt.id);
+  }
+  lines.push(step.done ? ("结束：" + (step.endKind || "normal")) : "试跑中断");
+  box.innerHTML = "<b>路径试跑</b><pre style='font-size:11px;white-space:pre-wrap;margin:8px 0 0'>" +
+    esc(lines.join("\n")) + "</pre>";
+};
+
+renderAssessList();
+document.getElementById("btn-fit").onclick = fitCanvas;
+requestAnimationFrame(function () { requestAnimationFrame(initLf); });
+
+} /* end pack guard */
+</script>
+</body>
+</html>

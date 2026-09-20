@@ -2,92 +2,11 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>直播展示 · 艺博 To-B</title>
-<link rel="stylesheet" href="../assets/css/proto.css?v=9" />
-<style>
-.lv-status-live   { font-size: 12px; padding: 2px 10px; border-radius: 999px; background: #fff1f0; color: #f53f3f; font-weight: 500; }
-.lv-status-will   { font-size: 12px; padding: 2px 10px; border-radius: 999px; background: #e8f3ff; color: #165dff; font-weight: 500; }
-.lv-status-replay { font-size: 12px; padding: 2px 10px; border-radius: 999px; background: #f2f3f5; color: #8c8c8c; font-weight: 500; }
-.lv-cshow-on      { font-size: 13px; color: #2f9e57; font-weight: 500; }
-.lv-cshow-off     { font-size: 13px; color: #bfbfbf; }
-.lv-op { color: #165dff; cursor: pointer; margin-right: 10px; font-size: 13px; }
-.lv-hd { display: flex; align-items: center; margin-bottom: 12px; }
-.lv-hd .hint-right { margin-left: auto; font-size: 12px; color: #8c8c8c; }
-.lv-hd .hint-right a { color: #165dff; text-decoration: none; }
-.lv-ft { font-size: 12px; color: #8c8c8c; margin-top: 14px; }
-.lv-ft a { color: #165dff; text-decoration: none; }
-</style>
+<meta http-equiv="refresh" content="0;url=mp-home.html#sec-live" />
+<title>已合并至首页装修</title>
+<script>location.replace("mp-home.html#sec-live");</script>
 </head>
-<body class="admin-body" data-module="content" data-nav="mp-live" data-title="直播展示" data-crumb="内容 / 小程序管理 / 直播展示">
-
-<div id="page-content" style="display:none">
-  <div class="lv-hd">
-    <span class="hint-right">控制在您店铺小程序「直播」tab 展示的场次；直播数据与中控在「<a href="lives.html">直播</a>」模块管理</span>
-  </div>
-
-  <div class="card">
-    <div class="card-bd" style="padding:16px">
-      <table class="data" style="width:100%">
-        <thead>
-          <tr><th>直播场次</th><th style="width:130px">开播时间</th><th style="width:100px">状态</th><th style="width:100px">C 端展示</th><th style="width:200px">操作</th></tr>
-        </thead>
-        <tbody id="live-tbody"></tbody>
-      </table>
-      <div class="lv-ft">创建与审核直播请前往 <a href="lives.html">直播模块 · 直播列表</a>，通过审核的场次默认自动展示在 C 端。</div>
-    </div>
-  </div>
-</div>
-
-<script src="../assets/js/proto.js"></script>
-<script src="../assets/js/admin-shell.js?v=15"></script>
-<script>
-// 直播场次数据来源于「直播」模块；此处仅配置 C 端展示开关
-var LIVES = [
-  { id: "L001", name: "开学第一课 · 家长专场",        time: "09-12 20:00", status: "live",   cshow: true },
-  { id: "L002", name: "非暴力沟通 · 案例答疑",        time: "09-15 20:00", status: "will",   cshow: true },
-  { id: "L003", name: "写作业不吼不叫 · 方法拆解",    time: "09-20 19:30", status: "will",   cshow: true },
-  { id: "L004", name: "亲子沟通 21 天训练营 · 第 4 期", time: "09-05 20:00", status: "replay", cshow: true },
-  { id: "L005", name: "家庭教育风格测评 · 报告解读",  time: "08-28 20:00", status: "replay", cshow: true },
-  { id: "L006", name: "青春期沟通避坑指南",          time: "08-21 20:00", status: "replay", cshow: true },
-];
-
-var STATUS_TEXT = { live: "直播中", will: "预告", replay: "回放" };
-var STATUS_CLS  = { live: "lv-status-live", will: "lv-status-will", replay: "lv-status-replay" };
-
-function esc(s) {
-  return String(s).replace(/[&<>"']/g, function(c) {
-    return ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c];
-  });
-}
-
-function render() {
-  document.getElementById("live-tbody").innerHTML = LIVES.map(function(l, i) {
-    return '' +
-      '<tr>' +
-        '<td style="font-size:14px;font-weight:600;color:#1d2129">' + esc(l.name) + '</td>' +
-        '<td style="font-size:13px;color:#4e5969">' + esc(l.time) + '</td>' +
-        '<td><span class="' + STATUS_CLS[l.status] + '">' + STATUS_TEXT[l.status] + '</span></td>' +
-        '<td><span class="' + (l.cshow ? "lv-cshow-on" : "lv-cshow-off") + '">' + (l.cshow ? "展示中" : "已隐藏") + '</span></td>' +
-        '<td>' +
-          '<span class="lv-op" data-toggle="' + i + '">' + (l.cshow ? "从 C 端隐藏" : "在 C 端展示") + '</span>' +
-          '<a class="lv-op" href="live-preview.html?id=' + encodeURIComponent(l.id) + '">查看预告页</a>' +
-        '</td>' +
-      '</tr>';
-  }).join("");
-}
-
-document.addEventListener("click", function(e) {
-  var tg = e.target.closest("[data-toggle]");
-  if (tg) {
-    var i = +tg.getAttribute("data-toggle");
-    LIVES[i].cshow = !LIVES[i].cshow;
-    render();
-    Proto.toast(LIVES[i].cshow ? "已在 C 端展示" : "已从 C 端隐藏");
-  }
-});
-
-render();
-</script>
+<body>
+<p>直播展示已合并至 <a href="mp-home.html#sec-live">交易 / 店铺运营 / 首页装修</a>。</p>
 </body>
 </html>

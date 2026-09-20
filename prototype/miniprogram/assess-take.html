@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>作答 · To-B 小程序</title>
+  <link rel="stylesheet" href="../assets/css/proto.css" />
+  <link rel="stylesheet" href="../assets/css/mp.css?v=16" />
+  <style>
+    .tk-opt {
+      display:block; width:100%; text-align:left; margin:0 0 10px; padding:12px 14px;
+      border:1px solid #e5e6eb; border-radius:10px; background:#fff; font-size:14px; color:#1d2129;
+    }
+    .tk-opt:active, .tk-opt.on { border-color:#165dff; background:#f0f5ff; }
+    .tk-badge { font-size:11px; color:#86909c; margin-bottom:8px; }
+  </style>
+</head>
+<body class="mp-page" data-tabbar="0">
+  <div class="mp-frame" style="padding-bottom:24px">
+    <div class="mp-top" style="height:170px"></div>
+    <div class="mp-status"><span>9:41</span><span>作答</span><span>100%</span></div>
+    <div class="mp-nav"><a class="back" href="assess.html">←</a><span id="tk-nav">测评</span></div>
+    <div class="mp-body" style="padding:14px" id="tk-root">
+      <p class="muted">加载中…</p>
+    </div>
+  </div>
+  <p class="mp-hint">测评=选项跳转 · 测评包=LogicFlow 编排 · <a href="assess.html">返回测评</a></p>
+
+  <script src="../assets/js/proto.js"></script>
+  <script src="../assets/js/assess-flow-store.js?v=2"></script>
+  <script src="../assets/js/mp-shell.js"></script>
+  <script>
+  var Store = window.AssessFlowStore;
+  var qs = new URLSearchParams(location.search);
+  var type = qs.get("type") === "package" ? "package" : "assessment";
+  var id = qs.get("id") || (type === "package" ? "MS1" : "MP01");
+  var sess = type === "package"
+    ? Store.createPackageSession(id)
+    : Store.createAssessmentSession(id);
+  var step = null;
+  var selectedOpt = null;
+
+  function esc(s) {
+    return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) {
+      return ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c];
+    });
+  }
+
+  function render() {
+    var root = document.getElementById("tk-root");
+    if (!sess) {
+      root.innerHTML = '<p style="padding:24px;text-align:center;color:#86909c">未找到流程</p>';
+      return;
+    }
+    if (!step) step = sess.start();
+    if (step.done) {
+      var tip = step.endKind === "high_risk" ? "已结束并标记高风险（演示）" : "作答完成";
+      root.innerHTML =
+        '<div style="background:#fff;border-radius:12px;padding:28px 20px;text-align:center">' +
+          '<div style="font-size:40px;color:#00b42a">✓</div>' +
+          '<h3 style="margin:12px 0 8px">' + tip + "</h3>" +
+          '<p style="font-size:13px;color:#86909c">分支路由演示结束</p>' +
+          '<a class="mp-btn" href="assess.html" style="margin-top:16px">返回测评</a></div>';
+      return;
+    }
+    var q = step.question;
+    if (!q) {
+      root.innerHTML = '<p style="padding:24px;color:#86909c">无可作答题目</p>';
+      return;
+    }
+    var modeLabel = step.mode === "assessment"
+      ? ("测评 · " + (step.assessmentId || ""))
+      : (type === "package" ? "测评包分流" : "测评项目");
+    document.getElementById("tk-nav").textContent = modeLabel;
+    selectedOpt = null;
+    root.innerHTML =
+      '<div class="tk-badge">' + esc(modeLabel) + (q.dim ? " · " + esc(q.dim) : "") + "</div>" +
+      '<div style="background:#fff;border-radius:12px;padding:16px">' +
+        '<div style="font-size:16px;font-weight:650;line-height:1.5;margin-bottom:14px">' + esc(q.text) + "</div>" +
+        (q.opts || []).map(function (o) {
+          return '<button type="button" class="tk-opt" data-oid="' + esc(o.id) + '">' + esc(o.t) + "</button>";
+        }).join("") +
+        '<button class="mp-btn" type="button" id="tk-next" style="margin-top:8px" disabled>下一题</button>' +
+      "</div>";
+  }
+
+  document.getElementById("tk-root").addEventListener("click", function (e) {
+    var opt = e.target.closest("[data-oid]");
+    if (opt) {
+      selectedOpt = opt.getAttribute("data-oid");
+      document.querySelectorAll(".tk-opt").forEach(function (el) {
+        el.classList.toggle("on", el.getAttribute("data-oid") === selectedOpt);
+      });
+      var btn = document.getElementById("tk-next");
+      if (btn) btn.disabled = false;
+      return;
+    }
+    if (e.target.id === "tk-next") {
+      if (!selectedOpt) return;
+      step = sess.answer(selectedOpt);
+      render();
+    }
+  });
+
+  render();
+  </script>
+</body>
+</html>

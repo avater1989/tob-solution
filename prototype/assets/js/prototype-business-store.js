@@ -5,8 +5,8 @@
  * - 兼容旧参数：liveId / spring03 / live-spring-03 等
  */
 (function (global) {
-  var STORE_KEY = "proto_biz_store_v9";
-  var VERSION = 9;
+  var STORE_KEY = "proto_biz_store_v12";
+  var VERSION = 12;
   var DEMO_NOW = "2026-09-09 16:00:00";
 
   var LIVE_ALIASES = {
@@ -29,6 +29,239 @@
       version: VERSION,
       demoNow: DEMO_NOW,
       merchant: { id: "M001", name: "星启家庭教育" },
+      /* IA 重构：统一业务对象演示 ID */
+      contents: [
+        { content_id: "C001", type: "online_course", title: "小学语文阅读启蒙", status: "published", goods_ids: ["G002", "G002B"], content_source: "self" },
+        { content_id: "C003", type: "online_course", title: "AI 学习规划入门", status: "published", goods_ids: ["G001"], content_source: "self" },
+        { content_id: "A001", type: "article", title: "9 月新学期家长指南", status: "published", goods_ids: [], paid: false, content_source: "self" }
+      ],
+      assessments: [
+        { assessment_id: "AS001", name: "亲子沟通能力测评", status: "published", question_ids: ["Q01","Q02","Q03"], report_template_id: "RT01" }
+      ],
+      assessmentSeries: [
+        { series_id: "MS1", name: "家庭教育入门测评包", assessment_ids: ["AS001","AS002"], auto_next: true, status: "published" }
+      ],
+      questions: [
+        { question_id: "Q01", text: "分歧时先讲道理还是先听感受？", type: "single", status: "active" },
+        { question_id: "Q02", text: "孩子倾诉时你会？", type: "single", status: "active" },
+        { question_id: "Q03", text: "家庭规则由谁决定？", type: "single", status: "active" }
+      ],
+      taskRules: [
+        { id: "R1", assessment_id: "AS001", scope: "question", question_id: "Q03", op: "gte", value: 4, then_task_ids: ["T001"] },
+        { id: "R3", assessment_id: "AS001", scope: "total", op: "between", value: 0, max: 39, then_task_ids: ["T003","T001"] }
+      ],
+      tasks: [
+        { task_id: "T001", name: "完成亲子沟通线上课", type: "course", ref_id: "C001" },
+        { task_id: "T003", name: "与家庭教育顾问对话", type: "agent", ref_id: "AG02" },
+        { task_id: "T005", name: "阅读新学期家长指南", type: "article", ref_id: "A001" }
+      ],
+      plans: [
+        { plan_id: "PL001", name: "亲子沟通 21 天计划", status: "published", stage_ids: ["ST1","ST2"] }
+      ],
+      goodsDemo: [
+        {
+          goods_id: "G001",
+          channel: "store",
+          create_mode: "from_content",
+          content_source: "self",
+          content_type: "online_course",
+          content_id: "C003",
+          category_id: "GC02",
+          tag_ids: ["GT01", "GT02"],
+          name: "AI 学习规划入门",
+          status: "on_sale",
+          audit_status: "approved",
+          reject_reason: "",
+          submitted_at: "2026-09-01 10:00",
+          price: 199
+        },
+        {
+          goods_id: "G002",
+          channel: "store",
+          create_mode: "from_content",
+          content_source: "self",
+          content_type: "online_course",
+          content_id: "C001",
+          category_id: "GC08",
+          tag_ids: ["GT01"],
+          name: "小学语文阅读启蒙",
+          status: "on_sale",
+          audit_status: "approved",
+          reject_reason: "",
+          submitted_at: "2026-09-01 10:00",
+          price: 199
+        },
+        {
+          goods_id: "G002B",
+          channel: "store",
+          create_mode: "from_content",
+          content_source: "self",
+          content_type: "online_course",
+          content_id: "C001",
+          category_id: "GC08",
+          tag_ids: ["GT03"],
+          name: "小学语文阅读启蒙 · 体验价",
+          status: "draft",
+          audit_status: "pending",
+          reject_reason: "",
+          submitted_at: "2026-09-19 16:40",
+          price: 9.9
+        },
+        {
+          goods_id: "G-DRAFT",
+          channel: "store",
+          create_mode: "from_content",
+          content_source: "self",
+          content_type: "article",
+          content_id: "A001",
+          category_id: "GC07",
+          tag_ids: ["GT02"],
+          name: "青春期沟通专题（草稿）",
+          status: "draft",
+          audit_status: "draft",
+          reject_reason: "",
+          submitted_at: "",
+          price: 129
+        },
+        {
+          goods_id: "G-REJ01",
+          channel: "store",
+          create_mode: "from_content",
+          content_source: "self",
+          content_type: "plan",
+          content_id: "PL001",
+          category_id: "GC07",
+          tag_ids: ["GT01"],
+          name: "亲子沟通 21 天计划 · 第 5 期",
+          status: "draft",
+          audit_status: "rejected",
+          reject_reason: "A-03 宣传用语含绝对化承诺：卖点写「100% 改善亲子关系」，请修改后重新提审。",
+          submitted_at: "2026-09-18 11:20",
+          price: 199
+        },
+        {
+          goods_id: "G-PF01",
+          channel: "store",
+          create_mode: "from_platform",
+          content_source: "platform",
+          content_type: "online_course",
+          content_id: "C-PF01",
+          platform_goods_id: "PG001",
+          category_id: "GC02",
+          tag_ids: [],
+          name: "平台精选 · 家庭教育入门课",
+          status: "on_sale",
+          audit_status: "approved",
+          reject_reason: "",
+          submitted_at: "2026-09-10 09:00",
+          price: 39.9
+        }
+      ],
+      platformGoodsCatalog: [
+        {
+          platform_goods_id: "PG001",
+          name: "平台精选 · 家庭教育入门课",
+          content_type: "online_course",
+          content_id: "C-PF01",
+          content_title: "家庭教育入门课（平台）",
+          price: 39.9,
+          category_id: "GC02"
+        },
+        {
+          platform_goods_id: "PG002",
+          name: "平台精选 · 亲子沟通 21 天计划",
+          content_type: "plan",
+          content_id: "PL-PF01",
+          content_title: "亲子沟通 21 天计划（平台）",
+          price: 199,
+          category_id: "GC07"
+        },
+        {
+          platform_goods_id: "PG003",
+          name: "平台精选 · 午间答疑直播",
+          content_type: "live",
+          content_id: "L-PF01",
+          content_title: "午间答疑 · 付费直播（平台）",
+          price: 9.9,
+          category_id: "GC04"
+        }
+      ],
+      wxshopGoodsDemo: [
+        {
+          goods_id: "WX001",
+          channel: "wxshop",
+          create_mode: "from_content",
+          content_source: "self",
+          content_type: "online_course",
+          content_id: "C001",
+          wx_product_id: "100001234567",
+          name: "春启 03 期家长必修课",
+          status: 5,
+          audit_status: "approved",
+          price: 9.9,
+          synced_at: "2026-09-19 18:20"
+        },
+        {
+          goods_id: "WX002",
+          channel: "wxshop",
+          create_mode: "from_content",
+          content_source: "self",
+          content_type: "plan",
+          content_id: "PL001",
+          wx_product_id: "100001234568",
+          name: "亲子沟通 21 天定制化计划 · 第 4 期",
+          status: 5,
+          audit_status: "approved",
+          price: 199,
+          synced_at: "2026-09-19 18:20"
+        },
+        {
+          goods_id: "WX003",
+          channel: "wxshop",
+          create_mode: "from_content",
+          content_source: "self",
+          content_type: "article",
+          content_id: "A001",
+          wx_product_id: "",
+          name: "9 月新学期家长指南（小店草稿）",
+          status: 0,
+          audit_status: "draft",
+          reject_reason: "",
+          price: 6.9,
+          synced_at: ""
+        },
+        {
+          goods_id: "WX004",
+          channel: "wxshop",
+          create_mode: "from_content",
+          content_source: "self",
+          content_type: "live",
+          content_id: "L001",
+          wx_product_id: "100001234569",
+          name: "午间答疑付费场（小店审核中）",
+          status: 0,
+          audit_status: "pending",
+          reject_reason: "",
+          price: 9.9,
+          synced_at: "2026-09-19 20:01"
+        },
+        {
+          goods_id: "WX005",
+          channel: "wxshop",
+          create_mode: "from_content",
+          content_source: "self",
+          content_type: "offline",
+          content_id: "O001",
+          wx_product_id: "100001234570",
+          name: "线下工作坊门票（微信驳回）",
+          status: 0,
+          audit_status: "rejected",
+          reject_reason: "商品类目与微信小店类目不匹配，请调整后重新提审。",
+          price: 399,
+          synced_at: "2026-09-18 14:22"
+        }
+      ],
+
       lives: [
         {
           id: "L001",
@@ -387,7 +620,7 @@
           typeLabel: "建议",
           completeMode: "manual",
           kind: "suggestion",
-          title: "系列课《边界感训练营》草稿未上架",
+          title: "线上课《边界感训练营》草稿未上架",
           reason: "内容检查建议 · 草稿超过 3 天",
           owner: "内容小周",
           mine: false,
@@ -401,7 +634,7 @@
           statusLabel: "待处理",
           action: "view",
           actionLabel: "去查看",
-          href: "content-series-edit.html?id=boundary&from=dashboard",
+          href: "content-video-edit.html?id=boundary&from=dashboard",
           roles: ["admin", "content"]
         }
       ],

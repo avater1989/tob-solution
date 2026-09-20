@@ -7,7 +7,7 @@
 <link rel="stylesheet" href="../assets/css/proto.css?v=4" />
 <link rel="stylesheet" href="../assets/css/assess.css?v=3" />
 </head>
-<body class="admin-body" data-module="content" data-nav="assess-projects" data-title="关联规则" data-crumb="运营后台 / 内容 / 测评管理 / 关联规则">
+<body class="admin-body" data-module="content" data-nav="assess-projects" data-title="关联规则" data-crumb="运营后台 / 内容与审核 / 测评中心 / 关联规则">
 
 <div id="header-actions">
   <a class="btn" id="btn-back" href="assess-projects.html">返回测评项目管理</a>
@@ -80,7 +80,7 @@
       <div class="form-grid" style="grid-template-columns:1fr 1fr">
         <div class="field"><label>优先级 *</label><input class="input" id="e-pri" type="number" value="10" min="1" max="99" /></div>
         <div class="field" style="padding-top:28px">
-          <label style="display:flex;align-items:center;gap:8px;font-weight:400"><input type="checkbox" id="e-on" checked> 保存后启用</label>
+          <label style="display:flex;align-items:center;gap:8px;font-weight:400"><input type="checkbox" id="e-on" checked> 保存后上架</label>
         </div>
       </div>
     </div>
@@ -132,8 +132,8 @@ var OWNERS = {
     P003: { name: "情绪调节问卷", sub: "配置该测评结果到任务的下发规则" }
   },
   series: {
-    S1: { name: "新生入学心理系列", sub: "配置系列测评完成后的任务关联规则" },
-    S2: { name: "学习力提升测评包", sub: "配置系列测评完成后的任务关联规则" }
+    S1: { name: "新生入学心理测评包", sub: "配置测评包完成后的任务关联规则" },
+    S2: { name: "学习力提升测评包", sub: "配置测评包完成后的任务关联规则" }
   }
 };
 
@@ -143,13 +143,13 @@ document.getElementById("owner-sub").textContent = META.sub;
 document.title = META.name + " · 关联规则 · 运营后台";
 document.body.setAttribute("data-nav", from === "series" ? "assess-series" : "assess-projects");
 document.body.setAttribute("data-crumb", from === "series"
-  ? "运营后台 / 内容 / 测评管理 / 系列关联规则"
-  : "运营后台 / 内容 / 测评管理 / 关联规则");
+  ? "运营后台 / 内容 / 测评中心 / 测评包关联规则"
+  : "运营后台 / 内容 / 测评中心 / 关联规则");
 
 var backHref = from === "series" ? "assess-series.html" : "assess-projects.html";
-var backLabel = from === "series" ? "返回系列测评管理" : "返回测评项目管理";
+var backLabel = from === "series" ? "返回测评包管理" : "返回测评项目管理";
 document.getElementById("btn-back").href = backHref;
-document.getElementById("btn-back").textContent = "返回" + (from === "series" ? "系列测评管理" : "测评项目管理");
+document.getElementById("btn-back").textContent = "返回" + (from === "series" ? "测评包管理" : "测评项目管理");
 document.getElementById("link-back").href = backHref;
 document.getElementById("link-back").textContent = "← " + backLabel;
 
@@ -183,8 +183,8 @@ function renderStats(){
   list.forEach(function(r){ r.tasks.forEach(function(t){ tasks[t]=1; }); });
   document.getElementById("stats").innerHTML =
     '<div class="as-stat accent"><div class="n">'+list.length+'</div><div class="l">规则数</div></div>' +
-    '<div class="as-stat ok"><div class="n">'+on+'</div><div class="l">已启用</div></div>' +
-    '<div class="as-stat warn"><div class="n">'+(list.length-on)+'</div><div class="l">已停用</div></div>' +
+    '<div class="as-stat ok"><div class="n">'+on+'</div><div class="l">已上架</div></div>' +
+    '<div class="as-stat warn"><div class="n">'+(list.length-on)+'</div><div class="l">已下架</div></div>' +
     '<div class="as-stat"><div class="n">'+Object.keys(tasks).length+'</div><div class="l">关联任务数</div></div>';
 }
 
@@ -198,12 +198,12 @@ function render(){
       '<td>'+r.pri+'</td>' +
       '<td style="font-size:12px">'+esc(r.tasks.join("、"))+'</td>' +
       '<td style="font-size:12px;color:#8c8c8c">'+esc(r.time)+'</td>' +
-      '<td><span class="as-tag '+(r.on?"green":"gray")+'">'+(r.on?"已启用":"已停用")+'</span></td>' +
+      '<td><span class="as-tag '+(r.on?"green":"gray")+'">'+(r.on?"已上架":"已下架")+'</span></td>' +
       '<td><div class="as-acts">' +
         '<button class="btn" data-view="'+r.id+'">查看</button>' +
         '<button class="btn" data-edit="'+r.id+'">编辑</button>' +
         '<button class="btn" data-run="'+r.id+'">试运行</button>' +
-        '<button class="btn" data-toggle="'+r.id+'">'+(r.on?"停用":"启用")+'</button>' +
+        '<button class="btn" data-toggle="'+r.id+'">'+(r.on?"下架":"上架")+'</button>' +
         '<button class="btn" style="color:#f53f3f;border-color:#ffa39e" data-del="'+r.id+'">删除</button>' +
       '</div></td></tr>';
   }).join("") || '<tr><td colspan="7" style="text-align:center;color:#bfbfbf;padding:36px">暂无关联规则，点击右上角新建</td></tr>';
@@ -290,7 +290,7 @@ document.addEventListener("click", function(e){
         '<div>触发条件：'+esc(r.cond)+'</div>' +
         '<div>优先级：'+r.pri+'</div>' +
         '<div>关联任务：'+esc(r.tasks.join("、"))+'</div>' +
-        '<div>状态：'+(r.on?"已启用":"已停用")+'</div>' +
+        '<div>状态：'+(r.on?"已上架":"已下架")+'</div>' +
         '<div>更新时间：'+esc(r.time)+'</div>' +
       '</div>';
     openM("modal-view"); return;
@@ -306,7 +306,7 @@ document.addEventListener("click", function(e){
   var tg = e.target.closest("[data-toggle]");
   if (tg) {
     var r2 = list.find(function(x){return x.id===tg.getAttribute("data-toggle");});
-    r2.on = !r2.on; render(); Proto.toast(r2.on?"已启用":"已停用"); return;
+    r2.on = !r2.on; render(); Proto.toast(r2.on?"已上架":"已下架"); return;
   }
   var del = e.target.closest("[data-del]");
   if (del) {
