@@ -3,240 +3,125 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>学习 · To-B 小程序</title>
+  <title>艺博士 · To-B 小程序</title>
   <link rel="stylesheet" href="../assets/css/proto.css" />
-  <link rel="stylesheet" href="../assets/css/mp.css?v=19" />
+  <link rel="stylesheet" href="../assets/css/mp.css?v=21" />
 </head>
-<body class="mp-page" data-tab="learn">
+<body class="mp-page" data-tab="yibo">
   <div class="mp-frame">
-    <div class="mp-top" style="height:200px"></div>
-    <div class="mp-status"><span>9:41</span><span>学习</span><span>100%</span></div>
-    <div class="mp-nav">学习</div>
-    <div class="mp-body" id="ln-root" style="padding-bottom:72px"></div>
+    <div class="mp-top" style="height:250px"></div>
+    <div class="mp-status"><span>9:41</span><span>艺博士</span><span>100%</span></div>
+    <div class="mp-nav">
+      艺博士
+      <a class="mp-search-ico" href="#" style="position:absolute;right:14px" data-toast="已开启新对话（原型）">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14" /></svg>
+      </a>
+    </div>
+
+    <div class="mp-body" style="padding-bottom:120px">
+
+      <div class="mp-ai-hd">
+        <img class="mp-ai-hd-av" src="../assets/img/ip/yibo.svg" alt="艺博士" />
+        <div class="mp-ai-hd-bd">
+          <div class="mp-ai-hd-name">艺博士 <span class="mp-ai-hd-tag">AI 顾问</span></div>
+          <div class="mp-ai-hd-sub">懂测评 · 懂孩子 · 懂家庭沟通</div>
+        </div>
+        <span class="mp-ai-hd-on"><i></i>在线</span>
+      </div>
+
+      <div class="mp-ai-caps">
+        <a class="mp-ai-cap" href="#" data-toast="解读测评报告：原型不落地">
+          <span class="mp-ai-cap-ico" style="background:linear-gradient(135deg,#ffb020,#ff7a45)">报</span>
+          <span>报告解读</span>
+        </a>
+        <a class="mp-ai-cap" href="#" data-toast="生成学习规划：原型不落地">
+          <span class="mp-ai-cap-ico" style="background:linear-gradient(135deg,#5b8cff,#3b6ef5)">规</span>
+          <span>学习规划</span>
+        </a>
+        <a class="mp-ai-cap" href="#" data-toast="生成沟通话术：原型不落地">
+          <span class="mp-ai-cap-ico" style="background:linear-gradient(135deg,#34c759,#1faa4a)">话</span>
+          <span>沟通话术</span>
+        </a>
+        <a class="mp-ai-cap" href="#" data-toast="情绪陪伴：原型不落地">
+          <span class="mp-ai-cap-ico" style="background:linear-gradient(135deg,#b39bf0,#8b5cf6)">伴</span>
+          <span>情绪陪伴</span>
+        </a>
+      </div>
+
+      <div class="mp-ai-flow">
+        <div class="mp-ai-day">今天 14:20</div>
+
+        <div class="mp-ai-msg">
+          <img class="mp-ai-msg-av" src="../assets/img/ip/yibo-face.svg" alt="" />
+          <div class="mp-ai-bubble">
+            你好，我是艺博士 👋
+            <span class="mp-ai-line">我可以帮你解读测评报告、分析孩子行为背后的原因，也能直接给你一段能照着说的沟通话术。</span>
+            <span class="mp-ai-line">现在有什么想聊的？</span>
+          </div>
+        </div>
+        <div class="mp-ai-follow">
+          <a href="#" data-toast="已发送：孩子厌学怎么办（原型）">孩子厌学怎么办</a>
+          <a href="#" data-toast="已发送：青春期叛逆怎么沟通（原型）">青春期叛逆怎么沟通</a>
+          <a href="#" data-toast="已发送：怎么提高专注力（原型）">怎么提高专注力</a>
+        </div>
+
+        <div class="mp-ai-msg me">
+          <span class="mp-ai-msg-av me-av"></span>
+          <div class="mp-ai-bubble">孩子上初二，最近特别叛逆，说什么都不听。</div>
+        </div>
+
+        <div class="mp-ai-msg">
+          <img class="mp-ai-msg-av" src="../assets/img/ip/yibo-face.svg" alt="" />
+          <div class="mp-ai-bubble">
+            <b>初二是自我意识最强的阶段</b>，孩子的"不听"往往不是针对你，而是在确认"我能不能自己说了算"。
+            <span class="mp-ai-line">可以先做两件事：</span>
+            <span class="mp-ai-line">1. 把命令句换成选择题，比如"你想先写数学还是先背单词"；</span>
+            <span class="mp-ai-line">2. 每天留 10 分钟只听不说，让他把话讲完。</span>
+            <span class="mp-ai-tip">提示：这两条执行 2 周后再做一次测评，能看到明显变化。</span>
+
+            <a class="mp-ai-inline" href="course.html?id=C001">
+              <span class="mp-ai-inline-img">沟通<br />基础</span>
+              <span class="mp-ai-inline-bd">
+                <span class="mp-ai-inline-t">亲子沟通基础</span>
+                <span class="mp-ai-inline-m">8 节 · 适合 3–12 岁家庭</span>
+              </span>
+              <span class="mp-ai-inline-go">去看 ›</span>
+            </a>
+          </div>
+        </div>
+
+        <div class="mp-ai-follow">
+          <a href="#" data-toast="已发送：帮我生成一段话术（原型）">帮我生成一段话术</a>
+          <a href="#" data-toast="已发送：推荐相关测评（原型）">推荐相关测评</a>
+        </div>
+
+        <div class="mp-ai-msg me">
+          <span class="mp-ai-msg-av me-av"></span>
+          <div class="mp-ai-bubble">帮我生成一段话术，今晚就想跟他聊聊。</div>
+        </div>
+
+        <div class="mp-ai-msg">
+          <img class="mp-ai-msg-av" src="../assets/img/ip/yibo-face.svg" alt="" />
+          <div class="mp-ai-bubble" style="padding:12px 14px">
+            <span class="mp-ai-typing"><i></i><i></i><i></i></span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="mp-ai-bar">
+      <input class="mp-ai-bar-in" type="text" placeholder="把问题告诉艺博士…" />
+      <a class="mp-ai-bar-ico" href="#" data-toast="语音输入：原型不落地">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="11" rx="3" /><path d="M5.5 11.5a6.5 6.5 0 0 0 13 0" /><path d="M12 18v3" /></svg>
+      </a>
+      <a class="mp-ai-bar-send" href="#" data-toast="艺博士正在思考…（原型不落地）">发送</a>
+    </div>
   </div>
-  <p class="mp-hint">
-    学习中心 · 仅已购内容 · 演示态
-    <a href="?learn=full">多权益</a> ·
-    <a href="?learn=one">单权益</a> ·
-    <a href="?learn=done">已完成</a> ·
-    <a href="?learn=empty">空态</a>
-  </p>
+
+  <p class="mp-hint">底栏「艺博士」= AI 会话页 · <a href="assess.html">测评</a> · <a href="../admin/mp-settings.html">管理端配置</a></p>
 
   <script src="../assets/js/proto.js"></script>
-  <script src="../assets/js/mp-shell.js"></script>
-  <script src="../assets/js/mp-learning.js"></script>
-  <script>
-  (function () {
-    var L = window.MpLearning;
-    var qs = new URLSearchParams(location.search);
-    if (qs.has("learn")) L.resetDemo(qs.get("learn"));
-    var mode = L.demoMode();
-    var root = document.getElementById("ln-root");
-
-    function esc(s) {
-      return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) {
-        return ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c];
-      });
-    }
-
-    function typeTone(t) {
-      return (
-        {
-          plan: "tone-plan",
-          online_course: "tone-course",
-          offline_course: "tone-offline",
-          article: "tone-article",
-          assessment: "tone-assess"
-        }[t] || "tone-course"
-      );
-    }
-
-    function raceHtml(growth, animateFrom) {
-      var goal = Math.max(1, growth.weekGoal || 5);
-      var done = Math.min(goal, growth.weekDone || 0);
-      var left = Math.max(0, goal - done);
-      var pct = Math.round((done / goal) * 100);
-      /* 轨道可视进度：终点旗占右侧，跑者最多到 88%，便于看清「还差几站」 */
-      var visual = done >= goal ? 88 : Math.max(6, Math.round((done / goal) * 78));
-      var fromVisual = typeof animateFrom === "number"
-        ? Math.max(6, Math.min(88, animateFrom))
-        : Math.max(6, visual - 14);
-      var title = left === 0
-        ? "本周目标已冲线"
-        : "本周冲刺 · 还差 <b>" + left + "</b> 站到终点";
-      var markers = "";
-      for (var i = 1; i <= goal; i++) {
-        var reached = i <= done;
-        var markLeft = Math.round((i / goal) * 78);
-        markers +=
-          '<span class="ln-race-mark' + (reached ? " is-on" : "") + (i === goal ? " is-goal" : "") + '" style="left:' + markLeft + '%">' +
-            '<i></i><em>' + i + '</em>' +
-          '</span>';
-      }
-      return (
-        '<div class="ln-growth ln-race" data-pct="' + visual + '" data-done="' + done + '">' +
-          '<div class="ln-race-hd">' +
-            '<div class="ln-race-title">' + title + '</div>' +
-            '<div class="ln-race-stars">★ ' + growth.stars + '</div>' +
-          '</div>' +
-          '<div class="ln-race-track' + (left === 0 ? " is-done" : "") + '" style="--race-from:' + fromVisual + '%;--race-to:' + visual + '%">' +
-            '<div class="ln-race-road"></div>' +
-            '<div class="ln-race-fill"></div>' +
-            '<div class="ln-race-marks">' + markers + '</div>' +
-            '<div class="ln-race-runner" aria-hidden="true">' +
-              '<img src="../assets/img/ip/yibo-face.svg" alt="" />' +
-              '<span class="ln-race-legs"></span>' +
-            '</div>' +
-            '<div class="ln-race-finish" aria-hidden="true">' +
-              '<span class="ln-race-flag">' +
-                '<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path fill="#fff" d="M6.2 3.2h1.6v17.6H6.2z"/><path fill="#FFE08A" d="M8.2 3.6c2.4 1.4 4.2-.2 6.6 1.1 1.6.9 2.8.6 3.8-.2v7.2c-1.2.9-2.6 1.2-4.2.4-2.2-1.1-4 .4-6.2-.8V3.6z"/></svg>' +
-              '</span>' +
-              '<em>终点</em>' +
-            '</div>' +
-          '</div>' +
-          '<div class="ln-race-ft">' +
-            '<span>已跑 <b>' + done + '/' + goal + '</b> 站</span>' +
-            '<span>连续学习 <b>' + growth.streak + '</b> 天</span>' +
-          '</div>' +
-        '</div>'
-      );
-    }
-
-    function render(opts) {
-      var animateFrom = opts && typeof opts.animateFrom === "number" ? opts.animateFrom : null;
-      var items = L.listOwned(mode);
-      var growth = L.growthSummary();
-      var tasks = L.pickTodayTasks(items);
-      var cont = L.continueItem(items);
-      var groups = L.groupByType(items);
-
-      if (!items.length) {
-        root.innerHTML =
-          raceHtml(growth, animateFrom) +
-          '<div class="ln-empty">' +
-            '<div class="ln-empty-ico">学</div>' +
-            '<h3>还没有可学习的内容</h3>' +
-            '<p>购买或领取课程、文章、测评、计划后，会在这里为你推荐下一步</p>' +
-            '<a class="mp-btn" href="home.html">去首页看看</a>' +
-            '<a class="mp-btn mp-btn-outline" href="orders.html" style="margin-top:10px">查看订单</a>' +
-          '</div>';
-        return;
-      }
-
-      var html = raceHtml(growth, animateFrom);
-
-      /* 今日任务 */
-      html +=
-        '<div class="ln-sec">' +
-          '<div class="ln-sec-hd"><span>今日任务</span><em>最多 3 项 · 按紧急度推荐</em></div>';
-      if (!tasks.length) {
-        html += '<div class="ln-done-all">今日推荐已全部完成，去复习巩固吧</div>';
-      } else {
-        tasks.forEach(function (t) {
-          html +=
-            '<div class="ln-task ' + (t.todayDone ? "is-done" : "") + '" data-id="' + esc(t.id) + '">' +
-              '<button type="button" class="ln-check" aria-label="完成" data-complete="' + esc(t.id) + '">' +
-                (t.todayDone ? "✓" : "") +
-              '</button>' +
-              '<div class="ln-task-bd">' +
-                '<div class="ln-task-type ' + typeTone(t.type) + '">' + esc(t.typeLabel) + '</div>' +
-                '<div class="ln-task-title">' + esc(t.title) + '</div>' +
-                '<div class="ln-task-reason">' + esc(t.reason) +
-                  (t.durationMin ? ' · 约 ' + t.durationMin + ' 分钟' : '') +
-                '</div>' +
-              '</div>' +
-              '<a class="ln-task-go" href="' + esc(t.href) + '">' + esc(t.action) + '</a>' +
-            '</div>';
-        });
-      }
-      html += '</div>';
-
-      /* 继续学习 */
-      if (cont && !cont.todayDone) {
-        html +=
-          '<div class="ln-sec">' +
-            '<div class="ln-sec-hd"><span>继续学习</span></div>' +
-            '<a class="ln-continue" href="' + esc(cont.href) + '">' +
-              '<div class="ln-continue-kicker">' + esc(cont.typeLabel) + ' · ' + esc(cont.reason) + '</div>' +
-              '<div class="ln-continue-title">' + esc(cont.title) + '</div>' +
-              '<div class="ln-continue-bar"><b style="width:' + (cont.progress || 8) + '%"></b></div>' +
-              '<span class="ln-continue-cta">' + esc(cont.action) + ' →</span>' +
-            '</a>' +
-          '</div>';
-      }
-
-      /* 我的内容 */
-      html += '<div class="ln-sec" style="padding-bottom:20px"><div class="ln-sec-hd"><span>我的内容</span><em>仅已购 / 已领取</em></div>';
-      groups.forEach(function (g) {
-        html += '<div class="ln-group-label">' + esc(g.label) + '</div>';
-        g.items.forEach(function (it) {
-          var meta =
-            it.type === "plan"
-              ? (it.stageLabel || "") + (it.currentTask ? " · " + it.currentTask : "")
-              : it.type === "offline_course"
-                ? (it.city || "") + (it.when ? " · " + it.when : "")
-                : it.type === "online_course"
-                  ? "进度 " + (it.progress || 0) + "%"
-                  : it.type === "article"
-                    ? "阅读 " + (it.progress || 0) + "%"
-                    : it.status === "done"
-                      ? "已完成"
-                      : "未开始";
-          html +=
-            '<a class="ln-row" href="' + esc(it.href) + '">' +
-              '<span class="ln-row-badge ' + typeTone(it.type) + '">' + esc(it.typeLabel).slice(0, 2) + '</span>' +
-              '<div class="ln-row-bd">' +
-                '<div class="ln-row-title">' + esc(it.title) + '</div>' +
-                '<div class="ln-row-meta">' + esc(meta) + '</div>' +
-              '</div>' +
-              '<span class="ln-row-act">' + esc(it.action) + '</span>' +
-            '</a>';
-        });
-      });
-      html += '</div>';
-
-      root.innerHTML = html;
-      bind();
-    }
-
-    function showGain(stars) {
-      var tip = document.createElement("div");
-      tip.className = "ln-gain";
-      tip.textContent = "+" + stars + " ★";
-      document.querySelector(".mp-frame").appendChild(tip);
-      setTimeout(function () {
-        tip.classList.add("out");
-      }, 1200);
-      setTimeout(function () {
-        tip.remove();
-      }, 1600);
-    }
-
-    function bind() {
-      root.querySelectorAll("[data-complete]").forEach(function (btn) {
-        btn.addEventListener("click", function (e) {
-          e.preventDefault();
-          e.stopPropagation();
-          var id = btn.getAttribute("data-complete");
-          var race = root.querySelector(".ln-race");
-          var fromPct = race ? Number(race.getAttribute("data-pct") || 0) : 0;
-          var res = L.completeTask(id);
-          if (!res.ok) return;
-          if (res.already) {
-            Proto.toast("今日已完成该项");
-            return;
-          }
-          showGain(res.starsGain || 3);
-          Proto.toast("前进一站 · 星星 +" + (res.starsGain || 3));
-          setTimeout(function () {
-            render({ animateFrom: fromPct });
-          }, 220);
-        });
-      });
-    }
-
-    render();
-  })();
-  </script>
+  <script src="../assets/js/mp-shell.js?v=10"></script>
 </body>
 </html>
