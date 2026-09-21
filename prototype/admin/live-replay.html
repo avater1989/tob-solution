@@ -7,10 +7,7 @@
 <link rel="stylesheet" href="../assets/css/proto.css?v=9" />
 </head>
 <body class="admin-body" data-module="live" data-nav="live-replay" data-title="直播回放" data-crumb="直播 / 直播管理 / 直播回放">
-<div id="header-actions">
-  <button class="btn" id="btn-tutorial">使用教程</button>
-  <button class="btn" id="btn-import">导入外部回放</button>
-</div>
+<div id="header-actions"></div>
 <div id="page-content" style="display:none">
 
   <!-- 顶部 3 个统计卡片（与 lives.html 风格一致） -->
@@ -391,7 +388,7 @@
 <script src="../assets/js/proto.js"></script>
 <script src="../assets/js/prototype-business-store.js"></script>
 <script src="../assets/js/live-ops.js?v=9"></script>
-<script src="../assets/js/admin-shell.js?v=19"></script>
+<script src="../assets/js/admin-shell.js?v=25"></script>
 <script>
 (function () {
   var liveId = window.LiveOps ? LiveOps.idFromSearch() : "";
@@ -410,9 +407,7 @@
     if (ha) {
       ha.innerHTML =
         '<a class="btn" href="' + LiveOps.viewLiveUrl(live.liveId) + '">返回直播详情</a>' +
-        '<a class="btn" href="live-replay.html">查看全部回放</a>' +
-        '<button type="button" class="btn" id="btn-tutorial">使用教程</button>' +
-        '<button type="button" class="btn" id="btn-import">导入外部回放</button>';
+        '<a class="btn" href="live-replay.html">查看全部回放</a>';
     }
     document.body.setAttribute("data-crumb", "直播 / 直播管理 / 直播回放 / " + live.liveName);
     document.title = "直播回放 · " + live.liveName + " · 商家管理后台";
@@ -508,8 +503,7 @@
       html =
         '<a href="#" class="is-disabled" data-row-act="play" title="生成失败，无法预览">预览</a>' +
         '<a href="#" data-row-act="retry">重试生成</a>' +
-        '<a href="#" data-row-act="import">补充回放</a>' +
-        '<span class="act-hint">生成失败，可重试或导入外部回放</span>';
+        '<span class="act-hint">生成失败，可重试生成</span>';
     } else if (shelf === "on") {
       html =
         '<a href="#" data-row-act="play">预览</a>' +
@@ -619,10 +613,6 @@
             Proto.toast("重试完成，回放已可用（原型）");
           }, 1200);
         }
-        else if (act === "import") {
-          Proto.toast("打开补充回放 / 导入入口（原型）");
-          setGenReady(tr);
-        }
       };
     });
   }
@@ -668,8 +658,6 @@
   document.getElementById("btn-batch-off").addEventListener("click", function () { batchUpdate("off"); });
 
   // ===== Header buttons =====
-  document.getElementById("btn-tutorial").addEventListener("click", function () { Proto.toast("打开使用教程（原型）"); });
-  document.getElementById("btn-import").addEventListener("click", function () { Proto.toast("导入外部回放（原型）"); });
   document.getElementById("btn-export-excel").addEventListener("click", function () { Proto.toast("已导出 Excel（原型）"); });
   document.getElementById("btn-query").addEventListener("click", function () { Proto.toast("已查询（原型）"); });
   document.getElementById("btn-reset").addEventListener("click", function () {

@@ -98,14 +98,14 @@ tr.live-highlight { background: #f0f5ff; }
 
   <div class="stat-cards" style="margin:0 0 8px">
     <div class="stat-card">
-      <div class="stat-label">待提交平台审核</div>
+      <div class="stat-label">草稿待上架</div>
       <div class="stat-value" id="stat-draft" style="color:#d48806">0</div>
-      <div class="stat-hint">草稿 / 可提交</div>
+      <div class="stat-hint">完善后可上架</div>
     </div>
     <div class="stat-card">
-      <div class="stat-label">平台审核中</div>
+      <div class="stat-label">已下架</div>
       <div class="stat-value" id="stat-platform-pending">0</div>
-      <div class="stat-hint">等待平台结果</div>
+      <div class="stat-hint">可再次上架</div>
     </div>
     <div class="stat-card">
       <div class="stat-label">已上架待开播</div>
@@ -120,16 +120,13 @@ tr.live-highlight { background: #f0f5ff; }
   </div>
 
   <div class="card" style="margin-bottom:8px"><div class="card-bd">
-    <div class="form-grid" style="grid-template-columns:repeat(5,minmax(0,1fr));gap:8px 12px">
+    <div class="form-grid" style="grid-template-columns:repeat(4,minmax(0,1fr));gap:8px 12px">
       <input id="f-name" type="text" placeholder="直播名称 / ID" />
       <select id="f-mode">
         <option value="">全部模式</option>
         <option value="视频直播">视频直播</option>
         <option value="语音直播">语音直播</option>
         <option value="录播直播">录播直播</option>
-      </select>
-      <select id="f-platform">
-        <option value="">平台审核状态</option>
       </select>
       <select id="f-shelf">
         <option value="">上架状态</option>
@@ -159,8 +156,7 @@ tr.live-highlight { background: #f0f5ff; }
           <th>模式</th>
           <th>开播时间</th>
           <th>负责人</th>
-          <th>审核状态</th>
-          <th>发布状态</th>
+          <th>状态</th>
           <th style="width:240px">操作</th>
         </tr>
       </thead>
@@ -178,8 +174,8 @@ tr.live-highlight { background: #f0f5ff; }
 
 <script src="../assets/js/proto.js"></script>
 <script src="../assets/js/prototype-business-store.js"></script>
-<script src="../assets/js/live-ops.js?v=9"></script>
-<script src="../assets/js/admin-shell.js?v=19"></script>
+<script src="../assets/js/live-ops.js?v=26"></script>
+<script src="../assets/js/admin-shell.js?v=25"></script>
 <script>
 (function () {
   var LO = window.LiveOps;
@@ -193,7 +189,6 @@ tr.live-highlight { background: #f0f5ff; }
   var filters = {
     name: "",
     mode: "",
-    platform: "",
     shelf: "",
     runtime: ""
   };
@@ -218,7 +213,6 @@ tr.live-highlight { background: #f0f5ff; }
     sel.innerHTML = html;
   }
 
-  fillSelect(document.getElementById("f-platform"), LO.PLATFORM_LABEL, "平台审核状态");
   fillSelect(document.getElementById("f-shelf"), LO.SHELF_LABEL, "上架状态");
   fillSelect(document.getElementById("f-runtime"), LO.RUNTIME_LABEL, "直播状态");
 
@@ -226,7 +220,6 @@ tr.live-highlight { background: #f0f5ff; }
     return {
       name: (document.getElementById("f-name").value || "").trim(),
       mode: document.getElementById("f-mode").value || "",
-      platform: document.getElementById("f-platform").value || "",
       shelf: document.getElementById("f-shelf").value || "",
       runtime: document.getElementById("f-runtime").value || ""
     };
@@ -236,7 +229,6 @@ tr.live-highlight { background: #f0f5ff; }
     f = f || {};
     document.getElementById("f-name").value = f.name || "";
     document.getElementById("f-mode").value = f.mode || "";
-    document.getElementById("f-platform").value = f.platform || "";
     document.getElementById("f-shelf").value = f.shelf || "";
     document.getElementById("f-runtime").value = f.runtime || "";
   }
@@ -248,7 +240,6 @@ tr.live-highlight { background: #f0f5ff; }
       if (hay.indexOf(q) < 0) return false;
     }
     if (f.mode && (v.liveMode || "") !== f.mode) return false;
-    if (f.platform && v.platformReviewStatus !== f.platform) return false;
     if (f.shelf && v.shelfStatus !== f.shelf) return false;
     if (f.runtime && v.runtimeStatus !== f.runtime) return false;
     return true;
@@ -301,7 +292,7 @@ tr.live-highlight { background: #f0f5ff; }
         toast("已撤回平台审核");
       },
       withdraw_edit: function (id) {
-        if (!confirm("当前直播正在平台审核中，编辑前需要撤回审核。撤回后直播将变为草稿，需要修改并重新提交。\n\n确认撤回并编辑？")) return false;
+        if (!confirm("当前直播正在已下架，编辑前需要撤回审核。撤回后直播将变为草稿，需要修改并重新提交。\n\n确认撤回并编辑？")) return false;
         LO.withdrawAndEdit(id);
         saveCtx({ highlightId: id });
         location.href = LO.editLiveUrl(id);
@@ -403,7 +394,7 @@ tr.live-highlight { background: #f0f5ff; }
 
   function renderEmpty() {
     tbody.innerHTML =
-      '<tr><td colspan="10" style="padding:48px;text-align:center;color:#86909c">暂无符合条件的直播</td></tr>';
+      '<tr><td colspan="9" style="padding:48px;text-align:center;color:#86909c">暂无符合条件的直播</td></tr>';
     pagerHint.innerHTML = "共 <b>0</b> 条";
     checkAll.checked = false;
     updateBatchButtons();
@@ -411,18 +402,18 @@ tr.live-highlight { background: #f0f5ff; }
 
   function updateStats(all) {
     var draft = 0;
-    var platformPending = 0;
+    var offline = 0;
     var upcoming = 0;
     var living = 0;
     all.forEach(function (v) {
       var key = LO.scenarioKey(v);
-      if (key === "draft" || key === "platform_rejected") draft++;
-      if (key === "platform_pending") platformPending++;
+      if (key === "draft") draft++;
+      if (key === "cancelled" || v.shelfStatus === "offline") offline++;
       if (key === "upcoming") upcoming++;
       if (key === "living") living++;
     });
     document.getElementById("stat-draft").textContent = String(draft);
-    document.getElementById("stat-platform-pending").textContent = String(platformPending);
+    document.getElementById("stat-platform-pending").textContent = String(offline);
     document.getElementById("stat-upcoming").textContent = String(upcoming);
     document.getElementById("stat-living").textContent = String(living);
   }
@@ -463,10 +454,6 @@ tr.live-highlight { background: #f0f5ff; }
       html += "<td>" + esc(v.liveMode || "—") + "</td>";
       html += "<td>" + esc(v.startAt || "—") + "</td>";
       html += "<td>" + esc(v.owner || v.creator || "—") + "</td>";
-      html += '<td class="audit-stack">';
-      html += '<span class="audit-badge ' + auditBadgeClass(v.platformReviewStatus) + '">' +
-        esc(v.platformReviewStatusLabel || "—") + "</span>";
-      html += "</td>";
       html += '<td class="pub-stack">';
       html += '<span class="status-dot ' + runtimeDotClass(v.runtimeStatus) + '"></span>' +
         esc(v.runtimeStatusLabel || "—") + "<br/>";
@@ -605,11 +592,10 @@ tr.live-highlight { background: #f0f5ff; }
     var fromUrl = {
       name: urlParams.get("name") || "",
       mode: urlParams.get("mode") || "",
-      platform: urlParams.get("platform") || "",
       shelf: urlParams.get("shelf") || "",
       runtime: urlParams.get("runtime") || ""
     };
-    if (fromUrl.name || fromUrl.mode || fromUrl.platform || fromUrl.shelf || fromUrl.runtime) {
+    if (fromUrl.name || fromUrl.mode || fromUrl.shelf || fromUrl.runtime) {
       ctx.filters = Object.assign({}, ctx.filters || {}, fromUrl);
     }
   } catch (e) {}

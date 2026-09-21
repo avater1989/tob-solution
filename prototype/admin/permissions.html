@@ -69,7 +69,6 @@
         <tbody>
           <tr><td>手机号解密</td><td><input type="checkbox" class="sens" /></td><td class="muted">解密需二次确认并记录审计日志</td></tr>
           <tr><td>退款审核</td><td><input type="checkbox" class="sens" /></td><td class="muted">退款单审核通过与驳回</td></tr>
-          <tr><td>结算确认</td><td><input type="checkbox" class="sens" /></td><td class="muted">结算单确认后触发打款流程</td></tr>
           <tr><td>客户导出</td><td><input type="checkbox" class="sens" /></td><td class="muted">导出含手机号的客户明细</td></tr>
           <tr><td>成员与角色管理</td><td><input type="checkbox" class="sens" /></td><td class="muted">邀请成员、分配角色、配置权限</td></tr>
         </tbody>
@@ -97,7 +96,7 @@
 </style>
 
 <script src="../assets/js/proto.js"></script>
-<script src="../assets/js/admin-shell.js?v=14"></script>
+<script src="../assets/js/admin-shell.js?v=25"></script>
 <script>
 (function () {
   // 权限点定义：[模块, 功能, 查看, 编辑, 审核/操作, 导出]
@@ -115,8 +114,7 @@
     ["内容", "课程上下架", 0, 1, 0, 0],
     ["交易", "订单列表 / 详情", 1, 0, 0, 0],
     ["交易", "退款 / 售后审核", 0, 0, 1, 0],
-    ["交易", "对账单", 0, 0, 0, 0],
-    ["交易", "结算单确认", 0, 0, 1, 0],
+    ["交易", "支付流水", 1, 0, 0, 1],
     ["用户", "用户列表 / 详情", 1, 0, 0, 0],
     ["用户", "用户打标", 0, 1, 0, 0],
     ["用户", "成员与角色管理", 0, 0, 0, 0],

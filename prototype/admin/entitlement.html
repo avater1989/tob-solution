@@ -33,7 +33,7 @@
     <div class="form-grid" style="grid-template-columns:repeat(6,minmax(0,1fr));gap:8px 12px">
       <input id="f-key" placeholder="订单号 / 学员手机号" />
       <select id="f-type">
-        <option value="">商品类型</option><option>课程商品</option><option>定制化计划商品</option><option>直播商品</option><option>平台商品</option>
+        <option value="">商品类型</option><option>课程商品</option><option>定制化计划商品</option><option>直播商品</option>
       </select>
       <select id="f-status">
         <option value="">权益状态</option><option>已开通</option><option>待开通</option><option>已回收</option>
@@ -90,7 +90,7 @@
         <tr>
           <td><input type="checkbox" /></td>
           <td><a href="order-detail.html" class="link-mono">YB20260907000956</a></td>
-          <td>家庭咨询 60 分钟服务卡<br><span class="muted" style="font-size:12px">平台商品 · 待预约</span></td>
+          <td>家庭咨询 60 分钟服务卡<br><span class="muted" style="font-size:12px">课程商品 · 待预约</span></td>
           <td>王女士<br><span class="muted" style="font-size:12px">U0003</span></td>
           <td>小程序</td>
           <td><span class="badge badge-warn">待开通</span><br><span class="muted" style="font-size:12px">支付回调超时</span></td>
@@ -101,7 +101,7 @@
         <tr>
           <td><input type="checkbox" /></td>
           <td><a href="order-detail.html" class="link-mono">YB20260906000317</a></td>
-          <td>亲子情绪管理音频课<br><span class="muted" style="font-size:12px">平台商品 · 领课兑换</span></td>
+          <td>亲子情绪管理音频课<br><span class="muted" style="font-size:12px">课程商品 · 领课兑换</span></td>
           <td>刘女士<br><span class="muted" style="font-size:12px">U0004</span></td>
           <td>领课兑换</td>
           <td><span class="badge badge-success">已开通</span></td>
@@ -132,7 +132,7 @@
 
   <div class="card" style="margin-top:16px"><div class="card-bd">
     <p class="muted" style="font-size:12px;line-height:1.8">
-      <b>权益规则：</b>课程商品、定制化计划商品、直播商品与平台商品均为虚拟商品，支付成功后自动开通权益，退款成功同步回收。
+      <b>权益规则：</b>课程商品、定制化计划商品、直播商品均为虚拟商品，支付成功后自动开通权益，退款成功同步回收。
       支付回调异常时订单进入「待开通」，可在此页手动开通；已回收权益可人工恢复（用于客诉安抚场景）。
       开通与回收通知可在「系统管理-消息推送」中配置。
     </p>
@@ -171,7 +171,7 @@
 </style>
 
 <script src="../assets/js/proto.js"></script>
-<script src="../assets/js/admin-shell.js?v=14"></script>
+<script src="../assets/js/admin-shell.js?v=25"></script>
 <script>
 (function () {
   var mask = document.getElementById("mask");

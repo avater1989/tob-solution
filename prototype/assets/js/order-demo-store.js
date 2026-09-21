@@ -1,12 +1,13 @@
 /* B 端订单演示数据（商家管理后台 / 运营后台共用）
    范围：交易 · 订单管理 · 订单列表 与 订单详情 的**同一份**演示数据源。
    覆盖状态：已支付 / 待付款 / 已完成 / 已退款 / 退款中；商品类型：课程商品 / 直播商品。
-   订单号与 admin/orders.html、ops/trade-orders.html 列表逐行一致，避免列表与详情口径分叉。 */
+   MVP：仅商家自建商品（服务费）；平台商品订单已从列表下线。
+   订单号与 admin/orders.html、ops/trade-orders.html 列表演示行对应，避免列表与详情口径分叉。 */
 (function (global) {
   var NOTE_KEY = "b_end_order_notes_v1";
 
   var SEED = {
-    /* ① 平台内容 · 佣金 20% · 已支付 · 课程商品 */
+    /* ① 商家自建 · 服务费 0.6% · 已支付 · 课程商品（视频号） */
     YB20260907000331: {
       order: {
         id: "YB20260907000331", type: "消费",
@@ -16,8 +17,8 @@
         time: "2026-09-07 14:22", payTime: "2026-09-07 14:22",
         payStatus: "已支付", refundStatus: "无", refundId: "",
         rightId: "R2026090700331", rightStatus: "有效", owner: "李女士",
-        channel: "视频号", contentSource: "platform", settleMode: "commission", commissionRate: 20,
-        contentOwner: "艺博平台（内容中台下发）", tenant: "星启家庭教育",
+        channel: "视频号", contentSource: "self", settleMode: "service_fee", serviceFeeRate: 0.6,
+        contentOwner: "星启家庭教育（商家自建）", tenant: "星启家庭教育",
         deliverType: "支付后自动开通", payChannel: "通联支付（微信小程序内）",
         channelTxn: "WX20260907140221", payTxn: "TL20260907000331XX",
         promoter: "—", consultant: "—",
@@ -161,7 +162,7 @@
       ]
     },
 
-    /* ⑤ 平台内容 · 佣金 20% · 已支付（公域同步）· 课程商品 */
+    /* ⑤ 商家自建 · 服务费 0.6% · 已支付（视频号）· 课程商品 */
     YB20260325000901: {
       order: {
         id: "YB20260325000901", type: "消费",
@@ -171,8 +172,8 @@
         time: "2026-03-25 11:05", payTime: "2026-03-25 11:05",
         payStatus: "已支付", refundStatus: "无", refundId: "",
         rightId: "R2026032500901", rightStatus: "有效", owner: "张女士",
-        channel: "视频号", contentSource: "platform", settleMode: "commission", commissionRate: 20,
-        contentOwner: "艺博平台（内容中台下发）", tenant: "星启家庭教育",
+        channel: "视频号", contentSource: "self", settleMode: "service_fee", serviceFeeRate: 0.6,
+        contentOwner: "星启家庭教育（商家自建）", tenant: "星启家庭教育",
         deliverType: "支付后自动开通", payChannel: "通联支付（微信小程序内）",
         channelTxn: "WX20260325110503", payTxn: "TL20260325110001XX",
         promoter: "—", consultant: "—",

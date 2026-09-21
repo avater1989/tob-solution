@@ -177,7 +177,7 @@
           <div class="kv-row"><span id="od-split-mch-label">商家所得</span><b id="od-split-mch">—</b></div>
           <div class="kv-row"><span>入金手续费（0.3%）</span><b id="od-split-channel">—</b></div>
           <div class="kv-row"><span>分账规则快照</span><b id="od-split-snapshot">—</b></div>
-          <div class="kv-row"><span>所属结算单</span><b><a href="settlement.html" class="link" id="od-settlement-link">—</a></b></div>
+          <div class="kv-row"><span>资金说明</span><b class="muted" style="font-weight:400">一期不对账结算提现 · 见支付流水</b></div>
         </div>
       </div>
     </div>
@@ -312,7 +312,7 @@
 <script src="../assets/js/proto.js"></script>
 <script src="../assets/js/order-demo-store.js"></script>
 <script src="../assets/js/user-store.js?v=3"></script>
-<script src="../assets/js/admin-shell.js?v=14"></script>
+<script src="../assets/js/admin-shell.js?v=25"></script>
 <script>
 (function () {
   var US = window.UserStore;
@@ -698,15 +698,11 @@
 
   document.getElementById("od-rights-link").href = viewRightsHref;
 
-  // ===== 分账：按商品来源走两条链路 =====
-  // 链路 A（平台内容）→ 佣金模式：商家拿佣金（默认 20%），课程金额留存艺博账户
-  // 链路 B（商家自建）→ 服务费模式：商家拿课程金额，平台收服务费（默认 0.6%）
-  var contentSource = order.contentSource || "self";
-  var isPlatform = contentSource === "platform";
-  var settleMode = order.settleMode || (isPlatform ? "commission" : "service_fee");
-  var rate = isPlatform
-    ? (order.commissionRate != null ? order.commissionRate : 20)
-    : (order.serviceFeeRate != null ? order.serviceFeeRate : 0.6);
+  // ===== 分账：MVP 仅商家自建服务费口径（废止链路 A 佣金） =====
+  var contentSource = "self";
+  var isPlatform = false;
+  var settleMode = "service_fee";
+  var rate = order.serviceFeeRate != null ? order.serviceFeeRate : 0.6;
   /* 未支付 或 免费场次（0 元且无渠道支付流水）→ 不产生分账 */
   var noTxn = !order.channelTxn || order.channelTxn === "—";
   var freeSession = noTxn && amount === 0;
@@ -752,16 +748,6 @@
         : refunding
           ? '<span class="badge badge-warn">已冻结</span> 退款处理中暂缓分账'
           : '<span class="badge badge-warn">待分账</span> 支付成功后 T+1 自动分账';
-
-  /* 所属结算单 */
-  var settlementLink = document.getElementById("od-settlement-link");
-  if (noSplit || !order.settlementId || order.settlementId === "—") {
-    settlementLink.textContent = unpaid ? "未支付 · 无结算单" : (freeSession ? "免费场次 · 无结算单" : "未入结算单");
-    settlementLink.removeAttribute("href");
-  } else {
-    settlementLink.textContent = order.settlementId + " →";
-    settlementLink.href = "settlement.html";
-  }
 
   /* ===== 退款详情（订单有退款单时显示，含退款处理中） ===== */
   if (refunded || refunding) {

@@ -103,14 +103,8 @@
           <option value="">全部直播状态</option>
           <option value="upcoming">待开播</option>
           <option value="ended">已结束</option>
-          <option value="draft_pending">待审核</option>
+          <option value="draft_pending">草稿</option>
           <option value="cancelled">已取消</option>
-        </select>
-        <select class="input" id="list-f-audit" style="width:140px">
-          <option value="">全部审核状态</option>
-          <option value="approved">已通过</option>
-          <option value="pending">审核中</option>
-          <option value="rejected">已驳回</option>
         </select>
         <input class="input" id="list-f-keyword" type="text" placeholder="直播名称 / ID" style="width:220px" />
         <button class="btn btn-primary" type="button" id="list-btn-query">查询</button>
@@ -130,8 +124,8 @@
           <tr>
             <th>直播名称</th>
             <th>直播状态</th>
-            <th>审核状态</th>
             <th>开播时间</th>
+            <th>触达计划数</th>
             <th>预约用户</th>
             <th>订阅提醒用户</th>
             <th>已触达用户</th>
@@ -586,7 +580,7 @@
 <script src="../assets/js/prototype-business-store.js"></script>
 <script src="../assets/js/live-ops.js?v=9"></script>
 <script src="../assets/js/live-reach.js"></script>
-<script src="../assets/js/admin-shell.js?v=19"></script>
+<script src="../assets/js/admin-shell.js?v=25"></script>
 <script>
 (function () {
   var LR = window.LiveReach;
@@ -733,11 +727,9 @@
   /* ---------- List view ---------- */
   function renderList() {
     var statusF = document.getElementById("list-f-live-status").value;
-    var auditF = document.getElementById("list-f-audit").value;
     var kw = (document.getElementById("list-f-keyword").value || "").trim().toLowerCase();
     var lives = LR.getLives().filter(function (l) {
       if (statusF && l.liveStatus !== statusF) return false;
-      if (auditF && l.auditStatus !== auditF) return false;
       if (kw && String(l.name).toLowerCase().indexOf(kw) < 0 && String(l.id).toLowerCase().indexOf(kw) < 0) return false;
       return true;
     });
@@ -749,11 +741,12 @@
       return;
     }
     tbody.innerHTML = lives.map(function (l) {
+      var planCount = (LR.getReminders(l.id) || []).length;
       return "<tr>" +
         "<td><a class=\"link-blue\" href=\"live-booking.html?live_id=" + esc(l.id) + "\"><b>" + esc(l.name) + "</b></a><div class=\"muted bk-mono\" style=\"font-size:11px\">" + esc(l.id) + "</div></td>" +
         "<td>" + liveStatusBadge(l) + "</td>" +
-        "<td>" + auditBadge(l) + "</td>" +
         "<td>" + esc(l.startAt) + "</td>" +
+        "<td class=\"bk-num\"><a class=\"link-blue\" href=\"live-booking.html?live_id=" + esc(l.id) + "&tab=reminders\">" + num(planCount) + "</a></td>" +
         "<td class=\"bk-num\">" + num(l.bookedUsers) + "</td>" +
         "<td class=\"bk-num\">" + num(l.subscribedUsers) + "</td>" +
         "<td class=\"bk-num\">" + num(l.reachedUsers) + "</td>" +
@@ -1289,7 +1282,7 @@
     document.getElementById("view-single").style.display = "";
     document.getElementById("bk-current-live-text").textContent = live.name;
     document.getElementById("bk-current-live-meta").innerHTML =
-      liveStatusBadge(live) + " " + auditBadge(live) + " · 开播 " + esc(live.startAt);
+      liveStatusBadge(live) + " · 开播 " + esc(live.startAt);
     var back = document.getElementById("bk-back-link");
     var backText = document.getElementById("bk-back-text");
     if (back) {
@@ -1365,7 +1358,6 @@
   document.getElementById("list-btn-query").addEventListener("click", renderList);
   document.getElementById("list-btn-reset").addEventListener("click", function () {
     document.getElementById("list-f-live-status").value = "";
-    document.getElementById("list-f-audit").value = "";
     document.getElementById("list-f-keyword").value = "";
     renderList();
   });

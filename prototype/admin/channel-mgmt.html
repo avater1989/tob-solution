@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>渠道管理 · 商家管理后台</title>
+<link rel="stylesheet" href="../assets/css/proto.css?v=9" />
+</head>
+<body class="admin-body" data-module="scrm" data-nav="channel-mgmt" data-title="渠道管理" data-crumb="SCRM / 业务设置 / 渠道管理">
+<div id="header-actions">
+  <button class="btn btn-primary" id="btn-create">新建渠道</button>
+</div>
+<div id="page-content" style="display:none">
+
+  <div class="board-tip" style="margin-bottom:12px">
+    <b>渠道管理：</b>配置获客二级渠道（如短视频、直播），并绑定<strong>视频号商品</strong>。绑定后，经营分析「获客与转化 · 渠道质量」会在一级渠道「视频号」下按此拆分二级渠道质量。
+    <span class="muted">一个商品只能映射到一个渠道；未映射商品归入「未映射商品」。</span>
+  </div>
+
+  <div class="card" style="margin-bottom:8px"><div class="card-bd">
+    <div class="toolbar" style="margin:0">
+      <input id="f-q" placeholder="搜索渠道名、商品 ID 或备注" style="flex:1;max-width:360px" />
+      <button class="btn btn-primary" id="btn-query">查询</button>
+      <button class="btn" id="btn-reset">重置</button>
+    </div>
+  </div></div>
+
+  <div class="card"><div class="card-bd" style="padding:0">
+    <table class="data">
+      <thead>
+        <tr>
+          <th>渠道名称</th>
+          <th>一级归属</th>
+          <th>映射视频号商品</th>
+          <th style="width:160px">操作</th>
+        </tr>
+      </thead>
+      <tbody id="ch-tbody"></tbody>
+    </table>
+  </div></div>
+  <div class="toolbar" style="margin-top:8px">
+    <span class="muted">共 <b id="ch-count">0</b> 条 · 用于渠道质量二级分析</span>
+    <div class="spacer"></div>
+    <a class="btn btn-sm" href="board-acquire.html">查看获客渠道质量 →</a>
+  </div>
+</div>
+
+<div class="proto-mask" id="mask"></div>
+
+<div class="proto-modal" id="modal-ch" style="width:560px">
+  <div class="proto-modal-hd">
+    <h3 style="font-size:16px;font-weight:600" id="modal-title">新建渠道</h3>
+    <button class="btn btn-sm btn-ghost" type="button" data-close>×</button>
+  </div>
+  <div class="proto-modal-bd">
+    <input type="hidden" id="m-id" />
+    <div class="field">
+      <label>渠道名称 <span class="req">*</span></label>
+      <input id="m-name" placeholder="如：短视频、直播" maxlength="40" />
+    </div>
+    <div class="field">
+      <label>一级归属</label>
+      <select id="m-parent" disabled>
+        <option value="video">视频号</option>
+      </select>
+      <div class="muted" style="font-size:12px;margin-top:4px">当前仅支持作为「视频号」下的二级渠道</div>
+    </div>
+    <div class="field">
+      <label>映射视频号商品</label>
+      <div id="m-goods" style="display:flex;flex-direction:column;gap:6px;max-height:180px;overflow:auto;padding:8px;border:1px solid var(--color-border);border-radius:6px;background:#fafafa"></div>
+      <div class="muted" style="font-size:12px;margin-top:4px">勾选后，该商品产生的获客数据归入本渠道</div>
+    </div>
+    <div class="field">
+      <label>备注</label>
+      <input id="m-remark" placeholder="可选" maxlength="80" />
+    </div>
+  </div>
+  <div class="proto-modal-ft">
+    <button class="btn" type="button" data-close>取消</button>
+    <button class="btn btn-primary" type="button" id="m-save">保存</button>
+  </div>
+</div>
+
+<script src="../assets/js/proto.js"></script>
+<script src="../assets/js/term-store.js?v=1"></script>
+<script src="../assets/js/channel-store.js?v=2"></script>
+<script src="../assets/js/admin-shell.js?v=26"></script>
+<script>
+(function () {
+  var editingId = null;
+
+  function openModal(el) {
+    document.getElementById("mask").classList.add("on");
+    el.classList.add("on");
+  }
+  function closeModals() {
+    document.getElementById("mask").classList.remove("on");
+    document.querySelectorAll(".proto-modal").forEach(function (m) { m.classList.remove("on"); });
+  }
+  document.getElementById("mask").addEventListener("click", closeModals);
+  document.querySelectorAll("[data-close]").forEach(function (b) {
+    b.addEventListener("click", closeModals);
+  });
+
+  function goodsCell(c) {
+    var ids = c.goodsIds || [];
+    if (!ids.length) return '<span class="muted">未映射</span>';
+    return ids.map(function (id) {
+      return '<div style="font-size:12px;line-height:1.4"><b>' + id + "</b> · " +
+        ChannelStore.goodsLabel(id) + "</div>";
+    }).join("");
+  }
+
+  function renderGoodsPicker(selected, excludeId) {
+    var used = ChannelStore.usedGoods(excludeId);
+    var selectedSet = {};
+    (selected || []).forEach(function (id) { selectedSet[id] = true; });
+    var host = document.getElementById("m-goods");
+    var catalog = ChannelStore.vxCatalog();
+    if (!catalog.length) {
+      host.innerHTML = '<span class="muted">暂无视频号商品</span>';
+      return;
+    }
+    host.innerHTML = catalog.map(function (g) {
+      var locked = used[g.id] && !selectedSet[g.id];
+      var owner = locked ? ChannelStore.get(used[g.id]) : null;
+      var tip = locked ? ' disabled title="已映射到：' + (owner ? owner.name : used[g.id]) + '"' : "";
+      var checked = selectedSet[g.id] ? " checked" : "";
+      return '<label style="display:flex;align-items:flex-start;gap:8px;font-size:13px;opacity:' +
+        (locked ? "0.45" : "1") + '">' +
+        '<input type="checkbox" data-gid="' + g.id + '"' + checked + tip + " />" +
+        '<span><b>' + g.id + "</b><br/><span class=\"muted\">" + g.name +
+        (locked ? " · 已占用" : "") + "</span></span></label>";
+    }).join("");
+  }
+
+  function collectGoods() {
+    return Array.prototype.map.call(
+      document.querySelectorAll("#m-goods input[data-gid]:checked"),
+      function (el) { return el.getAttribute("data-gid"); }
+    );
+  }
+
+  function openEditor(mode, id) {
+    editingId = mode === "edit" ? id : null;
+    document.getElementById("modal-title").textContent = mode === "edit" ? "编辑渠道" : "新建渠道";
+    var c = mode === "edit" ? ChannelStore.get(id) : null;
+    document.getElementById("m-id").value = c ? c.id : "";
+    document.getElementById("m-name").value = c ? c.name : "";
+    document.getElementById("m-parent").value = "video";
+    document.getElementById("m-remark").value = c ? (c.remark || "") : "";
+    renderGoodsPicker(c ? c.goodsIds : [], c ? c.id : null);
+    openModal(document.getElementById("modal-ch"));
+  }
+
+  function render() {
+    var q = document.getElementById("f-q").value.trim();
+    var rows = ChannelStore.list({ q: q });
+    document.getElementById("ch-count").textContent = rows.length;
+    var tb = document.getElementById("ch-tbody");
+    if (!rows.length) {
+      tb.innerHTML = '<tr><td colspan="4" class="muted" style="text-align:center;padding:28px">暂无渠道，请新建</td></tr>';
+      return;
+    }
+    tb.innerHTML = rows.map(function (c) {
+      return "<tr>" +
+        "<td><b>" + c.name + "</b>" + (c.remark ? '<div class="muted" style="font-size:12px">' + c.remark + "</div>" : "") + "</td>" +
+        "<td>视频号</td>" +
+        "<td>" + goodsCell(c) + "</td>" +
+        '<td class="row-actions">' +
+          '<a href="#" data-act="edit" data-id="' + c.id + '">编辑</a>' +
+          '<a href="#" class="danger" data-act="del" data-id="' + c.id + '">删除</a>' +
+        "</td></tr>";
+    }).join("");
+
+    tb.querySelectorAll("[data-act]").forEach(function (el) {
+      el.addEventListener("click", function (e) {
+        e.preventDefault();
+        var act = el.getAttribute("data-act");
+        var id = el.getAttribute("data-id");
+        if (act === "edit") {
+          openEditor("edit", id);
+        } else if (act === "del") {
+          if (!confirm("确认删除该渠道？删除后渠道质量中不再展示该二级渠道。")) return;
+          ChannelStore.remove(id);
+          Proto.toast("已删除");
+          render();
+        }
+      });
+    });
+  }
+
+  document.getElementById("btn-create").addEventListener("click", function () {
+    openEditor("create");
+  });
+  document.getElementById("m-save").addEventListener("click", function () {
+    var payload = {
+      id: document.getElementById("m-id").value || undefined,
+      name: document.getElementById("m-name").value,
+      parent: "video",
+      goodsIds: collectGoods(),
+      remark: document.getElementById("m-remark").value
+    };
+    if (editingId) payload.id = editingId;
+    var r = ChannelStore.upsert(payload);
+    if (!r.ok) {
+      Proto.toast(r.reason || "保存失败");
+      return;
+    }
+    Proto.toast("已保存");
+    closeModals();
+    render();
+  });
+  document.getElementById("btn-query").addEventListener("click", render);
+  document.getElementById("btn-reset").addEventListener("click", function () {
+    document.getElementById("f-q").value = "";
+    render();
+  });
+
+  render();
+})();
+</script>
+</body>
+</html>

@@ -138,52 +138,6 @@
           reject_reason: "A-03 宣传用语含绝对化承诺：卖点写「100% 改善亲子关系」，请修改后重新提审。",
           submitted_at: "2026-09-18 11:20",
           price: 199
-        },
-        {
-          goods_id: "G-PF01",
-          channel: "store",
-          create_mode: "from_platform",
-          content_source: "platform",
-          content_type: "online_course",
-          content_id: "C-PF01",
-          platform_goods_id: "PG001",
-          category_id: "GC02",
-          tag_ids: [],
-          name: "平台精选 · 家庭教育入门课",
-          status: "on_sale",
-          audit_status: "approved",
-          reject_reason: "",
-          submitted_at: "2026-09-10 09:00",
-          price: 39.9
-        }
-      ],
-      platformGoodsCatalog: [
-        {
-          platform_goods_id: "PG001",
-          name: "平台精选 · 家庭教育入门课",
-          content_type: "online_course",
-          content_id: "C-PF01",
-          content_title: "家庭教育入门课（平台）",
-          price: 39.9,
-          category_id: "GC02"
-        },
-        {
-          platform_goods_id: "PG002",
-          name: "平台精选 · 亲子沟通 21 天计划",
-          content_type: "plan",
-          content_id: "PL-PF01",
-          content_title: "亲子沟通 21 天计划（平台）",
-          price: 199,
-          category_id: "GC07"
-        },
-        {
-          platform_goods_id: "PG003",
-          name: "平台精选 · 午间答疑直播",
-          content_type: "live",
-          content_id: "L-PF01",
-          content_title: "午间答疑 · 付费直播（平台）",
-          price: 9.9,
-          category_id: "GC04"
         }
       ],
       wxshopGoodsDemo: [

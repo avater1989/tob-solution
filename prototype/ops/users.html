@@ -3,22 +3,26 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>页面已迁移 · 运营后台</title>
-<meta http-equiv="refresh" content="0; url=tenant-config.html?tab=user" />
+<title>页面分流说明 · 运营后台</title>
 <link rel="stylesheet" href="../assets/css/proto.css?v=4" />
 </head>
 <body style="padding:0">
-<div class="review-bar"><strong>运营后台</strong><a href="tenants.html">租户列表</a><span class="sep">·</span><a href="apps.html">应用管理</a><span class="sep">|</span><a href="../index.html">导航</a></div>
-<div style="max-width:620px;margin:56px auto;padding:0 20px;font-family:var(--font)">
-  <h1 style="font-size:20px;margin:0 0 10px">页面已并入新入口</h1>
+<div class="review-bar"><strong>运营后台</strong><a href="platform-users.html">C 端用户聚合</a><span class="sep">·</span><a href="tenant-config.html?tab=user">租户员工</a><span class="sep">|</span><a href="../index.html">导航</a></div>
+<div style="max-width:640px;margin:56px auto;padding:0 20px;font-family:var(--font)">
+  <h1 style="font-size:20px;margin:0 0 10px">用户入口已分流</h1>
   <p style="font-size:13px;color:var(--color-text-secondary);line-height:1.9;margin:0 0 18px">
-    本页已按「租户 / 应用层级调整」重构，内容以新页面为准，正在自动跳转。
+    请选择要查看的用户类型，避免与「租户员工账号」混淆：
   </p>
-  <p style="font-size:13px;margin:0 0 22px">
-    目标：<a href="tenant-config.html?tab=user">tenant-config.html?tab=user</a>
-  </p>
-  <a class="btn btn-primary" href="tenant-config.html?tab=user">前往 租户配置 · 租户用户</a>
+  <div style="display:grid;gap:12px;margin-bottom:22px">
+    <a class="btn btn-primary" href="platform-users.html" style="text-align:left;padding:14px 16px;height:auto;line-height:1.5">
+      <b>C 端用户聚合（推荐）</b><br/>
+      <span style="font-weight:400;opacity:.9;font-size:12px">跨租户学员 / 客户 · 顶栏「用户」模块</span>
+    </a>
+    <a class="btn" href="tenant-config.html?tab=user" style="text-align:left;padding:14px 16px;height:auto;line-height:1.5">
+      <b>租户员工账号</b><br/>
+      <span style="font-weight:400;opacity:.85;font-size:12px">商家管理后台登录人 · 租户管理 → 租户配置 → 租户用户</span>
+    </a>
+  </div>
 </div>
-<script>location.replace("tenant-config.html?tab=user");</script>
 </body>
 </html>

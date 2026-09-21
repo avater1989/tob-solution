@@ -6,16 +6,20 @@
 <title>支付流水 · 商家管理后台</title>
 <link rel="stylesheet" href="../assets/css/proto.css?v=9" />
 </head>
-<body class="admin-body" data-module="trade" data-nav="bills" data-title="支付流水" data-crumb="交易 / 资产管理 / 支付流水">
+<body class="admin-body" data-module="trade" data-nav="bills" data-title="支付流水" data-crumb="交易 / 资金流水 / 支付流水">
 <div id="header-actions"></div>
 <div id="page-content" style="display:none">
+
+  <div class="board-tip" style="margin-bottom:12px">
+    <b>一期口径：</b>仅提供支付流水查询。对账、结算单、提现管理暂未开放，出金与稽核走线下或二期能力。
+  </div>
 
   <!-- 顶部统计 -->
   <div class="grid-4" style="margin-bottom:16px">
     <div class="stat"><div class="label">本期收入</div><div class="value">¥24,650.00</div><div class="hint">近 30 天</div></div>
     <div class="stat"><div class="label">本期支出</div><div class="value">¥2,080.15</div><div class="hint">退款 + 入金手续费 + 分成</div></div>
     <div class="stat"><div class="label">净收入</div><div class="value">¥22,569.85</div><div class="hint">按支付时间口径</div></div>
-    <div class="stat"><div class="label">待核对差异</div><div class="value">2</div><div class="hint"><a href="recon.html" style="color:inherit">去对账 →</a></div></div>
+    <div class="stat"><div class="label">流水笔数</div><div class="value">186</div><div class="hint">近 30 天</div></div>
   </div>
 
   <!-- 筛选 -->
@@ -25,7 +29,7 @@
         <option value="">收款账户</option><option>通联支付</option><option>通联分账会员</option>
       </select>
       <select id="f-type">
-        <option value="">收支类型</option><option>订单收入</option><option>退款</option><option>入金手续费</option><option>分销分成</option><option>提现</option>
+        <option value="">收支类型</option><option>订单收入</option><option>退款</option><option>入金手续费</option><option>分销分成</option>
       </select>
       <input id="f-no" placeholder="交易单号 / 关联订单号" />
       <input id="f-time1" type="datetime-local" />
@@ -59,8 +63,8 @@
   <!-- 口径说明 -->
   <div class="card" style="margin-top:16px"><div class="card-bd">
     <p class="muted" style="font-size:12px;line-height:1.9">
-      <b>口径说明：</b>支付流水按订单「支付时间」逐笔记录收入 / 支出，支持与<b>通联支付「资金账单」</b>跨平台对账。
-      分账明细见「结算单」；分账与结算规则由平台统一配置（运营后台 · 结算规则配置）；数据同步可能存在约 3 秒误差，属正常现象。
+      <b>口径说明：</b>支付流水按订单「支付时间」逐笔记录收入 / 支出。一期不对账、不生成结算单、系统内不开放提现；
+      出金与跨平台核对一期走线下。分账比例按服务费口径在订单详情只读展示。数据同步可能存在约 3 秒误差，属正常现象。
     </p>
   </div></div>
 
@@ -82,7 +86,7 @@
 </style>
 
 <script src="../assets/js/proto.js"></script>
-<script src="../assets/js/admin-shell.js?v=14"></script>
+<script src="../assets/js/admin-shell.js?v=27"></script>
 <script>
 (function () {
   document.getElementById("btn-query").addEventListener("click", function(){ Proto.toast("已筛选（原型）"); });

@@ -13,31 +13,6 @@
 </div>
 <div id="page-content" style="display:none">
 
-  <!-- 审核状态横幅（驳回时展示） -->
-  <div class="audit-banner audit-banner-rejected" id="audit-banner" style="display:none">
-    <div class="audit-banner-icon">✕</div>
-    <div class="audit-banner-bd">
-      <div class="audit-banner-title">平台审核未通过 · 已驳回</div>
-      <div class="audit-banner-meta">
-        审核方：平台　·　驳回时间：<b id="ab-time">2026-09-03 17:30</b>
-      </div>
-      <div class="audit-banner-reason" id="ab-reason">
-        直播封面图包含第三方水印，请重新设计后再提交。建议尺寸 750*422px，去掉水印 logo。
-      </div>
-    </div>
-  </div>
-
-  <!-- 审核状态横幅（待审核/只读） -->
-  <div class="audit-banner audit-banner-pending" id="audit-banner-pending" style="display:none">
-    <div class="audit-banner-icon">⏱</div>
-    <div class="audit-banner-bd">
-      <div class="audit-banner-title">该直播已提交平台审核</div>
-      <div class="audit-banner-meta">
-        提交时间：<b id="ab-submit-time">2026-09-04 14:30</b>　·　当前不可编辑，可在列表撤回后修改
-      </div>
-    </div>
-  </div>
-
   <h2 class="page-section-title" id="sec-basic">基本信息</h2>
   <div class="card"><div class="card-bd">
     <div class="form-grid" style="grid-template-columns:1fr 1fr">
@@ -49,11 +24,11 @@
           <option>录播直播</option>
         </select>
       </div>
-      <div class="field"><label>直播间类型 *</label>
-        <select id="le-style">
-          <option>传统直播间</option>
-          <option>沉浸直播间</option>
+      <div class="field"><label>对应期次</label>
+        <select id="le-term">
+          <option value="">请选择期次</option>
         </select>
+        <p class="muted" style="margin:6px 0 0;font-size:12px">期次在「SCRM · 业务设置 · 期次管理」中维护；用于经营复盘与促到归属</p>
       </div>
       <div class="field"><label>主讲老师 *</label>
         <select id="le-teacher"><option>阮荣均</option><option>赵老师</option><option>王助教</option></select>
@@ -770,9 +745,11 @@
 
 <script src="../assets/js/proto.js"></script>
 <script src="../assets/js/prototype-business-store.js"></script>
-<script src="../assets/js/live-ops.js?v=10"></script>
+<script src="../assets/js/board-data.js"></script>
+<script src="../assets/js/term-store.js?v=3"></script>
+<script src="../assets/js/live-ops.js?v=26"></script>
 <script src="../assets/js/live-reach.js"></script>
-<script src="../assets/js/admin-shell.js?v=19"></script>
+<script src="../assets/js/admin-shell.js?v=25"></script>
 <script>
 (function () {
   function toast(msg) { if (window.Proto && Proto.toast) Proto.toast(msg); }
@@ -991,11 +968,36 @@
     inp.disabled = !on;
     if (!on) inp.value = "";
   }
+  function initTermSelect(selectedId, selectedName) {
+    if (!$("le-term") || !window.TermStore) return;
+    var value = selectedId || "";
+    if (value && TermStore.get && !TermStore.get(value) && selectedName) {
+      var hit = (TermStore.list({ includeDemo: true }) || []).find(function (t) {
+        return t.name === selectedName || (selectedName && t.name.indexOf(selectedName) === 0);
+      });
+      if (hit) value = hit.id;
+    }
+    TermStore.fillSelect($("le-term"), {
+      mode: value ? "edit" : "create",
+      valueMode: "id",
+      placeholder: "请选择期次",
+      value: value,
+      valueLabel: selectedName || ""
+    });
+    var curOpt = $("le-term").selectedOptions && $("le-term").selectedOptions[0];
+    if (curOpt && selectedName) {
+      var txt = curOpt.textContent || "";
+      if (/^spring\d+/i.test(txt) || txt.indexOf(value) === 0) {
+        curOpt.textContent = selectedName + (txt.indexOf("已结束") >= 0 ? "（已结束）" : "");
+      }
+    }
+  }
+
   function fillForm(v) {
     if (!v) return;
     if ($("le-name")) $("le-name").value = v.liveName || v.name || "";
     if ($("le-mode")) $("le-mode").value = v.liveMode || "视频直播";
-    if ($("le-style")) $("le-style").value = v.roomType || "传统直播间";
+    initTermSelect(v.termId || "", v.termName || "");
     if ($("le-start")) {
       if (v.startAt === "" || v.startAt === null) $("le-start").value = "";
       else $("le-start").value = toLocal(v.startAt) || "2026-09-12T20:00";
@@ -1050,12 +1052,22 @@
       }
     });
     var hostOn = $("le-host-pwd-mode") && $("le-host-pwd-mode").value === "on";
+    var termId = ($("le-term") && $("le-term").value) || "";
+    var termName = "";
+    if (termId && $("le-term") && $("le-term").selectedOptions && $("le-term").selectedOptions[0]) {
+      termName = ($("le-term").selectedOptions[0].textContent || "").replace(/（已结束）|（未开始）/g, "").trim();
+    }
+    if (termId && window.TermStore && TermStore.get) {
+      var t = TermStore.get(termId);
+      if (t) termName = t.name || termName;
+    }
     return {
       name: ($("le-name") && $("le-name").value.trim()) || "",
       liveMode: ($("le-mode") && $("le-mode").value) || "视频直播",
       courseName: courseName,
       catalogJoin: catalogJoin,
-      roomType: ($("le-style") && $("le-style").value) || "传统直播间",
+      termId: termId,
+      termName: termName,
       startAt: ($("le-start") && $("le-start").value) ? $("le-start").value.replace("T", " ") : "",
       endAt: ($("le-end") && $("le-end").value) ? $("le-end").value.replace("T", " ") : "",
       teacher: ($("le-teacher") && $("le-teacher").value) || "",
@@ -1274,7 +1286,7 @@
     } else if (warnOnSave) {
       html += '<button type="button" class="btn btn-primary" id="btn-save-revert">保存修改并退回草稿</button>';
     } else {
-      html += '<button type="button" class="btn btn-primary" id="btn-save-submit">保存并提交平台审核</button>';
+      html += '<button type="button" class="btn btn-primary" id="btn-save-submit">保存并上架</button>';
     }
     ha.innerHTML = html;
   }
@@ -1291,9 +1303,11 @@
       "<b>" + label + "</b>" +
       "<span>ID " + v.liveId + "</span>" +
       "<span>版本 v" + (v.currentVersion || 1) + "</span>" +
-      '<span class="chip">平台：' + (v.platformReviewStatusLabel || "") + "</span>" +
       '<span class="chip">上架：' + (v.shelfStatusLabel || "") + "</span>" +
       '<span class="chip">直播：' + (v.runtimeStatusLabel || "") + "</span>";
+    if (v.termName) {
+      bar.innerHTML += '<span class="chip">期次：' + v.termName + "</span>";
+    }
     pc.insertBefore(bar, pc.firstChild);
   }
 
@@ -1317,16 +1331,6 @@
     enableBookingLink(live.liveId);
     insertStatusBar(live, "查看直播");
     renderViewHeader(live);
-    if (live.platformReviewStatus === "rejected" || focus === "platform" || focus === "cover") {
-      if (live.platformReviewStatus === "rejected") showRejectBanner(live);
-    }
-    if (live.platformReviewStatus === "pending") {
-      var banP = $("audit-banner-pending");
-      if (banP) {
-        banP.style.display = "flex";
-        if ($("ab-submit-time") && live.submittedPlatformAt) $("ab-submit-time").textContent = live.submittedPlatformAt;
-      }
-    }
     document.addEventListener("click", function () {
       document.querySelectorAll(".le-ops-more.open").forEach(function (n) { n.classList.remove("open"); });
     });
@@ -1341,11 +1345,6 @@
     if (live.coverUrl && $("le-cover-img")) $("le-cover-img").src = live.coverUrl;
     enableBookingLink(live.liveId);
     insertStatusBar(live, isRejectedFlow ? "修改并重新提交" : "编辑直播");
-    if (isRejectedFlow || live.platformReviewStatus === "rejected") {
-      showRejectBanner(live);
-      isRejectedFlow = true;
-      renderEditHeader();
-    }
   } else if (copyPrefill) {
     fillForm(copyPrefill);
     if ($("le-start")) $("le-start").value = "";
@@ -1355,6 +1354,7 @@
     disableBookingLinks();
   } else {
     coverConfigured = true;
+    initTermSelect("");
     disableBookingLinks();
   }
   setCoverUi();

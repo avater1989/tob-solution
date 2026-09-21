@@ -530,9 +530,9 @@
       });
       if (existing.length && !force) return existing;
 
-      var canRun = live.auditStatus === "approved" && live.shelf;
+      var canRun = !!live.shelf;
       var baseStatus = canRun ? "pending" : "paused";
-      var pauseReason = canRun ? "" : (live.auditStatus === "pending" ? "直播审核中，提醒任务暂停" : "直播未上架，提醒任务暂停");
+      var pauseReason = canRun ? "" : "直播未上架，提醒任务暂停";
 
       var defs = [];
       if (live.reminderEnabled !== false) {
@@ -939,20 +939,11 @@
           fixAction: "edit"
         });
       }
-      if (!ended && live.auditStatus && live.auditStatus !== "approved") {
-        issues.push({
-          code: "audit",
-          severity: "hard",
-          reason: "直播未通过审核并上架，无法启动",
-          fixLabel: "去直播编辑/送审",
-          fixHref: "live-edit.html?live_id=" + encodeURIComponent(live.id)
-        });
-      }
-      if (!ended && live.shelf === false && live.auditStatus === "approved") {
+      if (!ended && live.shelf === false) {
         issues.push({
           code: "shelf",
           severity: "hard",
-          reason: "直播已通过审核但未上架",
+          reason: "直播未上架，无法启动",
           fixLabel: "去直播编辑上架",
           fixHref: "live-edit.html?live_id=" + encodeURIComponent(live.id)
         });
@@ -1005,8 +996,8 @@
       if (global.ProtoBiz) {
         var live = api.getLive((global.ProtoBiz.getSop(id) || {}).liveId);
         if (status === "running") {
-          if (!live || live.auditStatus !== "approved" || !live.shelf) {
-            return { error: "直播未通过审核并上架，无法启动直播提醒" };
+          if (!live || !live.shelf) {
+            return { error: "直播未上架，无法启动直播提醒" };
           }
         }
         return global.ProtoBiz.setSopStatus(id, status) || { error: "未找到直播提醒配置" };
@@ -1015,8 +1006,8 @@
       if (!sop) return null;
       var live2 = api.getLive(sop.liveId);
       if (status === "running") {
-        if (!live2 || live2.auditStatus !== "approved" || !live2.shelf) {
-          return { error: "直播未通过审核并上架，无法启动直播提醒" };
+        if (!live2 || !live2.shelf) {
+          return { error: "直播未上架，无法启动直播提醒" };
         }
         sop.startedAt = new Date().toISOString().slice(0, 16).replace("T", " ");
       }

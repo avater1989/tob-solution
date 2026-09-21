@@ -1091,6 +1091,9 @@
       };
     });
     rows = collapseToVideoOther(rows);
+    if (global.ChannelStore && typeof global.ChannelStore.expandVideoL2 === "function") {
+      rows = global.ChannelStore.expandVideoL2(rows);
+    }
     return { rows: rows, overallWecom: overallWecom, overallAttend: overallAttend, overallPay: overallPay };
   }
 
@@ -1118,10 +1121,12 @@
     var q = getChannelQuality(filters);
     var lines = [];
     if (!q.rows.length) return [{ text: "当前筛选下暂无渠道质量数据。" }];
-    var multi = q.rows.length > 1;
-    var byPool = sortBy(q.rows, "pool", "desc");
-    var byPay = sortBy(q.rows.filter(function (r) { return r.payRate != null; }), "payRate", "desc");
-    var byDrop = sortBy(q.rows.filter(function (r) { return r.trendPay != null; }), "trendPay", "asc");
+    /* 结论用叶子行：二级渠道 + 其他，排除视频号汇总父行 */
+    var leaf = q.rows.filter(function (r) { return !r.isParent; });
+    var multi = leaf.length > 1;
+    var byPool = sortBy(leaf, "pool", "desc");
+    var byPay = sortBy(leaf.filter(function (r) { return r.payRate != null; }), "payRate", "desc");
+    var byDrop = sortBy(leaf.filter(function (r) { return r.trendPay != null; }), "trendPay", "asc");
     if (byPool[0]) {
       if (multi) {
         lines.push({
@@ -1158,7 +1163,7 @@
         action: { type: "select_channel", id: byDrop[0].id, label: "查看" + byDrop[0].label + "质量" }
       });
     }
-    var low = sortBy(q.rows.filter(function (r) { return r.payDiff != null; }), "payDiff", "asc")[0];
+    var low = sortBy(leaf.filter(function (r) { return r.payDiff != null; }), "payDiff", "asc")[0];
     if (low && low.payDiff < 0) {
       lines.push({
         text: low.label + "主要流失在" + low.dropLabel + "。",

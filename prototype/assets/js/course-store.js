@@ -17,9 +17,9 @@
 
   var STATUS_LABEL = {
     draft: "草稿",
-    pending_audit: "待平台审核",
+    pending_audit: "已上架", /* 最简版免审：历史待审态归一为已上架 */
     enabled: "已上架",
-    rejected: "已驳回",
+    rejected: "草稿", /* 历史驳回态归一为草稿 */
     disabled: "已下架"
   };
 
@@ -98,6 +98,9 @@
       c.goodsIds = [];
     }
     c.goodsId = c.goodsIds[0] || "";
+    /* 最简版：取消内容事前审核，历史待审/驳回态归一 */
+    if (c.status === STATUS.pending_audit) c.status = STATUS.enabled;
+    if (c.status === STATUS.rejected) c.status = STATUS.draft;
     return c;
   }
 
@@ -443,14 +446,14 @@
   function canEditOutline(course) {
     if (!course) return false;
     if (course.source === "platform" && !isOpsSide()) return false;
-    if (course.status === STATUS.enabled || course.status === STATUS.pending_audit) return false;
+    if (course.status === STATUS.enabled) return false;
     return true;
   }
 
   function canEditContent(course) {
     if (!course) return true;
     if (course.source === "platform" && !isOpsSide()) return false;
-    if (course.status === STATUS.enabled || course.status === STATUS.pending_audit) return false;
+    if (course.status === STATUS.enabled) return false;
     return true;
   }
 
@@ -459,43 +462,48 @@
   }
 
   function canSubmitAudit(course) {
-    return !!(course && course.source === "self" && chapterCount(course) > 0 &&
-      (course.status === STATUS.draft || course.status === STATUS.rejected || course.status === STATUS.disabled));
+    /* 兼容旧名：现为「可上架」条件 */
+    return !!(course && chapterCount(course) > 0 &&
+      (course.status === STATUS.draft || course.status === STATUS.disabled || course.status === STATUS.rejected));
   }
 
   function submitAudit(id) {
-    var c = get(id);
-    if (!c) return { ok: false, msg: "课程不存在" };
-    if (c.source === "platform") return { ok: false, msg: "平台内容无需提交商家审核队列" };
-    if (!chapterCount(c)) return { ok: false, msg: "请先配置至少 1 个章节再提交审核" };
-    setStatus(id, STATUS.pending_audit);
-    return { ok: true, course: get(id) };
+    /* 最简版免审：提交审核 = 直接上架 */
+    return enableDirect(id);
   }
 
   function enableDirect(id) {
     var c = get(id);
     if (!c) return { ok: false, msg: "课程不存在" };
+    if (c.source === "platform" && !isOpsSide()) {
+      return { ok: false, msg: "平台标准内容由运营下发，商家侧不可提审上架" };
+    }
     if (!chapterCount(c)) return { ok: false, msg: "请先配置至少 1 个章节再上架" };
     setStatus(id, STATUS.enabled);
     return { ok: true, course: get(id) };
   }
 
-  function approveAudit(id) {
+  function forceOffline(id) {
     var c = get(id);
-    if (!c || c.status !== STATUS.pending_audit) return { ok: false, msg: "不在待审状态" };
-    setStatus(id, STATUS.enabled);
+    if (!c) return { ok: false, msg: "课程不存在" };
+    if (c.status !== STATUS.enabled) return { ok: false, msg: "仅已上架内容可强制下架" };
+    setStatus(id, STATUS.disabled);
     return { ok: true, course: get(id) };
+  }
+
+  function approveAudit(id) {
+    return enableDirect(id);
   }
 
   function rejectAudit(id, reason) {
     var c = get(id);
-    if (!c || c.status !== STATUS.pending_audit) return { ok: false, msg: "不在待审状态" };
-    setStatus(id, STATUS.rejected, { reason: reason || "" });
+    if (!c) return { ok: false, msg: "课程不存在" };
+    setStatus(id, STATUS.draft, { reason: reason || "" });
     return { ok: true, course: get(id) };
   }
 
   function listPendingAudit() {
-    return list({ status: STATUS.pending_audit });
+    return []; /* 最简版无待审队列 */
   }
 
   function setGoodsId(id, goodsId) {
@@ -542,6 +550,7 @@
     canSubmitAudit: canSubmitAudit,
     submitAudit: submitAudit,
     enableDirect: enableDirect,
+    forceOffline: forceOffline,
     approveAudit: approveAudit,
     rejectAudit: rejectAudit,
     listPendingAudit: listPendingAudit,

@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8" />
@@ -15,7 +15,7 @@
 <div id="page-content" style="display:none">
 
   <div class="board-tip">
-    <b>获客专题：</b>回答「从哪来」与「质量如何」。渠道仅区分视频号与其他；「视频号获客首单」为前端辅指标，不进后链路。
+    <b>获客专题：</b>回答「从哪来」与「质量如何」。一级渠道为视频号 / 其他；「视频号」下的二级渠道来自 SCRM「渠道管理」中的视频号商品映射。「视频号获客首单」为前端辅指标，不进后链路。
     <span class="muted">暂无投放成本，不展示 CAC / ROI。</span>
     <span class="muted" id="scope-help-brief"></span>
   </div>
@@ -59,7 +59,7 @@
   <div class="card" style="margin-bottom:16px">
     <div class="card-hd">
       <h2>渠道质量分析</h2>
-      <span class="muted" style="font-size:12px;font-weight:400">仅展示视频号 / 其他 · 成本数据：暂无</span>
+      <span class="muted" style="font-size:12px;font-weight:400">一级：视频号 / 其他 · 二级：渠道管理映射 · 成本数据：暂无</span>
     </div>
     <div class="card-bd">
       <div class="board-sort-bar">
@@ -89,12 +89,13 @@
 <script src="../assets/js/proto.js"></script>
 <script src="../assets/js/board-data.js?v=11"></script>
 <script src="../assets/js/term-store.js?v=1"></script>
+<script src="../assets/js/channel-store.js?v=2"></script>
 <script src="../assets/js/board-metrics.js?v=17"></script>
-<script src="../assets/js/board-insights.js?v=11"></script>
+<script src="../assets/js/board-insights.js?v=12"></script>
 <script src="../assets/js/board-term.js?v=1"></script>
 <script src="../assets/js/board-dictionary.js?v=4"></script>
 <script src="../assets/js/board-tools.js?v=6"></script>
-<script src="../assets/js/admin-shell.js?v=16"></script>
+<script src="../assets/js/admin-shell.js?v=28"></script>
 <script>
 (function () {
   BoardMetrics.ensureCaliberUI();
@@ -107,7 +108,29 @@
 
   function qualityRows(filters) {
     var q = BoardInsights.getChannelQuality(filters);
-    return BoardInsights.sortBy(q.rows, state.sort, "desc");
+    var parents = (q.rows || []).filter(function (r) { return r.isParent; });
+    var children = BoardInsights.sortBy(
+      (q.rows || []).filter(function (r) { return r.isChild; }),
+      state.sort,
+      "desc"
+    );
+    var others = BoardInsights.sortBy(
+      (q.rows || []).filter(function (r) { return !r.isParent && !r.isChild; }),
+      state.sort,
+      "desc"
+    );
+    return parents.concat(children).concat(others);
+  }
+
+  function channelCell(r) {
+    if (r.isChild) {
+      return '<span class="muted" style="margin-right:4px">└</span>' + r.label +
+        '<div class="muted" style="font-size:11px;padding-left:14px">视频号 · 二级</div>';
+    }
+    if (r.isParent) {
+      return "<b>" + r.label + '</b> <span class="badge" style="font-size:11px;font-weight:400">一级汇总</span>';
+    }
+    return "<b>" + r.label + "</b>";
   }
 
   function renderQuality(filters) {
@@ -119,7 +142,8 @@
     }
     tbody.innerHTML = rows.map(function (r) {
       var gmv = r.gmv == null ? "—" : BoardMetrics.money(r.gmv);
-      return "<tr><td><b>" + r.label + "</b></td><td>" +
+      var rowStyle = r.isChild ? ' style="background:#fafbfc"' : "";
+      return "<tr" + rowStyle + "><td>" + channelCell(r) + "</td><td>" +
         BoardMetrics.fmt(r.pool) + "</td><td>" + (r.validRate != null ? r.validRate + "%" : "—") + "</td><td>" +
         BoardMetrics.fmt(r.wecom) + " / " + (r.wecomRate != null ? r.wecomRate + "%" : "—") + "</td><td>" +
         BoardMetrics.fmt(r.attend) + " / " + (r.attendRate != null ? r.attendRate + "%" : "—") + "</td><td>" +
@@ -142,11 +166,9 @@
     }
 
     var pool = d.poolLeads || 0;
-    var rows = BoardInsights.sortBy(
-      BoardInsights.getChannelQuality(Object.assign({}, filters, { channel: "" })).rows,
-      "pool",
-      "desc"
-    );
+    var allRows = BoardInsights.getChannelQuality(Object.assign({}, filters, { channel: "" })).rows || [];
+    var leaf = allRows.filter(function (r) { return !r.isParent; });
+    var rows = BoardInsights.sortBy(leaf, "pool", "desc");
     if (!rows.length || !pool) {
       document.getElementById("top-channel").textContent = "—";
     } else {
@@ -187,10 +209,11 @@
       return {
         name: "渠道质量分析",
         filename: BoardMetrics.exportFileName("渠道质量分析"),
-        headers: ["渠道", "入池", "有效率", "加微人数", "加微率", "到场人数", "到场率", "支付人数", "支付率", "归因GMV"],
+        headers: ["渠道", "层级", "入池", "有效率", "加微人数", "加微率", "到场人数", "到场率", "支付人数", "支付率", "归因GMV"],
         rows: rows.map(function (r) {
+          var level = r.isParent ? "一级汇总" : (r.isChild ? "二级" : "一级");
           return [
-            r.label, r.pool, r.validRate != null ? r.validRate : "—",
+            r.label, level, r.pool, r.validRate != null ? r.validRate : "—",
             r.wecom, r.wecomRate != null ? r.wecomRate : "—",
             r.attend, r.attendRate != null ? r.attendRate : "—",
             r.pay, r.payRate != null ? r.payRate : "—",

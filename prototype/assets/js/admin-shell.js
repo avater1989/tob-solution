@@ -64,6 +64,14 @@
         ],
       },
       {
+        group: "业务设置",
+        links: [
+          { id: "term-mgmt", href: "term-mgmt.html", label: "期次管理" },
+          { id: "channel-mgmt", href: "channel-mgmt.html", label: "渠道管理" },
+          { id: "sidebar-mgmt", href: "sidebar-mgmt.html", label: "侧边栏管理" },
+        ],
+      },
+      {
         group: "客户中心",
         links: [
           { id: "leads", href: "leads.html", label: "线索池" },
@@ -76,8 +84,6 @@
           { id: "leads-dup", href: "leads-dup.html", label: "重复线索" },
           { id: "users", href: "users.html", label: "用户列表" },
           { id: "user-tags", href: "user-tags.html", label: "标签管理" },
-          { id: "user-segments", href: "user-segments.html", label: "用户分群（二期）" },
-          { id: "ops-plans", href: "ops-plans.html", label: "定向运营计划（二期）" },
         ],
       },
       {
@@ -105,13 +111,6 @@
           { id: "quick-form", href: "quick-form.html", label: "自定义表单" },
         ],
       },
-      {
-        group: "业务设置",
-        links: [
-          { id: "term-mgmt", href: "term-mgmt.html", label: "期次管理" },
-          { id: "sidebar-mgmt", href: "sidebar-mgmt.html", label: "侧边栏管理" },
-        ],
-      },
     ],
     live: [
       {
@@ -132,24 +131,6 @@
           { id: "content-article", href: "content-article.html", label: "文章" },
           { id: "content-tags", href: "content-tags.html", label: "内容标签" },
           { id: "content-teachers", href: "content-teachers.html", label: "讲师管理" },
-        ],
-      },
-      {
-        group: "测评中心",
-        links: [
-          { id: "assess-projects", href: "assess-projects.html", label: "测评" },
-          { id: "assess-series", href: "assess-series.html", label: "测评包" },
-          { id: "assess-questions", href: "assess-questions.html", label: "题库" },
-          { id: "assess-results", href: "assess-results.html", label: "测评报告" },
-          { id: "assess-report-templates", href: "assess-report-templates.html", label: "报告模板" },
-        ],
-      },
-      {
-        group: "学习服务",
-        links: [
-          { id: "agents", href: "agents.html", label: "智能体" },
-          { id: "content-tasks", href: "content-tasks.html", label: "任务" },
-          { id: "assess-plans", href: "assess-plans.html", label: "定制化计划" },
         ],
       },
     ],
@@ -201,13 +182,9 @@
         ],
       },
       {
-        group: "资产管理",
+        group: "资金流水",
         links: [
-          { id: "assets", href: "assets.html", label: "资产总览" },
           { id: "bills", href: "bills.html", label: "支付流水" },
-          { id: "recon", href: "recon.html", label: "对账管理", badge: 2 },
-          { id: "settlement", href: "settlement.html", label: "结算单", badge: 2 },
-          { id: "withdraw", href: "withdraw.html", label: "提现管理" },
         ],
       },
       {
@@ -243,14 +220,14 @@
     ],
     data: [
       {
-        group: "数据分析",
+        group: "数据",
         links: [
-          { id: "board-overview", href: "board-overview.html", label: "经营总览" },
+          { id: "board-overview", href: "board-overview.html", label: "总览" },
+          { id: "board-t", href: "board-term-review.html", label: "期次经营复盘" },
           { id: "board-a", href: "board-acquire.html", label: "获客与转化" },
           { id: "board-content", href: "board-live.html", label: "内容经营" },
           { id: "board-c", href: "board-convert.html", label: "商品与交易" },
           { id: "board-p", href: "board-private.html", label: "客户经营" },
-          { id: "board-t", href: "board-term-review.html", label: "期次复盘" },
         ],
       },
     ],
@@ -259,7 +236,7 @@
   var assistCopy = {
     workbench:
       "<div class='assist-block'><h3>快速上手</h3><ol>" +
-      "<li>创建并上架线上课</li><li>创建直播并提交审核</li>" +
+      "<li>创建并上架线上课</li><li>创建直播并上架开播</li>" +
       "<li>关联视频号商品</li><li>配置期次与促到</li></ol></div>" +
       "<div class='assist-block'><h3>评审路径</h3><ul>" +
       "<li><a href='content-video.html'>① 内容售卖</a></li>" +
@@ -268,8 +245,8 @@
       "<li><a href='leads.html'>④ 私域运营</a></li></ul></div>",
     scrm:
       "<div class='assist-block'><h3>现网对齐</h3><ol>" +
-      "<li>客户中心 / 营销管理 / 内容中心</li>" +
-      "<li>业务设置</li>" +
+      "<li>全域获客 / 业务设置 / 客户中心</li>" +
+      "<li>营销管理 / 内容中心</li>" +
       "<li>页面归属与字段对照真路径</li></ol></div>" +
       "<div class='assist-block'><h3>用户资料</h3><ul>" +
       "<li>MVP 支持手动打标与标签管理</li>" +
@@ -280,18 +257,16 @@
       "<li><a href='follow-ups.html'>跟进管理</a></li>" +
       "<li><a href='users.html'>用户列表</a></li>" +
       "<li><a href='user-tags.html'>标签管理</a></li>" +
-      "<li><a href='user-segments.html'>用户分群</a></li>" +
       "<li><a href='quick-tasks.html'>快捷任务</a></li></ul></div>",
     live:
       "<div class='assist-block'><h3>直播提示</h3><ul>" +
       "<li>直播可作为独立商品售卖</li>" +
-      "<li>多商户场景需审核与录像留痕</li>" +
+      "<li>最简版免事前审核，违规由运营强制下架</li>" +
       "<li>MVP 为小程序直播方案</li></ul></div>",
     content:
       "<div class='assist-block'><h3>内容闭环</h3><ul>" +
       "<li>内容资产 → 商品化 → 销售 → 履约</li>" +
-      "<li>测评 → 任务规则 → 任务 → 定制化计划</li>" +
-      "<li>智能体不可单独售卖，仅以任务编入定制化计划</li>" +
+      "<li>线上课 / 线下课 / 文章统一在内容资产维护</li>" +
       "<li>C 端首页露出在「交易 · 店铺运营 · 首页装修」配置</li></ul></div>",
     mp:
       "<div class='assist-block'><h3>店铺运营提示</h3><ul>" +
@@ -300,8 +275,8 @@
     trade:
       "<div class='assist-block'><h3>交易提示</h3><ul>" +
       "<li>支付成功开通权益，退款成功回收权益</li>" +
-      "<li>资金：备付金分账示意（服务费 1% + 商户 99%）</li>" +
-      "<li>T+1 自动对账，差异处理后才可结算</li></ul></div>" +
+      "<li>一期仅服务费口径：商家自建商品收服务费，资金流水可查</li>" +
+      "<li>对账 / 结算 / 提现为一期不做，出金走线下或二期开放</li></ul></div>" +
       "<div class='assist-block'><h3>店铺运营</h3><ul>" +
       "<li><a href='mp-home.html'>首页装修</a>（Banner / 直播 / 线上课 / 线下课 / 精选文章）</li>" +
       "<li><a href='mp-settings.html'>店铺设置</a></li></ul></div>" +
@@ -309,7 +284,7 @@
       "<li><a href='orders.html'>① 订单列表</a></li>" +
       "<li><a href='goods.html'>② 商品管理</a></li>" +
       "<li><a href='aftersales.html'>③ 售后维权</a></li>" +
-      "<li><a href='assets.html'>④ 资产管理</a></li>" +
+      "<li><a href='bills.html'>④ 支付流水</a></li>" +
       "<li><a href='trade-settings.html'>⑤ 交易设置</a></li></ul></div>",
     data:
       "<div class='assist-block'><h3>数据口径</h3><ul>" +

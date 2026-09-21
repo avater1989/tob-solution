@@ -34,25 +34,21 @@
   var showNotice = document.body.getAttribute("data-notice") !== "0";
 
   // 兼容旧页 data-module
-  if (moduleId === "audit") moduleId = "content";
-  // 「租户管理 / 商家」板块归入「系统管理」（页面未改动，此处做归属映射）
-  if (moduleId === "tenant" || moduleId === "merchant") moduleId = "sys";
+  if (moduleId === "audit" || moduleId === "content") moduleId = "workbench";
+  if (moduleId === "merchant") moduleId = "tenant";
   // 全局订单曾挂在数据下
   if (moduleId === "data" && active === "orders") moduleId = "biz";
   // 历史交易页用 trade 模块名 → 现归 biz；财务页仍用 trade
-  if (moduleId === "trade" && /^(trade-orders|entitlement|platform-goods|goods-edit|aftersales|orders)$/.test(active)) {
+  if (moduleId === "trade" && /^(trade-orders|entitlement|aftersales|orders)$/.test(active)) {
     moduleId = "biz";
-  }
-  // 内容审核页导航高亮
-  if (moduleId === "content" && /^content-/.test(active)) {
-    /* keep content; platform-content highlight via crumb pages */
   }
 
   var modules = [
     { id: "workbench", label: "工作台", href: "dashboard.html" },
-    { id: "content", label: "内容与审核", href: "content-video.html" },
+    { id: "tenant", label: "租户管理", href: "tenants.html" },
     { id: "biz", label: "交易", href: "trade-orders.html" },
-    { id: "trade", label: "财务", href: "settlements.html" },
+    { id: "trade", label: "财务", href: "pay-flows.html" },
+    { id: "users", label: "用户", href: "platform-users.html" },
     { id: "data", label: "数据", href: "data.html" },
     { id: "sys", label: "系统管理", href: "sys-users.html" },
   ];
@@ -68,72 +64,37 @@
         ],
       },
     ],
-    content: [
+    tenant: [
       {
-        group: "内容资产",
+        group: "租户管理",
         links: [
-          { id: "content-video", href: "content-video.html", label: "线上课" },
-          { id: "content-offline", href: "content-offline.html", label: "线下课" },
-          { id: "content-article", href: "content-article.html", label: "文章" },
-          { id: "content-tags", href: "content-tags.html", label: "内容标签" },
-          { id: "content-teachers", href: "content-teachers.html", label: "讲师管理" },
+          { id: "tenants", href: "tenants.html", label: "租户列表" },
         ],
       },
       {
-        group: "测评中心",
+        group: "应用管理",
         links: [
-          { id: "assess-projects", href: "assess-projects.html", label: "测评" },
-          { id: "assess-series", href: "assess-series.html", label: "测评包" },
-          { id: "assess-questions", href: "assess-questions.html", label: "题库" },
-          { id: "assess-results", href: "assess-results.html", label: "测评报告" },
-          { id: "assess-report-templates", href: "assess-report-templates.html", label: "报告模板" },
+          { id: "apps", href: "apps.html", label: "应用管理" },
         ],
       },
       {
-        group: "学习服务",
+        group: "套餐管理",
         links: [
-          { id: "agents", href: "agents.html", label: "智能体" },
-          { id: "content-tasks", href: "content-tasks.html", label: "任务" },
-          { id: "assess-plans", href: "assess-plans.html", label: "定制化计划" },
-        ],
-      },
-      {
-        group: "审核",
-        links: [
-          { id: "audit", href: "audit.html", label: "内容审核", badge: 0 },
-          { id: "audit-live", href: "audit.html?type=live", label: "直播审核" },
-          { id: "audit-goods", href: "audit.html?type=goods", label: "商品审核" },
-          { id: "audit-appeal", href: "audit.html?tab=appeal", label: "申诉处理" },
+          { id: "plans", href: "plans.html", label: "套餐管理" },
         ],
       },
     ],
     trade: [
       {
-        group: "收款与进件",
+        group: "进件",
         links: [
-          { id: "pay-channels", href: "pay-channels.html", label: "收款与清分" },
           { id: "onboard-audit", href: "onboard-audit.html", label: "进件审核", badge: 3 },
         ],
       },
       {
-        group: "资金",
+        group: "资金流水",
         links: [
-          { id: "recon", href: "recon.html", label: "对账管理", badge: 3 },
-          { id: "settlements", href: "settlements.html", label: "结算管理", badge: 5 },
-          { id: "payouts", href: "payouts.html", label: "提现审核", badge: 2 },
-        ],
-      },
-      {
-        group: "财务",
-        links: [
-          { id: "fee-ledger", href: "fee-ledger.html", label: "服务费台账" },
           { id: "pay-flows", href: "pay-flows.html", label: "支付流水" },
-        ],
-      },
-      {
-        group: "风控与规则",
-        links: [
-          { id: "settle-rules", href: "settle-rules.html", label: "结算规则配置" },
         ],
       },
     ],
@@ -146,16 +107,17 @@
         ],
       },
       {
-        group: "商品管理",
-        links: [
-          { id: "platform-goods", href: "platform-goods.html", label: "平台商品" },
-          { id: "goods-edit", href: "goods-edit.html", label: "新建商品" },
-        ],
-      },
-      {
         group: "售后管理",
         links: [
           { id: "aftersales", href: "aftersales.html", label: "退款与权益回收", badge: 4 },
+        ],
+      },
+    ],
+    users: [
+      {
+        group: "用户",
+        links: [
+          { id: "platform-users", href: "platform-users.html", label: "用户列表" },
         ],
       },
     ],
@@ -187,50 +149,33 @@
           { id: "channel-mgmt", href: "channel-mgmt.html", label: "渠道管理" },
         ],
       },
-      {
-        group: "租户管理",
-        links: [
-          { id: "tenants", href: "tenants.html", label: "租户列表" },
-        ],
-      },
-      {
-        group: "应用管理",
-        links: [
-          { id: "apps", href: "apps.html", label: "应用管理" },
-        ],
-      },
-      {
-        group: "套餐管理",
-        links: [
-          { id: "plans", href: "plans.html", label: "套餐管理" },
-        ],
-      },
     ],
   };
 
   var assistCopy = {
     workbench:
       "<div class='assist-block'><h3>运营职责</h3><ol>" +
-      "<li>审核商家入驻开通申请</li><li>审核商家发布到 C 端的内容</li>" +
-      "<li>全局查看各租户经营数据</li><li>处理结算与风控异常</li></ol></div>",
-    content:
-      "<div class='assist-block'><h3>内容与审核</h3><ul>" +
-      "<li>平台内容管理与商家端对齐：内容资产 / 测评中心 / 学习服务</li>" +
-      "<li>审核：内容 / 直播 / 商品 + 申诉（待审→通过，或待审→驳回→重提）</li></ul></div>",
+      "<li>审核商家入驻开通申请</li>" +
+      "<li>进件与收款开通</li>" +
+      "<li>一期不对账结算提现，资金异常走线下</li></ol></div>",
+    tenant:
+      "<div class='assist-block'><h3>租户管理</h3><ul>" +
+      "<li>开通 / 停用租户，配置应用与套餐</li>" +
+      "<li>租户用户为商家后台登录账号（B 端员工）</li>" +
+      "<li>C 端学员跨租户聚合见顶栏「用户」模块</li></ul></div>",
     trade:
-      "<div class='assist-block'><h3>资金闭环</h3><ol>" +
-      "<li>结算规则：费率 / 账期 / 门槛，按租户合同覆盖</li>" +
-      "<li>对账：T+1 与渠道账单逐笔核对，差异进工单</li>" +
-      "<li>结算：对账对平 → 商家确认 → 财务复核 → 打款</li>" +
-      "<li>提现：额度 / 风控 / 留存审核后打款</li></ol></div>" +
-      "<div class='assist-block'><h3>注意事项</h3><ul>" +
-      "<li>服务费口径 1% 与 10% 待统一（见详细设计）</li>" +
-      "<li>打款为敏感操作，需双人复核并留痕</li>" +
-      "<li>风控预警统一汇入运营工作台待办</li></ul></div>",
+      "<div class='assist-block'><h3>一期财务边界</h3><ul>" +
+      "<li>保留：进件审核、支付流水</li>" +
+      "<li>暂不做：收款与清分、对账、结算单、提现审核、服务费台账、结算规则</li>" +
+      "<li>出金与稽核一期走线下；系统内仅流水可查</li></ul></div>",
     biz:
       "<div class='assist-block'><h3>交易提示</h3><ul>" +
       "<li>支付成功开通权益，退款成功回收权益</li>" +
       "<li>平台侧查看全局订单与商品</li></ul></div>",
+    users:
+      "<div class='assist-block'><h3>用户聚合</h3><ul>" +
+      "<li>跨租户 C 端学员聚合，主键：手机号 / UnionID</li>" +
+      "<li>一期只读核查；租户员工账号在「租户管理 → 租户配置 · 租户用户」</li></ul></div>",
     data:
       "<div class='assist-block'><h3>数据口径</h3><ul>" +
       "<li>只做分析，不含订单/售后等业务管理页</li></ul></div>",
@@ -253,22 +198,12 @@
 
   function sideHtml() {
     var groups = sidebars[moduleId] || [];
-    var pendingPlatform = 0;
-    try {
-      if (window.ProtoBiz) {
-        pendingPlatform = ProtoBiz.getLives().filter(function (l) {
-          return l.auditStatus === "pending_platform_review";
-        }).length;
-      }
-    } catch (e) {}
     var html = '<div class="sidebar-module-label">当前模块</div>';
     groups.forEach(function (g) {
       html += '<div class="nav-group"><div class="nav-label">' + g.group + "</div>";
       g.links.forEach(function (l) {
         var cls = "nav-item" + (l.id === active ? " active" : "");
-        var badgeVal = l.badge;
-        if (l.id === "audit") badgeVal = pendingPlatform || 0;
-        var badge = badgeVal ? '<span class="nav-badge">' + badgeVal + '</span>' : '';
+        var badge = l.badge ? '<span class="nav-badge">' + l.badge + '</span>' : '';
         html += '<a class="' + cls + '" href="' + l.href + '">' + l.label + badge + "</a>";
       });
       html += "</div>";
@@ -280,10 +215,10 @@
     '<div class="review-bar">' +
     "<strong>评审路径</strong>" +
     '<a href="tenants.html">①租户开通</a><span class="sep">·</span>' +
-    '<a href="content-video.html">②平台内容</a><span class="sep">·</span>' +
-    '<a href="audit.html">③内容审核</a><span class="sep">·</span>' +
-    '<a href="settlements.html">④对账结算</a><span class="sep">·</span>' +
-    '<a href="orders.html">⑤全局订单</a><span class="sep">·</span>' +
+    '<a href="onboard-audit.html">②进件审核</a><span class="sep">·</span>' +
+    '<a href="pay-flows.html">③支付流水</a><span class="sep">·</span>' +
+    '<a href="platform-users.html">④用户聚合</a><span class="sep">·</span>' +
+    '<a href="trade-orders.html">⑤全局订单</a><span class="sep">·</span>' +
     '<a href="data.html">⑥数据</a><span class="sep">|</span>' +
     '<a href="../admin/dashboard.html">切商家后台</a><span class="sep">·</span>' +
     '<a href="../miniprogram/home.html">切 C 端</a><span class="sep">·</span>' +
@@ -292,7 +227,7 @@
 
   var notice = showNotice
     ? '<div class="notice-bar" id="notice-bar">' +
-      "<span>运营后台 · 内容与审核 / 交易 / 财务 / 数据 / 系统管理（含租户管理）</span>" +
+      "<span>运营后台 · 工作台 / 租户管理 / 交易 / 财务 / 用户 / 数据 / 系统管理</span>" +
       '<button type="button" class="close-notice" id="close-notice" aria-label="关闭">×</button>' +
       "</div>"
     : "";

@@ -88,7 +88,7 @@
 
   var CREATE_ITEMS = {
     series: { tag: "创建", title: "新建线上课", desc: "创建线上课并配置章节后进入上架流程", href: "content-video-edit.html" },
-    live: { tag: "创建", title: "新建直播", desc: "创建场次并保存草稿，列表提交平台审核", href: "live-edit.html" },
+    live: { tag: "创建", title: "新建直播", desc: "创建场次并保存草稿，完善后上架开播", href: "live-edit.html" },
     urge: { tag: "配置", title: "配置直播预约提醒", desc: "在直播促到中配置开播前提醒与直播中应到未到召回", href: "live-booking.html" },
     lead: { tag: "创建", title: "新建线索", desc: "手工录入或导入线索", href: "leads.html?action=create&from=dashboard" }
   };

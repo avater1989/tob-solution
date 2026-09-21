@@ -260,13 +260,27 @@
     /* enrich base lives with config fields */
     data.lives.forEach(function (l) {
       if (!l.courseName) {
-        if (l.id === "L001") { l.courseName = "春启 03 期家长必修课"; l.termId = "spring03"; l.termName = "春启 03 期"; }
-        if (l.id === "L002") { l.courseName = "春启 03 期家长必修课"; l.termId = "spring03"; l.termName = "春启 03 期"; }
-        if (l.id === "L003") { l.courseName = "春启 04 期家长必修课"; l.termId = "spring04"; l.termName = "春启 04 期"; }
+        if (l.id === "L001") { l.courseName = "春启 03 期家长必修课"; }
+        if (l.id === "L002") { l.courseName = "春启 03 期家长必修课"; }
+        if (l.id === "L003") { l.courseName = "春启 04 期家长必修课"; }
         changed = true;
       }
+      if (!l.termId) {
+        if (l.id === "L001" || l.id === "L002") {
+          l.termId = "spring03";
+          l.termName = "春启 03 期";
+          changed = true;
+        } else if (l.id === "L003") {
+          l.termId = "spring04";
+          l.termName = "春启 04 期";
+          changed = true;
+        }
+      } else if (!l.termName) {
+        if (l.termId === "spring03") { l.termName = "春启 03 期"; changed = true; }
+        else if (l.termId === "spring04") { l.termName = "春启 04 期"; changed = true; }
+        else if (l.termId === "trial") { l.termName = "试听公开课"; changed = true; }
+      }
       if (!l.liveMode) { l.liveMode = "视频直播"; changed = true; }
-      if (!l.roomType) { l.roomType = "传统直播间"; changed = true; }
       if (!l.teacher) { l.teacher = l.id === "L002" ? "赵老师" : "阮荣均"; changed = true; }
       if (!l.creator) { l.creator = l.teacher; changed = true; }
       if (!l.owner) { l.owner = l.creator; changed = true; }
@@ -371,17 +385,13 @@
   }
 
   function scenarioKey(v) {
-    var p = v.platformReviewStatus;
     var s = v.shelfStatus;
     var r = v.runtimeStatus;
+    /* 最简版免审：场景只看执行态 × 上架 */
     if (r === "cancelled") return "cancelled";
     if (r === "ended") return "ended";
     if (r === "living") return "living";
-    if (p === "pending") return "platform_pending";
-    if (p === "rejected") return "platform_rejected";
-    if (p === "passed" && s !== "published") return "ready_shelf";
-    if (p === "passed" && s === "published" && r === "not_started") return "upcoming";
-    /* not_submitted / withdrawn → draft */
+    if (s === "published") return "upcoming";
     return "draft";
   }
 
@@ -403,26 +413,10 @@
       draft: {
         primary: { label: "继续编辑", href: edit },
         secondary: [
-          { label: "提交平台审核", action: "submit_platform" },
+          { label: "上架", action: "publish" },
           { label: "查看详情", href: detail },
           { label: "复制", action: "copy" },
           { label: "删除", action: "delete" }
-        ]
-      },
-      platform_pending: {
-        primary: { label: "查看审核状态", href: progress },
-        secondary: [
-          { label: "撤回并编辑", action: "withdraw_edit" },
-          { label: "查看详情", href: detail },
-          { label: "复制", action: "copy" }
-        ]
-      },
-      platform_rejected: {
-        primary: { label: "修改并重新提交", href: editRejected },
-        secondary: [
-          { label: "查看驳回原因", href: progress },
-          { label: "查看详情", href: detail },
-          { label: "复制直播", action: "copy" }
         ]
       },
       ready_shelf: {
@@ -443,7 +437,8 @@
           { label: "进入中控台", href: control },
           { label: "直播大屏", href: screen },
           { label: "编辑", href: edit },
-          { label: "取消上架", action: "unpublish" }
+          { label: "取消上架", action: "unpublish" },
+          { label: "强制下架", action: "force_offline" }
         ]
       },
       living: {
@@ -580,10 +575,10 @@
     }
 
     if (runtime === "living" || runtime === "ended") {
-      addBlock("runtime", "直播中或已结束的场次不可提交平台审核", "runtime");
+      addBlock("runtime", "直播中或已结束的场次不可上架变更", "runtime");
     }
     if (platform === "pending") {
-      addBlock("pending", "已在平台审核中，请勿重复提交", "platform");
+      /* 免审后不再阻断；兼容旧数据忽略 */
     }
     if (!String(name).trim()) addBlock("name", "直播名称已填写", "name", "live-edit.html?live_id=" + (live && live.liveId) + "#sec-basic");
     if (!String(liveMode).trim()) addBlock("mode", "直播模式已选择", "mode", "live-edit.html?live_id=" + (live && live.liveId) + "#sec-basic");
@@ -832,24 +827,20 @@
   }
 
   function submitPlatform(liveId) {
-    return patchLive(liveId, {
-      platformReviewStatus: "pending",
-      submittedPlatformAt: (PB() && PB().DEMO_NOW) || "",
-      rejectReason: "",
-      nextActionHint: "等待平台审核"
-    });
+    /* 最简版免审：原「提交平台审核」改为直接上架 */
+    return publish(liveId);
   }
 
   function withdrawPlatform(liveId) {
     return patchLive(liveId, {
-      platformReviewStatus: "withdrawn",
-      nextActionHint: "完善后可重新提交平台审核"
+      platformReviewStatus: "not_submitted",
+      shelfStatus: "unpublished",
+      nextActionHint: "完善后可重新上架"
     });
   }
 
   function withdrawAndEdit(liveId) {
     withdrawPlatform(liveId);
-    patchLive(liveId, { platformReviewStatus: "not_submitted" });
     return getLive(liveId);
   }
 
@@ -858,12 +849,13 @@
       platformReviewStatus: "not_submitted",
       shelfStatus: "unpublished",
       runtimeStatus: "not_started",
-      nextActionHint: "完善后，在列表或编辑页提交平台审核"
+      nextActionHint: "完善后，在列表或编辑页上架"
     });
   }
 
   function publish(liveId) {
     return patchLive(liveId, {
+      platformReviewStatus: "passed",
       shelfStatus: "published",
       runtimeStatus: "not_started",
       shelvedAt: (PB() && PB().DEMO_NOW) || "",
@@ -895,7 +887,8 @@
       liveMode: src.liveMode || "视频直播",
       courseName: src.courseName || "",
       catalogJoin: src.catalogJoin != null ? !!src.catalogJoin : !!(src.courseName),
-      roomType: src.roomType || "传统直播间",
+      termId: src.termId || "",
+      termName: src.termName || "",
       teacher: src.teacher || "阮荣均",
       assistants: (src.assistants || []).slice(),
       description: src.description || "",
@@ -967,7 +960,8 @@
       merchantId: "M001",
       merchantName: "星启家庭教育",
       liveMode: "视频直播",
-      roomType: "传统直播间",
+      termId: "",
+      termName: "",
       creator: "阮荣均",
       owner: "阮荣均",
       teacher: "阮荣均",
@@ -1306,23 +1300,13 @@
 
   function blockReason(live, action) {
     if (!live) return "未找到对应直播。";
-    var p = live.platformReviewStatus;
     var s = live.shelfStatus;
     var r = live.runtimeStatus;
     if (r === "cancelled") return "本场直播已取消。";
     if (r === "ended") return "本场直播已结束。";
     if (action === "start" || action === "control" || action === "screen") {
-      if (p === "not_submitted" || p === "withdrawn") {
-        return "当前直播尚未提交平台审核，暂不可进入中控台。";
-      }
-      if (p === "pending") {
-        return "平台审核中，审核通过并上架后才能进入开播准备。";
-      }
-      if (p === "rejected") {
-        return "当前直播审核未通过，请修改并重新提交。";
-      }
       if (s !== "published") {
-        return "当前直播尚未上架，审核通过并上架后才能进入开播准备。";
+        return "当前直播尚未上架，上架后方可进入开播准备。";
       }
     }
     return "当前状态不支持该操作。";
@@ -1385,36 +1369,16 @@
     if (live.runtimeStatus === "living") {
       return { ok: true, mode: "living" };
     }
-    if (live.platformReviewStatus === "pending") {
-      return {
-        ok: false,
-        mode: "pending",
-        reason: "平台审核中，审核通过并上架后才能进入开播准备。",
-        actions: gateActionsFor(live, "pending")
-      };
+    if (live.shelfStatus === "published" && live.runtimeStatus === "not_started") {
+      return { ok: true, mode: "ready" };
     }
-    if (live.platformReviewStatus === "rejected") {
-      return {
-        ok: false,
-        mode: "rejected",
-        reason: "当前直播审核未通过，请修改并重新提交。",
-        actions: gateActionsFor(live, "rejected")
-      };
-    }
-    if (live.platformReviewStatus === "not_submitted" || live.platformReviewStatus === "withdrawn") {
+    if (live.shelfStatus !== "published") {
       return {
         ok: false,
         mode: "draft",
-        reason: "当前直播尚未提交平台审核，暂不可进入中控台。",
+        reason: "当前直播尚未上架，上架后方可进入中控台。",
         actions: gateActionsFor(live, "draft")
       };
-    }
-    if (
-      live.platformReviewStatus === "passed" &&
-      live.shelfStatus === "published" &&
-      live.runtimeStatus === "not_started"
-    ) {
-      return { ok: true, mode: "ready" };
     }
     return {
       ok: false,
@@ -1447,40 +1411,20 @@
     if (live.runtimeStatus === "living") {
       return { ok: true, mode: "living" };
     }
-    if (live.platformReviewStatus === "pending") {
-      return {
-        ok: false,
-        mode: "pending",
-        reason: "平台审核中，审核通过并上架后才能进入开播准备。",
-        actions: gateActionsFor(live, "pending")
-      };
-    }
-    if (live.platformReviewStatus === "rejected") {
-      return {
-        ok: false,
-        mode: "rejected",
-        reason: "当前直播审核未通过，请修改并重新提交。",
-        actions: gateActionsFor(live, "rejected")
-      };
-    }
-    if (live.platformReviewStatus === "not_submitted" || live.platformReviewStatus === "withdrawn") {
-      return {
-        ok: false,
-        mode: "draft",
-        reason: "当前直播尚未提交平台审核，暂不可进入直播大屏。",
-        actions: gateActionsFor(live, "draft")
-      };
-    }
-    if (
-      live.platformReviewStatus === "passed" &&
-      live.shelfStatus === "published" &&
-      live.runtimeStatus === "not_started"
-    ) {
+    if (live.shelfStatus === "published" && live.runtimeStatus === "not_started") {
       return {
         ok: true,
         mode: "standby",
         reason: "预览模式 · 直播尚未开始",
         actions: gateActionsFor(live, "standby")
+      };
+    }
+    if (live.shelfStatus !== "published") {
+      return {
+        ok: false,
+        mode: "draft",
+        reason: "当前直播尚未上架，上架后方可进入直播大屏。",
+        actions: gateActionsFor(live, "draft")
       };
     }
     return {
@@ -1532,11 +1476,7 @@
 
   function canStartLive(live) {
     if (!live) return { ok: false, reason: "未找到对应直播。" };
-    if (
-      live.platformReviewStatus === "passed" &&
-      live.shelfStatus === "published" &&
-      live.runtimeStatus === "not_started"
-    ) {
+    if (live.shelfStatus === "published" && live.runtimeStatus === "not_started") {
       return { ok: true };
     }
     if (live.runtimeStatus === "living") return { ok: false, reason: "当前已在直播中。" };

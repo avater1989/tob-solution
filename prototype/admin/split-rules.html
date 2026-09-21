@@ -14,7 +14,7 @@
 <div id="page-content" style="display:none">
 
   <div class="alert alert-warning" style="margin-bottom:12px;padding:10px 12px;border-radius:8px;background:#fff7e6;border:1px solid #ffd591;color:#d48806;font-size:13px">
-    <b>本页已下架</b>：分账规则属平台级配置，已迁移至 <b>运营后台 → 交易与结算 → 结算规则配置</b>（支持链路 A 佣金 / 链路 B 服务费双模式）。本页仅作历史留痕，口径以《交易口径 · 费率与分账基准》为准。
+    <b>本页已下架</b>：分账规则属平台级配置，已迁移至 <b>运营后台 → 交易与结算 → 结算规则配置</b>（仅服务费口径（链路 A 已废止））。本页仅作历史留痕，口径以《交易口径 · 费率与分账基准》为准。
   </div>
 
   <div class="alert alert-info" style="margin-bottom:12px;padding:10px 12px;border-radius:8px;background:#e8f3ff;border:1px solid #a0cfff;color:#165dff;font-size:13px">
@@ -26,7 +26,7 @@
     <div class="stat"><div class="label">生效规则</div><div class="value">3</div><div class="hint">另有 1 条已停用</div></div>
     <div class="stat"><div class="label">本月分账金额</div><div class="value">¥86,420</div><div class="hint">分账 1,286 笔</div></div>
     <div class="stat"><div class="label">分账失败</div><div class="value">2</div><div class="hint">结算卡异常，待处理</div></div>
-    <div class="stat"><div class="label">平台费率</div><div class="value">0.6%<span style="font-size:14px"> / 20%</span></div><div class="hint">服务费（自建）/ 佣金（平台内容）</div></div>
+    <div class="stat"><div class="label">平台费率</div><div class="value">0.6%</div><div class="hint">服务费（商家自建）</div></div>
   </div>
 
   <!-- 规则列表 -->
@@ -116,8 +116,7 @@
           <option>按商品类型：课程商品</option>
           <option>按商品类型：定制化计划商品</option>
           <option>按商品类型：直播商品</option>
-          <option>按商品类型：平台商品</option>
-          <option>指定单个商品</option>
+                    <option>指定单个商品</option>
         </select>
       </div>
       <div class="field"><label>结算周期 *</label>
@@ -187,7 +186,7 @@
 </style>
 
 <script src="../assets/js/proto.js"></script>
-<script src="../assets/js/admin-shell.js?v=14"></script>
+<script src="../assets/js/admin-shell.js?v=25"></script>
 <script>
 (function () {
   var mask = document.getElementById("mask");

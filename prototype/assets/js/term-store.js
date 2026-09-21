@@ -88,16 +88,27 @@
   }
 
   function loadRaw() {
+    var seeded = seedFromBoard();
     try {
       var raw = localStorage.getItem(KEY);
       if (raw) {
         var parsed = JSON.parse(raw);
         if (parsed && Array.isArray(parsed.terms) && parsed.terms.length) {
-          return parsed.terms.map(normalize);
+          var local = parsed.terms.map(normalize);
+          var byId = {};
+          local.forEach(function (t) { byId[t.id] = t; });
+          /* 补齐本地缓存缺失的看板期次，避免详情页只显示 spring03（已结束） */
+          seeded.forEach(function (t) {
+            if (!byId[t.id]) {
+              local.push(t);
+              byId[t.id] = t;
+            }
+          });
+          return local;
         }
       }
     } catch (e) {}
-    return seedFromBoard();
+    return seeded;
   }
 
   function saveRaw(terms) {
@@ -360,7 +371,7 @@
       if (!exists) {
         var opt = document.createElement("option");
         opt.value = cur;
-        opt.textContent = cur + "（已结束）";
+        opt.textContent = (opts.valueLabel || cur) + "（已结束）";
         el.appendChild(opt);
       }
       el.value = cur;

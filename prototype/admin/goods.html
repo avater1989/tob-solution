@@ -6,62 +6,34 @@
 <title>店铺商品 · 商家管理后台</title>
 <link rel="stylesheet" href="../assets/css/proto.css?v=9" />
 <style>
-.gd-cell { display:flex; align-items:center; gap:10px; }
-.thumb { width:36px; height:36px; border-radius:6px; display:inline-flex; align-items:center; justify-content:center; color:#fff; font-size:12px; font-weight:600; flex-shrink:0; }
-.t-blue { background:#1677ff; } .t-purple { background:#722ed1; } .t-orange { background:#fa8c16; }
-.t-green { background:#52c41a; } .t-cyan { background:#13c2c2; } .t-gray { background:#8c8c8c; }
 .mono { font-family:ui-monospace,Consolas,monospace; font-size:12px; }
-.create-mask, .create-modal, .proto-mask, .proto-modal { display:none; }
-.create-mask.open, .create-modal.open, .proto-mask.open { display:block; }
-.proto-modal.open { display:flex; }
-.create-mask, .proto-mask { position:fixed; inset:0; background:rgba(0,0,0,.45); z-index:1000; }
-.create-modal { position:fixed; left:50%; top:50%; transform:translate(-50%,-50%); z-index:1001; background:#fff; border-radius:12px; width:560px; max-width:92vw; box-shadow:0 12px 40px rgba(0,0,0,.18); }
-.create-choice { display:grid; grid-template-columns:1fr 1fr; gap:12px; padding:16px 20px 20px; }
-.create-choice a { border:1px solid var(--color-border); border-radius:10px; padding:16px; text-decoration:none; color:inherit; display:block; }
-.create-choice a:hover { border-color:var(--color-primary); background:var(--color-primary-soft); }
-.create-choice a b { display:block; margin-bottom:6px; font-size:15px; }
-.create-choice a span { font-size:12px; color:var(--color-text-secondary); line-height:1.6; }
-.status-stack { display:flex; flex-direction:column; gap:4px; align-items:flex-start; }
 </style>
 </head>
 <body class="admin-body" data-module="trade" data-nav="goods" data-title="店铺商品" data-crumb="交易 / 商品管理 / 店铺商品">
 <div id="header-actions">
   <button class="btn" id="btn-batch">批量操作</button>
-  <button class="btn btn-primary" id="btn-create">新建商品</button>
+  <button class="btn btn-primary" id="btn-create">通过内容创建</button>
 </div>
 <div id="page-content" style="display:none">
 
   <div class="grid-4" style="margin-bottom:16px">
-    <div class="stat"><div class="label">在售商品</div><div class="value" id="st-onsale">0</div><div class="hint">已通过审核且上架</div></div>
-    <div class="stat"><div class="label">待平台审核</div><div class="value" id="st-pending">0</div><div class="hint">已提审 · 等待运营审批</div></div>
-    <div class="stat"><div class="label">草稿 / 已驳回</div><div class="value" id="st-draft">0</div><div class="hint">可编辑后重新提审</div></div>
-    <div class="stat"><div class="label">平台商品镜像</div><div class="value" id="st-platform">0</div><div class="hint">免审 · 仅上下架</div></div>
+    <div class="stat"><div class="label">店铺商品</div><div class="value" id="st-total">0</div><div class="hint">全部自有内容商品</div></div>
+    <div class="stat"><div class="label">上架中</div><div class="value" id="st-onsale">0</div><div class="hint">可售卖</div></div>
+    <div class="stat"><div class="label">未上架</div><div class="value" id="st-pending">0</div><div class="hint">草稿 · 可直接上架</div></div>
+    <div class="stat"><div class="label">已下架</div><div class="value" id="st-draft">0</div><div class="hint">可再次上架</div></div>
   </div>
 
   <div class="card" style="margin-bottom:8px"><div class="card-bd">
-    <div class="form-grid" style="grid-template-columns:repeat(6,minmax(0,1fr));gap:8px 12px">
+    <div class="form-grid" style="grid-template-columns:repeat(5,minmax(0,1fr));gap:8px 12px">
       <input id="f-name" placeholder="商品名称 / ID" />
       <select id="f-type">
         <option value="">内容类型</option>
         <option value="online_course">线上课</option>
         <option value="offline">线下课</option>
         <option value="article">文章</option>
-        <option value="plan">定制化计划</option>
         <option value="live">直播</option>
       </select>
-      <select id="f-mode">
-        <option value="">创建方式</option>
-        <option value="from_content">通过内容创建</option>
-        <option value="from_platform">通过平台商品创建</option>
-      </select>
       <select id="f-cat"><option value="">商品类目</option></select>
-      <select id="f-audit">
-        <option value="">审核状态</option>
-        <option value="draft">草稿</option>
-        <option value="pending">待平台审核</option>
-        <option value="approved">已通过</option>
-        <option value="rejected">已驳回</option>
-      </select>
       <select id="f-status">
         <option value="">上架状态</option>
         <option value="on_sale">上架中</option>
@@ -69,7 +41,6 @@
         <option value="draft">未上架</option>
       </select>
       <button class="btn btn-primary" id="btn-query">筛选</button>
-      <button class="btn" id="btn-reset">重置</button>
     </div>
   </div></div>
 
@@ -77,15 +48,12 @@
     <table class="data">
       <thead>
         <tr>
-          <th style="width:36px"><input type="checkbox" id="ck-all" /></th>
           <th>商品</th>
           <th>内容类型</th>
-          <th>创建方式</th>
           <th>关联内容</th>
           <th>类目</th>
           <th>价格</th>
-          <th>审核</th>
-          <th>上架</th>
+          <th>上架状态</th>
           <th style="width:220px">操作</th>
         </tr>
       </thead>
@@ -93,36 +61,11 @@
     </table>
   </div></div>
 
-  <div class="toolbar" style="margin-top:8px">
-    <span class="muted">共 <b id="gd-total">0</b> 个店铺商品</span>
-    <div class="spacer"></div>
-    <span class="muted" style="font-size:12px">内容创建商品须提审，运营后台通过后方可上架；平台商品镜像免审</span>
-  </div>
-
   <div class="card" style="margin-top:16px"><div class="card-bd">
     <p class="muted" style="font-size:12px;line-height:1.8;margin:0">
-      <b>审核口径：</b>「通过内容创建」保存并选择立即上架 / 提审后进入运营后台「平台审核」队列；商家侧可撤回待审、查看驳回原因并修改后重新提审。
-      「通过平台商品创建」免平台审核，仅可上下架。微信小店审批走微信接口，见「微信小店商品」。
+      <b>口径：</b>店铺商品仅支持「通过自有内容创建」（线上课 / 线下课 / 文章 / 直播），免平台审核，保存后可直接上架。同一内容可建多个商品。微信小店审批仍走微信接口，见「微信小店商品」。违规处置由运营侧「强制下架」执行。
     </p>
   </div></div>
-</div>
-
-<div class="create-mask" id="create-mask"></div>
-<div class="create-modal" id="create-modal">
-  <div style="padding:16px 20px;border-bottom:1px solid var(--color-border);display:flex;justify-content:space-between;align-items:center">
-    <h3 style="margin:0;font-size:16px">新建店铺商品</h3>
-    <button type="button" class="btn btn-sm btn-ghost" id="create-close">×</button>
-  </div>
-  <div class="create-choice">
-    <a href="goods-edit.html?create_mode=from_content">
-      <b>通过内容创建</b>
-      <span>填写后提审，运营审批通过方可上架；同一内容可建多个商品。</span>
-    </a>
-    <a href="goods-edit.html?create_mode=from_platform">
-      <b>通过平台商品创建</b>
-      <span>平台已审镜像，免审；不可编辑，仅可上下架。</span>
-    </a>
-  </div>
 </div>
 
 <div class="proto-mask" id="reject-mask"></div>
@@ -145,7 +88,7 @@
 <script src="../assets/js/goods-taxonomy.js?v=1"></script>
 <script src="../assets/js/prototype-business-store.js"></script>
 <script src="../assets/js/share-modal.js"></script>
-<script src="../assets/js/admin-shell.js?v=16"></script>
+<script src="../assets/js/admin-shell.js?v=26"></script>
 <script>
 (function () {
   var Tax = window.GoodsTaxonomy;
@@ -170,35 +113,32 @@
     if (!rows.length) {
       rows = [
         { goods_id: "G001", channel: "store", create_mode: "from_content", content_source: "self", content_type: "online_course", content_id: "C003", category_id: "GC02", tag_ids: ["GT01"], name: "AI 学习规划入门", status: "on_sale", audit_status: "approved", price: 199 },
-        { goods_id: "G002B", channel: "store", create_mode: "from_content", content_source: "self", content_type: "online_course", content_id: "C001", category_id: "GC08", tag_ids: [], name: "体验价商品", status: "draft", audit_status: "pending", submitted_at: "2026-09-19 16:40", price: 9.9 },
-        { goods_id: "G-DRAFT", channel: "store", create_mode: "from_content", content_source: "self", content_type: "article", content_id: "A001", category_id: "GC07", tag_ids: [], name: "草稿商品", status: "draft", audit_status: "draft", price: 129 },
-        { goods_id: "G-REJ01", channel: "store", create_mode: "from_content", content_source: "self", content_type: "plan", content_id: "PL001", category_id: "GC07", tag_ids: [], name: "已驳回商品", status: "draft", audit_status: "rejected", reject_reason: "宣传用语违规", price: 199 },
-        { goods_id: "G-PF01", channel: "store", create_mode: "from_platform", content_source: "platform", content_type: "online_course", content_id: "C-PF01", platform_goods_id: "PG001", category_id: "GC02", tag_ids: [], name: "平台精选课", status: "on_sale", audit_status: "approved", price: 39.9 }
+        { goods_id: "G002B", channel: "store", create_mode: "from_content", content_source: "self", content_type: "online_course", content_id: "C001", category_id: "GC08", tag_ids: [], name: "体验价商品", status: "draft", audit_status: "approved", price: 9.9 },
+        { goods_id: "G-DRAFT", channel: "store", create_mode: "from_content", content_source: "self", content_type: "article", content_id: "A001", category_id: "GC07", tag_ids: [], name: "草稿商品", status: "draft", audit_status: "approved", price: 129 },
+        { goods_id: "G-OFF01", channel: "store", create_mode: "from_content", content_source: "self", content_type: "offline", content_id: "O001", category_id: "GC07", tag_ids: [], name: "已下架商品", status: "off", audit_status: "approved", price: 199 }
       ];
     }
+    rows = rows.filter(function (r) {
+      return r.create_mode !== "from_platform" && r.content_source !== "platform" && r.content_type !== "plan";
+    });
     rows.forEach(function (r) {
-      if (!r.audit_status) r.audit_status = r.create_mode === "from_platform" || r.status === "on_sale" ? "approved" : "draft";
+      /* 最简版免审：历史 pending/rejected 归一 */
+      if (r.audit_status === "pending" || r.audit_status === "rejected" || !r.audit_status) {
+        r.audit_status = "approved";
+        r.reject_reason = "";
+        r.submitted_at = "";
+      }
+      r.create_mode = "from_content";
+      r.content_source = "self";
+      delete r.platform_goods_id;
     });
   }
 
-  function thumbClass(t) {
-    return ({ online_course: "t-blue", offline: "t-orange", article: "t-green", plan: "t-purple", live: "t-cyan" })[t] || "t-gray";
-  }
-  function thumbText(t) {
-    return ({ online_course: "课", offline: "线", article: "文", plan: "计", live: "播" })[t] || "商";
-  }
   function shelfBadge(s) {
     if (s === "on_sale") return '<span class="badge badge-success">上架中</span>';
     if (s === "off") return '<span class="badge badge-warn">已下架</span>';
     return '<span class="badge">未上架</span>';
   }
-  function auditBadge(a) {
-    if (a === "pending") return '<span class="badge badge-warn">待平台审核</span>';
-    if (a === "approved") return '<span class="badge badge-success">已通过</span>';
-    if (a === "rejected") return '<span class="badge badge-danger">已驳回</span>';
-    return '<span class="badge">草稿</span>';
-  }
-  function modeLabel(m) { return m === "from_platform" ? "平台商品" : "内容创建"; }
   function nowStr() {
     var d = new Date();
     function p(n) { return n < 10 ? "0" + n : "" + n; }
@@ -210,17 +150,13 @@
   function filtered() {
     var name = (document.getElementById("f-name").value || "").trim().toLowerCase();
     var type = document.getElementById("f-type").value;
-    var mode = document.getElementById("f-mode").value;
     var cat = document.getElementById("f-cat").value;
-    var audit = document.getElementById("f-audit").value;
     var status = document.getElementById("f-status").value;
     return rows.filter(function (r) {
       if (r.channel && r.channel !== "store") return false;
       if (name && String(r.name).toLowerCase().indexOf(name) < 0 && String(r.goods_id).toLowerCase().indexOf(name) < 0) return false;
       if (type && r.content_type !== type) return false;
-      if (mode && r.create_mode !== mode) return false;
       if (cat && r.category_id !== cat) return false;
-      if (audit && (r.audit_status || "draft") !== audit) return false;
       if (status && r.status !== status) return false;
       return true;
     });
@@ -228,77 +164,43 @@
 
   function renderStats() {
     var store = rows.filter(function (r) { return !r.channel || r.channel === "store"; });
+    document.getElementById("st-total").textContent = store.length;
     document.getElementById("st-onsale").textContent = store.filter(function (r) { return r.status === "on_sale"; }).length;
-    document.getElementById("st-pending").textContent = store.filter(function (r) { return r.audit_status === "pending"; }).length;
-    document.getElementById("st-draft").textContent = store.filter(function (r) { return r.audit_status === "draft" || r.audit_status === "rejected"; }).length;
-    document.getElementById("st-platform").textContent = store.filter(function (r) { return r.create_mode === "from_platform"; }).length;
+    document.getElementById("st-pending").textContent = store.filter(function (r) { return r.status === "draft"; }).length;
+    document.getElementById("st-draft").textContent = store.filter(function (r) { return r.status === "off"; }).length;
   }
 
   function buildActs(r) {
-    var locked = r.create_mode === "from_platform";
-    var editHref = locked
-      ? "goods-edit.html?create_mode=from_platform&goods_id=" + encodeURIComponent(r.goods_id) + "&readonly=1"
-      : "goods-edit.html?create_mode=from_content&goods_id=" + encodeURIComponent(r.goods_id) + "&content_type=" + encodeURIComponent(r.content_type || "") + "&content_id=" + encodeURIComponent(r.content_id || "");
+    var editHref = "goods-edit.html?create_mode=from_content&goods_id=" + encodeURIComponent(r.goods_id) + "&content_type=" + encodeURIComponent(r.content_type || "") + "&content_id=" + encodeURIComponent(r.content_id || "");
     var id = Tax.esc(r.goods_id);
     var acts = [];
-    if (locked) {
-      acts.push('<a href="' + editHref + '">查看</a>');
-      acts.push('<a href="#" data-row-act="' + (r.status === "on_sale" ? "off" : "on") + '" data-id="' + id + '">' + (r.status === "on_sale" ? "下架" : "上架") + "</a>");
-      return acts.join(" ");
-    }
-    if (r.audit_status === "pending") {
-      acts.push('<a href="' + editHref + '">查看</a>');
-      acts.push('<a href="#" data-row-act="withdraw" data-id="' + id + '">撤回提审</a>');
-    } else if (r.audit_status === "rejected") {
-      acts.push('<a href="' + editHref + '">修改</a>');
-      acts.push('<a href="#" data-row-act="reason" data-id="' + id + '">驳回原因</a>');
-      acts.push('<a href="#" data-row-act="submit" data-id="' + id + '">重新提审</a>');
-    } else if (r.audit_status === "draft") {
-      acts.push('<a href="' + editHref + '">编辑</a>');
-      acts.push('<a href="#" data-row-act="submit" data-id="' + id + '">提审</a>');
-    } else {
-      acts.push('<a href="' + editHref + '">编辑</a>');
-      if (r.status === "on_sale") acts.push('<a href="#" data-row-act="off" data-id="' + id + '">下架</a>');
-      else acts.push('<a href="#" data-row-act="on" data-id="' + id + '">上架</a>');
-      acts.push('<a href="#" data-row-act="share" data-id="' + id + '">分享</a>');
-    }
+    acts.push('<a href="' + editHref + '">编辑</a>');
+    if (r.status === "on_sale") acts.push('<a href="#" data-row-act="off" data-id="' + id + '">下架</a>');
+    else acts.push('<a href="#" data-row-act="on" data-id="' + id + '">上架</a>');
+    acts.push('<a href="#" data-row-act="share" data-id="' + id + '">分享</a>');
     return acts.join(" ");
   }
 
   function render() {
     var list = filtered();
-    document.getElementById("gd-total").textContent = list.length;
     document.getElementById("gd-tbody").innerHTML = list.map(function (r) {
-      var editHref = r.create_mode === "from_platform"
-        ? "goods-edit.html?create_mode=from_platform&goods_id=" + encodeURIComponent(r.goods_id) + "&readonly=1"
-        : "goods-edit.html?create_mode=from_content&goods_id=" + encodeURIComponent(r.goods_id) + "&content_type=" + encodeURIComponent(r.content_type || "") + "&content_id=" + encodeURIComponent(r.content_id || "");
+      var editHref = "goods-edit.html?create_mode=from_content&goods_id=" + encodeURIComponent(r.goods_id) + "&content_type=" + encodeURIComponent(r.content_type || "") + "&content_id=" + encodeURIComponent(r.content_id || "");
       var cat = Tax.catPathLabel(r.category_id) || "—";
-      var auditExtra = r.audit_status === "pending" && r.submitted_at
-        ? '<br><span class="muted" style="font-size:11px">提交 ' + Tax.esc(r.submitted_at) + "</span>"
-        : (r.audit_status === "rejected" ? '<br><a href="#" data-row-act="reason" data-id="' + Tax.esc(r.goods_id) + '" style="font-size:11px">查看原因</a>' : "");
       return "<tr>" +
-        '<td><input type="checkbox" /></td>' +
-        '<td><div class="gd-cell"><span class="thumb ' + thumbClass(r.content_type) + '">' + thumbText(r.content_type) + '</span><div><a href="' + editHref + '">' + Tax.esc(r.name) + '</a><br><span class="muted mono">' + Tax.esc(r.goods_id) + "</span></div></div></td>" +
+        "<td><b><a href=\"" + editHref + "\">" + Tax.esc(r.name) + "</a></b><br><span class=\"muted mono\">" + Tax.esc(r.goods_id) + "</span></td>" +
         "<td>" + Tax.esc(Tax.contentTypeLabel(r.content_type)) + "</td>" +
-        "<td>" + modeLabel(r.create_mode) + "</td>" +
-        "<td class='mono'>" + Tax.esc(r.content_id || "—") + "</td>" +
+        "<td class=\"mono\">" + Tax.esc(r.content_id || "—") + "</td>" +
         "<td>" + Tax.esc(cat) + "</td>" +
         "<td><b>¥" + (r.price != null ? Number(r.price).toFixed(2) : "—") + "</b></td>" +
-        "<td><div class='status-stack'>" + auditBadge(r.audit_status || "draft") + auditExtra + "</div></td>" +
         "<td>" + shelfBadge(r.status) + "</td>" +
         '<td class="row-actions">' + buildActs(r) + "</td>" +
         "</tr>";
-    }).join("") || '<tr><td colspan="10" class="muted" style="text-align:center;padding:24px">暂无店铺商品</td></tr>';
+    }).join("") || '<tr><td colspan="7" class="muted" style="text-align:center;padding:24px">暂无店铺商品</td></tr>';
     renderStats();
   }
 
   function openCreate() {
-    document.getElementById("create-mask").classList.add("open");
-    document.getElementById("create-modal").classList.add("open");
-  }
-  function closeCreate() {
-    document.getElementById("create-mask").classList.remove("open");
-    document.getElementById("create-modal").classList.remove("open");
+    location.href = "goods-edit.html?create_mode=from_content";
   }
   function openReject(row) {
     rejectTarget = row;
@@ -313,8 +215,6 @@
   }
 
   document.getElementById("btn-create").addEventListener("click", openCreate);
-  document.getElementById("create-close").addEventListener("click", closeCreate);
-  document.getElementById("create-mask").addEventListener("click", closeCreate);
   document.getElementById("reject-close").addEventListener("click", closeReject);
   document.getElementById("reject-close2").addEventListener("click", closeReject);
   document.getElementById("reject-mask").addEventListener("click", closeReject);
@@ -325,14 +225,8 @@
       "&content_id=" + encodeURIComponent(rejectTarget.content_id || "");
   });
   document.getElementById("btn-query").addEventListener("click", render);
-  document.getElementById("btn-reset").addEventListener("click", function () {
-    ["f-name", "f-type", "f-mode", "f-cat", "f-audit", "f-status"].forEach(function (id) {
-      document.getElementById(id).value = "";
-    });
-    render();
-  });
   document.getElementById("btn-batch").addEventListener("click", function () {
-    Proto.toast("批量提审 / 上下架（原型）");
+    Proto.toast("批量上下架（原型）");
   });
 
   document.getElementById("gd-tbody").addEventListener("click", function (e) {
@@ -348,33 +242,9 @@
       else Proto.toast("分享（原型）");
       return;
     }
-    if (act === "reason") { openReject(row); return; }
-    if (act === "submit") {
-      if (!confirm("确认提交平台审核？提交后运营后台将出现在待审队列。")) return;
-      row.audit_status = "pending";
-      row.status = "draft";
-      row.submitted_at = nowStr();
-      row.reject_reason = "";
-      persist();
-      Proto.toast("已提审，等待平台审批");
-      render();
-      return;
-    }
-    if (act === "withdraw") {
-      if (!confirm("确认撤回提审？商品将回到草稿，可修改后再次提审。")) return;
-      row.audit_status = "draft";
-      row.submitted_at = "";
-      persist();
-      Proto.toast("已撤回提审");
-      render();
-      return;
-    }
     if (act === "on") {
-      if (row.create_mode !== "from_platform" && row.audit_status !== "approved") {
-        Proto.toast("须先通过平台审核方可上架");
-        return;
-      }
       row.status = "on_sale";
+      row.audit_status = "approved";
       persist();
       Proto.toast("已上架");
       render();

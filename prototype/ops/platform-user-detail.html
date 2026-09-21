@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>用户详情 · 运营后台</title>
+<link rel="stylesheet" href="../assets/css/proto.css?v=9" />
+<style>
+.ud-layout { display:grid; grid-template-columns:280px 1fr; gap:16px; align-items:start; }
+@media (max-width:980px) { .ud-layout { grid-template-columns:1fr; } }
+.ud-side .avatar {
+  width:64px; height:64px; border-radius:50%; background:#e8f3ff; color:#165dff;
+  display:flex; align-items:center; justify-content:center; font-size:22px; font-weight:700; margin-bottom:12px;
+}
+.ud-tabs { display:flex; gap:4px; border-bottom:1px solid var(--color-border); margin-bottom:14px; flex-wrap:wrap; }
+.ud-tabs a {
+  padding:8px 12px; font-size:13px; color:var(--color-text-secondary); text-decoration:none;
+  border-bottom:2px solid transparent; margin-bottom:-1px;
+}
+.ud-tabs a.active { color:#165dff; border-bottom-color:#165dff; font-weight:600; }
+.ud-panel { display:none; }
+.ud-panel.active { display:block; }
+.foot-card {
+  border:1px solid var(--color-border); border-radius:8px; padding:14px 16px; margin-bottom:10px; background:#fff;
+}
+.foot-card h3 { margin:0 0 8px; font-size:14px; }
+.kpi-row { display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin-bottom:14px; }
+.kpi-row .stat { background:#fff; border:1px solid var(--color-border); border-radius:8px; padding:12px 14px; }
+.kpi-row .label { font-size:12px; color:var(--color-text-muted); }
+.kpi-row .value { font-size:20px; font-weight:700; margin-top:4px; }
+.kv-row { display:flex; justify-content:space-between; gap:12px; padding:8px 0; border-bottom:1px dashed var(--color-border); font-size:13px; }
+.kv-row span { color:var(--color-text-secondary); }
+.kv-row b { font-weight:500; text-align:right; }
+.mono { font-family:ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size:12px; }
+</style>
+</head>
+<body class="admin-body" data-module="users" data-nav="platform-users" data-title="用户详情" data-crumb="运营后台 / 用户 / 用户详情">
+<div id="header-actions">
+  <a class="btn btn-ghost" href="platform-users.html">返回列表</a>
+  <button class="btn" id="btn-copy" type="button">复制平台用户 ID</button>
+  <button class="btn" id="btn-decrypt" type="button">解密手机号</button>
+</div>
+<div id="page-content" style="display:none">
+
+  <div class="board-tip" style="margin-bottom:12px">
+    <b>平台只读视图：</b>跨租户 C 端学员聚合。打标 / 改归属 / SCRM 跟进请在对应商家后台操作。
+    <span class="muted">租户员工账号见 <a href="tenant-config.html?tab=user">租户管理 → 租户配置 · 租户用户</a>。</span>
+  </div>
+
+  <div id="not-found" style="display:none" class="card"><div class="card-bd">
+    <p>未找到该平台用户。</p>
+    <a class="btn btn-primary" href="platform-users.html">返回列表</a>
+  </div></div>
+
+  <div id="ud-main" class="ud-layout" style="display:none">
+    <aside class="ud-side card"><div class="card-bd">
+      <div class="avatar" id="side-avatar">—</div>
+      <h2 id="side-name" style="margin:0 0 4px;font-size:18px">—</h2>
+      <div class="muted" id="side-nick" style="margin-bottom:12px;font-size:12px"></div>
+      <div class="kv">
+        <div class="kv-row"><span>平台 ID</span><b class="mono" id="side-id">—</b></div>
+        <div class="kv-row"><span>手机</span><b id="side-phone">—</b></div>
+        <div class="kv-row"><span>聚合状态</span><b id="side-merge">—</b></div>
+        <div class="kv-row"><span>最近活跃</span><b id="side-active">—</b></div>
+      </div>
+    </div></aside>
+
+    <div>
+      <div class="kpi-row">
+        <div class="stat"><div class="label">关联租户</div><div class="value" id="kpi-tenants">0</div></div>
+        <div class="stat"><div class="label">累计订单</div><div class="value" id="kpi-orders">0</div></div>
+        <div class="stat"><div class="label">有效权益</div><div class="value" id="kpi-rights">0</div></div>
+        <div class="stat"><div class="label">最近活跃租户</div><div class="value" id="kpi-last" style="font-size:14px;line-height:1.35">—</div></div>
+      </div>
+
+      <nav class="ud-tabs" id="ud-tabs">
+        <a href="#overview" data-tab="overview" class="active">概览</a>
+        <a href="#footprint" data-tab="footprint">租户足迹</a>
+        <a href="#orders" data-tab="orders">订单记录</a>
+        <a href="#rights" data-tab="rights">课程与权益</a>
+        <a href="#leads" data-tab="leads">线索与跟进</a>
+      </nav>
+
+      <div class="ud-panel active" id="panel-overview">
+        <div class="card"><div class="card-hd"><h2>平台身份</h2></div>
+          <div class="card-bd">
+            <div class="kv">
+              <div class="kv-row"><span>平台用户 ID</span><b class="mono" id="ov-id">—</b></div>
+              <div class="kv-row"><span>聚合主键</span><b id="ov-key">—</b></div>
+              <div class="kv-row"><span>手机号</span><b id="ov-phone">—</b></div>
+              <div class="kv-row"><span>微信 UnionID</span><b class="mono" id="ov-union">—</b></div>
+              <div class="kv-row"><span>注册来源</span><b id="ov-source">—</b></div>
+              <div class="kv-row"><span>首次注册</span><b id="ov-reg">—</b></div>
+              <div class="kv-row"><span>营销触达</span><b id="ov-mkt">—</b></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ud-panel" id="panel-footprint">
+        <div class="card"><div class="card-hd"><h2>租户足迹</h2><span class="muted" style="font-size:12px;font-weight:400">该用户在各租户的学员身份</span></div>
+          <div class="card-bd" id="foot-list"></div>
+        </div>
+      </div>
+
+      <div class="ud-panel" id="panel-orders">
+        <div class="card"><div class="card-bd" style="padding:0">
+          <table class="data">
+            <thead>
+              <tr><th>订单号</th><th>租户</th><th>商品</th><th>实付</th><th>状态</th><th>下单时间</th></tr>
+            </thead>
+            <tbody id="order-tbody"></tbody>
+          </table>
+        </div></div>
+      </div>
+
+      <div class="ud-panel" id="panel-rights">
+        <div class="card"><div class="card-bd" style="padding:0">
+          <table class="data">
+            <thead>
+              <tr><th>权益号</th><th>租户</th><th>课程</th><th>状态</th><th>学习</th><th>到期</th><th></th></tr>
+            </thead>
+            <tbody id="right-tbody"></tbody>
+          </table>
+        </div></div>
+      </div>
+
+      <div class="ud-panel" id="panel-leads">
+        <div class="card"><div class="card-hd"><h2>线索摘要</h2><span class="muted" style="font-size:12px;font-weight:400">只读</span></div>
+          <div class="card-bd" id="lead-list"></div>
+          <p class="muted" style="margin:10px 16px 16px;font-size:12px">线索跟进请在对应商家 SCRM 处理；平台侧仅展示摘要。</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="../assets/js/proto.js"></script>
+<script src="../assets/js/platform-user-store.js?v=2"></script>
+<script src="../assets/js/ops-shell.js?v=24"></script>
+<script>
+(function () {
+  var Store = window.PlatformUserStore;
+  var params = new URLSearchParams(location.search);
+  var id = params.get("id") || "";
+  var user = Store.get(id);
+  var phoneRevealed = false;
+
+  if (!user) {
+    document.getElementById("not-found").style.display = "block";
+    return;
+  }
+  document.getElementById("ud-main").style.display = "grid";
+
+  function maskPhone() {
+    return phoneRevealed ? (user.phone || "—") : (user.phoneMask || "—");
+  }
+
+  function renderSide() {
+    document.getElementById("side-avatar").textContent = (user.name || "?").slice(0, 1);
+    document.getElementById("side-name").textContent = user.name || "—";
+    document.getElementById("side-nick").textContent = user.nick ? "昵称 " + user.nick : "";
+    document.getElementById("side-id").textContent = user.id;
+    document.getElementById("side-phone").textContent = maskPhone();
+    document.getElementById("side-merge").textContent = Store.mergeStatusLabel(user.mergeStatus);
+    document.getElementById("side-active").innerHTML =
+      (Store.tenantName(user.lastActiveTenantId) || "—") +
+      '<div class="muted" style="font-size:12px">' + (user.lastActiveAt || "—") + "</div>";
+  }
+
+  function renderKpi() {
+    var s = Store.summarize(user);
+    document.getElementById("kpi-tenants").textContent = String(s.tenantCount);
+    document.getElementById("kpi-orders").textContent = String(s.orderCount);
+    document.getElementById("kpi-rights").textContent = String(s.validRights);
+    document.getElementById("kpi-last").textContent = s.lastActiveTenantName || "—";
+  }
+
+  function renderOverview() {
+    document.getElementById("ov-id").textContent = user.id;
+    document.getElementById("ov-key").textContent =
+      user.mergeKey === "unionId" ? "微信 UnionID" : "手机号";
+    document.getElementById("ov-phone").textContent = maskPhone();
+    document.getElementById("ov-union").textContent = user.unionId || "—";
+    document.getElementById("ov-source").textContent = user.source || "—";
+    document.getElementById("ov-reg").textContent = user.registeredAt || "—";
+    document.getElementById("ov-mkt").textContent =
+      user.marketing === "stopped" ? "已停止主动营销" : "正常触达";
+  }
+
+  function renderFootprint() {
+    var list = user.memberships || [];
+    var host = document.getElementById("foot-list");
+    if (!list.length) {
+      host.innerHTML = '<p class="muted">暂无租户足迹</p>';
+      return;
+    }
+    host.innerHTML = list.map(function (m) {
+      var tags = (m.tags || []).map(function (t) {
+        return '<span class="chip chip-blue">' + t + "</span>";
+      }).join("") || '<span class="muted">无标签</span>';
+      return '<div class="foot-card">' +
+        "<h3>" + m.tenantName + "</h3>" +
+        '<div class="kv">' +
+        '<div class="kv-row"><span>租户内 UID</span><b class="mono">' + m.localUserId + "</b></div>" +
+        '<div class="kv-row"><span>加微</span><b>' + (m.wecom ? "已加微" : "未加微") + "</b></div>" +
+        '<div class="kv-row"><span>负责人</span><b>' + (m.owner || "—") + "</b></div>" +
+        '<div class="kv-row"><span>进入时间</span><b>' + (m.joinedAt || "—") + "</b></div>" +
+        '<div class="kv-row"><span>来源</span><b>' + (m.source || "—") + "</b></div>" +
+        '<div class="kv-row"><span>标签</span><b style="font-weight:400">' + tags + "</b></div>" +
+        "</div>" +
+        '<div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap">' +
+        '<a class="btn btn-sm" href="tenant-config.html?id=' + encodeURIComponent(m.tenantId) + '">查看租户配置</a>' +
+        '<a class="btn btn-sm" href="trade-orders.html?tenant=' + encodeURIComponent(m.tenantId) + '">查看该租户订单</a>' +
+        "</div></div>";
+    }).join("");
+  }
+
+  function renderOrders() {
+    var list = user.orders || [];
+    var tb = document.getElementById("order-tbody");
+    if (!list.length) {
+      tb.innerHTML = '<tr><td colspan="6" class="muted" style="text-align:center;padding:24px">暂无订单</td></tr>';
+      return;
+    }
+    tb.innerHTML = list.map(function (o) {
+      return "<tr>" +
+        '<td class="mono"><a href="order-detail.html?id=' + encodeURIComponent(o.id) + '">' + o.id + "</a></td>" +
+        "<td>" + o.tenantName + "</td>" +
+        "<td>" + o.product + "</td>" +
+        "<td>¥" + o.amount + "</td>" +
+        "<td>" + o.status + "</td>" +
+        "<td>" + o.time + "</td>" +
+        "</tr>";
+    }).join("");
+  }
+
+  function renderRights() {
+    var list = user.rights || [];
+    var tb = document.getElementById("right-tbody");
+    if (!list.length) {
+      tb.innerHTML = '<tr><td colspan="7" class="muted" style="text-align:center;padding:24px">暂无权益</td></tr>';
+      return;
+    }
+    tb.innerHTML = list.map(function (r) {
+      var bad = r.abnormal || r.status === "已回收" || r.status === "开通失败";
+      var st = bad
+        ? '<span style="color:#f53f3f;font-weight:600">' + r.status + "</span>"
+        : r.status;
+      return "<tr>" +
+        '<td class="mono">' + r.id + "</td>" +
+        "<td>" + r.tenantName + "</td>" +
+        "<td>" + r.course + "</td>" +
+        "<td>" + st + "</td>" +
+        "<td>" + (r.learn || "—") + "</td>" +
+        "<td>" + (r.endAt || "—") + "</td>" +
+        '<td class="row-actions"><a href="entitlement.html">权益记录</a></td>' +
+        "</tr>";
+    }).join("");
+  }
+
+  function renderLeads() {
+    var list = user.leads || [];
+    var host = document.getElementById("lead-list");
+    if (!list.length) {
+      host.innerHTML = '<p class="muted" style="padding:0 16px">暂无线索摘要</p>';
+      return;
+    }
+    host.innerHTML = '<table class="data"><thead><tr><th>租户</th><th>阶段</th><th>负责人</th><th>更新时间</th></tr></thead><tbody>' +
+      list.map(function (l) {
+        return "<tr><td>" + l.tenantName + "</td><td>" + l.stage + "</td><td>" +
+          (l.owner || "—") + "</td><td>" + (l.updatedAt || "—") + "</td></tr>";
+      }).join("") + "</tbody></table>";
+  }
+
+  function showTab(name) {
+    document.querySelectorAll(".ud-tabs a").forEach(function (a) {
+      a.classList.toggle("active", a.getAttribute("data-tab") === name);
+    });
+    document.querySelectorAll(".ud-panel").forEach(function (p) {
+      p.classList.toggle("active", p.id === "panel-" + name);
+    });
+  }
+
+  document.getElementById("ud-tabs").addEventListener("click", function (e) {
+    var a = e.target.closest("a[data-tab]");
+    if (!a) return;
+    e.preventDefault();
+    showTab(a.getAttribute("data-tab"));
+  });
+
+  document.getElementById("btn-copy").onclick = function () {
+    var text = user.id;
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(function () {
+        Proto.toast("已复制 " + text);
+      }, function () {
+        Proto.toast(text);
+      });
+    } else {
+      Proto.toast(text);
+    }
+  };
+
+  document.getElementById("btn-decrypt").onclick = function () {
+    if (!phoneRevealed && !confirm("解密手机号属于敏感操作，将记入审计日志（原型）。确认继续？")) return;
+    phoneRevealed = !phoneRevealed;
+    document.getElementById("btn-decrypt").textContent = phoneRevealed ? "重新脱敏" : "解密手机号";
+    renderSide();
+    renderOverview();
+    Proto.toast(phoneRevealed ? "已解密手机号（已记审计日志 · 原型）" : "已重新脱敏");
+  };
+
+  renderSide();
+  renderKpi();
+  renderOverview();
+  renderFootprint();
+  renderOrders();
+  renderRights();
+  renderLeads();
+
+  var hash = (location.hash || "#overview").replace("#", "");
+  if (document.getElementById("panel-" + hash)) showTab(hash);
+})();
+</script>
+</body>
+</html>

@@ -499,7 +499,7 @@
 <script src="../assets/js/term-store.js?v=1"></script>
 <script src="../assets/js/live-ops.js?v=9"></script>
 <script src="../assets/js/live-reach.js?v=2"></script>
-<script src="../assets/js/admin-shell.js?v=20"></script>
+<script src="../assets/js/admin-shell.js?v=25"></script>
 <script>
 (function () {
   var mask = document.getElementById("mask");
@@ -724,11 +724,10 @@
     if (!live) return true;
     var k = liveRuntimeKey(live);
     if (k === "ended" || live.liveStatus === "ended") return false;
-    if (k === "draft" || k === "platform_rejected" || k === "platform_pending") return false;
-    var audit = live.auditStatus || "";
-    var plat = live.platformReviewStatus || "";
-    if (audit === "draft" || audit === "rejected" || audit === "pending") return false;
-    if (plat === "not_submitted" || plat === "rejected" || plat === "pending") return false;
+    if (k === "draft") return false;
+    var shelf = live.shelfStatus || "";
+    if (shelf && shelf !== "published") return false;
+    if (live.shelf === false) return false;
     return true;
   }
   function isLivingLive(live) {

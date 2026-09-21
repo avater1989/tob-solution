@@ -12,13 +12,13 @@
 </div>
 <div id="page-content" style="display:none">
 
-  <div class="alert alert-error" style="margin-bottom:12px">
-    <span><b>未签约</b>：会员未完成提现协议签约，<b>提现功能已被限制</b>。请先完成签约，再发起提现。</span>
+  <div class="alert alert-info" style="margin-bottom:12px">
+    <span><b>一期说明：</b>系统内暂不开放提现。本页签约仍为通联进件完整流程的一部分，完成后便于二期直接开通出金；收款与下单不受影响。</span>
   </div>
 
   <!-- 状态 -->
   <div class="grid-4" style="margin-bottom:16px">
-    <div class="stat"><div class="label">签约状态</div><div class="value" style="font-size:18px">未签约</div><div class="hint">限制提现</div></div>
+    <div class="stat"><div class="label">签约状态</div><div class="value" style="font-size:18px">未签约</div><div class="hint">一期不影响收款</div></div>
     <div class="stat"><div class="label">会员号</div><div class="value" style="font-size:16px">MEM-1001XX</div><div class="hint">通联云商通</div></div>
     <div class="stat"><div class="label">签约主体</div><div class="value" style="font-size:16px">星启家庭教育</div><div class="hint">企业会员</div></div>
     <div class="stat"><div class="label">协议编号</div><div class="value" style="font-size:16px">—</div><div class="hint">签约成功后回显</div></div>
@@ -35,7 +35,7 @@
         <div class="kv-row"><span>签约前置</span><b>企业信息审核通过（已完成）</b></div>
         <div class="kv-row"><span>签约方式</span><b>H5 页面签署（跳转通联签约页）</b></div>
         <div class="kv-row"><span>签约结果通知</span><b>成功提供后台异步通知；失败仅页面提示原因</b></div>
-        <div class="kv-row"><span>未签约影响</span><b>提现功能被限制（收款与下单不受影响）</b></div>
+        <div class="kv-row"><span>一期影响</span><b>未签约不影响收款与下单；系统内提现一期未开放</b></div>
       </div>
       <p class="muted" style="margin-top:10px;font-size:12px">个人会员签约前须完成实名认证；企业会员签约前须完成设置企业信息且审核成功。</p>
     </div>
@@ -62,7 +62,7 @@
 </style>
 
 <script src="../assets/js/proto.js"></script>
-<script src="../assets/js/admin-shell.js?v=14"></script>
+<script src="../assets/js/admin-shell.js?v=25"></script>
 <script>
 (function () {
   document.getElementById("btn-sign").addEventListener("click", function(){

@@ -56,7 +56,7 @@
       <a href="orders.html"><div class="label">成交金额</div><div class="value">¥18,620</div><div class="hint">含退款冲减前</div></a>
       <a href="lives.html"><div class="label">直播场次</div><div class="value">2</div><div class="hint">进行中 1</div></a>
       <a href="aftersales.html"><div class="label">退款金额</div><div class="value">¥1,280</div><div class="hint">4 笔售后</div></a>
-      <a href="settlement.html"><div class="label">待结算金额</div><div class="value">¥12,335</div><div class="hint">待确认结算单</div></a>
+      <a href="bills.html"><div class="label">本期净收入</div><div class="value">¥22,570</div><div class="hint">支付流水 · 近 30 天</div></a>
     </div>
   </section>
 
@@ -64,10 +64,9 @@
     <h2>我的待办</h2>
     <p class="sub">数字可直接跳到对应处理页</p>
     <div class="wb-todo">
-      <a class="wb-item" href="content-series.html?status=pending_review"><div><div class="t">待审核内容</div><div class="d">提交平台审核中的课程/文章</div></div><div class="n">5</div></a>
+      <a class="wb-item" href="content-video.html"><div><div class="t">内容上架</div><div class="d">免审直通 · 上架后可建商品</div></div><div class="n">→</div></a>
       <a class="wb-item" href="goods.html?status=draft"><div><div class="t">待上架商品</div><div class="d">草稿 / 待上架</div></div><div class="n">3</div></a>
       <a class="wb-item warn" href="aftersales.html?status=pending"><div><div class="t">待处理售后</div><div class="d">待商家处理</div></div><div class="n">4</div></a>
-      <a class="wb-item warn" href="settlement.html?status=pending_confirm"><div><div class="t">待确认结算</div><div class="d">平台已生成结算单</div></div><div class="n">2</div></a>
       <a class="wb-item" href="follow-ups.html"><div><div class="t">待跟进客户</div><div class="d">今日应跟进线索</div></div><div class="n">12</div></a>
       <a class="wb-item" href="lives.html?filter=pending"><div><div class="t">直播待处理</div><div class="d">待开播 / 待回放</div></div><div class="n">1</div></a>
     </div>
@@ -80,17 +79,14 @@
       <a class="wb-item danger" href="orders.html?filter=exception"><div><div class="t">订单异常</div><div class="d">支付成功权益未生效等</div></div><div class="n">2</div></a>
       <a class="wb-item danger" href="entitlement.html?filter=exception"><div><div class="t">权益异常</div><div class="d">待开通 / 开通失败 / 回收失败</div></div><div class="n">2</div></a>
       <a class="wb-item warn" href="aftersales.html?filter=refund_exception"><div><div class="t">退款异常</div><div class="d">退款中断或渠道失败</div></div><div class="n">1</div></a>
-      <a class="wb-item warn" href="recon.html?filter=diff"><div><div class="t">对账异常</div><div class="d">T+1 差异待处理</div></div><div class="n">2</div></a>
-      <a class="wb-item" href="settlement.html?filter=dispute"><div><div class="t">结算异常</div><div class="d">异议 / 复核中</div></div><div class="n">1</div></a>
-      <a class="wb-item" href="withdraw.html?filter=exception"><div><div class="t">提现异常</div><div class="d">打款失败或驳回</div></div><div class="n">0</div></a>
     </div>
-    <div class="wb-flow">主闭环：内容资产 → 商品 → 订单 → 权益履约 → 财务结算 → 数据复盘 · 学习闭环：测评 → 任务规则 → 任务 → 计划</div>
+    <div class="wb-flow">主闭环：内容资产 → 商品 → 订单 → 权益履约 → 支付流水 → 数据复盘 · 一期不对账结算提现</div>
   </section>
 
 </div>
 
 <script src="../assets/js/proto.js"></script>
-<script src="../assets/js/admin-shell.js?v=20"></script>
+<script src="../assets/js/admin-shell.js?v=27"></script>
 <script>
 (function () {
   var hash = location.hash.replace("#", "");
