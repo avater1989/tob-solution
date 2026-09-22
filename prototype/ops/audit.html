@@ -207,14 +207,29 @@
     return '<span class="tag ' + cls + '">' + esc(t) + "</span>";
   }
 
+  /* 关联内容：组合商品须列出全部交付内容（与商家端商品列表同口径） */
+  function contentCellOf(g) {
+    var G = window.GoodsStore;
+    var ids = (G && G.contentIdsOf) ? G.contentIdsOf(g)
+      : [(g.contents && g.contents[0] && g.contents[0].content_id) || g.content_id || ""];
+    ids = ids.filter(Boolean);
+    if (!ids.length) return ["—", false];
+    return [
+      esc(ids.join("、")) + (ids.length > 1 ? ' <span class="badge badge-info">组合 ' + ids.length + " 项</span>" : ""),
+      true
+    ];
+  }
+
   function pendingGoods() {
     try {
-      var data = Biz.load ? Biz.load() : null;
-      var list = (data && data.goodsDemo) || [];
+      /* 走 GoodsStore 取数：all() 已做 contents[] 归一化（组合商品多条）。
+         直接读 Biz.load().goodsDemo 原始行拿不到 contents，组合徽标不会生效 */
+      var list = (window.GoodsStore && window.GoodsStore.all) ? window.GoodsStore.all() : [];
       return list.filter(function (g) {
         return (!g.channel || g.channel === "store") && g.audit_status === "pending" && g.create_mode !== "from_platform";
       }).map(function (g) {
         var typeLabel = (Tax && Tax.contentTypeLabel) ? Tax.contentTypeLabel(g.content_type) : (g.content_type || "商品");
+        var cell = contentCellOf(g);
         return {
           id: g.goods_id,
           typeLabel: "商品",
@@ -227,10 +242,10 @@
           rows: [
             ["商品名称", g.name],
             ["内容类型", typeLabel],
-            ["关联内容", g.content_id || "—"],
+            ["关联内容", cell[0], cell[1]],
             ["创建方式", g.create_mode === "from_platform" ? "平台商品" : "内容创建"],
             ["售卖价格", "¥" + (g.price != null ? Number(g.price).toFixed(2) : "—")],
-            ["内容来源", g.content_source === "platform" ? "平台" : "商家自建"]
+            ["商品来源", g.content_source === "platform" ? "平台" : "商家自建"]
           ].concat(listingRowsOf(g))
         };
       });
@@ -243,7 +258,19 @@
   function listingRowsOf(g) {
     if (!window.ListingStore) return [];
     var LS = window.ListingStore;
-    var rows = LS.listByContent(g.content_id).filter(function (r) {
+    var G = window.GoodsStore;
+    /* 组合商品按「全部交付内容」合并反查上架位（与商家端商品列表同口径），按 listing_id 去重 */
+    var ids = (G && G.contentIdsOf) ? G.contentIdsOf(g) : [g.content_id];
+    var seen = {};
+    var all = [];
+    ids.filter(Boolean).forEach(function (cid) {
+      LS.listByContent(cid).forEach(function (r) {
+        if (seen[r.listing_id]) return;
+        seen[r.listing_id] = true;
+        all.push(r);
+      });
+    });
+    var rows = all.filter(function (r) {
       return r.default_goods_id === g.goods_id || (r.pay_mode === "free" && r.slot);
     });
     if (!rows.length) return [["上架配置", "尚未上架到小程序模块"]];
@@ -483,7 +510,8 @@
     document.getElementById("dt-id").textContent = item.id;
     document.getElementById("dt-rows").innerHTML = item.rows
       ? item.rows.map(function (r) {
-          return "<tr><td>" + esc(r[0]) + "</td><td>" + esc(r[1]) + '</td><td><span class="badge badge-success">合规</span></td></tr>';
+          /* r[2] === true 表示该行值已是可信 HTML（如「关联内容」带组合徽标），不再转义 */
+          return "<tr><td>" + esc(r[0]) + "</td><td>" + (r[2] ? String(r[1]) : esc(r[1])) + '</td><td><span class="badge badge-success">合规</span></td></tr>';
         }).join("")
       : "<tr><td>审核结果</td><td>" + (item.result === "passed" ? "通过" : "驳回") + "</td><td>" +
         esc(item.remark || "—") + "</td></tr>";

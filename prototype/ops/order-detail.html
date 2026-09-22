@@ -51,7 +51,7 @@
             <div class="kv-row"><span>下单渠道</span><b id="od-source">—</b></div>
             <div class="kv-row" id="od-live-row" style="display:none"><span>关联直播</span><b id="od-live-text">—</b></div>
             <div class="kv-row"><span>订单来源租户</span><b id="od-tenant">—</b></div>
-            <div class="kv-row"><span>内容归属</span><b id="od-content-source">—</b></div>
+            <div class="kv-row"><span>商品来源</span><b id="od-content-source">—</b></div>
             <div class="kv-row"><span>结算模式</span><b id="od-settle-mode">—</b></div>
             <div class="kv-row"><span>推广人</span><b id="od-promoter">—</b></div>
             <div class="kv-row"><span>下单时间</span><b id="od-time">—</b></div>
@@ -123,13 +123,13 @@
       </div>
     </div>
 
-    <!-- 租户与内容来源 + 对账信息 -->
+    <!-- 租户与商品来源 + 对账信息 -->
     <div class="detail-cols">
-      <div class="card"><div class="card-hd"><h2>租户与内容来源</h2></div>
+      <div class="card"><div class="card-hd"><h2>租户与商品来源</h2></div>
         <div class="card-bd">
           <div class="kv">
             <div class="kv-row"><span>订单来源租户</span><b><a class="link" id="od-tenant-link" href="tenants.html">—</a></b></div>
-            <div class="kv-row"><span>内容归属</span><b id="od-content-owner">—</b></div>
+            <div class="kv-row"><span>商品来源</span><b id="od-content-owner">—</b></div>
             <div class="kv-row"><span>分账链路</span><b id="od-settle-channel">—</b></div>
             <div class="kv-row"><span>推广人</span><b id="od-promoter-2">—</b></div>
           </div>
@@ -517,7 +517,7 @@
   setText("od-wecom", d.wecom ? "是" : "否");
   setText("od-reg-source", d.regSource);
 
-  /* ===== 租户与内容来源 ===== */
+  /* ===== 租户与商品来源 ===== */
   var tl = $("od-tenant-link");
   tl.textContent = d.tenant + " →";
   tl.href = "tenants.html";

@@ -209,6 +209,14 @@
     <button class="btn btn-sm" disabled>上一页</button>
     <button class="btn btn-sm">下一页</button>
   </div>
+
+  <div class="card" style="margin-top:16px"><div class="card-bd">
+    <p class="muted" style="font-size:12px;line-height:1.8;margin:0">
+      <b>口径：</b>订单以<b>成交商品</b>为主键（内容不含价格）。
+      <b>「商品来源」</b>表示该成交商品是<b>平台商品</b>还是<b>商家自建商品</b>（字段 <code>content_source</code>），决定分账走链路 A（佣金 20%）还是链路 B（服务费 0.6%）。
+      <br />注意：本列与「交易 · 商品管理 · <a href="wxshop-goods.html" style="color:inherit;text-decoration:underline">微信小店商品</a>」页的「商品来源」<b>不同义</b>——那里指的是微信侧的分发场景（视频号 / 直播，字段 <code>goods_source</code>），与分账无关。
+    </p>
+  </div></div>
 </div>
 
 <!-- ============ 弹窗 / 抽屉 ============ -->
