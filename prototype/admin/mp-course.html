@@ -34,8 +34,11 @@
 
   <!-- 试看策略 -->
   <div class="card" style="margin-bottom:14px">
-    <div class="card-hd"><h2>试看策略</h2><span class="muted" style="margin-left:10px">对应 C 端课程详情页顶部试看封面与目录区，按课程类型分别配置</span></div>
+    <div class="card-hd"><h2>试看策略（默认模板）</h2><span class="muted" style="margin-left:10px">对应 C 端课程详情页顶部试看封面与目录区，按课程类型分别配置</span></div>
     <div class="card-bd">
+      <div class="as-banner" style="margin-bottom:12px">
+        本表只作为<b>新建上架位时的默认取值</b>。<b>实际生效的试看范围由每条内容自己的上架配置决定</b>，请前往 <a href="mp-home.html">首页装修</a> 逐条配置「免费/付费 · 试看范围 · 下单方式 · 成交商品」。
+      </div>
       <table class="as-table">
         <thead>
           <tr>
@@ -104,6 +107,36 @@
     </div>
   </div>
 
+  <!-- 下单方式 → C 端表现 -->
+  <div class="card" style="margin-bottom:14px">
+    <div class="card-hd"><h2>下单方式 → C 端表现</h2><span class="muted" style="margin-left:10px">由「首页装修」的上架配置逐条指定；此处为 C 端映射说明，只读</span></div>
+    <div class="card-bd">
+      <table class="as-table">
+        <thead>
+          <tr><th style="width:190px">内容页展示</th><th style="width:220px">下单方式</th><th>用户路径</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>显示「免费」标记</td>
+            <td>免费内容，无需下单</td>
+            <td>点「立即学习」直接进入学习页，不产生订单与分账。</td>
+          </tr>
+          <tr>
+            <td>不显示价格，按钮为「去购买」</td>
+            <td><b>跳转商品详情页</b>（<code>order_mode=jump_goods</code>）</td>
+            <td>内容页 → 商品详情页（展示商品名 / 价格 / 交付方式 / 售后）→ 购买须知 → 支付结果页。价格只在商品详情页出现。</td>
+          </tr>
+          <tr>
+            <td>直接显示成交商品价格，按钮为「立即购买 ¥x」</td>
+            <td><b>不跳转，按商品金额直接下单</b>（<code>order_mode=inline</code>）</td>
+            <td>内容页原地拉起购买须知（含成交商品与金额）→ 支付结果页，全程不出现商品详情页。订单与分账仍以该成交商品为准。</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="muted" style="margin-top:10px">两种方式都要求成交商品已通过平台审核；<code>inline</code> 模式还要求商品已上架，否则内容页无法下单。</div>
+    </div>
+  </div>
+
   <!-- 学习页配置 -->
   <div class="card" style="margin-bottom:14px">
     <div class="card-hd"><h2>学习页配置</h2><span class="muted" style="margin-left:10px">对应 C 端学习页的目录状态文案、完成按钮与进度记录方式</span></div>
@@ -150,8 +183,8 @@
   <div class="card" style="margin-bottom:14px">
     <div class="card-hd"><h2>内容来源说明</h2><span class="muted" style="margin-left:10px">本页只配置展示形态，不维护课程数据</span></div>
     <div class="card-bd">
-      <div class="muted">课程内容在 <a href="content-video.html">内容 · 线上课</a> 维护，售卖在 <a href="goods.html">交易 · 店铺商品</a> 维护，此处只配置 C 端展示形态。</div>
-      <div class="muted" style="margin-top:8px">推荐顺序：先在线上课建课、在店铺商品定价上架 → 回到本页配置展示 → 订单在 <a href="orders.html">交易 · 订单列表</a> 查看。</div>
+      <div class="muted">课程内容在 <a href="content-video.html">内容 · 线上课</a> 维护（<b>不含价格</b>），售卖价格在 <a href="goods.html">交易 · 商品列表</a> 维护，上架到哪个模块与售卖策略在 <a href="mp-home.html">首页装修</a> 配置，此处只配置 C 端展示形态。</div>
+      <div class="muted" style="margin-top:8px">推荐顺序：先在线上课建课 → 在商品列表定价上架 → 在首页装修完成上架配置 → 回到本页配置展示 → 订单在 <a href="orders.html">交易 · 订单列表</a> 查看。</div>
     </div>
   </div>
 </div>
@@ -176,7 +209,7 @@
 <div class="proto-mask" id="mask"></div>
 
 <script src="../assets/js/proto.js"></script>
-<script src="../assets/js/admin-shell.js?v=14"></script>
+<script src="../assets/js/admin-shell.js?v=23"></script>
 <script>
 function esc(s){ return String(s).replace(/[&<>"']/g,function(c){return({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"})[c];}); }
 function stTag(on){ return on ? '<span class="as-tag green">展示中</span>' : '<span class="as-tag gray">已隐藏</span>'; }
@@ -200,10 +233,10 @@ var TRIAL_GUIDE_LABEL = { "1":"已开启", "0":"不开启" };
 var INFO_ITEMS = [
   { id:"title",  name:"课程标题",      desc:"标题区主标题，如「亲子沟通基础」",        on:true },
   { id:"meta",   name:"节数与学习人数", desc:"标题下方副信息，如「8 节视频 · 312 人已学」", on:true },
-  { id:"price",  name:"现价",          desc:"标题区现价，如「¥199」",                 on:true },
-  { id:"origin", name:"划线原价",       desc:"现价右侧划线价，如「¥299」",             on:true },
+  { id:"price",  name:"现价",          desc:"取自该上架位的「默认成交商品」售价，如「¥199」；免费内容显示「免费学习」", on:true },
+  { id:"origin", name:"划线原价",       desc:"取自默认成交商品的划线价，如「¥299」",   on:true },
   { id:"dir",    name:"目录区标题",     desc:"「目录」二字，隐藏后目录列表仍展示",       on:true },
-  { id:"buybar", name:"底部购买栏",     desc:"底部固定栏「立即购买」",                 on:true }
+  { id:"buybar", name:"底部购买栏",     desc:"底部固定栏「立即购买」；跳商品模式为「去购买」", on:true }
 ];
 
 function renderTrial(){

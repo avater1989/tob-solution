@@ -48,10 +48,13 @@ function fakeEl(tag, id) {
       toggle(c) { this._s.has(c) ? this._s.delete(c) : this._s.add(c); }
     },
     dataset: {}, children: [], parentNode: null, innerText: "", className: "",
+    firstChild: null, firstElementChild: null, nextSibling: null,
     setAttribute(k, v) { if (k === "id") this.id = v; },
     getAttribute() { return null; }, removeAttribute() {}, hasAttribute() { return false; },
     addEventListener() {}, removeEventListener() {},
-    appendChild(c) { this.children.push(c); return c; },
+    appendChild(c) { this.children.push(c); if (!this.firstChild) this.firstChild = c; return c; },
+    insertBefore(c) { this.children.unshift(c); if (!this.firstChild) this.firstChild = c; return c; },
+    removeChild(c) { this.children = this.children.filter((x) => x !== c); return c; },
     querySelector() { return fakeEl(); }, querySelectorAll() { return []; }, closest() { return null; },
     insertAdjacentHTML() {}, focus() {}, click() {}, remove() {},
     getBoundingClientRect() { return { top: 0, left: 0, width: 0, height: 0 }; },
@@ -70,7 +73,9 @@ for (const file of files) {
 
   const defined = new Set([...src.matchAll(/\bid="([^"]+)"/g)].map((m) => m[1]));
   const used = new Set([...src.matchAll(/getElementById\(\s*["']([^"']+)["']\s*\)/g)].map((m) => m[1]));
-  const missing = [...used].filter((id) => !defined.has(id));
+  /* 脚本里用拼接生成的 id（如 id="' + slot + '-goods"'）无法静态枚举，
+     按后缀模板放行，否则会误报 "id 引用缺失"。拼错的 id 仍会被抓到。 */
+  const dynSuffix = [...src.matchAll(/id="'\s*\+\s*[\w.]+\s*\+\s*'(-[a-z][\w-]*)"/g)].map((m) => m[1]);
 
   /* 预置表单初值：桩不解析 HTML，这里手工提取 select 默认项与 input 的 value */
   const seed = new Map();
@@ -93,6 +98,16 @@ for (const file of files) {
     .filter((p) => fs.existsSync(p))
     .map((p) => fs.readFileSync(p, "utf8"))
     .concat(inline);
+  /* 外链脚本（如 admin-shell.js）会用字符串拼出整段 DOM 并注入，
+     其中的 id 不在页面 HTML 里；把这些脚本里的 id="..." 也算作"已定义" */
+  for (const b of blocks) {
+    for (const m of b.matchAll(/\bid="([^"]+)"/g)) defined.add(m[1]);
+  }
+  /* 还有一类是运行时赋值造出来的 id（el.id = "xxx"），同样在 HTML 里找不到 */
+  for (const b of [src, ...blocks]) {
+    for (const m of b.matchAll(/\.id\s*=\s*["']([^"']+)["']/g)) defined.add(m[1]);
+  }
+  const missing = [...used].filter((id) => !defined.has(id) && !dynSuffix.some((s) => id.endsWith(s)));
   const cache = new Map();
   const doc = {
     getElementById(id) { if (!cache.has(id)) cache.set(id, fakeEl("div", id)); return cache.get(id); },
@@ -101,6 +116,7 @@ for (const file of files) {
     addEventListener() {},
     createElement(t) { return fakeEl(t); },
     body: fakeEl("body"), documentElement: fakeEl("html"),
+    head: fakeEl("head"), styleSheets: [],
     currentScript: null, readyState: "complete"
   };
   for (const [id, v] of seed) doc.getElementById(id).value = v;
@@ -116,8 +132,15 @@ for (const file of files) {
   };
   set("window", g);
   set("document", doc);
-  set("localStorage", { getItem() { return null; }, setItem() {}, removeItem() {} });
-  set("location", { href: "file://" + file, search: "", pathname: "/" + label });
+  const store = { getItem() { return null; }, setItem() {}, removeItem() {}, clear() {}, key() { return null; }, length: 0 };
+  set("localStorage", store);
+  set("sessionStorage", { getItem() { return null; }, setItem() {}, removeItem() {}, clear() {}, key() { return null; }, length: 0 });
+  set("location", {
+    href: "file://" + file, search: "", hash: "", pathname: "/" + label,
+    replace() {}, assign() {}, reload() {}, toString() { return "file://" + file; }
+  });
+  /* 页面上常用 new Option(...) 造下拉项 */
+  set("Option", function (text, value) { return { text: String(text), value: value == null ? String(text) : String(value) }; });
   set("setTimeout", function () { return 0; });
   set("clearTimeout", function () {});
   set("Proto", { toast() {}, open() {}, items() { return []; } });

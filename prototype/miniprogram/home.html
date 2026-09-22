@@ -172,14 +172,19 @@
   <script src="../assets/js/proto.js"></script>
   <script src="../assets/js/content-tags.js?v=2"></script>
   <script src="../assets/js/teachers-store.js?v=2"></script>
-  <script src="../assets/js/course-store.js?v=1"></script>
+  <script src="../assets/js/course-store.js?v=2"></script>
+  <script src="../assets/js/prototype-business-store.js"></script>
+  <script src="../assets/js/goods-store.js?v=1"></script>
+  <script src="../assets/js/listing-store.js?v=1"></script>
+  <script src="../assets/js/mp-commerce.js?v=2"></script>
   <script src="../assets/js/mp-shell.js"></script>
-  <script src="../assets/js/mp-commerce.js"></script>
   <script>
   (function () {
     var Store = window.CourseStore;
     var Tags = window.ContentTags;
     var Teachers = window.Teachers;
+    var Mp = window.MpCommerce;
+    var LS = window.ListingStore;
 
     function esc(s) {
       return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) {
@@ -194,13 +199,18 @@
       }).filter(Boolean).slice(0, 2);
     }
 
+    /* 首页露出顺序与内容由「首页装修」的上架配置决定 */
+    function listedIds(slot) {
+      return LS.listBySlot(slot).filter(function (r) { return r.visible && r.status === "active"; })
+        .map(function (r) { return r.content_id; });
+    }
+
     function renderOnline() {
-      var list = Store.list({ status: "enabled" }).filter(function (c) {
-        return c.storeVisible !== false;
-      }).slice(0, 3);
+      var list = listedIds("online").map(function (cid) { return Store.get(cid); })
+        .filter(function (c) { return c && c.storeVisible !== false; }).slice(0, 3);
       document.getElementById("home-online").innerHTML = list.map(function (c) {
         var tags = tagNames(c.tagIds);
-        var priceBtn = c.price > 0 ? ("¥" + c.price) : "免费学";
+        var priceBtn = Mp.priceLabel(c.id, "online").text;
         var ch = Store.chapterCount(c);
         return (
           '<a class="mp-crow" href="course.html?id=' + encodeURIComponent(c.id) + '">' +
@@ -225,20 +235,24 @@
     var OFFLINES = [
       {
         id: "O001", name: "卓越家族培养计划 · 线下工作坊", teacherId: "TCH02",
-        city: "上海", courseStart: "09-28 09:30", price: 299, signed: 86, capacity: 100,
+        city: "上海", courseStart: "09-28 09:30", signed: 86, capacity: 100,
         cover: "../assets/img/covers/classroom.jpg", phase: "报名中", tagIds: ["TG01", "TG02"]
       },
       {
         id: "O002", name: "亲子沟通实战 · 线下沙龙", teacherId: "TCH01",
-        city: "深圳", courseStart: "10-12 14:00", price: 0, signed: 32, capacity: 40,
+        city: "深圳", courseStart: "10-12 14:00", signed: 32, capacity: 40,
         cover: "../assets/img/covers/talk.jpg", phase: "免费", tagIds: ["TG02"]
       }
     ];
 
     function renderOffline() {
-      document.getElementById("home-offline").innerHTML = OFFLINES.map(function (o) {
+      var order = listedIds("offline");
+      var list = order.map(function (cid) {
+        return OFFLINES.filter(function (x) { return x.id === cid; })[0];
+      }).filter(Boolean).slice(0, 3);
+      document.getElementById("home-offline").innerHTML = list.map(function (o) {
         var tags = tagNames(o.tagIds);
-        var btn = o.price > 0 ? ("¥" + o.price) : "报名";
+        var btn = Mp.priceLabel(o.id, "offline").text;
         return (
           '<a class="mp-crow" href="offline-detail.html?id=' + encodeURIComponent(o.id) + '">' +
             '<div class="mp-crow-cover"><img src="' + esc(o.cover) + '" alt="" /></div>' +
@@ -255,22 +269,28 @@
             '<span class="mp-crow-btn">' + btn + "</span>" +
           "</a>"
         );
-      }).join("");
+      }).join("") || '<p style="padding:12px;color:#8c8c8c;font-size:13px">暂无线下课</p>';
     }
 
     var ARTICLES = [
-      { id: "A001", title: "9 月新学期家长指南", cover: "../assets/img/covers/term.jpg", author: "编辑部", tagIds: ["TG04"], reads: 2340, paid: false, price: 0 },
-      { id: "A002", title: "孩子注意力训练方法论", cover: "../assets/img/covers/focus.jpg", author: "张老师", tagIds: ["TG06"], reads: 1560, paid: true, price: 9.9 },
-      { id: "A004", title: "亲子沟通的三个黄金句式", cover: "../assets/img/covers/talk.jpg", author: "李老师", tagIds: ["TG02"], reads: 980, paid: false, price: 0 }
+      { id: "A001", title: "9 月新学期家长指南", cover: "../assets/img/covers/term.jpg", author: "编辑部", tagIds: ["TG04"], reads: 2340 },
+      { id: "A002", title: "孩子注意力训练方法论", cover: "../assets/img/covers/focus.jpg", author: "张老师", tagIds: ["TG06"], reads: 1560 },
+      { id: "A004", title: "亲子沟通的三个黄金句式", cover: "../assets/img/covers/talk.jpg", author: "李老师", tagIds: ["TG02"], reads: 980 }
     ];
 
     function renderArticles() {
-      document.getElementById("home-articles").innerHTML = ARTICLES.map(function (a) {
+      var order = listedIds("article");
+      var list = order.map(function (cid) {
+        return ARTICLES.filter(function (x) { return x.id === cid; })[0];
+      }).filter(Boolean).slice(0, 3);
+      document.getElementById("home-articles").innerHTML = list.map(function (a) {
         var tags = tagNames(a.tagIds);
-        var owned = a.paid && window.MpCommerce && MpCommerce.hasRights(a.id);
-        var pay = !a.paid
+        var lb = Mp.priceLabel(a.id, "article");
+        var pay = lb.ctx.free
           ? '<span style="color:#165dff">免费</span>'
-          : (owned ? '<span style="color:#00b42a">已解锁</span>' : '<span style="color:#d46b08">付费 ¥' + a.price + "</span>");
+          : (lb.ctx.owned
+            ? '<span style="color:#00b42a">已解锁</span>'
+            : '<span style="color:#d46b08">' + (lb.ctx.orderMode === "inline" ? "付费 " + lb.text : "付费") + "</span>");
         return (
           '<a class="mp-arow" href="article-detail.html?id=' + encodeURIComponent(a.id) + '">' +
             '<div class="mp-arow-cover"><img src="' + esc(a.cover) + '" alt="" /></div>' +
@@ -285,7 +305,7 @@
             "</div>" +
           "</a>"
         );
-      }).join("");
+      }).join("") || '<p style="padding:12px;color:#8c8c8c;font-size:13px">暂无精选文章</p>';
     }
 
     renderOnline();

@@ -1,0 +1,25 @@
+{
+  "v": 1,
+  "updated": "2026-09-22T22:41:03",
+  "items": [
+    {
+      "id": "rmucs7pgf7tti",
+      "page": "admin/wxshop-goods.html",
+      "anchor": {
+        "selector": "#admin-content-slot > div > div:nth-of-type(4) > div > table > thead > tr > th:nth-of-type(4)",
+        "selectorIn": "div:nth-of-type(4) > div > table > thead > tr > th:nth-of-type(4)",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "th",
+        "text": "关联商品",
+        "html": "<th>关联商品</th>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "左侧增加「商品来源」字段，枚举：视频号、直播",
+      "status": "open",
+      "createdAt": "2026-09-22T14:41:03.135Z"
+    }
+  ]
+}

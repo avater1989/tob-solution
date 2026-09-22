@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>店铺商品 · 商家管理后台</title>
+<title>商品列表 · 商家管理后台</title>
 <link rel="stylesheet" href="../assets/css/proto.css?v=9" />
 <style>
 .gd-cell { display:flex; align-items:center; gap:10px; }
@@ -11,23 +11,18 @@
 .t-blue { background:#1677ff; } .t-purple { background:#722ed1; } .t-orange { background:#fa8c16; }
 .t-green { background:#52c41a; } .t-cyan { background:#13c2c2; } .t-gray { background:#8c8c8c; }
 .mono { font-family:ui-monospace,Consolas,monospace; font-size:12px; }
-.create-mask, .create-modal, .proto-mask, .proto-modal { display:none; }
-.create-mask.open, .create-modal.open, .proto-mask.open { display:block; }
+.proto-mask, .proto-modal { display:none; }
+.proto-mask.open { display:block; }
 .proto-modal.open { display:flex; }
-.create-mask, .proto-mask { position:fixed; inset:0; background:rgba(0,0,0,.45); z-index:1000; }
-.create-modal { position:fixed; left:50%; top:50%; transform:translate(-50%,-50%); z-index:1001; background:#fff; border-radius:12px; width:560px; max-width:92vw; box-shadow:0 12px 40px rgba(0,0,0,.18); }
-.create-choice { display:grid; grid-template-columns:1fr 1fr; gap:12px; padding:16px 20px 20px; }
-.create-choice a { border:1px solid var(--color-border); border-radius:10px; padding:16px; text-decoration:none; color:inherit; display:block; }
-.create-choice a:hover { border-color:var(--color-primary); background:var(--color-primary-soft); }
-.create-choice a b { display:block; margin-bottom:6px; font-size:15px; }
-.create-choice a span { font-size:12px; color:var(--color-text-secondary); line-height:1.6; }
+.proto-mask { position:fixed; inset:0; background:rgba(0,0,0,.45); z-index:1000; }
 .status-stack { display:flex; flex-direction:column; gap:4px; align-items:flex-start; }
 </style>
 </head>
-<body class="admin-body" data-module="trade" data-nav="goods" data-title="店铺商品" data-crumb="交易 / 商品管理 / 店铺商品">
+<body class="admin-body" data-module="trade" data-nav="goods" data-title="商品列表" data-crumb="交易 / 商品管理 / 商品列表">
 <div id="header-actions">
   <button class="btn" id="btn-batch">批量操作</button>
-  <button class="btn btn-primary" id="btn-create">新建商品</button>
+  <a class="btn" href="goods-edit.html?create_mode=from_platform">通过平台商品创建</a>
+  <a class="btn btn-primary" href="goods-edit.html?create_mode=from_content">新建商品</a>
 </div>
 <div id="page-content" style="display:none">
 
@@ -84,6 +79,7 @@
           <th>关联内容</th>
           <th>类目</th>
           <th>价格</th>
+          <th>成交于模块</th>
           <th>审核</th>
           <th>上架</th>
           <th style="width:220px">操作</th>
@@ -94,35 +90,18 @@
   </div></div>
 
   <div class="toolbar" style="margin-top:8px">
-    <span class="muted">共 <b id="gd-total">0</b> 个店铺商品</span>
+    <span class="muted">共 <b id="gd-total">0</b> 个商品</span>
     <div class="spacer"></div>
     <span class="muted" style="font-size:12px">内容创建商品须提审，运营后台通过后方可上架；平台商品镜像免审</span>
   </div>
 
   <div class="card" style="margin-top:16px"><div class="card-bd">
     <p class="muted" style="font-size:12px;line-height:1.8;margin:0">
-      <b>审核口径：</b>「通过内容创建」保存并选择立即上架 / 提审后进入运营后台「平台审核」队列；商家侧可撤回待审、查看驳回原因并修改后重新提审。
-      「通过平台商品创建」免平台审核，仅可上下架。微信小店审批走微信接口，见「微信小店商品」。
+      <b>两种建品入口：</b>右上角「<b>新建商品</b>」= 通过内容创建（默认路径），填写后提审，运营审批通过方可上架，同一内容可建多个商品；
+      右上角「<b>通过平台商品创建</b>」= 平台已审镜像，免审，不可编辑、仅可上下架。
+      <br /><b>审核口径：</b>内容创建的商品保存并选择立即上架 / 提审后进入运营后台「平台审核」队列；商家侧可撤回待审、查看驳回原因并修改后重新提审。微信小店审批走微信接口，见「微信小店商品」。
     </p>
   </div></div>
-</div>
-
-<div class="create-mask" id="create-mask"></div>
-<div class="create-modal" id="create-modal">
-  <div style="padding:16px 20px;border-bottom:1px solid var(--color-border);display:flex;justify-content:space-between;align-items:center">
-    <h3 style="margin:0;font-size:16px">新建店铺商品</h3>
-    <button type="button" class="btn btn-sm btn-ghost" id="create-close">×</button>
-  </div>
-  <div class="create-choice">
-    <a href="goods-edit.html?create_mode=from_content">
-      <b>通过内容创建</b>
-      <span>填写后提审，运营审批通过方可上架；同一内容可建多个商品。</span>
-    </a>
-    <a href="goods-edit.html?create_mode=from_platform">
-      <b>通过平台商品创建</b>
-      <span>平台已审镜像，免审；不可编辑，仅可上下架。</span>
-    </a>
-  </div>
 </div>
 
 <div class="proto-mask" id="reject-mask"></div>
@@ -144,12 +123,15 @@
 <script src="../assets/js/proto.js"></script>
 <script src="../assets/js/goods-taxonomy.js?v=1"></script>
 <script src="../assets/js/prototype-business-store.js"></script>
+<script src="../assets/js/goods-store.js?v=1"></script>
+<script src="../assets/js/listing-store.js?v=1"></script>
 <script src="../assets/js/share-modal.js"></script>
-<script src="../assets/js/admin-shell.js?v=16"></script>
+<script src="../assets/js/admin-shell.js?v=23"></script>
 <script>
 (function () {
   var Tax = window.GoodsTaxonomy;
   var Biz = window.ProtoBiz;
+  var Goods = window.GoodsStore;
   var rows = [];
   var rejectTarget = null;
 
@@ -161,12 +143,15 @@
   }
 
   function loadRows() {
+    /* 单一数据源：GoodsStore.all() 已做 contents[] 归一化（组合商品） */
+    try { rows = Goods.all(); } catch (e) { rows = []; }
+    if (rows.length) return;
     try {
       if (Biz && typeof Biz.load === "function") {
         var data = Biz.load();
-        rows = (data && data.goodsDemo) ? data.goodsDemo.slice() : [];
+        rows = (data && data.goodsDemo ? data.goodsDemo : []).map(Goods.normalize);
       }
-    } catch (e) {}
+    } catch (e2) {}
     if (!rows.length) {
       rows = [
         { goods_id: "G001", channel: "store", create_mode: "from_content", content_source: "self", content_type: "online_course", content_id: "C003", category_id: "GC02", tag_ids: ["GT01"], name: "AI 学习规划入门", status: "on_sale", audit_status: "approved", price: 199 },
@@ -174,11 +159,8 @@
         { goods_id: "G-DRAFT", channel: "store", create_mode: "from_content", content_source: "self", content_type: "article", content_id: "A001", category_id: "GC07", tag_ids: [], name: "草稿商品", status: "draft", audit_status: "draft", price: 129 },
         { goods_id: "G-REJ01", channel: "store", create_mode: "from_content", content_source: "self", content_type: "plan", content_id: "PL001", category_id: "GC07", tag_ids: [], name: "已驳回商品", status: "draft", audit_status: "rejected", reject_reason: "宣传用语违规", price: 199 },
         { goods_id: "G-PF01", channel: "store", create_mode: "from_platform", content_source: "platform", content_type: "online_course", content_id: "C-PF01", platform_goods_id: "PG001", category_id: "GC02", tag_ids: [], name: "平台精选课", status: "on_sale", audit_status: "approved", price: 39.9 }
-      ];
+      ].map(Goods.normalize);
     }
-    rows.forEach(function (r) {
-      if (!r.audit_status) r.audit_status = r.create_mode === "from_platform" || r.status === "on_sale" ? "approved" : "draft";
-    });
   }
 
   function thumbClass(t) {
@@ -187,18 +169,48 @@
   function thumbText(t) {
     return ({ online_course: "课", offline: "线", article: "文", plan: "计", live: "播" })[t] || "商";
   }
-  function shelfBadge(s) {
-    if (s === "on_sale") return '<span class="badge badge-success">上架中</span>';
-    if (s === "off") return '<span class="badge badge-warn">已下架</span>';
-    return '<span class="badge">未上架</span>';
-  }
-  function auditBadge(a) {
-    if (a === "pending") return '<span class="badge badge-warn">待平台审核</span>';
-    if (a === "approved") return '<span class="badge badge-success">已通过</span>';
-    if (a === "rejected") return '<span class="badge badge-danger">已驳回</span>';
-    return '<span class="badge">草稿</span>';
-  }
+  /* 上架 / 审核状态徽标统一走 Proto.shelfTag（R-UI-010 全局配色一致） */
+  function shelfBadge(s) { return Proto.shelfTag(s); }
+  function auditBadge(a) { return Proto.shelfTag(a); }
   function modeLabel(m) { return m === "from_platform" ? "平台商品" : "内容创建"; }
+
+  /* 内容不含价格；商品指向内容，点内容可回到内容编辑页 */
+  function contentHref(type, cid) {
+    if (!cid) return "";
+    if (type === "online_course") return "content-video-edit.html?id=" + encodeURIComponent(cid);
+    if (type === "offline") return "content-offline-edit.html?id=" + encodeURIComponent(cid);
+    if (type === "article") return "content-article-edit.html?id=" + encodeURIComponent(cid);
+    if (type === "plan") return "assess-plans.html?id=" + encodeURIComponent(cid);
+    if (type === "live") return "live-edit.html?live_id=" + encodeURIComponent(cid);
+    return "";
+  }
+
+  /* 该商品的交付内容（组合商品可多条）：渲染为可点击的内容 ID */
+  function contentCell(r) {
+    var cs = Goods.contentsOf(r);
+    if (!cs.length) return '<span class="mono">—</span>';
+    return cs.map(function (c) {
+      var href = contentHref(c.content_type, c.content_id);
+      var txt = href
+        ? '<a class="mono" href="' + href + '">' + Tax.esc(c.content_id) + "</a>"
+        : '<span class="mono">' + Tax.esc(c.content_id) + "</span>";
+      return txt;
+    }).join("、") + (cs.length > 1 ? ' <span class="badge badge-info">组合 ' + cs.length + " 项</span>" : "");
+  }
+
+  /* 该商品被哪些小程序上架位指定为「默认成交商品」（组合商品按全部交付内容反查） */
+  function slotsUsingGoods(goods) {
+    if (!window.ListingStore || !goods) return [];
+    var slots = [];
+    Goods.contentIdsOf(goods).forEach(function (cid) {
+      ListingStore.listByContent(cid).forEach(function (r) {
+        if (r.default_goods_id !== goods.goods_id) return;
+        var label = ListingStore.SLOT_LABEL[r.slot] || r.slot;
+        if (slots.indexOf(label) < 0) slots.push(label);
+      });
+    });
+    return slots;
+  }
   function nowStr() {
     var d = new Date();
     function p(n) { return n < 10 ? "0" + n : "" + n; }
@@ -217,7 +229,7 @@
     return rows.filter(function (r) {
       if (r.channel && r.channel !== "store") return false;
       if (name && String(r.name).toLowerCase().indexOf(name) < 0 && String(r.goods_id).toLowerCase().indexOf(name) < 0) return false;
-      if (type && r.content_type !== type) return false;
+      if (type && !Goods.contentsOf(r).some(function (c) { return c.content_type === type; })) return false;
       if (mode && r.create_mode !== mode) return false;
       if (cat && r.category_id !== cat) return false;
       if (audit && (r.audit_status || "draft") !== audit) return false;
@@ -276,30 +288,27 @@
       var auditExtra = r.audit_status === "pending" && r.submitted_at
         ? '<br><span class="muted" style="font-size:11px">提交 ' + Tax.esc(r.submitted_at) + "</span>"
         : (r.audit_status === "rejected" ? '<br><a href="#" data-row-act="reason" data-id="' + Tax.esc(r.goods_id) + '" style="font-size:11px">查看原因</a>' : "");
+      var contentCellHtml = contentCell(r);
+      var usedSlots = slotsUsingGoods(r);
+      var typeLabel = Tax.contentTypeLabel(r.content_type) +
+        (Goods.contentsOf(r).length > 1 ? " 等 " + Goods.contentsOf(r).length + " 类" : "");
       return "<tr>" +
         '<td><input type="checkbox" /></td>' +
         '<td><div class="gd-cell"><span class="thumb ' + thumbClass(r.content_type) + '">' + thumbText(r.content_type) + '</span><div><a href="' + editHref + '">' + Tax.esc(r.name) + '</a><br><span class="muted mono">' + Tax.esc(r.goods_id) + "</span></div></div></td>" +
-        "<td>" + Tax.esc(Tax.contentTypeLabel(r.content_type)) + "</td>" +
+        "<td>" + Tax.esc(typeLabel) + "</td>" +
         "<td>" + modeLabel(r.create_mode) + "</td>" +
-        "<td class='mono'>" + Tax.esc(r.content_id || "—") + "</td>" +
+        "<td>" + contentCellHtml + "</td>" +
         "<td>" + Tax.esc(cat) + "</td>" +
         "<td><b>¥" + (r.price != null ? Number(r.price).toFixed(2) : "—") + "</b></td>" +
+        "<td>" + (usedSlots.length ? '<span class="badge badge-success">' + Tax.esc(usedSlots.join("、")) + "</span>" : '<span class="muted">—</span>') + "</td>" +
         "<td><div class='status-stack'>" + auditBadge(r.audit_status || "draft") + auditExtra + "</div></td>" +
         "<td>" + shelfBadge(r.status) + "</td>" +
         '<td class="row-actions">' + buildActs(r) + "</td>" +
         "</tr>";
-    }).join("") || '<tr><td colspan="10" class="muted" style="text-align:center;padding:24px">暂无店铺商品</td></tr>';
+    }).join("") || '<tr><td colspan="11" class="muted" style="text-align:center;padding:24px">暂无商品</td></tr>';
     renderStats();
   }
 
-  function openCreate() {
-    document.getElementById("create-mask").classList.add("open");
-    document.getElementById("create-modal").classList.add("open");
-  }
-  function closeCreate() {
-    document.getElementById("create-mask").classList.remove("open");
-    document.getElementById("create-modal").classList.remove("open");
-  }
   function openReject(row) {
     rejectTarget = row;
     document.getElementById("rj-name").textContent = row.name;
@@ -312,9 +321,6 @@
     document.getElementById("reject-modal").classList.remove("open");
   }
 
-  document.getElementById("btn-create").addEventListener("click", openCreate);
-  document.getElementById("create-close").addEventListener("click", closeCreate);
-  document.getElementById("create-mask").addEventListener("click", closeCreate);
   document.getElementById("reject-close").addEventListener("click", closeReject);
   document.getElementById("reject-close2").addEventListener("click", closeReject);
   document.getElementById("reject-mask").addEventListener("click", closeReject);

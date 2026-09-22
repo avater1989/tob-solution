@@ -724,6 +724,19 @@ td.row-actions {
   margin-right: 4px;
 }
 .tag-teal { background: var(--color-primary-soft); border-color: #bedaff; color: #0e42d2; }
+
+/* ===== 上架状态标签（全局统一）=====
+   已上架 = 绿；未上架 / 已下架 / 草稿 = 灰；待审核 = 橙；已驳回 = 红。
+   由 Proto.shelfTag(status) 生成，内容列表与商品列表共用。 */
+.shelf-tag {
+  display: inline-block; padding: 2px 8px; border-radius: 3px;
+  font-size: 12px; font-weight: 500; flex-shrink: 0;
+}
+.shelf-tag-on       { background: #e8f5e9; color: #00b42a; }
+.shelf-tag-off      { background: #f0f2f5; color: #86909c; }
+.shelf-tag-pending  { background: #fff7e6; color: #d48806; }
+.shelf-tag-rejected { background: #fff1f0; color: #f53f3f; }
+
 .detail-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;

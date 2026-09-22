@@ -29,7 +29,7 @@
     <button class="btn active" data-goto="sec-content">内容信息</button>
     <button class="btn" data-goto="sec-body">图文正文</button>
     <button class="btn" data-goto="sec-status">状态设置</button>
-    <button class="btn" data-goto="sec-pay">付费解锁</button>
+    <button class="btn" data-goto="sec-goods">关联商品</button>
     <button class="btn" data-goto="sec-share">分享设置</button>
   </div>
 
@@ -103,48 +103,19 @@
     </div>
   </div>
 
-  <div class="cm-section" id="sec-pay">
-    <div class="cm-section-hd"><h2>付费解锁</h2></div>
-    <div class="form-grid" style="grid-template-columns:1fr 1fr">
-      <div class="field">
-        <label>免费 / 付费 * <span style="font-weight:400;color:#8c8c8c">默认免费，也可任务化编入学习计划</span></label>
-        <div class="cm-choice">
-          <label><input type="radio" name="pay-mode" value="free" checked> 免费（默认）</label>
-          <label><input type="radio" name="pay-mode" value="paid" id="pay-paid"> 付费解锁</label>
-        </div>
-      </div>
-      <div class="field">
-        <label>解锁条件</label>
-        <select class="input" id="f-unlock">
-          <option>购买关联商品后解锁全文</option>
-          <option>购买任意课程商品解锁</option>
-          <option>完成指定测评后解锁</option>
-        </select>
-      </div>
-      <div class="field" style="grid-column:1/-1">
-        <label>试看内容</label>
-        <textarea class="input" id="f-preview" rows="2" placeholder="付费文章的免费试看段落（未解锁用户可见）"></textarea>
-      </div>
-      <div class="field">
-        <label>关联商品</label>
-        <div style="display:flex;gap:8px;align-items:center">
-          <input class="input" id="f-goods" placeholder="goods_id，如 G-ART-001" style="flex:1" />
-          <a class="btn" href="goods-edit.html?type=article&content_id=A001">创建商品</a>
-          <a class="btn" href="goods.html?content_id=A001">查看关联商品</a>
-        </div>
-      </div>
-      <div class="field">
-        <label>上下架状态</label>
-        <select class="input" id="f-pub">
-          <option>草稿</option><option>待审核</option><option>已上架</option><option>已下架</option>
-        </select>
-      </div>
-      <div class="field" style="grid-column:1/-1">
-        <label>阅读数据（示意）</label>
-        <div class="muted" style="font-size:13px">阅读 UV 1,286 · 付费解锁 328 · 转化率 25.5% · <a href="board-convert.html">查看交易分析</a></div>
-      </div>
+  <div class="cm-section" id="sec-goods">
+    <div class="cm-section-hd">
+      <h2>关联商品 <span class="hint">文章不承载价格；是否付费、售价多少由商家关联的商品决定，同一篇可建多个商品</span></h2>
     </div>
-    <p class="muted" style="font-size:12px;margin:10px 0 0">默认免费可直接阅读；也可<a id="link-taskify" href="content-tasks.html?type=article">设为学习任务</a>。付费时闭环：文章 → 商品 → 订单 → 阅读权益。</p>
+    <table class="data">
+      <thead>
+        <tr><th>商品</th><th style="width:110px">价格</th><th style="width:110px">审核</th><th style="width:100px">上架</th><th>已上架模块</th></tr>
+      </thead>
+      <tbody id="goods-tbody"></tbody>
+    </table>
+    <p class="muted" style="font-size:12px;margin:10px 0 0">
+      付费与免费、试看范围、付费后跳商品详情还是直接下单，均由商家在「交易 · 店铺运营 · 首页装修」的上架配置里决定；运营侧只在 <a href="audit.html">内容审核</a> 与商品审核队列中把关。
+    </p>
   </div>
 
   <div class="cm-section" id="sec-share">
@@ -180,6 +151,9 @@
 
 <script src="../assets/js/proto.js"></script>
 <script src="../assets/js/content-tags.js?v=2"></script>
+<script src="../assets/js/prototype-business-store.js"></script>
+<script src="../assets/js/goods-store.js?v=1"></script>
+<script src="../assets/js/listing-store.js?v=1"></script>
 <script src="../assets/js/share-modal.js?v=1"></script>
 <script src="../assets/js/ops-shell.js?v=16"></script>
 <script>
@@ -189,6 +163,8 @@ var PRESET = {
   A003: { name:"家庭情绪急救指南", tagIds:["TG03","TG01"], author:"李老师", intro:"冲突场景下的情绪急救步骤。", body:"先暂停、再命名情绪、最后再谈规则。" }
 };
 var Tags = window.ContentTags;
+var Goods = window.GoodsStore;
+var Listing = window.ListingStore;
 var id = new URLSearchParams(location.search).get("id") || "";
 var isNew = !id || !PRESET[id];
 document.getElementById("e-title").textContent = isNew ? "新建图文" : "编辑文章";
@@ -222,6 +198,31 @@ if (!isNew) {
   fShareDesc.placeholder = PRESET[id].intro;
 }
 updShareCnt();
+
+/* ---------- 关联商品（运营视角） ---------- */
+function esc2(s) {
+  return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) {
+    return ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c];
+  });
+}
+/* 上架 / 审核状态徽标统一走 Proto.shelfTag（R-UI-010 全局配色一致） */
+function auditTag(a) { return Proto.shelfTag(a); }
+function shelfTag(s) { return Proto.shelfTag(s); }
+(function renderGoods() {
+  var cid = id || "A001";
+  var rows = Goods.listByContent(cid);
+  document.getElementById("goods-tbody").innerHTML = rows.length ? rows.map(function (g) {
+    var used = Listing.listByContent(cid).filter(function (r) { return r.default_goods_id === g.goods_id; });
+    return "<tr>" +
+      '<td><a href="../admin/goods-edit.html?create_mode=' + encodeURIComponent(g.create_mode || "from_content") +
+        "&goods_id=" + encodeURIComponent(g.goods_id) + "&content_type=article&content_id=" + encodeURIComponent(cid) + '">' + esc2(g.name) + "</a></td>" +
+      "<td><b>¥" + Number(g.price || 0).toFixed(2) + "</b></td>" +
+      "<td>" + auditTag(g.audit_status) + "</td>" +
+      "<td>" + shelfTag(g.status) + "</td>" +
+      "<td>" + (used.length ? esc2(used.map(function (r) { return Listing.SLOT_LABEL[r.slot] || r.slot; }).join("、")) : '<span class="muted">—</span>') + "</td>" +
+      "</tr>";
+  }).join("") : '<tr><td colspan="5" class="muted" style="text-align:center;padding:24px">该文章尚无商家关联商品</td></tr>';
+})();
 document.getElementById("btn-share-preview").addEventListener("click", function(){
   var p = !isNew ? PRESET[id] : null;
   var cover = "../assets/img/covers/" + (id === "A002" ? "focus" : id === "A003" ? "emotion" : "term") + ".jpg";

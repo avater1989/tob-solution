@@ -37,11 +37,15 @@
   <script src="../assets/js/proto.js"></script>
   <script src="../assets/js/content-tags.js?v=2"></script>
   <script src="../assets/js/teachers-store.js?v=2"></script>
+  <script src="../assets/js/prototype-business-store.js"></script>
+  <script src="../assets/js/goods-store.js?v=1"></script>
+  <script src="../assets/js/listing-store.js?v=1"></script>
+  <script src="../assets/js/mp-commerce.js?v=2"></script>
   <script src="../assets/js/mp-shell.js"></script>
-  <script src="../assets/js/mp-commerce.js"></script>
   <script>
   var Tags = window.ContentTags;
   var Teachers = window.Teachers;
+  var Mp = window.MpCommerce;
 
   var COURSES = {
     O001: {
@@ -65,8 +69,6 @@
       expected: 80,
       capacity: 100,
       signed: 86,
-      access: "paid",
-      price: 299,
       cover: "../assets/img/covers/classroom.jpg"
     },
     O002: {
@@ -90,8 +92,6 @@
       expected: 35,
       capacity: 40,
       signed: 32,
-      access: "free",
-      price: 0,
       cover: "../assets/img/covers/talk.jpg"
     },
     O003: {
@@ -115,27 +115,11 @@
       expected: 25,
       capacity: 30,
       signed: 0,
-      access: "paid",
-      price: 999,
       cover: "../assets/img/covers/parent.jpg"
     }
   };
 
-  var RIGHTS_KEY = "mp_offline_rights_v1";
-  function readRights() {
-    try { return JSON.parse(localStorage.getItem(RIGHTS_KEY) || "{}") || {}; }
-    catch (e) { return {}; }
-  }
-  function hasRights(cid) {
-    var m = readRights();
-    return !!(m[cid] && m[cid].valid);
-  }
-  function grantRights(cid) {
-    var m = readRights();
-    m[cid] = { valid: true, grantedAt: new Date().toISOString() };
-    localStorage.setItem(RIGHTS_KEY, JSON.stringify(m));
-  }
-
+  /* 报名资格（免费 / 付费）与价格取自本场次的上架配置与成交商品，场次本身不含价格 */
   function esc(s) {
     return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) {
       return ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c];
@@ -169,14 +153,17 @@
     var ss = new Date(o.signupStart).getTime();
     var se = new Date(o.signupEnd).getTime();
     var ce = new Date(o.courseEnd).getTime();
-    if (hasRights(o.id)) return { ok: false, owned: true, reason: "", label: "已报名" };
+    if (octx.owned) return { ok: false, owned: true, reason: "", label: "已报名" };
     if (now > ce) return { ok: false, owned: false, reason: "课程已结束", label: "已结束" };
     if (now < ss) return { ok: false, owned: false, reason: "报名尚未开始（" + fmt(o.signupStart) + " 起）", label: "报名未开始" };
     if (now > se) return { ok: false, owned: false, reason: "报名已截止", label: "报名截止" };
     if (o.capacity && o.signed >= o.capacity) return { ok: false, owned: false, reason: "名额已满", label: "已满员" };
-    if (o.access === "paid") return { ok: true, owned: false, reason: "", label: "立即购票 ¥" + o.price };
-    return { ok: true, owned: false, reason: "", label: "立即报名" };
+    if (octx.free) return { ok: true, owned: false, reason: "", label: "立即报名" };
+    if (octx.orderMode === "inline") return { ok: true, owned: false, reason: "", label: "立即购票 ¥" + offlinePriceTxt() };
+    return { ok: true, owned: false, reason: "", label: "去购买" };
   }
+
+  function offlinePriceTxt() { return Number(octx.price || 0).toFixed(2).replace(/\.00$/, ""); }
 
   var qs = new URLSearchParams(location.search);
   var id = qs.get("id") || "O001";
@@ -189,7 +176,12 @@
       signupEnd: "2026-08-10T23:59:00"
     });
   }
-  if (qs.get("signed") === "1") grantRights(o.id);
+  var octx = Mp.context(id, "offline");
+
+  if (qs.get("signed") === "1" && octx.goods_id) {
+    Mp.grantRights(octx.goods_id, { source: octx.free ? "free" : "pay", content_id: id });
+    octx = Mp.context(id, "offline");
+  }
 
   var gate = gateState(o);
   var phase = derivePhase(o);
@@ -201,9 +193,15 @@
     return t ? '<span class="mp-crow-tag">' + esc(t.name) + "</span>" : "";
   }).join("");
 
-  var priceHtml = o.access === "paid"
-    ? '<div style="color:#dc2626;font-size:22px;font-weight:700;margin-top:8px">¥' + o.price + "</div>"
-    : '<div style="color:#00b42a;font-size:18px;font-weight:700;margin-top:8px">免费报名</div>';
+  var priceHtml;
+  if (octx.free) {
+    priceHtml = '<div style="color:#00b42a;font-size:18px;font-weight:700;margin-top:8px">免费报名</div>';
+  } else if (octx.orderMode === "inline") {
+    priceHtml = '<div style="color:#dc2626;font-size:22px;font-weight:700;margin-top:8px">¥' + offlinePriceTxt() + "</div>" +
+      '<div style="font-size:12px;color:#86909c;margin-top:2px">门票商品 · ' + esc(octx.goods_name || "—") + "</div>";
+  } else {
+    priceHtml = '<div style="color:#165dff;font-size:15px;font-weight:600;margin-top:8px">付费报名 · 点击「去购买」查看门票与价格</div>';
+  }
 
   document.getElementById("od-root").innerHTML =
     '<div style="height:160px;background:url(' + esc(o.cover) + ') center/cover"></div>' +
@@ -251,28 +249,16 @@
 
   cta.addEventListener("click", function () {
     if (!gate.ok) return;
-    if (o.access === "free") {
-      grantRights(o.id);
-      Proto.toast("报名成功");
-      setTimeout(function () {
-        location.href = "offline-detail.html?id=" + encodeURIComponent(o.id) + "&signed=1";
-      }, 400);
-      return;
-    }
-    MpCommerce.openBuyNotice({
-      catalogId: "offlineTicket",
-      from: "offline",
-      price: String(o.price),
-      course: o.id,
+    Mp.buy(o.id, {
+      slot: "offline",
       title: o.name + " · 门票",
-      item: {
-        title: o.name + " · 门票",
-        typeLabel: "线下门票",
-        include: "本场线下课报名资格（含签到入场）",
-        startHow: "支付成功后可在详情页查看报名状态；请于签到时间到场",
-        validityStart: "支付成功即获得本场报名资格"
-      },
-      returnUrl: "offline-detail.html?id=" + encodeURIComponent(o.id) + "&signed=1"
+      returnUrl: "offline-detail.html?id=" + encodeURIComponent(o.id) + "&signed=1",
+      onFree: function () {
+        Proto.toast("报名成功");
+        setTimeout(function () {
+          location.href = "offline-detail.html?id=" + encodeURIComponent(o.id) + "&signed=1";
+        }, 400);
+      }
     });
   });
   </script>

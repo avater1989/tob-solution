@@ -84,6 +84,8 @@
 
 <script src="../assets/js/proto.js"></script>
 <script src="../assets/js/content-tags.js?v=2"></script>
+<script src="../assets/js/prototype-business-store.js"></script>
+<script src="../assets/js/goods-store.js?v=1"></script>
 <script src="../assets/js/share-modal.js?v=1"></script>
 <script src="../assets/js/ops-shell.js?v=16"></script>
 <script>
@@ -99,17 +101,18 @@ setTimeout(function() {
 var ARTICLES = [
   { id: "A001", title: "9 月新学期家长指南", cover: "../assets/img/covers/term.jpg",
     author: "编辑部", tagIds: ["TG04"], date: "2026-08-25", reads: 2340, words: 1280,
-    status: "已上架", statusType: "pass", onShelf: true, payMode: "free" },
+    status: "已上架", onShelf: true },
   { id: "A002", title: "孩子注意力训练方法论", cover: "../assets/img/covers/focus.jpg",
     author: "张老师", tagIds: ["TG06", "TG04"], date: "2026-08-30", reads: 1560, words: 980,
-    status: "已上架", statusType: "pass", onShelf: true, payMode: "free" },
+    status: "已上架", onShelf: true },
   { id: "A003", title: "家庭情绪急救指南", cover: "../assets/img/covers/emotion.jpg",
     author: "李老师", tagIds: ["TG03", "TG01"], date: "—", reads: 0, words: 320,
-    status: "已下架", statusType: "review", onShelf: false, payMode: "free" }
+    status: "已下架", onShelf: false }
 ];
 
 var filterTagIds = [];
 var filterStatus = "";
+var Goods = window.GoodsStore;
 var filterKeyword = "";
 var Tags = window.ContentTags;
 var tagFilter = Tags.mountTreeSelect("#ca-tag", {
@@ -145,8 +148,7 @@ function renderList() {
         '<div class="ca-info">' +
           '<div class="ca-title">' + esc(a.title) +
             Tags.labelsHtml(a.tagIds) +
-            '<span class="ca-cat" style="background:#f6ffed;color:#389e0d">' + (a.payMode === "paid" ? "付费" : "免费") + '</span>' +
-            '<span class="audit-badge ' + a.statusType + '">' + esc(a.status) + '</span>' +
+            Proto.shelfTag(a.status) +
           '</div>' +
           '<div class="ca-meta">' +
             '<span><b>ID:</b> ' + esc(a.id) + '</span>' +
@@ -154,12 +156,12 @@ function renderList() {
             '<span><b>上架:</b> ' + esc(a.date) + '</span>' +
             '<span><b>阅读:</b> ' + a.reads.toLocaleString() + '</span>' +
             '<span><b>字数:</b> ' + a.words.toLocaleString() + '</span>' +
+            '<span><b>关联商品:</b> ' + Goods.listByContent(a.id).length + '</span>' +
           '</div>' +
         '</div>' +
         '<div class="ca-actions">' +
-          '<button class="btn" data-share="' + a.id + '"' + (a.onShelf ? '' : ' disabled') + '>分享</button>' +
+          '<button class="btn" data-share="' + a.id + '"' + (a.onShelf ? '' : ' disabled') + '>分享设置</button>' +
           '<a class="btn" href="content-article-detail.html?id=' + a.id + '">查看图文</a>' +
-          '<a class="btn" href="content-tasks.html?type=article&ref=' + a.id + '">设为任务</a>' +
           (a.onShelf
             ? '<button class="btn" data-shelf-off="' + a.id + '">下架</button>'
             : '<a class="btn btn-primary" href="content-article-edit.html?id=' + a.id + '">编辑</a>' +
@@ -205,13 +207,13 @@ document.addEventListener("click", function(e) {
   var off = e.target.closest("[data-shelf-off]");
   if (off) {
     var a = ARTICLES.find(function(x){ return x.id === off.getAttribute("data-shelf-off"); });
-    if (a) { a.onShelf = false; a.status = "已下架"; a.statusType = "review"; renderList(); Proto.toast("已下架"); }
+    if (a) { a.onShelf = false; a.status = "已下架"; renderList(); Proto.toast("已下架"); }
     return;
   }
   var on = e.target.closest("[data-shelf-on]");
   if (on) {
     var a2 = ARTICLES.find(function(x){ return x.id === on.getAttribute("data-shelf-on"); });
-    if (a2) { a2.onShelf = true; a2.status = "已上架"; a2.statusType = "pass"; renderList(); Proto.toast("已上架"); }
+    if (a2) { a2.onShelf = true; a2.status = "已上架"; renderList(); Proto.toast("已上架"); }
     return;
   }
   var del = e.target.closest("[data-del]");

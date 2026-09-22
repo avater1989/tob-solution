@@ -26,6 +26,7 @@
   <div class="cm-tabs" id="anchors">
     <button class="btn active" data-tab="sec-base">基础信息</button>
     <button class="btn" data-tab="sec-time">时间与名额</button>
+    <button class="btn" data-tab="sec-goods">关联商品</button>
     <button class="btn" data-tab="sec-access">报名与上架</button>
   </div>
 
@@ -55,10 +56,6 @@
           <option value="hot">热门课</option>
           <option value="premium">精品课</option>
         </select>
-      </div>
-      <div class="field">
-        <label>课程费（元）</label>
-        <input class="input" id="f-price" type="number" min="0" step="0.01" placeholder="0 表示免费" />
       </div>
       <div class="field">
         <label>封面图</label>
@@ -132,18 +129,22 @@
     <p class="paid-hint">建议：签到窗口落在课程开始前；名额限制 ≥ 预计人数。</p>
   </div>
 
+  <div class="cm-section tab-panel" id="sec-goods">
+    <div class="cm-section-hd">
+      <h2>关联商品 <span class="hint">线下课不承载价格；门票价由商家自建的门票商品决定</span></h2>
+    </div>
+    <table class="data">
+      <thead>
+        <tr><th>商品</th><th style="width:110px">价格</th><th style="width:110px">审核</th><th style="width:100px">上架</th><th>已上架模块</th></tr>
+      </thead>
+      <tbody id="goods-tbody"></tbody>
+    </table>
+    <p class="muted" style="font-size:12px;margin:10px 0 0">报名资格免费或付费、试看与下单方式，由商家在「交易 · 店铺运营 · 首页装修」的上架配置里决定。</p>
+  </div>
+
   <div class="cm-section tab-panel" id="sec-access">
     <div class="cm-section-hd"><h2>报名与上架</h2></div>
-    <div class="field">
-      <label>报名方式</label>
-      <div class="cm-choice">
-        <label><input type="radio" name="access" value="free" checked> 免费报名</label>
-        <label><input type="radio" name="access" value="paid"> 付费门票</label>
-      </div>
-      <div class="paid-box" id="paid-box">
-        <p class="paid-hint" style="margin:0">付费时使用上方「课程费」作为门票价，并生成线下门票商品（原型）。</p>
-      </div>
-    </div>
+    <div class="cm-alert" id="access-hint" style="margin-bottom:12px"></div>
     <div class="field" style="margin-top:12px">
       <label>店铺显示</label>
       <div class="cm-choice">
@@ -157,15 +158,20 @@
 <script src="../assets/js/proto.js"></script>
 <script src="../assets/js/content-tags.js?v=2"></script>
 <script src="../assets/js/teachers-store.js?v=2"></script>
+<script src="../assets/js/prototype-business-store.js"></script>
+<script src="../assets/js/goods-store.js?v=1"></script>
+<script src="../assets/js/listing-store.js?v=1"></script>
 <script src="../assets/js/ops-shell.js?v=16"></script>
 <script>
 var Tags = window.ContentTags;
+var Goods = window.GoodsStore;
+var Listing = window.ListingStore;
 var Teachers = window.Teachers;
 
 var PRESET = {
   O001: {
     name: "卓越家族培养计划 · 线下工作坊", term: "秋启 01 期", teacherId: "TCH02",
-    tagIds: ["TG01", "TG02"], badge: "hot", price: 299,
+    tagIds: ["TG01", "TG02"], badge: "hot",
     cover: "../assets/img/covers/classroom.jpg",
     address: "上海市浦东新区陆家嘴环路 1000 号 3F",
     intro: "两天沉浸式工作坊，聚焦家族沟通与边界。",
@@ -179,7 +185,7 @@ var PRESET = {
   },
   O002: {
     name: "亲子沟通实战 · 线下沙龙", term: "周末场", teacherId: "TCH01",
-    tagIds: ["TG02", "TG04"], badge: "premium", price: 0,
+    tagIds: ["TG02", "TG04"], badge: "premium",
     cover: "../assets/img/covers/talk.jpg",
     address: "深圳市南山区科技园南路 8 号活动厅",
     intro: "半天沙龙，现场演练亲子对话。",
@@ -193,7 +199,7 @@ var PRESET = {
   },
   O003: {
     name: "学习习惯养成 · 线下营", term: "冬令营", teacherId: "TCH03",
-    tagIds: ["TG06", "TG04"], badge: "", price: 999,
+    tagIds: ["TG06", "TG04"], badge: "",
     cover: "../assets/img/covers/parent.jpg",
     address: "北京市海淀区中关村大街 1 号营地",
     intro: "三天两夜集训，培养自主学习习惯。",
@@ -210,7 +216,7 @@ var PRESET = {
 var id = new URLSearchParams(location.search).get("id") || "";
 var isNew = !id || !PRESET[id];
 var data = isNew ? {
-  name: "", term: "", teacherId: "", tagIds: [], badge: "", price: 0,
+  name: "", term: "", teacherId: "", tagIds: [], badge: "",
   cover: "../assets/img/covers/classroom.jpg", address: "", intro: "", outlineText: "",
   detail: "", purchaseNotes: "",
   signupStart: "", signupEnd: "", courseStart: "", courseEnd: "",
@@ -227,7 +233,6 @@ document.getElementById("f-name").value = data.name || "";
 document.getElementById("f-term").value = data.term || "";
 document.getElementById("f-teacher").value = data.teacherId || "";
 document.getElementById("f-badge").value = data.badge || "";
-document.getElementById("f-price").value = data.price || 0;
 document.getElementById("f-cover-img").src = data.cover || "../assets/img/covers/classroom.jpg";
 document.getElementById("f-address").value = data.address || "";
 document.getElementById("f-intro").value = data.intro || "";
@@ -242,18 +247,43 @@ document.getElementById("f-checkin-start").value = data.checkinStart || "";
 document.getElementById("f-checkin-end").value = data.checkinEnd || "";
 document.getElementById("f-expected").value = data.expected || "";
 document.getElementById("f-capacity").value = data.capacity || "";
-if (data.access === "paid") {
-  document.querySelector('input[name="access"][value="paid"]').checked = true;
-}
 
-function syncPaid() {
-  var paid = document.querySelector('input[name="access"]:checked').value === "paid";
-  document.getElementById("paid-box").classList.toggle("show", paid);
+/* ---------- 关联商品（运营视角） ---------- */
+function esc(s) {
+  return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) {
+    return ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c];
+  });
 }
-document.querySelectorAll('input[name="access"]').forEach(function (r) {
-  r.addEventListener("change", syncPaid);
-});
-syncPaid();
+/* 上架 / 审核状态徽标统一走 Proto.shelfTag（R-UI-010 全局配色一致） */
+function auditTag(a) { return Proto.shelfTag(a); }
+function shelfTag(s) { return Proto.shelfTag(s); }
+(function renderGoods() {
+  var rows = Goods.listByContent(id);
+  var slots = Listing.activeSlotsOf(id);
+  document.getElementById("goods-tbody").innerHTML = rows.length ? rows.map(function (g) {
+    var used = Listing.listByContent(id).filter(function (r) { return r.default_goods_id === g.goods_id; });
+    return "<tr>" +
+      '<td><a href="../admin/goods-edit.html?create_mode=' + encodeURIComponent(g.create_mode || "from_content") +
+        "&goods_id=" + encodeURIComponent(g.goods_id) + "&content_id=" + encodeURIComponent(id) + '">' + esc(g.name) + '</a></td>' +
+      "<td><b>¥" + Number(g.price || 0).toFixed(2) + "</b></td>" +
+      "<td>" + auditTag(g.audit_status) + "</td>" +
+      "<td>" + shelfTag(g.status) + "</td>" +
+      "<td>" + (used.length ? esc(used.map(function (r) { return Listing.SLOT_LABEL[r.slot] || r.slot; }).join("、")) : '<span class="muted">—</span>') + "</td>" +
+      "</tr>";
+  }).join("") : '<tr><td colspan="5" class="muted" style="text-align:center;padding:24px">该场次尚无关联门票商品</td></tr>';
+
+  var payable = rows.filter(function (g) { return g.price > 0; });
+  var hint = document.getElementById("access-hint");
+  if (!rows.length && data._legacyPrice) {
+    hint.innerHTML = "本场次旧版本带有课程费 <b>¥" + data._legacyPrice + "</b>，内容已不承载价格，请商家补建门票商品。";
+  } else if (payable.length) {
+    hint.innerHTML = "已关联 " + payable.length + " 个付费门票商品（最低 ¥" +
+      Math.min.apply(null, payable.map(function (g) { return g.price; })).toFixed(2) +
+      "），C 端报名需付费；" + (slots.length ? "当前已上架至 " + esc(slots.join("、")) + "。" : "尚未上架到小程序模块。");
+  } else {
+    hint.innerHTML = "当前无付费商品，本场为免费报名。";
+  }
+})();
 
 function updCnt() {
   document.getElementById("name-cnt").textContent = (document.getElementById("f-name").value || "").length + "/45";

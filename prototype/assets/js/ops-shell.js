@@ -60,11 +60,9 @@
   var sidebars = {
     workbench: [
       {
-        group: "经营任务中心",
+        group: "概览",
         links: [
-          { id: "dashboard", href: "dashboard.html#today", label: "今日经营" },
-          { id: "dashboard-todo", href: "dashboard.html#todo", label: "我的待办" },
-          { id: "dashboard-alert", href: "dashboard.html#alert", label: "异常提醒" },
+          { id: "dashboard", href: "dashboard.html#today", label: "工作台" },
         ],
       },
     ],

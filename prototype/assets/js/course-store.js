@@ -1,11 +1,18 @@
-/* 线上课共享 Store（商家端 / 运营端）
+/* 线上课共享 Store（商家端 / 运营端 / C 端）
  * 统一原系列课 + 单视频课：基础字段 + 章节（一章一视频）+ 观看/评论/收藏统计
  * 兼容：window.SeriesStore 指向同一实现，便于旧页重定向前过渡
+ *
+ * v3（内容 / 商品 / 上架 三层解耦）：
+ *   - 内容实体不再承载价格，价格只存在于商品（GoodsStore）
+ *   - 旧 price 迁移到 _legacyPrice，仅用于「待补建商品」人工核对，UI 永不渲染
+ *   - goodsIds / goodsId 降级为只读派生，权威源是商品的 content_id（GoodsStore.listByContent）
+ *   - chapters[].free 语义收窄为「允许试看」声明，实际开放范围由 ListingStore.trial_scope 决定
  */
 (function (global) {
   var KEY = "tob_course_v2";
   var SEQ_KEY = "tob_course_seq_v1";
   var OLD_KEY = "tob_series_v1";
+  var SCHEMA_VER = "v3";
 
   var STATUS = {
     draft: "draft",
@@ -81,7 +88,12 @@
       }
     }
     c.badge = c.badge || "";
-    c.price = typeof c.price === "number" ? c.price : (parseFloat(c.price) || 0);
+    /* v3 迁移：内容不再承载价格；旧值转入 _legacyPrice 供「待补建商品」核对 */
+    var legacy = typeof c.price === "number" ? c.price : (parseFloat(c.price) || 0);
+    if (legacy > 0 && !c._legacyPrice) c._legacyPrice = legacy;
+    c._legacyPrice = typeof c._legacyPrice === "number" ? c._legacyPrice : (parseFloat(c._legacyPrice) || 0);
+    delete c.price;
+    c.schemaVer = SCHEMA_VER;
     c.outlineText = c.outlineText || "";
     c.purchaseNotes = c.purchaseNotes || "";
     c.views = typeof c.views === "number" ? c.views : (c.students || 0);
@@ -89,7 +101,7 @@
     c.favorites = typeof c.favorites === "number" ? c.favorites : 0;
     c.commentList = Array.isArray(c.commentList) ? c.commentList : [];
     c.chapters = (c.chapters || []).map(function (ch) { return normalizeChapter(ch, c.id); });
-    /* 内容 ↔ 商品 1:N：兼容旧字段 goodsId */
+    /* 内容 ↔ 商品 1:N：v3 起权威源为商品的 content_id，此处仅保留旧字段兼容读取 */
     if (Array.isArray(c.goodsIds)) {
       c.goodsIds = c.goodsIds.filter(Boolean);
     } else if (c.goodsId) {
@@ -111,7 +123,6 @@
         teacher: "张老师",
         tagIds: ["TG05", "TG04"],
         badge: "hot",
-        price: 199,
         cover: "../assets/img/covers/reading.jpg",
         intro: "针对 6-12 岁儿童阅读兴趣培养，从绘本到章节书的进阶路径。",
         outlineText: "共 4 章：认识绘本 → 亲子共读 → 章节书进阶 → 阅读习惯",
@@ -149,7 +160,6 @@
         teacher: "李老师",
         tagIds: ["TG03", "TG01"],
         badge: "premium",
-        price: 299,
         cover: "../assets/img/covers/emotion.jpg",
         intro: "8 周系统训练，帮助家长识别情绪、管理情绪、与孩子正向沟通。",
         outlineText: "第 1 周：目标与觉察",
@@ -178,7 +188,6 @@
         teacher: "王博士",
         tagIds: ["TG07", "TG06"],
         badge: "",
-        price: 99,
         cover: "../assets/img/covers/ai.jpg",
         intro: "AI 助力学习规划，实操课让孩子学会用 AI 工具提升学习效率。",
         outlineText: "AI 工具入门",
@@ -210,7 +219,6 @@
         teacher: "平台教研",
         tagIds: ["TG02", "TG01"],
         badge: "premium",
-        price: 0,
         cover: "../assets/img/covers/series.jpg",
         intro: "平台下发的标准线上课，商家侧只读，可上下架用于店铺售卖。",
         outlineText: "沟通关键 + 情绪优先",
@@ -385,7 +393,6 @@
       teacher: "",
       tagIds: [],
       badge: "",
-      price: 0,
       cover: "../assets/img/covers/reading.jpg",
       intro: "",
       outlineText: "",
@@ -401,6 +408,8 @@
       favorites: 0,
       commentList: [],
       goodsIds: [],
+      _legacyPrice: 0,
+      schemaVer: SCHEMA_VER,
       updatedAt: nowStr(),
       submittedAt: "",
       rejectReason: "",
@@ -498,6 +507,8 @@
     return list({ status: STATUS.pending_audit });
   }
 
+  /* 【已降级 · v3】内容↔商品关系的权威源是商品的 content_id；
+   * 以下写入方法仅为兼容旧页面保留，新代码请用 GoodsStore.listByContent / GoodsStore.save */
   function setGoodsId(id, goodsId) {
     return addGoodsId(id, goodsId);
   }
@@ -512,7 +523,25 @@
 
   function listGoodsIds(id) {
     var c = get(id);
-    return c ? (c.goodsIds || []).slice() : [];
+    if (!c) return [];
+    /* 权威源优先：按商品 content_id 反查 */
+    if (global.GoodsStore && global.GoodsStore.listByContent) {
+      var real = global.GoodsStore.listByContent(id).map(function (g) { return g.goods_id; });
+      if (real.length) return real;
+    }
+    return (c.goodsIds || []).slice();
+  }
+
+  /** 待补建商品：内容曾带价但尚无任何关联商品（v3 迁移遗留，需人工确认） */
+  function needsGoods(course) {
+    if (!course) return false;
+    if (course.status === "draft" && !course._legacyPrice) return false;
+    if (!course._legacyPrice) return false;
+    return listGoodsIds(course.id).length === 0;
+  }
+
+  function listNeedingGoods() {
+    return list().filter(needsGoods);
   }
 
   function resetSeed() {
@@ -522,6 +551,7 @@
 
   var api = {
     KEY: KEY,
+    SCHEMA_VER: SCHEMA_VER,
     STATUS: STATUS,
     STATUS_LABEL: STATUS_LABEL,
     STATUS_BADGE: STATUS_BADGE,
@@ -548,6 +578,8 @@
     setGoodsId: setGoodsId,
     addGoodsId: addGoodsId,
     listGoodsIds: listGoodsIds,
+    needsGoods: needsGoods,
+    listNeedingGoods: listNeedingGoods,
     chapterCount: chapterCount,
     durationSummary: durationSummary,
     teacherName: teacherName,

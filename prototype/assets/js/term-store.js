@@ -4,7 +4,28 @@
  */
 (function (global) {
   var KEY = "merchant_term_store_v2";
-  var STAFF = ["赵老师", "阮荣均", "王助教", "李管理", "刘助教", "陈奕均"];
+  /* 组织架构（演示种子）：末级部门取自「系统管理 · 部门管理」，
+     承接助教只能从这些组织节点中勾选，不支持自由录入 */
+  var ORG = [
+    { id: "ops-content", dept: "运营部", unit: "内容运营组", staff: ["阮荣均", "陈奕均"] },
+    { id: "ops-merchant", dept: "运营部", unit: "商户运营组", staff: ["赵老师", "李管理"] },
+    { id: "sales", dept: "销售部", unit: "", staff: ["王助教", "刘助教"] }
+  ];
+  function orgLabel(node) {
+    return node.unit ? node.dept + " / " + node.unit : node.dept;
+  }
+  /* 可选员工 = 组织架构内全部成员（负责人下拉与助教选择共用同一份） */
+  var STAFF = (function () {
+    var out = [], seen = {};
+    ORG.forEach(function (n) {
+      (n.staff || []).forEach(function (s) {
+        if (seen[s]) return;
+        seen[s] = true;
+        out.push(s);
+      });
+    });
+    return out;
+  })();
   /* 视频号带货商品（演示种子）：期次绑定后，这些商品产生的留资分配给期次承接助教 */
   var VX_GOODS = [
     { id: "P2026030101", name: "春启 03 期家长必修课" },
@@ -371,6 +392,93 @@
 
   /* ---- 共享编辑弹窗 ---- */
   var editorState = { mode: "create", termId: null, onSaved: null, draft: null };
+  /* 承接助教：已选（写回期次） / 待选（弹窗内编辑中） */
+  var asstSelected = [];
+  var asstDraft = [];
+
+  /* ---- 承接助教：展示区（chips）+ 组织架构选人弹窗 ---- */
+  function renderAsstChips() {
+    var box = document.getElementById("tm-assistants");
+    if (!box) return;
+    box.innerHTML = asstSelected.length
+      ? asstSelected.map(function (n) {
+          return '<span class="asst-chip">' + n + ' <a href="#" data-asst-remove="' + n + '" title="移除">×</a></span>';
+        }).join("")
+      : '<span class="muted" style="font-size:12px">未选择，请点上方「按组织架构选择」</span>';
+    var cnt = document.getElementById("tm-asst-count");
+    if (cnt) cnt.textContent = String(asstSelected.length);
+    box.querySelectorAll("[data-asst-remove]").forEach(function (a) {
+      a.addEventListener("click", function (e) {
+        e.preventDefault();
+        var n = a.getAttribute("data-asst-remove");
+        asstSelected = asstSelected.filter(function (x) { return x !== n; });
+        renderAsstChips();
+      });
+    });
+  }
+
+  function renderAsstOrg() {
+    var box = document.getElementById("asst-org");
+    if (!box) return;
+    var kw = (document.getElementById("asst-search").value || "").trim();
+    var html = "";
+    ORG.forEach(function (node) {
+      var names = (node.staff || []).filter(function (n) { return !kw || n.indexOf(kw) >= 0; });
+      if (!names.length) return;
+      var picked = names.filter(function (n) { return asstDraft.indexOf(n) >= 0; }).length;
+      html +=
+        '<div class="asst-org-node">' +
+          '<label class="asst-org-hd"><input type="checkbox" data-org-node="' + node.id + '"' + (picked === names.length ? " checked" : "") + " />" +
+            orgLabel(node) +
+            '<span class="muted" style="font-weight:400;font-size:12px">已选 ' + picked + "/" + names.length + "</span></label>" +
+          '<div class="asst-org-items">' +
+            names.map(function (n) {
+              return '<label><input type="checkbox" data-asst="' + n + '"' + (asstDraft.indexOf(n) >= 0 ? " checked" : "") + " />" + n + "</label>";
+            }).join("") +
+          "</div>" +
+        "</div>";
+    });
+    box.innerHTML = html || '<p class="muted" style="font-size:12px;margin:0">没有匹配的助教</p>';
+    box.querySelectorAll("[data-asst]").forEach(function (cb) {
+      cb.addEventListener("change", function () {
+        var n = cb.getAttribute("data-asst");
+        if (cb.checked) {
+          if (asstDraft.indexOf(n) < 0) asstDraft.push(n);
+        } else {
+          asstDraft = asstDraft.filter(function (x) { return x !== n; });
+        }
+        renderAsstOrg();
+      });
+    });
+    box.querySelectorAll("[data-org-node]").forEach(function (cb) {
+      cb.addEventListener("change", function () {
+        var node = ORG.filter(function (x) { return x.id === cb.getAttribute("data-org-node"); })[0];
+        if (!node) return;
+        (node.staff || []).forEach(function (n) {
+          var has = asstDraft.indexOf(n) >= 0;
+          if (cb.checked && !has) asstDraft.push(n);
+          if (!cb.checked && has) asstDraft = asstDraft.filter(function (x) { return x !== n; });
+        });
+        renderAsstOrg();
+      });
+    });
+    var pc = document.getElementById("asst-pick-count");
+    if (pc) pc.textContent = "本次已勾选 " + asstDraft.length + " 人";
+  }
+
+  function openAsstPick() {
+    asstDraft = asstSelected.slice();
+    document.getElementById("asst-search").value = "";
+    renderAsstOrg();
+    document.getElementById("asst-pick-mask").classList.add("open");
+    document.getElementById("modal-asst-pick").classList.add("open");
+  }
+  function closeAsstPick() {
+    var mask = document.getElementById("asst-pick-mask");
+    var modal = document.getElementById("modal-asst-pick");
+    if (mask) mask.classList.remove("open");
+    if (modal) modal.classList.remove("open");
+  }
 
   function ensureEditorDom() {
     if (document.getElementById("modal-term-edit")) return;
@@ -394,12 +502,16 @@
       '<div class="field" style="grid-column:1/-1">' +
       '<label>视频号商品</label>' +
       '<p class="muted" style="margin:0 0 8px;font-size:12px;line-height:1.5">选择本期内承接留资的视频号带货商品；这些商品产生的留资将分配给下方承接助教。</p>' +
-      '<div id="tm-vx-goods" style="display:flex;flex-direction:column;gap:6px;max-height:140px;overflow:auto;padding:8px 10px;border:1px solid var(--color-border);border-radius:6px;background:#fafbfc"></div>' +
+      '<div id="tm-vx-goods" style="display:flex;flex-direction:column;align-items:flex-start;gap:6px;max-height:140px;overflow:auto;padding:8px 10px;border:1px solid var(--color-border);border-radius:6px;background:#fafbfc"></div>' +
       '</div>' +
       '<div class="field" style="grid-column:1/-1">' +
       '<label>承接助教 *</label>' +
       '<p class="muted" style="margin:0 0 8px;font-size:12px;line-height:1.5">绑定商品产生的留资将分配给所选助教（可多选，按轮询/负载均衡分配）。</p>' +
-      '<div id="tm-assistants" style="display:flex;flex-wrap:wrap;gap:8px 14px;padding:8px 10px;border:1px solid var(--color-border);border-radius:6px;background:#fafbfc"></div>' +
+      '<div style="display:flex;align-items:center;gap:10px;margin:0 0 8px">' +
+      '<button type="button" class="btn btn-sm" id="tm-asst-pick">按组织架构选择</button>' +
+      '<span class="muted" style="font-size:12px">已选 <b id="tm-asst-count">0</b> 人</span>' +
+      '</div>' +
+      '<div id="tm-assistants" class="asst-chips" style="padding:8px 10px;border:1px solid var(--color-border);border-radius:6px;background:#fafbfc"></div>' +
       '</div>' +
       '<div class="field" style="grid-column:1/-1"><label>备注</label>' +
       '<textarea id="tm-remark" rows="2" style="width:100%;padding:8px;border:1px solid var(--color-border);border-radius:6px" placeholder="选填"></textarea></div>' +
@@ -408,6 +520,32 @@
       '<div class="proto-modal-ft">' +
       '<button class="btn" type="button" data-term-close>取消</button>' +
       '<button class="btn btn-primary" type="button" id="tm-submit">保存</button>' +
+      '</div></div>' +
+      /* 组织架构选人弹窗（叠加在编辑弹窗之上） */
+      '<style>' +
+      '.asst-chips { display:flex; flex-wrap:wrap; align-items:flex-start; gap:6px; min-height:34px; }' +
+      '.asst-chip { display:inline-flex; align-items:center; gap:4px; padding:3px 8px; border:1px solid var(--color-border); border-radius:14px; font-size:12px; background:#f7f8fa; }' +
+      '.asst-chip a { color:#86909c; text-decoration:none; font-size:13px; line-height:1; cursor:pointer; }' +
+      '.asst-chip a:hover { color:#f53f3f; }' +
+      '.asst-org { max-height:280px; overflow:auto; }' +
+      '.asst-org-node { border:1px solid var(--color-border); border-radius:6px; padding:8px 10px; margin-bottom:8px; }' +
+      '.asst-org-hd { display:flex; align-items:center; gap:6px; font-size:13px; font-weight:600; margin-bottom:6px; }' +
+      '.asst-org-items { display:flex; flex-wrap:wrap; gap:6px 14px; padding-left:20px; }' +
+      '.asst-org-items label { display:inline-flex; align-items:center; gap:6px; font-size:13px; margin:0; cursor:pointer; }' +
+      '</style>' +
+      '<div class="proto-mask" id="asst-pick-mask" style="z-index:1090"></div>' +
+      '<div class="proto-modal" id="modal-asst-pick" style="width:560px;z-index:1100">' +
+      '<div class="proto-modal-hd"><h3 style="font-size:16px;font-weight:600">按组织架构选择承接助教</h3>' +
+      '<button class="btn btn-sm btn-ghost" type="button" data-asst-close>×</button></div>' +
+      '<div class="proto-modal-bd">' +
+      '<p class="muted" style="margin:0 0 10px;font-size:12px;line-height:1.6">助教人选按组织架构取自「系统管理 · 用户列表」，不支持自由录入；可跨部门多选。</p>' +
+      '<input id="asst-search" class="input" style="width:100%;margin-bottom:10px" placeholder="搜索助教姓名" />' +
+      '<div class="asst-org" id="asst-org"></div>' +
+      '</div>' +
+      '<div class="proto-modal-ft">' +
+      '<span class="muted" id="asst-pick-count" style="margin-right:auto;font-size:12px"></span>' +
+      '<button class="btn" type="button" data-asst-close>取消</button>' +
+      '<button class="btn btn-primary" type="button" id="asst-pick-ok">确定</button>' +
       '</div></div>';
     document.body.insertAdjacentHTML("beforeend", html);
     var owner = document.getElementById("tm-owner");
@@ -426,14 +564,25 @@
         '<span><b>' + g.name + '</b><span class="muted" style="margin-left:6px;font-size:12px">' + g.id + "</span></span>";
       goodsBox.appendChild(lab);
     });
-    var asstBox = document.getElementById("tm-assistants");
-    STAFF.forEach(function (n) {
-      var lab = document.createElement("label");
-      lab.style.cssText = "display:inline-flex;align-items:center;gap:6px;font-size:13px;cursor:pointer;margin:0";
-      lab.innerHTML = '<input type="checkbox" data-assistant="' + n + '" />' + "<span>" + n + "</span>";
-      asstBox.appendChild(lab);
+    document.getElementById("tm-asst-pick").addEventListener("click", openAsstPick);
+    document.getElementById("asst-search").addEventListener("input", renderAsstOrg);
+    document.getElementById("asst-pick-mask").addEventListener("click", closeAsstPick);
+    document.querySelectorAll("[data-asst-close]").forEach(function (n) {
+      n.addEventListener("click", function (e) {
+        e.preventDefault();
+        closeAsstPick();
+      });
     });
+    document.getElementById("asst-pick-ok").addEventListener("click", function () {
+      /* 按组织架构顺序稳定回显 */
+      asstSelected = STAFF.filter(function (n) { return asstDraft.indexOf(n) >= 0; });
+      renderAsstChips();
+      closeAsstPick();
+    });
+    renderAsstChips();
+
     function closeEditor() {
+      closeAsstPick();
       editorState.draft = null;
       var mask = document.getElementById("mask") || document.querySelector(".proto-mask");
       if (mask) mask.classList.remove("open");
@@ -471,10 +620,7 @@
         var hit = VX_GOODS.filter(function (g) { return g.id === id; })[0];
         if (hit) vxGoods.push({ id: hit.id, name: hit.name });
       });
-      var assistants = [];
-      document.querySelectorAll("#tm-assistants [data-assistant]").forEach(function (cb) {
-        if (cb.checked) assistants.push(cb.getAttribute("data-assistant"));
-      });
+      var assistants = asstSelected.slice();
       if (!assistants.length) { toast("请至少选择一名承接助教"); return; }
       var goals = {};
       document.querySelectorAll("#tm-goals-grid [data-goal]").forEach(function (inp) {
@@ -516,14 +662,12 @@
     document.querySelectorAll("#tm-vx-goods [data-vx-good]").forEach(function (cb) {
       cb.checked = !!selectedGoods[cb.getAttribute("data-vx-good")];
     });
-    var selectedAsst = {};
-    var asstList = (term && term.assistants && term.assistants.length)
-      ? term.assistants
-      : (term && term.owner ? [term.owner] : []);
-    asstList.forEach(function (n) { selectedAsst[n] = true; });
-    document.querySelectorAll("#tm-assistants [data-assistant]").forEach(function (cb) {
-      cb.checked = !!selectedAsst[cb.getAttribute("data-assistant")];
-    });
+    /* 承接助教只来自组织架构：历史选择若不在组织架构内，选择时按组织架构重新确认 */
+    asstSelected = normalizeAssistants(
+      (term && term.assistants && term.assistants.length) ? term.assistants : [],
+      term ? term.owner : ""
+    ).filter(function (n) { return STAFF.indexOf(n) >= 0; });
+    renderAsstChips();
     var goals = (term && term.goals) || {};
     document.querySelectorAll("#tm-goals-grid [data-goal]").forEach(function (inp) {
       var k = inp.getAttribute("data-goal");
@@ -557,6 +701,8 @@
   global.TermStore = {
     KEY: KEY,
     STAFF: STAFF,
+    ORG: ORG,
+    orgLabel: orgLabel,
     VX_GOODS: VX_GOODS,
     GOAL_FIELDS: GOAL_FIELDS,
     list: list,

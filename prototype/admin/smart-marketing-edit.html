@@ -1,0 +1,871 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>智能营销设计 · 商家管理后台</title>
+<link rel="stylesheet" href="../assets/css/proto.css?v=9" />
+<link rel="stylesheet" href="../assets/css/marketing.css?v=1" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@logicflow/core@1.2.27/dist/index.css" />
+</head>
+<body class="admin-body" data-module="scrm" data-nav="smart-marketing" data-title="智能营销设计" data-crumb="SCRM / 用户运营 / 智能营销 / 智能营销设计">
+
+<div id="header-actions">
+  <a class="btn" href="smart-marketing.html">返回列表</a>
+  <button class="btn" id="btn-validate">校验流程</button>
+  <button class="btn btn-primary" id="btn-save">保存编排</button>
+</div>
+
+<div id="page-content" style="display:none">
+  <div class="mk-topbar">
+    <div>
+      <span class="mk-title" id="sm-title">—</span>
+      <span class="muted" id="sm-sub" style="margin-left:8px;font-size:12px"></span>
+    </div>
+    <div class="mk-toolbar">
+      <button class="btn" type="button" id="tb-test">发送测试</button>
+      <button class="btn btn-primary" type="button" id="tb-launch">正式发送</button>
+      <span class="sep"></span>
+      <button class="btn" type="button" id="tb-undo">撤销</button>
+      <button class="btn" type="button" id="tb-redo">恢复</button>
+      <button class="btn" type="button" id="tb-redesign">重新设计</button>
+      <span class="sep"></span>
+      <button class="btn" type="button" id="tb-zoom-in">放大</button>
+      <button class="btn" type="button" id="tb-zoom-out">缩小</button>
+      <button class="btn" type="button" id="tb-fit">适应画布</button>
+      <span class="sep"></span>
+      <button class="btn" type="button" id="tb-copy">复制</button>
+      <button class="btn" type="button" id="tb-del">删除</button>
+      <button class="btn" type="button" id="tb-tpl">另存为模板</button>
+    </div>
+  </div>
+
+  <div class="mk-flow-layout">
+    <div class="mk-panel">
+      <h3>节点</h3>
+      <div id="palette"></div>
+      <p class="muted" style="font-size:11px;line-height:1.6;margin:10px 0 0">
+        从「目标客户」起流转，经「人群处理」后进入「触达方式」；建议末端接「响应客户 / 营销分析」以便回收效果。
+      </p>
+    </div>
+
+    <div class="mk-canvas-wrap">
+      <div id="lf-container"></div>
+      <div class="mk-canvas-hint">滚轮缩放 · 拖动画布 · 锚点连线</div>
+    </div>
+
+    <div class="mk-panel mk-prop">
+      <h3>属性</h3>
+      <div id="prop-box"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ 节点配置弹窗 ============ -->
+<!-- 等待 -->
+<div class="proto-mask" id="m-wt-mask"></div>
+<div class="proto-modal" id="m-wt" style="width:540px">
+  <div class="proto-modal-hd"><h3 style="font-size:16px;font-weight:600">等待</h3>
+    <button class="btn btn-sm btn-ghost" data-mkc="m-wt">×</button></div>
+  <div class="proto-modal-bd">
+    <div class="field"><label>节点名称 *</label><input id="wt-name" placeholder="请输入节点名称" maxlength="20" /></div>
+    <div class="mk-sec" style="margin-bottom:0">
+      <div class="sh">等待时间</div>
+      <div class="mk-radio-row" style="margin-bottom:10px">
+        <label><input type="radio" name="wt-mode" value="abs" checked />等待至指定时间</label>
+        <label><input type="radio" name="wt-mode" value="day" />等待至第 N 天固定时刻</label>
+        <label><input type="radio" name="wt-mode" value="rel" />相对等待</label>
+      </div>
+      <div class="mk-inline" id="wt-abs-row">
+        <span style="font-size:13px">等待至</span>
+        <input class="input" id="wt-abs" type="datetime-local" style="width:230px" />
+      </div>
+      <div class="mk-inline" id="wt-day-row" style="display:none">
+        <span style="font-size:13px">等待至第</span>
+        <input class="input" id="wt-day" type="number" value="1" min="1" style="width:80px" />
+        <span class="muted" style="font-size:12px">天</span>
+        <input class="input" id="wt-day-time" type="time" value="09:00" style="width:130px" />
+      </div>
+      <div class="mk-inline" id="wt-rel-row" style="display:none">
+        <span style="font-size:13px">等待</span>
+        <input class="input" id="wt-hours" type="number" value="24" min="0" style="width:80px" /><span class="muted" style="font-size:12px">小时</span>
+        <input class="input" id="wt-mins" type="number" value="0" min="0" max="59" style="width:80px" /><span class="muted" style="font-size:12px">分钟</span>
+      </div>
+      <p class="mk-note">「等待至第 N 天」按用户进入本节点当天的 0 点起算；最长等待 30 天。</p>
+    </div>
+  </div>
+  <div class="proto-modal-ft"><button class="btn" type="button" data-mkc="m-wt">取消</button>
+    <button class="btn btn-primary" type="button" id="wt-ok">确定</button></div>
+</div>
+
+<!-- 人群筛选 -->
+<div class="proto-mask" id="m-aud-mask"></div>
+<div class="proto-modal" id="m-aud" style="width:600px">
+  <div class="proto-modal-hd"><h3 style="font-size:16px;font-weight:600">人群筛选</h3>
+    <button class="btn btn-sm btn-ghost" data-mkc="m-aud">×</button></div>
+  <div class="proto-modal-bd">
+    <div class="field"><label>节点名称 *</label><input id="aud-name" placeholder="请输入节点名称" maxlength="20" /></div>
+    <div class="mk-sec">
+      <div class="sh">快速设置</div>
+      <div class="mk-radio-row">
+        <label><input type="radio" name="aud-quick" value="" checked />不使用</label>
+        <label><input type="radio" name="aud-quick" value="沉睡客户" />沉睡客户</label>
+        <label><input type="radio" name="aud-quick" value="活跃客户" />活跃客户</label>
+        <label><input type="radio" name="aud-quick" value="新客户" />新客户</label>
+        <label><input type="radio" name="aud-quick" value="老客户" />老客户</label>
+      </div>
+    </div>
+    <div class="mk-sec">
+      <div class="sh">指定人群</div>
+      <div class="mk-inline">
+        <span style="font-size:13px">用户分群</span>
+        <button class="btn" type="button" id="aud-pick">选择人群</button>
+        <span class="muted" id="aud-seg-name" style="font-size:12px">未选择</span>
+      </div>
+    </div>
+    <div class="mk-sec" style="margin-bottom:0">
+      <div class="sh">交易条件</div>
+      <div class="mk-inline" style="margin-bottom:10px">
+        <span style="font-size:13px;width:96px">累计交易金额</span>
+        <select id="aud-amt" style="width:150px">
+          <option value="不限">不限</option><option>1~100 元</option><option>100~300 元</option>
+          <option>300~500 元</option><option>500 元以上</option>
+        </select>
+        <input class="input" id="aud-amt-c" placeholder="自定义" style="width:120px" />
+      </div>
+      <div class="mk-inline">
+        <span style="font-size:13px;width:96px">最后交易时间</span>
+        <div class="mk-radio-row" style="display:inline-flex;margin-right:10px">
+          <label><input type="radio" name="aud-time" value="rel" checked />相对时间</label>
+          <label><input type="radio" name="aud-time" value="abs" />绝对时间</label>
+        </div>
+        <input class="input" id="aud-days" type="number" value="30" style="width:70px" />
+        <span class="muted" style="font-size:12px">天前</span>
+        <input class="input" id="aud-date" type="date" style="width:150px;margin-left:8px" />
+      </div>
+    </div>
+  </div>
+  <div class="proto-modal-ft"><button class="btn" type="button" data-mkc="m-aud">取消</button>
+    <button class="btn btn-primary" type="button" id="aud-ok">确定</button></div>
+</div>
+
+<!-- 指定用户 -->
+<div class="proto-mask" id="m-num-mask"></div>
+<div class="proto-modal" id="m-num" style="width:640px">
+  <div class="proto-modal-hd"><h3 style="font-size:16px;font-weight:600">指定用户</h3>
+    <button class="btn btn-sm btn-ghost" data-mkc="m-num">×</button></div>
+  <div class="proto-modal-bd">
+    <div class="field"><label>节点名称 *</label><input id="num-name" placeholder="请输入节点名称" maxlength="20" /></div>
+    <div class="mk-sec">
+      <div class="sh">名单文件导入</div>
+      <div class="mk-inline">
+        <button class="btn" type="button" id="num-upload">点击上传</button>
+        <span class="muted" style="font-size:12px">支持 csv、txt、xls、xlsx 格式，大小限制在 50M 内</span>
+        <button class="btn" type="button" id="num-tpl" style="margin-left:auto">下载模板</button>
+      </div>
+      <table class="mk-table-mini" style="margin-top:12px">
+        <thead><tr><th>文件名</th><th>记录数</th><th>上传时间</th><th>处理状态</th><th style="width:70px">操作</th></tr></thead>
+        <tbody id="num-files"></tbody>
+      </table>
+      <p class="mk-note">名单以手机号为主键匹配用户；未匹配到的号码会被跳过，不阻断执行。</p>
+    </div>
+  </div>
+  <div class="proto-modal-ft"><button class="btn" type="button" data-mkc="m-num">取消</button>
+    <button class="btn btn-primary" type="button" id="num-ok">确定</button></div>
+</div>
+
+<!-- 合并 / 交集 / 排除 / 排重 / 抽取 -->
+<div class="proto-mask" id="m-set-mask"></div>
+<div class="proto-modal" id="m-set" style="width:600px">
+  <div class="proto-modal-hd"><h3 id="set-title" style="font-size:16px;font-weight:600">合并</h3>
+    <button class="btn btn-sm btn-ghost" data-mkc="m-set">×</button></div>
+  <div class="proto-modal-bd">
+    <div class="field"><label>节点名称 *</label><input id="set-name" placeholder="请输入节点名称" maxlength="20" /></div>
+
+    <div id="set-body-merge" style="display:none">
+      <div class="mk-sec" style="margin-bottom:0">
+        <div class="sh">合并方式</div>
+        <div class="mk-radio-row">
+          <label><input type="radio" name="set-merge" value="union" checked />并集（去重后合并）</label>
+          <label><input type="radio" name="set-merge" value="chain" />顺序追加</label>
+        </div>
+        <p class="mk-note">合并的上游节点由画布连线决定；多条连线进入本节点即视为多个人群。</p>
+      </div>
+    </div>
+
+    <div id="set-body-inter" style="display:none">
+      <div class="mk-sec">
+        <div class="sh">源数据人群</div>
+        <div class="mk-inline">
+          <button class="btn" type="button" id="set-src-pick">选择人群</button>
+          <span class="muted" id="set-src-name" style="font-size:12px">未选择</span>
+        </div>
+      </div>
+      <div class="mk-sec" style="margin-bottom:0">
+        <div class="sh">排除人群</div>
+        <div class="mk-inline">
+          <button class="btn" type="button" id="set-exc-pick">选择人群</button>
+          <span class="muted" id="set-exc-name" style="font-size:12px">未选择</span>
+        </div>
+        <p class="mk-note">从源数据人群中剔除排除人群，得到最终执行人群。</p>
+      </div>
+    </div>
+
+    <div id="set-body-extract" style="display:none">
+      <div class="mk-sec" style="margin-bottom:0">
+        <div class="sh">抽取方式</div>
+        <div class="mk-radio-row" style="margin-bottom:10px">
+          <label><input type="radio" name="set-ex-mode" value="ratio" checked />按比例抽取</label>
+          <label><input type="radio" name="set-ex-mode" value="count" />按固定人数抽取</label>
+        </div>
+        <div class="mk-inline" style="margin-bottom:8px">
+          <span style="font-size:13px">拆分人群分组 1</span>
+          <input class="input" id="set-ex-1" type="number" value="50" style="width:90px" />
+          <span class="muted" id="set-ex-1-unit" style="font-size:12px">%</span>
+          <label style="font-size:13px;margin-left:16px"><input type="checkbox" id="set-ex-even" checked />等比例分配</label>
+        </div>
+        <div class="mk-inline">
+          <span style="font-size:13px">拆分人群分组 2</span>
+          <input class="input" id="set-ex-2" type="number" value="50" style="width:90px" />
+          <span class="muted" id="set-ex-2-unit" style="font-size:12px">%</span>
+        </div>
+        <p class="mk-note">按比例抽取时两组之和需为 100%；按固定人数抽取时超出部分顺延到下一组。</p>
+      </div>
+    </div>
+
+    <div id="set-body-dedup" style="display:none">
+      <div class="mk-sec" style="margin-bottom:0">
+        <div class="sh">排重优先级</div>
+        <p class="mk-note" style="margin:0 0 8px">同一用户命中多个计划时，按下列优先级只执行最高优先的一个。</p>
+        <table class="mk-table-mini">
+          <thead><tr><th style="width:60px">优先级</th><th>计划 / 节点名</th><th style="width:70px">操作</th></tr></thead>
+          <tbody id="set-dedup-list"></tbody>
+        </table>
+        <div class="mk-inline" style="margin-top:8px">
+          <input class="input" id="set-dedup-new" placeholder="输入节点名" style="width:240px" />
+          <button class="btn" type="button" id="set-dedup-add">添加到优先级</button>
+        </div>
+        <div class="mk-sec" style="margin:12px 0 0">
+          <div class="sh">输出节点名</div>
+          <input class="input" id="set-dedup-out" placeholder="请输入输出节点名称" maxlength="20" style="width:100%" />
+          <p class="mk-note">排重后的人群以此名称输出，供下游节点引用。</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="proto-modal-ft"><button class="btn" type="button" data-mkc="m-set">取消</button>
+    <button class="btn btn-primary" type="button" id="set-ok">确定</button></div>
+</div>
+
+<!-- 营销响应 -->
+<div class="proto-mask" id="m-resp-mask"></div>
+<div class="proto-modal" id="m-resp" style="width:560px">
+  <div class="proto-modal-hd"><h3 style="font-size:16px;font-weight:600">营销响应</h3>
+    <button class="btn btn-sm btn-ghost" data-mkc="m-resp">×</button></div>
+  <div class="proto-modal-bd">
+    <div class="field"><label>节点名称 *</label><input id="rp-name" placeholder="请输入节点名称" maxlength="20" /></div>
+    <div class="mk-sec">
+      <div class="sh">输出时间</div>
+      <div class="mk-inline">
+        <span style="font-size:13px">营销发送</span>
+        <input class="input" id="rp-days" type="number" value="3" min="1" style="width:80px" />
+        <span class="muted" style="font-size:12px">天后输出节点</span>
+      </div>
+    </div>
+    <div class="mk-sec" style="margin-bottom:0">
+      <div class="sh">输出类型</div>
+      <div class="mk-inline" style="margin-bottom:8px">
+        <span style="font-size:13px;width:150px">1. 短链访问响应</span>
+        <div class="mk-radio-row">
+          <label><input type="radio" name="rp-visit" value="有访问" checked />有访问</label>
+          <label><input type="radio" name="rp-visit" value="无访问" />无访问</label>
+        </div>
+      </div>
+      <div class="mk-inline">
+        <span style="font-size:13px;width:150px">2. 拍单响应</span>
+        <div class="mk-radio-row">
+          <label><input type="radio" name="rp-order" value="未拍单" checked />未拍单</label>
+          <label><input type="radio" name="rp-order" value="拍下未付款" />拍下未付款</label>
+          <label><input type="radio" name="rp-order" value="已付款" />已付款</label>
+        </div>
+      </div>
+      <p class="mk-note">短信含有智能链接时「短链访问响应」才生效。</p>
+    </div>
+  </div>
+  <div class="proto-modal-ft"><button class="btn" type="button" data-mkc="m-resp">取消</button>
+    <button class="btn btn-primary" type="button" id="rp-ok">确定</button></div>
+</div>
+
+<!-- 短信分析 -->
+<div class="proto-mask" id="m-ana-mask"></div>
+<div class="proto-modal" id="m-ana" style="width:540px">
+  <div class="proto-modal-hd"><h3 style="font-size:16px;font-weight:600">短信分析</h3>
+    <button class="btn btn-sm btn-ghost" data-mkc="m-ana">×</button></div>
+  <div class="proto-modal-bd">
+    <div class="field"><label>节点名称 *</label><input id="an-name" placeholder="请输入节点名称" maxlength="20" /></div>
+    <div class="field"><label>分析任务名称 *</label><input id="an-task" placeholder="请输入短信分析名称" maxlength="20" /></div>
+    <div class="mk-sec" style="margin-bottom:0">
+      <div class="sh">分析周期</div>
+      <div class="mk-inline">
+        <span style="font-size:13px">营销后</span>
+        <input class="input" id="an-days" type="number" value="3" min="1" style="width:80px" />
+        <span class="muted" style="font-size:12px">天的成交分析结果</span>
+      </div>
+      <p class="mk-note">短信发送后即可查看营销效果；分析结果回流到「智能营销 · 效果汇总」。</p>
+    </div>
+  </div>
+  <div class="proto-modal-ft"><button class="btn" type="button" data-mkc="m-ana">取消</button>
+    <button class="btn btn-primary" type="button" id="an-ok">确定</button></div>
+</div>
+
+<script src="../assets/js/proto.js"></script>
+<script src="../assets/js/marketing-common.js?v=1"></script>
+<script src="../assets/js/smart-marketing-store.js?v=1"></script>
+<script src="https://cdn.jsdelivr.net/npm/@logicflow/core@1.2.27/dist/logic-flow.js"></script>
+<script src="../assets/js/admin-shell.js?v=23"></script>
+<script>
+(function () {
+  var S = window.SmartMarketingStore;
+  var MK = window.MarketingCommon;
+  var qs = new URLSearchParams(location.search);
+  var planId = qs.get("id") || "";
+  var isNew = qs.get("new") === "1";
+
+  if (isNew) {
+    var nid = S.nextId();
+    S.save({ id: nid, name: "未命名计划", runMode: "立即运行", status: "designing" });
+    S.saveFlow(nid, { nodes: [], edges: [] });
+    location.replace("smart-marketing-edit.html?id=" + encodeURIComponent(nid));
+    return;
+  }
+
+  var plan = S.get(planId);
+  if (!plan) {
+    document.getElementById("page-content").innerHTML =
+      '<div class="card"><div class="card-bd"><p style="margin:0">计划不存在，请返回列表重新选择。</p>' +
+      '<p style="margin:10px 0 0"><a class="btn" href="smart-marketing.html">返回列表</a></p></div></div>';
+    document.getElementById("page-content").style.display = "block";
+    return;
+  }
+
+  var flow = S.getFlow(planId);
+  var lf = null;
+  var selected = null;
+  var editingNodeId = null;
+  var segPick = { aud: "", src: "", exc: "" };
+  var dedupList = [];
+
+  document.getElementById("sm-title").textContent = plan.name;
+  document.getElementById("sm-sub").textContent =
+    "计划 ID " + plan.id + " · " + plan.runMode + " · " + S.STATUS[plan.status];
+
+  /* ---------- 左侧节点面板 ---------- */
+  var groups = [];
+  S.NODE_DEFS.forEach(function (d) {
+    var g = groups.filter(function (x) { return x.name === d.group; })[0];
+    if (!g) { g = { name: d.group, items: [] }; groups.push(g); }
+    g.items.push({ type: d.type, label: d.label, color: d.dot });
+  });
+  MK.renderPalette("#palette", groups, addNode);
+
+  function defaultProps(type) {
+    if (type === "wait") return { waitMode: "abs", waitLabel: "" };
+    if (type === "audience") return { segId: "", segName: "", quick: "", amt: "不限" };
+    if (type === "numbers") return { fileName: "" };
+    if (type === "merge") return { summary: "并集" };
+    if (type === "extract") return { summary: "" };
+    if (type === "intersect") return { summary: "" };
+    if (type === "exclude") return { summary: "" };
+    if (type === "dedup") return { summary: "", outName: "" };
+    if (type === "sms") return { summary: "", sign: MK.SMS_SIGNS[0], content: "" };
+    if (type === "wecom") return { summary: "", msgType: "活动 / 文案 / 券" };
+    if (type === "response") return { summary: "" };
+    if (type === "analyze") return { summary: "" };
+    return {};
+  }
+
+  var NODE_MODAL = {
+    wait: "m-wt", audience: "m-aud", numbers: "m-num",
+    merge: "m-set", extract: "m-set", intersect: "m-set", exclude: "m-set", dedup: "m-set",
+    sms: "mk-sms", wecom: "mk-wecom", response: "m-resp", analyze: "m-ana"
+  };
+  var SET_KIND = { merge: "merge", extract: "extract", intersect: "inter", exclude: "inter", dedup: "dedup" };
+
+  function findNode(id) {
+    return flow.nodes.filter(function (n) { return n.id === id; })[0] || null;
+  }
+  function syncFromLf() {
+    if (!lf) return;
+    flow = S.fromLogicFlowData(flow, lf.getGraphRawData());
+    S.saveFlow(planId, flow);
+  }
+  function refreshNodeText(id) {
+    var n = findNode(id);
+    if (n && lf) lf.updateText(id, S.nodeText(n.type, n.props));
+  }
+
+  /* ---------- 画布 ---------- */
+  function addNode(type) {
+    if (!lf) { Proto.toast("画布尚未就绪，请稍候"); return; }
+    var id = MK.uid("n");
+    var props = defaultProps(type);
+    var x = 160 + Math.random() * 260, y = 140 + Math.random() * 220;
+    flow.nodes.push({ id: id, type: type, x: x, y: y, props: props });
+    var d = S.defOf(type);
+    lf.addNode({
+      id: id, type: d ? d.shape : "rect", x: x, y: y,
+      text: S.nodeText(type, props), properties: { bizType: type, props: props }
+    });
+    S.saveFlow(planId, flow);
+    if (NODE_MODAL[type]) openNodeConfig(id);
+    else Proto.toast("已添加「" + (d ? d.label : type) + "」节点");
+  }
+
+  function initCanvas() {
+    MK.mountFlowWhenReady("lf-container", S.toLogicFlowData(flow), {
+      onNode: function (data) { selected = { kind: "node", data: data }; renderProp(); },
+      onEdge: function (data) { selected = { kind: "edge", data: data }; syncFromLf(); renderProp(); },
+      onBlank: function () { selected = null; renderProp(); },
+      onChange: function () { syncFromLf(); }
+    }, function (instance) {
+      lf = instance;
+      window.addEventListener("resize", function () { MK.fitFlow(lf); });
+      renderProp();
+    });
+  }
+
+  /* ---------- 右侧属性面板 ---------- */
+  function renderProp() {
+    var box = document.getElementById("prop-box");
+    if (!selected) {
+      var flow2 = S.getFlow(planId);
+      box.innerHTML =
+        '<p class="mk-prop-empty">选中画布上的节点或连线进行编辑。</p>' +
+        '<div class="mk-sec" style="margin-top:10px"><div class="sh">计划概览</div>' +
+        '<div class="mk-node-card"><div class="nhd">' + MK.esc(plan.name) + "</div>" +
+        '<div class="nrow"><span class="nk">运行方式</span><span>' + MK.esc(plan.runMode) + "</span></div>" +
+        '<div class="nrow"><span class="nk">节点数</span><span>' + (flow2.nodes || []).length + " 个</span></div>" +
+        "</div></div>";
+      return;
+    }
+    if (selected.kind === "edge") {
+      var eid = selected.data.id;
+      var cur = selected.data.text && selected.data.text.value ? selected.data.text.value : "";
+      box.innerHTML =
+        '<div class="mk-node-card"><div class="nhd">分支连线</div>' +
+        '<div class="nrow"><span class="nk">分支标签</span></div></div>' +
+        '<div class="field" style="margin-top:10px"><label>标签</label>' +
+        '<select class="input" id="prop-edge-label" style="width:100%">' +
+        '<option value="">无</option><option value="A">A</option><option value="B">B</option>' +
+        '<option value="Y">Y</option><option value="N">N</option></select></div>' +
+        '<div class="mk-prop-actions"><button class="btn" type="button" id="prop-del-el" style="color:#f53f3f">删除连线</button></div>';
+      var sel = document.getElementById("prop-edge-label");
+      sel.value = cur;
+      sel.onchange = function () {
+        flow.edges.forEach(function (e) { if (e.id === eid) e.text = sel.value; });
+        lf.updateText(eid, sel.value);
+        S.saveFlow(planId, flow);
+      };
+      document.getElementById("prop-del-el").onclick = function () { lf.deleteEdge(eid); selected = null; syncFromLf(); renderProp(); };
+      return;
+    }
+    var n = findNode(selected.data.id);
+    if (!n) { box.innerHTML = '<p class="mk-prop-empty">节点已不存在</p>'; return; }
+    var d = S.defOf(n.type);
+    var p = n.props || {};
+    var rows = [];
+    if (n.type === "wait") rows.push(["等待", p.waitLabel || "未配置"]);
+    else if (n.type === "audience") rows.push(["人群", p.segName || "未选择"], ["快捷设置", p.quick || "不使用"]);
+    else if (n.type === "numbers") rows.push(["名单", p.fileName || "未上传"]);
+    else rows.push(["配置", p.summary || "未配置"]);
+    box.innerHTML =
+      '<div class="mk-node-card"><div class="nhd">' + MK.esc(d ? d.label : n.type) + "</div>" +
+      rows.map(function (r) {
+        return '<div class="nrow"><span class="nk">' + MK.esc(r[0]) + "</span><span>" + MK.esc(r[1]) + "</span></div>";
+      }).join("") + "</div>" +
+      '<div class="mk-prop-actions"><button class="btn btn-primary" type="button" id="prop-cfg">配置</button>' +
+      '<button class="btn" type="button" id="prop-del" style="color:#f53f3f">删除节点</button></div>';
+    document.getElementById("prop-cfg").onclick = function () { openNodeConfig(n.id); };
+    document.getElementById("prop-del").onclick = function () {
+      lf.deleteNode(n.id); selected = null; syncFromLf(); renderProp();
+    };
+  }
+
+  /* ---------- 打开节点配置 ---------- */
+  function openNodeConfig(id) {
+    var n = findNode(id);
+    if (!n) return;
+    editingNodeId = id;
+    var p = n.props || {};
+    if (n.type === "sms") return MK.openSms({ props: p, onOk: function (out) {
+      applyNode(id, { nodeName: out.nodeName, sign: out.sign, content: out.content }, out.nodeName || out.summary);
+    } });
+    if (n.type === "wecom") return MK.openWecom({ props: p, onOk: function (out) {
+      applyNode(id, {
+        nodeName: out.nodeName, msgTypeKey: out.msgTypeKey, msgType: out.msgType,
+        actName: out.actName, goodsName: out.goodsName, rightName: out.rightName, content: out.content
+      }, out.nodeName || out.summary);
+    } });
+    if (n.type === "wait") return openWait(n);
+    if (n.type === "audience") return openAudience(n);
+    if (n.type === "numbers") return openNumbers(n);
+    if (n.type === "response") return openResponse(n);
+    if (n.type === "analyze") return openAnalyze(n);
+    if (SET_KIND[n.type]) return openSet(n);
+  }
+
+  function applyNode(id, props, summary) {
+    var n = findNode(id);
+    if (!n) return;
+    n.props = Object.assign({}, n.props, props);
+    if (summary) n.props.summary = summary;
+    if (lf) lf.setProperties(id, { bizType: n.type, props: n.props });
+    refreshTextFromProps(n);
+    S.saveFlow(planId, flow);
+    renderProp();
+  }
+  /* 触达节点用「节点名称」作为画布文案，其余节点用 summary */
+  function refreshTextFromProps(n) {
+    if (!lf) return;
+    var p = n.props || {};
+    var text = S.nodeText(n.type, p);
+    lf.updateText(n.id, text);
+  }
+  function closeAll() { MK.closeAll(); }
+
+  /* --- 等待 --- */
+  function openWait(n) {
+    var p = n.props || {};
+    document.getElementById("wt-name").value = p.nodeName || "等待";
+    document.querySelectorAll("input[name=wt-mode]").forEach(function (r) { r.checked = r.value === (p.waitMode || "abs"); });
+    if (p.absTime) document.getElementById("wt-abs").value = p.absTime;
+    if (p.day) document.getElementById("wt-day").value = p.day;
+    if (p.dayTime) document.getElementById("wt-day-time").value = p.dayTime;
+    if (p.hours) document.getElementById("wt-hours").value = p.hours;
+    if (p.mins) document.getElementById("wt-mins").value = p.mins;
+    toggleWait();
+    MK.open("m-wt");
+  }
+  function toggleWait() {
+    var v = (document.querySelector("input[name=wt-mode]:checked") || {}).value || "abs";
+    document.getElementById("wt-abs-row").style.display = v === "abs" ? "" : "none";
+    document.getElementById("wt-day-row").style.display = v === "day" ? "" : "none";
+    document.getElementById("wt-rel-row").style.display = v === "rel" ? "" : "none";
+  }
+  document.querySelectorAll("input[name=wt-mode]").forEach(function (r) { r.onchange = toggleWait; });
+  document.getElementById("wt-ok").onclick = function () {
+    var mode = (document.querySelector("input[name=wt-mode]:checked") || {}).value || "abs";
+    var name = document.getElementById("wt-name").value.trim() || "等待";
+    var label, props = { nodeName: name, waitMode: mode };
+    if (mode === "abs") {
+      var v = document.getElementById("wt-abs").value;
+      if (!v) { Proto.toast("请选择等待到的具体时间"); return; }
+      props.absTime = v; label = "至 " + v.replace("T", " ");
+    } else if (mode === "day") {
+      var d = parseInt(document.getElementById("wt-day").value, 10) || 0;
+      var t = document.getElementById("wt-day-time").value || "09:00";
+      if (!d) { Proto.toast("请输入第几天"); return; }
+      if (d > 30) { Proto.toast("最长等待 30 天"); return; }
+      props.day = d; props.dayTime = t; label = "第 " + d + " 天 " + t;
+    } else {
+      var h = parseInt(document.getElementById("wt-hours").value, 10) || 0;
+      var m = parseInt(document.getElementById("wt-mins").value, 10) || 0;
+      if (!h && !m) { Proto.toast("等待时间不能全为 0"); return; }
+      if (h + m / 60 > 720) { Proto.toast("最长等待 30 天"); return; }
+      props.hours = h; props.mins = m; label = (h ? h + " 小时 " : "") + (m ? m + " 分钟" : "");
+    }
+    props.waitLabel = label;
+    applyNode(editingNodeId, props, label);
+    closeAll();
+  };
+
+  /* --- 人群筛选 --- */
+  function openAudience(n) {
+    var p = n.props || {};
+    document.getElementById("aud-name").value = p.nodeName || "人群筛选";
+    document.querySelectorAll("input[name=aud-quick]").forEach(function (r) { r.checked = r.value === (p.quick || ""); });
+    segPick.aud = p.segId || "";
+    document.getElementById("aud-seg-name").textContent = p.segName || "未选择";
+    document.getElementById("aud-amt").value = p.amt || "不限";
+    document.getElementById("aud-amt-c").value = p.amtCustom || "";
+    document.querySelectorAll("input[name=aud-time]").forEach(function (r) { r.checked = r.value === (p.timeMode || "rel"); });
+    document.getElementById("aud-days").value = p.days || 30;
+    document.getElementById("aud-date").value = p.date || "";
+    MK.open("m-aud");
+  }
+  document.getElementById("aud-pick").onclick = function () {
+    MK.pickSegment(false, segPick.aud, function (v) {
+      segPick.aud = v;
+      var seg = MK.SEGMENTS.filter(function (s) { return s.id === v; })[0];
+      document.getElementById("aud-seg-name").textContent = seg ? (seg.name + "（" + seg.count + " 人）") : v;
+      MK.open("m-aud");
+    });
+  };
+  document.getElementById("aud-ok").onclick = function () {
+    var quick = (document.querySelector("input[name=aud-quick]:checked") || {}).value || "";
+    var seg = MK.SEGMENTS.filter(function (s) { return s.id === segPick.aud; })[0];
+    if (!quick && !seg) { Proto.toast("请选择快捷设置或指定一个人群"); return; }
+    var name = document.getElementById("aud-name").value.trim() || "人群筛选";
+    applyNode(editingNodeId, {
+      nodeName: name, quick: quick, segId: segPick.aud, segName: seg ? seg.name : "",
+      amt: document.getElementById("aud-amt").value, amtCustom: document.getElementById("aud-amt-c").value,
+      timeMode: (document.querySelector("input[name=aud-time]:checked") || {}).value || "rel",
+      days: document.getElementById("aud-days").value, date: document.getElementById("aud-date").value
+    }, seg ? seg.name : (quick || "已配置"));
+    closeAll();
+  };
+
+  /* --- 指定用户 --- */
+  var numFiles = [
+    { name: "线下引流名单 202609.xlsx", rows: "200,000", at: "2026-09-20 12:20", st: "完成" },
+    { name: "春启03 期未到课名单.csv", rows: "1,000", at: "2026-09-18 09:30", st: "完成" },
+    { name: "老学员回访名单.txt", rows: "50,000", at: "2026-09-12 16:05", st: "完成" }
+  ];
+  function renderNumFiles() {
+    document.getElementById("num-files").innerHTML = numFiles.map(function (f, i) {
+      return "<tr><td>" + MK.esc(f.name) + "</td><td>" + f.rows + "</td><td>" + f.at + "</td>" +
+        '<td><span class="badge badge-success">' + f.st + "</span></td>" +
+        '<td class="row-actions"><a href="#" data-num-del="' + i + '" class="danger">删除</a></td></tr>';
+    }).join("") || '<tr><td colspan="5" class="muted" style="text-align:center;padding:16px">暂无上传记录</td></tr>';
+    document.querySelectorAll("[data-num-del]").forEach(function (a) {
+      a.onclick = function (e) {
+        e.preventDefault();
+        numFiles.splice(parseInt(a.getAttribute("data-num-del"), 10), 1);
+        renderNumFiles();
+      };
+    });
+  }
+  function openNumbers(n) {
+    var p = n.props || {};
+    document.getElementById("num-name").value = p.nodeName || "指定用户";
+    renderNumFiles();
+    MK.open("m-num");
+  }
+  document.getElementById("num-upload").onclick = function () {
+    numFiles.unshift({ name: "名单文件 " + numFiles.length + ".xlsx", rows: "1,200", at: MK.nowText(), st: "完成" });
+    renderNumFiles();
+    Proto.toast("文件已上传（演示）");
+  };
+  document.getElementById("num-tpl").onclick = function () { Proto.toast("模板已下载（演示）"); };
+  document.getElementById("num-ok").onclick = function () {
+    if (!numFiles.length) { Proto.toast("请至少上传一份名单文件"); return; }
+    var name = document.getElementById("num-name").value.trim() || "指定用户";
+    applyNode(editingNodeId, { nodeName: name, fileName: numFiles[0].name }, numFiles[0].name);
+    closeAll();
+  };
+
+  /* --- 合并 / 交集 / 排除 / 排重 / 抽取（共用弹窗壳） --- */
+  var setKind = "";
+  function openSet(n) {
+    setKind = SET_KIND[n.type];
+    var p = n.props || {};
+    var title = S.defOf(n.type).label;
+    document.getElementById("set-title").textContent = title;
+    document.getElementById("set-name").value = p.nodeName || title;
+    ["merge", "inter", "extract", "dedup"].forEach(function (k) {
+      document.getElementById("set-body-" + k).style.display = k === setKind ? "" : "none";
+    });
+    if (setKind === "merge") {
+      document.querySelectorAll("input[name=set-merge]").forEach(function (r) { r.checked = r.value === (p.mergeMode || "union"); });
+    } else if (setKind === "inter") {
+      segPick.src = p.srcId || ""; segPick.exc = p.excId || "";
+      document.getElementById("set-src-name").textContent = p.srcName || "未选择";
+      document.getElementById("set-exc-name").textContent = p.excName || "未选择";
+    } else if (setKind === "extract") {
+      document.querySelectorAll("input[name=set-ex-mode]").forEach(function (r) { r.checked = r.value === (p.exMode || "ratio"); });
+      document.getElementById("set-ex-1").value = p.ex1 != null ? p.ex1 : 50;
+      document.getElementById("set-ex-2").value = p.ex2 != null ? p.ex2 : 50;
+      document.getElementById("set-ex-even").checked = p.even !== false;
+      toggleExUnit();
+    } else if (setKind === "dedup") {
+      dedupList = (p.dedupList || ["618 全品类复购营销", "618 电风扇复购营销", "双十一电器类复购营销"]).slice();
+      renderDedup();
+      document.getElementById("set-dedup-out").value = p.outName || "";
+    }
+    MK.open("m-set");
+  }
+  function toggleExUnit() {
+    var m = (document.querySelector("input[name=set-ex-mode]:checked") || {}).value || "ratio";
+    document.getElementById("set-ex-1-unit").textContent = m === "ratio" ? "%" : "人";
+    document.getElementById("set-ex-2-unit").textContent = m === "ratio" ? "%" : "人";
+  }
+  document.querySelectorAll("input[name=set-ex-mode]").forEach(function (r) { r.onchange = toggleExUnit; });
+  document.getElementById("set-src-pick").onclick = function () {
+    MK.pickSegment(false, segPick.src, function (v) {
+      segPick.src = v;
+      document.getElementById("set-src-name").textContent = MK.nameOf(MK.SEGMENTS, v);
+      MK.open("m-set");
+    });
+  };
+  document.getElementById("set-exc-pick").onclick = function () {
+    MK.pickSegment(false, segPick.exc, function (v) {
+      segPick.exc = v;
+      document.getElementById("set-exc-name").textContent = MK.nameOf(MK.SEGMENTS, v);
+      MK.open("m-set");
+    });
+  };
+  function renderDedup() {
+    document.getElementById("set-dedup-list").innerHTML = dedupList.map(function (nm, i) {
+      return "<tr><td>" + (i + 1) + "</td><td>" + MK.esc(nm) + "</td>" +
+        '<td class="row-actions"><a href="#" data-dd-up="' + i + '">上移</a></td></tr>';
+    }).join("") || '<tr><td colspan="3" class="muted" style="text-align:center;padding:14px">暂无</td></tr>';
+    document.querySelectorAll("[data-dd-up]").forEach(function (a) {
+      a.onclick = function (e) {
+        e.preventDefault();
+        var i = parseInt(a.getAttribute("data-dd-up"), 10);
+        if (i <= 0) return;
+        var t = dedupList[i - 1]; dedupList[i - 1] = dedupList[i]; dedupList[i] = t;
+        renderDedup();
+      };
+    });
+  }
+  document.getElementById("set-dedup-add").onclick = function () {
+    var v = document.getElementById("set-dedup-new").value.trim();
+    if (!v) { Proto.toast("请输入节点名"); return; }
+    dedupList.push(v);
+    document.getElementById("set-dedup-new").value = "";
+    renderDedup();
+  };
+  document.getElementById("set-ok").onclick = function () {
+    var name = document.getElementById("set-name").value.trim() || document.getElementById("set-title").textContent;
+    var props = { nodeName: name }, summary = name;
+    if (setKind === "merge") {
+      var m = (document.querySelector("input[name=set-merge]:checked") || {}).value || "union";
+      props.mergeMode = m;
+      summary = m === "union" ? "并集合并" : "顺序追加";
+    } else if (setKind === "inter") {
+      if (!segPick.src) { Proto.toast("请选择源数据人群"); return; }
+      props.srcId = segPick.src; props.srcName = MK.nameOf(MK.SEGMENTS, segPick.src);
+      props.excId = segPick.exc; props.excName = segPick.exc ? MK.nameOf(MK.SEGMENTS, segPick.exc) : "";
+      summary = props.srcName + (props.excName ? " 排除 " + props.excName : "");
+    } else if (setKind === "extract") {
+      var mode = (document.querySelector("input[name=set-ex-mode]:checked") || {}).value || "ratio";
+      var e1 = parseFloat(document.getElementById("set-ex-1").value) || 0;
+      var e2 = parseFloat(document.getElementById("set-ex-2").value) || 0;
+      if (mode === "ratio" && Math.round(e1 + e2) !== 100) { Proto.toast("按比例抽取时两组之和需为 100%"); return; }
+      if (!e1 && !e2) { Proto.toast("请填写抽取数量"); return; }
+      props.exMode = mode; props.ex1 = e1; props.ex2 = e2;
+      props.even = document.getElementById("set-ex-even").checked;
+      summary = mode === "ratio" ? (e1 + "% / " + e2 + "%") : (e1 + " 人 / " + e2 + " 人");
+    } else if (setKind === "dedup") {
+      if (!dedupList.length) { Proto.toast("请至少添加一条排重优先级"); return; }
+      props.dedupList = dedupList.slice();
+      props.outName = document.getElementById("set-dedup-out").value.trim();
+      summary = "优先级 " + dedupList.length + " 条";
+    }
+    applyNode(editingNodeId, props, summary);
+    closeAll();
+  };
+
+  /* --- 营销响应 --- */
+  function openResponse(n) {
+    var p = n.props || {};
+    document.getElementById("rp-name").value = p.nodeName || "营销响应";
+    document.getElementById("rp-days").value = p.days || 3;
+    document.querySelectorAll("input[name=rp-visit]").forEach(function (r) { r.checked = r.value === (p.visit || "有访问"); });
+    document.querySelectorAll("input[name=rp-order]").forEach(function (r) { r.checked = r.value === (p.order || "未拍单"); });
+    MK.open("m-resp");
+  }
+  document.getElementById("rp-ok").onclick = function () {
+    var d = parseInt(document.getElementById("rp-days").value, 10) || 0;
+    if (!d) { Proto.toast("请输入输出天数"); return; }
+    var visit = (document.querySelector("input[name=rp-visit]:checked") || {}).value || "有访问";
+    var order = (document.querySelector("input[name=rp-order]:checked") || {}).value || "未拍单";
+    var name = document.getElementById("rp-name").value.trim() || "营销响应";
+    applyNode(editingNodeId, { nodeName: name, days: d, visit: visit, order: order },
+      d + " 天后 · " + visit + " / " + order);
+    closeAll();
+  };
+
+  /* --- 短信分析 --- */
+  function openAnalyze(n) {
+    var p = n.props || {};
+    document.getElementById("an-name").value = p.nodeName || "短信分析";
+    document.getElementById("an-task").value = p.taskName || "短信分析任务";
+    document.getElementById("an-days").value = p.days || 3;
+    MK.open("m-ana");
+  }
+  document.getElementById("an-ok").onclick = function () {
+    var task = document.getElementById("an-task").value.trim();
+    var d = parseInt(document.getElementById("an-days").value, 10) || 0;
+    if (!task) { Proto.toast("请填写分析任务名称"); return; }
+    if (!d) { Proto.toast("请输入分析周期"); return; }
+    var name = document.getElementById("an-name").value.trim() || "短信分析";
+    applyNode(editingNodeId, { nodeName: name, taskName: task, days: d }, "营销后 " + d + " 天");
+    closeAll();
+  };
+
+  /* --- popup close --- */
+  document.querySelectorAll("[data-mkc]").forEach(function (b) {
+    b.addEventListener("click", function () { MK.close(b.getAttribute("data-mkc")); });
+  });
+  document.querySelectorAll(".proto-mask[id^='m-']").forEach(function (m) {
+    m.addEventListener("click", function () { MK.close(m.id.replace(/-mask$/, "")); });
+  });
+
+  /* ---------- 工具条 ---------- */
+  document.getElementById("btn-save").onclick = function () { syncFromLf(); Proto.toast("计划流程已保存"); };
+  document.getElementById("btn-validate").onclick = function () {
+    syncFromLf();
+    var issues = S.validateFlow(flow);
+    if (!issues.length) Proto.toast("校验通过：流程结构完整");
+    else Proto.toast(issues[0] + (issues.length > 1 ? " 等 " + issues.length + " 项" : ""));
+  };
+  document.getElementById("tb-test").onclick = function () {
+    syncFromLf();
+    if (!flow.nodes.length) { Proto.toast("请先编排流程"); return; }
+    Proto.toast("测试已发送（演示）：按流程模拟执行 1 个用户");
+  };
+  document.getElementById("tb-launch").onclick = function () {
+    syncFromLf();
+    var issues = S.validateFlow(flow);
+    if (issues.length) { Proto.toast("流程未通过校验：" + issues[0]); return; }
+    if (!confirm("确认正式发送？发送后计划进入「运行中」，按运行方式执行。")) return;
+    S.save({ id: planId, status: "running" });
+    Proto.toast("已正式发送，计划进入运行中");
+    location.href = "smart-marketing.html";
+  };
+  document.getElementById("tb-undo").onclick = function () { if (lf) lf.undo(); syncFromLf(); };
+  document.getElementById("tb-redo").onclick = function () { if (lf && lf.redo) lf.redo(); syncFromLf(); };
+  document.getElementById("tb-redesign").onclick = function () {
+    if (!confirm("重新设计会清空当前画布的全部节点与连线，确认继续？")) return;
+    flow = { nodes: [], edges: [] };
+    S.saveFlow(planId, flow);
+    if (lf) { lf.render(S.toLogicFlowData(flow)); MK.fitFlow(lf); }
+    selected = null;
+    renderProp();
+    Proto.toast("已重新设计");
+  };
+  document.getElementById("tb-zoom-in").onclick = function () { if (lf) lf.zoom(true); };
+  document.getElementById("tb-zoom-out").onclick = function () { if (lf) lf.zoom(false); };
+  document.getElementById("tb-fit").onclick = function () { MK.fitFlow(lf); };
+  document.getElementById("tb-copy").onclick = function () {
+    if (!selected || selected.kind !== "node") { Proto.toast("请先选中一个节点"); return; }
+    var n = findNode(selected.data.id);
+    if (!n) return;
+    var id = MK.uid("n");
+    var copy = { id: id, type: n.type, x: n.x + 60, y: n.y + 60, props: MK.clone(n.props) };
+    flow.nodes.push(copy);
+    var d = S.defOf(n.type);
+    lf.addNode({
+      id: id, type: d ? d.shape : "rect", x: copy.x, y: copy.y,
+      text: S.nodeText(copy.type, copy.props), properties: { bizType: copy.type, props: copy.props }
+    });
+    S.saveFlow(planId, flow);
+    Proto.toast("已复制节点");
+  };
+  document.getElementById("tb-del").onclick = function () {
+    if (!selected) { Proto.toast("请先选中节点或连线"); return; }
+    if (selected.kind === "edge") { lf.deleteEdge(selected.data.id); selected = null; syncFromLf(); renderProp(); return; }
+    lf.deleteNode(selected.data.id);
+    selected = null;
+    syncFromLf();
+    renderProp();
+  };
+  document.getElementById("tb-tpl").onclick = function () { Proto.toast("已另存为流程模板（二期模板库）"); };
+
+  initCanvas();
+})();
+</script>
+</body>
+</html>

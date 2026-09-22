@@ -80,7 +80,8 @@
           <th>商品</th>
           <th>微信小店商品ID</th>
           <th>内容类型</th>
-          <th>关联内容</th>
+          <th>商品来源</th>
+          <th>关联商品</th>
           <th>微信状态</th>
           <th>审批</th>
           <th>价格</th>
@@ -95,7 +96,10 @@
   <div class="card" style="margin-top:16px"><div class="card-bd">
     <p class="muted" style="font-size:12px;line-height:1.8;margin:0">
       <b>口径：</b>通过内容创建后「提审到微信」，经微信小店开放接口提交审核 / 上架 / 下架；本平台存镜像，审批与 status 以微信为准。
-      支持撤回提审、查看驳回原因、重新提审、从微信拉取覆盖。小店商品须绑定 <code>content_id</code>。<b>店铺商品平台审核不在此页。</b>
+      支持撤回提审、查看驳回原因、重新提审、从微信拉取覆盖。<b>商品平台审核不在此页。</b>
+      <br /><b>关联商品：</b>从微信侧同步下来的商品可能未绑定本地商品，须通过行内「关联商品」把它关联到「商品列表」中的一个商品（一对一），
+      其订单才能交付权益与计收；已关联后不再显示该按钮。
+      <br /><b>商品来源：</b>该小店商品在微信侧的分发场景，枚举「<b>视频号</b>」「<b>直播</b>」；由创建时所选内容类型推导（直播内容 → 直播，其余 → 视频号）。
     </p>
   </div></div>
 </div>
@@ -145,12 +149,33 @@
   </div>
 </div>
 
+<div class="create-mask" id="link-mask"></div>
+<div class="create-modal" id="link-modal" style="width:560px">
+  <div style="padding:14px 18px;border-bottom:1px solid var(--color-border);display:flex;justify-content:space-between;align-items:center">
+    <h3 style="margin:0;font-size:16px">关联商品</h3>
+    <button type="button" class="btn btn-sm btn-ghost" id="link-close">×</button>
+  </div>
+  <div style="padding:16px 18px">
+    <p class="muted" style="margin:0 0 12px;font-size:12px">
+      将小店商品关联到「商品列表」中的商品后，其订单才能交付权益与计收。<b>一个小店商品只能关联一个商品。</b>
+    </p>
+    <div class="field"><label>选择商品 *</label>
+      <select id="link-goods" class="input" style="width:100%"></select>
+    </div>
+  </div>
+  <div style="padding:12px 18px;border-top:1px solid var(--color-border);display:flex;justify-content:flex-end;gap:8px">
+    <button class="btn" id="link-cancel">取消</button>
+    <button class="btn btn-primary" id="link-ok">确认关联</button>
+  </div>
+</div>
+
 <script src="../assets/js/proto.js"></script>
 <script src="../assets/js/teachers-store.js?v=1"></script>
 <script src="../assets/js/course-store.js?v=1"></script>
 <script src="../assets/js/goods-taxonomy.js?v=1"></script>
 <script src="../assets/js/prototype-business-store.js"></script>
-<script src="../assets/js/admin-shell.js?v=16"></script>
+<script src="../assets/js/goods-store.js?v=1"></script>
+<script src="../assets/js/admin-shell.js?v=23"></script>
 <script>
 (function () {
   var Tax = window.GoodsTaxonomy;
@@ -185,11 +210,33 @@
     } catch (e) {}
     if (!rows.length) {
       rows = [
-        { goods_id: "WX001", content_type: "online_course", content_id: "C001", wx_product_id: "100001234567", name: "春启 03 期家长必修课", status: 5, audit_status: "approved", price: 9.9, synced_at: "2026-09-19 18:20" },
-        { goods_id: "WX002", content_type: "plan", content_id: "PL001", wx_product_id: "100001234568", name: "亲子沟通 21 天定制化计划 · 第 4 期", status: 5, audit_status: "approved", price: 199, synced_at: "2026-09-19 18:20" },
-        { goods_id: "WX003", content_type: "article", content_id: "A001", wx_product_id: "", name: "9 月新学期家长指南（小店草稿）", status: 0, audit_status: "draft", price: 6.9, synced_at: "" }
+        { goods_id: "WX001", content_type: "online_course", content_id: "C001", store_goods_id: "G002", wx_product_id: "100001234567", name: "小学语文阅读启蒙（微信小店）", status: 5, audit_status: "approved", price: 199, synced_at: "2026-09-19 18:20" },
+        { goods_id: "WX002", content_type: "plan", content_id: "PL001", store_goods_id: "", wx_product_id: "100001234568", name: "亲子沟通 21 天定制化计划 · 第 4 期", status: 5, audit_status: "approved", price: 199, synced_at: "2026-09-19 18:20" },
+        { goods_id: "WX003", content_type: "article", content_id: "A001", store_goods_id: "", wx_product_id: "", name: "9 月新学期家长指南（小店草稿）", status: 0, audit_status: "draft", price: 6.9, synced_at: "" },
+        /* 从微信侧同步下来的商品：不带内容与本地商品，须手工「关联商品」后才能交付权益与计收 */
+        { goods_id: "WX004", content_type: "", content_id: "", store_goods_id: "", wx_product_id: "100001234599", name: "家庭教育指导手册（微信同步）", status: 5, audit_status: "approved", price: 39, synced_at: "2026-09-19 18:20" }
       ];
     }
+    /* 商品来源：缺省按内容类型推导（直播内容 → 直播，其余 → 视频号），随行落库 */
+    rows.forEach(function (r) {
+      if (!r.goods_source) r.goods_source = r.content_type === "live" ? "live" : "video";
+    });
+  }
+
+  /* 商品来源：该小店商品在微信侧的分发场景（枚举：视频号 / 直播） */
+  var SOURCE_LABEL = { video: "视频号", live: "直播" };
+  function sourceLabel(r) {
+    var s = r.goods_source;
+    return '<span class="tag' + (s === "live" ? " tag-teal" : "") + '">' + (SOURCE_LABEL[s] || "—") + "</span>";
+  }
+
+  /* 关联商品：展示「商品列表」中被关联的商品名称；未关联给出提示 */
+  function linkedGoodsHtml(r) {
+    if (!r.store_goods_id) return '<span class="badge badge-warn">未关联</span>';
+    var G = window.GoodsStore;
+    var g = G ? G.get(r.store_goods_id) : null;
+    if (!g) return '<span class="badge badge-warn">未关联</span>';
+    return "<b>" + Tax.esc(g.name) + "</b><br><span class='muted mono'>" + Tax.esc(g.goods_id) + "</span>";
   }
 
   function statusLabel(s) {
@@ -236,6 +283,10 @@
     document.getElementById("tbody").innerHTML = list.map(function (r) {
       var acts = [];
       acts.push('<a href="#" data-act="view" data-id="' + Tax.esc(r.goods_id) + '">查看</a>');
+      /* 未关联商品的，紧跟「查看」给出关联入口；已关联则不再出现该按钮 */
+      if (!r.store_goods_id) {
+        acts.push('<a href="#" data-act="link" data-id="' + Tax.esc(r.goods_id) + '">关联商品</a>');
+      }
       if (r.audit_status === "draft" || r.audit_status === "rejected") {
         acts.push('<a href="#" data-act="submit" data-id="' + Tax.esc(r.goods_id) + '">提审到微信</a>');
       }
@@ -258,13 +309,14 @@
         "<td><b>" + Tax.esc(r.name) + "</b><br><span class='muted mono'>" + Tax.esc(r.goods_id) + "</span></td>" +
         "<td class='mono'>" + Tax.esc(r.wx_product_id || "—") + "</td>" +
         "<td>" + Tax.esc(Tax.contentTypeLabel(r.content_type)) + "</td>" +
-        "<td class='mono'>" + Tax.esc(r.content_id || "—") + "</td>" +
+        "<td>" + sourceLabel(r) + "</td>" +
+        "<td>" + linkedGoodsHtml(r) + "</td>" +
         "<td>" + statusLabel(r.status) + "</td>" +
         "<td>" + auditLabel(r.audit_status) + auditExtra + "</td>" +
         "<td><b>¥" + Number(r.price).toFixed(2) + "</b></td>" +
         "<td class='muted' style='font-size:12px'>" + Tax.esc(r.synced_at || "—") + "</td>" +
         '<td class="row-actions">' + acts.join(" ") + "</td></tr>";
-    }).join("") || '<tr><td colspan="9" class="muted" style="text-align:center;padding:24px">暂无微信小店商品</td></tr>';
+    }).join("") || '<tr><td colspan="10" class="muted" style="text-align:center;padding:24px">暂无微信小店商品</td></tr>';
     renderStats();
   }
 
@@ -320,7 +372,9 @@
       goods_id: id,
       content_type: selectedWxType(),
       content_id: document.getElementById("wx-content").value,
+      store_goods_id: "",
       wx_product_id: "",
+      goods_source: selectedWxType() === "live" ? "live" : "video",
       name: document.getElementById("wx-name").value || "未命名小店商品",
       status: 0,
       audit_status: "draft",
@@ -342,7 +396,9 @@
       goods_id: id,
       content_type: selectedWxType(),
       content_id: cid,
+      store_goods_id: "",
       wx_product_id: "10" + Date.now().toString().slice(-10),
+      goods_source: selectedWxType() === "live" ? "live" : "video",
       name: document.getElementById("wx-name").value || "未命名小店商品",
       status: 0,
       audit_status: "pending",
@@ -370,6 +426,41 @@
   document.getElementById("reason-ok").addEventListener("click", closeReason);
   document.getElementById("reason-mask").addEventListener("click", closeReason);
 
+  /* ---------- 关联商品（小店商品 → 商品列表商品，一对一） ---------- */
+  var linkTarget = null;
+  function openLink(row) {
+    linkTarget = row;
+    var G = window.GoodsStore;
+    var candidates = G ? G.all() : [];
+    document.getElementById("link-goods").innerHTML = candidates.length
+      ? candidates.map(function (g) {
+          var usedBy = rows.find(function (x) { return x.store_goods_id === g.goods_id && x.goods_id !== row.goods_id; });
+          return '<option value="' + Tax.esc(g.goods_id) + '"' + (usedBy ? " disabled" : "") + ">" +
+            Tax.esc(g.name) + "（" + Tax.esc(g.goods_id) + " · ¥" + Number(g.price || 0).toFixed(2) +
+            (usedBy ? " · 已被 " + Tax.esc(usedBy.goods_id) + " 关联" : "") + "）</option>";
+        }).join("")
+      : '<option value="">商品列表暂无可选商品</option>';
+    document.getElementById("link-mask").classList.add("open");
+    document.getElementById("link-modal").classList.add("open");
+  }
+  function closeLink() {
+    document.getElementById("link-mask").classList.remove("open");
+    document.getElementById("link-modal").classList.remove("open");
+  }
+  document.getElementById("link-close").addEventListener("click", closeLink);
+  document.getElementById("link-cancel").addEventListener("click", closeLink);
+  document.getElementById("link-mask").addEventListener("click", closeLink);
+  document.getElementById("link-ok").addEventListener("click", function () {
+    var gid = document.getElementById("link-goods").value;
+    if (!gid) { Proto.toast("请选择要关联的商品"); return; }
+    if (!linkTarget) return;
+    linkTarget.store_goods_id = gid;
+    persist();
+    closeLink();
+    Proto.toast("已关联商品 " + gid + "，该小店商品订单可交付权益与计收");
+    render();
+  });
+
   document.getElementById("tbody").addEventListener("click", function (e) {
     var a = e.target.closest("[data-act]");
     if (!a) return;
@@ -379,7 +470,10 @@
     var row = rows.find(function (r) { return r.goods_id === id; });
     if (!row) return;
     if (act === "view") {
-      Proto.toast("查看镜像：" + row.name + " · 审批 " + (row.audit_status || "—") + " · 内容 " + row.content_id);
+      Proto.toast("查看镜像：" + row.name + " · 审批 " + (row.audit_status || "—") +
+        (row.store_goods_id ? " · 关联商品 " + row.store_goods_id : " · 未关联商品"));
+    } else if (act === "link") {
+      openLink(row);
     } else if (act === "reason") {
       openReason(row);
     } else if (act === "submit") {

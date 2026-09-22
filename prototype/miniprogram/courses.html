@@ -19,12 +19,17 @@
   <script src="../assets/js/proto.js"></script>
   <script src="../assets/js/content-tags.js?v=2"></script>
   <script src="../assets/js/teachers-store.js?v=2"></script>
-  <script src="../assets/js/course-store.js?v=1"></script>
+  <script src="../assets/js/course-store.js?v=2"></script>
+  <script src="../assets/js/prototype-business-store.js"></script>
+  <script src="../assets/js/goods-store.js?v=1"></script>
+  <script src="../assets/js/listing-store.js?v=1"></script>
+  <script src="../assets/js/mp-commerce.js?v=2"></script>
   <script src="../assets/js/mp-shell.js"></script>
   <script>
   var Store = window.CourseStore;
   var Tags = window.ContentTags;
   var Teachers = window.Teachers;
+  var Mp = window.MpCommerce;
 
   function esc(s) {
     return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) {
@@ -41,7 +46,7 @@
       var t = Tags.get(id);
       return t ? t.name : "";
     }).filter(Boolean);
-    var price = c.price > 0 ? ("¥" + c.price) : "免费";
+    var price = Mp.priceLabel(c.id, "online").text;
     return (
       '<div class="mp-live-card" style="margin-top:12px">' +
         '<a href="course.html?id=' + encodeURIComponent(c.id) + '" style="color:inherit">' +

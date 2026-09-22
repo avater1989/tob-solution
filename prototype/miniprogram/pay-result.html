@@ -19,6 +19,7 @@
         <p style="font-size:13px;color:#888;margin-top:8px" id="pay-desc">权益已开通 · 资金进入艺博备付金待分账（示意）</p>
         <div style="margin-top:28px">
           <a class="mp-btn" href="learn.html" id="go-learn">去学习</a>
+          <a class="mp-btn mp-btn-outline" href="goods-detail.html" style="margin-top:10px;display:none" id="go-goods">查看商品</a>
           <a class="mp-btn mp-btn-outline" href="mine.html" style="margin-top:10px" id="go-mine">返回我的</a>
           <a class="mp-btn mp-btn-outline" href="live-room.html" style="margin-top:10px" id="go-live">返回直播间</a>
           <a class="mp-btn" href="offline-detail.html?id=O001&signed=1" style="margin-top:10px;display:none" id="go-offline">查看线下课</a>
@@ -27,60 +28,75 @@
       </div>
     </div>
   </div>
-  <p class="mp-hint"><a href="../admin/orders.html">管理端订单</a></p>
+  <p class="mp-hint"><a href="../admin/orders.html">管理端订单</a> · <a href="../admin/goods.html">商品列表</a></p>
   <script src="../assets/js/proto.js"></script>
+  <script src="../assets/js/prototype-business-store.js"></script>
+  <script src="../assets/js/goods-store.js?v=1"></script>
+  <script src="../assets/js/listing-store.js?v=1"></script>
+  <script src="../assets/js/mp-commerce.js?v=2"></script>
   <script src="../assets/js/mp-shell.js"></script>
   <script>
     var params = new URLSearchParams(location.search);
-    var from = params.get("from") || "course";
+    var from = params.get("from") || "online_course";
     var ret = params.get("return") || "";
-    var course = params.get("course") || "O001";
+    var contentId = params.get("content_id") || params.get("course") || "";
+    var goodsId = params.get("goods_id") || "";
+    var orderMode = params.get("order_mode") || "jump_goods";
+    var price = params.get("price") || "";
+    var Mp = window.MpCommerce;
+    var GD = window.GoodsStore;
+
     var desc = document.getElementById("pay-desc");
-    var goLive = document.getElementById("go-live");
     var goLearn = document.getElementById("go-learn");
+    var goLive = document.getElementById("go-live");
     var goOffline = document.getElementById("go-offline");
     var goOfflineList = document.getElementById("go-offline-list");
+    var goGoods = document.getElementById("go-goods");
+
+    /* 演示数据兜底：从 return 链接里取内容 ID */
+    if (!contentId && ret) {
+      var m = ret.match(/[?&]id=([^&]+)/);
+      if (m) contentId = decodeURIComponent(m[1]);
+    }
+    if (!goodsId && contentId) {
+      var ctx0 = Mp.context(contentId, from);
+      goodsId = ctx0.goods_id;
+    }
+
+    /* 权益主键为成交商品；contentIndex 供内容页反查 */
+    if (goodsId) {
+      Mp.grantRights(goodsId, { source: "pay", content_id: contentId, order_mode: orderMode });
+    }
+
+    var g = goodsId && GD ? GD.get(goodsId) : null;
+    var goodsLine = g
+      ? ('<div style="font-size:12px;color:#86909c;margin-top:8px">成交商品 · ' + g.name + " ¥" + Number(g.price || 0).toFixed(2) + "</div>")
+      : "";
+    var modeLine = orderMode === "inline"
+      ? '<div style="font-size:12px;color:#86909c;margin-top:4px">下单方式 · 内容页直接下单（未经过商品详情页）</div>'
+      : '<div style="font-size:12px;color:#86909c;margin-top:4px">下单方式 · 商品详情页下单</div>';
 
     if (from === "offline") {
       desc.textContent = "本场线下课报名资格已开通 · 请按签到时间到场";
       goLearn.style.display = "none";
       goLive.style.display = "none";
+      goGoods.style.display = "none";
       goOffline.style.display = "block";
       goOfflineList.style.display = "block";
-      goOffline.href = ret || ("offline-detail.html?id=" + encodeURIComponent(course) + "&signed=1");
-      try {
-        var key = "mp_offline_rights_v1";
-        var map = JSON.parse(localStorage.getItem(key) || "{}") || {};
-        var oid = course;
-        if (ret) {
-          var m = ret.match(/[?&]id=([^&]+)/);
-          if (m) oid = decodeURIComponent(m[1]);
-        }
-        map[oid] = { valid: true, grantedAt: new Date().toISOString(), source: "pay" };
-        localStorage.setItem(key, JSON.stringify(map));
-      } catch (e) {}
+      goOffline.href = ret || ("offline-detail.html?id=" + encodeURIComponent(contentId) + "&signed=1");
     } else if (from === "article") {
       desc.textContent = "文章阅读权益已开通 · 可永久查看全文";
       goLearn.style.display = "block";
       goLearn.textContent = "阅读全文";
       goLive.style.display = "none";
+      goGoods.style.display = "none";
       goOffline.style.display = "none";
       goOfflineList.style.display = "none";
-      var aid = course && course !== "O001" ? course : "A002";
-      if (ret) {
-        var ma = ret.match(/[?&]id=([^&]+)/);
-        if (ma) aid = decodeURIComponent(ma[1]);
-      }
-      try {
-        var ak = "mp_course_rights_v1";
-        var amap = JSON.parse(localStorage.getItem(ak) || "{}") || {};
-        amap[aid] = { valid: true, grantedAt: new Date().toISOString(), source: "pay", kind: "article" };
-        localStorage.setItem(ak, JSON.stringify(amap));
-      } catch (eA) {}
-      goLearn.href = ret || ("article-detail.html?id=" + encodeURIComponent(aid) + "&bought=1");
+      goLearn.href = ret || ("article-detail.html?id=" + encodeURIComponent(contentId) + "&bought=1");
     } else if (from === "live" || from === "ticket") {
-      desc.textContent = "直播/课程权益已开通 · 可返回直播间继续观看";
+      desc.textContent = "直播观看权益已开通 · 可返回直播间继续观看";
       goLearn.style.display = from === "live" ? "block" : "none";
+      goGoods.style.display = "none";
       goOffline.style.display = "none";
       goOfflineList.style.display = "none";
     } else {
@@ -88,19 +104,15 @@
       goOffline.style.display = "none";
       goOfflineList.style.display = "none";
       desc.textContent = "线上课学习权益已开通 · 可立即开始学习";
-      var cid = course && course !== "O001" ? course : "C001";
-      if (ret) {
-        var m2 = ret.match(/[?&]id=([^&]+)/);
-        if (m2) cid = decodeURIComponent(m2[1]);
+      goLearn.href = ret || ("learn.html?id=" + encodeURIComponent(contentId));
+      if (orderMode === "jump_goods" && goodsId) {
+        goGoods.style.display = "block";
+        goGoods.href = "goods-detail.html?goods_id=" + encodeURIComponent(goodsId) + "&content_id=" + encodeURIComponent(contentId);
+      } else {
+        goGoods.style.display = "none";
       }
-      try {
-        var ck = "mp_course_rights_v1";
-        var cmap = JSON.parse(localStorage.getItem(ck) || "{}") || {};
-        cmap[cid] = { valid: true, grantedAt: new Date().toISOString(), source: "pay" };
-        localStorage.setItem(ck, JSON.stringify(cmap));
-      } catch (e2) {}
-      goLearn.href = ret || ("learn.html?id=" + encodeURIComponent(cid));
     }
+    desc.insertAdjacentHTML("afterend", goodsLine + modeLine);
   </script>
 </body>
 </html>

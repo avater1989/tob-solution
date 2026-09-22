@@ -50,9 +50,12 @@
   <script src="../assets/js/proto.js"></script>
   <script src="../assets/js/content-tags.js?v=2"></script>
   <script src="../assets/js/teachers-store.js?v=2"></script>
-  <script src="../assets/js/course-store.js?v=1"></script>
+  <script src="../assets/js/course-store.js?v=2"></script>
+  <script src="../assets/js/prototype-business-store.js"></script>
+  <script src="../assets/js/goods-store.js?v=1"></script>
+  <script src="../assets/js/listing-store.js?v=1"></script>
   <script src="../assets/js/mp-shell.js"></script>
-  <script src="../assets/js/mp-commerce.js"></script>
+  <script src="../assets/js/mp-commerce.js?v=2"></script>
   <script>
   var Store = window.CourseStore;
   var Tags = window.ContentTags;
@@ -61,6 +64,7 @@
 
   var id = new URLSearchParams(location.search).get("id") || "C001";
   var from = new URLSearchParams(location.search).get("from") || "";
+  var slot = new URLSearchParams(location.search).get("slot") || "online";
   if (from === "home") document.getElementById("nav-back").href = "home.html";
 
   var course = Store.get(id) || Store.list({ status: "enabled" })[0];
@@ -70,15 +74,20 @@
     throw new Error("no course");
   }
 
-  if (new URLSearchParams(location.search).get("bought") === "1") {
-    Mp.grantRights(course.id, { source: "pay" });
+  /* 售卖上下文来自上架位（Listing）+ 成交商品（Goods），内容本身不含价格 */
+  var ctx = Mp.context(course.id, slot);
+  var selfUrl = "course.html?id=" + encodeURIComponent(course.id) + (slot !== "online" ? "&slot=" + encodeURIComponent(slot) : "");
+
+  if (new URLSearchParams(location.search).get("bought") === "1" && ctx.goods_id) {
+    Mp.grantRights(ctx.goods_id, { source: "pay", content_id: course.id });
+    ctx = Mp.context(course.id, slot);
   }
 
-  var owned = Mp.hasRights(course.id) || course.price <= 0;
+  var owned = ctx.owned;
   var teacherName = Teachers.nameOf(course.teacherId) || course.teacher || "讲师";
   var chapters = course.chapters || [];
-  var firstFree = chapters.findIndex(function (ch) { return ch.free; });
-  if (firstFree < 0) firstFree = 0;
+  var visibleIdx = Mp.trialVisible(ctx, chapters);
+  var firstFree = visibleIdx.length ? visibleIdx[0] : 0;
 
   function esc(s) {
     return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) {
@@ -101,9 +110,9 @@
 
   function chapterRows() {
     return chapters.map(function (ch, i) {
-      var can = owned || ch.free;
+      var can = owned || visibleIdx.indexOf(i) >= 0;
       var lock = can ? "" : " 🔒";
-      var trial = !owned && ch.free ? ' <span class="badge badge-teal">试看</span>' : "";
+      var trial = !owned && visibleIdx.indexOf(i) >= 0 ? ' <span class="badge badge-teal">试看</span>' : "";
       var href = can
         ? ('learn.html?id=' + encodeURIComponent(course.id) + "&ch=" + encodeURIComponent(ch.id))
         : "#";
@@ -125,9 +134,17 @@
     }).join("");
   }
 
-  var priceHtml = course.price > 0
-    ? '<div style="color:#dc2626;font-size:22px;font-weight:700;margin-top:8px">¥' + course.price + "</div>"
-    : '<div style="color:#00b42a;font-size:18px;font-weight:700;margin-top:8px">免费学习</div>';
+  /* 价格展示：免费→免费学习；付费且 inline→直接展示成交商品价；付费且 jump_goods→不展示价格 */
+  function priceTxt() { return Number(ctx.price || 0).toFixed(2).replace(/\.00$/, ""); }
+  var priceHtml;
+  if (ctx.free) {
+    priceHtml = '<div style="color:#00b42a;font-size:18px;font-weight:700;margin-top:8px">免费学习</div>';
+  } else if (ctx.orderMode === "inline") {
+    priceHtml = '<div style="color:#dc2626;font-size:22px;font-weight:700;margin-top:8px">¥' + priceTxt() + "</div>" +
+      '<div style="font-size:12px;color:#86909c;margin-top:2px">成交商品 · ' + esc(ctx.goods_name || "—") + "</div>";
+  } else {
+    priceHtml = '<div style="color:#165dff;font-size:15px;font-weight:600;margin-top:8px">购买后学习 · 点击「去购买」查看商品与价格</div>';
+  }
 
   document.getElementById("cd-root").innerHTML =
     '<div style="height:180px;background:url(' + esc(course.cover) + ') center/cover"></div>' +
@@ -140,7 +157,7 @@
       '<div class="mp-crow-tags" style="margin-top:8px">' + tagLine() + "</div>" +
       priceHtml +
       '<div class="cd-stats"><span>观看 <b>' + (course.views || 0) + '</b></span><span>评论 <b>' + (course.comments || 0) + '</b></span><span>收藏 <b>' + (course.favorites || 0) + "</b></span></div>" +
-      (owned && course.price > 0 ? '<div class="cd-owned">你已获得本课学习权益</div>' : "") +
+      (owned && !ctx.free ? '<div class="cd-owned">你已获得本课学习权益</div>' : "") +
     "</div>" +
     '<div class="cd-tabs" id="cd-tabs">' +
       '<button type="button" class="active" data-panel="p-ch">目录</button>' +
@@ -189,25 +206,23 @@
   var cta = document.getElementById("cd-cta");
   if (owned) {
     cta.textContent = "开始学习";
+  } else if (ctx.free) {
+    cta.textContent = "立即学习";
+  } else if (ctx.orderMode === "inline") {
+    cta.textContent = "立即购买 ¥" + priceTxt();
   } else {
-    cta.textContent = course.price > 0 ? ("立即购买 ¥" + course.price) : "立即学习";
+    cta.textContent = "去购买";
   }
 
   function startBuy() {
-    Mp.openBuyNotice({
-      catalogId: "comm",
-      from: "course",
-      price: String(course.price),
-      course: course.id,
+    Mp.buy(course.id, {
+      slot: slot,
       title: course.name,
-      include: "线上课全部章节视频（共 " + chapters.length + " 讲）",
-      item: {
-        title: course.name,
-        typeLabel: "线上课",
-        include: "线上课全部章节视频（共 " + chapters.length + " 讲）",
-        purchaseNotes: course.purchaseNotes
-      },
-      returnUrl: "course.html?id=" + encodeURIComponent(course.id) + "&bought=1"
+      returnUrl: selfUrl + "&bought=1",
+      onFree: function () {
+        Proto.toast("已开通学习权益");
+        setTimeout(function () { location.href = "learn.html?id=" + encodeURIComponent(course.id); }, 400);
+      }
     });
   }
 
@@ -215,14 +230,6 @@
     if (owned) {
       var ch = chapters[firstFree] || chapters[0];
       location.href = "learn.html?id=" + encodeURIComponent(course.id) + (ch ? "&ch=" + encodeURIComponent(ch.id) : "");
-      return;
-    }
-    if (course.price <= 0) {
-      Mp.grantRights(course.id, { source: "free" });
-      Proto.toast("已开通学习权益");
-      setTimeout(function () {
-        location.href = "learn.html?id=" + encodeURIComponent(course.id);
-      }, 400);
       return;
     }
     startBuy();

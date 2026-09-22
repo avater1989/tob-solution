@@ -51,7 +51,8 @@
     <div class="proto-modal-bd">
       <div class="field"><label>章节名称 *</label><input class="input" id="ch-name" placeholder="如：第一章 认识情绪" /></div>
       <div class="field">
-        <label style="display:flex;align-items:center;gap:8px;font-weight:400"><input type="checkbox" id="ch-free"> 是否免费</label>
+        <label style="display:flex;align-items:center;gap:8px;font-weight:400"><input type="checkbox" id="ch-free"> 允许试看</label>
+        <div class="muted" style="font-size:12px">勾选后，本节可被小程序上架配置选为试看内容；实际开放多少试看由「首页装修」的上架配置决定。</div>
       </div>
       <div class="field">
         <label>内容标签</label>
@@ -91,7 +92,7 @@
 <script src="../assets/js/content-tags.js?v=2"></script>
 <script src="../assets/js/teachers-store.js?v=2"></script>
 <script src="../assets/js/course-store.js?v=1"></script>
-<script src="../assets/js/admin-shell.js?v=16"></script>
+<script src="../assets/js/admin-shell.js?v=23"></script>
 <script>
 var Store = window.CourseStore;
 var Tags = window.ContentTags;
@@ -152,7 +153,7 @@ function render() {
           '<button class="btn" style="color:#f53f3f;border-color:#ffa39e" data-del-ch="' + i + '">删除</button>' +
         "</div>"
       : "";
-    var tags = ch.free ? '<span class="req" style="background:#e8f3ff;color:#165dff;margin-left:4px">免费</span>' : "";
+    var tags = ch.free ? '<span class="req" style="background:#e8f3ff;color:#165dff;margin-left:4px">可试看</span>' : "";
     return '<div class="cm-chapter">' +
       '<div class="cm-chapter-hd">' +
         '<div class="cm-chapter-num">' + (i + 1) + "</div>" +

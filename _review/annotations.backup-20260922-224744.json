@@ -1,0 +1,82 @@
+{
+  "v": 1,
+  "updated": "2026-09-22T22:46:39",
+  "items": [
+    {
+      "id": "rmucs7pgf7tti",
+      "page": "admin/wxshop-goods.html",
+      "anchor": {
+        "selector": "#admin-content-slot > div > div:nth-of-type(4) > div > table > thead > tr > th:nth-of-type(4)",
+        "selectorIn": "div:nth-of-type(4) > div > table > thead > tr > th:nth-of-type(4)",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "th",
+        "text": "关联商品",
+        "html": "<th>关联商品</th>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "左侧增加「商品来源」字段，枚举：视频号、直播",
+      "status": "open",
+      "createdAt": "2026-09-22T14:41:03.135Z"
+    },
+    {
+      "id": "rmucsbiwufle1",
+      "page": "admin/term-mgmt.html",
+      "anchor": {
+        "selector": "#tm-vx-goods",
+        "selectorIn": "",
+        "root": "",
+        "region": "page",
+        "shell": "",
+        "label": "div#tm-vx-goods",
+        "text": "春启 03 期家长必修课P2026030101视频号·春启 03 期家长课P2026090701家庭教育入门体验课（视频号）P2026080201青春期沟通专题课P2026090105亲子沟通 21 天定制化计划 · 第 4 期P2026070120",
+        "html": "<div id=\"tm-vx-goods\" style=\"display:flex;flex-direction:column;gap:6px;max-height:140px;overflow:auto;padding:8px 10px;border:1px solid var(--color-border);border-radius:6px;background:#fafbfc\"><label style=\"display: flex; align-items: flex-start; gap: 8px; font-size: 13px; curs"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "左对齐",
+      "status": "open",
+      "createdAt": "2026-09-22T14:44:01.279Z"
+    },
+    {
+      "id": "rmucsc3c00dy5",
+      "page": "admin/term-mgmt.html",
+      "anchor": {
+        "selector": "#tm-assistants",
+        "selectorIn": "",
+        "root": "",
+        "region": "page",
+        "shell": "",
+        "label": "div#tm-assistants",
+        "text": "赵老师阮荣均王助教李管理刘助教陈奕均",
+        "html": "<div id=\"tm-assistants\" style=\"display:flex;flex-wrap:wrap;gap:8px 14px;padding:8px 10px;border:1px solid var(--color-border);border-radius:6px;background:#fafbfc\"><label style=\"display: inline-flex; align-items: center; gap: 6px; font-size: 13px; cursor: pointer; margin: 0px;\"><"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "按照组织架构来选择，选择后展示在这里",
+      "status": "open",
+      "createdAt": "2026-09-22T14:44:27.744Z"
+    },
+    {
+      "id": "rmucsex4bw6gl",
+      "page": "admin/term-mgmt.html",
+      "anchor": {
+        "selector": "body > div:nth-of-type(4) > div:nth-of-type(2) > aside > div:nth-of-type(4) > div",
+        "selectorIn": "",
+        "root": "",
+        "region": "shell",
+        "shell": "admin-shell.js",
+        "label": "div.nav-label",
+        "text": "营销管理",
+        "html": "<div class=\"nav-label\">营销管理</div>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "上方增加用户运营板块，将「用户列表」「标签管理」 「 个人SOP」和「群SOP」都放在里面",
+      "status": "open",
+      "createdAt": "2026-09-22T14:46:39.659Z"
+    }
+  ]
+}

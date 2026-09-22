@@ -83,6 +83,7 @@
         <tr>
           <th>用户</th>
           <th>手机号</th>
+          <th>关联商品</th>
           <th>渠道</th>
           <th>报名时间</th>
           <th>获取方式</th>
@@ -103,13 +104,27 @@
 </div>
 
 <script src="../assets/js/proto.js"></script>
+<script src="../assets/js/prototype-business-store.js"></script>
+<script src="../assets/js/goods-store.js?v=1"></script>
+<script src="../assets/js/listing-store.js?v=1"></script>
 <script src="../assets/js/ops-shell.js?v=16"></script>
 <script>
+var Goods = window.GoodsStore;
+var Listing = window.ListingStore;
+
+/* 场次本身不含价格；报名资格由该场次关联的商品决定 */
 var COURSES = [
-  { id: "O001", title: "卓越家族培养计划 · 线下工作坊", access: "paid", price: 299, signed: 86, capacity: 100 },
-  { id: "O002", title: "亲子沟通实战 · 线下沙龙", access: "free", price: 0, signed: 32, capacity: 40 },
-  { id: "O003", title: "学习习惯养成 · 线下营（筹备中）", access: "paid", price: 999, signed: 0, capacity: 30 }
+  { id: "O001", title: "卓越家族培养计划 · 线下工作坊", signed: 86, capacity: 100 },
+  { id: "O002", title: "亲子沟通实战 · 线下沙龙", signed: 32, capacity: 40 },
+  { id: "O003", title: "学习习惯养成 · 线下营（筹备中）", signed: 0, capacity: 30 }
 ];
+
+/* 该条报名记录的关联商品：付费记录取本场次的付费门票商品名，免费记录无商品 */
+function goodsNameOf(courseId, row) {
+  if (!row.amount) return "—（免费报名）";
+  var paid = Goods.listByContent(courseId).filter(function (g) { return g.price > 0; });
+  return paid.length ? paid[0].name : "—";
+}
 
 var SIGNUPS = {
   O001: [
@@ -142,9 +157,8 @@ sel.innerHTML = COURSES.map(function (c) {
 function updateMeta() {
   var c = COURSES.find(function (x) { return x.id === currentId; });
   if (!c) return;
-  var access = c.access === "paid" ? ("¥" + c.price) : "免费";
   document.getElementById("sg-meta").textContent =
-    access + " · 报名 " + c.signed + "/" + c.capacity;
+    "报名 " + c.signed + "/" + c.capacity;
 }
 
 function esc(s) {
@@ -165,12 +179,13 @@ function render() {
   });
   var tbody = document.getElementById("sg-tbody");
   if (!rows.length) {
-    tbody.innerHTML = '<tr><td colspan="7" class="muted" style="text-align:center;padding:36px">暂无参与记录</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="8" class="muted" style="text-align:center;padding:36px">暂无参与记录</td></tr>';
   } else {
     tbody.innerHTML = rows.map(function (r) {
       return "<tr>" +
         '<td><div class="user-cell"><span class="user-avatar" style="background:' + r.color + '">' + esc(r.name.charAt(0)) + "</span>" + esc(r.name) + "</div></td>" +
         "<td>" + esc(r.phone) + "</td>" +
+        '<td style="max-width:220px">' + esc(goodsNameOf(currentId, r)) + "</td>" +
         "<td>" + esc(r.channel) + "</td>" +
         "<td>" + esc(r.time) + "</td>" +
         "<td>" + esc(r.access) + "</td>" +

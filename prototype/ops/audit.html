@@ -96,7 +96,7 @@
       <tbody id="dt-rows"></tbody>
     </table>
     <div style="margin-top:10px;padding:8px 12px;border-radius:6px;background:#e8f3ff;border:1px solid #a0cfff;color:#165dff;font-size:12px">
-      审核范围：<b>直播（必审）</b>、<b>线上课 / 文章（上架前审核）</b>、<b>店铺商品（内容创建须审；平台商品镜像免审）</b>。审核通过后内容 / 商品可上架至 C 端。
+      审核范围：<b>直播（必审）</b>、<b>线上课 / 文章（上架前审核）</b>、<b>商家商品（内容创建须审；平台商品镜像免审）</b>。审核通过后内容 / 商品可上架至 C 端。
     </div>
     <p class="muted" style="margin:10px 0 0;font-size:12px">平台审核通过后可上架；驳回需填写原因并通知商家；微信小店商品审批走微信接口，不在本队列。</p>
   </div>
@@ -167,8 +167,10 @@
 <script src="../assets/js/prototype-business-store.js"></script>
 <script src="../assets/js/content-tags.js?v=2"></script>
 <script src="../assets/js/teachers-store.js?v=1"></script>
-<script src="../assets/js/course-store.js?v=1"></script>
+<script src="../assets/js/course-store.js?v=2"></script>
 <script src="../assets/js/goods-taxonomy.js?v=1"></script>
+<script src="../assets/js/goods-store.js?v=1"></script>
+<script src="../assets/js/listing-store.js?v=1"></script>
 <script src="../assets/js/ops-shell.js?v=7"></script>
 <script>
 (function () {
@@ -229,12 +231,29 @@
             ["创建方式", g.create_mode === "from_platform" ? "平台商品" : "内容创建"],
             ["售卖价格", "¥" + (g.price != null ? Number(g.price).toFixed(2) : "—")],
             ["内容来源", g.content_source === "platform" ? "平台" : "商家自建"]
-          ]
+          ].concat(listingRowsOf(g))
         };
       });
     } catch (e) {
       return [];
     }
+  }
+
+  /* 商品对应的上架配置：审核商品时须一并核对免费/付费、试看范围与下单方式 */
+  function listingRowsOf(g) {
+    if (!window.ListingStore) return [];
+    var LS = window.ListingStore;
+    var rows = LS.listByContent(g.content_id).filter(function (r) {
+      return r.default_goods_id === g.goods_id || (r.pay_mode === "free" && r.slot);
+    });
+    if (!rows.length) return [["上架配置", "尚未上架到小程序模块"]];
+    return rows.map(function (r) {
+      return [
+        "上架位 · " + (LS.SLOT_LABEL[r.slot] || r.slot),
+        (r.pay_mode === "free" ? "免费" : "付费 · " + (r.order_mode === "inline" ? "内容页直接按商品金额下单" : "跳转商品详情页")) +
+          (r.default_goods_id === g.goods_id ? "（成交商品=本商品）" : "")
+      ];
+    });
   }
 
   function pendingSeries() {
@@ -251,7 +270,7 @@
         rows: [
           ["课程标题", c.name],
           ["内容标签", (c.tagIds && c.tagIds.length && window.ContentTags) ? window.ContentTags.namesByIds(c.tagIds).join("、") : (c.cat || "—")],
-          ["课程目录", Store.chapterCount(c) + " 章 · 试看 " + trialN + " 节"],
+          ["课程目录", Store.chapterCount(c) + " 章 · 允许试看 " + trialN + " 节"],
           ["讲师", c.teacher || "—"],
           ["课程简介", c.intro || "—"]
         ]
