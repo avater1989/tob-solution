@@ -21,6 +21,7 @@
 
   <div class="cm-tabs" id="anchors">
     <button class="btn active" data-tab="sec-base">基础信息</button>
+    <button class="btn" data-tab="sec-goods">关联商品</button>
     <button class="btn" data-tab="sec-status">状态与分享</button>
   </div>
 
@@ -52,10 +53,6 @@
         </select>
       </div>
       <div class="field">
-        <label>课程费（元）</label>
-        <input class="input" id="f-price" type="number" min="0" step="0.01" placeholder="0" />
-      </div>
-      <div class="field">
         <label>封面图</label>
         <div class="cm-cover-up has-img" id="f-cover-box"><img id="f-cover-img" src="../assets/img/covers/reading.jpg" alt="" /><span class="cm-cover-tip">更换封面</span></div>
       </div>
@@ -84,6 +81,21 @@
     </div>
   </div>
 
+  <div class="cm-section tab-panel" id="sec-goods">
+    <div class="cm-section-hd">
+      <h2>关联商品 <span class="hint">平台内容不承载价格；下发后由商家自建镜像商品定价，同一内容可建多个商品（1:N）</span></h2>
+    </div>
+    <table class="data">
+      <thead>
+        <tr><th>商家</th><th>商品</th><th style="width:110px">价格</th><th style="width:110px">审核</th><th style="width:100px">上架</th><th>已上架模块</th></tr>
+      </thead>
+      <tbody id="goods-tbody"></tbody>
+    </table>
+    <p class="muted" style="font-size:12px;margin:10px 0 0">
+      运营侧只负责内容审核与平台内容下发；商家侧的售卖价格、免费/付费、试看范围与下单方式，由商家在「交易 · 店铺运营 · 首页装修」的上架配置里决定。
+    </p>
+  </div>
+
   <div class="cm-section tab-panel" id="sec-status">
     <div class="cm-section-hd"><h2>状态与分享</h2></div>
     <div class="field">
@@ -109,10 +121,15 @@
 <script src="../assets/js/proto.js"></script>
 <script src="../assets/js/content-tags.js?v=2"></script>
 <script src="../assets/js/teachers-store.js?v=2"></script>
-<script src="../assets/js/course-store.js?v=1"></script>
+<script src="../assets/js/course-store.js?v=2"></script>
+<script src="../assets/js/prototype-business-store.js"></script>
+<script src="../assets/js/goods-store.js?v=1"></script>
+<script src="../assets/js/listing-store.js?v=1"></script>
 <script src="../assets/js/ops-shell.js?v=16"></script>
 <script>
 var Store = window.CourseStore;
+var Goods = window.GoodsStore;
+var Listing = window.ListingStore;
 var Tags = window.ContentTags;
 var Teachers = window.Teachers;
 
@@ -148,7 +165,6 @@ document.getElementById("f-name").value = course.name || "";
 document.getElementById("f-term").value = course.term || "";
 document.getElementById("f-teacher").value = course.teacherId || "";
 document.getElementById("f-badge").value = course.badge || "";
-document.getElementById("f-price").value = course.price || 0;
 document.getElementById("f-cover-img").src = course.cover || "../assets/img/covers/reading.jpg";
 document.getElementById("f-intro").value = course.intro || "";
 document.getElementById("f-outline").value = course.outlineText || "";
@@ -170,6 +186,32 @@ function updCnt() {
   document.getElementById(fid).addEventListener("input", updCnt);
 });
 updCnt();
+
+/* ---------- 关联商品（运营视角：查看该内容已下发的商品） ---------- */
+function esc(s) {
+  return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) {
+    return ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c];
+  });
+}
+/* 上架 / 审核状态徽标统一走 Proto.shelfTag（R-UI-010 全局配色一致） */
+function auditTag(a) { return Proto.shelfTag(a); }
+function shelfTag(s) { return Proto.shelfTag(s); }
+(function renderGoods() {
+  var rows = Goods.listByContent(course.id);
+  document.getElementById("goods-tbody").innerHTML = rows.length ? rows.map(function (g) {
+    var used = Listing.listByContent(course.id).filter(function (r) { return r.default_goods_id === g.goods_id; });
+    return "<tr>" +
+      "<td>" + esc(g.merchant || "星启家庭教育") + "</td>" +
+      '<td><a href="../admin/goods-edit.html?create_mode=' + encodeURIComponent(g.create_mode || "from_content") +
+        "&goods_id=" + encodeURIComponent(g.goods_id) + "&content_id=" + encodeURIComponent(course.id) + '">' +
+        esc(g.name) + '</a><br><span class="muted" style="font-family:ui-monospace,monospace;font-size:12px">' + esc(g.goods_id) + "</span></td>" +
+      "<td><b>¥" + Number(g.price || 0).toFixed(2) + "</b></td>" +
+      "<td>" + auditTag(g.audit_status) + "</td>" +
+      "<td>" + shelfTag(g.status) + "</td>" +
+      "<td>" + (used.length ? esc(used.map(function (r) { return Listing.SLOT_LABEL[r.slot] || r.slot; }).join("、")) : '<span class="muted">—</span>') + "</td>" +
+      "</tr>";
+  }).join("") : '<tr><td colspan="6" class="muted" style="text-align:center;padding:24px">该内容尚无商家关联商品</td></tr>';
+})();
 
 document.getElementById("anchors").addEventListener("click", function (e) {
   var b = e.target.closest("[data-tab]");
@@ -203,7 +245,6 @@ function collect() {
   course.teacher = Teachers.nameOf(teacherId);
   course.tagIds = selectedTagIds();
   course.badge = document.getElementById("f-badge").value;
-  course.price = parseFloat(document.getElementById("f-price").value) || 0;
   course.cover = document.getElementById("f-cover-img").src;
   course.intro = document.getElementById("f-intro").value.trim();
   course.outlineText = document.getElementById("f-outline").value.trim();

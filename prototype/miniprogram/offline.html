@@ -18,9 +18,14 @@
 
   <script src="../assets/js/proto.js"></script>
   <script src="../assets/js/teachers-store.js?v=2"></script>
+  <script src="../assets/js/prototype-business-store.js"></script>
+  <script src="../assets/js/goods-store.js?v=1"></script>
+  <script src="../assets/js/listing-store.js?v=1"></script>
+  <script src="../assets/js/mp-commerce.js?v=2"></script>
   <script src="../assets/js/mp-shell.js"></script>
   <script>
   var Teachers = window.Teachers;
+  var Mp = window.MpCommerce;
   var ITEMS = [
     {
       id: "O001",
@@ -35,8 +40,6 @@
       expected: 80,
       capacity: 100,
       signed: 86,
-      access: "paid",
-      price: 299,
       cover: "../assets/img/covers/classroom.jpg",
       badge: "报名中"
     },
@@ -53,8 +56,6 @@
       expected: 35,
       capacity: 40,
       signed: 32,
-      access: "free",
-      price: 0,
       cover: "../assets/img/covers/talk.jpg",
       badge: "免费报名"
     },
@@ -71,8 +72,6 @@
       expected: 25,
       capacity: 30,
       signed: 0,
-      access: "paid",
-      price: 999,
       cover: "../assets/img/covers/parent.jpg",
       badge: "即将开放"
     }
@@ -85,7 +84,7 @@
   }
 
   document.getElementById("off-list").innerHTML = ITEMS.map(function (o) {
-    var price = o.access === "paid" ? ("¥" + o.price) : "免费";
+    var price = Mp.priceLabel(o.id, "offline").text;
     return (
       '<div class="mp-live-card" style="margin-top:12px">' +
         '<a href="offline-detail.html?id=' + o.id + '" style="color:inherit">' +

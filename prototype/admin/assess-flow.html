@@ -50,7 +50,7 @@
 <script src="../assets/js/proto.js"></script>
 <script src="../assets/js/assess-flow-store.js?v=2"></script>
 <script src="https://cdn.jsdelivr.net/npm/@logicflow/core@1.2.27/dist/logic-flow.js"></script>
-<script src="../assets/js/admin-shell.js?v=16"></script>
+<script src="../assets/js/admin-shell.js?v=23"></script>
 <script>
 var Store = window.AssessFlowStore;
 var qs = new URLSearchParams(location.search);
@@ -219,8 +219,12 @@ function initLf() {
     return;
   }
   if (lf) return;
+  /* 必须显式传 width/height：只给 container 时 LogicFlow 按构造瞬间的尺寸建画布，
+     容器还没布局完就只渲染顶部约 150px，表现为画布大面积空白 */
   lf = new LF({
     container: container,
+    width: container.clientWidth,
+    height: container.clientHeight,
     grid: true,
     keyboard: { enabled: true },
     edgeType: "polyline",

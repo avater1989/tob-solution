@@ -35,8 +35,8 @@
       var ORDERS = [
         {
           no: "VX202603291001", time: "2026-09-13 09:12", state: "待付款",
-          title: "亲子沟通基础", spec: "8 节视频课 · 长期有效", price: 199,
-          cover: "沟通<br>基础", coverBg: "linear-gradient(160deg,#ffe0d8,#ffb3a0)",
+          title: "小学语文阅读启蒙", spec: "4 节视频课 · 长期有效 · 成交商品 G002", price: 199,
+          cover: "阅读<br>启蒙", coverBg: "linear-gradient(160deg,#ffe0d8,#ffb3a0)",
           acts: [{ txt: "取消订单", cls: "" }, { txt: "去支付", cls: "primary", act: "pay" }]
         },
         {
@@ -105,7 +105,12 @@
         if (!a) return;
         e.preventDefault();
         var act = a.getAttribute("data-act");
-        if (act === "pay") { location.href = "pay-result.html?from=course"; return; }
+        if (act === "pay") {
+          /* 与「上架位」新链路对齐：内容页直接下单（inline），成交商品 G002 */
+          location.href = "pay-result.html?from=online_course&order_mode=inline&content_id=C001&goods_id=G002" +
+            "&return=" + encodeURIComponent("course.html?id=C001&bought=1");
+          return;
+        }
         if (act === "learn") { location.href = "learn.html?id=C001"; return; }
         if (act === "replay") { location.href = "live-room.html"; return; }
         Proto.toast(a.textContent.trim() + "（原型）");

@@ -48,11 +48,9 @@
   var sidebars = {
     workbench: [
       {
-        group: "经营任务中心",
+        group: "概览",
         links: [
-          { id: "dashboard", href: "dashboard.html#today", label: "今日经营" },
-          { id: "dashboard-todo", href: "dashboard.html#todo", label: "我的待办" },
-          { id: "dashboard-alert", href: "dashboard.html#alert", label: "异常提醒" },
+          { id: "dashboard", href: "dashboard.html#today", label: "工作台" },
         ],
       },
     ],
@@ -74,8 +72,17 @@
           { id: "wecom-inherit", href: "wecom-inherit.html", label: "客户继承" },
           { id: "wecom-churn", href: "wecom-churn.html", label: "流失提醒" },
           { id: "leads-dup", href: "leads-dup.html", label: "重复线索" },
+        ],
+      },
+      {
+        group: "用户运营",
+        links: [
           { id: "users", href: "users.html", label: "用户列表" },
           { id: "user-tags", href: "user-tags.html", label: "标签管理" },
+          { id: "sop-personal", href: "sop-personal.html", label: "个人SOP" },
+          { id: "sop-group", href: "sop-group.html", label: "群SOP" },
+          { id: "event-marketing", href: "event-marketing.html", label: "用户事件营销（二期）" },
+          { id: "smart-marketing", href: "smart-marketing.html", label: "智能营销（二期）" },
           { id: "user-segments", href: "user-segments.html", label: "用户分群（二期）" },
           { id: "ops-plans", href: "ops-plans.html", label: "定向运营计划（二期）" },
         ],
@@ -92,8 +99,6 @@
           { id: "mass-group", href: "mass-group.html", label: "客户群群发" },
           { id: "mass-moment", href: "mass-moment.html", label: "群发朋友圈" },
           { id: "quick-task", href: "quick-tasks.html", label: "快捷任务" },
-          { id: "sop-personal", href: "sop-personal.html", label: "个人SOP" },
-          { id: "sop-group", href: "sop-group.html", label: "群SOP" },
           { id: "todo-cal", href: "todo-calendar.html", label: "待办日历" },
         ],
       },
@@ -188,7 +193,7 @@
       {
         group: "商品管理",
         links: [
-          { id: "goods", href: "goods.html", label: "店铺商品" },
+          { id: "goods", href: "goods.html", label: "商品列表" },
           { id: "wxshop-goods", href: "wxshop-goods.html", label: "微信小店商品" },
           { id: "goods-category", href: "goods-category.html", label: "商品类目" },
           { id: "goods-tags", href: "goods-tags.html", label: "商品标签" },
@@ -268,7 +273,7 @@
       "<li><a href='leads.html'>④ 私域运营</a></li></ul></div>",
     scrm:
       "<div class='assist-block'><h3>现网对齐</h3><ol>" +
-      "<li>客户中心 / 营销管理 / 内容中心</li>" +
+      "<li>客户中心 / 用户运营 / 营销管理 / 内容中心</li>" +
       "<li>业务设置</li>" +
       "<li>页面归属与字段对照真路径</li></ol></div>" +
       "<div class='assist-block'><h3>用户资料</h3><ul>" +

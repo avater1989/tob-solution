@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>新建店铺商品 · 商家管理后台</title>
+<title>新建商品 · 商家管理后台</title>
 <link rel="stylesheet" href="../assets/css/proto.css?v=9" />
 <link rel="stylesheet" href="../assets/css/content-mgmt.css?v=3" />
 <style>
@@ -23,11 +23,28 @@
 .tag-checks { display:flex; flex-wrap:wrap; gap:8px 14px; }
 .readonly-banner { background:#fff7e6; border:1px solid #ffd591; color:#ad6800; border-radius:8px; padding:10px 14px; margin-bottom:12px; font-size:13px; }
 .form-locked input, .form-locked select, .form-locked textarea { pointer-events:none; background:#f5f5f5; opacity:.9; }
+.proto-mask, .proto-modal { display:none; }
+.proto-mask.open { display:block; }
+.proto-modal.open { display:flex; }
+.proto-mask { position:fixed; inset:0; background:rgba(0,0,0,.45); z-index:1000; }
+.proto-modal { position:fixed; left:50%; top:50%; transform:translate(-50%,-50%); z-index:1001; background:#fff; border-radius:10px; width:680px; max-width:94vw; max-height:82vh; flex-direction:column; box-shadow:0 12px 40px rgba(0,0,0,.18); }
+.proto-modal-hd { display:flex; justify-content:space-between; align-items:center; padding:14px 18px; border-bottom:1px solid var(--color-border); }
+.proto-modal-bd { padding:16px 18px; overflow:auto; }
+.proto-modal-ft { display:flex; align-items:center; padding:12px 18px; border-top:1px solid var(--color-border); }
+#pick-body { margin-top:12px; }
+.pick-item { display:flex; gap:10px; align-items:flex-start; padding:10px 12px; border:1px solid var(--color-border); border-radius:8px; margin-bottom:8px; cursor:pointer; }
+.pick-item:hover { border-color:var(--color-primary); }
+.pick-item.on { border-color:var(--color-primary); background:var(--color-primary-soft); }
+.pick-name { font-size:13px; font-weight:600; }
+.pick-sub { font-size:12px; margin-top:2px; }
+.deliver-item { display:flex; align-items:center; gap:10px; padding:9px 12px; border:1px solid var(--color-border); border-radius:8px; margin-bottom:8px; background:#fafbfc; font-size:13px; }
+.deliver-item .tag-teal { font-size:11px; padding:1px 6px; border-radius:3px; }
+.deliver-item b { flex:1; }
 </style>
 </head>
-<body class="admin-body" data-module="trade" data-nav="goods" data-title="新建店铺商品" data-crumb="交易 / 商品管理 / 店铺商品 / 新建">
+<body class="admin-body" data-module="trade" data-nav="goods" data-title="新建商品" data-crumb="交易 / 商品管理 / 商品列表 / 新建">
 <div id="header-actions">
-  <button class="btn" onclick="location.href='goods.html'">返回店铺商品</button>
+  <button class="btn" onclick="location.href='goods.html'">返回商品列表</button>
   <button class="btn" id="btn-save-draft">存草稿</button>
   <button class="btn btn-primary" id="btn-submit">提交审核</button>
 </div>
@@ -49,22 +66,17 @@
   <!-- Path A: content -->
   <div id="path-content">
     <div class="cm-section">
-      <div class="cm-section-hd"><h3>选择内容 *</h3><span class="muted">类型与首页装修一致；同一内容可创建多个商品（1:N）</span></div>
-      <div class="cm-choice" id="gd-ctype">
-        <label class="cm-choice-item active"><input type="radio" name="ctype" value="online_course" checked /><b>线上课</b><span>购买后按章节解锁</span></label>
-        <label class="cm-choice-item"><input type="radio" name="ctype" value="offline" /><b>线下课</b><span>购买后生成门票</span></label>
-        <label class="cm-choice-item"><input type="radio" name="ctype" value="article" /><b>文章</b><span>付费阅读权限</span></label>
-        <label class="cm-choice-item"><input type="radio" name="ctype" value="plan" /><b>定制化计划</b><span>关卡与任务推进</span></label>
-        <label class="cm-choice-item"><input type="radio" name="ctype" value="live" /><b>直播</b><span>付费场次观看资格</span></label>
+      <div class="cm-section-hd"><h3>交付内容 *</h3><span class="muted">内容不含价格；一个商品可交付多个内容（组合商品），同一内容也可建多个商品</span></div>
+      <div class="field">
+        <label>交付内容 *</label>
+        <div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center">
+          <button type="button" class="btn btn-primary" id="btn-pick-content">选择交付内容</button>
+          <span class="muted" style="font-size:12px;font-weight:400">弹窗内多选，可选「线上课 / 线下课 / 定制化计划 / 文章 / 直播」，确定后在此回显</span>
+        </div>
       </div>
-      <div class="field" style="margin-top:12px">
-        <label>具体内容 *</label>
-        <select id="f-content" style="width:100%;padding:7px 8px;border:1px solid var(--color-border);border-radius:6px"></select>
-        <div class="muted" style="font-size:12px;margin-top:4px" id="f-content-hint">选择后自动填充名称与详情</div>
-      </div>
-      <div class="linked-card" id="linked-card" style="margin-top:12px;display:none">
-        <div style="font-size:13px;margin-bottom:4px"><b>已关联内容</b> <span class="muted" id="linked-meta"></span></div>
-        <div id="linked-title"></div>
+      <div id="deliver-list"></div>
+      <div class="linked-card" id="linked-card" style="display:none">
+        <div style="font-size:13px;margin-bottom:4px"><b>已关联商品</b> <span class="muted" id="linked-meta"></span></div>
         <div class="muted" style="font-size:12px;margin-top:6px" id="linked-goods"></div>
       </div>
     </div>
@@ -126,14 +138,13 @@
       <div class="cm-section-hd"><h3>交付与售后</h3><span class="muted">虚拟商品无物流，支付成功后自动开通</span></div>
       <div class="form-grid" style="grid-template-columns:1fr 1fr;gap:12px 16px">
         <div class="field"><label>交付方式</label>
-          <select style="width:100%;padding:7px 8px;border:1px solid var(--color-border);border-radius:6px">
-            <option>支付后自动开通（线上内容）</option>
-            <option>支付后开通服务额度（学员预约）</option>
-            <option>人工开通（对公转账场景）</option>
+          <select id="f-delivery" style="width:100%;padding:7px 8px;border:1px solid var(--color-border);border-radius:6px">
+            <option>支付后自动开通</option>
+            <option>人工开通</option>
           </select>
         </div>
         <div class="field"><label>退款规则</label>
-          <select style="width:100%;padding:7px 8px;border:1px solid var(--color-border);border-radius:6px">
+          <select id="f-refund" style="width:100%;padding:7px 8px;border:1px solid var(--color-border);border-radius:6px">
             <option>未使用可退</option>
             <option>按已使用比例退款</option>
             <option>不支持退款</option>
@@ -149,22 +160,56 @@
         <label><input type="radio" name="shelf" value="schedule" /> 审核通过后定时上架 <input type="datetime-local" style="border:1px solid var(--color-border);border-radius:6px;padding:4px 8px" /></label>
         <label><input type="radio" name="shelf" value="draft" /> 仅存草稿（不提审）</label>
       </div>
-      <p class="muted" style="font-size:12px;margin:10px 0 0">平台商品镜像路径免审，确认后直接生成可上下架的店铺商品。</p>
+      <p class="muted" style="font-size:12px;margin:10px 0 0">
+        平台商品镜像路径免审，确认后直接生成可上下架的商品。<br />
+        「上架」只代表商品可售；<b>内容展示到小程序哪个模块、免费还是付费、试看多少、付费后跳商品还是直接下单</b>，请前往
+        <a href="mp-home.html">交易 · 店铺运营 · 首页装修</a> 配置上架位。
+      </p>
     </div>
+  </div>
+</div>
+
+<!-- 交付内容多选弹窗：按类型切 Tab 浏览，勾选可跨类型累计，确定后回显在「交付内容」区 -->
+<div class="proto-mask" id="pick-mask"></div>
+<div class="proto-modal" id="pick-modal">
+  <div class="proto-modal-hd">
+    <h3 style="margin:0;font-size:16px">选择交付内容</h3>
+    <button type="button" class="btn btn-sm btn-ghost" id="pick-close">×</button>
+  </div>
+  <div class="proto-modal-bd">
+    <div class="cm-tabs" id="pick-tabs">
+      <button type="button" class="btn active" data-ptype="online_course">线上课</button>
+      <button type="button" class="btn" data-ptype="offline">线下课</button>
+      <button type="button" class="btn" data-ptype="plan">定制化计划</button>
+      <button type="button" class="btn" data-ptype="article">文章</button>
+      <button type="button" class="btn" data-ptype="live">直播</button>
+    </div>
+    <div id="pick-body"></div>
+  </div>
+  <div class="proto-modal-ft" style="justify-content:space-between">
+    <span class="muted" id="pick-count">已选 0 项</span>
+    <span style="display:flex;gap:8px">
+      <button type="button" class="btn" id="pick-cancel">取消</button>
+      <button type="button" class="btn btn-primary" id="pick-ok">确定</button>
+    </span>
   </div>
 </div>
 
 <script src="../assets/js/proto.js"></script>
 <script src="../assets/js/teachers-store.js?v=1"></script>
-<script src="../assets/js/course-store.js?v=1"></script>
+<script src="../assets/js/course-store.js?v=2"></script>
 <script src="../assets/js/goods-taxonomy.js?v=1"></script>
 <script src="../assets/js/prototype-business-store.js"></script>
-<script src="../assets/js/admin-shell.js?v=16"></script>
+<script src="../assets/js/goods-store.js?v=1"></script>
+<script src="../assets/js/listing-store.js?v=1"></script>
+<script src="../assets/js/admin-shell.js?v=23"></script>
 <script>
 (function () {
   var Store = window.CourseStore;
   var Tax = window.GoodsTaxonomy;
   var Biz = window.ProtoBiz;
+  var Goods = window.GoodsStore;
+  var Listing = window.ListingStore;
   var q = new URLSearchParams(location.search);
   var createMode = q.get("create_mode") || "from_content";
   var readonly = q.get("readonly") === "1" || createMode === "from_platform";
@@ -173,35 +218,11 @@
   if (boundType === "series") boundType = "online_course";
 
   var CONTENT_POOL = {
-    online_course: function () {
-      return Store.list({ status: Store.STATUS.enabled }).map(function (c) {
-        return { id: c.id, name: c.name, intro: c.intro || "", source: c.source || "self", goodsIds: c.goodsIds || [] };
-      });
-    },
-    offline: function () {
-      return [
-        { id: "O001", name: "卓越家族培养计划 · 线下工作坊", intro: "线下核销门票", source: "self", goodsIds: [] },
-        { id: "O002", name: "亲子沟通实战 · 线下沙龙", intro: "", source: "self", goodsIds: [] }
-      ];
-    },
-    article: function () {
-      return [
-        { id: "A001", name: "9 月新学期家长指南", intro: "付费文章示例", source: "self", goodsIds: [] },
-        { id: "A002", name: "孩子注意力训练方法论", intro: "", source: "self", goodsIds: [] }
-      ];
-    },
-    plan: function () {
-      return [
-        { id: "PL001", name: "亲子沟通 21 天定制化计划 · 第 4 期", intro: "按关卡推进", source: "self", goodsIds: [] },
-        { id: "PL002", name: "开学季学习习惯养成计划", intro: "", source: "self", goodsIds: [] }
-      ];
-    },
-    live: function () {
-      return [
-        { id: "L001", name: "春启 03 期家长公开课（付费）", intro: "直播观看资格", source: "self", goodsIds: [] },
-        { id: "L002", name: "午间答疑 · 付费直播", intro: "", source: "self", goodsIds: [] }
-      ];
-    }
+    online_course: function () { return Listing.contentOptions("online_course"); },
+    offline: function () { return Listing.contentOptions("offline"); },
+    article: function () { return Listing.contentOptions("article"); },
+    plan: function () { return Listing.contentOptions("plan"); },
+    live: function () { return Listing.contentOptions("live"); }
   };
 
   var platformCatalog = [];
@@ -245,53 +266,132 @@
       fillPlatform();
     } else {
       document.getElementById("f-source").value = "商家自建 (self)";
-      fillContentList();
     }
   }
 
-  function selectedCtype() {
-    var el = document.querySelector("#gd-ctype input[name=ctype]:checked");
-    return el ? el.value : "online_course";
+  /* ---------- 交付内容：弹窗多选（可跨类型累计，1 商品可交付多个内容） ---------- */
+  var selected = [];          // [{ content_type, content_id, name, source }]
+  var pickTab = "online_course";
+
+  function poolOf(type) {
+    return (CONTENT_POOL[type] || function () { return []; })();
+  }
+  function isPicked(id) {
+    return selected.some(function (s) { return s.content_id === id; });
+  }
+  function updPickCount() {
+    document.getElementById("pick-count").textContent = "已选 " + selected.length + " 项";
   }
 
-  function fillContentList() {
-    var type = selectedCtype();
-    var list = (CONTENT_POOL[type] || function () { return []; })();
-    var sel = document.getElementById("f-content");
-    sel.innerHTML = list.map(function (n) {
-      var selAttr = boundContentId && n.id === boundContentId ? " selected" : "";
-      return '<option value="' + Tax.esc(n.id) + '"' + selAttr + ">" + Tax.esc(n.name) + "（" + Tax.esc(n.id) + "）</option>";
-    }).join("") || '<option value="">暂无可选内容</option>';
-    document.getElementById("f-content-hint").textContent =
-      "取值于「" + Tax.contentTypeLabel(type) + "」已上架列表；同一内容可关联多个店铺商品";
-    applyContentPrefill();
+  function renderPickBody() {
+    var list = poolOf(pickTab);
+    document.getElementById("pick-body").innerHTML = list.length ? list.map(function (n) {
+      var on = isPicked(n.id);
+      return '<label class="pick-item' + (on ? " on" : "") + '">' +
+        '<input type="checkbox" data-pick-id="' + Tax.esc(n.id) + '"' + (on ? " checked" : "") + " />" +
+        '<div><div class="pick-name">' + Tax.esc(n.name) + "</div>" +
+        '<div class="pick-sub muted">' + Tax.esc(n.id) + " · " + Tax.esc(Tax.contentTypeLabel(pickTab)) +
+        (n.source === "platform" ? " · 平台" : " · 自建") + "</div></div></label>";
+    }).join("") : '<p class="muted" style="font-size:13px">该类型下暂无可选内容</p>';
+    updPickCount();
   }
 
-  function applyContentPrefill() {
-    var type = selectedCtype();
-    var id = document.getElementById("f-content").value;
-    var list = (CONTENT_POOL[type] || function () { return []; })();
-    var hit = list.find(function (n) { return n.id === id; });
+  function renderDeliverList() {
+    var el = document.getElementById("deliver-list");
+    if (!selected.length) {
+      el.innerHTML = '<div class="muted" style="font-size:12px;margin-top:10px">尚未选择交付内容</div>';
+    } else {
+      el.innerHTML =
+        '<div class="muted" style="font-size:12px;margin:10px 0 6px">已选 ' + selected.length + " 项" +
+        (selected.length > 1 ? "（组合商品）" : "") + "</div>" +
+        selected.map(function (s) {
+          return '<div class="deliver-item">' +
+            '<span class="tag-teal">' + Tax.esc(Tax.contentTypeLabel(s.content_type)) + "</span>" +
+            "<b>" + Tax.esc(s.name) + "</b>" +
+            '<span class="mono">' + Tax.esc(s.content_id) + "</span>" +
+            '<button type="button" class="btn btn-sm btn-ghost" data-unpick="' + Tax.esc(s.content_id) + '">移除</button>' +
+            "</div>";
+        }).join("");
+    }
+    renderLinkedSummary();
+  }
+
+  /* 已关联商品：按全部交付内容合并反查（组合商品的其它内容也会命中） */
+  function renderLinkedSummary() {
     var card = document.getElementById("linked-card");
-    if (!hit) {
-      card.style.display = "none";
-      return;
-    }
+    if (!selected.length) { card.style.display = "none"; return; }
     card.style.display = "";
-    document.getElementById("linked-meta").textContent = Tax.contentTypeLabel(type) + " · " + hit.id + " · 来源 " + (hit.source === "platform" ? "平台" : "自建");
-    document.getElementById("linked-title").innerHTML = "<b>" + Tax.esc(hit.name) + "</b>";
-    var gids = hit.goodsIds || [];
-    if (type === "online_course" && Store.listGoodsIds) gids = Store.listGoodsIds(hit.id);
-    document.getElementById("linked-goods").textContent = gids.length
-      ? ("已关联 " + gids.length + " 个商品：" + gids.join("、") + "（可继续创建）")
-      : "尚未关联店铺商品";
-    if (!q.get("goods_id")) {
-      document.getElementById("f-gname").value = hit.name;
-      document.getElementById("f-gdetail").value = hit.intro || "";
-      document.getElementById("f-sell").value = hit.intro || "";
-      document.getElementById("f-source").value = hit.source === "platform" ? "平台内容 (platform)" : "商家自建 (self)";
-    }
+    document.getElementById("linked-meta").textContent =
+      selected.length > 1 ? "组合商品 · 交付 " + selected.length + " 个内容" : "单一内容商品";
+    var ids = [];
+    selected.forEach(function (s) {
+      Goods.listByContent(s.content_id).forEach(function (g) {
+        if (ids.indexOf(g.goods_id) < 0) ids.push(g.goods_id);
+      });
+    });
+    document.getElementById("linked-goods").textContent = ids.length
+      ? ("已关联商品：" + ids.join("、") + "（可继续创建）")
+      : "尚未有关联商品";
   }
+
+  function prefillFromFirst() {
+    if (q.get("goods_id") || !selected.length) return;
+    var s = selected[0];
+    document.getElementById("f-gname").value = s.name;
+    document.getElementById("f-source").value = s.source === "platform" ? "平台内容 (platform)" : "商家自建 (self)";
+  }
+
+  function openPick() {
+    document.getElementById("pick-mask").classList.add("open");
+    document.getElementById("pick-modal").classList.add("open");
+    renderPickBody();
+  }
+  function closePick() {
+    document.getElementById("pick-mask").classList.remove("open");
+    document.getElementById("pick-modal").classList.remove("open");
+  }
+
+  document.getElementById("btn-pick-content").addEventListener("click", openPick);
+  document.getElementById("pick-close").addEventListener("click", closePick);
+  document.getElementById("pick-cancel").addEventListener("click", closePick);
+  document.getElementById("pick-mask").addEventListener("click", closePick);
+  document.getElementById("pick-tabs").addEventListener("click", function (e) {
+    var b = e.target.closest("[data-ptype]");
+    if (!b) return;
+    pickTab = b.getAttribute("data-ptype");
+    document.querySelectorAll("#pick-tabs .btn").forEach(function (x) { x.classList.remove("active"); });
+    b.classList.add("active");
+    renderPickBody();
+  });
+  document.getElementById("pick-body").addEventListener("change", function (e) {
+    var cb = e.target.closest("[data-pick-id]");
+    if (!cb) return;
+    var id = cb.getAttribute("data-pick-id");
+    if (cb.checked) {
+      var hit = poolOf(pickTab).find(function (n) { return n.id === id; });
+      if (hit && !isPicked(id)) {
+        selected.push({ content_type: pickTab, content_id: id, name: hit.name, source: hit.source });
+      }
+    } else {
+      selected = selected.filter(function (s) { return s.content_id !== id; });
+    }
+    cb.closest(".pick-item").classList.toggle("on", cb.checked);
+    updPickCount();
+  });
+  document.getElementById("pick-ok").addEventListener("click", function () {
+    if (!selected.length) { Proto.toast("请至少选择 1 个交付内容"); return; }
+    closePick();
+    renderDeliverList();
+    prefillFromFirst();
+    Proto.toast("已选择 " + selected.length + " 个交付内容");
+  });
+  document.getElementById("deliver-list").addEventListener("click", function (e) {
+    var b = e.target.closest("[data-unpick]");
+    if (!b) return;
+    var id = b.getAttribute("data-unpick");
+    selected = selected.filter(function (s) { return s.content_id !== id; });
+    renderDeliverList();
+  });
 
   function fillPlatform() {
     var sel = document.getElementById("f-platform");
@@ -322,12 +422,6 @@
   if (q.get("create_mode") || q.get("content_id") || q.get("type") || q.get("from")) {
     document.getElementById("sec-mode").style.display = "none";
   }
-  if (boundType && document.querySelector('#gd-ctype input[value="' + boundType + '"]')) {
-    document.querySelector('#gd-ctype input[value="' + boundType + '"]').checked = true;
-    document.querySelectorAll("#gd-ctype .cm-choice-item").forEach(function (n) {
-      n.classList.toggle("active", n.querySelector("input").value === boundType);
-    });
-  }
   setMode(createMode === "from_platform" ? "from_platform" : "from_content");
 
   document.querySelectorAll("#sec-mode .cm-choice-item").forEach(function (el) {
@@ -335,16 +429,62 @@
       setMode(el.getAttribute("data-mode"));
     });
   });
-  document.querySelectorAll("#gd-ctype input[name=ctype]").forEach(function (r) {
-    r.addEventListener("change", function () {
-      document.querySelectorAll("#gd-ctype .cm-choice-item").forEach(function (n) { n.classList.remove("active"); });
-      r.closest(".cm-choice-item").classList.add("active");
-      boundContentId = "";
-      fillContentList();
-    });
-  });
-  document.getElementById("f-content").addEventListener("change", applyContentPrefill);
   document.getElementById("f-platform").addEventListener("change", applyPlatformPrefill);
+
+  /* 从内容页「创建商品」深链进入时预选该内容；从商品列表进入编辑时载入该商品的全部交付内容 */
+  (function initBoundContent() {
+    var editingId = q.get("goods_id") || "";
+    var editing = editingId ? Goods.get(editingId) : null;
+
+    if (editing) {
+      selected = Goods.contentsOf(editing).map(function (c) {
+        var pool = poolOf(c.content_type).find(function (n) { return n.id === c.content_id; });
+        return {
+          content_type: c.content_type,
+          content_id: c.content_id,
+          name: pool ? pool.name : c.content_id,
+          source: pool ? pool.source : ""
+        };
+      });
+      if (selected.length) pickTab = selected[0].content_type;
+      document.querySelectorAll("#pick-tabs .btn").forEach(function (x) {
+        x.classList.toggle("active", x.getAttribute("data-ptype") === pickTab);
+      });
+      document.getElementById("f-gname").value = editing.name || "";
+      document.getElementById("f-price").value = editing.price || 0;
+      document.getElementById("f-olist").value = editing.list_price || 0;
+      if (editing.category_id) document.getElementById("f-category").value = editing.category_id;
+      if (editing.delivery) document.getElementById("f-delivery").value = editing.delivery;
+      if (editing.refund_rule) document.getElementById("f-refund").value = editing.refund_rule;
+      document.getElementById("f-source").value =
+        editing.content_source === "platform" ? "平台内容 (platform)" : "商家自建 (self)";
+      (editing.tag_ids || []).forEach(function (tid) {
+        var cb = document.querySelector('input[name=gtag][value="' + tid + '"]');
+        if (cb) cb.checked = true;
+      });
+      renderDeliverList();
+      return;
+    }
+
+    if (!boundContentId) { renderDeliverList(); return; }
+    var hit = poolOf(boundType).find(function (n) { return n.id === boundContentId; });
+    if (hit) {
+      selected.push({ content_type: boundType, content_id: hit.id, name: hit.name, source: hit.source });
+    } else {
+      var c = Listing.resolveContent(boundType, boundContentId);
+      selected.push({
+        content_type: boundType,
+        content_id: boundContentId,
+        name: c ? c.name : boundContentId,
+        source: c && c.source === "platform" ? "platform" : "self"
+      });
+    }
+    pickTab = boundType;
+    document.querySelectorAll("#pick-tabs .btn").forEach(function (x) {
+      x.classList.toggle("active", x.getAttribute("data-ptype") === boundType);
+    });
+    renderDeliverList();
+  })();
 
   document.getElementById("btn-save-draft").addEventListener("click", function () {
     if (readonly) return;
@@ -356,67 +496,61 @@
       var pf = document.getElementById("f-platform").value;
       if (!pf) { Proto.toast("请选择平台商品"); return; }
       try {
-        if (Biz && Biz.load && Biz.save) {
-          var data = Biz.load();
-          data.goodsDemo = data.goodsDemo || [];
-          data.goodsDemo.unshift({
-            goods_id: goodsId,
-            channel: "store",
-            create_mode: "from_platform",
-            content_source: "platform",
-            content_type: (platformCatalog.find(function (p) { return p.platform_goods_id === pf; }) || {}).content_type || "online_course",
-            content_id: (platformCatalog.find(function (p) { return p.platform_goods_id === pf; }) || {}).content_id || "",
-            platform_goods_id: pf,
-            category_id: document.getElementById("f-category").value,
-            tag_ids: [],
-            name: document.getElementById("f-gname").value,
-            status: "on_sale",
-            audit_status: "approved",
-            reject_reason: "",
-            price: parseFloat(document.getElementById("f-price").value) || 0
-          });
-          Biz.save(data);
-        }
+        var pfRow = platformCatalog.find(function (p) { return p.platform_goods_id === pf; }) || {};
+        Goods.save({
+          goods_id: goodsId,
+          channel: "store",
+          create_mode: "from_platform",
+          content_source: "platform",
+          content_type: pfRow.content_type || "online_course",
+          content_id: pfRow.content_id || "",
+          platform_goods_id: pf,
+          category_id: document.getElementById("f-category").value,
+          tag_ids: [],
+          name: document.getElementById("f-gname").value,
+          status: "on_sale",
+          audit_status: "approved",
+          reject_reason: "",
+          price: parseFloat(document.getElementById("f-price").value) || 0,
+          list_price: parseFloat(document.getElementById("f-olist").value) || 0
+        });
       } catch (eSave) {}
-      Proto.toast("已创建只读店铺商品 " + goodsId + "（免审，可上下架）");
+      Proto.toast("已创建只读商品 " + goodsId + "（免审，可上下架）");
       setTimeout(function () { location.href = "goods.html"; }, 1000);
       return;
     }
-    var ctype = selectedCtype();
-    var cid = document.getElementById("f-content").value;
-    if (!cid) { Proto.toast("请选择内容"); return; }
+    if (!selected.length) { Proto.toast("请选择交付内容"); return; }
     if (!document.getElementById("f-gname").value.trim()) { Proto.toast("请填写商品名称"); return; }
     var shelf = (document.querySelector("input[name=shelf]:checked") || {}).value || "submit";
-    if (ctype === "online_course" && Store.addGoodsId) Store.addGoodsId(cid, goodsId);
     var auditStatus = shelf === "draft" ? "draft" : "pending";
     try {
-      if (Biz && Biz.load && Biz.save) {
-        var data2 = Biz.load();
-        data2.goodsDemo = data2.goodsDemo || [];
-        var d = new Date();
-        function p(n) { return n < 10 ? "0" + n : "" + n; }
-        var ts = d.getFullYear() + "-" + p(d.getMonth() + 1) + "-" + p(d.getDate()) + " " + p(d.getHours()) + ":" + p(d.getMinutes());
-        data2.goodsDemo.unshift({
-          goods_id: goodsId,
-          channel: "store",
-          create_mode: "from_content",
-          content_source: document.getElementById("f-source").value.indexOf("platform") >= 0 ? "platform" : "self",
-          content_type: ctype,
-          content_id: cid,
-          category_id: document.getElementById("f-category").value,
-          tag_ids: Array.from(document.querySelectorAll("input[name=gtag]:checked")).map(function (x) { return x.value; }),
-          name: document.getElementById("f-gname").value.trim(),
-          status: "draft",
-          audit_status: auditStatus,
-          reject_reason: "",
-          submitted_at: auditStatus === "pending" ? ts : "",
-          price: parseFloat(document.getElementById("f-price").value) || 0
-        });
-        Biz.save(data2);
-      }
+      var d = new Date();
+      function p(n) { return n < 10 ? "0" + n : "" + n; }
+      var ts = d.getFullYear() + "-" + p(d.getMonth() + 1) + "-" + p(d.getDate()) + " " + p(d.getHours()) + ":" + p(d.getMinutes());
+      /* 商品的 contents[] 是「内容 ↔ 商品」关系的权威源（组合商品可多条），无需回写内容侧 */
+      Goods.save({
+        goods_id: goodsId,
+        channel: "store",
+        create_mode: "from_content",
+        content_source: document.getElementById("f-source").value.indexOf("platform") >= 0 ? "platform" : "self",
+        contents: selected.map(function (s) {
+          return { content_type: s.content_type, content_id: s.content_id };
+        }),
+        category_id: document.getElementById("f-category").value,
+        tag_ids: Array.from(document.querySelectorAll("input[name=gtag]:checked")).map(function (x) { return x.value; }),
+        name: document.getElementById("f-gname").value.trim(),
+        status: "draft",
+        audit_status: auditStatus,
+        reject_reason: "",
+        submitted_at: auditStatus === "pending" ? ts : "",
+        price: parseFloat(document.getElementById("f-price").value) || 0,
+        list_price: parseFloat(document.getElementById("f-olist").value) || 0,
+        delivery: document.getElementById("f-delivery").value,
+        refund_rule: document.getElementById("f-refund").value
+      });
     } catch (eSave2) {}
     if (auditStatus === "pending") {
-      Proto.toast("商品 " + goodsId + " 已提交平台审核，请等待运营审批");
+      Proto.toast("商品 " + goodsId + " 已提交平台审核，通过后可在「首页装修」上架到小程序模块");
     } else {
       Proto.toast("草稿已保存 " + goodsId + "，可稍后在列表提审");
     }

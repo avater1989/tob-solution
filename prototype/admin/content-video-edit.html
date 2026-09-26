@@ -21,6 +21,7 @@
 
   <div class="cm-tabs" id="anchors">
     <button class="btn active" data-tab="sec-base">基础信息</button>
+    <button class="btn" data-tab="sec-goods">关联商品</button>
     <button class="btn" data-tab="sec-status">状态与分享</button>
   </div>
 
@@ -52,10 +53,6 @@
         </select>
       </div>
       <div class="field">
-        <label>课程费（元）</label>
-        <input class="input" id="f-price" type="number" min="0" step="0.01" placeholder="0" />
-      </div>
-      <div class="field">
         <label>封面图</label>
         <div class="cm-cover-up has-img" id="f-cover-box"><img id="f-cover-img" src="../assets/img/covers/reading.jpg" alt="" /><span class="cm-cover-tip">更换封面</span></div>
       </div>
@@ -84,6 +81,23 @@
     </div>
   </div>
 
+  <div class="cm-section tab-panel" id="sec-goods">
+    <div class="cm-section-hd">
+      <h2>关联商品 <span class="hint">内容不含价格；价格与售卖在「商品列表」维护，同一内容可建多个商品（1:N）</span></h2>
+      <a class="btn" id="btn-create-goods" href="goods-edit.html?create_mode=from_content&content_type=online_course">+ 新建商品</a>
+    </div>
+    <div class="cm-alert" id="legacy-warn" style="display:none;margin-bottom:12px"></div>
+    <table class="data">
+      <thead>
+        <tr><th>商品</th><th style="width:110px">价格</th><th style="width:110px">审核</th><th style="width:100px">上架</th><th>已上架模块</th><th style="width:110px">操作</th></tr>
+      </thead>
+      <tbody id="goods-tbody"></tbody>
+    </table>
+    <p class="muted" style="font-size:12px;margin:10px 0 0">
+      「允许试看」在章节里勾选，是内容结构声明；实际开放多少试看、免费还是付费、付费后跳商品还是直接下单，都在 <a href="mp-home.html">交易 · 店铺运营 · 首页装修</a> 的上架配置里决定。
+    </p>
+  </div>
+
   <div class="cm-section tab-panel" id="sec-status">
     <div class="cm-section-hd"><h2>状态与分享</h2></div>
     <div class="field">
@@ -109,10 +123,14 @@
 <script src="../assets/js/proto.js"></script>
 <script src="../assets/js/content-tags.js?v=2"></script>
 <script src="../assets/js/teachers-store.js?v=2"></script>
-<script src="../assets/js/course-store.js?v=1"></script>
-<script src="../assets/js/admin-shell.js?v=16"></script>
+<script src="../assets/js/course-store.js?v=2"></script>
+<script src="../assets/js/goods-store.js?v=1"></script>
+<script src="../assets/js/listing-store.js?v=1"></script>
+<script src="../assets/js/admin-shell.js?v=23"></script>
 <script>
 var Store = window.CourseStore;
+var Goods = window.GoodsStore;
+var Listing = window.ListingStore;
 var Tags = window.ContentTags;
 var Teachers = window.Teachers;
 
@@ -148,7 +166,6 @@ document.getElementById("f-name").value = course.name || "";
 document.getElementById("f-term").value = course.term || "";
 document.getElementById("f-teacher").value = course.teacherId || "";
 document.getElementById("f-badge").value = course.badge || "";
-document.getElementById("f-price").value = course.price || 0;
 document.getElementById("f-cover-img").src = course.cover || "../assets/img/covers/reading.jpg";
 document.getElementById("f-intro").value = course.intro || "";
 document.getElementById("f-outline").value = course.outlineText || "";
@@ -170,6 +187,56 @@ function updCnt() {
   document.getElementById(fid).addEventListener("input", updCnt);
 });
 updCnt();
+
+/* ---------- 关联商品（内容不含价格，价格只在商品维护） ---------- */
+function esc(s) {
+  return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) {
+    return ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c];
+  });
+}
+/* 上架 / 审核状态徽标统一走 Proto.shelfTag（R-UI-010 全局配色一致） */
+function auditTag(a) { return Proto.shelfTag(a); }
+function shelfTag(s) { return Proto.shelfTag(s); }
+
+function renderGoods() {
+  var gid = id;
+  var rows = Goods ? Goods.listByContent(gid) : [];
+
+  document.getElementById("btn-create-goods").href =
+    "goods-edit.html?create_mode=from_content&content_type=online_course&content_id=" + encodeURIComponent(gid);
+
+  var warn = document.getElementById("legacy-warn");
+  if (course._legacyPrice > 0 && !rows.length) {
+    warn.style.display = "block";
+    warn.innerHTML = "本内容在旧版本中带有价格 <b>¥" + course._legacyPrice +
+      "</b>，内容已不再承载价格，请到「商品列表」补建商品后再上架售卖。";
+  } else {
+    warn.style.display = "none";
+  }
+
+  document.getElementById("goods-tbody").innerHTML = rows.length ? rows.map(function (g) {
+    var href = "goods-edit.html?create_mode=" + encodeURIComponent(g.create_mode || "from_content") +
+      "&goods_id=" + encodeURIComponent(g.goods_id) +
+      "&content_type=" + encodeURIComponent(g.content_type || "") +
+      "&content_id=" + encodeURIComponent(g.content_id || "");
+    var usedBy = "";
+    if (Listing) {
+      var hit = Listing.listByContent(gid).filter(function (r) {
+        return r.default_goods_id === g.goods_id;
+      });
+      usedBy = hit.length ? hit.map(function (r) { return Listing.SLOT_LABEL[r.slot] || r.slot; }).join("、") : "";
+    }
+    return "<tr>" +
+      '<td><a href="' + href + '">' + esc(g.name) + '</a><br><span class="muted" style="font-family:ui-monospace,monospace;font-size:12px">' + esc(g.goods_id) + "</span></td>" +
+      "<td><b>¥" + Number(g.price || 0).toFixed(2) + "</b></td>" +
+      "<td>" + auditTag(g.audit_status) + "</td>" +
+      "<td>" + shelfTag(g.status) + "</td>" +
+      "<td>" + (usedBy ? esc(usedBy) + " · 成交商品" : '<span class="muted">—</span>') + "</td>" +
+      '<td class="row-actions"><a href="' + href + '">编辑</a></td>' +
+      "</tr>";
+  }).join("") : '<tr><td colspan="6" class="muted" style="text-align:center;padding:24px">尚未关联商品，点右上角「+ 新建商品」创建</td></tr>';
+}
+renderGoods();
 
 document.getElementById("anchors").addEventListener("click", function (e) {
   var b = e.target.closest("[data-tab]");
@@ -203,7 +270,6 @@ function collect() {
   course.teacher = Teachers.nameOf(teacherId);
   course.tagIds = selectedTagIds();
   course.badge = document.getElementById("f-badge").value;
-  course.price = parseFloat(document.getElementById("f-price").value) || 0;
   course.cover = document.getElementById("f-cover-img").src;
   course.intro = document.getElementById("f-intro").value.trim();
   course.outlineText = document.getElementById("f-outline").value.trim();

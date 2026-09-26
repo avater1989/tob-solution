@@ -44,11 +44,15 @@
 
   <script src="../assets/js/proto.js"></script>
   <script src="../assets/js/content-tags.js?v=2"></script>
+  <script src="../assets/js/prototype-business-store.js"></script>
+  <script src="../assets/js/goods-store.js?v=1"></script>
+  <script src="../assets/js/listing-store.js?v=1"></script>
+  <script src="../assets/js/mp-commerce.js?v=2"></script>
   <script src="../assets/js/mp-shell.js"></script>
-  <script src="../assets/js/mp-commerce.js"></script>
   <script>
   var Tags = window.ContentTags;
   var Mp = window.MpCommerce;
+  /* 正文内容本身不含价格与商品；付费标记 / 价格 / 权益由文章的上架配置与成交商品决定 */
   var MAP = {
     A001: {
       title: "9 月新学期家长指南",
@@ -57,9 +61,6 @@
       tagIds: ["TG04"],
       date: "2026-08-25",
       reads: 2340,
-      paid: false,
-      price: 0,
-      goodsId: "",
       preview: "",
       body: "<p>新学期开始前，建议先和孩子一起对齐三件事：作息、学习节奏、家庭沟通方式。</p><p>1. 提前一周回调作息，避免开学第一周硬着陆。<br>2. 用「本周一件小事」代替宏大目标，降低焦虑。<br>3. 每天留 10 分钟无评判倾听，让孩子感到被看见。</p><p>本文为免费精选内容，可分享给家人一起看。</p>"
     },
@@ -70,9 +71,6 @@
       tagIds: ["TG06"],
       date: "2026-08-30",
       reads: 1560,
-      paid: true,
-      price: 9.9,
-      goodsId: "G-ART-002",
       preview: "<p>注意力不是「逼」出来的，而是练出来的。可以从短时专注、环境减噪、任务切片三方面入手。</p><p>以下为付费全文的系统方法与家庭练习清单……</p>",
       body: "<p>注意力不是「逼」出来的，而是练出来的。可以从短时专注、环境减噪、任务切片三方面入手。</p><p><b>一、短时专注训练</b><br>推荐练习：番茄钟 15 分钟 → 休息 5 分钟；连续 3 天后可升到 20 分钟。关键是「完成一次」而不是「坐够时间」。</p><p><b>二、环境减噪</b><br>书桌只留当前任务物品；手机放到视线外；家庭约定专注时段不打断。</p><p><b>三、任务切片</b><br>把大作业拆成「可见的小块」：例如作文 = 选题 5 分钟 + 提纲 10 分钟 + 写一段 15 分钟。</p><p><b>四、具体表扬</b><br>完成后用「你刚才专注了 15 分钟，中间没有看手机」这类可观察反馈，而不是空泛的「真棒」。</p><p>付费全文还包含 7 天打卡表与亲子沟通话术示例。</p>"
     },
@@ -83,9 +81,6 @@
       tagIds: ["TG02"],
       date: "2026-09-05",
       reads: 980,
-      paid: false,
-      price: 0,
-      goodsId: "",
       preview: "",
       body: "<p>句式一：「我看到你……」——先描述事实。<br>句式二：「你是不是觉得……」——确认感受。<br>句式三：「我们一起试试……」——邀请合作。</p><p>少用「你总是」「你从不」，多给可执行的下一步。</p>"
     },
@@ -96,9 +91,6 @@
       tagIds: ["TG01", "TG03"],
       date: "2026-09-12",
       reads: 1120,
-      paid: true,
-      price: 6.9,
-      goodsId: "G-ART-005",
       preview: "<p>边界的本质是：什么可以谈、什么不可谈、后果是什么。爱提供安全感，规则提供可预期性。</p><p>解锁全文可获得家庭会议模板与 2–3 条底线约定范例……</p>",
       body: "<p>边界的本质是：什么可以谈、什么不可谈、后果是什么。爱提供安全感，规则提供可预期性。</p><p><b>家庭会议怎么开</b><br>建议每周固定 20 分钟，共同约定 2–3 条底线，并写清违反后的自然后果，而不是临时发火。</p><p><b>底线范例</b><br>1. 晚上 10:30 前归寝（超时次日娱乐时间减半）<br>2. 作业未完成不刷短视频<br>3. 冲突时先暂停 10 分钟再谈</p><p><b>爱的表达</b><br>规则之外，每天至少一次「无条件的看见」：描述孩子做对的事，不立刻加要求。</p>"
     }
@@ -113,41 +105,57 @@
   var qs = new URLSearchParams(location.search);
   var id = qs.get("id") || "A001";
   var a = MAP[id] || MAP.A001;
+  var articleKey = id;
 
-  if (qs.get("bought") === "1" && a.paid) {
-    Mp.grantRights(a.id || id, { source: "pay", kind: "article" });
+  var ctx = Mp.context(articleKey, "article");
+  var priceTxt = Number(ctx.price || 0).toFixed(2).replace(/\.00$/, "");
+
+  if (qs.get("bought") === "1" && ctx.goods_id) {
+    Mp.grantRights(ctx.goods_id, { source: "pay", kind: "article", content_id: articleKey });
+    ctx = Mp.context(articleKey, "article");
   }
 
-  var articleKey = a.id || id;
-  var owned = !a.paid || Mp.hasRights(articleKey);
+  var owned = ctx.owned;
   var tags = (a.tagIds || []).map(function (tid) {
     var t = Tags.get(tid);
     return t ? '<span class="mp-crow-tag">' + esc(t.name) + "</span>" : "";
   }).join("");
 
-  var payBadge = a.paid
-    ? (owned
-      ? '<span class="mp-crow-tag" style="background:#e8ffea;color:#00b42a">已解锁</span>'
-      : '<span class="mp-crow-tag" style="background:#fff7e6;color:#d46b08">付费 ¥' + a.price + "</span>")
-    : '<span class="mp-crow-tag" style="background:#e8f3ff;color:#165dff">免费</span>';
+  var payBadge;
+  if (ctx.free) {
+    payBadge = '<span class="mp-crow-tag" style="background:#e8f3ff;color:#165dff">免费</span>';
+  } else if (owned) {
+    payBadge = '<span class="mp-crow-tag" style="background:#e8ffea;color:#00b42a">已解锁</span>';
+  } else if (ctx.orderMode === "inline") {
+    payBadge = '<span class="mp-crow-tag" style="background:#fff7e6;color:#d46b08">付费 ¥' + priceTxt + "</span>";
+  } else {
+    payBadge = '<span class="mp-crow-tag" style="background:#fff7e6;color:#d46b08">付费</span>';
+  }
+
+  /* 未购用户可见：试看范围决定能看到多少 */
+  var trialVisibleAll = Mp.trialVisible(ctx, [{ free: true }]);
+  var canPreview = ctx.free || owned || trialVisibleAll.length > 0;
 
   var bodyHtml;
-  if (!a.paid || owned) {
+  if (ctx.free || owned) {
     bodyHtml = '<div class="ad-body">' + a.body + "</div>";
   } else {
+    var lockLine = ctx.orderMode === "inline"
+      ? ("试看以上内容 · 购买后永久阅读<br><span class=\"ad-price\">¥" + priceTxt + "</span>" +
+        (ctx.goods_name ? " · 成交商品 " + esc(ctx.goods_name) : ""))
+      : "试看以上内容 · 购买后永久阅读<br>点击「去购买」查看商品与价格";
     bodyHtml =
       '<div class="ad-body">' +
-        '<div class="ad-preview-fade">' + (a.preview || a.body) + "</div>" +
+        '<div class="ad-preview-fade">' + (canPreview ? (a.preview || a.body) : "本内容不提供试看，购买后可阅读全文。") + "</div>" +
         '<div class="ad-lock">' +
           '<div class="ad-lock-icon">🔒</div>' +
           "<h4>全文需付费解锁</h4>" +
-          '<p>试看以上内容 · 购买后永久阅读<br><span class="ad-price">¥' + a.price + "</span>" +
-          (a.goodsId ? ' · 商品 ' + esc(a.goodsId) : "") + "</p>" +
+          "<p>" + lockLine + "</p>" +
         "</div>" +
       "</div>";
   }
 
-  var ownedTip = owned && a.paid
+  var ownedTip = owned && !ctx.free
     ? '<div class="ad-owned">已获得本文阅读权益，可永久查看全文</div>'
     : "";
 
@@ -166,11 +174,11 @@
   var cta = document.getElementById("ad-cta");
   var fav = document.getElementById("ad-fav");
 
-  if (a.paid && !owned) {
+  if (!ctx.free && !owned) {
     frame.style.paddingBottom = "72px";
     bar.style.display = "flex";
-    cta.textContent = "立即购买 ¥" + a.price;
-  } else if (a.paid && owned) {
+    cta.textContent = ctx.orderMode === "inline" ? ("立即购买 ¥" + priceTxt) : "去购买";
+  } else if (!ctx.free && owned) {
     frame.style.paddingBottom = "72px";
     bar.style.display = "flex";
     cta.textContent = "已解锁 · 继续阅读";
@@ -187,25 +195,11 @@
   }
 
   function startBuy() {
-    Mp.openBuyNotice({
-      catalogId: "article",
-      from: "article",
-      price: String(a.price),
-      course: articleKey,
+    Mp.buy(articleKey, {
+      slot: "article",
       title: a.title,
-      include: "本文全部正文内容（购买关联商品后解锁全文）",
-      item: {
-        title: a.title,
-        typeLabel: "文章",
-        include: "本文全部正文 · 长期有效",
-        type: "article",
-        access: "付费购买",
-        validity: "长期有效",
-        validityStart: "支付成功即日起算",
-        startHow: "支付成功后立即解锁全文阅读",
-        service: "可在「我的 → 账号与帮助」联系商家"
-      },
-      returnUrl: "article-detail.html?id=" + encodeURIComponent(articleKey) + "&bought=1"
+      returnUrl: "article-detail.html?id=" + encodeURIComponent(articleKey) + "&bought=1",
+      onFree: function () { Proto.toast("本文免费，可直接阅读"); }
     });
   }
 

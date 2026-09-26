@@ -57,11 +57,14 @@
 <script src="../assets/js/proto.js"></script>
 <script src="../assets/js/content-tags.js?v=2"></script>
 <script src="../assets/js/teachers-store.js?v=2"></script>
-<script src="../assets/js/course-store.js?v=1"></script>
+<script src="../assets/js/course-store.js?v=2"></script>
+<script src="../assets/js/prototype-business-store.js"></script>
+<script src="../assets/js/goods-store.js?v=1"></script>
 <script src="../assets/js/share-modal.js?v=1"></script>
 <script src="../assets/js/ops-shell.js?v=16"></script>
 <script>
 var Store = window.CourseStore;
+var Goods = window.GoodsStore;
 var Tags = window.ContentTags;
 var Teachers = window.Teachers;
 
@@ -101,10 +104,10 @@ function render() {
     }
     if (c.status === Store.STATUS.enabled) {
       acts += '<button class="btn" data-act="disable" data-id="' + c.id + '">下架</button>';
-      if (Store.canCreateGoods(c)) acts += '<a class="btn btn-primary" href="goods-edit.html?type=online_course&content_id=' + encodeURIComponent(c.id) + '">建商品</a>';
+      if (Store.canCreateGoods(c)) acts += '<a class="btn btn-primary" href="goods-edit.html?create_mode=from_content&content_type=online_course&content_id=' + encodeURIComponent(c.id) + '">创建商品</a>';
     } else if (c.status === Store.STATUS.disabled) {
       acts += '<button class="btn btn-primary" data-act="enable" data-id="' + c.id + '">上架</button>';
-      acts += '<button class="btn" data-act="enable-draft" data-id="' + c.id + '">恢复草稿</button>';
+      acts += '<a class="btn" href="goods-edit.html?create_mode=from_content&content_type=online_course&content_id=' + encodeURIComponent(c.id) + '">创建商品</a>';
     } else if (Store.canSubmitAudit(c)) {
       acts += '<button class="btn btn-primary" data-act="submit" data-id="' + c.id + '">提交审核</button>';
     }
@@ -116,16 +119,15 @@ function render() {
       '<div class="cs-info">' +
         '<div class="cs-title">' + esc(c.name) + badge +
           ' <span class="muted" style="font-size:12px;font-weight:400">' + esc(c.term || "") + "</span>" +
-          ' <span class="tag">' + esc(st) + "</span></div>" +
+          " " + Proto.shelfTag(st) + "</div>" +
         '<div class="cs-desc">' + esc(c.intro || "") + "</div>" +
         '<div class="cs-stats">' +
           "<span>讲师 " + Teachers.avatarHtml(c.teacherId, { size: 22 }) + " <b>" + esc(Store.teacherName(c)) + "</b></span>" +
           "<span>标签 " + Tags.labelsHtml(c.tagIds) + "</span>" +
-          "<span>价格 <b>¥" + (c.price || 0) + "</b></span>" +
+          "<span>关联商品 <b>" + Goods.listByContent(c.id).length + "</b></span>" +
+          "<span>总时长 <b>" + Store.durationSummary(c) + "</b></span>" +
           "<span>章节 <b>" + Store.chapterCount(c) + "</b></span>" +
           "<span>观看 <b>" + (c.views || 0) + "</b></span>" +
-          "<span>评论 <b>" + (c.comments || 0) + "</b></span>" +
-          "<span>收藏 <b>" + (c.favorites || 0) + "</b></span>" +
         "</div>" +
       "</div>" +
       '<div class="cs-actions">' + acts + "</div>" +

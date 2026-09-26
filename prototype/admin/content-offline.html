@@ -15,8 +15,6 @@
 .cs-desc { font-size:12px;color:#8c8c8c;line-height:1.6;margin-bottom:8px; }
 .cs-stats { display:flex;gap:14px;font-size:12px;color:#595959;flex-wrap:wrap; }
 .cs-stats b { color:#165dff;font-weight:600; }
-.cs-badge { font-size:11px;padding:1px 6px;border-radius:3px;background:#fff7e6;color:#d46b08;font-weight:500; }
-.cs-badge.premium { background:#f9f0ff;color:#722ed1; }
 .cs-actions { display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end;max-width:360px; }
 .phase-pill { font-size:11px;padding:1px 6px;border-radius:3px;font-weight:500;background:#f2f3f5;color:#4e5969; }
 .phase-pill.open { background:#e8ffea;color:#00b42a; }
@@ -70,10 +68,12 @@
 <script src="../assets/js/proto.js"></script>
 <script src="../assets/js/content-tags.js?v=2"></script>
 <script src="../assets/js/teachers-store.js?v=2"></script>
-<script src="../assets/js/admin-shell.js?v=16"></script>
+<script src="../assets/js/goods-store.js?v=1"></script>
+<script src="../assets/js/admin-shell.js?v=23"></script>
 <script>
 var Tags = window.ContentTags;
 var Teachers = window.Teachers;
+var Goods = window.GoodsStore;
 
 document.getElementById("f-teacher").insertAdjacentHTML("beforeend", Teachers.optionsHtml());
 var tagFilter = Tags.mountTreeSelect("#f-tag", {
@@ -85,7 +85,7 @@ var tagFilter = Tags.mountTreeSelect("#f-tag", {
 var OFFLINES = [
   {
     id: "O001", name: "卓越家族培养计划 · 线下工作坊", term: "秋启 01 期",
-    teacherId: "TCH02", tagIds: ["TG01", "TG02"], badge: "hot", price: 299,
+    teacherId: "TCH02", tagIds: ["TG01", "TG02"], badge: "hot",
     cover: "../assets/img/covers/classroom.jpg",
     intro: "两天沉浸式工作坊，聚焦家族沟通与边界。",
     address: "上海市浦东新区陆家嘴环路 1000 号 3F",
@@ -97,7 +97,7 @@ var OFFLINES = [
   },
   {
     id: "O002", name: "亲子沟通实战 · 线下沙龙", term: "周末场",
-    teacherId: "TCH01", tagIds: ["TG02", "TG04"], badge: "premium", price: 0,
+    teacherId: "TCH01", tagIds: ["TG02", "TG04"], badge: "premium",
     cover: "../assets/img/covers/talk.jpg",
     intro: "半天沙龙，现场演练亲子对话。",
     address: "深圳市南山区科技园南路 8 号活动厅",
@@ -109,7 +109,7 @@ var OFFLINES = [
   },
   {
     id: "O003", name: "学习习惯养成 · 线下营", term: "冬令营",
-    teacherId: "TCH03", tagIds: ["TG06", "TG04"], badge: "", price: 999,
+    teacherId: "TCH03", tagIds: ["TG06", "TG04"], badge: "",
     cover: "../assets/img/covers/parent.jpg",
     intro: "三天两夜集训，培养自主学习习惯。",
     address: "北京市海淀区中关村大街 1 号营地",
@@ -165,11 +165,8 @@ function render() {
   var rows = filtered();
   document.getElementById("count").textContent = rows.length;
   document.getElementById("list").innerHTML = rows.map(function (o) {
-    var badge = "";
-    if (o.badge === "hot") badge = '<span class="cs-badge">热门课</span>';
-    else if (o.badge === "premium") badge = '<span class="cs-badge premium">精品课</span>';
     var phase = derivePhase(o);
-    var priceTxt = o.price > 0 ? ("¥" + o.price) : "免费";
+    var goodsRows = Goods.listByContent(o.id);
     var acts =
       '<a class="btn" href="content-offline-signups.html?id=' + encodeURIComponent(o.id) + '">报名记录</a>' +
       '<a class="btn" href="content-offline-edit.html?id=' + encodeURIComponent(o.id) + '">编辑</a>' +
@@ -180,15 +177,15 @@ function render() {
     return '<div class="cs-row">' +
       '<div class="cs-cover"><img src="' + esc(o.cover) + '" alt="" /></div>' +
       '<div class="cs-info">' +
-        '<div class="cs-title">' + esc(o.name) + badge +
+        '<div class="cs-title">' + esc(o.name) +
           ' <span class="muted" style="font-size:12px;font-weight:400">' + esc(o.term || "") + "</span>" +
           ' <span class="phase-pill ' + phase.cls + '">' + phase.label + "</span>" +
-          ' <span class="tag">' + esc(o.status) + "</span></div>" +
+          " " + Proto.shelfTag(o.status) + "</div>" +
         '<div class="cs-desc">' + esc(o.intro || "") + "</div>" +
         '<div class="cs-stats">' +
           "<span>讲师 " + Teachers.avatarHtml(o.teacherId, { size: 22 }) + " <b>" + esc(Teachers.nameOf(o.teacherId)) + "</b></span>" +
           "<span>标签 " + Tags.labelsHtml(o.tagIds) + "</span>" +
-          "<span>价格 <b>" + priceTxt + "</b></span>" +
+          "<span>关联商品 <b>" + goodsRows.length + "</b></span>" +
           "<span>报名 <b>" + esc(o.signupStart) + " ~ " + esc(o.signupEnd) + "</b></span>" +
           "<span>课程 <b>" + esc(o.courseStart) + " ~ " + esc(o.courseEnd) + "</b></span>" +
           "<span>签到 <b>" + esc(o.checkinStart) + " ~ " + esc(o.checkinEnd) + "</b></span>" +

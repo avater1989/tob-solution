@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>用户事件营销 · 商家管理后台</title>
+<link rel="stylesheet" href="../assets/css/proto.css?v=9" />
+<link rel="stylesheet" href="../assets/css/marketing.css?v=1" />
+</head>
+<body class="admin-body" data-module="scrm" data-nav="event-marketing" data-title="用户事件营销" data-crumb="SCRM / 用户运营 / 用户事件营销">
+<div id="header-actions">
+  <a class="btn" href="user-segments.html">用户分群</a>
+  <button class="btn btn-primary" id="btn-new">新建事件</button>
+</div>
+<div id="page-content" style="display:none">
+
+  <div class="board-tip" style="margin-bottom:12px">
+    <b>用户事件营销（二期）：</b>用户发生指定事件时，自动执行一条营销流程（判断 → 触达 → 打标签 / 变更属性 → 结束）。
+    事件取自本店铺真实行为（小程序访问、交易、内容学习、用户权益、营销触达）；触达渠道见
+    <a href="message-push.html" style="color:inherit;text-decoration:underline">消息推送</a>，人群见
+    <a href="user-segments.html" style="color:inherit;text-decoration:underline">用户分群</a>。
+  </div>
+
+  <div class="card" style="margin-bottom:8px"><div class="card-bd">
+    <div class="form-grid" style="grid-template-columns:repeat(3,minmax(0,1fr));gap:8px 12px">
+      <div class="field" style="margin:0">
+        <label>事件名称 / 事件 ID</label>
+        <input id="f-key" placeholder="搜索事件名称或 ID" />
+      </div>
+      <div class="field" style="margin:0">
+        <label>事件类型</label>
+        <select id="f-type">
+          <option value="">全部</option>
+          <option value="主动触发">主动触发</option>
+          <option value="特殊日期触发">特殊日期触发</option>
+        </select>
+      </div>
+      <div class="field" style="margin:0">
+        <label>活动状态</label>
+        <select id="f-status">
+          <option value="">全部</option>
+          <option value="designing">设计中</option>
+          <option value="running">运行中</option>
+          <option value="ended">已结束</option>
+        </select>
+      </div>
+    </div>
+    <div class="toolbar" style="margin-top:8px">
+      <button class="btn btn-primary" id="btn-query">查询</button>
+      <button class="btn" id="btn-reset">重置</button>
+    </div>
+  </div></div>
+
+  <div class="mk-tabbar" id="status-tabs">
+    <button class="mk-tab active" data-st="">全部</button>
+    <button class="mk-tab" data-st="designing">设计中</button>
+    <button class="mk-tab" data-st="running">运行中</button>
+    <button class="mk-tab" data-st="ended">已结束</button>
+    <span class="mk-tabbar-right muted" style="font-size:12px">共 <b id="em-count">0</b> 条</span>
+  </div>
+
+  <div class="card"><div class="card-bd" style="padding:0">
+    <table class="data">
+      <thead>
+        <tr>
+          <th style="width:110px">事件ID</th>
+          <th>事件名称</th>
+          <th style="width:130px">事件类型</th>
+          <th style="width:150px">创建时间</th>
+          <th style="width:150px">流程</th>
+          <th style="width:100px">活动状态</th>
+          <th style="width:220px">操作</th>
+        </tr>
+      </thead>
+      <tbody id="em-tbody"></tbody>
+    </table>
+  </div></div>
+
+  <div class="card" style="margin-top:16px"><div class="card-bd">
+    <p class="muted" style="font-size:12px;line-height:1.8;margin:0">
+      <b>口径：</b>事件营销由<b>用户行为事件</b>触发，与
+      <a href="smart-marketing.html" style="color:inherit;text-decoration:underline">智能营销</a>（按人群与计划主动执行）互补。
+      同一用户在同一事件下默认只执行一次；流程运行中可「发送测试」验证，正式发送后进入运行中状态。
+      <b>删除</b>仅对「设计中」的事件开放，运行中 / 已结束的事件请先「另存」留档。
+    </p>
+  </div></div>
+</div>
+
+<div class="proto-mask" id="mask"></div>
+<div class="proto-modal" id="modal-stats" style="width:560px">
+  <div class="proto-modal-hd"><h3 style="font-size:16px;font-weight:600">事件效果统计</h3>
+    <button class="btn btn-sm btn-ghost" data-close>×</button></div>
+  <div class="proto-modal-bd">
+    <p style="margin:0 0 10px"><b id="st-name">—</b> <span class="muted" id="st-id" style="font-size:12px"></span></p>
+    <table class="mk-table-mini">
+      <thead><tr><th>指标</th><th>近 7 天</th><th>近 30 天</th></tr></thead>
+      <tbody id="st-body"></tbody>
+    </table>
+    <p class="mk-note">统计口径：触发人数按去重用户计；触达以渠道回执为准；转化归因为事件触发后 7 天内的支付订单。</p>
+  </div>
+  <div class="proto-modal-ft"><button class="btn btn-primary" data-close>关闭</button></div>
+</div>
+
+<script src="../assets/js/proto.js"></script>
+<script src="../assets/js/marketing-common.js?v=1"></script>
+<script src="../assets/js/event-marketing-store.js?v=1"></script>
+<script src="../assets/js/admin-shell.js?v=23"></script>
+<script>
+(function () {
+  var S = window.EventMarketingStore;
+  var MK = window.MarketingCommon;
+  var filters = { keyword: "", type: "", status: "" };
+
+  function esc(s) { return MK.esc(s); }
+
+  function statusBadge(st) {
+    if (st === "running") return '<span class="badge badge-success">运行中</span>';
+    if (st === "designing") return '<span class="badge badge-info">设计中</span>';
+    return '<span class="badge">已结束</span>';
+  }
+
+  function tabsRender() {
+    var counts = { "": S.list({}).length };
+    ["designing", "running", "ended"].forEach(function (k) { counts[k] = S.list({ status: k }).length; });
+    document.querySelectorAll("#status-tabs .mk-tab").forEach(function (b) {
+      var k = b.getAttribute("data-st");
+      var base = b.textContent.replace(/\s*\(\d+\)$/, "");
+      b.textContent = base + "（" + counts[k] + "）";
+      b.classList.toggle("active", k === filters.status);
+    });
+  }
+
+  function render() {
+    var rows = S.list(filters);
+    document.getElementById("em-count").textContent = String(rows.length);
+    var tb = document.getElementById("em-tbody");
+    if (!rows.length) {
+      tb.innerHTML = '<tr><td colspan="7" class="muted" style="text-align:center;padding:36px">暂无事件</td></tr>';
+    } else {
+      tb.innerHTML = rows.map(function (e) {
+        var n = S.nodeCount(e.id);
+        var acts = '<a href="event-marketing-edit.html?id=' + encodeURIComponent(e.id) + '">编辑</a>' +
+          '<a href="#" data-act="stats" data-id="' + esc(e.id) + '">统计</a>' +
+          '<a href="#" data-act="copy" data-id="' + esc(e.id) + '">另存</a>';
+        if (e.status === "designing") {
+          acts += '<a href="#" class="danger" data-act="del" data-id="' + esc(e.id) + '">删除</a>';
+        } else {
+          acts += '<a href="#" class="is-disabled" title="仅「设计中」的事件可删除" data-act="nodel">删除</a>';
+        }
+        return "<tr>" +
+          '<td class="mono">' + esc(e.id) + "</td>" +
+          "<td><b>" + esc(e.name) + "</b></td>" +
+          "<td>" + esc(e.type) + "</td>" +
+          '<td class="muted" style="font-size:12px">' + esc(e.createdAt) + "</td>" +
+          "<td>" + (n ? ('<span class="badge badge-info">' + n + " 个节点</span>") : '<span class="muted">未编排</span>') + "</td>" +
+          "<td>" + statusBadge(e.status) + "</td>" +
+          '<td class="row-actions">' + acts + "</td>" +
+          "</tr>";
+      }).join("");
+    }
+    tabsRender();
+  }
+
+  function openStats(row) {
+    document.getElementById("st-name").textContent = row.name;
+    document.getElementById("st-id").textContent = "事件 ID " + row.id;
+    var seed = parseInt(row.id, 10) % 7;
+    var metrics = [
+      ["触发人数", 1820 + seed * 137, 7460 + seed * 512],
+      ["触达人数", 1690 + seed * 128, 7020 + seed * 486],
+      ["触达率", "92.8%", "94.1%"],
+      ["转化人数", 168 + seed * 12, 712 + seed * 34],
+      ["转化率", "9.9%", "10.1%"],
+      ["归因 GMV", "¥ 18,600", "¥ 79,400"]
+    ];
+    document.getElementById("st-body").innerHTML = metrics.map(function (m) {
+      return "<tr><td>" + m[0] + "</td><td>" + m[1] + "</td><td>" + m[2] + "</td></tr>";
+    }).join("");
+    MK.open("modal-stats");
+  }
+
+  document.querySelectorAll("[data-close]").forEach(function (b) {
+    b.addEventListener("click", function () { MK.close("modal-stats"); });
+  });
+  document.getElementById("mask").addEventListener("click", function () { MK.close("modal-stats"); });
+
+  document.getElementById("em-tbody").addEventListener("click", function (e) {
+    var a = e.target.closest("[data-act]");
+    if (!a) return;
+    e.preventDefault();
+    var act = a.getAttribute("data-act");
+    var id = a.getAttribute("data-id");
+    var row = S.get(id);
+    if (!row) return;
+    if (act === "nodel") { Proto.toast("仅「设计中」的事件可删除"); return; }
+    if (act === "stats") { openStats(row); return; }
+    if (act === "copy") {
+      var nid = S.duplicate(id);
+      Proto.toast("已另存为 " + nid);
+      render();
+      return;
+    }
+    if (act === "del") {
+      if (!confirm("确认删除事件「" + row.name + "」？其流程编排也会一并删除。")) return;
+      S.remove(id);
+      Proto.toast("已删除");
+      render();
+    }
+  });
+
+  document.getElementById("btn-new").addEventListener("click", function () {
+    location.href = "event-marketing-edit.html?new=1";
+  });
+  document.getElementById("btn-query").addEventListener("click", function () {
+    filters.keyword = document.getElementById("f-key").value.trim();
+    filters.type = document.getElementById("f-type").value;
+    filters.status = document.getElementById("f-status").value;
+    render();
+  });
+  document.getElementById("btn-reset").addEventListener("click", function () {
+    document.getElementById("f-key").value = "";
+    document.getElementById("f-type").value = "";
+    document.getElementById("f-status").value = "";
+    filters = { keyword: "", type: "", status: "" };
+    render();
+  });
+  document.getElementById("status-tabs").addEventListener("click", function (e) {
+    var b = e.target.closest(".mk-tab");
+    if (!b) return;
+    filters.status = b.getAttribute("data-st");
+    document.getElementById("f-status").value = filters.status;
+    render();
+  });
+
+  render();
+})();
+</script>
+</body>
+</html>

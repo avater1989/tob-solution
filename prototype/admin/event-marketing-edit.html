@@ -1,0 +1,968 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>用户事件营销设计 · 商家管理后台</title>
+<link rel="stylesheet" href="../assets/css/proto.css?v=9" />
+<link rel="stylesheet" href="../assets/css/marketing.css?v=1" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@logicflow/core@1.2.27/dist/index.css" />
+</head>
+<body class="admin-body" data-module="scrm" data-nav="event-marketing" data-title="用户事件营销设计" data-crumb="SCRM / 用户运营 / 用户事件营销 / 事件营销设计">
+
+<div id="header-actions">
+  <a class="btn" href="event-marketing.html">返回列表</a>
+  <button class="btn" id="btn-validate">校验流程</button>
+  <button class="btn btn-primary" id="btn-save">保存编排</button>
+</div>
+
+<div id="page-content" style="display:none">
+  <div class="mk-topbar">
+    <div>
+      <span class="mk-title" id="em-title">—</span>
+      <span class="muted" id="em-sub" style="margin-left:8px;font-size:12px"></span>
+    </div>
+    <div class="mk-toolbar">
+      <button class="btn" type="button" id="tb-test">发送测试</button>
+      <button class="btn btn-primary" type="button" id="tb-launch">正式发送</button>
+      <span class="sep"></span>
+      <button class="btn" type="button" id="tb-undo">撤销</button>
+      <button class="btn" type="button" id="tb-redo">恢复</button>
+      <button class="btn" type="button" id="tb-redesign">重新设计</button>
+      <span class="sep"></span>
+      <button class="btn" type="button" id="tb-zoom-in">放大</button>
+      <button class="btn" type="button" id="tb-zoom-out">缩小</button>
+      <button class="btn" type="button" id="tb-fit">适应画布</button>
+      <span class="sep"></span>
+      <button class="btn" type="button" id="tb-copy">复制</button>
+      <button class="btn" type="button" id="tb-del">删除</button>
+      <button class="btn" type="button" id="tb-tpl">另存为模板</button>
+    </div>
+  </div>
+
+  <div class="mk-flow-layout">
+    <div class="mk-panel">
+      <h3>节点</h3>
+      <div id="palette"></div>
+      <p class="muted" style="font-size:11px;line-height:1.6;margin:10px 0 0">
+        点击节点即加入画布并打开配置；判断节点可拉出两条分支，连线后选中连线填写分支标签（Y / N）。
+      </p>
+    </div>
+
+    <div class="mk-canvas-wrap">
+      <div id="lf-container"></div>
+      <div class="mk-canvas-hint">滚轮缩放 · 拖动画布 · 锚点连线</div>
+    </div>
+
+    <div class="mk-panel mk-prop">
+      <h3>属性</h3>
+      <div id="prop-box"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ 弹窗 ============ -->
+<!-- 选择触发事件 -->
+<div class="proto-mask" id="m-ev-mask"></div>
+<div class="proto-modal" id="m-ev" style="width:640px">
+  <div class="proto-modal-hd"><h3 style="font-size:16px;font-weight:600">选择触发事件</h3>
+    <button class="btn btn-sm btn-ghost" data-mkc="m-ev">×</button></div>
+  <div class="proto-modal-bd">
+    <p class="muted" style="margin:0 0 10px;font-size:12px;line-height:1.7">
+      事件取自本店铺真实行为。用户发生该事件时触发本流程；同一用户默认只执行一次。
+    </p>
+    <div class="mk-pick-list" id="ev-catalog" style="max-height:200px"></div>
+    <div class="mk-sec" style="margin-top:12px">
+      <div class="sh">触发条件</div>
+      <div class="mk-inline" style="margin-bottom:8px">
+        <span style="font-size:13px;width:64px">下单店铺</span>
+        <select id="ev-shop-mode" style="width:120px">
+          <option value="all">不限</option><option value="in">指定店铺</option><option value="out">排除店铺</option>
+        </select>
+        <button class="btn" type="button" id="ev-pick-shop">选择店铺</button>
+        <span class="muted" id="ev-shop-chosen" style="font-size:12px">未选择</span>
+      </div>
+      <div class="mk-inline" style="margin-bottom:8px">
+        <span style="font-size:13px;width:64px">实付金额</span>
+        <label style="font-size:13px"><input type="radio" name="ev-amt" value="all" checked />不限</label>
+        <label style="font-size:13px"><input type="radio" name="ev-amt" value="custom" />自定义</label>
+        <input class="input" id="ev-amt-from" type="number" placeholder="0" style="width:90px" />
+        <span class="muted">至</span>
+        <input class="input" id="ev-amt-to" type="number" placeholder="不限" style="width:90px" />
+        <span class="muted" style="font-size:12px">元</span>
+      </div>
+      <div class="mk-inline">
+        <span style="font-size:13px;width:64px">下单时间</span>
+        <label style="font-size:13px"><input type="radio" name="ev-time" value="all" checked />不限</label>
+        <label style="font-size:13px"><input type="radio" name="ev-time" value="custom" />自定义</label>
+        <input class="input" id="ev-time-from" type="date" style="width:150px" />
+        <span class="muted">至</span>
+        <input class="input" id="ev-time-to" type="date" style="width:150px" />
+      </div>
+      <p class="mk-note">「实付金额」「下单时间」仅对交易相关事件生效；其他事件可忽略。</p>
+    </div>
+  </div>
+  <div class="proto-modal-ft">
+    <button class="btn" type="button" data-mkc="m-ev">取消</button>
+    <button class="btn btn-primary" type="button" id="ev-ok">确定</button>
+  </div>
+</div>
+
+<!-- 变更用户属性 -->
+<div class="proto-mask" id="m-profile-mask"></div>
+<div class="proto-modal" id="m-profile" style="width:540px">
+  <div class="proto-modal-hd"><h3 style="font-size:16px;font-weight:600">变更用户属性</h3>
+    <button class="btn btn-sm btn-ghost" data-mkc="m-profile">×</button></div>
+  <div class="proto-modal-bd">
+    <div class="field"><label>节点名称 *</label>
+      <input id="pf-name" placeholder="如：标记待复购" maxlength="20" /></div>
+    <div class="mk-sec">
+      <div class="sh">等级变更</div>
+      <div class="mk-radio-row">
+        <label><input type="radio" name="pf-level" value="none" checked />不变</label>
+        <label><input type="radio" name="pf-level" value="up" />升一级</label>
+        <label><input type="radio" name="pf-level" value="down" />降一级</label>
+        <label><input type="radio" name="pf-level" value="set" />指定等级</label>
+      </div>
+      <div class="mk-inline" style="margin-top:8px">
+        <select id="pf-level-value" style="width:180px" disabled>
+          <option value="">请选择等级</option>
+          <option>入会会员</option><option>初级会员</option><option>高级会员</option>
+        </select>
+      </div>
+    </div>
+    <div class="mk-sec">
+      <div class="sh">积分变更</div>
+      <div class="mk-inline">
+        <select id="pf-point-mode" style="width:120px">
+          <option value="none">无变化</option><option value="add">增加</option><option value="sub">减少</option>
+        </select>
+        <input class="input" id="pf-point" type="number" value="0" style="width:100px" />
+        <span class="muted" style="font-size:12px">分</span>
+      </div>
+    </div>
+  </div>
+  <div class="proto-modal-ft">
+    <button class="btn" type="button" data-mkc="m-profile">取消</button>
+    <button class="btn btn-primary" type="button" id="pf-ok">确定</button>
+  </div>
+</div>
+
+<!-- 打标签 -->
+<div class="proto-mask" id="m-tag-mask"></div>
+<div class="proto-modal" id="m-tag" style="width:560px">
+  <div class="proto-modal-hd"><h3 style="font-size:16px;font-weight:600">打标签</h3>
+    <button class="btn btn-sm btn-ghost" data-mkc="m-tag">×</button></div>
+  <div class="proto-modal-bd">
+    <div class="field"><label>节点名称 *</label>
+      <input id="tg-name" placeholder="如：打标签：人群 A" maxlength="20" /></div>
+    <div class="mk-sec">
+      <div class="sh">增加标签</div>
+      <div class="mk-pick-list" id="tg-add" style="max-height:150px"></div>
+    </div>
+    <div class="mk-sec" style="margin-bottom:0">
+      <div class="sh">移除标签</div>
+      <div class="mk-pick-list" id="tg-del" style="max-height:150px"></div>
+    </div>
+    <p class="mk-note">标签取自「用户运营 · 标签管理」；增加与移除可同时配置，移除优先于增加执行。</p>
+  </div>
+  <div class="proto-modal-ft">
+    <button class="btn" type="button" data-mkc="m-tag">取消</button>
+    <button class="btn btn-primary" type="button" id="tg-ok">确定</button>
+  </div>
+</div>
+
+<!-- 用户属性判断 -->
+<div class="proto-mask" id="m-cu-mask"></div>
+<div class="proto-modal" id="m-cu" style="width:600px">
+  <div class="proto-modal-hd"><h3 style="font-size:16px;font-weight:600">用户属性判断</h3>
+    <button class="btn btn-sm btn-ghost" data-mkc="m-cu">×</button></div>
+  <div class="proto-modal-bd">
+    <div class="field"><label>节点名称 *</label>
+      <input id="cu-name" placeholder="如：判断宝宝年龄" maxlength="20" /></div>
+    <div class="mk-sec">
+      <div class="sh">判断条件（满足走 Y，否则走 N）</div>
+      <div class="mk-inline" style="margin-bottom:8px">
+        <span style="font-size:13px;width:64px">性别</span>
+        <select id="cu-sex" style="width:120px"><option value="">不限</option><option>男</option><option>女</option></select>
+        <span style="font-size:13px;width:64px;margin-left:12px">城市</span>
+        <input class="input" id="cu-city" placeholder="如：广州；长沙；杭州" style="width:200px" />
+      </div>
+      <div class="mk-inline" style="margin-bottom:8px">
+        <span style="font-size:13px;width:64px">生日</span>
+        <input class="input" id="cu-birth" type="date" style="width:150px" />
+        <span style="font-size:13px;width:64px;margin-left:12px">订单状态</span>
+        <select id="cu-order" style="width:140px"><option value="">不限</option><option>已支付</option><option>已确认收货</option><option>已完成</option></select>
+      </div>
+      <div class="mk-inline">
+        <span style="font-size:13px;width:64px">孩子年龄</span>
+        <select id="cu-age" style="width:140px"><option value="">不限</option><option>0-3 岁</option><option>4-6 岁</option><option>7-12 岁</option><option>13 岁以上</option></select>
+      </div>
+      <p class="mk-note" id="cu-summary">已选条件：—</p>
+    </div>
+  </div>
+  <div class="proto-modal-ft">
+    <button class="btn" type="button" data-mkc="m-cu">取消</button>
+    <button class="btn btn-primary" type="button" id="cu-ok">确定</button>
+  </div>
+</div>
+
+<!-- 交易属性判断 -->
+<div class="proto-mask" id="m-ct-mask"></div>
+<div class="proto-modal" id="m-ct" style="width:600px">
+  <div class="proto-modal-hd"><h3 style="font-size:16px;font-weight:600">交易属性判断</h3>
+    <button class="btn btn-sm btn-ghost" data-mkc="m-ct">×</button></div>
+  <div class="proto-modal-bd">
+    <div class="field"><label>节点名称 *</label>
+      <input id="ct-name" placeholder="如：判断是否有下单行为" maxlength="20" /></div>
+    <div class="mk-sec">
+      <div class="sh">判断条件</div>
+      <div class="mk-inline" style="margin-bottom:8px">
+        <span style="font-size:13px;width:84px">累计消费金额</span>
+        <input class="input" id="ct-amt-from" type="number" placeholder="0" style="width:100px" />
+        <span class="muted">至</span>
+        <input class="input" id="ct-amt-to" type="number" placeholder="不限" style="width:100px" />
+        <span class="muted" style="font-size:12px">元</span>
+      </div>
+      <div class="mk-inline" style="margin-bottom:8px">
+        <span style="font-size:13px;width:84px">购买次数</span>
+        <input class="input" id="ct-cnt-from" type="number" placeholder="0" style="width:100px" />
+        <span class="muted">至</span>
+        <input class="input" id="ct-cnt-to" type="number" placeholder="不限" style="width:100px" />
+        <span class="muted" style="font-size:12px">次</span>
+      </div>
+      <div class="mk-inline">
+        <span style="font-size:13px;width:84px">最近下单时间</span>
+        <input class="input" id="ct-last" type="date" style="width:150px" />
+        <span class="muted" style="font-size:12px">之前</span>
+      </div>
+    </div>
+  </div>
+  <div class="proto-modal-ft">
+    <button class="btn" type="button" data-mkc="m-ct">取消</button>
+    <button class="btn btn-primary" type="button" id="ct-ok">确定</button>
+  </div>
+</div>
+
+<!-- 社交属性判断 -->
+<div class="proto-mask" id="m-cs-mask"></div>
+<div class="proto-modal" id="m-cs" style="width:600px">
+  <div class="proto-modal-hd"><h3 style="font-size:16px;font-weight:600">社交属性判断</h3>
+    <button class="btn btn-sm btn-ghost" data-mkc="m-cs">×</button></div>
+  <div class="proto-modal-bd">
+    <div class="field"><label>节点名称 *</label>
+      <input id="cs-name" placeholder="如：判断是否已添加企微" maxlength="20" /></div>
+    <div class="mk-sec">
+      <div class="sh">社交属性</div>
+      <div class="mk-inline" style="margin-bottom:8px">
+        <span style="font-size:13px;width:96px">是否关注视频号</span>
+        <select id="cs-ch" style="width:140px"><option value="">不限</option><option>已关注</option><option>未关注</option><option>已取关</option></select>
+      </div>
+      <div class="mk-inline" style="margin-bottom:8px">
+        <span style="font-size:13px;width:96px">是否添加企微</span>
+        <select id="cs-wecom" style="width:140px"><option value="">不限</option><option>已添加</option><option>未添加</option></select>
+      </div>
+      <div class="mk-inline" style="margin-bottom:8px">
+        <span style="font-size:13px;width:96px">公众号关注</span>
+        <select id="cs-mp" style="width:140px"><option value="">不限</option><option>有关注</option><option>无关注</option><option>已取消关注</option></select>
+        <select id="cs-mp-op" style="width:110px"><option>等于</option><option>介于</option><option>大于等于</option><option>小于等于</option></select>
+        <input class="input" id="cs-mp-date" type="date" style="width:150px" />
+      </div>
+      <div class="mk-inline">
+        <span style="font-size:13px;width:96px">品牌号订阅</span>
+        <select id="cs-brand" style="width:140px"><option value="">不限</option><option>已订阅</option><option>未订阅</option></select>
+      </div>
+    </div>
+  </div>
+  <div class="proto-modal-ft">
+    <button class="btn" type="button" data-mkc="m-cs">取消</button>
+    <button class="btn btn-primary" type="button" id="cs-ok">确定</button>
+  </div>
+</div>
+
+<!-- 偏好属性判断 -->
+<div class="proto-mask" id="m-cp-mask"></div>
+<div class="proto-modal" id="m-cp" style="width:600px">
+  <div class="proto-modal-hd"><h3 style="font-size:16px;font-weight:600">偏好属性判断</h3>
+    <button class="btn btn-sm btn-ghost" data-mkc="m-cp">×</button></div>
+  <div class="proto-modal-bd">
+    <div class="field"><label>节点名称 *</label>
+      <input id="cp-name" placeholder="如：判断是否短信敏感" maxlength="20" /></div>
+    <div class="mk-sec">
+      <div class="sh">偏好属性（多选）</div>
+      <div class="mk-pick-list" id="cp-list" style="max-height:190px"></div>
+      <p class="mk-note">偏好属性由用户行为自动沉淀（二期）；勾选后满足任一即走 Y 分支。</p>
+    </div>
+  </div>
+  <div class="proto-modal-ft">
+    <button class="btn" type="button" data-mkc="m-cp">取消</button>
+    <button class="btn btn-primary" type="button" id="cp-ok">确定</button>
+  </div>
+</div>
+
+<!-- 流程等待 -->
+<div class="proto-mask" id="m-wait-mask"></div>
+<div class="proto-modal" id="m-wait" style="width:540px">
+  <div class="proto-modal-hd"><h3 style="font-size:16px;font-weight:600">流程等待</h3>
+    <button class="btn btn-sm btn-ghost" data-mkc="m-wait">×</button></div>
+  <div class="proto-modal-bd">
+    <div class="field"><label>节点名称 *</label>
+      <input id="wt-name" placeholder="如：等待 24 小时" maxlength="20" /></div>
+    <div class="mk-sec" style="margin-bottom:0">
+      <div class="sh">等待时间</div>
+      <div class="mk-radio-row" style="margin-bottom:10px">
+        <label><input type="radio" name="wt-mode" value="rel" checked />相对等待</label>
+        <label><input type="radio" name="wt-mode" value="abs" />等待至指定时间</label>
+      </div>
+      <div class="mk-inline" id="wt-rel-row">
+        <span style="font-size:13px">等待</span>
+        <input class="input" id="wt-days" type="number" value="1" min="0" style="width:80px" /><span class="muted" style="font-size:12px">天</span>
+        <input class="input" id="wt-hours" type="number" value="0" min="0" max="23" style="width:80px" /><span class="muted" style="font-size:12px">小时</span>
+        <input class="input" id="wt-mins" type="number" value="0" min="0" max="59" style="width:80px" /><span class="muted" style="font-size:12px">分钟</span>
+      </div>
+      <div class="mk-inline" id="wt-abs-row" style="display:none">
+        <span style="font-size:13px">等待至</span>
+        <input class="input" id="wt-abs" type="datetime-local" style="width:220px" />
+      </div>
+      <p class="mk-note">相对等待自上一个节点执行完成起算；最长等待 30 天。</p>
+    </div>
+  </div>
+  <div class="proto-modal-ft">
+    <button class="btn" type="button" data-mkc="m-wait">取消</button>
+    <button class="btn btn-primary" type="button" id="wt-ok">确定</button>
+  </div>
+</div>
+
+<script src="../assets/js/proto.js"></script>
+<script src="../assets/js/marketing-common.js?v=1"></script>
+<script src="../assets/js/event-marketing-store.js?v=1"></script>
+<script src="https://cdn.jsdelivr.net/npm/@logicflow/core@1.2.27/dist/logic-flow.js"></script>
+<script src="../assets/js/admin-shell.js?v=23"></script>
+<script>
+(function () {
+  var S = window.EventMarketingStore;
+  var MK = window.MarketingCommon;
+  var qs = new URLSearchParams(location.search);
+  var eventId = qs.get("id") || "";
+  var isNew = qs.get("new") === "1";
+
+  /* ---------- 新建：先落一条事件再进入设计 ---------- */
+  if (isNew) {
+    var nid = S.nextId();
+    S.save({ id: nid, name: "未命名事件", type: "主动触发", status: "designing" });
+    S.saveFlow(nid, { nodes: [{ id: MK.uid("n"), type: "start", x: 140, y: 240, props: {} }], edges: [] });
+    location.replace("event-marketing-edit.html?id=" + encodeURIComponent(nid));
+    return;
+  }
+
+  var evt = S.get(eventId);
+  if (!evt) {
+    document.getElementById("page-content").innerHTML =
+      '<div class="card"><div class="card-bd"><p style="margin:0">事件不存在，请返回列表重新选择。</p>' +
+      '<p style="margin:10px 0 0"><a class="btn" href="event-marketing.html">返回列表</a></p></div></div>';
+    document.getElementById("page-content").style.display = "block";
+    return;
+  }
+
+  var flow = S.getFlow(eventId);
+  var lf = null;
+  var selected = null;      /* { kind:'node'|'edge', data } */
+  var editingNodeId = null; /* 当前打开配置弹窗的节点 */
+  var shopChosen = [];
+
+  document.getElementById("em-title").textContent = evt.name;
+  document.getElementById("em-sub").textContent =
+    "事件 ID " + evt.id + " · " + evt.type + " · " + S.STATUS[evt.status];
+
+  /* ---------- 左侧节点面板 ---------- */
+  var groups = [];
+  S.NODE_DEFS.forEach(function (d) {
+    var g = groups.filter(function (x) { return x.name === d.group; })[0];
+    if (!g) { g = { name: d.group, items: [] }; groups.push(g); }
+    g.items.push({ type: d.type, label: d.label, color: d.dot });
+  });
+  MK.renderPalette("#palette", groups, addNode);
+
+  /* ---------- 默认属性 ---------- */
+  function defaultProps(type) {
+    if (type === "wait") return { waitLabel: "24 小时" };
+    if (type === "sms") return { summary: "", sign: MK.SMS_SIGNS[0], content: "" };
+    if (type === "wecom") return { summary: "", msgType: "活动 / 文案 / 券", actName: "", content: "", rightName: "" };
+    if (type === "profile") return { summary: "", level: "none", pointMode: "none", point: 0 };
+    if (type === "tag") return { tags: [], addTags: [], delTags: [] };
+    if (S.isCondition(type)) return { summary: "" };
+    if (type === "start") return { eventId: "", eventName: "", shopMode: "all", shopNames: [] };
+    return {};
+  }
+
+  /* ---------- 弹窗映射 ---------- */
+  var NODE_MODAL = {
+    start: "m-ev", sms: "mk-sms", wecom: "mk-wecom", profile: "m-profile",
+    tag: "m-tag", "cond-user": "m-cu", "cond-trade": "m-ct",
+    "cond-social": "m-cs", "cond-prefer": "m-cp", wait: "m-wait"
+  };
+
+  function findNode(id) {
+    return flow.nodes.filter(function (n) { return n.id === id; })[0] || null;
+  }
+
+  function syncFromLf() {
+    if (!lf) return;
+    flow = S.fromLogicFlowData(flow, lf.getGraphRawData());
+    S.saveFlow(eventId, flow);
+  }
+
+  function refreshNodeText(id) {
+    if (!lf) return;
+    var n = findNode(id);
+    if (!n) return;
+    lf.updateText(id, S.nodeText(n.type, n.props));
+  }
+
+  /* ---------- 画布 ---------- */
+  function addNode(type) {
+    if (!lf) { Proto.toast("画布尚未就绪，请稍候"); return; }
+    var id = MK.uid("n");
+    var props = defaultProps(type);
+    flow.nodes.push({ id: id, type: type, x: 160 + Math.random() * 260, y: 140 + Math.random() * 220, props: props });
+    var d = S.defOf(type);
+    lf.addNode({
+      id: id, type: d ? d.shape : "rect",
+      x: flow.nodes[flow.nodes.length - 1].x, y: flow.nodes[flow.nodes.length - 1].y,
+      text: S.nodeText(type, props),
+      properties: { bizType: type, props: props }
+    });
+    S.saveFlow(eventId, flow);
+    var m = NODE_MODAL[type];
+    if (m) openNodeConfig(id); else Proto.toast("已添加「" + (d ? d.label : type) + "」节点");
+  }
+
+  function initCanvas() {
+    MK.mountFlowWhenReady("lf-container", S.toLogicFlowData(flow), {
+      onNode: function (data) { selected = { kind: "node", data: data }; renderProp(); },
+      onEdge: function (data) { selected = { kind: "edge", data: data }; syncFromLf(); renderProp(); },
+      onBlank: function () { selected = null; renderProp(); },
+      onChange: function () { syncFromLf(); }
+    }, function (instance) {
+      lf = instance;
+      window.addEventListener("resize", function () { MK.fitFlow(lf); });
+      renderProp();
+    });
+  }
+
+  /* ---------- 右侧属性面板 ---------- */
+  function renderProp() {
+    var box = document.getElementById("prop-box");
+    if (!selected) {
+      var start = flow.nodes.filter(function (n) { return n.type === "start"; })[0];
+      var evName = start && start.props && start.props.eventName;
+      box.innerHTML =
+        '<p class="mk-prop-empty">选中画布上的节点或连线进行编辑。</p>' +
+        '<div class="mk-sec" style="margin-top:10px"><div class="sh">触发事件</div>' +
+        '<div class="mk-node-card"><div class="nhd">' + (evName ? MK.esc(evName) : "未选择触发事件") + "</div>" +
+        '<div class="nrow"><span class="nk">事件 ID</span><span>' +
+        MK.esc((start && start.props && start.props.eventId) || "—") + "</span></div></div>" +
+        '<div class="mk-prop-actions">' +
+        (start ? '<button class="btn" type="button" id="prop-edit-event">配置触发事件</button>' : "") +
+        (start ? '<button class="btn" type="button" id="prop-del-event">删除事件</button>' : "") +
+        "</div></div>";
+      var eb = document.getElementById("prop-edit-event");
+      if (eb) eb.onclick = function () { openNodeConfig(start.id); };
+      var db = document.getElementById("prop-del-event");
+      if (db) db.onclick = function () { removeNode(start.id); };
+      return;
+    }
+    if (selected.kind === "edge") {
+      var eid = selected.data.id;
+      var cur = selected.data.text && selected.data.text.value ? selected.data.text.value : "";
+      box.innerHTML =
+        '<div class="mk-node-card"><div class="nhd">分支连线</div>' +
+        '<div class="nrow"><span class="nk">分支标签</span></div></div>' +
+        '<div class="field" style="margin-top:10px"><label>标签</label>' +
+        '<select class="input" id="prop-edge-label" style="width:100%">' +
+        '<option value="">无</option><option value="Y">Y</option><option value="N">N</option>' +
+        '<option value="A">A</option><option value="B">B</option>' +
+        "</select></div>" +
+        '<div class="mk-prop-actions"><button class="btn" type="button" id="prop-del-el" style="color:#f53f3f">删除连线</button></div>';
+      var sel = document.getElementById("prop-edge-label");
+      sel.value = cur;
+      sel.onchange = function () {
+        flow.edges.forEach(function (e) { if (e.id === eid) e.text = sel.value; });
+        lf.updateText(eid, sel.value);
+        S.saveFlow(eventId, flow);
+      };
+      document.getElementById("prop-del-el").onclick = function () { lf.deleteEdge(eid); selected = null; syncFromLf(); renderProp(); };
+      return;
+    }
+    var n = findNode(selected.data.id);
+    if (!n) { box.innerHTML = '<p class="mk-prop-empty">节点已不存在</p>'; return; }
+    var d = S.defOf(n.type);
+    var rows = summaryRows(n);
+    box.innerHTML =
+      '<div class="mk-node-card"><div class="nhd">' + MK.esc(d ? d.label : n.type) + "</div>" +
+      (rows.length ? rows.map(function (r) {
+        return '<div class="nrow"><span class="nk">' + MK.esc(r[0]) + "</span><span>" + MK.esc(r[1]) + "</span></div>";
+      }).join("") : '<div class="nrow"><span class="nk">配置</span><span>未配置</span></div>') +
+      "</div>" +
+      '<div class="mk-prop-actions">' +
+      (NODE_MODAL[n.type] ? '<button class="btn btn-primary" type="button" id="prop-cfg">配置</button>' : "") +
+      (n.type === "start" ? "" : '<button class="btn" type="button" id="prop-del" style="color:#f53f3f">删除节点</button>') +
+      "</div>";
+    var cb = document.getElementById("prop-cfg");
+    if (cb) cb.onclick = function () { openNodeConfig(n.id); };
+    var del = document.getElementById("prop-del");
+    if (del) del.onclick = function () { removeNode(n.id); };
+  }
+
+  function summaryRows(n) {
+    var p = n.props || {};
+    var rows = [];
+    if (n.type === "start") {
+      rows.push(["触发事件", p.eventName || "未选择"]);
+      if (p.shopMode && p.shopMode !== "all") rows.push(["店铺范围", (p.shopNames || []).join("、") || "未选择"]);
+    } else if (n.type === "end") {
+      rows.push(["说明", "流程结束"]);
+    } else if (n.type === "wait") {
+      rows.push(["等待", p.waitLabel || "—"]);
+    } else if (n.type === "sms") {
+      rows.push(["方案名", p.summary || "未配置"]);
+      rows.push(["签名", p.sign || "—"]);
+    } else if (n.type === "wecom") {
+      rows.push(["方案名", p.summary || "未配置"]);
+      rows.push(["消息类型", p.msgType || "—"]);
+    } else if (n.type === "profile") {
+      rows.push(["变更", p.summary || "未配置"]);
+    } else if (n.type === "tag") {
+      rows.push(["增加标签", (p.addTags || []).join("、") || "—"]);
+      rows.push(["移除标签", (p.delTags || []).join("、") || "—"]);
+    } else if (S.isCondition(n.type)) {
+      rows.push(["条件", p.summary || "未配置"]);
+    }
+    return rows;
+  }
+
+  function removeNode(id) {
+    var n = findNode(id);
+    if (n && n.type === "start") { Proto.toast("「开始」节点不可删除"); return; }
+    lf.deleteNode(id);
+    selected = null;
+    syncFromLf();
+    renderProp();
+  }
+
+  /* ---------- 打开 / 收集节点配置 ---------- */
+  function openNodeConfig(id) {
+    var n = findNode(id);
+    if (!n) return;
+    editingNodeId = id;
+    if (n.type === "start") return openEventModal(n);
+    if (n.type === "sms") return openTouchSms(n);
+    if (n.type === "wecom") return openTouchWecom(n);
+    if (n.type === "profile") return openProfileModal(n);
+    if (n.type === "tag") return openTagModal(n);
+    if (n.type === "cond-user") return openCondUser(n);
+    if (n.type === "cond-trade") return openCondTrade(n);
+    if (n.type === "cond-social") return openCondSocial(n);
+    if (n.type === "cond-prefer") return openCondPrefer(n);
+    if (n.type === "wait") return openWaitModal(n);
+  }
+
+  function applyNode(id, props, summary) {
+    var n = findNode(id);
+    if (!n) return;
+    n.props = Object.assign({}, n.props, props, { summary: summary || n.props.summary || "" });
+    if (lf) lf.setProperties(id, { bizType: n.type, props: n.props });
+    refreshNodeText(id);
+    S.saveFlow(eventId, flow);
+    renderProp();
+  }
+  function closeAll() { MK.closeAll(); }
+
+  /* --- 选择触发事件 --- */
+  function renderCatalog(selectedId) {
+    document.getElementById("ev-catalog").innerHTML = S.EVENT_CATALOG.map(function (g) {
+      return '<div class="mk-pick-group">' + MK.esc(g.group) + "</div>" +
+        g.events.map(function (e) {
+          return '<label><input type="radio" name="ev-opt" value="' + MK.esc(e.id) + '"' +
+            (e.id === selectedId ? " checked" : "") + " /><span>" + MK.esc(e.name) + "</span></label>";
+        }).join("");
+    }).join("");
+  }
+  function openEventModal(n) {
+    var p = n.props || {};
+    renderCatalog(p.eventId || "");
+    document.getElementById("ev-shop-mode").value = p.shopMode || "all";
+    shopChosen = (p.shopNames || []).slice();
+    document.getElementById("ev-shop-chosen").textContent = shopChosen.length ? ("已选 " + shopChosen.length + " 个店铺") : "未选择";
+    document.querySelectorAll("input[name=ev-amt]").forEach(function (r) { r.checked = r.value === (p.amtMode || "all"); });
+    document.getElementById("ev-amt-from").value = p.amtFrom || "";
+    document.getElementById("ev-amt-to").value = p.amtTo || "";
+    document.querySelectorAll("input[name=ev-time]").forEach(function (r) { r.checked = r.value === (p.timeMode || "all"); });
+    document.getElementById("ev-time-from").value = p.timeFrom || "";
+    document.getElementById("ev-time-to").value = p.timeTo || "";
+    MK.open("m-ev");
+  }
+  document.getElementById("ev-pick-shop").onclick = function () {
+    MK.pick({
+      id: "m-pick-shop", title: "选择店铺",
+      hint: "按渠道勾选本店铺在视频号 / 微信小店 / 小程序下的门店与商品来源。",
+      multi: true, width: 560, selected: [],
+      groups: MK.SHOPS.map(function (s) {
+        return { name: s.name, items: s.items.map(function (x) { return { v: x, t: x }; }) };
+      }),
+      onOk: function (vals) {
+        shopChosen = vals.slice();
+        document.getElementById("ev-shop-chosen").textContent = "已选 " + vals.length + " 个店铺";
+        MK.open("m-ev");
+      }
+    });
+  };
+  document.getElementById("ev-ok").onclick = function () {
+    var sel = document.querySelector("input[name=ev-opt]:checked");
+    if (!sel) { Proto.toast("请选择触发事件"); return; }
+    var id = sel.value;
+    var name = S.eventName(id);
+    var amtMode = (document.querySelector("input[name=ev-amt]:checked") || {}).value || "all";
+    var timeMode = (document.querySelector("input[name=ev-time]:checked") || {}).value || "all";
+    applyNode(editingNodeId, {
+      eventId: id, eventName: name,
+      shopMode: document.getElementById("ev-shop-mode").value, shopNames: shopChosen.slice(),
+      amtMode: amtMode, amtFrom: document.getElementById("ev-amt-from").value, amtTo: document.getElementById("ev-amt-to").value,
+      timeMode: timeMode, timeFrom: document.getElementById("ev-time-from").value, timeTo: document.getElementById("ev-time-to").value
+    }, name);
+    closeAll();
+    Proto.toast("触发事件已设置：" + name);
+  };
+
+  /* --- 发送短信 / 企微消息（弹窗由 marketing-common 提供，两个设计器共用） --- */
+  function openTouchSms(n) {
+    MK.openSms({
+      props: n.props || {},
+      onOk: function (out) {
+        var name = out.nodeName || "发送短信";
+        applyNode(editingNodeId, {
+          nodeName: name, sign: out.sign, content: out.content, summary: out.summary
+        }, name);
+      }
+    });
+  }
+  function openTouchWecom(n) {
+    MK.openWecom({
+      props: n.props || {},
+      onOk: function (out) {
+        var name = out.nodeName || "发送企微消息";
+        applyNode(editingNodeId, {
+          nodeName: name, msgTypeKey: out.msgTypeKey, msgType: out.msgType,
+          actName: out.actName, goodsName: out.goodsName, rightName: out.rightName,
+          content: out.content, summary: out.summary
+        }, name);
+      }
+    });
+  }
+
+  /* --- 变更用户属性 --- */
+  function openProfileModal(n) {
+    var p = n.props || {};
+    document.getElementById("pf-name").value = p.nodeName || "变更用户属性";
+    document.querySelectorAll("input[name=pf-level]").forEach(function (r) { r.checked = r.value === (p.level || "none"); });
+    toggleLevelValue();
+    document.getElementById("pf-level-value").value = p.levelValue || "";
+    document.getElementById("pf-point-mode").value = p.pointMode || "none";
+    document.getElementById("pf-point").value = p.point || 0;
+    MK.open("m-profile");
+  }
+  function toggleLevelValue() {
+    var v = (document.querySelector("input[name=pf-level]:checked") || {}).value;
+    document.getElementById("pf-level-value").disabled = v !== "set";
+  }
+  document.querySelectorAll("input[name=pf-level]").forEach(function (r) { r.onchange = toggleLevelValue; });
+  document.getElementById("pf-ok").onclick = function () {
+    var level = (document.querySelector("input[name=pf-level]:checked") || {}).value || "none";
+    var lvValue = document.getElementById("pf-level-value").value;
+    if (level === "set" && !lvValue) { Proto.toast("请选择要变更到的等级"); return; }
+    var pointMode = document.getElementById("pf-point-mode").value;
+    var point = parseInt(document.getElementById("pf-point").value, 10) || 0;
+    var parts = [];
+    if (level === "up") parts.push("等级升一级");
+    else if (level === "down") parts.push("等级降一级");
+    else if (level === "set") parts.push("等级调至" + lvValue);
+    if (pointMode !== "none" && point > 0) parts.push("积分" + (pointMode === "add" ? "增加" : "减少") + point + "分");
+    if (!parts.length) { Proto.toast("请至少配置一项变更"); return; }
+    var name = document.getElementById("pf-name").value.trim() || "变更用户属性";
+    applyNode(editingNodeId, {
+      nodeName: name, level: level, levelValue: lvValue, pointMode: pointMode, point: point,
+      summary: parts.join("；")
+    }, name);
+    closeAll();
+  };
+
+  /* --- 打标签 --- */
+  function openTagModal(n) {
+    var p = n.props || {};
+    document.getElementById("tg-name").value = p.nodeName || "打标签";
+    var add = p.addTags || p.tags || [];
+    var del = p.delTags || [];
+    document.getElementById("tg-add").innerHTML = MK.TAGS.map(function (t) {
+      return '<label><input type="checkbox" data-tg-add="' + MK.esc(t.name) + '"' +
+        (add.indexOf(t.name) >= 0 ? " checked" : "") + " /><span>" + MK.esc(t.name) + "</span></label>";
+    }).join("");
+    document.getElementById("tg-del").innerHTML = MK.TAGS.map(function (t) {
+      return '<label><input type="checkbox" data-tg-del="' + MK.esc(t.name) + '"' +
+        (del.indexOf(t.name) >= 0 ? " checked" : "") + " /><span>" + MK.esc(t.name) + "</span></label>";
+    }).join("");
+    MK.open("m-tag");
+  }
+  document.getElementById("tg-ok").onclick = function () {
+    var add = [], del = [];
+    document.querySelectorAll("[data-tg-add]").forEach(function (c) { if (c.checked) add.push(c.getAttribute("data-tg-add")); });
+    document.querySelectorAll("[data-tg-del]").forEach(function (c) { if (c.checked) del.push(c.getAttribute("data-tg-del")); });
+    if (!add.length && !del.length) { Proto.toast("请至少选择一个标签"); return; }
+    var name = document.getElementById("tg-name").value.trim() || "打标签";
+    applyNode(editingNodeId, { nodeName: name, tags: add, addTags: add, delTags: del, summary: add.concat(del).join("/") }, name);
+    closeAll();
+  };
+
+  /* --- 各类属性判断 --- */
+  function condSummary(parts) {
+    var s = parts.filter(function (x) { return x && x.indexOf("不限") < 0; }).join("、");
+    return s || "未配置条件";
+  }
+  function openCondUser(n) {
+    var p = n.props || {};
+    document.getElementById("cu-name").value = p.nodeName || "用户属性判断";
+    document.getElementById("cu-sex").value = p.sex || "";
+    document.getElementById("cu-city").value = p.city || "";
+    document.getElementById("cu-birth").value = p.birth || "";
+    document.getElementById("cu-order").value = p.orderStatus || "";
+    document.getElementById("cu-age").value = p.age || "";
+    updateCuSummary();
+    MK.open("m-cu");
+  }
+  function updateCuSummary() {
+    var parts = [
+      document.getElementById("cu-sex").value ? ("性别" + document.getElementById("cu-sex").value) : "",
+      document.getElementById("cu-age").value ? ("孩子年龄" + document.getElementById("cu-age").value) : "",
+      document.getElementById("cu-city").value ? ("城市含" + document.getElementById("cu-city").value) : "",
+      document.getElementById("cu-birth").value ? ("生日" + document.getElementById("cu-birth").value) : "",
+      document.getElementById("cu-order").value ? ("订单状态" + document.getElementById("cu-order").value) : ""
+    ];
+    document.getElementById("cu-summary").textContent = "已选条件：" + condSummary(parts);
+  }
+  ["cu-sex", "cu-city", "cu-birth", "cu-order", "cu-age"].forEach(function (id) {
+    document.getElementById(id).addEventListener("input", updateCuSummary);
+    document.getElementById(id).addEventListener("change", updateCuSummary);
+  });
+  document.getElementById("cu-ok").onclick = function () {
+    var parts = [
+      document.getElementById("cu-sex").value ? ("性别" + document.getElementById("cu-sex").value) : "",
+      document.getElementById("cu-age").value ? ("年龄" + document.getElementById("cu-age").value) : "",
+      document.getElementById("cu-city").value ? ("城市含" + document.getElementById("cu-city").value) : "",
+      document.getElementById("cu-birth").value ? ("生日" + document.getElementById("cu-birth").value) : "",
+      document.getElementById("cu-order").value ? ("订单状态" + document.getElementById("cu-order").value) : ""
+    ];
+    var s = condSummary(parts);
+    if (s === "未配置条件") { Proto.toast("请至少配置一个判断条件"); return; }
+    var name = document.getElementById("cu-name").value.trim() || "用户属性判断";
+    applyNode(editingNodeId, {
+      nodeName: name, sex: document.getElementById("cu-sex").value, age: document.getElementById("cu-age").value,
+      city: document.getElementById("cu-city").value, birth: document.getElementById("cu-birth").value,
+      orderStatus: document.getElementById("cu-order").value
+    }, s);
+    closeAll();
+  };
+
+  function openCondTrade(n) {
+    var p = n.props || {};
+    document.getElementById("ct-name").value = p.nodeName || "交易属性判断";
+    document.getElementById("ct-amt-from").value = p.amtFrom || "";
+    document.getElementById("ct-amt-to").value = p.amtTo || "";
+    document.getElementById("ct-cnt-from").value = p.cntFrom || "";
+    document.getElementById("ct-cnt-to").value = p.cntTo || "";
+    document.getElementById("ct-last").value = p.lastBefore || "";
+    MK.open("m-ct");
+  }
+  document.getElementById("ct-ok").onclick = function () {
+    var a1 = document.getElementById("ct-amt-from").value, a2 = document.getElementById("ct-amt-to").value;
+    var c1 = document.getElementById("ct-cnt-from").value, c2 = document.getElementById("ct-cnt-to").value;
+    var last = document.getElementById("ct-last").value;
+    var parts = [];
+    if (a1 || a2) parts.push("累计消费 " + (a1 || 0) + "~" + (a2 || "不限") + " 元");
+    if (c1 || c2) parts.push("购买次数 " + (c1 || 0) + "~" + (c2 || "不限"));
+    if (last) parts.push("最近下单早于 " + last);
+    if (!parts.length) { Proto.toast("请至少配置一个判断条件"); return; }
+    var name = document.getElementById("ct-name").value.trim() || "交易属性判断";
+    applyNode(editingNodeId, {
+      nodeName: name, amtFrom: a1, amtTo: a2, cntFrom: c1, cntTo: c2, lastBefore: last
+    }, parts.join("、"));
+    closeAll();
+  };
+
+  function openCondSocial(n) {
+    var p = n.props || {};
+    document.getElementById("cs-name").value = p.nodeName || "社交属性判断";
+    document.getElementById("cs-ch").value = p.followChannel || "";
+    document.getElementById("cs-wecom").value = p.addWecom || "";
+    document.getElementById("cs-mp").value = p.mpFollow || "";
+    document.getElementById("cs-mp-op").value = p.mpOp || "等于";
+    document.getElementById("cs-mp-date").value = p.mpDate || "";
+    document.getElementById("cs-brand").value = p.brand || "";
+    MK.open("m-cs");
+  }
+  document.getElementById("cs-ok").onclick = function () {
+    var parts = [];
+    var ch = document.getElementById("cs-ch").value, wc = document.getElementById("cs-wecom").value;
+    var mp = document.getElementById("cs-mp").value, op = document.getElementById("cs-mp-op").value;
+    var date = document.getElementById("cs-mp-date").value, bd = document.getElementById("cs-brand").value;
+    if (ch) parts.push("视频号" + ch);
+    if (wc) parts.push("企微" + wc);
+    if (mp) parts.push("公众号" + mp + (date ? "（关注时间" + op + date + "）" : ""));
+    if (bd) parts.push("品牌号" + bd);
+    if (!parts.length) { Proto.toast("请至少配置一个判断条件"); return; }
+    var name = document.getElementById("cs-name").value.trim() || "社交属性判断";
+    applyNode(editingNodeId, {
+      nodeName: name, followChannel: ch, addWecom: wc, mpFollow: mp, mpOp: op, mpDate: date, brand: bd
+    }, parts.join("、"));
+    closeAll();
+  };
+
+  var PREFER_ITEMS = ["短信敏感", "折扣敏感", "直播敏感", "优惠券敏感", "专属客服敏感", "群聊活跃",
+    "购买渠道偏好", "一级类目偏好", "兴趣人群", "钻展偏好", "聚划算偏好"];
+  function openCondPrefer(n) {
+    var p = n.props || {};
+    document.getElementById("cp-name").value = p.nodeName || "偏好属性判断";
+    var cur = p.prefers || [];
+    document.getElementById("cp-list").innerHTML = PREFER_ITEMS.map(function (t) {
+      return '<label><input type="checkbox" data-cp="' + MK.esc(t) + '"' +
+        (cur.indexOf(t) >= 0 ? " checked" : "") + " /><span>" + MK.esc(t) + "</span></label>";
+    }).join("");
+    MK.open("m-cp");
+  }
+  document.getElementById("cp-ok").onclick = function () {
+    var vals = [];
+    document.querySelectorAll("[data-cp]").forEach(function (c) { if (c.checked) vals.push(c.getAttribute("data-cp")); });
+    if (!vals.length) { Proto.toast("请至少选择一个偏好属性"); return; }
+    var name = document.getElementById("cp-name").value.trim() || "偏好属性判断";
+    applyNode(editingNodeId, { nodeName: name, prefers: vals }, vals.slice(0, 3).join("、") + (vals.length > 3 ? " 等" : ""));
+    closeAll();
+  };
+
+  /* --- 流程等待 --- */
+  function openWaitModal(n) {
+    var p = n.props || {};
+    document.getElementById("wt-name").value = p.nodeName || "流程等待";
+    document.querySelectorAll("input[name=wt-mode]").forEach(function (r) { r.checked = r.value === (p.waitMode || "rel"); });
+    document.getElementById("wt-days").value = p.days != null ? p.days : 1;
+    document.getElementById("wt-hours").value = p.hours != null ? p.hours : 0;
+    document.getElementById("wt-mins").value = p.mins != null ? p.mins : 0;
+    document.getElementById("wt-abs").value = p.absTime || "";
+    toggleWaitRows();
+    MK.open("m-wait");
+  }
+  function toggleWaitRows() {
+    var v = (document.querySelector("input[name=wt-mode]:checked") || {}).value || "rel";
+    document.getElementById("wt-rel-row").style.display = v === "rel" ? "" : "none";
+    document.getElementById("wt-abs-row").style.display = v === "abs" ? "" : "none";
+  }
+  document.querySelectorAll("input[name=wt-mode]").forEach(function (r) { r.onchange = toggleWaitRows; });
+  document.getElementById("wt-ok").onclick = function () {
+    var mode = (document.querySelector("input[name=wt-mode]:checked") || {}).value || "rel";
+    var name = document.getElementById("wt-name").value.trim() || "流程等待";
+    var label;
+    if (mode === "abs") {
+      var abs = document.getElementById("wt-abs").value;
+      if (!abs) { Proto.toast("请选择等待到的具体时间"); return; }
+      label = "至 " + abs.replace("T", " ");
+    } else {
+      var d = parseInt(document.getElementById("wt-days").value, 10) || 0;
+      var h = parseInt(document.getElementById("wt-hours").value, 10) || 0;
+      var m = parseInt(document.getElementById("wt-mins").value, 10) || 0;
+      if (!d && !h && !m) { Proto.toast("等待时间不能全为 0"); return; }
+      if (d + h / 24 + m / 1440 > 30) { Proto.toast("最长等待 30 天"); return; }
+      label = (d ? d + " 天 " : "") + (h ? h + " 小时 " : "") + (m ? m + " 分钟" : "");
+    }
+    applyNode(editingNodeId, {
+      nodeName: name, waitMode: mode, waitLabel: label.trim(),
+      days: document.getElementById("wt-days").value, hours: document.getElementById("wt-hours").value,
+      mins: document.getElementById("wt-mins").value, absTime: document.getElementById("wt-abs").value
+    }, label.trim());
+    closeAll();
+  };
+
+  /* ---------- 弹窗关闭 ---------- */
+  document.querySelectorAll("[data-mkc]").forEach(function (b) {
+    b.addEventListener("click", function () { MK.close(b.getAttribute("data-mkc")); });
+  });
+  document.querySelectorAll(".proto-mask[id^='m-']").forEach(function (m) {
+    m.addEventListener("click", function () { MK.close(m.id.replace(/-mask$/, "")); });
+  });
+
+  /* ---------- 工具条 ---------- */
+  function currentStatus() { var e = S.get(eventId); return e ? e.status : "designing"; }
+
+  document.getElementById("btn-save").onclick = function () {
+    syncFromLf();
+    Proto.toast("事件流程已保存");
+  };
+  document.getElementById("btn-validate").onclick = function () {
+    syncFromLf();
+    var issues = S.validateFlow(flow);
+    if (!issues.length) Proto.toast("校验通过：流程结构完整");
+    else Proto.toast(issues[0] + (issues.length > 1 ? " 等 " + issues.length + " 项" : ""));
+  };
+  document.getElementById("tb-test").onclick = function () {
+    var start = flow.nodes.filter(function (n) { return n.type === "start"; })[0];
+    if (!start || !(start.props && start.props.eventName)) { Proto.toast("请先配置触发事件"); return; }
+    Proto.toast("测试已发送（演示）：以「" + start.props.eventName + "」模拟触发 1 个用户");
+  };
+  document.getElementById("tb-launch").onclick = function () {
+    syncFromLf();
+    var issues = S.validateFlow(flow);
+    if (issues.length) { Proto.toast("流程未通过校验：" + issues[0]); return; }
+    if (!confirm("确认正式发送？发送后事件进入「运行中」，将按事件真实触发用户。")) return;
+    S.save({ id: eventId, status: "running" });
+    Proto.toast("已正式发送，事件进入运行中");
+    location.href = "event-marketing.html";
+  };
+  document.getElementById("tb-undo").onclick = function () { if (lf) lf.undo(); syncFromLf(); };
+  document.getElementById("tb-redo").onclick = function () { if (lf && lf.redo) lf.redo(); syncFromLf(); };
+  document.getElementById("tb-redesign").onclick = function () {
+    if (!confirm("重新设计会清空当前画布的节点与连线（保留触发事件配置），确认继续？")) return;
+    var start = flow.nodes.filter(function (n) { return n.type === "start"; })[0];
+    if (!start) { start = { id: MK.uid("n"), type: "start", x: 140, y: 240, props: {} }; }
+    flow = { nodes: [start], edges: [] };
+    S.saveFlow(eventId, flow);
+    if (lf) { lf.render(S.toLogicFlowData(flow)); MK.fitFlow(lf); }
+    selected = null;
+    renderProp();
+    Proto.toast("已重新设计");
+  };
+  document.getElementById("tb-zoom-in").onclick = function () { if (lf) lf.zoom(true); };
+  document.getElementById("tb-zoom-out").onclick = function () { if (lf) lf.zoom(false); };
+  document.getElementById("tb-fit").onclick = function () { MK.fitFlow(lf); };
+  document.getElementById("tb-copy").onclick = function () {
+    if (!selected || selected.kind !== "node") { Proto.toast("请先选中一个节点"); return; }
+    var n = findNode(selected.data.id);
+    if (!n) return;
+    var id = MK.uid("n");
+    var copy = { id: id, type: n.type, x: n.x + 60, y: n.y + 60, props: MK.clone(n.props) };
+    flow.nodes.push(copy);
+    var d = S.defOf(n.type);
+    lf.addNode({
+      id: id, type: d ? d.shape : "rect", x: copy.x, y: copy.y,
+      text: S.nodeText(copy.type, copy.props), properties: { bizType: copy.type, props: copy.props }
+    });
+    S.saveFlow(eventId, flow);
+    Proto.toast("已复制节点");
+  };
+  document.getElementById("tb-del").onclick = function () {
+    if (!selected) { Proto.toast("请先选中节点或连线"); return; }
+    if (selected.kind === "edge") { lf.deleteEdge(selected.data.id); selected = null; syncFromLf(); renderProp(); return; }
+    removeNode(selected.data.id);
+  };
+  document.getElementById("tb-tpl").onclick = function () { Proto.toast("已另存为流程模板（二期模板库）"); };
+
+  initCanvas();
+})();
+</script>
+</body>
+</html>

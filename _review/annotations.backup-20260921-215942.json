@@ -1,0 +1,754 @@
+{
+  "v": 1,
+  "updated": "2026-09-21T21:36:50",
+  "items": [
+    {
+      "id": "rmub8fidphe1g",
+      "page": "admin/dashboard.html",
+      "anchor": {
+        "selector": "body > div:nth-of-type(2) > div:nth-of-type(2) > aside > div:nth-of-type(2) > a:nth-of-type(1) > span",
+        "selectorIn": "",
+        "root": "",
+        "region": "shell",
+        "shell": "admin-shell.js",
+        "label": "span.nav-text",
+        "text": "今日经营",
+        "html": "<span class=\"nav-text\">今日经营</span>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "改成「工作台」",
+      "status": "open",
+      "createdAt": "2026-09-21T12:39:28.717Z"
+    },
+    {
+      "id": "rmub8g1fd67ov",
+      "page": "admin/dashboard.html",
+      "anchor": {
+        "selector": "body > div:nth-of-type(2) > div:nth-of-type(2) > aside > div:nth-of-type(2) > div",
+        "selectorIn": "",
+        "root": "",
+        "region": "shell",
+        "shell": "admin-shell.js",
+        "label": "div.nav-label",
+        "text": "经营任务中心",
+        "html": "<div class=\"nav-label\">经营任务中心</div>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "改成：概览",
+      "status": "open",
+      "createdAt": "2026-09-21T12:39:53.401Z"
+    },
+    {
+      "id": "rmub8gayft1ht",
+      "page": "admin/dashboard.html",
+      "anchor": {
+        "selector": "body > div:nth-of-type(2) > div:nth-of-type(2) > aside > div:nth-of-type(2) > a:nth-of-type(2)",
+        "selectorIn": "",
+        "root": "",
+        "region": "shell",
+        "shell": "admin-shell.js",
+        "label": "a.nav-item.active",
+        "text": "我的待办",
+        "html": "<a class=\"nav-item active\" href=\"dashboard.html#todo\"><span class=\"nav-text\">我的待办</span></a>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "去掉菜单",
+      "status": "open",
+      "createdAt": "2026-09-21T12:40:05.751Z",
+      "updatedAt": "2026-09-21T12:40:36.678Z"
+    },
+    {
+      "id": "rmub8gt3vjhv9",
+      "page": "admin/dashboard.html",
+      "anchor": {
+        "selector": "body > div:nth-of-type(2) > div:nth-of-type(2) > aside > div:nth-of-type(2) > a:nth-of-type(3)",
+        "selectorIn": "",
+        "root": "",
+        "region": "shell",
+        "shell": "admin-shell.js",
+        "label": "a.nav-item.active",
+        "text": "异常提醒",
+        "html": "<a class=\"nav-item active\" href=\"dashboard.html#alert\"><span class=\"nav-text\">异常提醒</span></a>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "去掉菜单",
+      "status": "open",
+      "createdAt": "2026-09-21T12:40:29.275Z"
+    },
+    {
+      "id": "rmub93s8sqo04",
+      "page": "admin/goods-edit.html",
+      "anchor": {
+        "selector": "#path-content > div > div:nth-of-type(1) > h3",
+        "selectorIn": "#path-content > div > div:nth-of-type(1) > h3",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "h3",
+        "text": "选择内容 *",
+        "html": "<h3>选择内容 *</h3>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "文案改成「交付内容」； 这个板块，改成弹窗选择，多选，可以选择「线上课」「线下课」「定制化计划」「文章」「直播」，选择后，再回显出来",
+      "status": "open",
+      "createdAt": "2026-09-21T12:58:21.244Z",
+      "updatedAt": "2026-09-21T13:01:31.637Z"
+    },
+    {
+      "id": "rmub99hitdg91",
+      "page": "admin/goods-edit.html",
+      "anchor": {
+        "selector": "#form-body > div:nth-of-type(3) > div:nth-of-type(2) > div:nth-of-type(1) > label",
+        "selectorIn": "#form-body > div:nth-of-type(3) > div:nth-of-type(2) > div:nth-of-type(1) > label",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "label",
+        "text": "交付方式",
+        "html": "<label>交付方式</label>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "下拉改成：支付后自动开通、人工开通",
+      "status": "open",
+      "createdAt": "2026-09-21T13:02:47.285Z"
+    },
+    {
+      "id": "rmub9atwom6j6",
+      "page": "admin/mp-home.html",
+      "anchor": {
+        "selector": "#issue-bar",
+        "selectorIn": "#issue-bar",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "div#issue-bar.issue-bar",
+        "text": "有 3 个上架位未生效C001（线上课）：内容不存在或未登记C003（线上课）：内容不存在或未登记CP001（线上课）：内容不存在或未登记",
+        "html": "<div class=\"issue-bar\" id=\"issue-bar\" style=\"display: block;\"><b>有 3 个上架位未生效</b><div style=\"margin-top:4px\">C001（线上课）：内容不存在或未登记<br>C003（线上课）：内容不存在或未登记<br>CP001（线上课）：内容不存在或未登记</div></div>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "去掉",
+      "status": "open",
+      "createdAt": "2026-09-21T13:03:49.992Z"
+    },
+    {
+      "id": "rmub9bnsurfz9",
+      "page": "admin/mp-home.html",
+      "anchor": {
+        "selector": "#b-link-type",
+        "selectorIn": "",
+        "root": "",
+        "region": "page",
+        "shell": "",
+        "label": "select#b-link-type.input",
+        "text": "线上课 线下课 直播间 文章",
+        "html": "<select class=\"input\" id=\"b-link-type\"> <option value=\"online_course\">线上课</option> <option value=\"offline\">线下课</option> <option value=\"live\">直播间</option> <option value=\"article\">文章</option> </select>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "增加选项：智能体",
+      "status": "open",
+      "createdAt": "2026-09-21T13:04:28.735Z",
+      "updatedAt": "2026-09-21T13:04:40.418Z"
+    },
+    {
+      "id": "rmub9f2xyjevs",
+      "page": "admin/goods.html",
+      "anchor": {
+        "selector": "#btn-create",
+        "selectorIn": "#btn-create",
+        "root": "#page-header-actions",
+        "region": "header-actions",
+        "shell": "",
+        "label": "button#btn-create.btn.btn-primary",
+        "text": "新建商品",
+        "html": "<button class=\"btn btn-primary\" id=\"btn-create\">新建商品</button>"
+      },
+      "type": "copy",
+      "priority": "P2",
+      "comment": "改成直接跳转到通过内容创建商品那个页面，不需要通过平台商品创建。通过平台商品创建，改成放在该按钮旁边的另一个操作。",
+      "status": "open",
+      "createdAt": "2026-09-21T13:07:08.326Z",
+      "updatedAt": "2026-09-21T13:26:47.772Z"
+    },
+    {
+      "id": "rmub9gf5l1laa",
+      "page": "admin/wxshop-goods.html",
+      "anchor": {
+        "selector": "#admin-content-slot > div > div:nth-of-type(4) > div > table > thead > tr > th:nth-of-type(4)",
+        "selectorIn": "div:nth-of-type(4) > div > table > thead > tr > th:nth-of-type(4)",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "th",
+        "text": "关联内容",
+        "html": "<th>关联内容</th>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "改成「关联商品」显示的是商品名称",
+      "status": "open",
+      "createdAt": "2026-09-21T13:08:10.809Z",
+      "updatedAt": "2026-09-21T13:10:07.493Z"
+    },
+    {
+      "id": "rmub9hm5k6p9t",
+      "page": "admin/wxshop-goods.html",
+      "anchor": {
+        "selector": "#tbody > tr:nth-of-type(1) > td:nth-of-type(9) > a:nth-of-type(1)",
+        "selectorIn": "#tbody > tr:nth-of-type(1) > td:nth-of-type(9) > a:nth-of-type(1)",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "a",
+        "text": "查看",
+        "html": "<a href=\"#\" data-act=\"view\" data-id=\"WX001\">查看</a>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "右侧增加「关联商品」的按钮，从微信同步下来的商品，可能还未关联商品，从商品列表选择商品进行关联。关联了之后不存在这个按钮",
+      "status": "open",
+      "createdAt": "2026-09-21T13:09:06.537Z",
+      "updatedAt": "2026-09-21T13:09:54.728Z"
+    },
+    {
+      "id": "rmub9hyeejb69",
+      "page": "admin/wxshop-goods.html",
+      "anchor": {
+        "selector": "body > div:nth-of-type(6) > div:nth-of-type(2) > aside > div:nth-of-type(3) > a:nth-of-type(1) > span",
+        "selectorIn": "",
+        "root": "",
+        "region": "shell",
+        "shell": "admin-shell.js",
+        "label": "span.nav-text",
+        "text": "店铺商品",
+        "html": "<span class=\"nav-text\">店铺商品</span>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "文案改成「商品列表」",
+      "status": "open",
+      "createdAt": "2026-09-21T13:09:22.407Z"
+    },
+    {
+      "id": "rmub9pay4yhet",
+      "page": "admin/content-video.html",
+      "anchor": {
+        "selector": "#list > div:nth-of-type(1) > div:nth-of-type(2) > div:nth-of-type(3) > span:nth-of-type(7)",
+        "selectorIn": "#list > div:nth-of-type(1) > div:nth-of-type(2) > div:nth-of-type(3) > span:nth-of-type(7)",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "span",
+        "text": "评论 0",
+        "html": "<span>评论 <b>0</b></span>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "去掉",
+      "status": "open",
+      "createdAt": "2026-09-21T13:15:05.260Z"
+    },
+    {
+      "id": "rmub9pepvuul7",
+      "page": "admin/content-video.html",
+      "anchor": {
+        "selector": "#list > div:nth-of-type(1) > div:nth-of-type(2) > div:nth-of-type(3) > span:nth-of-type(8)",
+        "selectorIn": "#list > div:nth-of-type(1) > div:nth-of-type(2) > div:nth-of-type(3) > span:nth-of-type(8)",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "span",
+        "text": "收藏 0",
+        "html": "<span>收藏 <b>0</b></span>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "去掉",
+      "status": "open",
+      "createdAt": "2026-09-21T13:15:10.147Z"
+    },
+    {
+      "id": "rmub9ppr6zutm",
+      "page": "admin/content-video.html",
+      "anchor": {
+        "selector": "#list > div:nth-of-type(1) > div:nth-of-type(2) > div:nth-of-type(3) > span:nth-of-type(5)",
+        "selectorIn": "#list > div:nth-of-type(1) > div:nth-of-type(2) > div:nth-of-type(3) > span:nth-of-type(5)",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "span",
+        "text": "章节 4",
+        "html": "<span>章节 <b>4</b></span>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "左侧，增加总时长",
+      "status": "open",
+      "createdAt": "2026-09-21T13:15:24.450Z"
+    },
+    {
+      "id": "rmub9q05q10vg",
+      "page": "admin/content-video.html",
+      "anchor": {
+        "selector": "#list > div:nth-of-type(1) > div:nth-of-type(3) > a:nth-of-type(3)",
+        "selectorIn": "#list > div:nth-of-type(1) > div:nth-of-type(3) > a:nth-of-type(3)",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "a.btn.btn-primary",
+        "text": "建商品",
+        "html": "<a class=\"btn btn-primary\" href=\"goods-edit.html?create_mode=from_content&amp;content_type=online_course&amp;content_id=S001\">建商品</a>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "文案改成：创建商品",
+      "status": "open",
+      "createdAt": "2026-09-21T13:15:37.934Z"
+    },
+    {
+      "id": "rmub9qv7yohev",
+      "page": "admin/content-video.html",
+      "anchor": {
+        "selector": "#list > div:nth-of-type(2) > div:nth-of-type(3) > button:nth-of-type(2)",
+        "selectorIn": "#list > div:nth-of-type(2) > div:nth-of-type(3) > button:nth-of-type(2)",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "button.btn",
+        "text": "恢复草稿",
+        "html": "<button class=\"btn\" data-act=\"enable-draft\" data-id=\"S002\">恢复草稿</button>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "改成「创建商品」",
+      "status": "open",
+      "createdAt": "2026-09-21T13:16:18.190Z"
+    },
+    {
+      "id": "rmub9t4ptfm3x",
+      "page": "admin/content-article.html",
+      "anchor": {
+        "selector": "#ca-list > div:nth-of-type(1) > div:nth-of-type(3) > button:nth-of-type(1)",
+        "selectorIn": "#ca-list > div:nth-of-type(1) > div:nth-of-type(3) > button:nth-of-type(1)",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "button.btn",
+        "text": "分享",
+        "html": "<button class=\"btn\" data-share=\"A001\">分享</button>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "分享设置",
+      "status": "open",
+      "createdAt": "2026-09-21T13:18:03.810Z"
+    },
+    {
+      "id": "rmub9tc4vrqet",
+      "page": "admin/content-article.html",
+      "anchor": {
+        "selector": "#ca-list > div:nth-of-type(1) > div:nth-of-type(3) > a:nth-of-type(2)",
+        "selectorIn": "#ca-list > div:nth-of-type(1) > div:nth-of-type(3) > a:nth-of-type(2)",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "a.btn",
+        "text": "设为任务",
+        "html": "<a class=\"btn\" href=\"content-tasks.html?type=article&amp;ref=A001\">设为任务</a>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "去掉",
+      "status": "open",
+      "createdAt": "2026-09-21T13:18:13.423Z"
+    },
+    {
+      "id": "rmub9uk4ck8rb",
+      "page": "admin/content-article.html",
+      "anchor": {
+        "selector": "#ca-list > div:nth-of-type(1) > div:nth-of-type(2) > div:nth-of-type(1) > span:nth-of-type(2)",
+        "selectorIn": "#ca-list > div:nth-of-type(1) > div:nth-of-type(2) > div:nth-of-type(1) > span:nth-of-type(2)",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "span.ca-cat",
+        "text": "¥6.9",
+        "html": "<span class=\"ca-cat\" style=\"background:#f6ffed;color:#389e0d\">¥6.9</span>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "去掉",
+      "status": "open",
+      "createdAt": "2026-09-21T13:19:10.428Z"
+    },
+    {
+      "id": "rmub9vh2phs67",
+      "page": "admin/content-article.html",
+      "anchor": {
+        "selector": "#ca-list > div:nth-of-type(1) > div:nth-of-type(2) > div:nth-of-type(2) > span:nth-of-type(5)",
+        "selectorIn": "#ca-list > div:nth-of-type(1) > div:nth-of-type(2) > div:nth-of-type(2) > span:nth-of-type(5)",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "span",
+        "text": "字数: 1,280",
+        "html": "<span><b>字数:</b> 1,280</span>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "右侧增加关联商品数的展示",
+      "status": "open",
+      "createdAt": "2026-09-21T13:19:53.138Z"
+    },
+    {
+      "id": "rmub9wsilvwos",
+      "page": "admin/content-offline.html",
+      "anchor": {
+        "selector": "#list > div:nth-of-type(1) > div:nth-of-type(2) > div:nth-of-type(3) > span:nth-of-type(3)",
+        "selectorIn": "#list > div:nth-of-type(1) > div:nth-of-type(2) > div:nth-of-type(3) > span:nth-of-type(3)",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "span",
+        "text": "报名资格 ¥299",
+        "html": "<span>报名资格 <b>¥299</b></span>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "去掉",
+      "status": "open",
+      "createdAt": "2026-09-21T13:20:54.621Z"
+    },
+    {
+      "id": "rmub9x3u388y8",
+      "page": "admin/content-offline.html",
+      "anchor": {
+        "selector": "#list > div:nth-of-type(2) > div:nth-of-type(2) > div:nth-of-type(3) > span:nth-of-type(3)",
+        "selectorIn": "#list > div:nth-of-type(2) > div:nth-of-type(2) > div:nth-of-type(3) > span:nth-of-type(3)",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "span",
+        "text": "报名资格 待建商品",
+        "html": "<span>报名资格 <b>待建商品</b></span>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "去掉",
+      "status": "open",
+      "createdAt": "2026-09-21T13:21:09.292Z"
+    },
+    {
+      "id": "rmub9yfgpbcxa",
+      "page": "admin/content-video.html",
+      "anchor": {
+        "selector": "#list > div:nth-of-type(1) > div:nth-of-type(2) > div:nth-of-type(1) > span:nth-of-type(2)",
+        "selectorIn": "#list > div:nth-of-type(1) > div:nth-of-type(2) > div:nth-of-type(1) > span:nth-of-type(2)",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "span.tag",
+        "text": "已上架",
+        "html": "<span class=\"tag\">已上架</span>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "已上架的状态，全局都统一颜色，例如：绿色，未上架、已下架，则为灰色",
+      "status": "open",
+      "createdAt": "2026-09-21T13:22:11.017Z"
+    },
+    {
+      "id": "rmub9zx77oxbz",
+      "page": "admin/content-offline.html",
+      "anchor": {
+        "selector": "#list > div:nth-of-type(1) > div:nth-of-type(2) > div:nth-of-type(1) > span:nth-of-type(1)",
+        "selectorIn": "#list > div:nth-of-type(1) > div:nth-of-type(2) > div:nth-of-type(1) > span:nth-of-type(1)",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "span.cs-badge",
+        "text": "热门课",
+        "html": "<span class=\"cs-badge\">热门课</span>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "去掉",
+      "status": "open",
+      "createdAt": "2026-09-21T13:23:20.660Z"
+    },
+    {
+      "id": "rmub9zzse3tcz",
+      "page": "admin/content-offline.html",
+      "anchor": {
+        "selector": "#list > div:nth-of-type(2) > div:nth-of-type(2) > div:nth-of-type(1) > span:nth-of-type(1)",
+        "selectorIn": "#list > div:nth-of-type(2) > div:nth-of-type(2) > div:nth-of-type(1) > span:nth-of-type(1)",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "span.cs-badge.premium",
+        "text": "精品课",
+        "html": "<span class=\"cs-badge premium\">精品课</span>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "去掉",
+      "status": "open",
+      "createdAt": "2026-09-21T13:23:24.014Z"
+    },
+    {
+      "id": "rmuba0r8tnoym",
+      "page": "admin/content-offline-signups.html",
+      "anchor": {
+        "selector": "#sg-meta",
+        "selectorIn": "#sg-meta",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "span#sg-meta.sg-selector-current",
+        "text": "¥299 · 报名 86/100",
+        "html": "<span class=\"sg-selector-current\" id=\"sg-meta\">¥299 · 报名 86/100</span>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "不显示价格",
+      "status": "open",
+      "createdAt": "2026-09-21T13:23:59.597Z"
+    },
+    {
+      "id": "rmuba11uxqftv",
+      "page": "admin/content-offline-signups.html",
+      "anchor": {
+        "selector": "#admin-content-slot > div > div:nth-of-type(3) > div > table > thead > tr > th:nth-of-type(3)",
+        "selectorIn": "div:nth-of-type(3) > div > table > thead > tr > th:nth-of-type(3)",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "th",
+        "text": "渠道",
+        "html": "<th>渠道</th>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "左侧，增加关联商品展示",
+      "status": "open",
+      "createdAt": "2026-09-21T13:24:13.353Z"
+    },
+    {
+      "id": "rmuba78z7vd2a",
+      "page": "admin/content-video.html",
+      "anchor": {
+        "selector": "#list > div:nth-of-type(1) > div:nth-of-type(2) > div:nth-of-type(3) > span:nth-of-type(4)",
+        "selectorIn": "#list > div:nth-of-type(1) > div:nth-of-type(2) > div:nth-of-type(3) > span:nth-of-type(4)",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "span",
+        "text": "已上架模块 未上架",
+        "html": "<span>已上架模块 <span class=\"muted\">未上架</span></span>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "去掉",
+      "status": "open",
+      "createdAt": "2026-09-21T13:29:02.515Z"
+    },
+    {
+      "id": "rmuba7cukhsts",
+      "page": "admin/content-video.html",
+      "anchor": {
+        "selector": "#list > div:nth-of-type(2) > div:nth-of-type(2) > div:nth-of-type(3) > span:nth-of-type(4)",
+        "selectorIn": "#list > div:nth-of-type(2) > div:nth-of-type(2) > div:nth-of-type(3) > span:nth-of-type(4)",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "span",
+        "text": "已上架模块 未上架",
+        "html": "<span>已上架模块 <span class=\"muted\">未上架</span></span>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "去掉",
+      "status": "open",
+      "createdAt": "2026-09-21T13:29:07.532Z"
+    },
+    {
+      "id": "rmuba7pawaiav",
+      "page": "admin/content-offline.html",
+      "anchor": {
+        "selector": "#list > div:nth-of-type(1) > div:nth-of-type(2) > div:nth-of-type(3) > span:nth-of-type(5)",
+        "selectorIn": "#list > div:nth-of-type(1) > div:nth-of-type(2) > div:nth-of-type(3) > span:nth-of-type(5)",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "span",
+        "text": "已上架模块 线下课",
+        "html": "<span>已上架模块 <b>线下课</b></span>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "去掉",
+      "status": "open",
+      "createdAt": "2026-09-21T13:29:23.672Z"
+    },
+    {
+      "id": "rmuba7wb3sn5j",
+      "page": "admin/content-article.html",
+      "anchor": {
+        "selector": "#ca-list > div:nth-of-type(1) > div:nth-of-type(2) > div:nth-of-type(1) > span:nth-of-type(3)",
+        "selectorIn": "#ca-list > div:nth-of-type(1) > div:nth-of-type(2) > div:nth-of-type(1) > span:nth-of-type(3)",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "span.ca-cat",
+        "text": "已上架 精选文章",
+        "html": "<span class=\"ca-cat\" style=\"background:#e8f3ff;color:#165dff\">已上架 精选文章</span>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "去掉",
+      "status": "open",
+      "createdAt": "2026-09-21T13:29:32.751Z"
+    },
+    {
+      "id": "rmuba9pd27h2o",
+      "page": "admin/mp-home.html",
+      "anchor": {
+        "selector": "#modal-listing > div:nth-of-type(2) > div:nth-of-type(1)",
+        "selectorIn": "",
+        "root": "",
+        "region": "page",
+        "shell": "",
+        "label": "div.lis-box",
+        "text": "售卖方式 * 免费 付费 付费内容需指定成交商品；试看与实际下单都基于该商品。",
+        "html": "<div class=\"lis-box\" style=\"margin-bottom:12px\"> <div class=\"lis-row\"> <span class=\"k\">售卖方式 *</span> <span> <label style=\"margin-right:18px\"><input type=\"radio\" name=\"ls-pay\" value=\"free\"> 免费</label> <label><input type=\"radio\" name=\"ls-pay\" value=\"paid\"> 付费</label> </span> </div>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "不可选择，仅展示，付费的直播，就需要选择「默认成交商品」，如果免费，则不需要。",
+      "status": "open",
+      "createdAt": "2026-09-21T13:30:57.063Z",
+      "updatedAt": "2026-09-21T13:34:54.444Z"
+    },
+    {
+      "id": "rmubabqytd87j",
+      "page": "admin/mp-home.html",
+      "anchor": {
+        "selector": "#ls-paid-box > div:nth-of-type(3) > span:nth-of-type(2) > label:nth-of-type(2)",
+        "selectorIn": "",
+        "root": "",
+        "region": "page",
+        "shell": "",
+        "label": "label",
+        "text": "不跳转，直接按商品金额在内容页下单",
+        "html": "<label style=\"display:block\"><input type=\"radio\" name=\"ls-order\" value=\"inline\"> 不跳转，直接按商品金额在内容页下单</label>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "不可以选择，如果是付费直播，默认就是在进入的时候就付费。",
+      "status": "open",
+      "createdAt": "2026-09-21T13:32:32.453Z"
+    },
+    {
+      "id": "rmubabv797ej5",
+      "page": "admin/mp-home.html",
+      "anchor": {
+        "selector": "#ls-trial-hint",
+        "selectorIn": "",
+        "root": "",
+        "region": "page",
+        "shell": "",
+        "label": "div#ls-trial-hint.muted",
+        "text": "不提供任何试看，未购买用户仅可见目录。",
+        "html": "<div class=\"muted\" style=\"font-size:12px\" id=\"ls-trial-hint\">不提供任何试看，未购买用户仅可见目录。</div>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "去掉",
+      "status": "open",
+      "createdAt": "2026-09-21T13:32:37.941Z"
+    },
+    {
+      "id": "rmubabyve0cxk",
+      "page": "admin/mp-home.html",
+      "anchor": {
+        "selector": "#ls-paid-box > div:nth-of-type(1) > span:nth-of-type(1)",
+        "selectorIn": "",
+        "root": "",
+        "region": "page",
+        "shell": "",
+        "label": "span.k",
+        "text": "试看范围 *",
+        "html": "<span class=\"k\">试看范围 *</span>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "去掉",
+      "status": "open",
+      "createdAt": "2026-09-21T13:32:42.698Z"
+    },
+    {
+      "id": "rmubac4bewl9d",
+      "page": "admin/mp-home.html",
+      "anchor": {
+        "selector": "#ls-goods-hint",
+        "selectorIn": "",
+        "root": "",
+        "region": "page",
+        "shell": "",
+        "label": "div#ls-goods-hint.muted",
+        "text": "C 端将直接在内容页按该商品金额下单，不进入商品详情页。",
+        "html": "<div class=\"muted\" style=\"font-size:12px\" id=\"ls-goods-hint\">C 端将直接在内容页按该商品金额下单，不进入商品详情页。</div>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "去掉",
+      "status": "open",
+      "createdAt": "2026-09-21T13:32:49.754Z"
+    },
+    {
+      "id": "rmubae2qanxfu",
+      "page": "admin/mp-home.html",
+      "anchor": {
+        "selector": "#ls-goto-goods",
+        "selectorIn": "",
+        "root": "",
+        "region": "page",
+        "shell": "",
+        "label": "a#ls-goto-goods.btn",
+        "text": "去建商品",
+        "html": "<a class=\"btn\" id=\"ls-goto-goods\" href=\"goods.html?content_type=live&amp;content_id=L001\" style=\"margin-right:auto\">去建商品</a>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "去掉",
+      "status": "open",
+      "createdAt": "2026-09-21T13:34:21.011Z"
+    },
+    {
+      "id": "rmubah9wp4yvg",
+      "page": "admin/mp-home.html",
+      "anchor": {
+        "selector": "#live-tbody > tr:nth-of-type(1) > td:nth-of-type(7) > button:nth-of-type(2)",
+        "selectorIn": "#live-tbody > tr:nth-of-type(1) > td:nth-of-type(7) > button:nth-of-type(2)",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "button.btn",
+        "text": "配置",
+        "html": "<button class=\"btn\" data-l-config=\"LMUB8B1RA-10\">配置</button>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "直播、线上课、线下课、精选文章等这些配置，拆分成不同的弹窗，不要用同一个展示",
+      "status": "open",
+      "createdAt": "2026-09-21T13:36:50.281Z"
+    }
+  ]
+}

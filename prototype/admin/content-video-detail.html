@@ -31,7 +31,7 @@
         <div class="cm-hero-meta">
           <span>期数 <b id="o-term">—</b></span>
           <span>讲师 <span id="o-teacher-av" style="display:inline-flex;align-items:center;gap:6px"></span></span>
-          <span>价格 <b id="o-price">—</b></span>
+          <span>关联商品 <b id="o-goods">0</b></span>
           <span>章节 <b id="o-ch">0</b></span>
         </div>
       </div>
@@ -83,10 +83,14 @@
 <script src="../assets/js/proto.js"></script>
 <script src="../assets/js/content-tags.js?v=2"></script>
 <script src="../assets/js/teachers-store.js?v=2"></script>
-<script src="../assets/js/course-store.js?v=1"></script>
-<script src="../assets/js/admin-shell.js?v=16"></script>
+<script src="../assets/js/course-store.js?v=2"></script>
+<script src="../assets/js/goods-store.js?v=1"></script>
+<script src="../assets/js/listing-store.js?v=1"></script>
+<script src="../assets/js/admin-shell.js?v=23"></script>
 <script>
 var Store = window.CourseStore;
+var Goods = window.GoodsStore;
+var Listing = window.ListingStore;
 var Tags = window.ContentTags;
 var Teachers = window.Teachers;
 var id = new URLSearchParams(location.search).get("id") || "";
@@ -111,7 +115,8 @@ if (!course) {
   document.getElementById("o-term").textContent = course.term || "—";
   document.getElementById("o-teacher-av").innerHTML =
     Teachers.avatarHtml(course.teacherId, { size: 28 }) + " <b>" + esc(Store.teacherName(course)) + "</b>";
-  document.getElementById("o-price").textContent = "¥" + (course.price || 0);
+  document.getElementById("o-goods").textContent = Goods.listByContent(course.id).length +
+    (Listing.activeSlotsOf(course.id).length ? " · 已上架 " + Listing.activeSlotsOf(course.id).join("、") : "");
   document.getElementById("o-ch").textContent = Store.chapterCount(course);
   document.getElementById("s-views").textContent = course.views || 0;
   document.getElementById("s-comments").textContent = course.comments || 0;

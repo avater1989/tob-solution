@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>智能营销 · 商家管理后台</title>
+<link rel="stylesheet" href="../assets/css/proto.css?v=9" />
+<link rel="stylesheet" href="../assets/css/marketing.css?v=1" />
+</head>
+<body class="admin-body" data-module="scrm" data-nav="smart-marketing" data-title="智能营销" data-crumb="SCRM / 用户运营 / 智能营销">
+<div id="header-actions">
+  <a class="btn" href="user-segments.html">用户分群</a>
+  <button class="btn btn-primary" id="btn-new">新建计划</button>
+</div>
+<div id="page-content" style="display:none">
+
+  <div class="board-tip" style="margin-bottom:12px">
+    <b>智能营销（二期）：</b>按流程编排对<b>目标人群</b>主动执行营销——人群筛选 / 指定用户 → 合并·抽取·交集·排除·排重 → 等待 → 触达 → 营销响应 / 效果分析。
+    与<a href="event-marketing.html" style="color:inherit;text-decoration:underline">用户事件营销</a>互补：事件营销由用户行为触发，智能营销按计划与人群执行。
+  </div>
+
+  <!-- 效果汇总 -->
+  <div class="card" style="margin-bottom:12px"><div class="card-bd">
+    <div class="mk-summary-hd">
+      <div>
+        <h2 style="margin:0 0 6px;font-size:16px">效果汇总</h2>
+        <div class="mk-roi">ROI（投入产出比）<b id="sm-roi">1 : 66.66</b></div>
+      </div>
+      <div class="mk-tabbar" id="range-tabs" style="margin:0">
+        <button class="mk-tab active" data-r="d7">近7天</button>
+        <button class="mk-tab" data-r="d15">近15天</button>
+        <button class="mk-tab" data-r="d30">近30天</button>
+      </div>
+    </div>
+    <div class="mk-stats" id="sm-stats"></div>
+    <p class="mk-note">口径：营销人数按去重用户计；付款金额 / 订单 / 人数归因到营销触达后 7 天内的支付订单；进店人数指小程序访问用户数。</p>
+  </div></div>
+
+  <!-- 营销计划 -->
+  <div class="card"><div class="card-hd"><h2>营销计划</h2>
+    <span class="muted" style="font-size:12px">共 <b id="sm-count">0</b> 个计划</span>
+  </div>
+    <div class="card-bd" style="border-bottom:1px solid var(--color-border)">
+      <div class="form-grid" style="grid-template-columns:repeat(4,minmax(0,1fr));gap:8px 12px">
+        <div class="field" style="margin:0">
+          <label>计划名称 / 计划 ID</label>
+          <input id="f-key" placeholder="搜索计划名称或 ID" />
+        </div>
+        <div class="field" style="margin:0">
+          <label>运行方式</label>
+          <select id="f-run">
+            <option value="">全部</option>
+            <option value="立即运行">立即运行</option>
+            <option value="固定时段运行">固定时段运行</option>
+          </select>
+        </div>
+        <div class="field" style="margin:0">
+          <label>活动状态</label>
+          <select id="f-status">
+            <option value="">全部</option>
+            <option value="designing">设计中</option>
+            <option value="running">运行中</option>
+            <option value="ended">已结束</option>
+          </select>
+        </div>
+        <div class="field" style="margin:0;display:flex;align-items:flex-end;gap:8px">
+          <button class="btn btn-primary" id="btn-query">查询</button>
+          <button class="btn" id="btn-reset">重置</button>
+        </div>
+      </div>
+    </div>
+    <div class="card-bd" style="padding:0">
+      <table class="data">
+        <thead>
+          <tr>
+            <th style="width:110px">计划ID</th>
+            <th>计划名称</th>
+            <th style="width:140px">运行方式</th>
+            <th style="width:170px">启动时间</th>
+            <th style="width:150px">流程</th>
+            <th style="width:100px">活动状态</th>
+            <th style="width:220px">操作</th>
+          </tr>
+        </thead>
+        <tbody id="sm-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:16px"><div class="card-bd">
+    <p class="muted" style="font-size:12px;line-height:1.8;margin:0">
+      <b>说明：</b>人群取自「用户分群」，「指定用户」支持按名单文件导入；触达走
+      <a href="message-push.html" style="color:inherit;text-decoration:underline">消息推送</a>已开通的渠道。
+      计划启动后按「立即运行」或「固定时段运行」执行，同一用户在同一计划内默认只执行一次（可用「排重」节点控制跨计划频次）。
+      <b>删除</b>仅对「设计中」的计划开放。
+    </p>
+  </div></div>
+</div>
+
+<div class="proto-mask" id="mask"></div>
+<div class="proto-modal" id="modal-sm-stats" style="width:560px">
+  <div class="proto-modal-hd"><h3 style="font-size:16px;font-weight:600">计划效果统计</h3>
+    <button class="btn btn-sm btn-ghost" data-close>×</button></div>
+  <div class="proto-modal-bd">
+    <p style="margin:0 0 10px"><b id="ss-name">—</b> <span class="muted" id="ss-id" style="font-size:12px"></span></p>
+    <table class="mk-table-mini">
+      <thead><tr><th>指标</th><th>累计</th><th>近 7 天</th></tr></thead>
+      <tbody id="ss-body"></tbody>
+    </table>
+    <p class="mk-note">统计口径：以计划为维度归因，与顶部「效果汇总」按时间范围汇总的口径一致。</p>
+  </div>
+  <div class="proto-modal-ft"><button class="btn btn-primary" data-close>关闭</button></div>
+</div>
+
+<script src="../assets/js/proto.js"></script>
+<script src="../assets/js/marketing-common.js?v=1"></script>
+<script src="../assets/js/smart-marketing-store.js?v=1"></script>
+<script src="../assets/js/admin-shell.js?v=23"></script>
+<script>
+(function () {
+  var S = window.SmartMarketingStore;
+  var MK = window.MarketingCommon;
+  var filters = { keyword: "", runMode: "", status: "" };
+  var range = "d7";
+
+  function esc(s) { return MK.esc(s); }
+  function fmt(n) { return Number(n).toLocaleString("en-US"); }
+
+  function statusBadge(st) {
+    if (st === "running") return '<span class="badge badge-success">运行中</span>';
+    if (st === "designing") return '<span class="badge badge-info">设计中</span>';
+    return '<span class="badge">已结束</span>';
+  }
+
+  /* 效果汇总 */
+  function renderSummary() {
+    var d = S.summary(range);
+    document.getElementById("sm-roi").textContent = d.roi;
+    var items = [
+      ["营销人数", fmt(d.reach), "人"],
+      ["付款金额", fmt(d.payAmount), "元"],
+      ["付款订单", fmt(d.payOrders), "笔"],
+      ["付款人数", fmt(d.payUsers), "人"],
+      ["进店人数", fmt(d.visit), "人"],
+      ["收藏人数", fmt(d.fav), "人"],
+      ["领券人数", fmt(d.coupon), "人"]
+    ];
+    document.getElementById("sm-stats").innerHTML = items.map(function (it) {
+      return '<div class="mk-stat"><div class="k">' + it[0] + '</div><div class="v">' + it[1] +
+        "<small>" + it[2] + "</small></div></div>";
+    }).join("");
+    document.querySelectorAll("#range-tabs .mk-tab").forEach(function (b) {
+      b.classList.toggle("active", b.getAttribute("data-r") === range);
+    });
+  }
+
+  function render() {
+    var rows = S.list(filters);
+    document.getElementById("sm-count").textContent = String(rows.length);
+    var tb = document.getElementById("sm-tbody");
+    if (!rows.length) {
+      tb.innerHTML = '<tr><td colspan="7" class="muted" style="text-align:center;padding:36px">暂无计划</td></tr>';
+    } else {
+      tb.innerHTML = rows.map(function (p) {
+        var flow = S.getFlow(p.id);
+        var n = (flow.nodes || []).length;
+        var acts = '<a href="smart-marketing-edit.html?id=' + encodeURIComponent(p.id) + '">编辑</a>' +
+          '<a href="#" data-act="stats" data-id="' + esc(p.id) + '">统计</a>' +
+          '<a href="#" data-act="copy" data-id="' + esc(p.id) + '">另存</a>';
+        if (p.status === "designing") {
+          acts += '<a href="#" class="danger" data-act="del" data-id="' + esc(p.id) + '">删除</a>';
+        } else {
+          acts += '<a href="#" class="is-disabled" title="仅「设计中」的计划可删除" data-act="nodel">删除</a>';
+        }
+        return "<tr>" +
+          '<td class="mono">' + esc(p.id) + "</td>" +
+          "<td><b>" + esc(p.name) + "</b></td>" +
+          "<td>" + esc(p.runMode) + "</td>" +
+          '<td class="muted" style="font-size:12px">' + esc(p.startedAt) + "</td>" +
+          "<td>" + (n ? ('<span class="badge badge-info">' + n + " 个节点</span>") : '<span class="muted">未编排</span>') + "</td>" +
+          "<td>" + statusBadge(p.status) + "</td>" +
+          '<td class="row-actions">' + acts + "</td>" +
+          "</tr>";
+      }).join("");
+    }
+  }
+
+  function openStats(row) {
+    document.getElementById("ss-name").textContent = row.name;
+    document.getElementById("ss-id").textContent = "计划 ID " + row.id;
+    var seed = parseInt(row.id, 10) % 7;
+    var metrics = [
+      ["触达人数", 3260 + seed * 214, 880 + seed * 46],
+      ["触达率", "94.2%", "93.6%"],
+      ["进店人数", 1420 + seed * 96, 402 + seed * 21],
+      ["付款人数", 268 + seed * 18, 74 + seed * 5],
+      ["付款金额", "¥ 62,800", "¥ 17,200"],
+      ["ROI", "1 : 48.2", "1 : 52.6"]
+    ];
+    document.getElementById("ss-body").innerHTML = metrics.map(function (m) {
+      return "<tr><td>" + m[0] + "</td><td>" + m[1] + "</td><td>" + m[2] + "</td></tr>";
+    }).join("");
+    MK.open("modal-sm-stats");
+  }
+
+  document.querySelectorAll("[data-close]").forEach(function (b) {
+    b.addEventListener("click", function () { MK.close("modal-sm-stats"); });
+  });
+  document.getElementById("mask").addEventListener("click", function () { MK.close("modal-sm-stats"); });
+
+  document.getElementById("sm-tbody").addEventListener("click", function (e) {
+    var a = e.target.closest("[data-act]");
+    if (!a) return;
+    e.preventDefault();
+    var act = a.getAttribute("data-act");
+    var id = a.getAttribute("data-id");
+    var row = S.get(id);
+    if (!row) return;
+    if (act === "nodel") { Proto.toast("仅「设计中」的计划可删除"); return; }
+    if (act === "stats") { openStats(row); return; }
+    if (act === "copy") { var nid = S.duplicate(id); Proto.toast("已另存为 " + nid); render(); return; }
+    if (act === "del") {
+      if (!confirm("确认删除计划「" + row.name + "」？其流程编排也会一并删除。")) return;
+      S.remove(id);
+      Proto.toast("已删除");
+      render();
+    }
+  });
+
+  document.getElementById("btn-new").addEventListener("click", function () {
+    location.href = "smart-marketing-edit.html?new=1";
+  });
+  document.getElementById("btn-query").addEventListener("click", function () {
+    filters.keyword = document.getElementById("f-key").value.trim();
+    filters.runMode = document.getElementById("f-run").value;
+    filters.status = document.getElementById("f-status").value;
+    render();
+  });
+  document.getElementById("btn-reset").addEventListener("click", function () {
+    document.getElementById("f-key").value = "";
+    document.getElementById("f-run").value = "";
+    document.getElementById("f-status").value = "";
+    filters = { keyword: "", runMode: "", status: "" };
+    render();
+  });
+  document.getElementById("range-tabs").addEventListener("click", function (e) {
+    var b = e.target.closest(".mk-tab");
+    if (!b) return;
+    range = b.getAttribute("data-r");
+    renderSummary();
+  });
+
+  renderSummary();
+  render();
+})();
+</script>
+</body>
+</html>

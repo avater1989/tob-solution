@@ -49,7 +49,8 @@
       <button class="btn" id="btn-reset">重置</button>
     </div>
   </div></div>
-  <p style="font-size:12px;color:#8c8c8c;margin:0 0 12px">系列课已并入线上课。上架后可绑定商品；已上架时章节锁定，须先下架再改。</p>
+  <p style="font-size:12px;color:#8c8c8c;margin:0 0 12px">系列课已并入线上课。<b>内容不承载价格</b>，价格只在「商品列表」维护；同一内容可建多个商品。已上架时章节锁定，须先下架再改。</p>
+  <div id="legacy-banner" style="display:none;margin-bottom:12px"></div>
   <div id="list"></div>
   <div style="margin-top:12px;font-size:12px;color:#8c8c8c">共 <b id="count">0</b> 条</div>
 </div>
@@ -57,11 +58,13 @@
 <script src="../assets/js/proto.js"></script>
 <script src="../assets/js/content-tags.js?v=2"></script>
 <script src="../assets/js/teachers-store.js?v=2"></script>
-<script src="../assets/js/course-store.js?v=1"></script>
+<script src="../assets/js/course-store.js?v=2"></script>
+<script src="../assets/js/goods-store.js?v=1"></script>
 <script src="../assets/js/share-modal.js?v=1"></script>
-<script src="../assets/js/admin-shell.js?v=16"></script>
+<script src="../assets/js/admin-shell.js?v=23"></script>
 <script>
 var Store = window.CourseStore;
+var Goods = window.GoodsStore;
 var Tags = window.ContentTags;
 var Teachers = window.Teachers;
 
@@ -101,10 +104,10 @@ function render() {
     }
     if (c.status === Store.STATUS.enabled) {
       acts += '<button class="btn" data-act="disable" data-id="' + c.id + '">下架</button>';
-      if (Store.canCreateGoods(c)) acts += '<a class="btn btn-primary" href="goods-edit.html?create_mode=from_content&content_type=online_course&content_id=' + encodeURIComponent(c.id) + '">建商品</a>';
+      if (Store.canCreateGoods(c)) acts += '<a class="btn btn-primary" href="goods-edit.html?create_mode=from_content&content_type=online_course&content_id=' + encodeURIComponent(c.id) + '">创建商品</a>';
     } else if (c.status === Store.STATUS.disabled) {
       acts += '<button class="btn btn-primary" data-act="enable" data-id="' + c.id + '">上架</button>';
-      acts += '<button class="btn" data-act="enable-draft" data-id="' + c.id + '">恢复草稿</button>';
+      acts += '<a class="btn" href="goods-edit.html?create_mode=from_content&content_type=online_course&content_id=' + encodeURIComponent(c.id) + '">创建商品</a>';
     } else if (Store.canSubmitAudit(c)) {
       acts += '<button class="btn btn-primary" data-act="submit" data-id="' + c.id + '">提交审核</button>';
     }
@@ -116,16 +119,15 @@ function render() {
       '<div class="cs-info">' +
         '<div class="cs-title">' + esc(c.name) + badge +
           ' <span class="muted" style="font-size:12px;font-weight:400">' + esc(c.term || "") + "</span>" +
-          ' <span class="tag">' + esc(st) + "</span></div>" +
+          " " + Proto.shelfTag(st) + "</div>" +
         '<div class="cs-desc">' + esc(c.intro || "") + "</div>" +
         '<div class="cs-stats">' +
           "<span>讲师 " + Teachers.avatarHtml(c.teacherId, { size: 22 }) + " <b>" + esc(Store.teacherName(c)) + "</b></span>" +
           "<span>标签 " + Tags.labelsHtml(c.tagIds) + "</span>" +
-          "<span>价格 <b>¥" + (c.price || 0) + "</b></span>" +
+          "<span>关联商品 <b>" + Goods.listByContent(c.id).length + "</b></span>" +
+          "<span>总时长 <b>" + Store.durationSummary(c) + "</b></span>" +
           "<span>章节 <b>" + Store.chapterCount(c) + "</b></span>" +
           "<span>观看 <b>" + (c.views || 0) + "</b></span>" +
-          "<span>评论 <b>" + (c.comments || 0) + "</b></span>" +
-          "<span>收藏 <b>" + (c.favorites || 0) + "</b></span>" +
         "</div>" +
       "</div>" +
       '<div class="cs-actions">' + acts + "</div>" +
@@ -133,8 +135,7 @@ function render() {
   }).join("") || '<div class="muted" style="padding:32px;text-align:center;border:1px dashed #e8e8e8;border-radius:8px">暂无线上课</div>';
 }
 
-document.getElementById("btn-query").addEventListener("click", render);
-document.getElementById("btn-reset").addEventListener("click", function () {
+document.getElementById("btn-query").addEventListener("click", render);document.getElementById("btn-reset").addEventListener("click", function () {
   document.getElementById("f-kw").value = "";
   document.getElementById("f-teacher").value = "";
   document.getElementById("f-badge").value = "";
@@ -163,6 +164,21 @@ document.getElementById("list").addEventListener("click", function (e) {
   }
   render();
 });
+
+/* 待补建商品提示（v3 迁移遗留：内容旧价尚无关联商品） */
+(function () {
+  var need = Store.listNeedingGoods();
+  var el = document.getElementById("legacy-banner");
+  if (!need.length) { el.style.display = "none"; return; }
+  el.style.display = "block";
+  el.innerHTML = '<div class="card" style="border-color:#ffd591;background:#fff7e6"><div class="card-bd" style="padding:12px 16px">' +
+    '<b style="color:#ad6800">有 ' + need.length + ' 个内容待补建商品</b>' +
+    '<div style="font-size:12px;color:#ad6800;margin-top:4px;line-height:1.7">内容已不再承载价格，以下内容在旧版本中带有价格但尚无关联商品，无法上架售卖：' +
+    need.map(function (c) {
+      return '<a href="content-video-edit.html?id=' + encodeURIComponent(c.id) + '">' + esc(c.name) + "（原 ¥" + c._legacyPrice + '）</a>';
+    }).join("、") +
+    '。请进入内容编辑页的「关联商品」页签补建商品。</div></div></div>';
+})();
 
 render();
 </script>
