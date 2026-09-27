@@ -1674,3 +1674,57 @@ tr.is-selected td { background: rgba(22,93,255,.06); }
 }
 
 /* cache-bust-radio-fix-20260908 */
+
+/* ===== 一期/二期 开关（phase2） ===== */
+.phase2-toggle {
+  height: 32px;
+  padding: 0 12px;
+  border: 1px solid var(--color-border);
+  border-radius: 16px;
+  background: #fff;
+  color: var(--color-text-secondary);
+  font-size: 12px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+}
+.phase2-toggle::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #c9cdd4;
+}
+.phase2-toggle:hover { border-color: #f59a23; color: #ad6800; }
+.phase2-toggle.on { border-color: #ffe1ba; background: #fff7e8; color: #ad6800; font-weight: 600; }
+.phase2-toggle.on::before { background: #f59a23; }
+.review-bar .phase2-toggle { height: 22px; padding: 0 10px; font-size: 11px; vertical-align: middle; }
+.nav-phase {
+  display: inline-block;
+  flex-shrink: 0;
+  margin-left: 8px;
+  min-width: 20px;
+  height: 16px;
+  line-height: 16px;
+  padding: 0 5px;
+  border-radius: 8px;
+  background: #ffe1ba;
+  color: #ad6800;
+  font-size: 10px;
+  font-weight: 600;
+  text-align: center;
+}
+.phase2-guard {
+  max-width: 720px;
+  margin: 80px auto;
+  padding: 36px 32px;
+  text-align: center;
+  border: 1px solid #ffe1ba;
+  background: #fffaf0;
+  border-radius: 8px;
+}
+.phase2-guard h2 { font-size: 18px; margin: 0 0 10px; color: #ad6800; }
+.phase2-guard p { color: var(--color-text-secondary); font-size: 13px; margin: 0 0 20px; }
+.phase2-guard .btn { margin: 0 6px; }

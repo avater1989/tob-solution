@@ -546,12 +546,39 @@
   }
 
   /* ---------- export / print ---------- */
-  function exportCurrentCsv() {
-    if (!_cfg || typeof _cfg.getExportTable !== "function") {
-      toast("当前页面暂无可导出表格");
-      return;
+  /* 页面可给 getExportTables()（数组，一张表一个 CSV 按钮）；
+     只给了旧的 getExportTable() 时按单表处理，行为与之前一致。 */
+  function exportTableList() {
+    if (!_cfg) return [];
+    if (typeof _cfg.getExportTables === "function") {
+      var list = _cfg.getExportTables();
+      if (list && list.length) return list;
     }
-    var table = _cfg.getExportTable();
+    if (typeof _cfg.getExportTable === "function") return [_cfg.getExportTable()];
+    return [];
+  }
+
+  function attrEsc(s) {
+    return String(s == null ? "" : s)
+      .replace(/&/g, "&amp;").replace(/"/g, "&quot;")
+      .replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  }
+
+  function exportButtonsHtml() {
+    var list = exportTableList();
+    if (!list.length) {
+      return '<button type="button" data-exp="csv" data-idx="0" disabled title="当前无可导出表格">导出当前表格CSV</button>';
+    }
+    return list.map(function (t, i) {
+      var ok = t && t.rows && t.rows.length;
+      var label = (t && t.menuLabel) || ("导出" + ((t && t.name) || "当前表格") + "CSV");
+      var tip = ok ? "" : ((t && t.reason) || "当前无可导出表格");
+      return '<button type="button" data-exp="csv" data-idx="' + i + '"' + (ok ? "" : " disabled") +
+        ' title="' + attrEsc(tip) + '">' + label + "</button>";
+    }).join("");
+  }
+
+  function exportCsvTable(table) {
     if (!table || !table.headers || !table.rows || !table.rows.length) {
       toast(table && table.reason ? table.reason : "当前筛选下无可导出数据");
       return;
@@ -566,6 +593,15 @@
       BM().exportCsv(name, table.headers, table.rows);
       toast("CSV 已导出");
     }, 200);
+  }
+
+  function exportCurrentCsv() {
+    var list = exportTableList();
+    if (!list.length) {
+      toast("当前页面暂无可导出表格");
+      return;
+    }
+    exportCsvTable(list[0]);
   }
 
   function printReport() {
@@ -624,11 +660,23 @@
       '<div class="board-toolbar-group">' +
       '<button type="button" class="btn btn-sm" id="btn-export-menu">导出</button>' +
       '<div class="board-toolbar-menu" id="menu-export" hidden>' +
-      '<button type="button" data-exp="csv">导出当前表格CSV</button>' +
+      exportButtonsHtml() +
       '<button type="button" data-exp="print">打印当前报表</button>' +
       '<button type="button" data-exp="summary">复制当前数据摘要</button>' +
       '</div></div>';
     host.appendChild(wrap);
+
+    function syncExportButtons() {
+      var menu = document.getElementById("menu-export");
+      if (!menu) return;
+      var list = exportTableList();
+      menu.querySelectorAll('[data-exp="csv"]').forEach(function (b) {
+        var t = list[Number(b.getAttribute("data-idx") || 0)];
+        var ok = t && t.rows && t.rows.length;
+        b.disabled = !ok;
+        b.title = ok ? "" : ((t && t.reason) || "当前无可导出表格");
+      });
+    }
 
     document.getElementById("btn-export-menu").onclick = function (e) {
       e.stopPropagation();
@@ -636,19 +684,14 @@
       var show = menu.hidden;
       closeMenus();
       menu.hidden = !show;
-      var csvBtn = menu.querySelector('[data-exp="csv"]');
-      var canCsv = _cfg && typeof _cfg.getExportTable === "function";
-      var table = canCsv ? _cfg.getExportTable() : null;
-      var ok = table && table.rows && table.rows.length;
-      csvBtn.disabled = !ok;
-      csvBtn.title = ok ? "" : ((table && table.reason) || "当前无可导出表格");
+      syncExportButtons();
     };
     document.getElementById("menu-export").onclick = function (e) {
       var b = e.target.closest("[data-exp]");
       if (!b || b.disabled) return;
       closeMenus();
       var t = b.getAttribute("data-exp");
-      if (t === "csv") exportCurrentCsv();
+      if (t === "csv") exportCsvTable(exportTableList()[Number(b.getAttribute("data-idx") || 0)]);
       else if (t === "print") printReport();
       else if (t === "summary") copySummary();
     };

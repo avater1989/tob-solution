@@ -1623,3 +1623,6 @@
   from { transform: translate(-50%, -40%) scale(.6); opacity: 0; }
   to { transform: translate(-50%, -50%) scale(1); opacity: 1; }
 }
+
+/* 艺博士 Tab：彩色 IP 脸图标 */
+.mp-tabbar .ico img { width: 100%; height: 100%; display: block; object-fit: contain; }

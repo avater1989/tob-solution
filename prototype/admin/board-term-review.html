@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>经营分析 · 商家管理后台</title>
-<link rel="stylesheet" href="../assets/css/proto.css?v=14" />
+<link rel="stylesheet" href="../assets/css/proto.css?v=15" />
 <style>
 .board-kpi-grid { display:grid; grid-template-columns:repeat(5,1fr); gap:12px; margin-bottom:16px; }
 @media (max-width:1200px) { .board-kpi-grid { grid-template-columns:repeat(3,1fr); } }
@@ -82,6 +82,28 @@
         </div>
       </div>
     </div>
+
+    <div class="card" id="term-interval-section" style="margin-bottom:16px">
+      <div class="card-hd" style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap">
+        <h2 style="margin:0">成单间隔分析</h2>
+        <span class="muted" style="font-size:12px;font-weight:400">加微 → 成单的转化时长分布 · <span data-slice-label>整期</span></span>
+      </div>
+      <div class="card-bd">
+        <p class="muted" style="font-size:12px;margin:0" id="term-interval-note"></p>
+        <div style="display:flex;gap:24px;flex-wrap:wrap;margin:12px 0" id="term-interval-kpis"></div>
+        <div id="term-interval-chart"></div>
+        <div style="margin-top:16px;padding-top:12px;border-top:1px dashed var(--color-border)">
+          <h3 style="margin:0 0 8px;font-size:13px">分档明细</h3>
+          <div style="overflow-x:auto">
+            <table class="data" style="min-width:720px">
+              <thead id="term-interval-thead"></thead>
+              <tbody id="term-interval-tbody"></tbody>
+            </table>
+          </div>
+          <p class="muted" style="font-size:12px;margin:8px 0 0" id="term-interval-foot"></p>
+        </div>
+      </div>
+    </div>
   </div>
 
 </div>
@@ -90,10 +112,10 @@
 <script src="../assets/js/term-store.js?v=3"></script>
 <script src="../assets/js/board-metrics.js?v=16"></script>
 <script src="../assets/js/board-insights.js?v=10"></script>
-<script src="../assets/js/board-term.js?v=2"></script>
+<script src="../assets/js/board-term.js?v=3"></script>
 <script src="../assets/js/board-dictionary.js?v=4"></script>
-<script src="../assets/js/board-tools.js?v=6"></script>
-<script src="../assets/js/admin-shell.js?v=23"></script>
+<script src="../assets/js/board-tools.js?v=7"></script>
+<script src="../assets/js/admin-shell.js?v=26"></script>
 <script>
 (function () {
   BoardMetrics.ensureCaliberUI();
@@ -433,6 +455,98 @@
     }
   }
 
+  function clearIntervalSection() {
+    ["term-interval-note", "term-interval-kpis", "term-interval-chart",
+      "term-interval-thead", "term-interval-tbody", "term-interval-foot"].forEach(function (id) {
+      var el = document.getElementById(id);
+      if (el) el.innerHTML = "";
+    });
+  }
+
+  function intervalKpi(label, value, sub) {
+    return '<div style="min-width:118px">' +
+      '<div class="muted" style="font-size:12px;margin-bottom:2px">' + label + "</div>" +
+      '<div style="font-size:20px;font-weight:700;line-height:1.2">' + value + "</div>" +
+      (sub ? '<div class="muted" style="font-size:11px;margin-top:2px">' + sub + "</div>" : "") +
+      "</div>";
+  }
+
+  function intervalDiffCell(diff) {
+    if (!diff) return '<span class="muted">0</span>';
+    var color = diff > 0 ? "#00b42a" : "#f53f3f";
+    return '<span style="color:' + color + '">' + (diff > 0 ? "+" : "") + diff + "</span>";
+  }
+
+  function renderInterval(termId, filters) {
+    clearIntervalSection();
+    var data = (window.BoardTerm && BoardTerm.getConvertInterval)
+      ? BoardTerm.getConvertInterval(termId, filters)
+      : null;
+    if (!data) return;
+
+    var st = data.stats;
+    var note = document.getElementById("term-interval-note");
+    if (note) {
+      note.textContent = "样本：期内「已加微且已成交」的可归因用户 " + BoardMetrics.fmt(data.total) +
+        " 人 · 间隔按自然日计（首次成交日 − 加微日）· 切片 " + (pageState.lastSliceLabel || "整期") +
+        " · 未加微直接成交的订单不计入本报表。";
+    }
+
+    var kpis = document.getElementById("term-interval-kpis");
+    if (kpis) {
+      kpis.innerHTML =
+        intervalKpi("样本量", BoardMetrics.fmt(data.total), "已加微且已成交") +
+        intervalKpi("加微→成单转化率", data.convertRate == null ? "—" : data.convertRate + "%",
+          "分母 加微 " + BoardMetrics.fmt(data.wecomLeads) + " 人") +
+        intervalKpi("间隔中位数", st.medianLabel) +
+        intervalKpi("平均间隔", st.avgLabel) +
+        intervalKpi("3 日内成单占比", st.within3 == null ? "—" : st.within3 + "%") +
+        intervalKpi("7 日内成单占比", st.within7 == null ? "—" : st.within7 + "%");
+    }
+
+    if (window.BoardTerm && BoardTerm.renderIntervalChart) {
+      BoardTerm.renderIntervalChart(document.getElementById("term-interval-chart"), data);
+    }
+
+    var hasPrior = !!data.prior;
+    var colCount = hasPrior ? 6 : 4;
+    var thead = document.getElementById("term-interval-thead");
+    var tbody = document.getElementById("term-interval-tbody");
+    if (thead) {
+      thead.innerHTML = "<tr><th>加微 → 成单间隔</th><th>成单人数</th><th>占比</th><th>累计占比</th>" +
+        (hasPrior ? "<th>" + data.prior.label + "同期</th><th>人数差</th>" : "") + "</tr>";
+    }
+    if (!tbody) return;
+    if (!data.total) {
+      BoardMetrics.renderEmpty(tbody, colCount, "本切片内没有「已加微且已成交」的可归因用户");
+    } else {
+      tbody.innerHTML = data.buckets.map(function (b, i) {
+        var prCount = hasPrior ? (data.prior.rows[i] ? data.prior.rows[i].count : 0) : 0;
+        return "<tr><td>" + b.label + "</td><td>" + BoardMetrics.fmt(b.count) + "</td><td>" + b.share +
+          "%</td><td>" + b.cumShare + "%</td>" +
+          (hasPrior ? "<td>" + BoardMetrics.fmt(prCount) + "</td><td>" + intervalDiffCell(b.count - prCount) + "</td>" : "") +
+          "</tr>";
+      }).join("") +
+        "<tr><td><b>合计</b></td><td><b>" + BoardMetrics.fmt(data.total) + "</b></td><td><b>100%</b></td><td><b>100%</b></td>" +
+        (hasPrior
+          ? "<td><b>" + BoardMetrics.fmt(data.prior.total) + "</b></td><td><b>" +
+            intervalDiffCell(data.total - data.prior.total) + "</b></td>"
+          : "") +
+        "</tr>";
+    }
+
+    var foot = document.getElementById("term-interval-foot");
+    if (foot) {
+      foot.textContent = hasPrior
+        ? ("上一期同期：" + data.prior.label + " 中位间隔 " + data.prior.stats.medianLabel +
+          "、平均 " + data.prior.stats.avgLabel + "、7 日内成单占比 " +
+          (data.prior.stats.within7 == null ? "—" : data.prior.stats.within7 + "%") +
+          "；本期为 " + st.medianLabel + " / " + st.avgLabel + " / " +
+          (st.within7 == null ? "—" : st.within7 + "%") + "。")
+        : "分布越偏左说明成交节奏越快；整体右移通常意味着跟进周期变长或信任建立变慢。";
+    }
+  }
+
   function renderCoreKpis(filters) {
     var kpis = BoardInsights.getCoreKpis(filters);
     document.getElementById("term-kpis").innerHTML = kpis.map(function (k) {
@@ -508,6 +622,7 @@
         emptyDesc.textContent = "「全部期次」不能作为单个期次复盘对象。请在上方选择具体期次。";
       }
       lastDetailRows = null;
+      clearIntervalSection();
       BoardMetrics.wireBoardLinks();
       return;
     }
@@ -519,6 +634,7 @@
       if (emptyTitle) emptyTitle.textContent = "未找到该期次";
       if (emptyDesc) emptyDesc.textContent = "URL 中的期次无效或不存在，请重新选择。";
       lastDetailRows = null;
+      clearIntervalSection();
       BoardMetrics.wireBoardLinks();
       return;
     }
@@ -542,6 +658,7 @@
       if (emptyTitle) emptyTitle.textContent = slice.upcoming ? "期次尚未开始" : "暂无可统计区间";
       if (emptyDesc) emptyDesc.textContent = slice.reason || "请更换期次或等待开营。";
       lastDetailRows = null;
+      clearIntervalSection();
       BoardMetrics.wireBoardLinks();
       return;
     }
@@ -555,6 +672,7 @@
       renderCoreKpis(filters);
       openTermTrend();
       renderMetricDetail(termId, filters);
+      renderInterval(termId, filters);
       BoardMetrics.fillAttr();
       BoardMetrics.wireBoardLinks();
       maybeScrollTrend();
@@ -638,6 +756,70 @@
     }
   })();
 
+  /* ===== 导出：两张表各自一个 CSV ===== */
+
+  function buildMetricExport(termId, filters) {
+    var name = "期次经营_指标明细";
+    var headers = ["日期"].concat(METRICS.map(function (m) { return m.label; }));
+    var table = lastDetailRows;
+    if (!table) table = buildMetricDetailTable(termId, filters);
+    var base = {
+      menuLabel: "导出指标明细CSV",
+      name: name,
+      filename: BoardMetrics.exportFileName(name),
+      headers: headers
+    };
+    if (!table || !table.rows || !table.rows.length) {
+      return Object.assign(base, { rows: [], reason: "当前切片无按日指标明细，请更换期次或统计切片" });
+    }
+    return Object.assign(base, {
+      rows: table.rows.map(function (r) {
+        return [r.label].concat(METRICS.map(function (m) {
+          return fmtDetailCell(r.cells[m.trendKey], m.kind);
+        }));
+      })
+    });
+  }
+
+  function buildIntervalExport(termId, filters) {
+    var name = "期次经营_成单间隔";
+    var data = (window.BoardTerm && BoardTerm.getConvertInterval)
+      ? BoardTerm.getConvertInterval(termId, filters)
+      : null;
+    var headers = ["加微 → 成单间隔", "成单人数", "占比", "累计占比"];
+    if (data && data.prior) headers = headers.concat([data.prior.label + "同期", "人数差"]);
+    var base = {
+      menuLabel: "导出成单间隔CSV",
+      name: name,
+      filename: BoardMetrics.exportFileName(name),
+      headers: headers
+    };
+    if (!data || !data.total) {
+      return Object.assign(base, { rows: [], reason: "当前切片内没有「已加微且已成交」的可归因用户，无可导出数据" });
+    }
+
+    var hasPrior = !!data.prior;
+    var rows = data.buckets.map(function (b, i) {
+      var pc = hasPrior ? (data.prior.rows[i] ? data.prior.rows[i].count : 0) : null;
+      var row = [b.label, b.count, b.share + "%", b.cumShare + "%"];
+      if (hasPrior) row = row.concat([pc, (b.count - pc > 0 ? "+" : "") + (b.count - pc)]);
+      return row;
+    });
+    rows.push(["合计", data.total, "100%", "100%"].concat(
+      hasPrior ? [data.prior.total, (data.total - data.prior.total > 0 ? "+" : "") + (data.total - data.prior.total)] : []
+    ));
+    rows.push([]);
+    rows.push(["口径", "样本 = 期内「已加微且已成交」的可归因用户；间隔 = 首次成交日 − 加微日（自然日）"]);
+    rows.push(["关键结论", "中位 " + data.stats.medianLabel + " · 平均 " + data.stats.avgLabel +
+      " · 3 日内 " + (data.stats.within3 == null ? "—" : data.stats.within3 + "%") +
+      " · 7 日内 " + (data.stats.within7 == null ? "—" : data.stats.within7 + "%") +
+      " · 加微→成单 " + (data.convertRate == null ? "—" : data.convertRate + "%") +
+      "（分母 加微 " + BoardMetrics.fmt(data.wecomLeads) + " 人）"]);
+    rows.push(["统计切片", BoardMetrics.rangeLabel(filters) +
+      (pageState.lastSliceLabel ? "（" + pageState.lastSliceLabel + "）" : "")]);
+    return Object.assign(base, { rows: rows });
+  }
+
   BoardMetrics.setFilters({ channel: "" }, { push: false });
   BoardMetrics.bindFilterBar({
     onApply: function () {
@@ -653,33 +835,16 @@
         slice: pageState.sliceMode || "term"
       };
     },
-    getExportTable: function () {
+    getExportTables: function () {
       var termId = currentTermId();
-      if (!termId) {
-        return { reason: "请先选择具体期次后再导出", headers: [], rows: [] };
+      if (!termId || !BoardTerm.getTermById(termId)) {
+        return [
+          { menuLabel: "导出指标明细CSV", name: "期次经营_指标明细", reason: "请先选择具体期次后再导出", headers: [], rows: [] },
+          { menuLabel: "导出成单间隔CSV", name: "期次经营_成单间隔", reason: "请先选择具体期次后再导出", headers: [], rows: [] }
+        ];
       }
-      var table = lastDetailRows;
-      if (!table) table = buildMetricDetailTable(termId, BoardMetrics.getFilters());
-      var name = "期次经营_指标明细";
-      var headers = ["日期"].concat(METRICS.map(function (m) { return m.label; }));
-      if (!table || !table.rows || !table.rows.length) {
-        return {
-          name: name,
-          filename: BoardMetrics.exportFileName(name),
-          headers: headers,
-          rows: []
-        };
-      }
-      return {
-        name: name,
-        filename: BoardMetrics.exportFileName(name),
-        headers: headers,
-        rows: table.rows.map(function (r) {
-          return [r.label].concat(METRICS.map(function (m) {
-            return fmtDetailCell(r.cells[m.trendKey], m.kind);
-          }));
-        })
-      };
+      var filters = BoardMetrics.getFilters();
+      return [buildMetricExport(termId, filters), buildIntervalExport(termId, filters)];
     }
   });
 

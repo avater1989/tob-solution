@@ -257,6 +257,143 @@
     };
   }
 
+  /* ===== 成单间隔分析：加微 → 成单的转化时长分布 =====
+   * 口径：样本 = 期内「已加微且已可归因成交」的用户；间隔 = 首次成交日 − 加微日（自然日）
+   * 仅支持「加微时间 / 成交时间」的期次内可归因用户，未加微直接成交的订单不进本报表
+   */
+  var INTERVAL_BUCKETS = [
+    { id: "d0", label: "当日", mid: 0 },
+    { id: "d1", label: "1 天", mid: 1 },
+    { id: "d2", label: "2 天", mid: 2 },
+    { id: "d3", label: "3 天", mid: 3 },
+    { id: "d4_7", label: "4–7 天", mid: 5.5 },
+    { id: "d8_14", label: "8–14 天", mid: 11 },
+    { id: "d15", label: "15 天以上", mid: 22 }
+  ];
+  var INTERVAL_WEIGHTS = [0.11, 0.17, 0.16, 0.13, 0.22, 0.15, 0.06];
+
+  function makeIntervalDistribution(seed, total) {
+    var weights = INTERVAL_WEIGHTS.map(function (w, i) {
+      var jitter = (((seed + i * 37) % 11) - 5) / 100;
+      return Math.max(0.01, w * (1 + jitter));
+    });
+    var sum = weights.reduce(function (a, b) { return a + b; }, 0);
+    var counts = [];
+    var assigned = 0;
+    weights.forEach(function (w, i) {
+      if (i === weights.length - 1) {
+        counts.push(Math.max(0, total - assigned));
+      } else {
+        var c = Math.round((w / sum) * total);
+        counts.push(c);
+        assigned += c;
+      }
+    });
+
+    var run = 0;
+    var maxIdx = 0;
+    counts.forEach(function (c, i) { if (c > counts[maxIdx]) maxIdx = i; });
+    var rows = INTERVAL_BUCKETS.map(function (b, i) {
+      run += counts[i];
+      return {
+        id: b.id,
+        label: b.label,
+        count: counts[i],
+        share: total ? Math.round((counts[i] / total) * 1000) / 10 : 0,
+        cumShare: total ? Math.round((run / total) * 1000) / 10 : 0,
+        cumCount: run
+      };
+    });
+    return { counts: counts, rows: rows, maxIdx: maxIdx, total: total };
+  }
+
+  function intervalStats(dist) {
+    var total = dist.total;
+    if (!total) return { medianLabel: "—", avgLabel: "—", within3: null, within7: null };
+    var cum = 0;
+    var weighted = 0;
+    var medianLabel = "—";
+    dist.counts.forEach(function (c, i) {
+      cum += c;
+      weighted += c * INTERVAL_BUCKETS[i].mid;
+      if (medianLabel === "—" && cum >= total / 2) medianLabel = INTERVAL_BUCKETS[i].label;
+    });
+    function shareUpTo(lastIdx) {
+      var n = 0;
+      for (var i = 0; i <= lastIdx; i++) n += dist.counts[i];
+      return Math.round((n / total) * 1000) / 10;
+    }
+    return {
+      medianLabel: medianLabel,
+      avgLabel: Math.round((weighted / total) * 10) / 10 + " 天",
+      within3: shareUpTo(3),
+      within7: shareUpTo(4)
+    };
+  }
+
+  function getConvertInterval(termId, filters) {
+    var term = getTermById(termId);
+    if (!term) return null;
+    filters = termFilters(filters, termId);
+    var d = BM().aggregateLeadMetrics(filters);
+    var wecomLeads = d.wecomLeads || 0;
+    var total = Math.max(0, d.attributedPayUsers || 0);
+    var rangeKey = [filters.start_date || "", filters.end_date || ""].join("~");
+    var dist = makeIntervalDistribution(hash(termId + ":interval:" + rangeKey), total);
+
+    var prior = null;
+    if (term.compareTermId) {
+      var priorTerm = getTermById(term.compareTermId);
+      if (priorTerm) {
+        var priorTotal = Math.round(((priorTerm.goals || {}).payUsers || 0) * 0.88);
+        var priorDist = makeIntervalDistribution(hash(priorTerm.id + ":interval:" + rangeKey), priorTotal);
+        prior = {
+          label: term.compareTermLabel || priorTerm.name,
+          total: priorTotal,
+          rows: priorDist.rows,
+          stats: intervalStats(priorDist)
+        };
+      }
+    }
+
+    return {
+      termId: termId,
+      term: term,
+      total: total,
+      wecomLeads: wecomLeads,
+      convertRate: pct(total, wecomLeads),
+      buckets: dist.rows,
+      maxIdx: dist.maxIdx,
+      stats: intervalStats(dist),
+      prior: prior
+    };
+  }
+
+  function renderIntervalChart(host, data) {
+    if (!host) return;
+    if (!data || !data.total) {
+      host.innerHTML = '<p class="muted" style="padding:16px 0">本切片内没有「已加微且已成交」的可归因用户，暂无间隔分布。</p>';
+      return;
+    }
+    var maxCount = Math.max.apply(null, data.buckets.map(function (b) { return b.count; }).concat([1]));
+    host.innerHTML =
+      '<div style="display:flex;align-items:flex-end;gap:10px;height:200px;padding:8px 0 0">' +
+      data.buckets.map(function (b, i) {
+        var h = Math.max(3, Math.round((b.count / maxCount) * 100));
+        var peak = i === data.maxIdx;
+        return '<div style="flex:1;min-width:0;height:100%;display:flex;flex-direction:column;align-items:center;gap:4px">' +
+          '<div style="font-size:11px;font-weight:600;color:' + (peak ? "#165dff" : "#4e5969") + '">' + BM().fmt(b.count) + "</div>" +
+          '<div style="flex:1;width:100%;display:flex;align-items:flex-end">' +
+          '<div style="width:100%;height:' + h + "%;min-height:3px;border-radius:4px 4px 0 0;background:" +
+          (peak ? "linear-gradient(180deg,#4080ff,#165dff)" : "linear-gradient(180deg,#a8c6ff,#7ba7ff)") +
+          '" title="' + b.label + "：" + b.count + " 人 · 占比 " + b.share + '%"></div>' +
+          "</div>" +
+          '<div style="font-size:11px;color:#86909c;white-space:nowrap">' + b.label + "</div>" +
+          "</div>";
+      }).join("") +
+      "</div>";
+  }
+
   function getTermBottlenecks(termId, filters) {
     var bundle = getTermBundle(termId, filters);
     if (!bundle) return [];
@@ -664,6 +801,8 @@
     getTermStaff: getTermStaff,
     getTermLives: getTermLives,
     getTermConvert: getTermConvert,
+    getConvertInterval: getConvertInterval,
+    renderIntervalChart: renderIntervalChart,
     getTermBottlenecks: getTermBottlenecks,
     getTermTodos: getTermTodos,
     buildTrendSeries: buildTrendSeries,

@@ -1,0 +1,66 @@
+{
+  "v": 1,
+  "updated": "2026-09-27T13:32:44",
+  "items": [
+    {
+      "id": "rmujdqq9siaah",
+      "page": "admin/orders.html",
+      "anchor": {
+        "selector": "body > div:nth-of-type(5) > div:nth-of-type(2) > aside > div:nth-of-type(5) > a:nth-of-type(3) > span:nth-of-type(1)",
+        "selectorIn": "",
+        "root": "",
+        "region": "shell",
+        "shell": "admin-shell.js",
+        "label": "span.nav-text",
+        "text": "对账管理",
+        "html": "<span class=\"nav-text\">对账管理</span>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "取消二期标识",
+      "status": "resolved",
+      "createdAt": "2026-09-27T05:30:19.648Z",
+      "resolvedAt": "2026-09-27T13:33:00"
+    },
+    {
+      "id": "rmujdqtd68c7h",
+      "page": "admin/orders.html",
+      "anchor": {
+        "selector": "body > div:nth-of-type(5) > div:nth-of-type(2) > aside > div:nth-of-type(5) > a:nth-of-type(4) > span:nth-of-type(1)",
+        "selectorIn": "",
+        "root": "",
+        "region": "shell",
+        "shell": "admin-shell.js",
+        "label": "span.nav-text",
+        "text": "结算单",
+        "html": "<span class=\"nav-text\">结算单</span>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "取消二期标识",
+      "status": "resolved",
+      "createdAt": "2026-09-27T05:30:23.659Z",
+      "resolvedAt": "2026-09-27T13:33:00"
+    },
+    {
+      "id": "rmujdqwqocipl",
+      "page": "admin/orders.html",
+      "anchor": {
+        "selector": "body > div:nth-of-type(5) > div:nth-of-type(2) > aside > div:nth-of-type(5) > a:nth-of-type(5) > span:nth-of-type(1)",
+        "selectorIn": "",
+        "root": "",
+        "region": "shell",
+        "shell": "admin-shell.js",
+        "label": "span.nav-text",
+        "text": "提现管理",
+        "html": "<span class=\"nav-text\">提现管理</span>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "取消二期标识",
+      "status": "resolved",
+      "createdAt": "2026-09-27T05:30:28.033Z",
+      "resolvedAt": "2026-09-27T13:33:00"
+    }
+  ]
+}

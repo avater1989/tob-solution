@@ -17,6 +17,21 @@
     } catch (eLoadBiz) {}
   }
 
+  if (!window.ProtoPhase2) {
+    try {
+      var curPhase = document.currentScript;
+      var phaseSrc = (curPhase && curPhase.src)
+        ? curPhase.src.replace(/ops-shell\.js[^/]*$/, "phase2-config.js?v=3")
+        : "../assets/js/phase2-config.js";
+      var xhrPhase = new XMLHttpRequest();
+      xhrPhase.open("GET", phaseSrc, false);
+      xhrPhase.send(null);
+      if (xhrPhase.status >= 200 && xhrPhase.status < 300 && xhrPhase.responseText) {
+        (0, eval)(xhrPhase.responseText);
+      }
+    } catch (ePhase) {}
+  }
+
   // 全局错误捕获 - 避免脚本异常导致页面全裸
   window.addEventListener("error", function (e) {
     if (document.body && !document.querySelector(".admin-app")) {
@@ -33,10 +48,34 @@
   var showAssist = false; // 操作助手已隐藏（原 data-assist="1" 开关）
   var showNotice = document.body.getAttribute("data-notice") !== "0";
 
+  // ===== 一期/二期 开关 =====
+  var PH2 = window.ProtoPhase2 || {
+    enabled: function () { return false; },
+    setEnabled: function () {},
+    isPhase2: function () { return false; },
+  };
+  var phase2On = PH2.enabled();
+
+  /* 二期页面直接访问拦截：一期视图（默认）下显示提示横幅 */
+  if (document.body.getAttribute("data-phase2") === "1" && !phase2On) {
+    document.body.insertAdjacentHTML("afterbegin",
+      '<div class="phase2-guard"><h2>二期能力 · 一期视图下已隐藏</h2>' +
+      "<p>当前页属于二期功能，默认不进入一期评审范围。</p>" +
+      '<button type="button" class="btn btn-primary" id="phase2-enable">开启二期视图</button>' +
+      '<a class="btn" href="../index.html">返回导航</a></div>');
+    var phase2Enable = document.getElementById("phase2-enable");
+    if (phase2Enable) {
+      phase2Enable.addEventListener("click", function () {
+        PH2.setEnabled(true);
+        location.reload();
+      });
+    }
+    return;
+  }
+
   // 兼容旧页 data-module
   if (moduleId === "audit") moduleId = "content";
-  // 「租户管理 / 商家」板块归入「系统管理」（页面未改动，此处做归属映射）
-  if (moduleId === "tenant" || moduleId === "merchant") moduleId = "sys";
+  // 2026-09-27：「租户管理」已提升为独立顶级模块，原先归入「系统管理」的映射取消
   // 全局订单曾挂在数据下
   if (moduleId === "data" && active === "orders") moduleId = "biz";
   // 历史交易页用 trade 模块名 → 现归 biz；财务页仍用 trade
@@ -50,6 +89,7 @@
 
   var modules = [
     { id: "workbench", label: "工作台", href: "dashboard.html" },
+    { id: "tenant", label: "租户管理", href: "tenants.html" },
     { id: "content", label: "内容与审核", href: "content-video.html" },
     { id: "biz", label: "交易", href: "trade-orders.html" },
     { id: "trade", label: "财务", href: "settlements.html" },
@@ -63,6 +103,26 @@
         group: "概览",
         links: [
           { id: "dashboard", href: "dashboard.html#today", label: "工作台" },
+        ],
+      },
+    ],
+    tenant: [
+      {
+        group: "租户管理",
+        links: [
+          { id: "tenants", href: "tenants.html", label: "租户列表" },
+        ],
+      },
+      {
+        group: "应用管理",
+        links: [
+          { id: "apps", href: "apps.html", label: "应用管理" },
+        ],
+      },
+      {
+        group: "套餐管理",
+        links: [
+          { id: "plans", href: "plans.html", label: "套餐管理" },
         ],
       },
     ],
@@ -185,24 +245,6 @@
           { id: "channel-mgmt", href: "channel-mgmt.html", label: "渠道管理" },
         ],
       },
-      {
-        group: "租户管理",
-        links: [
-          { id: "tenants", href: "tenants.html", label: "租户列表" },
-        ],
-      },
-      {
-        group: "应用管理",
-        links: [
-          { id: "apps", href: "apps.html", label: "应用管理" },
-        ],
-      },
-      {
-        group: "套餐管理",
-        links: [
-          { id: "plans", href: "plans.html", label: "套餐管理" },
-        ],
-      },
     ],
   };
 
@@ -241,8 +283,22 @@
       "<li>超级管理员不可停用与删除</li></ul></div>",
   };
 
+  /* 模块下所有菜单均为隐藏的二期项时，隐藏该一级模块 */
+  function moduleVisible(m) {
+    var groups = sidebars[m.id];
+    if (!groups || !groups.length) return true;
+    for (var i = 0; i < groups.length; i++) {
+      var links = (groups[i] && groups[i].links) || [];
+      for (var j = 0; j < links.length; j++) {
+        if (phase2On || !PH2.isPhase2("ops", links[j].id)) return true;
+      }
+    }
+    return false;
+  }
+
   function modulesHtml() {
     return modules
+      .filter(moduleVisible)
       .map(function (m) {
         return '<a class="' + (m.id === moduleId ? "active" : "") + '" href="' + m.href + '">' + m.label + "</a>";
       })
@@ -261,36 +317,51 @@
     } catch (e) {}
     var html = '<div class="sidebar-module-label">当前模块</div>';
     groups.forEach(function (g) {
+      var links = (g.links || []).filter(function (l) {
+        return phase2On || !PH2.isPhase2("ops", l.id);
+      });
+      if (!links.length) return; // 分组整体为二期且已隐藏时跳过
       html += '<div class="nav-group"><div class="nav-label">' + g.group + "</div>";
-      g.links.forEach(function (l) {
+      links.forEach(function (l) {
         var cls = "nav-item" + (l.id === active ? " active" : "");
         var badgeVal = l.badge;
         if (l.id === "audit") badgeVal = pendingPlatform || 0;
         var badge = badgeVal ? '<span class="nav-badge">' + badgeVal + '</span>' : '';
-        html += '<a class="' + cls + '" href="' + l.href + '">' + l.label + badge + "</a>";
+        var phaseTag = PH2.isPhase2("ops", l.id) ? '<span class="nav-phase">二期</span>' : "";
+        html += '<a class="' + cls + '" href="' + l.href + '"><span class="nav-text">' + l.label + "</span>" + phaseTag + badge + "</a>";
       });
       html += "</div>";
     });
     return html;
   }
 
+  /* 评审路径：二期步骤（平台内容 / 内容审核）随二期开关显隐 */
+  var reviewSteps = [
+    { href: "tenants.html", label: "租户开通", phase2: false },
+    { href: "content-video.html", label: "平台内容", phase2: true },
+    { href: "audit.html", label: "内容审核", phase2: true },
+    { href: "settlements.html", label: "对账结算", phase2: false },
+    { href: "orders.html", label: "全局订单", phase2: false },
+    { href: "data.html", label: "数据", phase2: false },
+  ];
+  var CIRCLED = ["①", "②", "③", "④", "⑤", "⑥", "⑦", "⑧", "⑨"];
   var review =
     '<div class="review-bar">' +
     "<strong>评审路径</strong>" +
-    '<a href="tenants.html">①租户开通</a><span class="sep">·</span>' +
-    '<a href="content-video.html">②平台内容</a><span class="sep">·</span>' +
-    '<a href="audit.html">③内容审核</a><span class="sep">·</span>' +
-    '<a href="settlements.html">④对账结算</a><span class="sep">·</span>' +
-    '<a href="orders.html">⑤全局订单</a><span class="sep">·</span>' +
-    '<a href="data.html">⑥数据</a><span class="sep">|</span>' +
+    reviewSteps
+      .filter(function (s) { return phase2On || !s.phase2; })
+      .map(function (s, i) { return '<a href="' + s.href + '">' + (CIRCLED[i] || "") + s.label + "</a>"; })
+      .join('<span class="sep">·</span>') +
+    '<span class="sep">|</span>' +
     '<a href="../admin/dashboard.html">切商家后台</a><span class="sep">·</span>' +
     '<a href="../miniprogram/home.html">切 C 端</a><span class="sep">·</span>' +
-    '<a href="../index.html">导航</a>' +
+    '<a href="../index.html">导航</a><span class="sep">|</span>' +
+    '<button type="button" class="phase2-toggle' + (phase2On ? " on" : "") + '" id="phase2-toggle" aria-pressed="' + (phase2On ? "true" : "false") + '" title="显示/隐藏二期能力（当前：' + (phase2On ? "显示" : "隐藏") + '）">二期</button>' +
     "</div>";
 
   var notice = showNotice
     ? '<div class="notice-bar" id="notice-bar">' +
-      "<span>运营后台 · 内容与审核 / 交易 / 财务 / 数据 / 系统管理（含租户管理）</span>" +
+      "<span>运营后台 · 租户管理 / 内容与审核 / 交易 / 财务 / 数据 / 系统管理</span>" +
       '<button type="button" class="close-notice" id="close-notice" aria-label="关闭">×</button>' +
       "</div>"
     : "";
@@ -368,6 +439,15 @@
       activeNav.scrollIntoView({ block: "center", inline: "nearest" });
     }
   })();
+
+  // ===== 评审路径条「二期」开关：切换后整页刷新重渲染 =====
+  var phase2ToggleBtn = document.getElementById("phase2-toggle");
+  if (phase2ToggleBtn) {
+    phase2ToggleBtn.addEventListener("click", function () {
+      PH2.setEnabled(!PH2.enabled());
+      location.reload();
+    });
+  }
 
   var closeNotice = document.getElementById("close-notice");
   if (closeNotice) {
