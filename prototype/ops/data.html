@@ -6,7 +6,7 @@
 <title>经营总览 · 运营后台</title>
 <link rel="stylesheet" href="../assets/css/proto.css?v=15" />
 </head>
-<body class="admin-body" data-module="data" data-nav="data" data-title="平台经营" data-crumb="运营后台 / 数据 / 平台经营" data-assist="1">
+<body class="admin-body" data-module="data" data-nav="data" data-title="经营总览" data-crumb="运营后台 / 数据 / 经营总览" data-assist="1">
 <div id="header-actions">
   <select id="range-sel" class="btn" style="padding:6px 10px">
     <option>近 7 天</option><option>近 30 天</option><option>本月</option><option>本季度</option>
@@ -15,104 +15,422 @@
 </div>
 <div id="page-content" style="display:none">
 
-  <div style="background:#f7f8fa;border:1px solid #e8e8e8;border-radius:8px;padding:12px 14px;margin-bottom:14px;font-size:13px">
-    数据分析（不含订单/售后业务管理）：
-    <a href="data.html">平台经营</a> ·
-    <a href="data.html?view=merchant">商家经营</a> ·
-    <a href="data.html?view=trade">交易分析</a> ·
-    <a href="data.html?view=content">内容分析</a> ·
-    <a href="data.html?view=health">商家健康度</a>
-    · 订单请前往 <a href="orders.html">交易 / 全局订单</a>
+  <!-- 视角切换（对照商家管理后台「数据」板块） -->
+  <div class="data-views" id="data-views">
+    <a href="data.html" data-view="overview">经营总览</a>
+    <a href="data.html?view=acquire" data-view="acquire">获客与转化</a>
+    <a href="data.html?view=content" data-view="content">内容经营</a>
+    <a href="data.html?view=trade" data-view="trade">商品与交易</a>
+    <a href="data.html?view=customer" data-view="customer">客户经营</a>
+    <a href="data.html?view=term" data-view="term">期次复盘</a>
+    <a href="data.html?view=merchant" data-view="merchant">商家经营</a>
+    <a href="data.html?view=health" data-view="health" data-phase2-only="1">商家健康度</a>
+    <span class="data-views-note">只做分析，不含订单 / 售后业务管理；明细请前往 <a href="trade-orders.html">交易 / 全局订单</a></span>
   </div>
 
-  <!-- 全局统计 -->
-  <div class="grid-4" style="margin-bottom:16px">
-    <div class="stat"><div class="label">平台 GMV（已支付）</div><div class="value">¥1,286,430.00</div><div class="hint">环比 +14.2% · 18 个租户</div></div>
-    <div class="stat"><div class="label">平台订单</div><div class="value">9,842</div><div class="hint">小程序 62% · 视频号 28% · 直播间 10%</div></div>
-    <div class="stat"><div class="label">C 端用户</div><div class="value">36,410</div><div class="hint">付费用户 8,216 · 复购率 23%</div></div>
-    <div class="stat"><div class="label">平台费率收入</div><div class="value">¥7,718.58</div><div class="hint">服务费 0.6%（自建）/ 佣金 20%（平台内容）· 退款冲减 ¥6,930</div></div>
-  </div>
+  <!-- ============ 经营总览 ============ -->
+  <section class="dv" data-view="overview">
+    <div class="grid-4" style="margin-bottom:16px">
+      <div class="stat"><div class="label">平台 GMV（已支付）</div><div class="value">¥1,286,430.00</div><div class="hint">环比 +14.2% · 18 个租户</div></div>
+      <div class="stat"><div class="label">平台订单</div><div class="value">9,842</div><div class="hint">小程序 62% · 视频号 28% · 直播间 10%</div></div>
+      <div class="stat"><div class="label">C 端用户</div><div class="value">36,410</div><div class="hint">付费用户 8,216 · 复购率 23%</div></div>
+      <div class="stat"><div class="label">平台费率收入</div><div class="value">¥7,718.58</div><div class="hint">服务费 0.6%（自建）/ 佣金 20%（平台内容）· 退款冲减 ¥6,930</div></div>
+    </div>
 
-  <div style="display:grid;grid-template-columns:2fr 1fr;gap:16px">
-    <!-- GMV 趋势 -->
-    <div class="card">
-      <div class="card-hd"><h2>平台 GMV 趋势（近 7 天）</h2></div>
-      <div class="card-bd" style="padding-bottom:36px">
-        <div class="chart-bars">
-          <div class="bar" style="height:46%"><span>08-31</span></div>
-          <div class="bar" style="height:58%"><span>09-01</span></div>
-          <div class="bar" style="height:52%"><span>09-02</span></div>
-          <div class="bar" style="height:70%"><span>09-03</span></div>
-          <div class="bar" style="height:86%"><span>09-04</span></div>
-          <div class="bar" style="height:100%"><span>09-05</span></div>
-          <div class="bar" style="height:64%"><span>09-06</span></div>
+    <div style="display:grid;grid-template-columns:2fr 1fr;gap:16px">
+      <div class="card">
+        <div class="card-hd"><h2>平台 GMV 趋势（近 7 天）</h2></div>
+        <div class="card-bd" style="padding-bottom:36px">
+          <div class="chart-bars">
+            <div class="bar" style="height:46%"><span>08-31</span></div>
+            <div class="bar" style="height:58%"><span>09-01</span></div>
+            <div class="bar" style="height:52%"><span>09-02</span></div>
+            <div class="bar" style="height:70%"><span>09-03</span></div>
+            <div class="bar" style="height:86%"><span>09-04</span></div>
+            <div class="bar" style="height:100%"><span>09-05</span></div>
+            <div class="bar" style="height:64%"><span>09-06</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-hd"><h2>交易渠道结构</h2></div>
+        <div class="card-bd">
+          <div class="kv-row"><span>小程序（C 端商城）</span><b>62% · ¥797,587</b></div>
+          <div class="kv-row"><span>视频号（公域订单）</span><b>28% · ¥360,200</b></div>
+          <div class="kv-row"><span>直播间下单</span><b>10% · ¥128,643</b></div>
+          <p class="muted" style="font-size:12px;margin-top:10px">公域订单通过渠道对账单同步至商家后台，进入同一交易视图。</p>
         </div>
       </div>
     </div>
 
-    <!-- 渠道结构 -->
-    <div class="card">
-      <div class="card-hd"><h2>交易渠道结构</h2></div>
-      <div class="card-bd">
-        <div class="kv-row"><span>小程序（C 端商城）</span><b>62% · ¥797,587</b></div>
-        <div class="kv-row"><span>视频号（公域订单）</span><b>28% · ¥360,200</b></div>
-        <div class="kv-row"><span>直播间下单</span><b>10% · ¥128,643</b></div>
-        <p class="muted" style="font-size:12px;margin-top:10px">公域订单通过渠道对账单同步至商家后台，进入同一交易视图。</p>
+    <div class="card" style="margin-top:16px">
+      <div class="card-hd"><h2>租户排行（按近 30 天 GMV）</h2>
+        <a href="tenants.html" style="font-size:13px;color:var(--color-primary);text-decoration:none">全部租户 →</a>
+      </div>
+      <div class="card-bd" style="padding:0">
+        <table class="data">
+          <thead><tr><th style="width:60px">排名</th><th>租户</th><th>近30天GMV</th><th>订单数</th><th>退款率</th><th>私域线索</th><th>趋势</th></tr></thead>
+          <tbody>
+            <tr><td>1</td><td><a href="tenant-config.html?id=10001"><b>星启家庭教育</b></a></td><td><b>¥126,480</b></td><td>1,264</td><td>5.5%</td><td>842</td><td><span class="badge badge-success">↑ 12.4%</span></td></tr>
+            <tr><td>2</td><td><a href="tenant-config.html?id=10002"><b>晨光少儿成长</b></a></td><td><b>¥98,210</b></td><td>1,020</td><td>4.1%</td><td>615</td><td><span class="badge badge-success">↑ 8.9%</span></td></tr>
+            <tr><td>3</td><td><a href="tenant-config.html?id=10005"><b>青藤家长学堂</b></a></td><td><b>¥64,300</b></td><td>688</td><td>6.2%</td><td>402</td><td><span class="badge">→ 持平</span></td></tr>
+            <tr><td>4</td><td><a href="tenant-config.html?id=10004"><b>慧心教育</b></a></td><td><b>¥31,860</b></td><td>355</td><td>9.8%</td><td>188</td><td><span class="badge badge-warn">↓ 3.1%</span></td></tr>
+            <tr><td>5</td><td><a href="tenant-config.html"><b>某某成长中心</b></a></td><td><b>¥18,940</b></td><td>201</td><td>21.0% <span class="badge badge-danger">超阈值</span></td><td>96</td><td><span class="badge badge-danger">↓ 18.2%</span></td></tr>
+          </tbody>
+        </table>
       </div>
     </div>
-  </div>
+  </section>
 
-  <!-- 租户排行榜 -->
-  <div class="card" style="margin-top:16px">
-    <div class="card-hd"><h2>租户排行（按近 30 天 GMV）</h2>
-      <a href="tenants.html" style="font-size:13px;color:var(--color-primary);text-decoration:none">全部租户 →</a>
+  <!-- ============ 获客与转化 ============ -->
+  <section class="dv" data-view="acquire" hidden>
+    <div class="grid-4" style="margin-bottom:16px">
+      <div class="stat"><div class="label">新增线索</div><div class="value">1,284</div><div class="hint">环比 +9.6% · 18 个租户汇总</div></div>
+      <div class="stat"><div class="label">加微率</div><div class="value">46.2%</div><div class="hint">加微 593 人 / 线索 1,284</div></div>
+      <div class="stat"><div class="label">线索 → 成交转化</div><div class="value">12.4%</div><div class="hint">成交 159 单</div></div>
+      <div class="stat"><div class="label">平均获客成本</div><div class="value">¥18.6</div><div class="hint">投放成本 / 新增加微人数</div></div>
     </div>
-    <div class="card-bd" style="padding:0">
-      <table class="data">
-        <thead><tr><th style="width:60px">排名</th><th>租户</th><th>近30天GMV</th><th>订单数</th><th>退款率</th><th>私域线索</th><th>趋势</th></tr></thead>
-        <tbody>
-          <tr><td>1</td><td><a href="tenant-config.html?id=10001"><b>星启家庭教育</b></a></td><td><b>¥126,480</b></td><td>1,264</td><td>5.5%</td><td>842</td><td><span class="badge badge-success">↑ 12.4%</span></td></tr>
-          <tr><td>2</td><td><a href="tenant-config.html?id=10002"><b>晨光少儿成长</b></a></td><td><b>¥98,210</b></td><td>1,020</td><td>4.1%</td><td>615</td><td><span class="badge badge-success">↑ 8.9%</span></td></tr>
-          <tr><td>3</td><td><a href="tenant-config.html?id=10005"><b>青藤家长学堂</b></a></td><td><b>¥64,300</b></td><td>688</td><td>6.2%</td><td>402</td><td><span class="badge">→ 持平</span></td></tr>
-          <tr><td>4</td><td><a href="tenant-config.html?id=10004"><b>慧心教育</b></a></td><td><b>¥31,860</b></td><td>355</td><td>9.8%</td><td>188</td><td><span class="badge badge-warn">↓ 3.1%</span></td></tr>
-          <tr><td>5</td><td><a href="tenant-config.html"><b>某某成长中心</b></a></td><td><b>¥18,940</b></td><td>201</td><td>21.0% <span class="badge badge-danger">超阈值</span></td><td>96</td><td><span class="badge badge-danger">↓ 18.2%</span></td></tr>
-        </tbody>
-      </table>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+      <div class="card">
+        <div class="card-hd"><h2>获客渠道结构</h2></div>
+        <div class="card-bd">
+          <div class="kv-row"><span>小程序自然流量</span><b>38% · 488 条</b></div>
+          <div class="kv-row"><span>视频号 / 直播</span><b>29% · 372 条</b></div>
+          <div class="kv-row"><span>活动裂变</span><b>18% · 231 条</b></div>
+          <div class="kv-row"><span>老客转介</span><b>10% · 128 条</b></div>
+          <div class="kv-row"><span>线下课到场</span><b>5% · 65 条</b></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hd"><h2>加微 → 成单间隔分档</h2><span class="muted" style="font-size:12px">中位 1.8 天 · 7 日内成单 62%</span></div>
+        <div class="card-bd" style="padding:0">
+          <table class="data">
+            <thead><tr><th>分档</th><th>人数</th><th>占比</th><th>累计占比</th></tr></thead>
+            <tbody>
+              <tr><td>当日</td><td>38</td><td>23.9%</td><td>23.9%</td></tr>
+              <tr><td>1 天</td><td>34</td><td>21.4%</td><td>45.3%</td></tr>
+              <tr><td>2 天</td><td>26</td><td>16.4%</td><td>61.7%</td></tr>
+              <tr><td>3 天</td><td>18</td><td>11.3%</td><td>73.0%</td></tr>
+              <tr><td>4–7 天</td><td>21</td><td>13.2%</td><td>86.2%</td></tr>
+              <tr><td>8–14 天</td><td>14</td><td>8.8%</td><td>95.0%</td></tr>
+              <tr><td>15 天以上</td><td>8</td><td>5.0%</td><td>100.0%</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
-  </div>
+  </section>
 
-  <!-- 结算总览 -->
-  <div class="card" style="margin-top:16px">
-    <div class="card-hd"><h2>平台结算总览（弱存管 · 托管代付）</h2></div>
-    <div class="card-bd" style="padding:0">
-      <table class="data">
-        <thead><tr><th>账期</th><th>平台交易额</th><th>退款</th><th>平台费率收入（0.6%）</th><th>商户应结算</th><th>结算状态</th></tr></thead>
-        <tbody>
-          <tr><td>2026-09-06</td><td>¥48,213.60</td><td>¥1,860.00</td><td>¥278.12</td><td>¥46,075.48</td><td><span class="badge badge-warn">对账中</span></td></tr>
-          <tr><td>2026-09-05</td><td>¥52,880.00</td><td>¥2,110.00</td><td>¥304.62</td><td>¥50,465.38</td><td><span class="badge badge-info">待结算确认 (5)</span></td></tr>
-          <tr><td>2026-09-04</td><td>¥61,200.00</td><td>¥980.00</td><td>¥361.32</td><td>¥59,858.68</td><td><span class="badge badge-success">已结算</span></td></tr>
-        </tbody>
-      </table>
-      <p class="muted" style="margin:10px 14px;font-size:12px">资金口径与商家后台「结算」一致：资金先进<b>艺博入金收款主体</b>（通联 · 银行弱存管），按订单商品来源分流——平台内容按佣金率（默认 20%），商家自建内容按服务费率（默认 0.6%），对账无差异后托管代付结算。</p>
+  <!-- ============ 内容经营 ============ -->
+  <section class="dv" data-view="content" hidden>
+    <div class="grid-4" style="margin-bottom:16px">
+      <div class="stat"><div class="label">在线课</div><div class="value">128</div><div class="hint">上架 96 · 待上架 32</div></div>
+      <div class="stat"><div class="label">线下课</div><div class="value">36</div><div class="hint">近 30 天开课 22 场</div></div>
+      <div class="stat"><div class="label">文章</div><div class="value">412</div><div class="hint">近 30 天发布 58 篇</div></div>
+      <div class="stat"><div class="label">直播</div><div class="value">96 场</div><div class="hint">场均观看 1,240 · 场均转化 6.8%</div></div>
     </div>
-  </div>
+    <div class="card" style="margin-bottom:16px">
+      <div class="card-hd"><h2>内容形式效果对比</h2><span class="muted" style="font-size:12px">近 30 天 · 全平台</span></div>
+      <div class="card-bd" style="padding:0">
+        <table class="data">
+          <thead><tr><th>内容形式</th><th>上架数</th><th>曝光量</th><th>下单数</th><th>转化率</th><th>内容 GMV</th></tr></thead>
+          <tbody>
+            <tr><td><b>线上课</b></td><td>96</td><td>186,400</td><td>4,820</td><td>2.6%</td><td>¥486,200</td></tr>
+            <tr><td><b>直播</b></td><td>96</td><td>119,040</td><td>3,910</td><td>3.3%</td><td>¥392,880</td></tr>
+            <tr><td><b>线下课</b></td><td>36</td><td>12,600</td><td>860</td><td>6.8%</td><td>¥215,400</td></tr>
+            <tr><td><b>文章</b></td><td>412</td><td>264,800</td><td>252</td><td>0.1%</td><td>¥41,950</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-hd"><h2>热门内容 TOP 5</h2></div>
+      <div class="card-bd" style="padding:0">
+        <table class="data">
+          <thead><tr><th style="width:60px">排名</th><th>内容</th><th>形式</th><th>所属租户</th><th>曝光</th><th>下单</th><th>GMV</th></tr></thead>
+          <tbody>
+            <tr><td>1</td><td>春启 03 期家长必修课</td><td><span class="tag tag-blue">线上课</span></td><td>星启家庭教育</td><td>28,600</td><td>1,264</td><td>¥126,480</td></tr>
+            <tr><td>2</td><td>青春期沟通训练营</td><td><span class="tag tag-blue">线上课</span></td><td>星启家庭教育</td><td>19,400</td><td>860</td><td>¥98,200</td></tr>
+            <tr><td>3</td><td>中高考命题趋势公开课</td><td><span class="tag tag-purple">直播</span></td><td>晨光少儿成长</td><td>16,800</td><td>688</td><td>¥64,300</td></tr>
+            <tr><td>4</td><td>卓越家族培养计划 · 线下工作坊</td><td><span class="tag tag-green">线下课</span></td><td>慧心教育</td><td>8,200</td><td>355</td><td>¥31,860</td></tr>
+            <tr><td>5</td><td>亲子沟通的三个黄金句式</td><td><span class="tag">文章</span></td><td>青藤家长学堂</td><td>32,400</td><td>96</td><td>¥18,940</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 商品与交易 ============ -->
+  <section class="dv" data-view="trade" hidden>
+    <div class="grid-4" style="margin-bottom:16px">
+      <div class="stat"><div class="label">交易额（已支付）</div><div class="value">¥1,286,430</div><div class="hint">环比 +14.2%</div></div>
+      <div class="stat"><div class="label">订单数</div><div class="value">9,842</div><div class="hint">已完成 8,932 · 退款 528</div></div>
+      <div class="stat"><div class="label">客单价</div><div class="value">¥130.7</div><div class="hint">线上课 ¥100.9 · 线下课 ¥250.5</div></div>
+      <div class="stat"><div class="label">退款率</div><div class="value">5.4%</div><div class="hint">阈值 8.0% · 未超线</div></div>
+    </div>
+    <div class="card" style="margin-bottom:16px">
+      <div class="card-hd"><h2>商品来源与结算模式</h2></div>
+      <div class="card-bd" style="padding:0">
+        <table class="data">
+          <thead><tr><th>商品来源</th><th>结算模式</th><th>订单数</th><th>交易额</th><th>平台费率收入</th></tr></thead>
+          <tbody>
+            <tr><td><span class="tag tag-purple">平台</span></td><td>佣金 20%</td><td>2,140</td><td>¥386,900</td><td>¥77,380.00</td></tr>
+            <tr><td><span class="tag tag-green">商家自建</span></td><td>服务费 0.6%</td><td>7,702</td><td>¥899,530</td><td>¥5,397.18</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-hd"><h2>平台结算总览（弱存管 · 托管代付）</h2></div>
+      <div class="card-bd" style="padding:0">
+        <table class="data">
+          <thead><tr><th>账期</th><th>平台交易额</th><th>退款</th><th>平台费率收入</th><th>商户应结算</th><th>结算状态</th></tr></thead>
+          <tbody>
+            <tr><td>2026-09-06</td><td>¥48,213.60</td><td>¥1,860.00</td><td>¥278.12</td><td>¥46,075.48</td><td><span class="badge badge-warn">对账中</span></td></tr>
+            <tr><td>2026-09-05</td><td>¥52,880.00</td><td>¥2,110.00</td><td>¥304.62</td><td>¥50,465.38</td><td><span class="badge badge-info">待结算确认 (5)</span></td></tr>
+            <tr><td>2026-09-04</td><td>¥61,200.00</td><td>¥980.00</td><td>¥361.32</td><td>¥59,858.68</td><td><span class="badge badge-success">已结算</span></td></tr>
+          </tbody>
+        </table>
+        <p class="muted" style="margin:10px 14px;font-size:12px">资金口径与商家后台「结算」一致：资金先进<b>艺博入金收款主体</b>（通联 · 银行弱存管），按订单商品来源分流——平台内容按佣金率（默认 20%），商家自建内容按服务费率（默认 0.6%），对账无差异后托管代付结算。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 客户经营 ============ -->
+  <section class="dv" data-view="customer" hidden>
+    <div class="grid-4" style="margin-bottom:16px">
+      <div class="stat"><div class="label">C 端用户</div><div class="value">36,410</div><div class="hint">近 30 天新增 4,280</div></div>
+      <div class="stat"><div class="label">付费用户</div><div class="value">8,216</div><div class="hint">付费率 22.6%</div></div>
+      <div class="stat"><div class="label">复购率</div><div class="value">23%</div><div class="hint">二次购买 1,890 人</div></div>
+      <div class="stat"><div class="label">私域好友</div><div class="value">12,486</div><div class="hint">加微率 46.2%</div></div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+      <div class="card">
+        <div class="card-hd"><h2>用户生命周期分层</h2></div>
+        <div class="card-bd">
+          <div class="kv-row"><span>新客（30 天内）</span><b>4,280 · 11.8%</b></div>
+          <div class="kv-row"><span>活跃（30 天内有互动）</span><b>9,860 · 27.1%</b></div>
+          <div class="kv-row"><span>沉默（31–90 天未互动）</span><b>14,320 · 39.3%</b></div>
+          <div class="kv-row"><span>流失（90 天以上未互动）</span><b>7,950 · 21.8%</b></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hd"><h2>各商家私域运营对比</h2></div>
+        <div class="card-bd" style="padding:0">
+          <table class="data">
+            <thead><tr><th>租户</th><th>私域好友</th><th>加微率</th><th>复购率</th></tr></thead>
+            <tbody>
+              <tr><td>星启家庭教育</td><td>3,860</td><td>52.4%</td><td>28%</td></tr>
+              <tr><td>晨光少儿成长</td><td>2,940</td><td>47.1%</td><td>24%</td></tr>
+              <tr><td>青藤家长学堂</td><td>1,880</td><td>41.6%</td><td>19%</td></tr>
+              <tr><td>慧心教育</td><td>1,260</td><td>38.2%</td><td>15%</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 期次复盘 ============ -->
+  <section class="dv" data-view="term" hidden>
+    <div class="grid-4" style="margin-bottom:16px">
+      <div class="stat"><div class="label">已结束期次</div><div class="value">12</div><div class="hint">平台汇总 · 近 12 期</div></div>
+      <div class="stat"><div class="label">期次均价</div><div class="value">¥2,140</div><div class="hint">环比 +6.8%</div></div>
+      <div class="stat"><div class="label">成单间隔中位数</div><div class="value">1.8 天</div><div class="hint">加微 → 成单</div></div>
+      <div class="stat"><div class="label">7 日内成单占比</div><div class="value">62%</div><div class="hint">环比 +3.2pp</div></div>
+    </div>
+    <div class="card" style="margin-bottom:16px">
+      <div class="card-hd"><h2>期次经营对比</h2></div>
+      <div class="card-bd" style="padding:0">
+        <table class="data">
+          <thead><tr><th>期次</th><th>时间</th><th>参训人数</th><th>成单数</th><th>成单率</th><th>期次 GMV</th><th>环比</th></tr></thead>
+          <tbody>
+            <tr><td>春启 03 期</td><td>08-15 ~ 08-31</td><td>1,860</td><td>642</td><td>34.5%</td><td>¥126,480</td><td><span class="badge badge-success">↑ 12.4%</span></td></tr>
+            <tr><td>春启 02 期</td><td>07-15 ~ 07-31</td><td>1,640</td><td>558</td><td>34.0%</td><td>¥112,530</td><td><span class="badge badge-success">↑ 8.9%</span></td></tr>
+            <tr><td>暑期特训期</td><td>07-01 ~ 07-14</td><td>1,420</td><td>486</td><td>34.2%</td><td>¥103,340</td><td><span class="badge">→ 持平</span></td></tr>
+            <tr><td>春启 01 期</td><td>06-01 ~ 06-15</td><td>1,280</td><td>402</td><td>31.4%</td><td>¥86,760</td><td><span class="badge badge-warn">↓ 3.1%</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-hd"><h2>加微 → 成单间隔分档</h2><span class="muted" style="font-size:12px">样本 159 人 · 中位 1.8 天</span></div>
+      <div class="card-bd" style="padding:0">
+        <table class="data">
+          <thead><tr><th>分档</th><th>人数</th><th>占比</th><th>累计占比</th><th>上一期同期</th><th>人数差</th></tr></thead>
+          <tbody>
+            <tr><td>当日</td><td>38</td><td>23.9%</td><td>23.9%</td><td>32</td><td><span class="badge badge-success">+6</span></td></tr>
+            <tr><td>1 天</td><td>34</td><td>21.4%</td><td>45.3%</td><td>30</td><td><span class="badge badge-success">+4</span></td></tr>
+            <tr><td>2 天</td><td>26</td><td>16.4%</td><td>61.7%</td><td>28</td><td><span class="badge badge-warn">-2</span></td></tr>
+            <tr><td>3 天</td><td>18</td><td>11.3%</td><td>73.0%</td><td>21</td><td><span class="badge badge-warn">-3</span></td></tr>
+            <tr><td>4–7 天</td><td>21</td><td>13.2%</td><td>86.2%</td><td>19</td><td><span class="badge badge-success">+2</span></td></tr>
+            <tr><td>8–14 天</td><td>14</td><td>8.8%</td><td>95.0%</td><td>16</td><td><span class="badge badge-warn">-2</span></td></tr>
+            <tr><td>15 天以上</td><td>8</td><td>5.0%</td><td>100.0%</td><td>9</td><td><span class="badge badge-warn">-1</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 商家经营 ============ -->
+  <section class="dv" data-view="merchant" hidden>
+    <div class="grid-4" style="margin-bottom:16px">
+      <div class="stat"><div class="label">入驻商家</div><div class="value">18</div><div class="hint">本月新增 2</div></div>
+      <div class="stat"><div class="label">本月活跃商家</div><div class="value">14</div><div class="hint">活跃定义：当月有成交</div></div>
+      <div class="stat"><div class="label">单商家平均 GMV</div><div class="value">¥71,468</div><div class="hint">近 30 天</div></div>
+      <div class="stat"><div class="label">本月流失</div><div class="value">1</div><div class="hint">到期未续费</div></div>
+    </div>
+    <div class="card" style="margin-bottom:16px">
+      <div class="card-hd"><h2>商家经营对比</h2><span class="muted" style="font-size:12px">近 30 天 · 按 GMV 降序</span></div>
+      <div class="card-bd" style="padding:0">
+        <table class="data">
+          <thead><tr><th>商家</th><th>套餐</th><th>近30天GMV</th><th>订单数</th><th>客单价</th><th>退款率</th><th>私域线索</th><th>健康度</th></tr></thead>
+          <tbody>
+            <tr><td><a href="tenant-config.html?id=10001"><b>星启家庭教育</b></a></td><td><span class="tag tag-blue">专业版</span></td><td><b>¥126,480</b></td><td>1,264</td><td>¥100.1</td><td>5.5%</td><td>842</td><td><span class="badge badge-success">健康</span></td></tr>
+            <tr><td><a href="tenant-config.html?id=10002"><b>晨光少儿成长</b></a></td><td><span class="tag tag-blue">标准版</span></td><td><b>¥98,210</b></td><td>1,020</td><td>¥96.3</td><td>4.1%</td><td>615</td><td><span class="badge badge-success">健康</span></td></tr>
+            <tr><td><a href="tenant-config.html?id=10005"><b>青藤家长学堂</b></a></td><td><span class="tag tag-blue">标准版</span></td><td><b>¥64,300</b></td><td>688</td><td>¥93.5</td><td>6.2%</td><td>402</td><td><span class="badge badge-warn">预警</span></td></tr>
+            <tr><td><a href="tenant-config.html?id=10004"><b>慧心教育</b></a></td><td><span class="tag">试用版</span></td><td><b>¥31,860</b></td><td>355</td><td>¥89.7</td><td>9.8%</td><td>188</td><td><span class="badge badge-warn">预警</span></td></tr>
+            <tr><td><a href="tenant-config.html"><b>某某成长中心</b></a></td><td><span class="muted">—</span></td><td><b>¥18,940</b></td><td>201</td><td>¥94.2</td><td>21.0%</td><td>96</td><td><span class="badge badge-danger">高危</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-hd"><h2>商家分层分布</h2></div>
+      <div class="card-bd">
+        <div class="kv-row"><span>头部（月 GMV ≥ ¥10 万）</span><b>2 家 · 占平台 GMV 17.5%</b></div>
+        <div class="kv-row"><span>腰部（¥3 万 ~ ¥10 万）</span><b>3 家 · 占平台 GMV 15.1%</b></div>
+        <div class="kv-row"><span>长尾（&lt; ¥3 万）</span><b>13 家 · 占平台 GMV 6.1%</b></div>
+        <p class="muted" style="font-size:12px;margin-top:10px">分层按近 30 天 GMV 口径；平台收入向头部集中，长尾商家以内容分发与私域运营扶持为主。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 商家健康度 ============ -->
+  <section class="dv" data-view="health" hidden>
+    <div class="grid-4" style="margin-bottom:16px">
+      <div class="stat"><div class="label">健康商家</div><div class="value">12</div><div class="hint">占比 66.7%</div></div>
+      <div class="stat"><div class="label">预警商家</div><div class="value">4</div><div class="hint">需运营跟进</div></div>
+      <div class="stat"><div class="label">高危商家</div><div class="value">2</div><div class="hint">触发风控 / 退款阈值</div></div>
+      <div class="stat"><div class="label">待处理告警</div><div class="value">7</div><div class="hint">近 7 天新增</div></div>
+    </div>
+    <div class="card">
+      <div class="card-hd"><h2>健康度告警</h2><span class="muted" style="font-size:12px">阈值可配置，命中即汇入运营工作台待办</span></div>
+      <div class="card-bd" style="padding:0">
+        <table class="data">
+          <thead><tr><th>商家</th><th>告警项</th><th>当前值</th><th>阈值</th><th>等级</th><th>建议动作</th></tr></thead>
+          <tbody>
+            <tr><td>某某成长中心</td><td>退款率过高</td><td>21.0%</td><td>≥ 8.0%</td><td><span class="badge badge-danger">高危</span></td><td>冻结新品上架，人工介入核查</td></tr>
+            <tr><td>某某成长中心</td><td>近 30 天无成交</td><td>0 单</td><td>≤ 0 单</td><td><span class="badge badge-danger">高危</span></td><td>运营回访，评估是否续约</td></tr>
+            <tr><td>慧心教育</td><td>退款率偏高</td><td>9.8%</td><td>≥ 8.0%</td><td><span class="badge badge-warn">预警</span></td><td>排查履约与内容质量</td></tr>
+            <tr><td>青藤家长学堂</td><td>套餐即将到期</td><td>剩余 0 天</td><td>≤ 7 天</td><td><span class="badge badge-warn">预警</span></td><td>发起续费提醒</td></tr>
+            <tr><td>乐学伴家庭</td><td>到期未续费</td><td>逾期 30 天</td><td>≥ 30 天</td><td><span class="badge badge-warn">预警</span></td><td>转入停用流程</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
 </div>
 
 <style>
 .kv-row { display:flex; justify-content:space-between; padding:7px 0; font-size:13px; border-bottom:1px dashed var(--color-border); }
 .kv-row:last-child { border-bottom:none; }
 .kv-row span { color:var(--color-text-secondary); }
-@media (max-width: 1100px) { #page-content > div[style*="grid-template-columns:2fr"] { grid-template-columns:1fr !important; } }
+.tag { display:inline-block; padding:2px 8px; border-radius:4px; font-size:12px; }
+.tag-blue { background:#e8f3ff; color:#165dff; }
+.tag-green { background:#e8ffea; color:#009a29; }
+.tag-purple { background:#f4f0ff; color:#722ed1; }
+.data-views {
+  display:flex; align-items:center; gap:6px; flex-wrap:wrap;
+  background:#f7f8fa; border:1px solid #e8e8e8; border-radius:8px;
+  padding:8px 10px; margin-bottom:14px; font-size:13px;
+}
+.data-views a { padding:4px 10px; border-radius:6px; color:var(--color-text-secondary); text-decoration:none; white-space:nowrap; }
+.data-views a:hover { background:#fff; color:var(--color-primary); }
+.data-views a.active { background:var(--color-primary); color:#fff; }
+.data-views-note { margin-left:auto; color:var(--color-text-muted); font-size:12px; }
+@media (max-width: 1100px) {
+  #page-content > section.dv > div[style*="grid-template-columns:2fr"] { grid-template-columns:1fr !important; }
+  #page-content > section.dv > div[style*="grid-template-columns:1fr 1fr"] { grid-template-columns:1fr !important; }
+}
 </style>
 
 <script src="../assets/js/proto.js"></script>
-<script src="../assets/js/ops-shell.js?v=24"></script>
+<script src="../assets/js/ops-shell.js?v=26"></script>
 <script>
 (function () {
+  /* 视角 → 标题 / 面包屑（对照商家管理后台「数据」板块，平台侧视角） */
+  var VIEWS = {
+    overview: { title: "经营总览",   crumb: "运营后台 / 数据 / 经营总览" },
+    acquire:  { title: "获客与转化", crumb: "运营后台 / 数据 / 获客与转化" },
+    content:  { title: "内容经营",   crumb: "运营后台 / 数据 / 内容经营" },
+    trade:    { title: "商品与交易", crumb: "运营后台 / 数据 / 商品与交易" },
+    customer: { title: "客户经营",   crumb: "运营后台 / 数据 / 客户经营" },
+    term:     { title: "期次复盘",   crumb: "运营后台 / 数据 / 期次复盘" },
+    merchant: { title: "商家经营",   crumb: "运营后台 / 数据 / 商家经营" },
+    health:   { title: "商家健康度", crumb: "运营后台 / 数据 / 商家健康度" }
+  };
+
+  var view = "";
+  try { view = new URLSearchParams(location.search).get("view") || ""; } catch (e) { view = ""; }
+  if (!VIEWS[view]) view = "overview";
+  var meta = VIEWS[view];
+
+  /* 只显示当前视角 */
+  document.querySelectorAll("#page-content > section.dv").forEach(function (sec) {
+    sec.hidden = sec.getAttribute("data-view") !== view;
+  });
+  document.querySelectorAll("#data-views a").forEach(function (a) {
+    a.classList.toggle("active", a.getAttribute("data-view") === view);
+  });
+
+  /* 标题 / 面包屑 */
+  var pt = document.getElementById("page-title");
+  if (pt) pt.textContent = meta.title;
+  document.title = meta.title + " · 运营后台";
+  var bc = document.querySelector(".breadcrumb");
+  if (bc) bc.textContent = meta.crumb;
+
+  /* 二期视角在一期视图下拦截（2026-09-29 评审标注：「商家健康度」标记为二期） */
+  var PH2 = window.ProtoPhase2 || { enabled: function () { return false; }, setEnabled: function () {} };
+  if (!PH2.enabled() && view === "health") {
+    document.querySelectorAll("#page-content > section.dv").forEach(function (sec) { sec.hidden = true; });
+    var dvBar = document.getElementById("data-views");
+    if (dvBar) dvBar.style.display = "none";
+    var guard = document.createElement("div");
+    guard.className = "phase2-guard";
+    guard.innerHTML =
+      "<h2>二期能力 · 一期视图下已隐藏</h2>" +
+      "<p>「商家健康度」属于二期功能，默认不进入一期评审范围。</p>" +
+      '<button type="button" class="btn btn-primary" id="phase2-enable">开启二期视图</button>' +
+      '<a class="btn" href="../index.html">返回导航</a>';
+    var pc = document.getElementById("page-content");
+    pc.insertBefore(guard, pc.firstChild);
+    var enableBtn = document.getElementById("phase2-enable");
+    if (enableBtn) {
+      enableBtn.addEventListener("click", function () {
+        PH2.setEnabled(true);
+        location.reload();
+      });
+    }
+    return;
+  }
+
+  /* 侧栏高亮：与当前视角对应 */
+  var wanted = view === "overview" ? "data.html" : "data.html?view=" + view;
+  document.querySelectorAll(".sidebar .nav-item").forEach(function (a) {
+    var href = a.getAttribute("href") || "";
+    if (!/^data\.html/.test(href)) return;
+    a.classList.toggle("active", href === wanted);
+  });
+
   document.getElementById("range-sel").addEventListener("change", function () {
     Proto.toast("已切换时间范围：" + this.value + "（原型）");
   });
-  document.getElementById("btn-export").addEventListener("click", function () { Proto.toast("已导出经营报表（原型）"); });
+  document.getElementById("btn-export").addEventListener("click", function () {
+    Proto.toast("已导出「" + meta.title + "」报表（原型）");
+  });
 })();
 </script>
 </body>

@@ -29,12 +29,10 @@ window.ProtoPhase2 = (function () {
       "assets"
     ],
     ops: [
-      /* 内容与审核：一期链接的 ops 端无该模块（仅 admin 端保留内容资产） */
-      "content-video",
-      "content-offline",
-      "content-article",
-      "content-tags",
-      "content-teachers",
+      /* 2026-09-29 评审标注：
+       * 「内容资产」5 项（线上课 / 线下课 / 文章 / 内容标签 / 讲师管理）去掉二期标识 → 一期
+       * 「平台商品 / 新建商品」去掉二期标识 → 一期
+       * 保留二期：测评中心、学习服务、审核三组；财务「收款与进件」组、服务费台账、结算规则配置 */
       "assess-projects",
       "assess-series",
       "assess-questions",
@@ -53,9 +51,8 @@ window.ProtoPhase2 = (function () {
       "onboard-audit",
       "fee-ledger",
       "settle-rules",
-      /* 交易 · 商品管理：一期链接的 ops 交易仅有订单/权益/售后 */
-      "platform-goods",
-      "goods-edit"
+      /* 数据 · 数据分析：2026-09-29 第三轮评审标注「商家健康度」标记为二期 */
+      "data-health"
     ],
     mp: []
   };

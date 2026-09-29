@@ -1,0 +1,46 @@
+{
+  "v": 1,
+  "updated": "2026-09-29T23:47:12",
+  "items": [
+    {
+      "id": "rmumufkfnpf8d",
+      "page": "admin/dashboard.html",
+      "anchor": {
+        "selector": "#todo > div > a:nth-of-type(1)",
+        "selectorIn": "#todo > div > a:nth-of-type(1)",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "a.wb-item",
+        "text": "待审核内容提交平台审核中的课程/文章5",
+        "html": "<a class=\"wb-item\" href=\"content-series.html?status=pending_review\"><div><div class=\"t\">待审核内容</div><div class=\"d\">提交平台审核中的课程/文章</div></div><div class=\"n\">5</div></a>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "标记为二期",
+      "status": "resolved",
+      "createdAt": "2026-09-29T15:40:50.868Z",
+      "updatedAt": "2026-09-29T15:47:12.547Z"
+    },
+    {
+      "id": "rmumuhos7pi91",
+      "page": "ops/data.html",
+      "anchor": {
+        "selector": "body > div:nth-of-type(2) > div:nth-of-type(2) > aside > div:nth-of-type(2) > a:nth-of-type(8)",
+        "selectorIn": "",
+        "root": "",
+        "region": "shell",
+        "shell": "admin-shell.js",
+        "label": "a.nav-item.active",
+        "text": "商家健康度",
+        "html": "<a class=\"nav-item active\" href=\"data.html?view=health\"><span class=\"nav-text\">商家健康度</span></a>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "标记为二期",
+      "status": "resolved",
+      "createdAt": "2026-09-29T15:42:29.815Z",
+      "updatedAt": "2026-09-29T15:47:12.547Z"
+    }
+  ]
+}

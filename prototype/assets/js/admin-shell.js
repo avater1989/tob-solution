@@ -22,7 +22,7 @@
     try {
       var curPhase = document.currentScript;
       var phaseSrc = (curPhase && curPhase.src)
-        ? curPhase.src.replace(/admin-shell\.js[^/]*$/, "phase2-config.js?v=3")
+        ? curPhase.src.replace(/admin-shell\.js[^/]*$/, "phase2-config.js?v=5")
         : "../assets/js/phase2-config.js";
       var xhrPhase = new XMLHttpRequest();
       xhrPhase.open("GET", phaseSrc, false);
@@ -57,6 +57,17 @@
     isPhase2: function () { return false; },
   };
   var phase2On = PH2.enabled();
+
+  // ===== 内容区「二期」标记：带 data-phase2-only 的元素随二期开关显隐 =====
+  (function applyPhase2Marks() {
+    if (!document.getElementById("phase2-mark-css")) {
+      var st = document.createElement("style");
+      st.id = "phase2-mark-css";
+      st.textContent = "html:not(.phase2-on) [data-phase2-only]{display:none!important}";
+      document.head.appendChild(st);
+    }
+    document.documentElement.classList.toggle("phase2-on", phase2On);
+  })();
 
   /* 二期页面直接访问拦截：一期视图（默认）下显示提示横幅 */
   if (document.body.getAttribute("data-phase2") === "1" && !phase2On) {

@@ -6,6 +6,11 @@
   <title>首页 · To-B 小程序</title>
   <link rel="stylesheet" href="../assets/css/proto.css?v=15" />
   <link rel="stylesheet" href="../assets/css/mp.css?v=21" />
+  <style>
+  /* 首页店铺名称（原搜索栏位置，按评审标注去掉搜索 / 通知 / 扫一扫入口） */
+  .mp-searchrow { padding-top: 8px; }
+  .mp-shop-name { font-size: 19px; font-weight: 700; color: var(--mp-ink); letter-spacing: .2px; }
+  </style>
 </head>
 <body class="mp-page" data-tab="home">
   <div class="mp-frame">
@@ -14,18 +19,9 @@
 
     <div class="mp-body" id="mpHomeBody">
 
-      <!-- 搜索栏 -->
+      <!-- 店铺名称（原搜索栏 + 通知 + 扫一扫，按评审标注仅保留租户店铺名称） -->
       <div class="mp-searchrow">
-        <a class="mp-search" href="#" data-toast="搜索：原型不落地">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
-          想学什么搜搜看
-        </a>
-        <a class="mp-search-ico" href="#" data-toast="消息通知：原型不落地" aria-label="通知">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 9.5a5.5 5.5 0 0 1 11 0c0 4.2 1.5 5.5 1.5 5.5H5s1.5-1.3 1.5-5.5z"/><path d="M10 18.5a2 2 0 0 0 4 0"/></svg>
-        </a>
-        <a class="mp-search-ico" href="#" data-toast="扫一扫：原型不落地" aria-label="扫一扫">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8V5a1 1 0 0 1 1-1h3M20 8V5a1 1 0 0 0-1-1h-3M4 16v3a1 1 0 0 0 1 1h3M20 16v3a1 1 0 0 1-1 1h-3"/><path d="M7 12h10"/></svg>
-        </a>
+        <span class="mp-shop-name">星启家庭教育</span>
       </div>
 
       <!-- 金刚区 -->
@@ -54,7 +50,7 @@
           </span>
           精选文章
         </a>
-        <a href="assess.html">
+        <a href="assess.html" data-phase2-only="1">
           <span class="mp-king-ico k5" aria-hidden="true">
             <svg viewBox="0 0 24 24" fill="none"><rect x="4.2" y="3.5" width="15.6" height="17" rx="2.4" fill="url(#k5a)"/><path d="M8.2 8.2h7.6M8.2 12h7.6M8.2 15.8h4.8" stroke="#fff" stroke-width="1.7" stroke-linecap="round"/><circle cx="16.2" cy="16" r="3.4" fill="#fff"/><path d="M14.8 16.1l.9.9 2-2" stroke="#E11D48" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><defs><linearGradient id="k5a" x1="4" y1="3.5" x2="20" y2="20"><stop stop-color="#FDA4AF"/><stop offset="1" stop-color="#E11D48"/></linearGradient></defs></svg>
           </span>
@@ -67,8 +63,8 @@
         <img src="../assets/img/mp-home/doc-card-full.png?v=2" alt="您好，我是艺博士。您的专属家庭成长顾问。您可以问：孩子辍学、青春期孩子叛逆、亲子沟通" />
       </a>
 
-      <!-- 消息提醒：定制化计划入口 -->
-      <a class="mp-strip" href="plan.html">
+      <!-- 消息提醒：定制化计划入口（二期，随「二期」开关显隐） -->
+      <a class="mp-strip" href="plan.html" data-phase2-only="1">
         <span class="mp-strip-dot">测</span>
         <span class="mp-strip-txt"><b>定制化计划</b>·亲子沟通 21天训练营计划</span>
         <span class="mp-strip-go">去看看 ›</span>
@@ -167,7 +163,7 @@
       <span>顶部</span>
     </a>
   </div>
-  <p class="mp-hint">首页 = 搜索 + 金刚区 + 艺博士 + 直播 + 线上课 + 线下课 + 精选文章 · <a href="learning.html">艺博士</a> · <a href="../admin/mp-home.html">管理端装修</a></p>
+  <p class="mp-hint">首页 = 店铺名称 + 金刚区 + 艺博士 + 直播 + 线上课 + 线下课 + 精选文章 · <a href="learning.html">艺博士</a> · <a href="../admin/mp-home.html">管理端装修</a></p>
 
   <script src="../assets/js/proto.js"></script>
   <script src="../assets/js/content-tags.js?v=2"></script>
@@ -177,7 +173,7 @@
   <script src="../assets/js/goods-store.js?v=1"></script>
   <script src="../assets/js/listing-store.js?v=1"></script>
   <script src="../assets/js/mp-commerce.js?v=2"></script>
-  <script src="../assets/js/mp-shell.js?v=2"></script>
+  <script src="../assets/js/mp-shell.js?v=4"></script>
   <script>
   (function () {
     var Store = window.CourseStore;

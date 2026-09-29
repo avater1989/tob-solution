@@ -21,7 +21,7 @@
     try {
       var curPhase = document.currentScript;
       var phaseSrc = (curPhase && curPhase.src)
-        ? curPhase.src.replace(/ops-shell\.js[^/]*$/, "phase2-config.js?v=3")
+        ? curPhase.src.replace(/ops-shell\.js[^/]*$/, "phase2-config.js?v=5")
         : "../assets/js/phase2-config.js";
       var xhrPhase = new XMLHttpRequest();
       xhrPhase.open("GET", phaseSrc, false);
@@ -55,6 +55,17 @@
     isPhase2: function () { return false; },
   };
   var phase2On = PH2.enabled();
+
+  // ===== 内容区「二期」标记：带 data-phase2-only 的元素随二期开关显隐 =====
+  (function applyPhase2Marks() {
+    if (!document.getElementById("phase2-mark-css")) {
+      var st = document.createElement("style");
+      st.id = "phase2-mark-css";
+      st.textContent = "html:not(.phase2-on) [data-phase2-only]{display:none!important}";
+      document.head.appendChild(st);
+    }
+    document.documentElement.classList.toggle("phase2-on", phase2On);
+  })();
 
   /* 二期页面直接访问拦截：一期视图（默认）下显示提示横幅 */
   if (document.body.getAttribute("data-phase2") === "1" && !phase2On) {
@@ -114,12 +125,6 @@
         ],
       },
       {
-        group: "应用管理",
-        links: [
-          { id: "apps", href: "apps.html", label: "应用管理" },
-        ],
-      },
-      {
         group: "套餐管理",
         links: [
           { id: "plans", href: "plans.html", label: "套餐管理" },
@@ -176,6 +181,8 @@
       {
         group: "资金",
         links: [
+          /* 2026-09-29 评审标注：「支付流水」从「财务」组移到「资金」组，置于对账管理之上 */
+          { id: "pay-flows", href: "pay-flows.html", label: "支付流水" },
           { id: "recon", href: "recon.html", label: "对账管理", badge: 3 },
           { id: "settlements", href: "settlements.html", label: "结算管理", badge: 5 },
           { id: "payouts", href: "payouts.html", label: "提现审核", badge: 2 },
@@ -185,7 +192,6 @@
         group: "财务",
         links: [
           { id: "fee-ledger", href: "fee-ledger.html", label: "服务费台账" },
-          { id: "pay-flows", href: "pay-flows.html", label: "支付流水" },
         ],
       },
       {
@@ -221,10 +227,16 @@
       {
         group: "数据分析",
         links: [
-          { id: "data", href: "data.html", label: "平台经营" },
+          /* 2026-09-29 评审标注：对照商家管理后台「数据」板块重构
+           * （经营总览 / 获客与转化 / 内容经营 / 商品与交易 / 客户经营 / 期次复盘），
+           * 平台侧另保留「商家经营」「商家健康度」两项 */
+          { id: "data", href: "data.html", label: "经营总览" },
+          { id: "data-acquire", href: "data.html?view=acquire", label: "获客与转化" },
+          { id: "data-content", href: "data.html?view=content", label: "内容经营" },
+          { id: "data-trade", href: "data.html?view=trade", label: "商品与交易" },
+          { id: "data-customer", href: "data.html?view=customer", label: "客户经营" },
+          { id: "data-term", href: "data.html?view=term", label: "期次复盘" },
           { id: "data-merchant", href: "data.html?view=merchant", label: "商家经营" },
-          { id: "data-trade", href: "data.html?view=trade", label: "交易分析" },
-          { id: "data-content", href: "data.html?view=content", label: "内容分析" },
           { id: "data-health", href: "data.html?view=health", label: "商家健康度" },
         ],
       },
@@ -243,6 +255,8 @@
         links: [
           { id: "sys-dict", href: "sys-dict.html", label: "数据字典" },
           { id: "channel-mgmt", href: "channel-mgmt.html", label: "渠道管理" },
+          /* 2026-09-29 评审标注：「应用管理」从租户管理模块迁到系统管理下 */
+          { id: "apps", href: "apps.html", label: "应用管理" },
         ],
       },
     ],
@@ -335,10 +349,11 @@
     return html;
   }
 
-  /* 评审路径：二期步骤（平台内容 / 内容审核）随二期开关显隐 */
+  /* 评审路径：二期步骤（内容审核）随二期开关显隐
+   * 2026-09-29 评审标注：「平台内容」去掉二期标识 → 一期步骤 */
   var reviewSteps = [
     { href: "tenants.html", label: "租户开通", phase2: false },
-    { href: "content-video.html", label: "平台内容", phase2: true },
+    { href: "content-video.html", label: "平台内容", phase2: false },
     { href: "audit.html", label: "内容审核", phase2: true },
     { href: "settlements.html", label: "对账结算", phase2: false },
     { href: "orders.html", label: "全局订单", phase2: false },
@@ -359,7 +374,8 @@
     '<button type="button" class="phase2-toggle' + (phase2On ? " on" : "") + '" id="phase2-toggle" aria-pressed="' + (phase2On ? "true" : "false") + '" title="显示/隐藏二期能力（当前：' + (phase2On ? "显示" : "隐藏") + '）">二期</button>' +
     "</div>";
 
-  var notice = showNotice
+  /* 公告条标记为二期：一期视图下不显示（2026-09-29 评审标注） */
+  var notice = showNotice && phase2On
     ? '<div class="notice-bar" id="notice-bar">' +
       "<span>运营后台 · 租户管理 / 内容与审核 / 交易 / 财务 / 数据 / 系统管理</span>" +
       '<button type="button" class="close-notice" id="close-notice" aria-label="关闭">×</button>' +

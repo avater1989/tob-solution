@@ -1,0 +1,25 @@
+{
+  "v": 1,
+  "updated": "2026-09-29T23:40:50",
+  "items": [
+    {
+      "id": "rmumufkfnpf8d",
+      "page": "admin/dashboard.html",
+      "anchor": {
+        "selector": "#todo > div > a:nth-of-type(1)",
+        "selectorIn": "#todo > div > a:nth-of-type(1)",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "a.wb-item",
+        "text": "待审核内容提交平台审核中的课程/文章5",
+        "html": "<a class=\"wb-item\" href=\"content-series.html?status=pending_review\"><div><div class=\"t\">待审核内容</div><div class=\"d\">提交平台审核中的课程/文章</div></div><div class=\"n\">5</div></a>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "标记为二期",
+      "status": "open",
+      "createdAt": "2026-09-29T15:40:50.868Z"
+    }
+  ]
+}

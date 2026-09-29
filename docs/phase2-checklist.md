@@ -3,7 +3,7 @@
 > 基准：协作者一期原型 `https://tob-solution-minimmvp.vercel.app/`（已逐端抓取 `modules` + `sidebars` + C 端导航/页面内容核对，非目测）
 > 口径：本地菜单里「一期链接没有的项」→ 标「二期」，受**评审路径条**右侧的「二期」开关控制（默认隐藏）
 > 状态：**已落地**部分无需确认；**第 1.2 / 1.3 / 2.2 / 2.3 / 三**为需你逐项确认的差异
-> 更新：2026-09-27 已按原型评审标注（`_review/annotations.json`）调整两次，并把 ops 对账/结算/提现放开到一期，见下方「零·续」
+> 更新：2026-09-29 已按原型评审标注（`_review/annotations.json`）处理第三轮 24 条 + 追加 2 条（含 ops 数据板块重构），见下方「零·续」第 6、7 条
 
 ---
 
@@ -84,6 +84,46 @@ ops 端 `recon` / `settlements` / `payouts` 从二期黑名单移除，三个页
 
 > 口径变化：ops 财务模块的 `收款与进件` 由「收款与清分二期 / 进件审核一期」变为**整组二期**；一期视图下 ops 侧栏可达项 22 → 21。
 > 这与此前注释里写的「一期保留进件审核」相反，以本次标注为准。若后续想恢复进件审核为一期，只需从 `phase2-config.js` ops 名单删掉 `onboard-audit` 并去掉该页 `data-phase2`。
+
+### 6. 第三轮原型标注（2026-09-29 23:16 标注 / 23:5x 处理）✅ 已落地
+
+本轮共 24 条，全部处理完毕，`annotations.json` 状态 `open` → `resolved`（待处理 0 / 已修改 24）。
+
+| # | 标注 | 处理 |
+|---|---|---|
+| 1 | `admin/message-push.html` 去掉「站内信」 | 发送渠道表格删行；场景模板下拉删「站内信 / 短信 + 站内信」；`SCENES` 中权益开通改「小程序服务通知」、退款结果改「短信」；发送记录同步 |
+| 2-6 | `miniprogram/home.html`：搜索栏改店铺名、去掉通知与扫一扫、定制化计划入口与「测评」金刚区标记二期 | 搜索栏替换为「租户店铺名称」（星启家庭教育）；两处入口删除；两处加 `data-phase2-only` |
+| 7-11 | `ops/content-video.html`：内容资产 5 项去掉二期标识 | `phase2-config.js` ops 名单删除 `content-video/offline/article/tags/teachers`；5 个页面去掉 `data-phase2`；评审路径「平台内容」改为**一期步骤** |
+| 12 | `ops/content-video.html`：公告条标记二期 | `ops-shell.js` 公告条改为 **仅二期视图显示** |
+| 13-19 | `ops/dashboard.html`：7 处标记二期 | 开通申请 / 内容审核 / 直播审核 / 商品审核 / 售后积压 / 进件异常 / 待审内容 加 `data-phase2-only` |
+| 20 | `ops/data.html`：对照商家后台数据板块重构 | 侧栏「数据分析」重构为 经营总览 / 获客与转化 / 内容经营 / 商品与交易 / 客户经营 / 期次复盘 + 商家经营 / 商家健康度；`data.html` 按 `?view=` 渲染 8 个视角 |
+| 21 | `ops/settlements.html`：支付流水移到「资金」组、置于对账管理之上 | `ops-shell.js` 财务模块「资金」组新增 `pay-flows` 置首，「财务」组只留服务费台账 |
+| 22 | `ops/tenants.html`：「应用管理」放到系统管理下 | 租户管理模块删「应用管理」组；系统管理模块「系统管理」组新增 `apps`；`apps.html` / `app-config.html` 的 `data-module` → `sys`，面包屑改「运营后台 / 系统管理 / 应用管理」 |
+| 23-24 | `ops/trade-orders.html`：平台商品 / 新建商品去掉二期标识 | `phase2-config.js` ops 名单删除 `platform-goods` / `goods-edit`；两页去掉 `data-phase2` |
+
+**机制新增**：内容区「二期」标记统一用 `data-phase2-only` 属性，由 `ops-shell.js` / `mp-shell.js` 注入 `html:not(.phase2-on) [data-phase2-only]{display:none!important}` 实现「一期视图隐藏、开启二期显示」。
+
+**口径变化**：
+
+- ops 二期项 23 → **16**（去内容资产 5 + 平台商品 2）；ops 二期页面 21 → **14**
+- 一期视图下 ops「内容与审核」模块不再整体隐藏，「内容资产」5 项进入一期侧栏
+- 「财务」模块一期视图下只剩「资金」组（支付流水 / 对账管理 / 结算管理 / 提现审核），「财务」「风控与规则」两组（服务费台账 / 结算规则配置）为二期、整组隐藏
+- 缓存版本号：`ops-shell.js?v=25`（66 处）、`mp-shell.js?v=3`（19 处）、`admin-shell.js?v=27`（121 处，内部 `phase2-config.js` 引用升级）、`phase2-config.js?v=4`
+
+### 7. 第三轮·续（2026-09-29 23:42 标注 / 23:47 处理）✅ 已落地
+
+清空上一批后新提 2 条，均为「标记为二期」，沿用「随二期开关显隐」口径：
+
+| # | 标注 | 处理 |
+|---|---|---|
+| 1 | `admin/dashboard.html` · 我的待办「待审核内容」 | 该卡加 `data-phase2-only="1"`；**`admin-shell.js` 补齐 `data-phase2-only` 显隐机制**（此前只有 ops / mp 两个 shell 有） |
+| 2 | `ops/data.html` · 侧栏「商家健康度」 | `phase2-config.js` ops 名单新增 `data-health`（导航徽标 + 一期视图隐藏）；`ops/data.html` 的「商家健康度」切换项加 `data-phase2-only`，并新增**二期视角一期拦截**：一期视图下直接访问 `?view=health` 显示「二期能力 · 一期视图下已隐藏」提示 + 开启二期按钮（复用 `proto.css` 的 `.phase2-guard`） |
+
+**口径变化**：ops 二期项 16 → **17**（+`data-health`）；「数据分析」分组不会整组隐藏（其余 7 项为一期），一期视图下该分组 7 项、二期视图下 8 项。
+
+**连带处理（2026-09-29 23:49 口头确认「标记为二期」）**：`ops/dashboard.html`「异常提醒 · 商家健康度告警」卡片（`href="data.html?view=health"`）补 `data-phase2-only="1"`，与侧栏「商家健康度」口径一致；一期视图下该卡隐藏，异常提醒只剩对账异常 / 权益异常 / 申诉处理 3 项。
+
+**缓存版本号**（本轮再次 bump）：`admin-shell.js?v=28`（121 处）、`ops-shell.js?v=26`（66 处）、`mp-shell.js?v=4`（19 处）、`phase2-config.js?v=5`（3 处 shell 内部引用）
 
 ---
 
@@ -213,6 +253,11 @@ ops 端 `recon` / `settlements` / `payouts` 从二期黑名单移除，三个页
 - `prototype/miniprogram/learning.html`（→ 艺博士会话页）、`ai.html`（→ 跳转桩）、`learn-center.html`（新增，保留原学习中心）、`mine.html`、`plan.html`
 - `_review/annotations.json` / `annotations.md`（第一轮 3 条 + 第二轮 2 条，状态均 `open` → `resolved`，自动留了备份）
 - ops 租户模块相关页面：`ops/tenants.html`、`apps.html`、`plans.html`、`app-config.html`、`plan-edit.html`、`tenant-config.html`、`tenant-profile.html`、`user-detail.html`（`tenant-profile.html` 的 `data-module` 由 `sys` 改 `tenant`；面包屑统一为「运营后台 / 租户管理 / …」）
+- **第三轮标注（2026-09-29）改动文件**：
+  - `prototype/assets/js/phase2-config.js`（ops 名单 -7：内容资产 5 + platform-goods / goods-edit）
+  - `prototype/assets/js/ops-shell.js`（`data-phase2-only` 显隐机制、公告条仅二期显示、评审路径「平台内容」改一期、侧栏：资金组置入支付流水 / 应用管理归入系统管理 / 数据分析分组重构）
+  - `prototype/assets/js/mp-shell.js`（`data-phase2-only` 显隐机制）
+  - 页面：`ops/content-video.html`、`content-offline.html`、`content-article.html`、`content-tags.html`、`content-teachers.html`、`platform-goods.html`、`goods-edit.html`（去 `data-phase2`）；`ops/dashboard.html`（7 处二期标记）；`ops/data.html`（重写为 8 视角）；`ops/apps.html`、`app-config.html`（归属改系统管理）；`admin/message-push.html`（清理站内信）；`miniprogram/home.html`（店铺名 / 去入口 / 二期标记）
 - **缓存版本号同步（2026-09-27 收尾）**：`proto.css?v=15`、`mp.css?v=21`、`admin-shell.js?v=26`、`ops-shell.js?v=24`、`mp-shell.js?v=2`、`board-term.js?v=3`，以及三个 shell 内 `phase2-config.js?v=3`；已复核无残留无版本号引用
 
 ## 附 2：本轮原型新增报表（2026-09-27 第二轮标注）

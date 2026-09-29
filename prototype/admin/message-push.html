@@ -39,14 +39,6 @@
             <td><span class="switch on" data-switch></span></td>
             <td class="row-actions"><a href="#" data-row-act="sms">签名与模板</a><a href="#" data-toast="短信额度（原型示意）">短信额度</a></td>
           </tr>
-          <tr>
-            <td><b>站内信</b></td>
-            <td>商家后台通知（审核结果、异常订单等）</td>
-            <td><span class="badge badge-success">已配置</span></td>
-            <td>无限制</td>
-            <td><span class="switch on" data-switch></span></td>
-            <td class="row-actions"><a href="#" data-row-act="tpl">模板配置</a></td>
-          </tr>
         </tbody>
       </table>
     </div>
@@ -71,7 +63,7 @@
         <thead><tr><th>时间</th><th>场景</th><th>接收人</th><th>渠道</th><th>结果</th></tr></thead>
         <tbody>
           <tr><td>2026-09-07 14:23</td><td>支付成功</td><td>李***（U0001）</td><td>小程序服务通知</td><td><span class="badge badge-success">送达</span></td></tr>
-          <tr><td>2026-09-07 14:23</td><td>权益开通</td><td>李***（U0001）</td><td>站内信</td><td><span class="badge badge-success">送达</span></td></tr>
+          <tr><td>2026-09-07 14:23</td><td>权益开通</td><td>李***（U0001）</td><td>小程序服务通知</td><td><span class="badge badge-success">送达</span></td></tr>
           <tr><td>2026-09-07 09:20</td><td>开课提醒</td><td>张***（U0002）</td><td>短信</td><td><span class="badge badge-success">送达</span></td></tr>
           <tr><td>2026-09-06 20:31</td><td>领课兑换成功</td><td>刘***（U0004）</td><td>小程序服务通知</td><td><span class="badge badge-warn">用户未订阅</span></td></tr>
           <tr><td>2026-09-06 20:19</td><td>退款结果</td><td>陈***（U0010）</td><td>短信</td><td><span class="badge badge-success">送达</span></td></tr>
@@ -91,8 +83,8 @@
       <div class="field"><label>触发时机</label><input id="sc-when" /></div>
       <div class="field"><label>发送渠道 *</label>
         <select id="sc-ch" style="width:100%;padding:7px 8px;border:1px solid var(--color-border);border-radius:6px">
-          <option>小程序服务通知</option><option>短信</option><option>站内信</option>
-          <option>小程序服务通知 + 短信</option><option>短信 + 站内信</option>
+          <option>小程序服务通知</option><option>短信</option>
+          <option>小程序服务通知 + 短信</option>
         </select>
       </div>
       <div class="field"><label>启用状态</label>
@@ -121,17 +113,17 @@
 </style>
 
 <script src="../assets/js/proto.js"></script>
-<script src="../assets/js/admin-shell.js?v=26"></script>
+<script src="../assets/js/admin-shell.js?v=28"></script>
 <script>
 (function () {
   var SCENES = [
     { id:"pay",     name:"支付成功",       when:"支付回调成功后即时",       ch:"小程序服务通知 + 短信", on:true,  txt:"{学员昵称}，你已成功报名《{课程名称}》，点击立即开始学习。" },
-    { id:"benefit", name:"权益开通",       when:"权益开通成功后即时",       ch:"站内信",               on:true,  txt:"权益已开通：{课程名称}，有效期至 {有效期}。" },
+    { id:"benefit", name:"权益开通",       when:"权益开通成功后即时",       ch:"小程序服务通知",       on:true,  txt:"权益已开通：{课程名称}，有效期至 {有效期}。" },
     { id:"course",  name:"开课提醒",       when:"开课前 1 小时",            ch:"小程序服务通知 + 短信", on:true,  txt:"{学员昵称}，你报名的《{课程名称}》将于 {开课时间} 开课，记得准时参加。" },
     { id:"live",    name:"直播开播提醒",   when:"开播前 30 分钟",           ch:"小程序服务通知",       on:true,  txt:"{学员昵称}，你预约的直播《{直播名称}》将于 {直播时间} 开播。" },
     { id:"claim",   name:"领课兑换成功",   when:"兑换成功后即时",           ch:"小程序服务通知",       on:true,  txt:"兑换成功！《{课程名称}》已加入你的学习清单，添加企微老师领取学习资料。" },
     { id:"member",  name:"会员到期提醒",   when:"到期前 7 天 / 到期当天",   ch:"短信",                 on:false, txt:"{学员昵称}，你的会员将于 {到期时间} 到期，续费可继续学习全部课程。" },
-    { id:"refund",  name:"退款结果",       when:"退款成功 / 驳回后即时",     ch:"短信 + 站内信",        on:true,  txt:"你的退款申请已处理，退款金额 {退款金额} 元，预计 1-3 个工作日到账。" },
+    { id:"refund",  name:"退款结果",       when:"退款成功 / 驳回后即时",     ch:"短信",                 on:true,  txt:"你的退款申请已处理，退款金额 {退款金额} 元，预计 1-3 个工作日到账。" },
     { id:"replay",  name:"直播回放生成",   when:"回放生成后即时",           ch:"小程序服务通知",       on:false, txt:"《{直播名称}》回放已生成，点击继续观看。" }
   ];
 
