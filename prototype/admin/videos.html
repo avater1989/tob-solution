@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>视频号 · 商家管理后台</title>
-<link rel="stylesheet" href="../assets/css/proto.css?v=15" />
+<link rel="stylesheet" href="../assets/css/proto.css?v=17" />
 </head>
 <body class="admin-body" data-module="scrm" data-nav="videos" data-title="视频号" data-crumb="SCRM / 全域获客 / 视频号">
 <div id="header-actions"></div>
@@ -51,7 +51,7 @@
           <p class="guide-title">微信小店授权步骤</p>
           <ol>
             <li>使用微信小店「店长」微信登录微信小店后台，进入「服务市场 → 经营工具 → 我的服务」，获取 <b>小店ID</b> 与 <b>授权密钥</b>；</li>
-            <li>回到本页点击「+ 授权微信小店」，填写小店信息并完成授权。</li>
+            <li>回到本页点击「+ 授权微信小店」：第一步填写小店信息；第二步把弹窗给出的 服务器地址 / Token / 消息密钥 填到小店后台「服务市场 → 消息推送」，完成授权。</li>
           </ol>
         </div>
       </div>
@@ -63,23 +63,61 @@
 <!-- ============ 弹窗 ============ -->
 <div class="proto-mask" id="mask"></div>
 
-<!-- 授权微信小店弹窗 -->
-<div class="proto-modal" id="modal-wxauth" style="width:560px">
+<!-- 授权微信小店弹窗（两步：填写小店信息 → 设置消息推送） -->
+<div class="proto-modal" id="modal-wxauth" style="width:600px">
   <div class="proto-modal-hd">
     <h3 style="font-size:16px;font-weight:600">授权微信小店</h3>
     <button class="btn btn-sm btn-ghost" data-close>×</button>
   </div>
   <div class="proto-modal-bd">
-    <p class="muted" style="margin:0 0 10px;font-size:12px">可多次授权不同的微信小店，分别独立管理。小店ID 与 密钥需用店长微信在微信小店后台「服务市场 → 经营工具 → 我的服务」获取。</p>
-    <div class="form-grid">
-      <div class="field"><label>小店ID *</label><input placeholder="wx_store_xxxx" /></div>
-      <div class="field"><label>授权密钥 *</label><input type="password" placeholder="请输入授权密钥" /></div>
-      <div class="field"><label>小店名称</label><input placeholder="选填，便于识别" /></div>
+
+    <div class="wx-steps">
+      <div class="wx-step active" data-step-bar="1"><span class="wx-step-no">1</span>填写小店信息</div>
+      <div class="wx-step" data-step-bar="2"><span class="wx-step-no">2</span>设置消息推送</div>
     </div>
+
+    <!-- 第一步：填写小店信息 -->
+    <div class="wx-step-pane" data-step-pane="1">
+      <p class="muted" style="margin:0 0 12px;font-size:12px">可多次授权不同的微信小店，分别独立管理。小店ID 与 授权密钥需用店长微信在「小店后台 → 服务市场 → 经营工具 → 我的服务」获取。</p>
+      <div class="form-grid">
+        <div class="field"><label>小店ID *</label><input id="wx-store-id" placeholder="wx_store_xxxx" /></div>
+        <div class="field"><label>授权密钥 *</label><input id="wx-store-secret" type="password" placeholder="请输入授权密钥" /></div>
+        <div class="field full"><label>小店名称</label><input id="wx-store-name" placeholder="选填，便于识别" /></div>
+      </div>
+    </div>
+
+    <!-- 第二步：设置消息推送 -->
+    <div class="wx-step-pane" data-step-pane="2" style="display:none">
+      <p class="wx-hint">请将下方三项信息填写到 <b>小店后台 → 服务市场 → 消息推送</b>，否则本平台无法接收该小店的订单消息。</p>
+      <div class="form-grid">
+        <div class="field full"><label>服务器地址</label>
+          <div class="wx-copy">
+            <input id="wx-mp-url" readonly value="https://open.yibo-edu.com/wxshop/callback" />
+            <button type="button" class="btn btn-sm" data-copy="wx-mp-url">复制</button>
+          </div>
+        </div>
+        <div class="field full"><label>Token</label>
+          <div class="wx-copy">
+            <input id="wx-mp-token" readonly value="ybvx7f3a91c2d84e" />
+            <button type="button" class="btn btn-sm" data-copy="wx-mp-token">复制</button>
+          </div>
+        </div>
+        <div class="field full"><label>消息密钥</label>
+          <div class="wx-copy">
+            <input id="wx-mp-aes" readonly value="kQ2mV8sZ1xLpR4tN6yBw9dHc3jF5gA0e" />
+            <button type="button" class="btn btn-sm" data-copy="wx-mp-aes">复制</button>
+          </div>
+        </div>
+      </div>
+      <p class="muted" style="margin:10px 0 0;font-size:12px">消息密钥用于消息体加解密，请勿泄露；如已泄露可重新授权生成新的密钥。</p>
+    </div>
+
   </div>
   <div class="proto-modal-ft" style="border-top:1px solid var(--color-border);padding:12px 20px;display:flex;gap:8px;justify-content:flex-end">
-    <button class="btn" data-close>取消</button>
-    <button class="btn btn-primary" id="wxauth-submit">确认授权</button>
+    <button class="btn" data-close id="wxauth-cancel">取消</button>
+    <button class="btn" id="wxauth-prev" style="display:none">上一步</button>
+    <button class="btn btn-primary" id="wxauth-next">下一步</button>
+    <button class="btn btn-primary" id="wxauth-submit" style="display:none">确认</button>
   </div>
 </div>
 
@@ -89,6 +127,23 @@
 .guide-body { padding: 4px 4px 12px; }
 .guide-title { font-size: 13px; font-weight: 600; margin: 8px 0 4px; }
 .guide-body ol { margin: 4px 0 8px 18px; padding: 0; font-size: 13px; color: var(--color-text-secondary); line-height: 2; }
+
+/* 授权弹窗：两步向导 */
+.wx-steps { display: flex; gap: 8px; margin-bottom: 14px; }
+.wx-step {
+  flex: 1; display: flex; align-items: center; justify-content: center; gap: 6px;
+  height: 36px; border-radius: 6px; font-size: 13px;
+  background: #f2f3f5; color: var(--color-text-secondary);
+}
+.wx-step.active { background: #165dff; color: #fff; }
+.wx-step-no { font-weight: 600; }
+.wx-hint {
+  margin: 0 0 12px; padding: 8px 10px; border-radius: 6px; font-size: 12px; line-height: 1.6;
+  background: #fff7e8; border: 1px solid #ffe1ba; color: #ad6800;
+}
+.wx-copy { display: flex; gap: 6px; align-items: center; }
+.wx-copy input { font-family: ui-monospace, Consolas, monospace; font-size: 12px; background: #f7f8fa; }
+.wx-copy .btn { flex-shrink: 0; }
 </style>
 
 <script src="../assets/js/proto.js"></script>
@@ -129,27 +184,118 @@
       this.textContent = showGuide ? "收起指引 ▴" : "查看授权指引 ▾";
     });
   }
-  document.querySelectorAll("[data-store-act]").forEach(function (a) {
-    a.addEventListener("click", function (e) {
-      e.preventDefault();
-      var act = a.getAttribute("data-store-act");
-      var tr = a.closest("tr");
-      var store = tr ? tr.querySelector("td b").textContent.trim() : "—";
-      if (act === "renew") {
-        Proto.toast("重新授权「" + store + "」（原型）");
-      } else if (act === "unbind") {
-        if (confirm("确定解绑「" + store + "」？解绑后该店铺商品将停止同步。")) {
-          Proto.toast("店铺已解绑（原型）");
-        }
+  // 重新授权 / 解绑：走事件委托，授权新增的行也能生效
+  document.addEventListener("click", function (e) {
+    var a = e.target.closest("[data-store-act]");
+    if (!a) return;
+    e.preventDefault();
+    var act = a.getAttribute("data-store-act");
+    var tr = a.closest("tr");
+    var store = tr && tr.querySelector("td b") ? tr.querySelector("td b").textContent.trim() : "—";
+    if (act === "renew") {
+      Proto.toast("重新授权「" + store + "」（原型）");
+    } else if (act === "unbind") {
+      if (confirm("确定解绑「" + store + "」？解绑后该店铺商品将停止同步。")) {
+        Proto.toast("店铺已解绑（原型）");
       }
+    }
+  });
+
+  // ===== 授权弹窗：两步向导 =====
+  var wxModal = document.getElementById("modal-wxauth");
+  var wxStep = 1;
+
+  function esc(s) {
+    return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) {
+      return ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c];
+    });
+  }
+
+  function setWxStep(n) {
+    wxStep = n;
+    wxModal.querySelectorAll("[data-step-bar]").forEach(function (b) {
+      b.classList.toggle("active", b.getAttribute("data-step-bar") === String(n));
+    });
+    wxModal.querySelectorAll("[data-step-pane]").forEach(function (p) {
+      p.style.display = p.getAttribute("data-step-pane") === String(n) ? "" : "none";
+    });
+    document.getElementById("wxauth-cancel").style.display = n === 1 ? "" : "none";
+    document.getElementById("wxauth-next").style.display = n === 1 ? "" : "none";
+    document.getElementById("wxauth-prev").style.display = n === 2 ? "" : "none";
+    document.getElementById("wxauth-submit").style.display = n === 2 ? "" : "none";
+  }
+
+  function resetWxAuth() {
+    ["wx-store-id", "wx-store-secret", "wx-store-name"].forEach(function (id) {
+      document.getElementById(id).value = "";
+    });
+    setWxStep(1);
+  }
+
+  function stamp() {
+    function pad(v) { return (v < 10 ? "0" : "") + v; }
+    var d = new Date();
+    return d.getFullYear() + "-" + pad(d.getMonth() + 1) + "-" + pad(d.getDate()) +
+      " " + pad(d.getHours()) + ":" + pad(d.getMinutes());
+  }
+
+  /* 刷新ID：原型里由小店ID 派生，保证同一小店每次授权结果一致 */
+  function refreshId(sid) {
+    var h = 0;
+    for (var i = 0; i < sid.length; i++) h = (h * 31 + sid.charCodeAt(i)) >>> 0;
+    return "wx_refresh_" + ("000000" + h.toString(16)).slice(-6);
+  }
+
+  function addStoreRow(name, sid) {
+    var tbody = document.querySelector("#panel-auth table.data tbody");
+    if (!tbody) return;
+    var tr = document.createElement("tr");
+    tr.innerHTML =
+      "<td><b>" + esc(name) + "</b></td>" +
+      "<td>" + esc(sid) + "</td>" +
+      '<td><span class="badge badge-success">已授权</span></td>' +
+      "<td>" + stamp() + "</td>" +
+      '<td class="row-actions"><a href="#" data-store-act="renew">重新授权</a>' +
+      '<a href="#" data-store-act="unbind">解绑</a></td>';
+    tbody.appendChild(tr);
+  }
+
+  // 复制服务器地址 / Token / 消息密钥
+  document.querySelectorAll("[data-copy]").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      var el = document.getElementById(btn.getAttribute("data-copy"));
+      if (!el) return;
+      try {
+        el.removeAttribute("readonly");
+        el.select();
+        document.execCommand("copy");
+        el.setAttribute("readonly", "readonly");
+      } catch (err) {}
+      Proto.toast("已复制");
     });
   });
+
   document.getElementById("wx-auth").addEventListener("click", function () {
-    open(document.getElementById("modal-wxauth"));
+    resetWxAuth();
+    open(wxModal);
   });
+
+  document.getElementById("wxauth-next").addEventListener("click", function () {
+    if (!document.getElementById("wx-store-id").value.trim()) { Proto.toast("请输入小店ID"); return; }
+    if (!document.getElementById("wx-store-secret").value.trim()) { Proto.toast("请输入授权密钥"); return; }
+    setWxStep(2);
+  });
+
+  document.getElementById("wxauth-prev").addEventListener("click", function () {
+    setWxStep(1);
+  });
+
   document.getElementById("wxauth-submit").addEventListener("click", function () {
+    var sid = document.getElementById("wx-store-id").value.trim();
+    var name = document.getElementById("wx-store-name").value.trim() || sid;
     closeAll();
-    Proto.toast("授权成功（原型）");
+    addStoreRow(name, sid);
+    Proto.toast("授权成功，刷新ID：" + refreshId(sid) + "（原型）");
   });
 })();
 </script>

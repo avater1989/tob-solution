@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>线上课 · 商家管理后台</title>
-<link rel="stylesheet" href="../assets/css/proto.css?v=15" />
+<link rel="stylesheet" href="../assets/css/proto.css?v=17" />
 <style>
 .cs-row { background:#fff;border:1px solid #e8e8e8;border-radius:8px;margin-bottom:12px;padding:14px 16px;display:flex;align-items:center;gap:14px; }
 .cs-row:hover { border-color:#165dff; box-shadow:0 4px 14px rgba(22,93,255,.1); }
@@ -18,6 +18,8 @@
 .cs-badge { font-size:11px;padding:1px 6px;border-radius:3px;background:#fff7e6;color:#d46b08;font-weight:500; }
 .cs-badge.premium { background:#f9f0ff;color:#722ed1; }
 .cs-actions { display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end;max-width:400px; }
+.cs-goods { color:var(--color-primary); text-decoration:none; cursor:pointer; }
+.cs-goods:hover { text-decoration:underline; }
 </style>
 </head>
 <body class="admin-body" data-module="content" data-nav="content-video" data-title="线上课" data-crumb="内容 / 内容资产 / 线上课">
@@ -49,17 +51,16 @@
       <button class="btn" id="btn-reset">重置</button>
     </div>
   </div></div>
-  <p style="font-size:12px;color:#8c8c8c;margin:0 0 12px">系列课已并入线上课。<b>内容不承载价格</b>，价格只在「商品列表」维护；同一内容可建多个商品。已上架时章节锁定，须先下架再改。</p>
   <div id="legacy-banner" style="display:none;margin-bottom:12px"></div>
   <div id="list"></div>
   <div style="margin-top:12px;font-size:12px;color:#8c8c8c">共 <b id="count">0</b> 条</div>
 </div>
 
 <script src="../assets/js/proto.js"></script>
-<script src="../assets/js/content-tags.js?v=2"></script>
-<script src="../assets/js/teachers-store.js?v=2"></script>
+<script src="../assets/js/content-tags.js?v=3"></script>
+<script src="../assets/js/teachers-store.js?v=3"></script>
 <script src="../assets/js/course-store.js?v=2"></script>
-<script src="../assets/js/goods-store.js?v=1"></script>
+<script src="../assets/js/goods-store.js?v=2"></script>
 <script src="../assets/js/share-modal.js?v=1"></script>
 <script src="../assets/js/admin-shell.js?v=28"></script>
 <script>
@@ -67,6 +68,7 @@ var Store = window.CourseStore;
 var Goods = window.GoodsStore;
 var Tags = window.ContentTags;
 var Teachers = window.Teachers;
+if (Goods.ensureDemoGoods) Goods.ensureDemoGoods();
 
 document.getElementById("f-teacher").insertAdjacentHTML("beforeend", Teachers.optionsHtml());
 var tagFilter = Tags.mountTreeSelect("#f-tag", {
@@ -124,10 +126,10 @@ function render() {
         '<div class="cs-stats">' +
           "<span>讲师 " + Teachers.avatarHtml(c.teacherId, { size: 22 }) + " <b>" + esc(Store.teacherName(c)) + "</b></span>" +
           "<span>标签 " + Tags.labelsHtml(c.tagIds) + "</span>" +
-          "<span>关联商品 <b>" + Goods.listByContent(c.id).length + "</b></span>" +
           "<span>总时长 <b>" + Store.durationSummary(c) + "</b></span>" +
           "<span>章节 <b>" + Store.chapterCount(c) + "</b></span>" +
           "<span>观看 <b>" + (c.views || 0) + "</b></span>" +
+          '<a class="cs-goods" href="#" data-goods-of="' + esc(c.id) + '">关联商品 <b>' + Goods.listByContent(c.id).length + "</b></a>" +
         "</div>" +
       "</div>" +
       '<div class="cs-actions">' + acts + "</div>" +
@@ -175,10 +177,20 @@ document.getElementById("list").addEventListener("click", function (e) {
     '<b style="color:#ad6800">有 ' + need.length + ' 个内容待补建商品</b>' +
     '<div style="font-size:12px;color:#ad6800;margin-top:4px;line-height:1.7">内容已不再承载价格，以下内容在旧版本中带有价格但尚无关联商品，无法上架售卖：' +
     need.map(function (c) {
-      return '<a href="content-video-edit.html?id=' + encodeURIComponent(c.id) + '">' + esc(c.name) + "（原 ¥" + c._legacyPrice + '）</a>';
+      return '<a href="goods.html?content_id=' + encodeURIComponent(c.id) + '">' + esc(c.name) + "（原 ¥" + c._legacyPrice + '）</a>';
     }).join("、") +
-    '。请进入内容编辑页的「关联商品」页签补建商品。</div></div></div>';
+    '。请到「商品列表」补建商品后再上架。</div></div></div>';
 })();
+
+/* 关联商品：点击跳到商品列表并按当前内容筛选；无商品时提示 */
+document.addEventListener("click", function (e) {
+  var a = e.target.closest("[data-goods-of]");
+  if (!a) return;
+  e.preventDefault();
+  var cid = a.getAttribute("data-goods-of");
+  if (!Goods.listByContent(cid).length) { Proto.toast("还没有商品"); return; }
+  location.href = "goods.html?content_id=" + encodeURIComponent(cid);
+});
 
 render();
 </script>

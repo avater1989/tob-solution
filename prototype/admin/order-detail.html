@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>订单详情 · 商家管理后台</title>
-<link rel="stylesheet" href="../assets/css/proto.css?v=15" />
+<link rel="stylesheet" href="../assets/css/proto.css?v=17" />
 </head>
 <body class="admin-body" data-module="trade" data-nav="orders" data-title="订单详情" data-crumb="交易 / 订单 / 订单详情">
 <div id="header-actions">
@@ -43,7 +43,6 @@
         <span class="badge" id="od-status-badge" style="font-size:13px">—</span>
         <b class="mono" id="od-no">—</b>
         <span class="tag tag-green" id="od-channel-tag">视频号</span>
-        <span class="tag tag-blue" id="od-goods-tag">课程商品</span>
       </div>
       <div class="os-flow" id="od-flow"></div>
     </div>
@@ -532,11 +531,6 @@
   document.getElementById("od-no").textContent = order.id;
   document.getElementById("od-info-no").textContent = order.id;
   document.getElementById("od-channel-tag").textContent = orderChannel;
-  var goodsTagEl = document.getElementById("od-goods-tag");
-  goodsTagEl.textContent = goodsType;
-  goodsTagEl.className = "tag " + (goodsType === "直播商品" ? "tag-orange" :
-    goodsType === "定制化计划商品" ? "tag-purple" :
-      goodsType === "线下门票" ? "tag-green" : "tag-blue");
   document.getElementById("od-product").textContent = order.product || (right && right.course) || "—";
   document.getElementById("od-product-sub").textContent =
     (goodsType === "线下门票" ? "线下活动 · " :

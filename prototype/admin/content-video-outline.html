@@ -4,19 +4,18 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>章节管理 · 商家管理后台</title>
-<link rel="stylesheet" href="../assets/css/proto.css?v=15" />
+<link rel="stylesheet" href="../assets/css/proto.css?v=17" />
 <link rel="stylesheet" href="../assets/css/content-mgmt.css?v=4" />
 </head>
 <body class="admin-body" data-module="content" data-nav="content-video" data-title="章节管理" data-crumb="内容 / 内容资产 / 线上课 / 章节管理">
 
 <div id="header-actions">
-  <button class="btn" id="btn-new-ch" style="display:none">+ 新建章节</button>
-  <button class="btn btn-primary" id="btn-publish" style="display:none">完成并提交审核</button>
   <a class="btn" href="content-video.html">返回列表</a>
+  <button class="btn" id="btn-new-ch" style="display:none">+ 新建章节</button>
+  <button class="btn btn-primary" id="btn-publish" style="display:none">完成并提交</button>
 </div>
 
 <div id="page-content" style="display:none">
-  <a class="cm-back" href="content-video.html">← 返回线上课列表</a>
   <div class="cm-page-hd">
     <div>
       <h1 id="o-name">—</h1>
@@ -55,30 +54,12 @@
         <div class="muted" style="font-size:12px">勾选后，本节可被小程序上架配置选为试看内容；实际开放多少试看由「首页装修」的上架配置决定。</div>
       </div>
       <div class="field">
-        <label>内容标签</label>
-        <div id="ch-tags"></div>
-      </div>
-      <div class="field">
         <label>上传视频 *</label>
         <div style="display:flex;gap:8px;align-items:center">
           <input class="input" id="ch-video" placeholder="未选择文件" readonly style="flex:1" />
           <button type="button" class="btn" id="btn-up-video">选择视频</button>
         </div>
         <div class="field" style="margin-top:8px"><label>时长</label><input class="input" id="ch-dur" placeholder="如：15分钟" /></div>
-      </div>
-      <div class="field">
-        <label>上传思维导图</label>
-        <div style="display:flex;gap:8px;align-items:center">
-          <input class="input" id="ch-mind" placeholder="未选择文件" readonly style="flex:1" />
-          <button type="button" class="btn" id="btn-up-mind">选择文件</button>
-        </div>
-      </div>
-      <div class="field">
-        <label>上传课件 PPT</label>
-        <div style="display:flex;gap:8px;align-items:center">
-          <input class="input" id="ch-ppt" placeholder="未选择文件" readonly style="flex:1" />
-          <button type="button" class="btn" id="btn-up-ppt">选择文件</button>
-        </div>
       </div>
     </div>
     <div class="proto-modal-ft" style="justify-content:flex-end;gap:8px;padding:12px 16px;border-top:1px solid var(--color-border);display:flex">
@@ -89,8 +70,8 @@
 </div>
 
 <script src="../assets/js/proto.js"></script>
-<script src="../assets/js/content-tags.js?v=2"></script>
-<script src="../assets/js/teachers-store.js?v=2"></script>
+<script src="../assets/js/content-tags.js?v=3"></script>
+<script src="../assets/js/teachers-store.js?v=3"></script>
 <script src="../assets/js/course-store.js?v=1"></script>
 <script src="../assets/js/admin-shell.js?v=28"></script>
 <script>
@@ -99,7 +80,6 @@ var Tags = window.ContentTags;
 var id = new URLSearchParams(location.search).get("id") || "";
 var course = Store.get(id);
 var editingIdx = -1;
-var chTagPicker = null;
 
 function esc(s) {
   return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) {
@@ -141,7 +121,7 @@ function render() {
   document.getElementById("btn-new-ch").style.display = readonly ? "none" : "";
   document.getElementById("btn-publish").style.display = readonly ? "none" : "";
   document.getElementById("btn-publish").textContent =
-    course.source === "platform" ? "完成并上架" : "完成并提交审核";
+    course.source === "platform" ? "完成并上架" : "完成并提交";
   document.getElementById("o-ch-count").textContent = Store.chapterCount(course);
 
   document.getElementById("o-chapters").innerHTML = (course.chapters || []).map(function (ch, i) {
@@ -164,12 +144,7 @@ function render() {
         '<span class="cm-lesson-idx">▶</span>' +
         '<div class="cm-lesson-bd">' +
           '<div class="cm-lesson-title">' + esc(ch.videoName || "未上传视频") + "</div>" +
-          '<div class="cm-lesson-meta">' + esc(ch.duration || "—") +
-            " · 观看 <b>" + (ch.views || 0) + "</b>" +
-            " · 导图 " + esc(ch.mindmapName || "无") +
-            " · PPT " + esc(ch.pptName || "无") +
-            " · 标签 " + Tags.namesByIds(ch.tagIds || []).join("、") +
-          "</div>" +
+          '<div class="cm-lesson-meta">' + esc(ch.duration || "—") + "</div>" +
         "</div>" +
       "</div>" +
     "</div>";
@@ -202,12 +177,6 @@ function openChapterModal(idx) {
   document.getElementById("ch-free").checked = !!ch.free;
   document.getElementById("ch-video").value = ch.videoName || "";
   document.getElementById("ch-dur").value = ch.duration || "";
-  document.getElementById("ch-mind").value = ch.mindmapName || "";
-  document.getElementById("ch-ppt").value = ch.pptName || "";
-  chTagPicker = Tags.mountTreeSelect("#ch-tags", {
-    selectedIds: ch.tagIds || [],
-    placeholder: "请选择内容标签（可多选）"
-  });
   openModal();
 }
 
@@ -217,29 +186,21 @@ document.getElementById("btn-up-video").addEventListener("click", function () {
   if (!document.getElementById("ch-dur").value) document.getElementById("ch-dur").value = "10分钟";
   Proto.toast("已选择视频（原型）");
 });
-document.getElementById("btn-up-mind").addEventListener("click", function () {
-  document.getElementById("ch-mind").value = "思维导图_" + Date.now() + ".png";
-  Proto.toast("已选择思维导图（原型）");
-});
-document.getElementById("btn-up-ppt").addEventListener("click", function () {
-  document.getElementById("ch-ppt").value = "课件_" + Date.now() + ".pptx";
-  Proto.toast("已选择课件（原型）");
-});
 
 document.getElementById("btn-save-ch").addEventListener("click", function () {
   var title = document.getElementById("ch-name").value.trim();
   if (!title) { Proto.toast("请填写章节名称"); return; }
   var videoName = document.getElementById("ch-video").value.trim();
   if (!videoName) { Proto.toast("请上传视频"); return; }
-  var tagIds = chTagPicker ? chTagPicker.getSelected() : [];
+  var tagIds = editingIdx >= 0 ? (course.chapters[editingIdx].tagIds || []) : [];
   var payload = {
     title: title,
     free: document.getElementById("ch-free").checked,
     tagIds: tagIds,
     videoName: videoName,
     duration: document.getElementById("ch-dur").value.trim(),
-    mindmapName: document.getElementById("ch-mind").value.trim(),
-    pptName: document.getElementById("ch-ppt").value.trim(),
+    mindmapName: editingIdx >= 0 ? (course.chapters[editingIdx].mindmapName || "") : "",
+    pptName: editingIdx >= 0 ? (course.chapters[editingIdx].pptName || "") : "",
     views: editingIdx >= 0 ? (course.chapters[editingIdx].views || 0) : 0
   };
   if (editingIdx >= 0) payload.id = course.chapters[editingIdx].id;

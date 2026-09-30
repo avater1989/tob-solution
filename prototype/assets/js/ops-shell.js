@@ -255,6 +255,8 @@
         links: [
           { id: "sys-dict", href: "sys-dict.html", label: "数据字典" },
           { id: "channel-mgmt", href: "channel-mgmt.html", label: "渠道管理" },
+          /* 2026-09-30 评审标注：C 端消息模板统一在运营后台配置，新增「消息配置」 */
+          { id: "message-config", href: "message-config.html", label: "消息配置" },
           /* 2026-09-29 评审标注：「应用管理」从租户管理模块迁到系统管理下 */
           { id: "apps", href: "apps.html", label: "应用管理" },
         ],

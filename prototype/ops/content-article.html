@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>文章 · 艺博 To-B</title>
-<link rel="stylesheet" href="../assets/css/proto.css?v=15" />
+<link rel="stylesheet" href="../assets/css/proto.css?v=17" />
 <style>
 .ca-list { background: #fff; border: 1px solid #e8e8e8; border-radius: 8px; overflow: hidden; }
 .ca-row {
@@ -37,7 +37,6 @@
 <body class="admin-body" data-module="content" data-nav="content-article" data-title="文章" data-crumb="运营后台 / 内容与审核 / 内容资产 / 文章">
 
 <div id="header-actions">
-  <button class="btn">批量删除</button>
   <a class="btn btn-primary" href="content-article-edit.html">+ 新增图文</a>
 </div>
 
@@ -70,24 +69,12 @@
 <!-- 弹窗遮罩 -->
 <div class="proto-mask" id="mask"></div>
 
-<!-- 删除图文二次确认 -->
-<div class="proto-modal" id="modal-del" style="width:440px">
-  <div class="proto-modal-hd"><h3 style="font-size:16px;font-weight:600">删除图文</h3><button class="btn btn-sm btn-ghost" data-close>×</button></div>
-  <div class="proto-modal-bd">
-    <p>确定删除《<b id="del-name"></b>》？删除后学员端将不再展示，且无法恢复。</p>
-  </div>
-  <div class="proto-drawer-ft" style="border-top:1px solid var(--color-border);padding:12px 20px;display:flex;gap:8px;justify-content:flex-end">
-    <button class="btn" data-close>取消</button>
-    <button class="btn btn-primary" id="del-confirm" style="background:#f53f3f;border-color:#f53f3f">确认删除</button>
-  </div>
-</div>
-
 <script src="../assets/js/proto.js"></script>
-<script src="../assets/js/content-tags.js?v=2"></script>
+<script src="../assets/js/content-tags.js?v=3"></script>
 <script src="../assets/js/prototype-business-store.js"></script>
-<script src="../assets/js/goods-store.js?v=1"></script>
+<script src="../assets/js/goods-store.js?v=2"></script>
 <script src="../assets/js/share-modal.js?v=1"></script>
-<script src="../assets/js/ops-shell.js?v=26"></script>
+<script src="../assets/js/ops-shell.js?v=27"></script>
 <script>
 setTimeout(function() {
   if (document.documentElement.getAttribute('data-shell-ready') === '1') return;
@@ -160,14 +147,12 @@ function renderList() {
           '</div>' +
         '</div>' +
         '<div class="ca-actions">' +
-          '<button class="btn" data-share="' + a.id + '"' + (a.onShelf ? '' : ' disabled') + '>分享设置</button>' +
-          '<a class="btn" href="content-article-detail.html?id=' + a.id + '">查看图文</a>' +
+          '<button class="btn" data-share="' + a.id + '" data-phase2-only="1"' + (a.onShelf ? '' : ' disabled') + '>分享设置</button>' +
+          '<a class="btn" href="content-article-detail.html?id=' + a.id + '">查看</a>' +
           (a.onShelf
             ? '<button class="btn" data-shelf-off="' + a.id + '">下架</button>'
             : '<a class="btn btn-primary" href="content-article-edit.html?id=' + a.id + '">编辑</a>' +
               '<button class="btn" data-shelf-on="' + a.id + '">上架</button>') +
-          '<button class="btn" style="color:#f53f3f;border-color:#ffa39e" data-del="' + a.id + '">删除</button>' +
-          '<button class="btn" data-copy="' + a.id + '">复制</button>' +
         '</div>' +
       '</div>';
   }).join("");
@@ -180,20 +165,6 @@ function closeAll() {
   mask.classList.remove("open");
   document.querySelectorAll(".proto-modal").forEach(function(n) { n.classList.remove("open"); });
 }
-function openModal(el) {
-  if (!el) return;
-  mask.classList.add("open");
-  el.classList.add("open");
-}
-var pendingDelId = null;
-document.getElementById("del-confirm").addEventListener("click", function () {
-  if (!pendingDelId) return;
-  ARTICLES = ARTICLES.filter(function (x) { return x.id !== pendingDelId; });
-  pendingDelId = null;
-  closeAll();
-  renderList();
-  Proto.toast("已删除");
-});
 function openShare(id) {
   var a = ARTICLES.find(function(x){ return x.id === id; });
   XiboShare.open({ type: "图文", url: "https://yibo.app/a/" + id, cover: a ? a.cover : "", name: a ? a.title : "", desc: "" });
@@ -216,15 +187,6 @@ document.addEventListener("click", function(e) {
     if (a2) { a2.onShelf = true; a2.status = "已上架"; renderList(); Proto.toast("已上架"); }
     return;
   }
-  var del = e.target.closest("[data-del]");
-  if (del) {
-    pendingDelId = del.getAttribute("data-del");
-    var da = ARTICLES.find(function (x) { return x.id === pendingDelId; });
-    document.getElementById("del-name").textContent = da ? da.title : pendingDelId;
-    openModal(document.getElementById("modal-del"));
-    return;
-  }
-  if (e.target.closest("[data-copy]")) Proto.toast("已复制图文（演示）");
 });
 mask && mask.addEventListener("click", closeAll);
 document.querySelectorAll("[data-close]").forEach(function(b) { b.addEventListener("click", closeAll); });

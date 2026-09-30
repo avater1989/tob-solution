@@ -4,13 +4,12 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>订单列表 · 商家管理后台</title>
-<link rel="stylesheet" href="../assets/css/proto.css?v=15" />
+<link rel="stylesheet" href="../assets/css/proto.css?v=17" />
 </head>
 <body class="admin-body" data-module="trade" data-nav="orders" data-title="订单列表" data-crumb="交易 / 订单管理 / 订单列表">
 <div id="header-actions">
-  <button class="btn" id="btn-export">导出订单</button>
+  <button class="btn" id="btn-export" data-phase2-only="1">导出订单</button>
   <button class="btn" id="btn-sync">同步公域订单</button>
-  <button class="btn btn-primary" id="btn-create">手工补单</button>
 </div>
 <div id="page-content" style="display:none">
 
@@ -41,10 +40,6 @@
       <select id="f-channel">
         <option value="">渠道来源</option>
         <option>小程序</option><option>视频号</option><option>直播间</option>
-      </select>
-      <select id="f-promoter">
-        <option value="">推广人</option>
-        <option>赵老师</option><option>阮荣均</option><option>王助教</option><option>无</option>
       </select>
       <select id="f-pay-status">
         <option value="">支付状态</option>
@@ -77,7 +72,6 @@
           <th>渠道来源</th>
           <th>商品来源</th>
           <th>结算模式</th>
-          <th>推广人</th>
           <th>支付状态</th>
           <th>权益状态</th>
           <th>退款状态</th>
@@ -95,9 +89,7 @@
           <td><b>¥9.90</b></td>
           <td><span class="tag tag-green">视频号</span></td>
           <td><span class="tag tag-purple">平台</span></td>
-          <td>佣金 20%</td>
-          <td>—</td>
-          <td><span class="badge badge-info">已支付</span></td>
+          <td>佣金 20%</td>          <td><span class="badge badge-info">已支付</span></td>
           <td><span class="badge badge-info">已开通</span></td>
           <td><span class="muted">—</span></td>
           <td>2026-09-07 14:22</td>
@@ -114,9 +106,7 @@
           <td><b>¥0.00</b></td>
           <td><span class="tag tag-purple">直播间</span></td>
           <td><span class="tag tag-green">自建</span></td>
-          <td>服务费 0.6%</td>
-          <td>阮荣均</td>
-          <td><span class="badge badge-success">已完成</span></td>
+          <td>服务费 0.6%</td>          <td><span class="badge badge-success">已完成</span></td>
           <td><span class="badge badge-info">已开通</span></td>
           <td><span class="muted">—</span></td>
           <td>2026-03-28 20:18</td>
@@ -132,9 +122,7 @@
           <td><b>¥9.90</b></td>
           <td><span class="tag tag-blue">小程序</span></td>
           <td><span class="tag tag-green">自建</span></td>
-          <td>服务费 0.6%</td>
-          <td>王助教</td>
-          <td><span class="badge badge-warn">待付款</span></td>
+          <td>服务费 0.6%</td>          <td><span class="badge badge-warn">待付款</span></td>
           <td><span class="muted">未开通</span></td>
           <td><span class="muted">—</span></td>
           <td>2026-03-27 15:30</td>
@@ -150,9 +138,7 @@
           <td><b>¥9.90</b></td>
           <td><span class="tag tag-blue">小程序</span></td>
           <td><span class="tag tag-green">自建</span></td>
-          <td>服务费 0.6%</td>
-          <td>赵老师</td>
-          <td><span class="badge badge-danger">已退款</span></td>
+          <td>服务费 0.6%</td>          <td><span class="badge badge-danger">已退款</span></td>
           <td><span class="badge">已回收</span></td>
           <td><span class="badge badge-danger">已退款 ¥9.90</span></td>
           <td>2026-03-25 14:22</td>
@@ -168,9 +154,7 @@
           <td><b>¥99.00</b></td>
           <td><span class="tag tag-green">视频号</span></td>
           <td><span class="tag tag-purple">平台</span></td>
-          <td>佣金 20%</td>
-          <td>—</td>
-          <td><span class="badge badge-info">已支付</span></td>
+          <td>佣金 20%</td>          <td><span class="badge badge-info">已支付</span></td>
           <td><span class="badge badge-info">已开通</span></td>
           <td><span class="muted">—</span></td>
           <td>2026-03-25 11:05</td>
@@ -187,9 +171,7 @@
           <td><b>¥299.00</b></td>
           <td><span class="tag tag-blue">小程序</span></td>
           <td><span class="tag tag-green">自建</span></td>
-          <td>服务费 0.6%</td>
-          <td>赵老师</td>
-          <td><span class="badge badge-info">已支付</span></td>
+          <td>服务费 0.6%</td>          <td><span class="badge badge-info">已支付</span></td>
           <td><span class="badge badge-info">已开通</span></td>
           <td><span class="badge badge-warn">退款中</span></td>
           <td>2026-03-24 18:47</td>
@@ -324,7 +306,7 @@
       product: tds[1] ? tds[1].textContent.trim() : "",
       buyer: tds[2] ? tds[2].childNodes[0].textContent.trim() : "",
       paid: tds[3] ? tds[3].textContent.trim() : "",
-      payStatus: tds[8] ? tds[8].textContent.trim() : "",
+      payStatus: tds[7] ? tds[7].textContent.trim() : "",
       settleMode: tds[6] ? tds[6].textContent.trim() : "",
     };
   }
@@ -369,11 +351,10 @@
   // ===== Header buttons =====
   document.getElementById("btn-export").addEventListener("click", function () { Proto.toast("已导出订单列表（原型）"); });
   document.getElementById("btn-sync").addEventListener("click", function () { Proto.toast("已触发视频号订单同步（原型）"); });
-  document.getElementById("btn-create").addEventListener("click", function () { Proto.toast("打开手工补单（原型）"); });
   document.getElementById("btn-query").addEventListener("click", function () { Proto.toast("已筛选（原型）"); });
   document.getElementById("btn-reset").addEventListener("click", function () {
     ["f-order-no", "f-product", "f-buyer"].forEach(function (id) { document.getElementById(id).value = ""; });
-    ["f-channel", "f-promoter", "f-pay-status", "f-benefit", "f-refund-status"].forEach(function (id) { document.getElementById(id).value = ""; });
+    ["f-channel", "f-pay-status", "f-benefit", "f-refund-status"].forEach(function (id) { document.getElementById(id).value = ""; });
     document.getElementById("f-time1").value = "";
     document.getElementById("f-time2").value = "";
     Proto.toast("已重置");
@@ -382,7 +363,7 @@
   if (window.BoardMetrics && BoardMetrics.applyDrilldownToList) {
     BoardMetrics.applyDrilldownToList({
       tbody: "ord-tbody",
-      cols: { product: 1, channel: 4, promoter: 7, payStatus: 8, refundStatus: 10, owner: 7 }
+      cols: { product: 1, channel: 4, payStatus: 7, refundStatus: 9 }
     });
   }
 })();

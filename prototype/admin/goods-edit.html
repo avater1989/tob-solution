@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>新建商品 · 商家管理后台</title>
-<link rel="stylesheet" href="../assets/css/proto.css?v=15" />
+<link rel="stylesheet" href="../assets/css/proto.css?v=17" />
 <link rel="stylesheet" href="../assets/css/content-mgmt.css?v=3" />
 <style>
 .cm-section { background:#fff; border:1px solid var(--color-border); border-radius:8px; padding:16px; margin-bottom:12px; }
@@ -46,7 +46,7 @@
 <div id="header-actions">
   <button class="btn" onclick="location.href='goods.html'">返回商品列表</button>
   <button class="btn" id="btn-save-draft">存草稿</button>
-  <button class="btn btn-primary" id="btn-submit">提交审核</button>
+  <button class="btn btn-primary" id="btn-submit">提交</button>
 </div>
 <div id="page-content" style="display:none">
 
@@ -87,8 +87,11 @@
     <div class="cm-section">
       <div class="cm-section-hd"><h3>选择平台商品 *</h3><span class="muted">运营端已下发至本租户的目录</span></div>
       <div class="field">
-        <label>平台商品</label>
-        <select id="f-platform" style="width:100%;padding:7px 8px;border:1px solid var(--color-border);border-radius:6px"></select>
+        <label>平台商品 *</label>
+        <div style="display:flex;gap:10px;align-items:center">
+          <button type="button" class="btn btn-primary" id="btn-pick-platform">选择平台商品</button>
+          <span class="muted" id="pf-picked" style="font-size:12px">未选择</span>
+        </div>
       </div>
       <div class="linked-card" id="platform-card" style="margin-top:12px;display:none">
         <div style="font-size:13px"><b id="pf-name"></b></div>
@@ -120,7 +123,7 @@
     </div>
 
     <div class="cm-section">
-      <div class="cm-section-hd"><h3>规格与价格</h3></div>
+      <div class="cm-section-hd"><h3>规格与价格</h3><span class="muted" id="price-hint">内容创建商品在此维护售价与划线价</span></div>
       <table class="data" style="margin-bottom:10px">
         <thead><tr><th>规格项</th><th>SKU</th><th>价格</th><th>划线价</th></tr></thead>
         <tbody>
@@ -154,14 +157,13 @@
     </div>
 
     <div class="cm-section" id="sec-shelf">
-      <div class="cm-section-hd"><h3>提审与上架</h3><span class="muted">内容创建商品须平台审核通过后方可上架售卖</span></div>
+      <div class="cm-section-hd"><h3>上架设置</h3><span class="muted">商品不参与平台审核，保存后即可上架售卖</span></div>
       <div class="cm-check">
-        <label><input type="radio" name="shelf" value="submit" checked /> 保存并提交平台审核（运营后台审批通过后可上架）</label>
-        <label><input type="radio" name="shelf" value="schedule" /> 审核通过后定时上架 <input type="datetime-local" style="border:1px solid var(--color-border);border-radius:6px;padding:4px 8px" /></label>
-        <label><input type="radio" name="shelf" value="draft" /> 仅存草稿（不提审）</label>
+        <label><input type="radio" name="shelf" value="publish" checked /> 保存并上架</label>
+        <label><input type="radio" name="shelf" value="schedule" /> 定时上架 <input type="datetime-local" style="border:1px solid var(--color-border);border-radius:6px;padding:4px 8px" /></label>
+        <label><input type="radio" name="shelf" value="draft" /> 仅存草稿</label>
       </div>
       <p class="muted" style="font-size:12px;margin:10px 0 0">
-        平台商品镜像路径免审，确认后直接生成可上下架的商品。<br />
         「上架」只代表商品可售；<b>内容展示到小程序哪个模块、免费还是付费、试看多少、付费后跳商品还是直接下单</b>，请前往
         <a href="mp-home.html">交易 · 店铺运营 · 首页装修</a> 配置上架位。
       </p>
@@ -180,7 +182,7 @@
     <div class="cm-tabs" id="pick-tabs">
       <button type="button" class="btn active" data-ptype="online_course">线上课</button>
       <button type="button" class="btn" data-ptype="offline">线下课</button>
-      <button type="button" class="btn" data-ptype="plan">定制化计划</button>
+      <button type="button" class="btn" data-ptype="plan" data-phase2-only="1">定制化计划</button>
       <button type="button" class="btn" data-ptype="article">文章</button>
       <button type="button" class="btn" data-ptype="live">直播</button>
     </div>
@@ -195,12 +197,36 @@
   </div>
 </div>
 
+<!-- 平台商品单选弹窗：列表口径与「商品列表」一致，选中后回填 -->
+<div class="proto-mask" id="pf-mask"></div>
+<div class="proto-modal" id="pf-modal">
+  <div class="proto-modal-hd">
+    <h3 style="margin:0;font-size:16px">选择平台商品</h3>
+    <button type="button" class="btn btn-sm btn-ghost" id="pf-close">×</button>
+  </div>
+  <div class="proto-modal-bd" style="padding:0">
+    <table class="data">
+      <thead>
+        <tr><th style="width:44px"></th><th style="width:140px">平台商品编号</th><th>商品名称</th><th>交付内容</th><th style="width:110px">价格</th></tr>
+      </thead>
+      <tbody id="pf-tbody"></tbody>
+    </table>
+  </div>
+  <div class="proto-modal-ft" style="justify-content:space-between">
+    <span class="muted" id="pf-count">未选择</span>
+    <span style="display:flex;gap:8px">
+      <button type="button" class="btn" id="pf-cancel">取消</button>
+      <button type="button" class="btn btn-primary" id="pf-ok">确定</button>
+    </span>
+  </div>
+</div>
+
 <script src="../assets/js/proto.js"></script>
 <script src="../assets/js/teachers-store.js?v=1"></script>
 <script src="../assets/js/course-store.js?v=2"></script>
 <script src="../assets/js/goods-taxonomy.js?v=1"></script>
 <script src="../assets/js/prototype-business-store.js"></script>
-<script src="../assets/js/goods-store.js?v=1"></script>
+<script src="../assets/js/goods-store.js?v=2"></script>
 <script src="../assets/js/listing-store.js?v=1"></script>
 <script src="../assets/js/admin-shell.js?v=28"></script>
 <script>
@@ -250,11 +276,24 @@
     document.getElementById("path-platform").style.display = mode === "from_platform" ? "" : "none";
     document.getElementById("readonly-banner").style.display = readonly ? "" : "none";
     document.getElementById("form-body").classList.toggle("form-locked", readonly);
+    /* 平台商品的价格由平台定义，商家不可填写（含划线价） */
+    ["f-price", "f-olist"].forEach(function (id) {
+      var el = document.getElementById(id);
+      if (el) el.readOnly = readonly;
+    });
+    var priceHint = document.getElementById("price-hint");
+    if (priceHint) {
+      priceHint.textContent = readonly
+        ? "平台商品价格由平台定义，不可修改"
+        : "内容创建商品在此维护售价与划线价";
+    }
+    var picked = document.getElementById("pf-picked");
+    if (picked) picked.textContent = platformPicked || "未选择";
     document.getElementById("btn-save-draft").style.display = readonly ? "none" : "";
-    document.getElementById("btn-submit").textContent = readonly ? "确认创建并上架" : "提交审核";
+    document.getElementById("btn-submit").textContent = readonly ? "确认创建并上架" : "提交";
     document.querySelector("#sec-shelf .cm-section-hd span").textContent = readonly
-      ? "平台商品已审，创建后可直接上下架"
-      : "内容创建商品须平台审核通过后方可上架售卖";
+      ? "平台商品已下发，创建后可直接上下架"
+      : "商品不参与平台审核，保存后即可上架售卖";
     document.getElementById("sec-shelf").style.display = readonly ? "none" : "";
     document.querySelectorAll("#sec-mode .cm-choice-item").forEach(function (el) {
       el.classList.toggle("active", el.getAttribute("data-mode") === mode);
@@ -263,7 +302,7 @@
     });
     if (mode === "from_platform") {
       document.getElementById("f-source").value = "平台内容 (platform)";
-      fillPlatform();
+      applyPlatformPrefill();
     } else {
       document.getElementById("f-source").value = "商家自建 (self)";
     }
@@ -393,17 +432,36 @@
     renderDeliverList();
   });
 
-  function fillPlatform() {
-    var sel = document.getElementById("f-platform");
-    sel.innerHTML = platformCatalog.map(function (p) {
-      return '<option value="' + Tax.esc(p.platform_goods_id) + '">' + Tax.esc(p.name) + "（" + Tax.esc(p.platform_goods_id) + "）</option>";
-    }).join("");
-    applyPlatformPrefill();
+  /* ---------- 平台商品：弹窗单选（列表口径与「商品列表」一致） ---------- */
+  var platformPicked = "";
+
+  function renderPfBody() {
+    document.getElementById("pf-tbody").innerHTML = platformCatalog.length ? platformCatalog.map(function (p) {
+      var on = p.platform_goods_id === platformPicked;
+      return "<tr>" +
+        '<td><input type="radio" name="pf-pick" data-pf-id="' + Tax.esc(p.platform_goods_id) + '"' + (on ? " checked" : "") + " /></td>" +
+        '<td><span class="mono">' + Tax.esc(p.platform_goods_id) + "</span></td>" +
+        "<td>" + Tax.esc(p.name) + "</td>" +
+        "<td>" + Tax.esc(Tax.contentTypeLabel(p.content_type)) + " · " + Tax.esc(p.content_title || p.content_id || "") + "</td>" +
+        '<td><b>¥' + Number(p.price || 0).toFixed(2) + "</b></td>" +
+        "</tr>";
+    }).join("") : '<tr><td colspan="5" class="muted" style="text-align:center;padding:24px">暂无可选平台商品</td></tr>';
+    document.getElementById("pf-count").textContent = platformPicked ? ("已选 " + platformPicked) : "未选择";
+  }
+
+  function openPf() {
+    document.getElementById("pf-mask").classList.add("open");
+    document.getElementById("pf-modal").classList.add("open");
+    renderPfBody();
+  }
+  function closePf() {
+    document.getElementById("pf-mask").classList.remove("open");
+    document.getElementById("pf-modal").classList.remove("open");
   }
 
   function applyPlatformPrefill() {
-    var id = document.getElementById("f-platform").value;
-    var hit = platformCatalog.find(function (p) { return p.platform_goods_id === id; });
+    document.getElementById("pf-picked").textContent = platformPicked || "未选择";
+    var hit = platformCatalog.find(function (p) { return p.platform_goods_id === platformPicked; });
     var card = document.getElementById("platform-card");
     if (!hit) { card.style.display = "none"; return; }
     card.style.display = "";
@@ -429,7 +487,22 @@
       setMode(el.getAttribute("data-mode"));
     });
   });
-  document.getElementById("f-platform").addEventListener("change", applyPlatformPrefill);
+  document.getElementById("btn-pick-platform").addEventListener("click", openPf);
+  document.getElementById("pf-close").addEventListener("click", closePf);
+  document.getElementById("pf-cancel").addEventListener("click", closePf);
+  document.getElementById("pf-mask").addEventListener("click", closePf);
+  document.getElementById("pf-tbody").addEventListener("change", function (e) {
+    var r = e.target.closest("[data-pf-id]");
+    if (!r) return;
+    platformPicked = r.getAttribute("data-pf-id");
+    renderPfBody();
+  });
+  document.getElementById("pf-ok").addEventListener("click", function () {
+    if (!platformPicked) { Proto.toast("请选择 1 个平台商品"); return; }
+    closePf();
+    applyPlatformPrefill();
+    Proto.toast("已选择平台商品 " + platformPicked);
+  });
 
   /* 从内容页「创建商品」深链进入时预选该内容；从商品列表进入编辑时载入该商品的全部交付内容 */
   (function initBoundContent() {
@@ -488,12 +561,12 @@
 
   document.getElementById("btn-save-draft").addEventListener("click", function () {
     if (readonly) return;
-    Proto.toast("草稿已保存（未提审）");
+    Proto.toast("草稿已保存");
   });
   document.getElementById("btn-submit").addEventListener("click", function () {
     var goodsId = "G" + Date.now().toString().slice(-8);
     if (createMode === "from_platform") {
-      var pf = document.getElementById("f-platform").value;
+      var pf = platformPicked;
       if (!pf) { Proto.toast("请选择平台商品"); return; }
       try {
         var pfRow = platformCatalog.find(function (p) { return p.platform_goods_id === pf; }) || {};
@@ -515,18 +588,15 @@
           list_price: parseFloat(document.getElementById("f-olist").value) || 0
         });
       } catch (eSave) {}
-      Proto.toast("已创建只读商品 " + goodsId + "（免审，可上下架）");
+      Proto.toast("已创建平台商品镜像 " + goodsId + "（可上下架）");
       setTimeout(function () { location.href = "goods.html"; }, 1000);
       return;
     }
     if (!selected.length) { Proto.toast("请选择交付内容"); return; }
     if (!document.getElementById("f-gname").value.trim()) { Proto.toast("请填写商品名称"); return; }
-    var shelf = (document.querySelector("input[name=shelf]:checked") || {}).value || "submit";
-    var auditStatus = shelf === "draft" ? "draft" : "pending";
+    var shelf = (document.querySelector("input[name=shelf]:checked") || {}).value || "publish";
+    var onSale = shelf === "publish";
     try {
-      var d = new Date();
-      function p(n) { return n < 10 ? "0" + n : "" + n; }
-      var ts = d.getFullYear() + "-" + p(d.getMonth() + 1) + "-" + p(d.getDate()) + " " + p(d.getHours()) + ":" + p(d.getMinutes());
       /* 商品的 contents[] 是「内容 ↔ 商品」关系的权威源（组合商品可多条），无需回写内容侧 */
       Goods.save({
         goods_id: goodsId,
@@ -539,20 +609,21 @@
         category_id: document.getElementById("f-category").value,
         tag_ids: Array.from(document.querySelectorAll("input[name=gtag]:checked")).map(function (x) { return x.value; }),
         name: document.getElementById("f-gname").value.trim(),
-        status: "draft",
-        audit_status: auditStatus,
+        status: onSale ? "on_sale" : "draft",
+        audit_status: onSale ? "approved" : "draft",
         reject_reason: "",
-        submitted_at: auditStatus === "pending" ? ts : "",
         price: parseFloat(document.getElementById("f-price").value) || 0,
         list_price: parseFloat(document.getElementById("f-olist").value) || 0,
         delivery: document.getElementById("f-delivery").value,
         refund_rule: document.getElementById("f-refund").value
       });
     } catch (eSave2) {}
-    if (auditStatus === "pending") {
-      Proto.toast("商品 " + goodsId + " 已提交平台审核，通过后可在「首页装修」上架到小程序模块");
+    if (onSale) {
+      Proto.toast("商品 " + goodsId + " 已上架，可前往「首页装修」上架到小程序模块");
+    } else if (shelf === "schedule") {
+      Proto.toast("商品 " + goodsId + " 已保存，将于设定时间自动上架");
     } else {
-      Proto.toast("草稿已保存 " + goodsId + "，可稍后在列表提审");
+      Proto.toast("草稿已保存 " + goodsId);
     }
     setTimeout(function () { location.href = "goods.html"; }, 1000);
   });

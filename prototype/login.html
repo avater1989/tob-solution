@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>登录 · 商家管理后台</title>
-<link rel="stylesheet" href="assets/css/proto.css?v=4" />
+<link rel="stylesheet" href="assets/css/proto.css?v=17" />
 <style>
 html { overflow: auto; }
 body {
@@ -55,10 +55,9 @@ body {
 .lg-foot a { color: #165dff; text-decoration: none; font-weight: 500; }
 .lg-foot a:hover { text-decoration: underline; }
 .login-copy { text-align: center; color: rgba(255,255,255,.55); font-size: 12px; margin-top: 20px; }
-/* 浅灰底 toast（覆盖 proto.css 深色样式） */
+/* 浅灰底 toast（仅覆盖 proto.css 的深色配色；位置沿用全局「中上部居中」） */
 .toast {
-  position: fixed; left: 50%; top: 24px; transform: translateX(-50%);
-  bottom: auto; right: auto; z-index: 9999;
+  z-index: 9999;
   background: #f2f3f5; color: #4e5969; border: 1px solid #e5e6eb;
   box-shadow: 0 4px 14px rgba(0, 0, 0, .08);
 }

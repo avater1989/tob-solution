@@ -147,6 +147,39 @@
       submitted_at: "2026-09-05 09:00",
       price: 199,
       list_price: 299
+    },
+    {
+      /* 兼容旧版残留课程 id（S001）：保证线上课列表首行「关联商品」演示同为 2 */
+      goods_id: "G-S001-01",
+      channel: "store",
+      create_mode: "from_content",
+      content_source: "self",
+      content_type: "online_course",
+      content_id: "S001",
+      category_id: "GC08",
+      tag_ids: [],
+      name: "线上课 · 单课购买",
+      status: "on_sale",
+      audit_status: "approved",
+      reject_reason: "",
+      price: 99,
+      list_price: 199
+    },
+    {
+      goods_id: "G-S001-02",
+      channel: "store",
+      create_mode: "from_content",
+      content_source: "self",
+      content_type: "online_course",
+      content_id: "S001",
+      category_id: "GC08",
+      tag_ids: [],
+      name: "线上课 · 体验价",
+      status: "on_sale",
+      audit_status: "approved",
+      reject_reason: "",
+      price: 9.9,
+      list_price: 0
     }
   ];
 

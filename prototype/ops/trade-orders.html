@@ -4,14 +4,13 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>订单列表 · 运营后台</title>
-<link rel="stylesheet" href="../assets/css/proto.css?v=15" />
+<link rel="stylesheet" href="../assets/css/proto.css?v=17" />
 </head>
 <body class="admin-body" data-module="biz" data-nav="trade-orders" data-title="订单列表" data-crumb="运营后台 / 交易 / 订单管理 / 订单列表">
 <div id="header-actions">
-  <button class="btn" id="btn-export">导出订单</button>
+  <button class="btn" id="btn-export" data-phase2-only="1">导出订单</button>
   <button class="btn" id="btn-sync">同步公域订单</button>
   <button class="btn" onclick="location.href='entitlement.html'">权益开通记录</button>
-  <button class="btn btn-primary" id="btn-create">手工补单</button>
 </div>
 <div id="page-content" style="display:none">
 
@@ -47,10 +46,6 @@
         <option value="">订单来源租户</option>
         <option>星启家庭教育</option><option>晨光少儿成长</option><option>慧心教育</option><option>青藤家长学堂</option>
       </select>
-      <select id="f-promoter">
-        <option value="">推广人</option>
-        <option>赵老师</option><option>阮荣均</option><option>王助教</option><option>无</option>
-      </select>
       <select id="f-pay-status">
         <option value="">支付状态</option>
         <option>待付款</option><option>已支付</option><option>已完成</option><option>已关闭</option>
@@ -84,7 +79,6 @@
           <th>订单来源租户</th>
           <th>商品来源</th>
           <th>结算模式</th>
-          <th>推广人</th>
           <th>支付状态</th>
           <th>权益状态</th>
           <th>退款状态</th>
@@ -104,9 +98,7 @@
           <td><span class="tag tag-green">视频号</span></td>
           <td><span class="tag tag-blue">星启家庭教育</span></td>
           <td><span class="tag tag-blue">平台</span></td>
-          <td>佣金 20%</td>
-          <td>—</td>
-          <td><span class="badge badge-info">已支付</span></td>
+          <td>佣金 20%</td>          <td><span class="badge badge-info">已支付</span></td>
           <td><span class="badge badge-info">已开通</span></td>
           <td><span class="muted">—</span></td>
           <td>2026-09-07 14:22</td>
@@ -125,9 +117,7 @@
           <td><span class="tag tag-purple">直播间</span></td>
           <td><span class="tag tag-blue">晨光少儿成长</span></td>
           <td><span class="tag tag-green">自建</span></td>
-          <td>服务费 0.6%</td>
-          <td>阮荣均</td>
-          <td><span class="badge badge-success">已完成</span></td>
+          <td>服务费 0.6%</td>          <td><span class="badge badge-success">已完成</span></td>
           <td><span class="badge badge-info">已开通</span></td>
           <td><span class="muted">—</span></td>
           <td>2026-03-28 20:18</td>
@@ -145,9 +135,7 @@
           <td><span class="tag tag-blue">小程序</span></td>
           <td><span class="tag tag-blue">晨光少儿成长</span></td>
           <td><span class="tag tag-green">自建</span></td>
-          <td>服务费 0.6%</td>
-          <td>王助教</td>
-          <td><span class="badge badge-warn">待付款</span></td>
+          <td>服务费 0.6%</td>          <td><span class="badge badge-warn">待付款</span></td>
           <td><span class="muted">未开通</span></td>
           <td><span class="muted">—</span></td>
           <td>2026-03-27 15:30</td>
@@ -165,9 +153,7 @@
           <td><span class="tag tag-blue">小程序</span></td>
           <td><span class="tag tag-blue">星启家庭教育</span></td>
           <td><span class="tag tag-green">自建</span></td>
-          <td>服务费 0.6%</td>
-          <td>赵老师</td>
-          <td><span class="badge badge-danger">已退款</span></td>
+          <td>服务费 0.6%</td>          <td><span class="badge badge-danger">已退款</span></td>
           <td><span class="badge">已回收</span></td>
           <td><span class="badge badge-danger">已退款 ¥9.90</span></td>
           <td>2026-03-25 14:22</td>
@@ -185,9 +171,7 @@
           <td><span class="tag tag-green">视频号</span></td>
           <td><span class="tag tag-blue">星启家庭教育</span></td>
           <td><span class="tag tag-purple">平台</span></td>
-          <td>佣金 20%</td>
-          <td>—</td>
-          <td><span class="badge badge-info">已支付</span></td>
+          <td>佣金 20%</td>          <td><span class="badge badge-info">已支付</span></td>
           <td><span class="badge badge-info">已开通</span></td>
           <td><span class="muted">—</span></td>
           <td>2026-03-25 11:05</td>
@@ -206,9 +190,7 @@
           <td><span class="tag tag-blue">小程序</span></td>
           <td><span class="tag tag-blue">星启家庭教育</span></td>
           <td><span class="tag tag-green">自建</span></td>
-          <td>服务费 0.6%</td>
-          <td>赵老师</td>
-          <td><span class="badge badge-info">已支付</span></td>
+          <td>服务费 0.6%</td>          <td><span class="badge badge-info">已支付</span></td>
           <td><span class="badge badge-info">已开通</span></td>
           <td><span class="badge badge-warn">退款中</span></td>
           <td>2026-03-24 18:47</td>
@@ -304,7 +286,7 @@
 <script src="../assets/js/board-data.js?v=6"></script>
 <script src="../assets/js/board-metrics.js?v=11"></script>
 <script src="../assets/js/board-insights.js?v=4"></script>
-<script src="../assets/js/ops-shell.js?v=26"></script>
+<script src="../assets/js/ops-shell.js?v=27"></script>
 <script>
 (function () {
   // ===== Mask =====
@@ -337,7 +319,7 @@
       buyer: tds[3] ? tds[3].childNodes[0].textContent.trim() : "",
       paid: tds[4] ? tds[4].textContent.trim() : "",
       settleMode: tds[8] ? tds[8].textContent.trim() : "",
-      payStatus: tds[10] ? tds[10].textContent.trim() : "",
+      payStatus: tds[9] ? tds[9].textContent.trim() : "",
     };
   }
 
@@ -381,11 +363,10 @@
   // ===== Header buttons =====
   document.getElementById("btn-export").addEventListener("click", function () { Proto.toast("已导出订单列表（原型）"); });
   document.getElementById("btn-sync").addEventListener("click", function () { Proto.toast("已触发视频号订单同步（原型）"); });
-  document.getElementById("btn-create").addEventListener("click", function () { Proto.toast("打开手工补单（原型）"); });
   document.getElementById("btn-query").addEventListener("click", function () { Proto.toast("已筛选（原型）"); });
   document.getElementById("btn-reset").addEventListener("click", function () {
     ["f-order-no", "f-product", "f-buyer"].forEach(function (id) { document.getElementById(id).value = ""; });
-    ["f-channel", "f-tenant", "f-promoter", "f-pay-status", "f-benefit", "f-refund-status"].forEach(function (id) { document.getElementById(id).value = ""; });
+    ["f-channel", "f-tenant", "f-pay-status", "f-benefit", "f-refund-status"].forEach(function (id) { document.getElementById(id).value = ""; });
     document.getElementById("f-time1").value = "";
     document.getElementById("f-time2").value = "";
     Proto.toast("已重置");
@@ -394,7 +375,7 @@
   if (window.BoardMetrics && BoardMetrics.applyDrilldownToList) {
     BoardMetrics.applyDrilldownToList({
       tbody: "ord-tbody",
-      cols: { product: 2, channel: 5, tenant: 6, promoter: 9, payStatus: 10, refundStatus: 12, owner: 9 }
+      cols: { product: 2, channel: 5, tenant: 6, payStatus: 9, refundStatus: 11 }
     });
   }
 })();

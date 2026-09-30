@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>讲师管理 · 商家管理后台</title>
-<link rel="stylesheet" href="../assets/css/proto.css?v=15" />
+<link rel="stylesheet" href="../assets/css/proto.css?v=17" />
 <style>
 .tg-status { display:inline-flex; padding:1px 8px; border-radius:999px; font-size:11px; border:1px solid #b7eb8f; color:#389e0d; background:#f6ffed; }
 .tg-status.off { border-color:#d9d9d9; color:#8c8c8c; background:#fafafa; }
@@ -65,7 +65,7 @@
       <div class="field"><label>姓名 *</label><input class="input" id="f-name" /></div>
       <div class="field"><label>头衔</label><input class="input" id="f-title" placeholder="如：资深阅读启蒙导师" /></div>
       <div class="field"><label>简介</label><textarea class="input" id="f-intro" rows="3"></textarea></div>
-      <div class="field"><label><input type="checkbox" id="f-enabled" checked> 上架</label></div>
+      <div class="field"><label><input type="checkbox" id="f-enabled" checked> 启用</label></div>
     </div>
     <div class="proto-modal-ft" style="justify-content:flex-end;gap:8px;padding:12px 16px;border-top:1px solid var(--color-border);display:flex">
       <button class="btn" data-close>取消</button>
@@ -75,7 +75,8 @@
 </div>
 
 <script src="../assets/js/proto.js"></script>
-<script src="../assets/js/teachers-store.js?v=2"></script>
+<script src="../assets/js/course-store.js?v=2"></script>
+<script src="../assets/js/teachers-store.js?v=3"></script>
 <script src="../assets/js/admin-shell.js?v=28"></script>
 <script>
 var Teachers = window.Teachers;
@@ -124,7 +125,7 @@ function render() {
   var q = document.getElementById("f-q").value.trim();
   var rows = Teachers.list({ keyword: q });
   document.getElementById("tbody").innerHTML = rows.map(function (t) {
-    var st = t.enabled ? '<span class="tg-status">上架</span>' : '<span class="tg-status off">下架</span>';
+    var st = t.enabled ? '<span class="tg-status">启用</span>' : '<span class="tg-status off">禁用</span>';
     return "<tr>" +
       '<td><div class="tch-name-cell">' + Teachers.avatarHtml(t, { size: 40 }) +
         "<div><b>" + esc(t.name) + "</b><br><span class='muted' style='font-size:12px'>" + esc(t.id) + "</span></div></div></td>" +
@@ -133,8 +134,8 @@ function render() {
       "<td>" + st + "</td>" +
       "<td>" +
         '<button class="btn btn-sm" data-act="edit" data-id="' + t.id + '">编辑</button> ' +
-        '<button class="btn btn-sm" data-act="toggle" data-id="' + t.id + '">' + (t.enabled ? "下架" : "上架") + "</button> " +
-        '<button class="btn btn-sm" data-act="del" data-id="' + t.id + '">删除</button>' +
+        '<button class="btn btn-sm" data-act="toggle" data-id="' + t.id + '">' + (t.enabled ? "禁用" : "启用") + "</button> " +
+        '<button class="btn btn-sm" data-act="del" data-id="' + t.id + '" style="color:#f53f3f;border-color:#ffa39e">删除</button>' +
       "</td></tr>";
   }).join("") || "<tr><td colspan='5' class='muted'>暂无讲师</td></tr>";
 }
@@ -169,9 +170,10 @@ document.getElementById("tbody").addEventListener("click", function (e) {
     openModal();
   } else if (act === "toggle") {
     Teachers.setEnabled(id, !row.enabled);
-    Proto.toast(row.enabled ? "已下架" : "已上架");
+    Proto.toast(row.enabled ? "已禁用" : "已启用");
     render();
   } else if (act === "del") {
+    if (Teachers.usedByContent(id)) { Proto.toast("当前讲师已有关联内容不能删除"); return; }
     Teachers.remove(id);
     Proto.toast("已删除");
     render();

@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>编辑文章 · 艺博 To-B</title>
-<link rel="stylesheet" href="../assets/css/proto.css?v=15" />
+<link rel="stylesheet" href="../assets/css/proto.css?v=17" />
 <link rel="stylesheet" href="../assets/css/content-mgmt.css?v=3" />
 </head>
 <body class="admin-body" data-module="content" data-nav="content-article" data-title="编辑文章" data-crumb="运营后台 / 内容与审核 / 内容资产 / 文章 / 编辑">
@@ -12,26 +12,10 @@
 <div id="header-actions">
   <a class="btn" href="content-article.html">返回列表</a>
   <button class="btn" id="btn-draft">保存草稿</button>
-  <button class="btn" id="btn-preview">用户端预览</button>
   <button class="btn btn-primary" id="btn-publish">保存并上架</button>
 </div>
 
 <div id="page-content" style="display:none">
-  <a class="cm-back" href="content-article.html">← 返回图文列表</a>
-  <div class="cm-page-hd">
-    <div>
-      <h1 id="e-title">新建图文</h1>
-      <p class="sub">在同一页面完成图文内容、状态与分享配置；如需售卖，可在列表页「创建商品」将内容带入商品模块</p>
-    </div>
-  </div>
-
-  <div class="cm-anchor" id="anchors">
-    <button class="btn active" data-goto="sec-content">内容信息</button>
-    <button class="btn" data-goto="sec-body">图文正文</button>
-    <button class="btn" data-goto="sec-status">状态设置</button>
-    <button class="btn" data-goto="sec-goods">关联商品</button>
-    <button class="btn" data-goto="sec-share">分享设置</button>
-  </div>
 
   <div class="cm-section" id="sec-content">
     <div class="cm-section-hd"><h2>内容信息</h2></div>
@@ -138,24 +122,17 @@
       </div>
     </div>
     <p style="font-size:12px;color:#8c8c8c;margin:8px 0 0">草稿阶段可预览分享卡片；正式上架后生成可用短链和二维码。</p>
-    <button class="btn" style="margin-top:10px" id="btn-share-preview">预览分享卡片</button>
   </div>
 
-  <div class="cm-sticky-ft">
-    <a class="btn" href="content-article.html">取消</a>
-    <button class="btn" id="btn-draft2">保存草稿</button>
-    <button class="btn" id="btn-preview2">用户端预览</button>
-    <button class="btn btn-primary" id="btn-publish2">保存并上架</button>
-  </div>
 </div>
 
 <script src="../assets/js/proto.js"></script>
-<script src="../assets/js/content-tags.js?v=2"></script>
+<script src="../assets/js/content-tags.js?v=3"></script>
 <script src="../assets/js/prototype-business-store.js"></script>
-<script src="../assets/js/goods-store.js?v=1"></script>
+<script src="../assets/js/goods-store.js?v=2"></script>
 <script src="../assets/js/listing-store.js?v=1"></script>
 <script src="../assets/js/share-modal.js?v=1"></script>
-<script src="../assets/js/ops-shell.js?v=26"></script>
+<script src="../assets/js/ops-shell.js?v=27"></script>
 <script>
 var PRESET = {
   A001: { name:"9 月新学期家长指南", tagIds:["TG04"], author:"编辑部", intro:"用一篇图文快速了解新学期家长准备事项。", body:"新学期开始，家长可以从作息、书包整理、情绪陪伴三个维度做准备。" },
@@ -167,9 +144,6 @@ var Goods = window.GoodsStore;
 var Listing = window.ListingStore;
 var id = new URLSearchParams(location.search).get("id") || "";
 var isNew = !id || !PRESET[id];
-document.getElementById("e-title").textContent = isNew ? "新建图文" : "编辑文章";
-var taskLink = document.getElementById("link-taskify");
-if (taskLink) taskLink.href = "content-tasks.html?type=article&ref=" + encodeURIComponent(id || "A001");
 var initTags = !isNew ? (PRESET[id].tagIds || []) : [];
 var tagPicker = Tags.mountTreeSelect("#f-tags", {
   selectedIds: initTags,
@@ -223,34 +197,14 @@ function shelfTag(s) { return Proto.shelfTag(s); }
       "</tr>";
   }).join("") : '<tr><td colspan="5" class="muted" style="text-align:center;padding:24px">该文章尚无商家关联商品</td></tr>';
 })();
-document.getElementById("btn-share-preview").addEventListener("click", function(){
-  var p = !isNew ? PRESET[id] : null;
-  var cover = "../assets/img/covers/" + (id === "A002" ? "focus" : id === "A003" ? "emotion" : "term") + ".jpg";
-  XiboShare.open({
-    type: "图文",
-    url: "https://yibo.app/a/" + (id || "NEW"),
-    cover: cover,
-    name: fShareTitle.value || (p ? p.name : document.getElementById("f-name").value) || "未命名图文",
-    desc: fShareDesc.value || (p ? p.intro : "") || ""
-  });
-});
 document.getElementById("f-name").addEventListener("input", function(){
   document.getElementById("name-cnt").textContent = this.value.length + "/45";
 });
 document.getElementById("name-cnt").textContent = (document.getElementById("f-name").value||"").length + "/45";
-document.getElementById("anchors").addEventListener("click", function(e){
-  var b = e.target.closest("[data-goto]"); if (!b) return;
-  document.querySelectorAll("#anchors .btn").forEach(function(x){ x.classList.remove("active"); });
-  b.classList.add("active");
-  var el = document.getElementById(b.getAttribute("data-goto"));
-  if (el) el.scrollIntoView({ behavior:"smooth", block:"start" });
-});
 function draft(){ Proto.toast("草稿已保存"); }
-function preview(){ Proto.toast("已打开用户端预览（演示）"); }
 function publish(){ Proto.toast("已保存并上架"); setTimeout(function(){ location.href="content-article.html"; }, 500); }
-["btn-draft","btn-draft2"].forEach(function(id){ document.getElementById(id).onclick = draft; });
-["btn-preview","btn-preview2"].forEach(function(id){ document.getElementById(id).onclick = preview; });
-["btn-publish","btn-publish2"].forEach(function(id){ document.getElementById(id).onclick = publish; });
+document.getElementById("btn-draft").onclick = draft;
+document.getElementById("btn-publish").onclick = publish;
 document.getElementById("f-body").addEventListener("focus", function(){ var ph=this.querySelector(".rt-placeholder"); if(ph) ph.remove(); });
 </script>
 </body>

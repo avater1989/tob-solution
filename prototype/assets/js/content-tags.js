@@ -106,6 +106,32 @@
     return save(t);
   }
 
+  /** 是否有子标签（父标签不可直接删除） */
+  function hasChildren(id) {
+    if (!id) return false;
+    return readAll().some(function (t) { return t.parentId === id; });
+  }
+
+  /** 是否已被内容引用：线上课（含章节）标签；其它内容源可由页面注入 window.ContentUsage.usedByTag */
+  function usedByContent(id) {
+    if (!id) return false;
+    var C = global.CourseStore;
+    if (C && typeof C.list === "function") {
+      try {
+        var hit = C.list({}).some(function (c) {
+          if ((c.tagIds || []).indexOf(id) >= 0) return true;
+          return (c.chapters || []).some(function (ch) { return (ch.tagIds || []).indexOf(id) >= 0; });
+        });
+        if (hit) return true;
+      } catch (e) {}
+    }
+    var U = global.ContentUsage;
+    if (U && typeof U.usedByTag === "function") {
+      try { return !!U.usedByTag(id); } catch (e2) {}
+    }
+    return false;
+  }
+
   /** 扁平树：带 depth / pathLabel */
   function treeFlat(opts) {
     opts = opts || {};
@@ -357,6 +383,8 @@
     save: save,
     remove: remove,
     setEnabled: setEnabled,
+    hasChildren: hasChildren,
+    usedByContent: usedByContent,
     treeFlat: treeFlat,
     namesByIds: namesByIds,
     labelsHtml: labelsHtml,

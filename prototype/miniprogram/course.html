@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>线上课详情 · To-B 小程序</title>
-  <link rel="stylesheet" href="../assets/css/proto.css?v=15" />
+  <link rel="stylesheet" href="../assets/css/proto.css?v=17" />
   <link rel="stylesheet" href="../assets/css/mp.css?v=21" />
   <style>
     .cd-badge { font-size:11px;padding:1px 6px;border-radius:3px;background:#fff7e6;color:#d46b08;margin-left:6px;vertical-align:middle; }
@@ -48,11 +48,11 @@
   <p class="mp-hint"><a href="home.html">首页</a> · <a href="courses.html">线上课列表</a> · <a href="../admin/content-video.html">管理端</a></p>
 
   <script src="../assets/js/proto.js"></script>
-  <script src="../assets/js/content-tags.js?v=2"></script>
-  <script src="../assets/js/teachers-store.js?v=2"></script>
+  <script src="../assets/js/content-tags.js?v=3"></script>
+  <script src="../assets/js/teachers-store.js?v=3"></script>
   <script src="../assets/js/course-store.js?v=2"></script>
   <script src="../assets/js/prototype-business-store.js"></script>
-  <script src="../assets/js/goods-store.js?v=1"></script>
+  <script src="../assets/js/goods-store.js?v=2"></script>
   <script src="../assets/js/listing-store.js?v=1"></script>
   <script src="../assets/js/mp-shell.js?v=4"></script>
   <script src="../assets/js/mp-commerce.js?v=2"></script>
@@ -162,7 +162,6 @@
     '<div class="cd-tabs" id="cd-tabs">' +
       '<button type="button" class="active" data-panel="p-ch">目录</button>' +
       '<button type="button" data-panel="p-intro">详情</button>' +
-      '<button type="button" data-panel="p-cmt">评论</button>' +
     "</div>" +
     '<div class="cd-panel active" id="p-ch"><div style="background:#fff">' + chapterRows() + "</div></div>" +
     '<div class="cd-panel" id="p-intro">' +
@@ -181,8 +180,7 @@
       (course.detail
         ? ('<div class="mp-section"><div class="mp-section-title">课程详情</div><div style="background:#fff;border-radius:10px;padding:14px;font-size:13px;line-height:1.7">' + course.detail + "</div></div>")
         : "") +
-    "</div>" +
-    '<div class="cd-panel" id="p-cmt"><div style="background:#fff;padding:4px 16px">' + commentsHtml() + "</div></div>";
+    "</div>";
 
   document.getElementById("cd-tabs").addEventListener("click", function (e) {
     var b = e.target.closest("[data-panel]");

@@ -3,7 +3,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>直播中控台 · 商家管理后台</title>
-<link rel="stylesheet" href="../assets/css/proto.css?v=15">
+<link rel="stylesheet" href="../assets/css/proto.css?v=17">
 <style>
 html, body.ctrl-mode { height:100%; overflow:hidden; }
 body.ctrl-mode { background:#0a0f1c; color:#e8eaed; margin:0; }
@@ -634,7 +634,7 @@ body.demo-on button.demo-only, body.demo-on .ctrl-chip.demo-only { display:inlin
       <div class="ctrl-rpane" id="rpane-tools">
         <div class="ctrl-mk-pane">
           <div class="ctrl-mk-tip">营销工具仅作用于当前直播间。状态：未投放 / 投放中 / 已结束。</div>
-          <div class="ctrl-mk-card">
+          <div class="ctrl-mk-card" data-phase2-only="1">
             <div class="ctrl-mk-card-name">优惠券</div>
             <div class="ctrl-mk-card-desc">投放到直播间浮窗</div>
             <div id="mk-coupon-status"><span class="mk-status is-idle">未投放</span></div>

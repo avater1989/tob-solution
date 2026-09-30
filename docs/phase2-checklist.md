@@ -3,7 +3,7 @@
 > 基准：协作者一期原型 `https://tob-solution-minimmvp.vercel.app/`（已逐端抓取 `modules` + `sidebars` + C 端导航/页面内容核对，非目测）
 > 口径：本地菜单里「一期链接没有的项」→ 标「二期」，受**评审路径条**右侧的「二期」开关控制（默认隐藏）
 > 状态：**已落地**部分无需确认；**第 1.2 / 1.3 / 2.2 / 2.3 / 三**为需你逐项确认的差异
-> 更新：2026-09-29 已按原型评审标注（`_review/annotations.json`）处理第三轮 24 条 + 追加 2 条（含 ops 数据板块重构），见下方「零·续」第 6、7 条
+> 更新：2026-09-30 已按原型评审标注（`_review/annotations.json`）处理第六轮 32 条（含**商品审核下线**、商品列表列改造），见下方「零·续」第 10 条
 
 ---
 
@@ -124,6 +124,98 @@ ops 端 `recon` / `settlements` / `payouts` 从二期黑名单移除，三个页
 **连带处理（2026-09-29 23:49 口头确认「标记为二期」）**：`ops/dashboard.html`「异常提醒 · 商家健康度告警」卡片（`href="data.html?view=health"`）补 `data-phase2-only="1"`，与侧栏「商家健康度」口径一致；一期视图下该卡隐藏，异常提醒只剩对账异常 / 权益异常 / 申诉处理 3 项。
 
 **缓存版本号**（本轮再次 bump）：`admin-shell.js?v=28`（121 处）、`ops-shell.js?v=26`（66 处）、`mp-shell.js?v=4`（19 处）、`phase2-config.js?v=5`（3 处 shell 内部引用）
+
+### 8. 第四轮原型标注（2026-09-30 11:23 标注 / 12:52 处理）✅ 已落地
+
+本轮 20 条，以文案 / 结构清理为主，另含 3 条二期标记、1 处功能拆分。`annotations.json` 状态 `open` → `resolved`（待处理 0 / 已修改 20）。
+
+| # | 标注 | 处理 |
+|---|---|---|
+| 1 | `admin/board-overview.html`：优化总览，增加按不同时间对比五个维度，并汇总各下钻页总览数据 | **整页重构**：新增时间区间切换（今日 / 昨日 / 近7日 / 近30日）、五维度总览卡（获客与转化 / 内容经营 / 商品与交易 / 期次数据 / 客户经营）、「不同时间对比」表（同口径四列对照）、「下钻专题总览汇总」表；数据全部取 `BoardMetrics.RANGES` / `getRangeData` / `BoardTerm.getTermBundle`，不硬编码 |
+| 2-3 | 同上：去掉「异常下钻示例」卡、页头「期次复盘」按钮 | 已删（侧栏仍有「期次复盘」入口） |
+| 4-12 | 三个内容编辑页（article / video / offline）：去掉 tab 与快速定位、去掉 `← 返回…列表`、article 另去掉页标题与说明段、页头「用户端预览」 | 已删；**video / offline 的 tab 是真切换面板**，去掉 tab 后撤销 `.tab-panel` 让全部分区平铺；同步清理会抛错的 anchors JS 与 `e-title` 赋值；article 页头按钮与底部 sticky footer 重复，删的是页头那个 |
+| 13-14 | `content-tags` / `content-teachers`：「上下架」改「启禁用」 | 复选框标签、状态徽标、行内按钮、toast 四处全改（各页 4 处） |
+| 15 | `admin/entitlement.html`：导出记录 → 二期 | 按钮加 `data-phase2-only="1"` |
+| 16 | `admin/live-control.html`：优惠券营销卡 → 二期 | `.ctrl-mk-card`（优惠券）加 `data-phase2-only="1"` |
+| 17 | `admin/live-edit.html`：保存并提交平台审核 → 保存并确认创建 | 按钮文案已改（**注**：页面内其余「提交平台审核」语义的提示未动，见下） |
+| 18 | `admin/orders.html`：去掉手工补单 | 按钮与 JS 绑定一并删除 |
+| 19 | `admin/orders.html`：导出订单 → 二期 | 按钮加 `data-phase2-only="1"` |
+| 20 | `admin/message-push.html`：此处仅查看发送记录，模板统一在运营后台配置，运营后台需增加消息配置 | admin 页**降级为只读记录视图**（删发送渠道 / 场景模板 / 保存设置 / 测试发送，改为筛选 + 发送概览 + 发送记录）；**新增 `ops/message-config.html`**（渠道 + 短信签名与模板审核 + 场景模板编辑），侧栏挂在运营后台「系统管理」模块的「系统管理」组 |
+
+**结构变化**：ops「系统管理 → 系统管理」组由 3 项（数据字典 / 渠道管理 / 应用管理）→ **4 项**（中间插入「消息配置」）。
+
+**待确认（本轮未扩大范围，已按标注字面处理）**：
+
+- `admin/live-edit.html` 只改了按钮文案，页面内仍有「提交平台审核」语义的提示与流程（审核横幅 / toast / `nextActionHint`）；若直播创建不再走平台审核，需整页改口径
+- 「手工补单」在 `ops/trade-orders.html` 也有（平台侧），未动
+- `admin/message-push.html` 菜单名仍为「消息推送」，页面已是只读记录视图；是否改名「消息记录」待定
+
+**缓存版本号**：`ops-shell.js?v=27`（67 处，新增页面 + 侧栏变更）
+
+### 9. 第五轮原型标注（2026-09-30 13:50 标注 / 14:44 处理）✅ 已落地
+
+本轮 18 条，聚焦「内容资产」板块的编辑页与列表页清理，另含 2 条小程序、1 条二期标记。`annotations.json` 状态 `open` → `resolved`（待处理 0 / 已修改 18）。
+
+**口径确认（用户三点答复）**：① 「返回列表」按钮全扫（admin + ops 内容资产板块，统一放到 header-actions 左数第一个）；② 列表页待补建商品提示改为指向「商品列表」；③ admin 另两个编辑页（article / offline）的「关联商品」页签一并去掉。
+
+| 分组 | 处理 |
+|---|---|
+| `content-article-edit` | 去底部 sticky 操作条、去「预览分享卡片」按钮（含 JS），JS 绑定改为只绑页头按钮 |
+| `content-video-edit` | 去「关联商品」整节 + `renderGoods` / `goods-store` / `listing-store` / `Goods` / `Listing` 全部关联代码 |
+| `content-offline-edit` | 同上；`#access-hint` 改为静态说明（原由商品数据动态生成） |
+| `content-article-edit` / `content-offline-edit`（admin 另两页） | 按③同步去掉「关联商品」整节及关联 JS |
+| `content-video-outline` | 去返回条、`完成并提交审核` → `完成并提交`（**含 JS 里运行期覆写的文案**）、返回列表移首位、章节弹窗删「内容标签 / 上传思维导图 / 上传课件 PPT」三字段（payload 改为编辑时保留原值，避免保存即抹数据） |
+| `content-article` | 去「批量删除」「复制」按钮及处理器 |
+| `content-video` | 「关联商品 N」移到「观看」之后并可点击：0 视为「还没有商品」toast，否则跳 `goods.html?content_id=`；待补建提示改为指向「商品列表」 |
+| `goods.html` | 新增 `?content_id=` 筛选（含「已按内容筛选 / 清除筛选」提示条） |
+| `content-video-detail` | 返回列表移首位、去 `cm-back` |
+| `content-offline-signups` | 返回列表移首位（导出之后 → 之前） |
+| `goods-edit` | 「定制化计划」类型按钮标 `data-phase2-only`；`提交审核` → `提交`（含 JS 动态文案） |
+| `miniprogram/course.html` | 课程详情去「评论」Tab 及其面板 |
+| `miniprogram/lives.html` | `.mp-nav` 增加返回按钮 → `home.html` |
+| ops 同步 | `content-article-edit` / `content-video-edit` / `content-offline-edit`（去 tab / 去返回条 / 面板平铺；**运营视角的「关联商品」节保留**）、`content-video-outline`（同 admin 全套）、`content-video-detail`、`content-article`、`goods-edit`（仅二期标记）、`content-tags` / `content-teachers`（上下架 → 启禁用）、`trade-orders`（去手工补单、导出订单标二期）、`content-offline-signups`（返回列表移首位） |
+
+**待确认（本轮未动）**：
+
+- **ops 内容编辑页的「关联商品」节保留**：ops 侧该节是运营视角（看哪些商家基于该内容建了商品，无「新建商品」入口），与 admin 侧「商家自管商品」不是同一个问题；如需一并去掉请告知
+- `ops/content-video.html` 的「关联商品 N」未做跳转：ops 商品列表 `trade-goods.html` 是静态表、无内容关联数据模型，做不了「按当前内容筛选」
+- ops 编辑页的 `#btn-submit` 文案是「保存并上架下发」（平台语义），与 admin 的「提交审核 → 提交」不是同一问题，未改
+- `admin/goods-edit.html` 的类型页签「定制化计划」标二期后，若某商品恰好关联计划类内容，页签会选不中（原型层面无影响）
+- ops/content-video.html 的商品跳转、`content-article.html` 的评论数展示等边角，均按「只改标注所指」处理
+
+**缓存版本号**：本轮未改共享脚本（只改页面 HTML/内联 JS），**未 bump**
+
+---
+
+### 10. 第六轮原型标注（2026-09-30 16:14 标注 / 16:45 处理）✅ 已落地
+
+32 条，集中在商品管理与内容资产；本轮口径由用户确认两处：
+
+| 口径 | 结论 |
+|---|---|
+| `content-article` / `content-offline` 列表的「删除」 | **所有行都去掉**（连带删除弹窗与逻辑） |
+| **商品是否还需要审核** | **不需要** —— 商品不参与平台审核，也没有「已驳回」状态；按「商品列表 + 编辑页 + 运营后台审核队列」一并清理 |
+
+**商品审核下线（跨 3 处）**
+
+- `admin/goods.html`：去掉「待平台审核」统计卡与全部卡片 hint、「草稿 / 已驳回」→「草稿」（口径只算 `draft`）；去掉「审核」列与「审核状态」筛选；行内去掉 提审 / 撤回提审 / 重新提审 / 驳回原因；删除驳回原因弹窗与 `reject_target` / `openReject` / `closeReject`；上架不再校验审核
+- `admin/goods-edit.html`：「提审与上架」→「上架设置」，选项改「保存并上架 / 定时上架 / 仅存草稿」；平台商品路径价格与划线价只读（提示「平台商品价格由平台定义，不可修改」）；「平台商品」select → **弹窗单选**（列表口径同商品列表）；提交写 `status/audit_status` 不再是 `pending`
+- `ops/audit.html`：审核队列移除「商品」类型（统计 hint / 类型筛选 / 审核范围说明），删除 `pendingGoods` / `contentCellOf` / `listingRowsOf` 与商品数据源拼接
+
+**其余 32 条落点**
+
+- `admin/goods.html`：「商品」列拆为「商品编号 + 商品名称」并去缩略图；「内容类型」列显示组合（去重后全列）；去掉「成交于模块」列与「批量操作」按钮
+- `admin/goods-edit.html` 见上
+- `admin/content-offline.html`：已上架行去掉「编辑」（上架中不可编辑）、删除按钮全去、去掉说明 p、关联商品可点跳筛选
+- `admin/content-article.html`：去掉蓝色提示条、去掉删除按钮、`查看图文`→`查看`、`分享设置` 标 `data-phase2-only`
+- `admin/content-video.html`：去掉说明 p、关联商品演示数补到 2（`goods-store.js` 新增 `G-S001-01/02`，兼容旧版残留课程 id）
+- `admin/content-tags.html` / `content-teachers.html`：删除按钮标红 + 引用校验（标签：子标签优先提示「当前标签有子标签，不能删除」，其次「当前标签已有关联内容不能删除」；讲师：「当前讲师已有关联内容不能删除」）——`content-tags.js` 新增 `hasChildren` / `usedByContent`，`teachers-store.js` 新增 `usedByContent`，两页各引入 `course-store.js` 做真实引用检查
+- `admin/orders.html`：去掉「推广人」列与筛选，同步 `rowData` td 索引与下钻 `cols`
+- `admin/order-detail.html`：去掉 `#od-goods-tag` 徽标
+- `admin/content-video-outline.html`：章节 meta 只留时长（去观看 / 导图 / PPT / 标签）
+- **ops 同步**：`content-article` / `content-offline` / `content-video` / `content-video-outline` / `content-tags` / `content-teachers` / `trade-orders`（去推广人列与筛选）/ `audit`（去商品审核）；ops 商品列表 `trade-goods.html` 为静态表、无内容关联数据模型，**关联商品点击未同步**；`ops/order-detail.html` 详情里的「推广人」字段本轮未动（待确认）
+
+**缓存版本号**：`goods-store.js?v=2`（29 处）、`content-tags.js?v=3`（27 处）、`teachers-store.js?v=3`（21 处）
 
 ---
 

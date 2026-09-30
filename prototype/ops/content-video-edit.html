@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>编辑线上课 · 运营后台</title>
-<link rel="stylesheet" href="../assets/css/proto.css?v=15" />
+<link rel="stylesheet" href="../assets/css/proto.css?v=17" />
 <link rel="stylesheet" href="../assets/css/content-mgmt.css?v=4" />
 </head>
 <body class="admin-body" data-module="content" data-nav="content-video" data-title="编辑线上课" data-crumb="运营后台 / 内容与审核 / 内容资产 / 线上课 / 编辑">
@@ -16,16 +16,9 @@
 </div>
 
 <div id="page-content" style="display:none">
-  <a class="cm-back" href="content-video.html">← 返回线上课列表</a>
   <div id="edit-lock" class="cm-alert" style="display:none;margin-bottom:12px"></div>
 
-  <div class="cm-tabs" id="anchors">
-    <button class="btn active" data-tab="sec-base">基础信息</button>
-    <button class="btn" data-tab="sec-goods">关联商品</button>
-    <button class="btn" data-tab="sec-status">状态与分享</button>
-  </div>
-
-  <div class="cm-section tab-panel active" id="sec-base">
+  <div class="cm-section" id="sec-base">
     <div class="cm-section-hd"><h2>基础信息 <span class="hint">配置完基础字段后继续配置章节</span></h2></div>
     <div class="form-grid" style="grid-template-columns:1fr 1fr">
       <div class="field" style="grid-column:1/-1">
@@ -81,7 +74,7 @@
     </div>
   </div>
 
-  <div class="cm-section tab-panel" id="sec-goods">
+  <div class="cm-section" id="sec-goods">
     <div class="cm-section-hd">
       <h2>关联商品 <span class="hint">平台内容不承载价格；下发后由商家自建镜像商品定价，同一内容可建多个商品（1:N）</span></h2>
     </div>
@@ -96,7 +89,7 @@
     </p>
   </div>
 
-  <div class="cm-section tab-panel" id="sec-status">
+  <div class="cm-section" id="sec-status">
     <div class="cm-section-hd"><h2>状态与分享</h2></div>
     <div class="field">
       <label>店铺显示</label>
@@ -119,13 +112,13 @@
 </div>
 
 <script src="../assets/js/proto.js"></script>
-<script src="../assets/js/content-tags.js?v=2"></script>
-<script src="../assets/js/teachers-store.js?v=2"></script>
+<script src="../assets/js/content-tags.js?v=3"></script>
+<script src="../assets/js/teachers-store.js?v=3"></script>
 <script src="../assets/js/course-store.js?v=2"></script>
 <script src="../assets/js/prototype-business-store.js"></script>
-<script src="../assets/js/goods-store.js?v=1"></script>
+<script src="../assets/js/goods-store.js?v=2"></script>
 <script src="../assets/js/listing-store.js?v=1"></script>
-<script src="../assets/js/ops-shell.js?v=26"></script>
+<script src="../assets/js/ops-shell.js?v=27"></script>
 <script>
 var Store = window.CourseStore;
 var Goods = window.GoodsStore;
@@ -212,16 +205,6 @@ function shelfTag(s) { return Proto.shelfTag(s); }
       "</tr>";
   }).join("") : '<tr><td colspan="6" class="muted" style="text-align:center;padding:24px">该内容尚无商家关联商品</td></tr>';
 })();
-
-document.getElementById("anchors").addEventListener("click", function (e) {
-  var b = e.target.closest("[data-tab]");
-  if (!b) return;
-  document.querySelectorAll("#anchors .btn").forEach(function (x) { x.classList.remove("active"); });
-  b.classList.add("active");
-  document.querySelectorAll(".tab-panel").forEach(function (p) {
-    p.classList.toggle("active", p.id === b.getAttribute("data-tab"));
-  });
-});
 
 document.getElementById("f-cover-box").addEventListener("click", function () {
   if (locked) return;

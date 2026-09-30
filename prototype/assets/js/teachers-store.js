@@ -137,6 +137,22 @@
     return save(t);
   }
 
+  /** 是否已被内容引用（线上课讲师；其它内容源可由页面注入 window.ContentUsage.usedByTeacher） */
+  function usedByContent(id) {
+    if (!id) return false;
+    var C = global.CourseStore;
+    if (C && typeof C.list === "function") {
+      try {
+        if (C.list({}).some(function (c) { return c.teacherId === id; })) return true;
+      } catch (e) {}
+    }
+    var U = global.ContentUsage;
+    if (U && typeof U.usedByTeacher === "function") {
+      try { return !!U.usedByTeacher(id); } catch (e2) {}
+    }
+    return false;
+  }
+
   function optionsHtml(opts) {
     opts = opts || {};
     var html = "";
@@ -163,6 +179,7 @@
     save: save,
     remove: remove,
     setEnabled: setEnabled,
+    usedByContent: usedByContent,
     optionsHtml: optionsHtml,
     nextId: nextId,
     resetSeed: resetSeed,

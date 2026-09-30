@@ -698,8 +698,15 @@ td.row-actions {
 }
 .toast {
   position: fixed;
-  bottom: 24px;
-  right: 24px;
+  /* 页面中上部居中：用 left/right + margin auto 居中，避免与 fadeIn 的 transform 冲突 */
+  top: 8%;
+  left: 0;
+  right: 0;
+  bottom: auto;
+  width: fit-content;
+  max-width: calc(100% - 48px);
+  margin: 0 auto;
+  text-align: center;
   background: #1d2129;
   color: #fff;
   padding: 10px 16px;

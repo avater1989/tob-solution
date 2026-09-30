@@ -4,34 +4,329 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>经营总览 · 商家管理后台</title>
-<link rel="stylesheet" href="../assets/css/proto.css?v=15" />
+<link rel="stylesheet" href="../assets/css/proto.css?v=17" />
+<style>
+#cmp-table td.grp, #cmp-table th.grp { white-space: nowrap; }
+#cmp-table tr.grp-row td { background: #fafbfc; font-weight: 600; color: var(--color-text-secondary); }
+#cmp-table td.cur { background: #f2f7ff; }
+.drill-kpi { display: flex; flex-wrap: wrap; gap: 4px 14px; }
+.drill-kpi span { font-size: 12px; color: var(--color-text-secondary); }
+.drill-kpi b { font-size: 13px; color: var(--color-text); }
+</style>
 </head>
 <body class="admin-body" data-module="data" data-nav="board-overview" data-title="经营总览" data-crumb="数据 / 经营总览" data-assist="1">
 <div id="header-actions">
-  <a class="btn" href="board-term-review.html">期次复盘</a>
+  <span class="muted" id="board-updated" style="font-size:12px"></span>
 </div>
 <div id="page-content" style="display:none">
-  <div style="background:#f7f8fa;border:1px solid #e8e8e8;border-radius:8px;padding:12px 14px;margin-bottom:14px;font-size:13px">
-    数据页只做分析：<b>指标 → 趋势 → 维度拆解 → 明细 → 业务对象</b>。不在此管理订单/售后明细。
+
+  <div class="board-tip">
+    <b>数据页只做分析：</b>指标 → 趋势 → 维度拆解 → 明细 → 业务对象。
+    本页按<b>同一时间口径</b>汇总五个下钻专题（获客与转化 / 内容经营 / 商品与交易 / 期次数据 / 客户经营）的总览指标，并做跨时间对照；不在此管理订单 / 售后明细。
+    <span class="muted" id="scope-help-brief"></span>
   </div>
-  <div class="grid-4" style="margin-bottom:16px">
-    <a class="stat" href="board-acquire.html" style="text-decoration:none;color:inherit"><div class="label">获客与转化</div><div class="value">1,286</div><div class="hint">入池 → 加微 → 支付</div></a>
-    <a class="stat" href="board-live.html" style="text-decoration:none;color:inherit"><div class="label">内容经营</div><div class="value">68%</div><div class="hint">完课率 · 下钻直播/课程</div></a>
-    <a class="stat" href="board-convert.html" style="text-decoration:none;color:inherit"><div class="label">商品与交易</div><div class="value">¥186k</div><div class="hint">GMV · 下钻商品/订单</div></a>
-    <a class="stat" href="board-private.html" style="text-decoration:none;color:inherit"><div class="label">客户经营</div><div class="value">42%</div><div class="hint">跟进完成率</div></a>
-  </div>
-  <div class="card"><div class="card-bd">
-    <h3 style="margin:0 0 10px;font-size:14px">异常下钻示例</h3>
-    <p class="muted" style="font-size:13px;margin:0 0 12px">成交下降 → 期次分析 → 直播分析 → 查看直播</p>
-    <div style="display:flex;flex-wrap:wrap;gap:8px">
-      <a class="btn" href="board-term-review.html">期次复盘</a>
-      <a class="btn" href="board-live.html">内容/直播分析</a>
-      <a class="btn btn-primary" href="lives.html">查看直播</a>
-      <a class="btn" href="orders.html">查看订单（交易模块）</a>
+
+  <div class="board-filter">
+    <div class="segmented" id="range-seg">
+      <button type="button" class="active" data-range="7d">近7日</button>
+      <button type="button" data-range="30d">近30日</button>
+      <button type="button" data-range="today">今日</button>
+      <button type="button" data-range="yesterday">昨日</button>
     </div>
-  </div></div>
+    <span class="muted" style="font-size:12px" id="compare-hint"></span>
+  </div>
+
+  <!-- ===== 五维度总览（当前时间口径） ===== -->
+  <div class="stat-cards board-stats cols-5" id="ov-cards">
+    <a class="stat-card" data-board-link="board-acquire.html" href="board-acquire.html">
+      <div class="stat-label">获客与转化</div>
+      <div class="stat-value" id="ov-pool">—</div>
+      <div class="stat-hint" id="ov-pool-hint">—</div>
+    </a>
+    <a class="stat-card" data-board-link="board-live.html" href="board-live.html">
+      <div class="stat-label">内容经营</div>
+      <div class="stat-value" id="ov-live">—</div>
+      <div class="stat-hint" id="ov-live-hint">—</div>
+    </a>
+    <a class="stat-card" data-board-link="board-convert.html" href="board-convert.html">
+      <div class="stat-label">商品与交易</div>
+      <div class="stat-value" id="ov-gmv">—</div>
+      <div class="stat-hint" id="ov-gmv-hint">—</div>
+    </a>
+    <a class="stat-card" data-board-link="board-term-review.html" href="board-term-review.html">
+      <div class="stat-label">期次数据</div>
+      <div class="stat-value" id="ov-term" style="font-size:18px">—</div>
+      <div class="stat-hint" id="ov-term-hint">—</div>
+    </a>
+    <a class="stat-card" data-board-link="board-private.html" href="board-private.html">
+      <div class="stat-label">客户经营</div>
+      <div class="stat-value" id="ov-follow">—</div>
+      <div class="stat-hint" id="ov-follow-hint">—</div>
+    </a>
+  </div>
+
+  <!-- ===== 不同时间对比 ===== -->
+  <div class="card" style="margin-bottom:16px">
+    <div class="card-hd">
+      <h2>不同时间对比</h2>
+      <span class="muted" style="font-size:12px;font-weight:400">今日 / 昨日 / 近7日 / 近30日 同口径对照 · 高亮列为当前所选区间</span>
+    </div>
+    <div class="card-bd" style="padding:0">
+      <div style="overflow-x:auto">
+        <table class="data" id="cmp-table" style="min-width:760px">
+          <thead>
+            <tr>
+              <th style="width:110px">维度</th>
+              <th>指标</th>
+              <th data-col="today">今日</th>
+              <th data-col="yesterday">昨日</th>
+              <th data-col="7d">近7日</th>
+              <th data-col="30d">近30日</th>
+            </tr>
+          </thead>
+          <tbody id="cmp-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== 下钻专题总览汇总 ===== -->
+  <div class="card">
+    <div class="card-hd">
+      <h2>下钻专题总览汇总</h2>
+      <span class="muted" style="font-size:12px;font-weight:400">各专题页顶部总览指标 · 取当前所选区间</span>
+    </div>
+    <div class="card-bd" style="padding:0">
+      <table class="data">
+        <thead>
+          <tr><th style="width:120px">专题</th><th>总览指标</th><th style="width:120px">环比</th><th style="width:110px">操作</th></tr>
+        </thead>
+        <tbody id="drill-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+  <p class="board-attr" data-board-attr style="padding:12px 0"></p>
 </div>
 <script src="../assets/js/proto.js"></script>
+<script src="../assets/js/board-data.js?v=11"></script>
+<script src="../assets/js/term-store.js?v=3"></script>
+<script src="../assets/js/board-metrics.js?v=17"></script>
+<script src="../assets/js/board-insights.js?v=11"></script>
+<script src="../assets/js/board-term.js?v=3"></script>
+<script src="../assets/js/board-dictionary.js?v=4"></script>
+<script src="../assets/js/board-tools.js?v=7"></script>
 <script src="../assets/js/admin-shell.js?v=28"></script>
+<script>
+(function () {
+  var BM = window.BoardMetrics;
+  var BT = window.BoardTerm;
+
+  BM.ensureCaliberUI();
+  BM.setUpdatedNow();
+  BM.fillAttr();
+  var brief = document.getElementById("scope-help-brief");
+  if (brief && BM.FILTER_SCOPE_HELP) brief.textContent = " · " + BM.FILTER_SCOPE_HELP.slice(0, 48) + "…";
+
+  var RANGES = ["today", "yesterday", "7d", "30d"];
+  var RANGE_LABEL = { today: "今日", yesterday: "昨日", "7d": "近7日", "30d": "近30日" };
+  var TERM_ID = BT && BT.defaultTermId ? BT.defaultTermId() : "";
+
+  function money(v) { return v == null ? "—" : BM.money(v); }
+  function num(v) { return BM.fmt(v == null ? 0 : v); }
+  function rate(n, den) { return den ? Math.round((n / den) * 1000) / 10 : null; }
+  function pctText(v) { return v == null ? "—" : v + "%"; }
+
+  /* 环比徽标：deltas 里是 "+12%" / "-0.3pp" 这类字符串 */
+  function delta(text) {
+    if (!text || /NaN/.test(text)) return '<span class="muted">—</span>';
+    var up = text.charAt(0) !== "-";
+    return '<span class="' + (up ? "up" : "down") + '">' + (up ? "↑ " : "↓ ") + text.replace(/^[+-]/, "") + "</span>";
+  }
+
+  /* 期次数据：按区间取期次包的 KPI（vsPrior 为 NaN 时丢弃——数据源中 GMV 缺上期基数） */
+  function termByRange(range) {
+    if (!BT || !TERM_ID) return null;
+    try { return BT.getTermBundle(TERM_ID, { range: range }); } catch (e) { return null; }
+  }
+  function termKpi(bundle, id) {
+    if (!bundle || !bundle.kpis) return null;
+    return bundle.kpis.filter(function (k) { return k.id === id; })[0] || null;
+  }
+  function safeVsPrior(kpi) {
+    var v = kpi && kpi.vsPrior;
+    if (!v || !v.text || /NaN/.test(v.text)) return null;
+    return v;
+  }
+
+  /* ===== 各区间数据 ===== */
+  function allData() {
+    var out = {};
+    RANGES.forEach(function (r) { out[r] = BM.getRangeData(r); });
+    return out;
+  }
+
+  /* ===== 五维度总览卡 ===== */
+  function renderCards(d) {
+    var followRate = rate((d.wecomLeads || 0) - (d.noFollow || 0), d.wecomLeads);
+
+    document.getElementById("ov-pool").textContent = num(d.poolLeads) + " 人";
+    document.getElementById("ov-pool-hint").innerHTML =
+      "加微 " + num(d.wecomLeads) + " · 归因支付 " + num(d.attributedPayUsers) + " · " + delta(d.deltas && d.deltas.leads);
+
+    document.getElementById("ov-live").textContent = num(d.liveSessions) + " 场";
+    document.getElementById("ov-live-hint").innerHTML =
+      "场均到场 " + (d.liveAttendAvg || "—") + " · 完课率 " + (d.coverRate || "—");
+
+    document.getElementById("ov-gmv").textContent = money(d.totalGmv);
+    document.getElementById("ov-gmv-hint").innerHTML =
+      "订单 " + num(d.totalPaidOrders) + " · 客单价 " + (d.aov || "—") + " · " + delta(d.deltas && d.deltas.gmv);
+
+    var tb = termByRange(d.rangeKey || "7d");
+    var term = tb && tb.term;
+    var payUsers = termKpi(tb, "payUsers");
+    document.getElementById("ov-term").textContent = term ? term.name : "—";
+    document.getElementById("ov-term-hint").textContent = term
+      ? "支付人数 " + (payUsers ? payUsers.value : "—") + " / 目标 " + (payUsers && payUsers.target != null ? payUsers.target : "—")
+      : "暂无可复盘期次";
+
+    document.getElementById("ov-follow").textContent = pctText(followRate);
+    document.getElementById("ov-follow-hint").innerHTML =
+      "无跟进 " + num(d.noFollow) + " · 流失 " + num(d.churn) + " · 完成率 = 1 − 无跟进/已加微";
+  }
+
+  /* ===== 不同时间对比表 ===== */
+  var CMP_ROWS = [
+    { g: "获客与转化", label: "入池线索（人）", get: function (d) { return num(d.poolLeads); } },
+    { g: "获客与转化", label: "加微人数（加微率）", get: function (d) { return num(d.wecomLeads) + "（" + (d.stepWecom || "—") + "）"; } },
+    { g: "获客与转化", label: "可归因支付用户", get: function (d) { return num(d.attributedPayUsers); } },
+    { g: "内容经营", label: "直播场次", get: function (d) { return num(d.liveSessions); } },
+    { g: "内容经营", label: "场均到场率", get: function (d) { return d.liveAttendAvg || "—"; } },
+    { g: "内容经营", label: "完课率", get: function (d) { return d.coverRate || "—"; } },
+    { g: "商品与交易", label: "GMV", get: function (d) { return money(d.totalGmv); } },
+    { g: "商品与交易", label: "支付订单（笔）", get: function (d) { return num(d.totalPaidOrders); } },
+    { g: "商品与交易", label: "客单价", get: function (d) { return d.aov || "—"; } },
+    { g: "商品与交易", label: "退款率", get: function (d) { return d.refundRate || "—"; } },
+    {
+      g: "期次数据", label: "期次支付人数（目标）",
+      get: function (d, r) {
+        var k = termKpi(termByRange(r), "payUsers");
+        return k ? k.value + (k.target != null ? "（" + k.target + "）" : "") : "—";
+      }
+    },
+    {
+      g: "期次数据", label: "期次可归因 GMV",
+      get: function (d, r) { var k = termKpi(termByRange(r), "gmv"); return k ? (k.display || k.value) : "—"; }
+    },
+    {
+      g: "客户经营", label: "跟进完成率",
+      get: function (d) { return pctText(rate((d.wecomLeads || 0) - (d.noFollow || 0), d.wecomLeads)); }
+    },
+    { g: "客户经营", label: "无跟进 / 流失（人）", get: function (d) { return num(d.noFollow) + " / " + num(d.churn); } }
+  ];
+
+  function renderCompare(cur, data) {
+    var rows = [];
+    var lastG = "";
+    CMP_ROWS.forEach(function (row) {
+      if (row.g !== lastG) {
+        rows.push('<tr class="grp-row"><td class="grp" colspan="6">' + row.g + "</td></tr>");
+        lastG = row.g;
+      }
+      var tds = RANGES.map(function (r) {
+        var cellCls = r === cur ? ' class="cur"' : "";
+        return "<td" + cellCls + ">" + row.get(data[r], r) + "</td>";
+      }).join("");
+      rows.push("<tr><td class='grp muted'>" + row.g + "</td><td>" + row.label + "</td>" + tds + "</tr>");
+    });
+    document.getElementById("cmp-tbody").innerHTML = rows.join("");
+
+    /* 高亮当前列 */
+    document.querySelectorAll("#cmp-table th[data-col]").forEach(function (th) {
+      th.style.background = th.getAttribute("data-col") === cur ? "#e8f3ff" : "";
+      th.style.color = th.getAttribute("data-col") === cur ? "var(--color-primary)" : "";
+    });
+  }
+
+  /* ===== 下钻专题总览汇总 ===== */
+  function renderDrill(cur, d) {
+    var tb = termByRange(cur);
+    var payK = termKpi(tb, "payUsers");
+    var gmvK = termKpi(tb, "gmv");
+    var payPrior = safeVsPrior(payK);
+    var followRate = rate((d.wecomLeads || 0) - (d.noFollow || 0), d.wecomLeads);
+
+    var defs = [
+      {
+        name: "获客与转化", href: "board-acquire.html", deltaText: d.deltas && d.deltas.leads,
+        kpis: [
+          ["入池线索", num(d.poolLeads) + " 人"],
+          ["加微率", d.stepWecom || "—"],
+          ["归因支付", num(d.attributedPayUsers) + " 人"]
+        ]
+      },
+      {
+        name: "内容经营", href: "board-live.html", deltaText: null,
+        kpis: [
+          ["直播场次", num(d.liveSessions) + " 场"],
+          ["场均到场率", d.liveAttendAvg || "—"],
+          ["完课率", d.coverRate || "—"]
+        ]
+      },
+      {
+        name: "商品与交易", href: "board-convert.html", deltaText: d.deltas && d.deltas.gmv,
+        kpis: [
+          ["GMV", money(d.totalGmv)],
+          ["支付订单", num(d.totalPaidOrders) + " 笔"],
+          ["退款率", d.refundRate || "—"]
+        ]
+      },
+      {
+        name: "期次数据", href: "board-term-review.html",
+        deltaText: payPrior ? payPrior.text : null,
+        kpis: [
+          ["当前期次", tb && tb.term ? tb.term.name : "—"],
+          ["支付人数", payK ? payK.value + (payK.target != null ? " / " + payK.target : "") : "—"],
+          ["可归因 GMV", gmvK ? (gmvK.display || gmvK.value) : "—"]
+        ]
+      },
+      {
+        name: "客户经营", href: "board-private.html", deltaText: null,
+        kpis: [
+          ["跟进完成率", pctText(followRate)],
+          ["无跟进", num(d.noFollow) + " 人"],
+          ["流失", num(d.churn) + " 人"]
+        ]
+      }
+    ];
+
+    document.getElementById("drill-tbody").innerHTML = defs.map(function (x) {
+      var kpis = x.kpis.map(function (kv) {
+        return "<span>" + kv[0] + " <b>" + kv[1] + "</b></span>";
+      }).join("");
+      return "<tr>" +
+        "<td class='grp'><b>" + x.name + "</b></td>" +
+        '<td><div class="drill-kpi">' + kpis + "</div></td>" +
+        "<td>" + delta(x.deltaText) + "</td>" +
+        '<td><a href="' + x.href + '" data-board-link="' + x.href + '">下钻 →</a></td>' +
+        "</tr>";
+    }).join("");
+  }
+
+  /* ===== 主渲染 ===== */
+  function renderAll(cur) {
+    var data = allData();
+    var d = data[cur] || data["7d"];
+    d.rangeKey = cur;
+    renderCards(d);
+    renderCompare(cur, data);
+    renderDrill(cur, d);
+    var hint = document.getElementById("compare-hint");
+    if (hint) hint.textContent = "当前区间：" + (RANGE_LABEL[cur] || cur) + " · " + BM.comparePeriodHint({ range: cur });
+    BM.wireBoardLinks();
+  }
+
+  BM.bindRange("range-seg", function (key) { renderAll(key); });
+})();
+</script>
 </body>
 </html>
