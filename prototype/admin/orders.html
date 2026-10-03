@@ -51,7 +51,7 @@
       </select>
       <select id="f-refund-status">
         <option value="">退款状态</option>
-        <option>无退款</option><option>退款中</option><option>已退款</option><option>已驳回</option>
+        <option>无退款</option><option>用户已申请</option><option>退款中</option><option>已退款</option><option>已驳回</option>
       </select>
       <input id="f-time1" type="datetime-local" />
       <input id="f-time2" type="datetime-local" />
@@ -59,6 +59,8 @@
       <button class="btn" id="btn-reset">重置</button>
     </div>
   </div></div>
+
+  <p class="muted" style="margin:0 0 8px;font-size:12px">退款状态口径：<b>用户已申请</b>（C 端用户在小程序发起退款申请，待运营人员审核） → <b>退款中</b>（审核通过、退款处理中）→ <b>已退款</b> / <b>已驳回</b>。</p>
 
   <!-- 表格 -->
   <div class="card"><div class="card-bd" style="padding:0">
@@ -70,8 +72,8 @@
           <th>买家</th>
           <th>实付金额</th>
           <th>渠道来源</th>
-          <th>商品来源</th>
-          <th>结算模式</th>
+          <th data-phase2-only>商品来源</th>
+          <th data-phase2-only>结算模式</th>
           <th>支付状态</th>
           <th>权益状态</th>
           <th>退款状态</th>
@@ -88,14 +90,13 @@
           <td>李***<br><span class="muted">U0001</span></td>
           <td><b>¥9.90</b></td>
           <td><span class="tag tag-green">视频号</span></td>
-          <td><span class="tag tag-purple">平台</span></td>
-          <td>佣金 20%</td>          <td><span class="badge badge-info">已支付</span></td>
+          <td data-phase2-only><span class="tag tag-purple">平台</span></td>
+          <td data-phase2-only>佣金 20%</td>          <td><span class="badge badge-info">已支付</span></td>
           <td><span class="badge badge-info">已开通</span></td>
           <td><span class="muted">—</span></td>
           <td>2026-09-07 14:22</td>
           <td class="row-actions">
             <a href="order-detail.html?id=YB20260907000331">详情</a>
-            <a href="entitlement.html">权益记录</a>
             <a href="aftersales.html">退款</a>
           </td>
         </tr>
@@ -105,8 +106,8 @@
           <td>陈***<br><span class="muted">U0010</span></td>
           <td><b>¥0.00</b></td>
           <td><span class="tag tag-purple">直播间</span></td>
-          <td><span class="tag tag-green">自建</span></td>
-          <td>服务费 0.6%</td>          <td><span class="badge badge-success">已完成</span></td>
+          <td data-phase2-only><span class="tag tag-green">自建</span></td>
+          <td data-phase2-only>服务费 0%</td>          <td><span class="badge badge-success">已完成</span></td>
           <td><span class="badge badge-info">已开通</span></td>
           <td><span class="muted">—</span></td>
           <td>2026-03-28 20:18</td>
@@ -121,8 +122,8 @@
           <td>刘***<br><span class="muted">U0004</span></td>
           <td><b>¥9.90</b></td>
           <td><span class="tag tag-blue">小程序</span></td>
-          <td><span class="tag tag-green">自建</span></td>
-          <td>服务费 0.6%</td>          <td><span class="badge badge-warn">待付款</span></td>
+          <td data-phase2-only><span class="tag tag-green">自建</span></td>
+          <td data-phase2-only>服务费 0%</td>          <td><span class="badge badge-warn">待付款</span></td>
           <td><span class="muted">未开通</span></td>
           <td><span class="muted">—</span></td>
           <td>2026-03-27 15:30</td>
@@ -137,14 +138,13 @@
           <td>赵***<br><span class="muted">U0008</span></td>
           <td><b>¥9.90</b></td>
           <td><span class="tag tag-blue">小程序</span></td>
-          <td><span class="tag tag-green">自建</span></td>
-          <td>服务费 0.6%</td>          <td><span class="badge badge-danger">已退款</span></td>
+          <td data-phase2-only><span class="tag tag-green">自建</span></td>
+          <td data-phase2-only>服务费 0%</td>          <td><span class="badge badge-danger">已退款</span></td>
           <td><span class="badge">已回收</span></td>
           <td><span class="badge badge-danger">已退款 ¥9.90</span></td>
           <td>2026-03-25 14:22</td>
           <td class="row-actions">
             <a href="order-detail.html?id=YB20260325000666">详情</a>
-            <a href="refunds.html">退款单</a>
           </td>
         </tr>
         <tr>
@@ -153,8 +153,8 @@
           <td>张***<br><span class="muted">U0011</span></td>
           <td><b>¥99.00</b></td>
           <td><span class="tag tag-green">视频号</span></td>
-          <td><span class="tag tag-purple">平台</span></td>
-          <td>佣金 20%</td>          <td><span class="badge badge-info">已支付</span></td>
+          <td data-phase2-only><span class="tag tag-purple">平台</span></td>
+          <td data-phase2-only>佣金 20%</td>          <td><span class="badge badge-info">已支付</span></td>
           <td><span class="badge badge-info">已开通</span></td>
           <td><span class="muted">—</span></td>
           <td>2026-03-25 11:05</td>
@@ -170,14 +170,31 @@
           <td>周***<br><span class="muted">U0006</span></td>
           <td><b>¥299.00</b></td>
           <td><span class="tag tag-blue">小程序</span></td>
-          <td><span class="tag tag-green">自建</span></td>
-          <td>服务费 0.6%</td>          <td><span class="badge badge-info">已支付</span></td>
+          <td data-phase2-only><span class="tag tag-green">自建</span></td>
+          <td data-phase2-only>服务费 0%</td>          <td><span class="badge badge-info">已支付</span></td>
           <td><span class="badge badge-info">已开通</span></td>
-          <td><span class="badge badge-warn">退款中</span></td>
+          <td><span class="badge badge-warn">用户已申请</span></td>
           <td>2026-03-24 18:47</td>
           <td class="row-actions">
             <a href="order-detail.html?id=YB20260324100231">详情</a>
-            <a href="refunds.html">退款单</a>
+            <a href="#" data-row-act="refund-process">退款处理</a>
+          </td>
+        </tr>
+        <tr>
+          <td><a href="order-detail.html?id=YB20260320100888" class="link-mono">YB20260320100888</a></td>
+          <td>家庭教育 1 对 1 深度咨询<br><span class="muted">服务类 · ¥599 · 人工开通权益</span></td>
+          <td>孙***<br><span class="muted">U0012</span></td>
+          <td><b>¥599.00</b></td>
+          <td><span class="tag tag-blue">小程序</span></td>
+          <td data-phase2-only><span class="tag tag-green">自建</span></td>
+          <td data-phase2-only>服务费 0%</td>
+          <td><span class="badge badge-info">已支付</span></td>
+          <td><span class="badge badge-warn">未开通</span></td>
+          <td><span class="muted">—</span></td>
+          <td>2026-03-20 16:30</td>
+          <td class="row-actions">
+            <a href="order-detail.html?id=YB20260320100888">详情</a>
+            <a href="#" data-row-act="open-right">开通权益</a>
           </td>
         </tr>
       </tbody>
@@ -195,7 +212,7 @@
   <div class="card" style="margin-top:16px"><div class="card-bd">
     <p class="muted" style="font-size:12px;line-height:1.8;margin:0">
       <b>口径：</b>订单以<b>成交商品</b>为主键（内容不含价格）。
-      <b>「商品来源」</b>表示该成交商品是<b>平台商品</b>还是<b>商家自建商品</b>（字段 <code>content_source</code>），决定分账走链路 A（佣金 20%）还是链路 B（服务费 0.6%）。
+      <b>「商品来源」</b>表示该成交商品是<b>平台商品</b>还是<b>商家自建商品</b>（字段 <code>content_source</code>），决定分账走链路 A（佣金 20%）还是链路 B（服务费 0%）。
       <br />注意：本列与「交易 · 商品管理 · <a href="wxshop-goods.html" style="color:inherit;text-decoration:underline">微信小店商品</a>」页的「商品来源」<b>不同义</b>——那里指的是微信侧的分发场景（视频号 / 直播，字段 <code>goods_source</code>），与分账无关。
     </p>
   </div></div>
@@ -256,6 +273,29 @@
   </div>
 </div>
 
+<!-- 退款处理弹窗（用户已申请） -->
+<div class="proto-modal" id="modal-refund-process" style="width:480px">
+  <div class="proto-modal-hd">
+    <h3 style="font-size:16px;font-weight:600">退款处理</h3>
+    <button class="btn btn-sm btn-ghost" data-close>×</button>
+  </div>
+  <div class="proto-modal-bd">
+    <p class="muted" style="margin:0 0 12px">用户已发起退款申请，请确认是否同意退款。</p>
+    <div class="form-grid">
+      <div class="field"><label>订单号</label><div id="rp-ord">—</div></div>
+      <div class="field"><label>买家</label><div id="rp-cust">—</div></div>
+      <div class="field"><label>实付金额</label><div id="rp-paid">—</div></div>
+    </div>
+    <div class="field" style="margin-top:10px"><label>处理备注</label>
+      <textarea id="rp-note" rows="3" style="width:100%;padding:8px;border:1px solid var(--color-border);border-radius:6px" placeholder="驳回时建议填写原因"></textarea>
+    </div>
+  </div>
+  <div class="proto-drawer-ft" style="border-top:1px solid var(--color-border);padding:12px 20px;display:flex;gap:8px;justify-content:flex-end">
+    <button class="btn" id="rp-reject">驳回退款</button>
+    <button class="btn btn-primary" id="rp-agree">同意退款</button>
+  </div>
+</div>
+
 <style>
 .link-mono {
   font-family: ui-monospace, Consolas, monospace;
@@ -275,7 +315,7 @@
 <script src="../assets/js/board-data.js?v=6"></script>
 <script src="../assets/js/board-metrics.js?v=11"></script>
 <script src="../assets/js/board-insights.js?v=4"></script>
-<script src="../assets/js/admin-shell.js?v=28"></script>
+<script src="../assets/js/admin-shell.js?v=31"></script>
 <script>
 (function () {
   // ===== Mask =====
@@ -313,6 +353,7 @@
 
   // ===== Row actions =====
   var noteOrder = "";
+  var refundProcessRow = null;
   document.querySelectorAll("#ord-tbody tr").forEach(function (tr) {
     tr.querySelectorAll("[data-row-act]").forEach(function (a) {
       a.addEventListener("click", function (e) {
@@ -324,15 +365,45 @@
           document.getElementById("ref-cust").textContent = d.buyer + "*";
           document.getElementById("ref-paid").textContent = d.paid;
           open(document.getElementById("modal-refund"));
+        } else if (act === "refund-process") {
+          refundProcessRow = tr;
+          document.getElementById("rp-ord").textContent = d.orderNo;
+          document.getElementById("rp-cust").textContent = d.buyer + "*";
+          document.getElementById("rp-paid").textContent = d.paid;
+          document.getElementById("rp-note").value = "";
+          open(document.getElementById("modal-refund-process"));
         } else if (act === "note") {
           noteOrder = d.orderNo;
           document.getElementById("note-input").value = "";
           open(document.getElementById("modal-note"));
         } else if (act === "close") {
-          Proto.toast("待付款订单已关闭（原型）");
+          if (!confirm("确认关闭该订单？关闭后订单状态将变为「已关闭」，且不可恢复。")) return;
+          var statusTd = tr.querySelectorAll("td")[7];
+          if (statusTd) statusTd.innerHTML = '<span class="badge">已关闭</span>';
+          Proto.toast("订单已关闭（原型）");
+        } else if (act === "open-right") {
+          if (!confirm("确认为该订单人工开通权益？开通后买家即可访问对应内容。")) return;
+          var rightsTd = tr.querySelectorAll("td")[8];
+          if (rightsTd) rightsTd.innerHTML = '<span class="badge badge-info">已开通</span>';
+          Proto.toast("权益已人工开通（原型）");
         }
       });
     });
+  });
+
+  // 退款处理：同意 → 退款中；驳回 → 驳回退款
+  function setRefundStatus(row, statusText, cls) {
+    if (!row) return;
+    var tds = row.querySelectorAll("td");
+    if (tds[9]) tds[9].innerHTML = '<span class="badge ' + (cls || "") + '">' + statusText + "</span>";
+  }
+  document.getElementById("rp-agree").addEventListener("click", function () {
+    setRefundStatus(refundProcessRow, "退款中", "badge-warn");
+    closeAll(); Proto.toast("已同意退款，退款处理中（原型）");
+  });
+  document.getElementById("rp-reject").addEventListener("click", function () {
+    setRefundStatus(refundProcessRow, "已驳回", "badge-danger");
+    closeAll(); Proto.toast("已驳回退款申请（原型）");
   });
 
   document.getElementById("ref-submit").addEventListener("click", function () {

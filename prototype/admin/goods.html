@@ -16,7 +16,7 @@
 </head>
 <body class="admin-body" data-module="trade" data-nav="goods" data-title="商品列表" data-crumb="交易 / 商品管理 / 商品列表">
 <div id="header-actions">
-  <a class="btn" href="goods-edit.html?create_mode=from_platform">通过平台商品创建</a>
+  <a class="btn" href="goods-edit.html?create_mode=from_platform" data-phase2-only>通过平台商品创建</a>
   <a class="btn btn-primary" href="goods-edit.html?create_mode=from_content">新建商品</a>
 </div>
 <div id="page-content" style="display:none">
@@ -41,7 +41,7 @@
       <select id="f-mode">
         <option value="">创建方式</option>
         <option value="from_content">通过内容创建</option>
-        <option value="from_platform">通过平台商品创建</option>
+        <option value="from_platform" data-phase2-only>通过平台商品创建</option>
       </select>
       <select id="f-cat"><option value="">商品类目</option></select>
       <select id="f-status">
@@ -96,7 +96,7 @@
 <script src="../assets/js/goods-store.js?v=2"></script>
 <script src="../assets/js/listing-store.js?v=1"></script>
 <script src="../assets/js/share-modal.js"></script>
-<script src="../assets/js/admin-shell.js?v=28"></script>
+<script src="../assets/js/admin-shell.js?v=31"></script>
 <script>
 (function () {
   var Tax = window.GoodsTaxonomy;
@@ -149,6 +149,7 @@
 
   /* 该商品的交付内容（组合商品可多条）：渲染为可点击的内容 ID */
   function contentCell(r) {
+    if (r.manual_delivery) return '<span class="badge badge-warn">人工开通权益</span>';
     var cs = Goods.contentsOf(r);
     if (!cs.length) return '<span class="mono">—</span>';
     return cs.map(function (c) {

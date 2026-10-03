@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>线上课详情 · To-B 小程序</title>
   <link rel="stylesheet" href="../assets/css/proto.css?v=17" />
-  <link rel="stylesheet" href="../assets/css/mp.css?v=21" />
+  <link rel="stylesheet" href="../assets/css/mp.css?v=22" />
   <style>
     .cd-badge { font-size:11px;padding:1px 6px;border-radius:3px;background:#fff7e6;color:#d46b08;margin-left:6px;vertical-align:middle; }
     .cd-badge.premium { background:#f9f0ff;color:#722ed1; }
@@ -54,8 +54,8 @@
   <script src="../assets/js/prototype-business-store.js"></script>
   <script src="../assets/js/goods-store.js?v=2"></script>
   <script src="../assets/js/listing-store.js?v=1"></script>
-  <script src="../assets/js/mp-shell.js?v=4"></script>
-  <script src="../assets/js/mp-commerce.js?v=2"></script>
+  <script src="../assets/js/mp-shell.js?v=5"></script>
+  <script src="../assets/js/mp-commerce.js?v=3"></script>
   <script>
   var Store = window.CourseStore;
   var Tags = window.ContentTags;
@@ -206,9 +206,8 @@
     cta.textContent = "开始学习";
   } else if (ctx.free) {
     cta.textContent = "立即学习";
-  } else if (ctx.orderMode === "inline") {
-    cta.textContent = "立即购买 ¥" + priceTxt();
   } else {
+    /* 2026-10-02 评审标注：购买入口统一跳商品详情页，本页不再直接下单 */
     cta.textContent = "去购买";
   }
 

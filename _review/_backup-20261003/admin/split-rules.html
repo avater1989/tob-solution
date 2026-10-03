@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>分账规则配置 · 商家管理后台</title>
+<link rel="stylesheet" href="../assets/css/proto.css?v=17" />
+</head>
+<body class="admin-body" data-module="trade" data-nav="split-rules" data-title="分账规则配置" data-crumb="交易 / 交易设置 / 分账规则配置">
+<div id="header-actions">
+  <button class="btn" id="btn-test">试算</button>
+  <button class="btn btn-primary" id="btn-new">新建分账规则</button>
+</div>
+<div id="page-content" style="display:none">
+
+  <div class="alert alert-warning" style="margin-bottom:12px;padding:10px 12px;border-radius:8px;background:#fff7e6;border:1px solid #ffd591;color:#d48806;font-size:13px">
+    <b>本页已下架</b>：分账规则属平台级配置，已迁移至 <b>运营后台 → 交易与结算 → 结算规则配置</b>（支持链路 A 佣金 / 链路 B 服务费双模式）。本页仅作历史留痕，口径以《交易口径 · 费率与分账基准》为准。
+  </div>
+
+  <div class="alert alert-info" style="margin-bottom:12px;padding:10px 12px;border-radius:8px;background:#e8f3ff;border:1px solid #a0cfff;color:#165dff;font-size:13px">
+    分账规则决定一笔订单资金如何通过<b>通联支付</b>清分到各分账方。资金走银行弱存管，订单进入<b>平台中间账户集</b>后按规则托管代付；分账方需已完成通联会员进件、绑定结算卡并完成提现协议签约。
+  </div>
+
+  <!-- 顶部统计 -->
+  <div class="grid-4" style="margin-bottom:16px">
+    <div class="stat"><div class="label">生效规则</div><div class="value">3</div><div class="hint">另有 1 条已停用</div></div>
+    <div class="stat"><div class="label">本月分账金额</div><div class="value">¥86,420</div><div class="hint">分账 1,286 笔</div></div>
+    <div class="stat"><div class="label">分账失败</div><div class="value">2</div><div class="hint">结算卡异常，待处理</div></div>
+    <div class="stat"><div class="label">平台费率</div><div class="value">0.6%<span style="font-size:14px"> / 20%</span></div><div class="hint">服务费（自建）/ 佣金（平台内容）</div></div>
+  </div>
+
+  <!-- 规则列表 -->
+  <div class="card" style="margin-bottom:12px"><div class="card-hd"><h2>分账规则</h2><span class="muted" style="font-size:12px">按「适用范围」匹配，命中优先级：商品 &gt; 类目 &gt; 全局默认</span></div>
+    <div class="card-bd" style="padding:0">
+      <table class="data">
+        <thead>
+          <tr>
+            <th>规则名称</th>
+            <th>适用范围</th>
+            <th>分账方与比例</th>
+            <th>结算周期</th>
+            <th>状态</th>
+            <th>更新时间</th>
+            <th style="width:170px">操作</th>
+          </tr>
+        </thead>
+        <tbody id="sr-tbody">
+          <tr>
+            <td><b>平台内容 · 默认佣金规则</b><br><span class="muted" style="font-size:12px">链路 A</span></td>
+            <td>全部平台内容（全局）</td>
+            <td><span class="tag tag-blue">星启家庭教育 20%</span> <span class="tag tag-purple">艺博平台 80%</span></td>
+            <td>T+1 自动</td>
+            <td><span class="badge badge-success">生效中</span></td>
+            <td>2026-09-11 14:02</td>
+            <td class="row-actions"><a href="#" data-row-act="edit">编辑</a><a href="#" data-row-act="test">试算</a><a href="#" data-row-act="off">停用</a></td>
+          </tr>
+          <tr>
+            <td><b>家长课堂 · 自建内容默认规则</b><br><span class="muted" style="font-size:12px">链路 B</span></td>
+            <td>家长课堂（类目）</td>
+            <td><span class="tag tag-blue">星启家庭教育 99.4%</span> <span class="tag tag-purple">艺博服务费 0.6%</span></td>
+            <td>T+1 自动</td>
+            <td><span class="badge badge-success">生效中</span></td>
+            <td>2026-08-20 14:02</td>
+            <td class="row-actions"><a href="#" data-row-act="edit">编辑</a><a href="#" data-row-act="test">试算</a><a href="#" data-row-act="off">停用</a></td>
+          </tr>
+          <tr>
+            <td><b>1v1 咨询服务规则</b><br><span class="muted" style="font-size:12px">链路 B · 含老师分成</span></td>
+            <td>平台商品 · 线上咨询</td>
+            <td><span class="tag tag-blue">星启家庭教育 94.4%</span> <span class="tag tag-green">授课老师 5%</span> <span class="tag tag-purple">艺博服务费 0.6%</span></td>
+            <td>T+7 自动</td>
+            <td><span class="badge badge-success">生效中</span></td>
+            <td>2026-08-30 16:20</td>
+            <td class="row-actions"><a href="#" data-row-act="edit">编辑</a><a href="#" data-row-act="test">试算</a><a href="#" data-row-act="off">停用</a></td>
+          </tr>
+          <tr>
+            <td><b>战略合同 · 慧心教育</b><br><span class="muted" style="font-size:12px">链路 B · 合同费率</span></td>
+            <td>指定租户：慧心教育</td>
+            <td><span class="tag tag-blue">慧心教育 99.4%</span> <span class="tag tag-purple">艺博服务费 0.6%</span></td>
+            <td>月结</td>
+            <td><span class="badge">已停用</span></td>
+            <td>2026-07-15 11:08</td>
+            <td class="row-actions"><a href="#" data-row-act="edit">编辑</a><a href="#" data-row-act="on">启用</a></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- 口径说明 -->
+  <div class="card"><div class="card-hd"><h2>规则说明与限制</h2></div>
+    <div class="card-bd">
+      <p class="muted" style="font-size:12px;line-height:1.9;margin:0">
+        <b>1. 双链路：</b>平台内容（链路 A）按佣金率（默认 20%）给商家分账佣金，课程金额留存艺博账户；商家自建内容（链路 B）商家拿课程金额，平台按服务费率（默认 0.6%）收服务费。同一订单只命中一条链路。<br>
+        <b>2. 分账方资格：</b>所有分账方（机构、老师、推广人）须先完成通联支付会员进件、绑定结算银行卡并完成<b>提现协议签约</b>，未进件/未签约方不参与分账与提现。<br>
+        <b>3. 比例校验：</b>各分账方比例合计须等于 100%，平台费率由艺博统一配置（0.6% 服务费 / 20% 佣金）。<br>
+        <b>4. 结算周期：</b>支持 T+1 / T+7 / 周结 / 月结，与入金手续费扣费周期相互独立。<br>
+        <b>5. 退款回退：</b>已分账订单退款时，支持「仅退回买家金额」或「同时退回分账资金」；受原收款人账户余额约束，不足需先充值。<br>
+        <b>6. 变更生效：</b>规则修改后仅对<b>修改时间之后支付</b>的订单生效，历史订单按原规则快照执行。
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- 新建/编辑规则弹窗 -->
+<div class="proto-mask" id="mask"></div>
+<div class="proto-modal" id="modal-rule" style="width:620px">
+  <div class="proto-modal-hd"><h3 id="sr-title" style="font-size:16px;font-weight:600">新建分账规则</h3><button class="btn btn-sm btn-ghost" data-close>×</button></div>
+  <div class="proto-modal-bd">
+    <div class="form-grid" style="grid-template-columns:1fr 1fr;gap:10px 16px">
+      <div class="field"><label>规则名称 *</label><input id="sr-name" placeholder="如：家长课堂类目默认规则" /></div>
+      <div class="field"><label>适用范围 *</label>
+        <select id="sr-scope" style="width:100%;padding:7px 8px;border:1px solid var(--color-border);border-radius:6px">
+          <option>全部商品（全局默认）</option>
+          <option>按商品分组：家长课堂</option>
+          <option>按商品分组：亲子训练营</option>
+          <option>按商品类型：课程商品</option>
+          <option>按商品类型：定制化计划商品</option>
+          <option>按商品类型：直播商品</option>
+          <option>按商品类型：平台商品</option>
+          <option>指定单个商品</option>
+        </select>
+      </div>
+      <div class="field"><label>结算周期 *</label>
+        <select id="sr-cycle" style="width:100%;padding:7px 8px;border:1px solid var(--color-border);border-radius:6px">
+          <option>T+1 自动分账</option><option>T+7 自动分账</option><option>周结</option><option>月结</option>
+        </select>
+      </div>
+      <div class="field"><label>服务费计收方式</label>
+        <select style="width:100%;padding:7px 8px;border:1px solid var(--color-border);border-radius:6px">
+          <option>从分账金额中扣除平台服务费</option>
+          <option>先分账后单独结算服务费</option>
+        </select>
+      </div>
+    </div>
+
+    <h4 style="margin:14px 0 8px;font-size:14px">分账方与比例</h4>
+    <table class="data">
+      <thead><tr><th>分账方</th><th>通联会员号</th><th style="width:150px">分账比例</th><th style="width:60px"></th></tr></thead>
+      <tbody id="sr-parties">
+        <tr>
+          <td><b>星启家庭教育</b></td>
+          <td class="mono">MEM-1001XX</td>
+          <td><input type="number" value="99.4" step="0.1" style="width:80px;padding:5px 8px;border:1px solid var(--color-border);border-radius:6px" /> %</td>
+          <td><a href="#" data-row-act="del" style="color:#f53f3f">删除</a></td>
+        </tr>
+        <tr>
+          <td><b>艺博平台</b> <span class="muted" style="font-size:12px">（平台服务费）</span></td>
+          <td class="mono">TL-MCH-8801XXXX</td>
+          <td><input type="number" value="0.6" step="0.1" style="width:80px;padding:5px 8px;border:1px solid var(--color-border);border-radius:6px" /> %</td>
+          <td><a href="#" data-row-act="del" style="color:#f53f3f">删除</a></td>
+        </tr>
+      </tbody>
+    </table>
+    <button class="btn btn-sm" id="sr-add" style="margin-top:8px">＋ 添加分账方</button>
+    <p class="muted" style="margin-top:10px">当前合计：<b id="sr-sum">100</b>%，须等于 100% 才能保存。分账方须已完成通联进件。</p>
+  </div>
+  <div class="proto-drawer-ft" style="border-top:1px solid var(--color-border);padding:12px 20px;display:flex;gap:8px;justify-content:flex-end">
+    <button class="btn" data-close>取消</button>
+    <button class="btn btn-primary" id="sr-save">保存规则</button>
+  </div>
+</div>
+
+<!-- 试算弹窗 -->
+<div class="proto-modal" id="modal-test" style="width:480px">
+  <div class="proto-modal-hd"><h3 style="font-size:16px;font-weight:600">分账试算</h3><button class="btn btn-sm btn-ghost" data-close>×</button></div>
+  <div class="proto-modal-bd">
+    <div class="field" style="margin-bottom:10px"><label>订单金额（元）</label><input type="number" id="test-amount" value="199.00" /></div>
+    <div class="kv">
+      <div class="kv-row"><span>命中规则</span><b>家长课堂 · 自建内容默认规则（链路 B）</b></div>
+      <div class="kv-row"><span>入金手续费（0.3%）</span><b>-¥0.60</b></div>
+      <div class="kv-row"><span>星启家庭教育（99.4%）</span><b>¥197.81</b></div>
+      <div class="kv-row"><span>艺博平台服务费（0.6%）</span><b>¥1.19</b></div>
+    </div>
+    <p class="muted" style="margin-top:10px">试算结果仅供参考，实际分账以通联支付回盘为准。平台内容（链路 A）按佣金率 20% 计，商家得佣金、平台留存。</p>
+  </div>
+  <div class="proto-drawer-ft" style="border-top:1px solid var(--color-border);padding:12px 20px;display:flex;gap:8px;justify-content:flex-end">
+    <button class="btn" data-close>关闭</button>
+    <button class="btn btn-primary" data-toast="已重新试算（原型）">重新试算</button>
+  </div>
+</div>
+
+<style>
+.mono { font-family:ui-monospace,Consolas,monospace; font-size:12px; }
+.tag { display:inline-block; padding:2px 8px; border-radius:4px; font-size:12px; background:#f2f3f5; color:#4e5969; }
+.tag-blue{background:#e8f3ff;color:#165dff} .tag-purple{background:#f4f0ff;color:#722ed1}
+.tag-green{background:#e8ffea;color:#009a29} .tag-orange{background:#fff3e0;color:#ad6800}
+</style>
+
+<script src="../assets/js/proto.js"></script>
+<script src="../assets/js/admin-shell.js?v=31"></script>
+<script>
+(function () {
+  var mask = document.getElementById("mask");
+  function closeAll(){ mask.classList.remove("open"); document.querySelectorAll(".proto-modal").forEach(function(n){n.classList.remove("open");}); }
+  function open(n){ mask.classList.add("open"); n.classList.add("open"); }
+  mask.addEventListener("click", closeAll);
+  document.querySelectorAll("[data-close]").forEach(function(n){ n.addEventListener("click", closeAll); });
+
+  function recalc(){
+    var sum = 0;
+    document.querySelectorAll("#sr-parties input[type=number]").forEach(function(i){ sum += Number(i.value || 0); });
+    document.getElementById("sr-sum").textContent = sum;
+    document.getElementById("sr-sum").style.color = sum === 100 ? "#009a29" : "#cb2634";
+  }
+  document.getElementById("sr-parties").addEventListener("input", recalc);
+
+  document.addEventListener("click", function(e){
+    var el = e.target.closest("[data-row-act]");
+    if (!el) return;
+    e.preventDefault();
+    var act = el.getAttribute("data-row-act");
+    if (act === "edit") { document.getElementById("sr-title").textContent = "编辑分账规则"; open(document.getElementById("modal-rule")); }
+    else if (act === "test") { open(document.getElementById("modal-test")); }
+    else if (act === "off") { Proto.toast("规则已停用，历史订单不受影响（原型）"); }
+    else if (act === "on") { Proto.toast("规则已启用（原型）"); }
+    else if (act === "del") { el.closest("tr").remove(); recalc(); }
+  });
+
+  document.getElementById("sr-add").addEventListener("click", function(){
+    var tr = document.createElement("tr");
+    tr.innerHTML = '<td><select style="width:100%;padding:6px 8px;border:1px solid var(--color-border);border-radius:6px">' +
+      '<option>选择分账方</option><option>晨光少儿成长（MEM-1002XX）</option><option>慧心教育（进件中）</option><option>授课老师</option><option>推广人</option></select></td>' +
+      '<td class="mono">—</td>' +
+      '<td><input type="number" value="0" style="width:80px;padding:5px 8px;border:1px solid var(--color-border);border-radius:6px" /> %</td>' +
+      '<td><a href="#" data-row-act="del" style="color:#f53f3f">删除</a></td>';
+    document.getElementById("sr-parties").appendChild(tr);
+    recalc();
+  });
+
+  document.getElementById("sr-save").addEventListener("click", function(){
+    var sum = Number(document.getElementById("sr-sum").textContent);
+    if (sum !== 100) { Proto.toast("分账比例合计须等于 100%"); return; }
+    if (!document.getElementById("sr-name").value.trim()) { Proto.toast("请填写规则名称"); return; }
+    closeAll();
+    Proto.toast("分账规则已保存，仅对之后的订单生效（原型）");
+  });
+
+  document.getElementById("btn-new").addEventListener("click", function(){
+    document.getElementById("sr-title").textContent = "新建分账规则";
+    document.getElementById("sr-name").value = "";
+    open(document.getElementById("modal-rule"));
+  });
+  document.getElementById("btn-test").addEventListener("click", function(){ open(document.getElementById("modal-test")); });
+  recalc();
+})();
+</script>
+</body>
+</html>

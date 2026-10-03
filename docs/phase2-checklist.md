@@ -3,7 +3,7 @@
 > 基准：协作者一期原型 `https://tob-solution-minimmvp.vercel.app/`（已逐端抓取 `modules` + `sidebars` + C 端导航/页面内容核对，非目测）
 > 口径：本地菜单里「一期链接没有的项」→ 标「二期」，受**评审路径条**右侧的「二期」开关控制（默认隐藏）
 > 状态：**已落地**部分无需确认；**第 1.2 / 1.3 / 2.2 / 2.3 / 三**为需你逐项确认的差异
-> 更新：2026-09-30 已按原型评审标注（`_review/annotations.json`）处理第六轮 32 条（含**商品审核下线**、商品列表列改造），见下方「零·续」第 10 条
+> 更新：2026-10-02 先后处理**第七轮**（套餐管理二期、租户级容量与费率、租户管理并入系统管理、内容与审核整模块二期、订单列表移入财务、数据板块除商家经营外二期，见「零·续」第 11 条）与**第九轮**（租户列表去套餐化、取消「试用中」、续费改续期并可改使用截止日期、列表编辑/续费入口收敛到配置详情、新增操作日志 Tab，见第 12 条）
 
 ---
 
@@ -219,6 +219,109 @@ ops 端 `recon` / `settlements` / `payouts` 从二期黑名单移除，三个页
 
 ---
 
+### 11. 第七轮调整（2026-10-02，运营后台模块与二期收口）✅ 已落地
+
+用户口头指定 6 条，全部落在 **ops 端**：
+
+| # | 要求 | 落地方式 |
+|---|---|---|
+| 1 | **套餐管理**标记为二期 | `phase2-config.js` ops 新增 `plans`；`plans.html` / `plan-edit.html` 加 `data-phase2="1"`；侧栏「套餐管理」打二期徽标 |
+| 2 | **商家账号数 / 直播场次 / 订单服务费率**改为**按租户单独编辑** | `tenant-config.html` 新增「容量与费率」卡片 + 编辑弹窗（`#modal-capacity`），三值可改并即时回填；`tenants.html` 行内「编辑」弹窗补齐同 3 项，列表列名「服务费率」→「订单服务费率」；`plans.html` / `plan-edit.html` 加注「按租户单独配置，套餐仅保留默认值」 |
+| 3 | **租户管理**并入**系统管理** | `ops-shell.js` 删除顶级模块 `tenant`，两组（租户列表 / 套餐管理）移入 `sidebars.sys` 首组「租户管理」；6 个 `data-module="tenant"` 页面改 `sys`，面包屑「运营后台 / 租户管理 / …」→「运营后台 / 系统管理 / …」；加 `moduleId === "tenant" → "sys"` 兜底映射 |
+| 4 | **内容与审核**下面所有页面标记为二期 | ops 名单补齐内容资产 5 项（线上课 / 线下课 / 文章 / 内容标签 / 讲师管理）；17 个内容类页面补 `<body data-phase2="1">`；评审路径「②平台内容」同步改为二期步骤 |
+| 5 | 交易板块「**订单列表**」移至**财务**，交易剩余内容全部二期 | `sidebars.trade` 新增首组「订单管理」（订单列表 + 全局订单）；`sidebars.biz` 删「订单列表」；`trade-orders.html` / `order-detail.html` / `orders.html` 改 `data-module="trade"` 并改面包屑；`ops-shell.js` 删除 `trade-orders|orders → biz` 旧回落映射；`entitlement` / `platform-goods` / `goods-edit` / `aftersales` 标二期，对应页面加 `data-phase2` |
+| 6 | **数据**板块除「商家经营」外全部二期 | ops 名单新增 `data` / `data-acquire` / `data-content` / `data-trade` / `data-customer` / `data-term` / `data-health`（保留 `data-merchant` 一期）；`data.html` 的 7 个视角切换项加 `data-phase2-only`；一期视图默认落「商家经营」，直开二期视角显示 `.phase2-guard` |
+
+**一期视图结果（真浏览器验证）**：ops 顶部模块 **7 → 4**（工作台 / 财务 / 数据 / 系统管理）；侧栏「内容与审核」「交易」两模块整体隐藏；「系统管理」= 租户管理（仅租户列表）/ 系统用户管理 / 系统管理；「数据」仅「商家经营」；评审路径条 6 步 → 4 步（租户开通 / 对账结算 / 全局订单 / 数据）。
+
+**缓存版本号**：`ops-shell.js?v=28`（67）、`admin-shell.js?v=29`（121）、`mp-shell.js?v=5`（19），三个 shell 内 `phase2-config.js?v=6`。
+
+> 附带判断（已按此执行，可回退）：`ops/orders.html`（全局订单）用户未点名，但原挂在 `biz`（交易）模块下；「交易」模块整块标二期后该页会失去侧栏归属，故一并移入「财务 / 订单管理」，保持一期可达。
+
+> ~~待确认：第 2 条的「容量与费率」现有两处编辑入口（租户列表行内「编辑」+ 租户配置页「编辑配置」），如需收敛为单一入口请指定保留哪一处。~~ → **已定**（第九轮）：租户列表的「编辑」「续费」入口全部去掉，配置统一收敛到「租户配置」详情页。
+
+---
+
+### 12. 第九轮调整（2026-10-02，租户列表去套餐化 + 续期 + 操作日志）✅ 已落地
+
+用户口头指定 3 条，均在 **ops 端租户管理**：
+
+| # | 要求 | 落地方式 |
+|---|---|---|
+| 1.1 | 套餐相关的配置**均不出现** | `tenants.html`：删「套餐版本」筛选项 + 列 + 8 行单元格；开通弹窗删「套餐版本」字段。`tenant-config.html`：基本信息删「套餐版本」行、应用授权页删「套餐要求」列、「授权来源：套餐默认」→「默认授权」。`admin/account.html`（商家端镜像）：删「套餐版本」行。`ops/data.html`「商家经营」视角（一期可见）：删「套餐」列。`ops/sys-dict.html`：「租户套餐」字典项加 `data-phase2-only`。`ops/apps.html` / `app-config.html`：「套餐要求」→「适用范围」，「全部套餐 / 专业版 / 标准版」→「全部租户 / 指定租户」 |
+| 1.2 | 取消「试用中」状态；**续费 → 续期**，可改**系统使用的截止日期** | `tenants.html` 状态筛选项删「试用中」；慧心教育「试用中 / 试用版」→「已到期」；`tenant-config.html` 工具栏「续费 / 续费记录」→「续期 / 续期记录」；续期弹窗（`#modal-renew`）改为直接设置**使用截止日期**（含延长/缩短天数实时预览、变更原因、备注），保存后同步顶部条 + 基本信息 + 操作日志；「续期记录」抽屉列改为 变更时间 / 原截止日期 / 新截止日期 / 变更时长 / 操作人 / 备注。「到期时间」全站改称「**使用截止日期**」 |
+| 2 | 租户列表的**编辑、续费入口去掉**，统一走配置详情 | `tenants.html` 行操作只保留 配置 / 资料管理 / 进入商家后台（+ 开通-拒绝 / 恢复-停用）；删除 `#modal-edit`、`#modal-renew` 两个弹窗及相关 JS；「编辑」/「续期」若从旧链接进入则跳 `tenant-config.html?id=<租户>`；工具栏提示语改为「…统一在『配置』详情页内维护」 |
+| 3 | 租户详情增加**操作日志**查看 | `tenant-config.html` 新增第 7 个 Tab「操作日志」：类型 / 操作人 / 时间范围三筛选（真实过滤，共 13 条演示日志）、7 列日志表（时间 / 类型 / 内容 / 操作人 / 来源 IP / 结果 / 备注）、导出按钮；续期保存会实时追加一条日志 |
+
+**一期视图结果（真浏览器验证）**：`tenants.html` 表头 12 → 11 列且无「套餐」，状态筛选 4 项无「试用中」；`tenant-config.html` Tab 6 → 7 个，基本信息无「套餐版本」，续期弹窗「延长 366 天」预览正确；一期可见的 ops/admin 页面**「套餐」文本 0 泄漏**（`data.html?view=health`、`plans.html` 等二期页除外）。
+
+**共享脚本**：本轮未改任何共享 JS，**未 bump 版本号**。
+
+---
+
+### 13. 第十轮调整（2026-10-02，评审标注 28 条：ops 收口 + 商家端装修 + C 端购买链路）✅ 已落地
+
+标注来源：`_review/annotations.json`（28 条 / 12 个页面），本轮全部处理完毕并已置为 `resolved`。分三块：
+
+**（1）ops 端 7 条**
+
+| # | 页面 / 锚点 | 要求 | 落地方式 |
+|---|---|---|---|
+| 1 | `ops/orders.html` 侧栏「订单列表」 | 订单列表和全局订单只保留一个，合并 | `orders.html` 整页降级为**跳转桩**（`<meta refresh>` + `location.replace`，与 `content-series.html` 同风格）→ `trade-orders.html`；`ops-shell.js` 的 `sidebars.trade`「订单管理」组删掉「全局订单」项、`reviewSteps` 的「全局订单」步骤改指 `trade-orders.html`；`ops/dashboard.html` 工作台卡片链接同步改指。**未删页面**，避免旧链接死链 |
+| 2 | `ops/data.html` 视角切换条 | 去掉 | 删 `#data-views` 整段 DOM（替换为注释）+ 全部 `.data-views*` CSS + JS 高亮块 `querySelectorAll("#data-views a")` + guard 里的 `dvBar` 两行；视角统一走左侧「数据」菜单 |
+| 3 | `ops/data.html` 商家经营对比表头「健康度」 | 加一个说明 | 表头加 `<span class="th-help" title="…">?</span>`（新增 `.th-help` 样式），表尾补「口径说明」段落 |
+| 4 | `ops/data.html` 商家经营对比表 | 增加消耗额度的统计 | 新增「额度消耗」列（插在「客单价」后），口径与「口径说明」同段：**额度 = 线下付款累计入账 − 营销短信扣减 − 直播 UV 扣减 ± 平台运营人工调整** |
+| 5 | `ops/message-config.html` 场景模板行 | 「测试发送」去掉 | 行操作只剩「编辑」；删 JS 的 `act === "test"` 分支 |
+| 6 | `ops/apps.html` 应用行 | 「版本记录」去掉 | 7 处 `<a data-row-act="ver">` 全删 + JS `act === "ver"` 分支 + 整个 `#modal-ver` 弹窗 |
+| 7 | `ops/app-config.html` 新增资源弹窗 | 「标记为敏感资源（使用留痕）」去掉 | 仅从 `#modal-res-add`（新增）删除；`#modal-res-edit`（编辑）**保留**——标注锚点在新增弹窗 |
+
+**（2）商家端 11 条**
+
+| # | 页面 | 要求 | 落地方式 |
+|---|---|---|---|
+| 8–11 | `admin/board-acquire.html` 侧栏「获客与转化 / 内容经营 / 商品与交易 / 客户经营」 | 标记为二期 | `phase2-config.js` admin 桶追加 `board-a` / `board-content` / `board-c` / `board-p`（共 4 个视角）；`board-acquire|live|convert|private.html` 四页 `<body data-phase2="1">`。「数据」板块因此**一期只剩「经营总览」＋「期次复盘」** |
+| 12 | `admin/mp-home.html`「直播展示」 | 增加编辑小程序直播列表展示哪些直播的功能 | 卡片文案改为「控制小程序「直播」列表展示哪些场次（按下方排序）」；补 `+ 添加直播` 按钮 → `openPick("live")`；`openPick` 新增 `live` 配置项 |
+| 13 | 同页「线上课」 | 增加编辑线上课列表展示哪些线上课 | 文案改为「控制小程序「线上课」模块展示的内容：首页露出前 N 门，其余在「更多」列表页展示」 |
+| 14 | 同页「线下课」 | 同上 | 同上（前 3 场） |
+| 15 | 同页「精选文章」 | 增加编辑精选文章更多列表展示哪些文章 | 同上（前 3 篇） |
+| 16–18 | 同页三处「「更多」跳转」`<select id="*-more">` | 去掉 | 线上课 / 线下课 / 精选文章三个 `*-more` 下拉全删，`form-grid` 收窄为 `max-width:320px` 单列；`loadBlocks()` 去掉 `more` 字段；`btn-save` 与初始化块同步去掉 `*-more` 读写。**单模块上限 6 → 20**，提示文案同步 |
+
+**（3）C 端小程序 10 条**
+
+| # | 页面 | 要求 | 落地方式 |
+|---|---|---|---|
+| 19–22 | `miniprogram/orders.html` | 「去学习」「再次购买」去掉；「看回放」→「我要退款」，并在**后台订单列表增加「用户已申请」状态** | C 端：删除对应按钮（`acts: []`），`VX202603291075` 改为单按钮「我要退款」，点击后订单态切「退款申请中」+ toast；新增 Tab「退款申请中」与 `stateMap` 映射；`mp.css` 新增 `.mp-order-state.apply`。共享数据源 `order-demo-store.js` 把 `YB20260324100231` 的退款状态 `退款中` → **`用户已申请`**；`admin/orders.html` / `ops/trade-orders.html` 筛选项新增「用户已申请」、徽标改 `badge-warn`、筛选卡后补口径段落：**用户已申请 → 退款中 → 已退款 / 已驳回**；两端 `order-detail.html` 的 `refunding` 判定改正则 `/(退款中\|用户已申请)/` |
+| 23 | `miniprogram/mine.html`「全部课程 ›」 | **新增**页面，不用原来的，聚合线上课 / 线下课 / 文章等已购买或已加入的内容 | 新建 `miniprogram/my-courses.html`（概览 + 类型 Tab + 统一卡片列表，6 条演示数据）；`mine.html` 入口改指新页；原 `courses.html`（线上课列表）**保留**，仍被 `home.html` 金刚区与 `course.html` 返回链接引用 |
+| 24 | `miniprogram/home.html`「线下课」 | 「更多」里所有状态都展示出来，自动补齐 | `miniprogram/offline.html` 整体重写：`ITEMS` 扩到 10 条，覆盖 **免费/付费 × 已报名/未报名 × 报名中 / 报名截止·待开始 / 进行中 / 已结束**全矩阵；新增 5 个状态筛选 Tab；`orderedPool()` 让「首页装修 → 线下课」已配置的场次优先排序，**更多页展示全量**（首页露出仍受上架位控制） |
+| 25–27 | `miniprogram/article-detail.html` | 「收藏」去掉；「更多精选文章」去掉；「收藏文章」→「收藏到我的课程」 | 底部栏删 `#ad-fav` 及其监听；免费态区块删「更多精选文章」链接；`#ad-fav-free` 文案与 toast 改「收藏到我的课程」 |
+| 28 | `miniprogram/live-room.html`「购买」 | 跳商品详情；**C 端所有购买入口都跳商品详情**；商品详情页只有「去支付」，点击进收银台 | 见下「购买链路统一」 |
+
+**购买链路统一（#28 派生，本轮最大改动）**
+
+- `assets/js/mp-commerce.js` **v2 → v3**：`buy()` 不再按上架位的 `order_mode` 分流，**付费内容一律 `openGoodsDetail()`**；`openTrialEndPrompt()` 的购买按钮同理；`openBuyNotice()` 确认后从 `pay-result.html` 改为进入 `cashier.html`。`order_mode` 字段保留（后台配置与列表文案仍在用），只是不再决定购买去向。
+- `miniprogram/goods-detail.html` 重写：底部栏**只留「去支付」**（删「收藏」）；按后台 `admin/goods-edit.html` 的字段补全四块——**商品卖点 / 商品详情 / 交付方式 / 退款规则**（按内容类型给出演示文案），保留原有的交付内容 / 类目 / 来源 / 结算模式 / 权益与售后 / 上架信息；「去支付 →」跳 `cashier.html?goods_id=…`。
+- **新建 `miniprogram/cashier.html`（收银台）**：订单信息（订单号 / 上架模块 / 下单方式）+ 金额明细 + 权益说明（含交付方式、退款规则）+ 支付方式（微信支付）+ 底部「确认支付 ¥x」→ `pay-result.html`。
+- 入口统一：`live-room.html` 两处购买（挂载课 → `G002`，本场门票 → `G-L001`）、`course.html` / `learn.html` / `offline-detail.html` / `article-detail.html`（走 `Mp.buy`，自动生效）；`orders.html` 待付款订单的「去支付」直接进收银台（订单已生成，`from=order`）。
+- 内容页 CTA 文案相应收敛：付费态统一「去购买」（不再出现「立即购买 ¥x」这种会在内容页直接下单的表述）。
+- **修掉一个既有隐患**：`G-O001` / `G-L001` / `G-A00x` 等演示商品由 `GoodsStore.ensureDemoGoods()` 惰性补种，原先直接打开 `goods-detail.html` 会「未找到该商品」；已在 `goods-detail.html` 与 `cashier.html` 显式补种。
+
+**共享脚本 / 版本号（本轮）**
+
+| 资源 | 版本 | 说明 |
+|---|---|---|
+| `assets/js/mp-commerce.js` | **v2 → v3** | 统一购买入口 + 落收银台；13 个 C 端页面引用同步 bump |
+| `assets/js/phase2-config.js` | **v7** | admin 桶新增 4 个 board 视角（第 8–11 项） |
+| `assets/js/admin-shell.js` | **v31** | 数据板块二期项过滤 |
+| `assets/js/ops-shell.js` | v28 | 订单管理组去「全局订单」+ 评审路径改指（`sidebars.trade` / `reviewSteps`） |
+| `assets/css/mp.css` | v22 | 新增 `.mp-order-state.apply` |
+| `assets/css/proto.css` | v17 | 未改 |
+
+**新增页面 2 个**：`miniprogram/cashier.html`（收银台）、`miniprogram/my-courses.html`（我的课程）。
+
+**自检**：`node _review/domcheck.mjs` 三端全量通过（详见「附：改动文件清单」）。**既有问题（本轮未引入、未修）**：`ops/content-article.html` / `admin/content-article.html`（`id 引用缺失: ca-query`）、`admin/follow-ups.html`（`aj-count`）、`admin/live-control.html`（`btn-start-live`，直开无 `live_id` 时的兜底分支）、`admin/board-live.html`（`BoardMetrics.validateConsistency` 人员合计与顶部不一致）。
+
+---
+
 ## 一、admin 端（商家管理后台）
 
 ### 1.1 已标二期（13 项，判定依据明确）
@@ -258,35 +361,34 @@ ops 端 `recon` / `settlements` / `payouts` 从二期黑名单移除，三个页
 
 ## 二、ops 端（运营后台）
 
-### 2.1 已标二期（23 项）
+### 2.1 已标二期（33 项，2026-10-02 第七轮收口后）
 
 | 模块 | 分组 | 菜单（全部标二期） |
 |---|---|---|
-| 内容与审核 | 内容资产 | 线上课、线下课、文章、内容标签、讲师管理 ⚠️ |
+| 系统管理 | 租户管理 | 套餐管理（**租户列表为一期**） |
+| 内容与审核 | 内容资产 | 线上课、线下课、文章、内容标签、讲师管理 |
 | 内容与审核 | 测评中心 | 测评、测评包、题库、测评报告、报告模板 |
 | 内容与审核 | 学习服务 | 智能体、任务、定制化计划 |
 | 内容与审核 | 审核 | 内容审核、直播审核、商品审核、申诉处理 |
+| 交易 | 订单 / 商品 / 售后 | 权益开通记录、平台商品、新建商品、退款与权益回收（**「订单列表」已移入财务并保留一期**） |
+| 数据 | 数据分析 | 经营总览、获客与转化、内容经营、商品与交易、客户经营、期次复盘、商家健康度（**「商家经营」为一期**） |
 | 财务 | 收款与进件 | 收款与清分、进件审核（2026-09-27 按标注整组二期） |
 | 财务 | 财务 / 风控与规则 | 服务费台账、结算规则配置（**对账管理 / 结算管理 / 提现审核已按 G2 放开为一期**） |
-| 交易 | 商品管理 | 平台商品、新建商品 |
 
 ### 2.2 结构差异 —— 需确认是否对齐
 
 | # | 本地 ops | 一期链接 ops | 确认 |
 |---|---|---|---|
-| T1 | 顶部模块 7 个（含「**内容与审核**」） | 7 个：工作台 / 租户管理 / 交易 / 财务 / **用户** / 数据 / 系统管理，**无「内容与审核」** | 剩余差异只剩「内容与审核 vs 用户」（见 T3、2.3） |
-| T2 | ~~租户管理 / 应用管理 / 套餐管理 挂在「系统管理」下~~ | 「租户管理」是**独立顶级模块** | ✅ **已对齐**（2026-09-27 13:57 决定并落地，见「零·续」第 4 条） |
+| T1 | 顶部模块 **6 个**（工作台 / 内容与审核 / 交易 / 财务 / 数据 / 系统管理）；**一期视图实显 4 个**（内容与审核、交易整块二期后隐藏） | 7 个：工作台 / 租户管理 / 交易 / 财务 / **用户** / 数据 / 系统管理，**无「内容与审核」** | 剩余差异只剩「内容与审核 vs 用户」（见 T3、2.3）；2026-10-02 起内容与审核整块二期，与「一期无该模块」一致 |
+| T2 | **租户管理已并入「系统管理」**（2026-10-02 第七轮，见「零·续」第 11 条） | 「租户管理」是**独立顶级模块** | 与一期链接不再一致，**以 2026-10-02 的最新决定为准**（此前的「独立模块」决定已作废） |
 | T3 | **无「用户」模块**；`ops/users.html` 是「页面已迁移」跳转桩（→ `tenant-config.html?tab=user`） | 「用户」独立顶级模块 → `platform-users.html`（跨租户 C 端用户聚合，一期为只读核查） | ☐ 补 platform-users 页面+模块 / ☐ 不补 |
 | T4 | 财务分组名「收款与进件」「财务」 | 「**进件**」「**资金流水**」 | ☐ 改名 / ☐ 保持 |
-| T5 | 评审路径「全局订单」→ `orders.html`（页面标题「全局订单」） | → `trade-orders.html`；本地 `orders.html` 仅评审条可达，属重复页 | ☐ 对齐 / ☐ 保持 |
+| T5 | 评审路径「全局订单」→ `orders.html`（2026-10-02 起归「财务 / 订单管理」，一期） | → `trade-orders.html` | ☐ 对齐 / ☐ 保持（本地两页同在「财务 / 订单管理」下，一期可达） |
 
-### 2.3 ⚠️ 需你拍板的判断点：ops「内容资产」5 项
+### 2.3 ~~⚠️ 需你拍板的判断点~~ 已定：ops「内容与审核」整模块二期（2026-10-02）
 
-- **机械口径（当前已按此执行）**：一期链接的 ops 端**没有「内容与审核」模块**，因此 17 项全部标二期 → 一期视图下该模块整体消失。
-  （补充事实：远程站点上 `ops/content-video.html` 等**页面是存在的**，只是菜单没挂——说明是刻意裁掉菜单。）
-- **对齐 admin 口径**：内容资产在 admin 端是一期能力，若认为 ops 也应保留，则只保留这 5 项为一期，改法是把 `phase2-config.js` 里 ops 数组前 5 个 id 删掉。
-
-☐ 维持机械口径（整模块二期） / ☐ 改为保留「内容资产」5 项为一期
+- **结论**：2026-10-02 用户明确「内容与审核下面所有页面标记为二期」→ 该模块 17 项全部二期，一期视图下整模块隐藏。此前的「内容资产 5 项是否保留一期」判断点**已关闭**。
+- 落实方式见「零·续」第 11 条第 4 条（含 17 个内容类页面的 `data-phase2` 补齐清单）。
 
 ---
 
@@ -351,6 +453,16 @@ ops 端 `recon` / `settlements` / `payouts` 从二期黑名单移除，三个页
   - `prototype/assets/js/mp-shell.js`（`data-phase2-only` 显隐机制）
   - 页面：`ops/content-video.html`、`content-offline.html`、`content-article.html`、`content-tags.html`、`content-teachers.html`、`platform-goods.html`、`goods-edit.html`（去 `data-phase2`）；`ops/dashboard.html`（7 处二期标记）；`ops/data.html`（重写为 8 视角）；`ops/apps.html`、`app-config.html`（归属改系统管理）；`admin/message-push.html`（清理站内信）；`miniprogram/home.html`（店铺名 / 去入口 / 二期标记）
 - **缓存版本号同步（2026-09-27 收尾）**：`proto.css?v=15`、`mp.css?v=21`、`admin-shell.js?v=26`、`ops-shell.js?v=24`、`mp-shell.js?v=2`、`board-term.js?v=3`，以及三个 shell 内 `phase2-config.js?v=3`；已复核无残留无版本号引用
+- **第七轮（2026-10-02）改动文件**：
+  - `prototype/assets/js/phase2-config.js`（ops 名单补 `plans`、内容资产 5 项、`entitlement`/`platform-goods`/`goods-edit`/`aftersales`、数据 7 项）
+  - `prototype/assets/js/ops-shell.js`（删 `tenant` 顶级模块 → 并入 `sidebars.sys`；`sidebars.trade` 新增「订单管理」组；`sidebars.biz` 删「订单列表」；删除 `trade-orders|orders → biz` 回落映射 + 新增 `tenant → sys` 兜底；评审路径「平台内容」改二期；公告条文案更新）
+  - `prototype/assets/js/admin-shell.js`、`mp-shell.js`（内层 `phase2-config.js?v=5 → 6`）
+  - 租户类页面（`data-module` `tenant → sys` + 面包屑）：`ops/tenants.html`、`tenant-config.html`、`tenant-profile.html`、`user-detail.html`、`plans.html`、`plan-edit.html`
+  - 减容配置：`ops/tenant-config.html`（新增「容量与费率」卡片 + `#modal-capacity`）、`ops/tenants.html`（编辑弹窗补 3 项、列名改「订单服务费率」）、`ops/plans.html` / `plan-edit.html`（加「按租户单独配置」说明 + `data-phase2`）
+  - 补 `data-phase2="1"`：内容类 17 个（`content-video/offline/article/tags/teachers` 及各自 detail/edit/outline、`assess-flow`/`assess-plan-stages`/`assess-relations`/`assess-scoring`/`assess-task-rules`）+ 交易类 6 个（`entitlement`/`platform-goods`/`goods-edit`/`aftersales`/`aftersale-detail`/`trade-goods`）
+  - 订单迁移：`ops/trade-orders.html` / `order-detail.html` / `orders.html`（`data-module` 改 `trade` + 面包屑改「运营后台 / 财务 / 订单管理 / …」）
+  - 数据板块：`ops/data.html`（7 个视角切换项加 `data-phase2-only`、脚本改为「一期默认商家经营 + 直开二期视角拦截」）
+  - **缓存版本号同步（2026-10-02）**：`ops-shell.js?v=28`（67 处）、`admin-shell.js?v=29`（121）、`mp-shell.js?v=5`（19），三个 shell 内 `phase2-config.js?v=6`；已复核无残留
 
 ## 附 2：本轮原型新增报表（2026-09-27 第二轮标注）
 

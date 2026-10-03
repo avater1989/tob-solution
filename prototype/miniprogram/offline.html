@@ -5,75 +5,133 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>线下课 · To-B 小程序</title>
   <link rel="stylesheet" href="../assets/css/proto.css?v=17" />
-  <link rel="stylesheet" href="../assets/css/mp.css?v=21" />
+  <link rel="stylesheet" href="../assets/css/mp.css?v=22" />
+  <style>
+    .ol-tags { display:flex; gap:6px; flex-wrap:wrap; margin-bottom:2px; }
+    .ol-tag { font-size:11px; padding:2px 8px; border-radius:999px; font-weight:600; }
+    .ol-tag.pay    { background:#f9f0ff; color:#722ed1; }
+    .ol-tag.free   { background:#e8ffea; color:#00b42a; }
+    .ol-tag.on     { background:#e8f3ff; color:#165dff; }
+    .ol-tag.done   { background:#f2f3f5; color:#8c8c8c; }
+    .ol-tag.warn   { background:#fff7e6; color:#d46b08; }
+    .ol-tag.signed { background:#e8ffea; color:#00b42a; }
+    .ol-tag.unsigned { background:#fff1f0; color:#f53f3f; }
+  </style>
 </head>
 <body class="mp-page" data-tabbar="0">
   <div class="mp-frame">
     <div class="mp-top" style="height:170px"></div>
     <div class="mp-status"><span>9:41</span><span>线下课</span><span>100%</span></div>
     <div class="mp-nav"><a class="back" href="home.html">←</a>线下课</div>
-    <div class="mp-body" style="padding:0 14px 16px" id="off-list"></div>
+    <div class="mp-body" style="padding:0 14px 16px">
+
+      <!-- 状态筛选（更多列表展示全部状态） -->
+      <div class="mp-tabs" id="off-tabs" style="margin-bottom:10px">
+        <a class="mp-tab active" href="#" data-state="">全部</a>
+        <a class="mp-tab" href="#" data-state="open">可报名</a>
+        <a class="mp-tab" href="#" data-state="signed">已报名</a>
+        <a class="mp-tab" href="#" data-state="running">进行中</a>
+        <a class="mp-tab" href="#" data-state="closed">已结束</a>
+      </div>
+
+      <div id="off-list"></div>
+    </div>
   </div>
-  <p class="mp-hint">线下课列表 · <a href="../admin/content-offline.html">管理端线下课</a></p>
+  <p class="mp-hint">线下课「更多」列表：全量展示 免费/付费 × 已报名/未报名 × 报名中 / 报名截止·待开始 / 进行中 / 已结束 的全部状态；首页露出受「首页装修 → 线下课」控制 · <a href="../admin/content-offline.html">管理端线下课</a></p>
 
   <script src="../assets/js/proto.js"></script>
+  <script src="../assets/js/content-tags.js?v=3"></script>
   <script src="../assets/js/teachers-store.js?v=3"></script>
   <script src="../assets/js/prototype-business-store.js"></script>
   <script src="../assets/js/goods-store.js?v=2"></script>
   <script src="../assets/js/listing-store.js?v=1"></script>
-  <script src="../assets/js/mp-commerce.js?v=2"></script>
-  <script src="../assets/js/mp-shell.js?v=4"></script>
+  <script src="../assets/js/mp-commerce.js?v=3"></script>
+  <script src="../assets/js/mp-shell.js?v=5"></script>
   <script>
   var Teachers = window.Teachers;
-  var Mp = window.MpCommerce;
+  var LS = window.ListingStore;
+
+  /* 演示数据覆盖「免费 / 付费」×「已报名 / 未报名」×「报名中 / 报名截止·待开始 / 进行中 / 已结束」全部状态 */
   var ITEMS = [
     {
-      id: "O001",
-      name: "卓越家族培养计划 · 线下工作坊",
-      term: "秋启 01 期",
-      teacherId: "TCH02",
-      city: "上海",
-      address: "浦东新区陆家嘴环路 1000 号 3F",
-      signup: "09-01 ~ 09-25",
-      courseStart: "09-28 09:30",
-      checkin: "09-28 08:30",
-      expected: 80,
-      capacity: 100,
-      signed: 86,
+      id: "O001", name: "卓越家族培养计划 · 线下工作坊", term: "秋启 01 期", teacherId: "TCH02",
+      city: "上海", address: "浦东新区陆家嘴环路 1000 号 3F",
+      signup: "09-01 ~ 09-25", courseStart: "09-28 09:30", checkin: "09-28 08:30",
+      expected: 80, capacity: 100, signed: 86,
       cover: "../assets/img/covers/classroom.jpg",
-      badge: "报名中"
+      free: false, price: "¥1,980", signedUp: false, phase: "open", phaseText: "报名中"
     },
     {
-      id: "O002",
-      name: "亲子沟通实战 · 线下沙龙",
-      term: "周末场",
-      teacherId: "TCH01",
-      city: "深圳",
-      address: "南山区科技园南路 8 号活动厅",
-      signup: "09-10 ~ 10-05",
-      courseStart: "10-12 14:00",
-      checkin: "10-12 13:30",
-      expected: 35,
-      capacity: 40,
-      signed: 32,
+      id: "O002", name: "亲子沟通实战 · 线下沙龙", term: "周末场", teacherId: "TCH01",
+      city: "深圳", address: "南山区科技园南路 8 号活动厅",
+      signup: "09-10 ~ 10-05", courseStart: "10-12 14:00", checkin: "10-12 13:30",
+      expected: 35, capacity: 40, signed: 32,
       cover: "../assets/img/covers/talk.jpg",
-      badge: "免费报名"
+      free: true, price: "免费", signedUp: true, phase: "open", phaseText: "报名中"
     },
     {
-      id: "O003",
-      name: "学习习惯养成 · 线下营",
-      term: "冬令营",
-      teacherId: "TCH03",
-      city: "北京",
-      address: "海淀区中关村大街 1 号营地",
-      signup: "11-01 ~ 11-20",
-      courseStart: "11-28 09:00",
-      checkin: "11-28 08:00",
-      expected: 25,
-      capacity: 30,
-      signed: 0,
+      id: "O003", name: "学习习惯养成 · 线下营", term: "冬令营", teacherId: "TCH03",
+      city: "北京", address: "海淀区中关村大街 1 号营地",
+      signup: "11-01 ~ 11-20", courseStart: "11-28 09:00", checkin: "11-28 08:00",
+      expected: 25, capacity: 30, signed: 12,
       cover: "../assets/img/covers/parent.jpg",
-      badge: "即将开放"
+      free: false, price: "¥2,980", signedUp: false, phase: "open", phaseText: "报名中"
+    },
+    {
+      id: "O004", name: "家庭教育公益讲堂", term: "第 12 场", teacherId: "TCH02",
+      city: "杭州", address: "西湖区文三路 258 号报告厅",
+      signup: "10-15 ~ 11-05", courseStart: "11-12 14:00", checkin: "11-12 13:30",
+      expected: 120, capacity: 150, signed: 64,
+      cover: "../assets/img/covers/term.jpg",
+      free: true, price: "免费", signedUp: false, phase: "open", phaseText: "报名中"
+    },
+    {
+      id: "O005", name: "青春期沟通 · 线下工作坊", term: "秋启 03 期", teacherId: "TCH01",
+      city: "成都", address: "高新区天府大道 999 号会议中心 B 厅",
+      signup: "09-05 ~ 09-30", courseStart: "10-06 09:30", checkin: "10-06 08:30",
+      expected: 60, capacity: 60, signed: 60,
+      cover: "../assets/img/covers/classroom.jpg",
+      free: false, price: "¥1,280", signedUp: true, phase: "closed_signup", phaseText: "报名截止 · 待开始"
+    },
+    {
+      id: "O006", name: "卓越家族培养计划 · 线下工作坊", term: "秋启 02 期", teacherId: "TCH02",
+      city: "上海", address: "浦东新区陆家嘴环路 1000 号 3F",
+      signup: "08-01 ~ 08-25", courseStart: "09-01 09:30", checkin: "09-01 08:30",
+      expected: 80, capacity: 96, signed: 92,
+      cover: "../assets/img/covers/classroom.jpg",
+      free: true, price: "免费", signedUp: true, phase: "running", phaseText: "课程进行中"
+    },
+    {
+      id: "O007", name: "专注力亲子营（第 3 天）", term: "秋令营", teacherId: "TCH03",
+      city: "广州", address: "天河区体育东路 22 号营地",
+      signup: "08-20 ~ 09-05", courseStart: "09-24 09:00", checkin: "09-24 08:00",
+      expected: 40, capacity: 45, signed: 41,
+      cover: "../assets/img/covers/focus.jpg",
+      free: false, price: "¥680", signedUp: false, phase: "running", phaseText: "课程进行中"
+    },
+    {
+      id: "O008", name: "情绪管理家长工作坊", term: "夏启 01 期", teacherId: "TCH01",
+      city: "南京", address: "鼓楼区中山北路 100 号多功能厅",
+      signup: "06-01 ~ 06-20", courseStart: "06-28 14:00", checkin: "06-28 13:30",
+      expected: 50, capacity: 50, signed: 50,
+      cover: "../assets/img/covers/talk.jpg",
+      free: true, price: "免费", signedUp: true, phase: "ended", phaseText: "已结束"
+    },
+    {
+      id: "O009", name: "高效陪伴训练营", term: "夏启 02 期", teacherId: "TCH02",
+      city: "武汉", address: "洪山区珞喻路 66 号训练基地",
+      signup: "05-10 ~ 05-30", courseStart: "06-08 09:00", checkin: "06-08 08:00",
+      expected: 30, capacity: 36, signed: 33,
+      cover: "../assets/img/covers/parent.jpg",
+      free: false, price: "¥880", signedUp: true, phase: "ended", phaseText: "已结束"
+    },
+    {
+      id: "O010", name: "幼小衔接家长课", term: "春季场", teacherId: "TCH03",
+      city: "西安", address: "雁塔区高新路 8 号文化中心",
+      signup: "04-01 ~ 04-20", courseStart: "05-02 09:30", checkin: "05-02 08:30",
+      expected: 60, capacity: 80, signed: 38,
+      cover: "../assets/img/covers/term.jpg",
+      free: true, price: "免费", signedUp: false, phase: "closed_signup", phaseText: "报名截止 · 待开始"
     }
   ];
 
@@ -83,29 +141,79 @@
     });
   }
 
-  document.getElementById("off-list").innerHTML = ITEMS.map(function (o) {
-    var price = Mp.priceLabel(o.id, "offline").text;
-    return (
-      '<div class="mp-live-card" style="margin-top:12px">' +
-        '<a href="offline-detail.html?id=' + o.id + '" style="color:inherit">' +
-          '<div class="mp-live-cover" style="background:url(' + esc(o.cover) + ') center/cover;min-height:120px">' +
-            '<span class="mp-live-badge">' + esc(o.badge) + "</span>" +
-            "<h3>" + esc(o.name) + "</h3>" +
-            "<p>" + esc(Teachers.nameOf(o.teacherId)) + " · " + esc(o.term) + " · " + esc(o.city) + "</p>" +
+  /* 2026-10-02 评审标注（home.html「线下课」）：「更多」列表要把所有状态都展示出来 ——
+     本页展示线下课全量，自动补齐 免费/付费 × 已报名/未报名 × 报名中 / 报名截止·待开始 / 进行中 / 已结束；
+     「首页装修 → 线下课」的上架位只决定首页露出（前 3 场），已配置的场次在本页优先排序。 */
+  function orderedPool() {
+    var rows = LS ? LS.listBySlot("offline").filter(function (r) { return r.visible && r.status === "active"; }) : [];
+    var ids = rows.map(function (r) { return r.content_id; });
+    var head = ids.map(function (id) {
+      return ITEMS.filter(function (o) { return o.id === id; })[0];
+    }).filter(Boolean);
+    var tail = ITEMS.filter(function (o) { return ids.indexOf(o.id) < 0; });
+    return head.concat(tail);
+  }
+
+  var filter = "";
+
+  function render() {
+    var pool = orderedPool();
+    var list = pool.filter(function (o) {
+      if (!filter) return true;
+      if (filter === "open") return o.phase === "open";
+      if (filter === "signed") return o.signedUp;
+      if (filter === "running") return o.phase === "running";
+      if (filter === "closed") return o.phase === "ended" || o.phase === "closed_signup";
+      return true;
+    });
+
+    document.getElementById("off-list").innerHTML = list.length ? list.map(function (o) {
+      var payCls = o.free ? "free" : "pay";
+      var phaseCls = o.phase === "open" ? "on" : (o.phase === "ended" ? "done" : "warn");
+      var ctaText = o.phase === "ended"
+        ? "查看回顾"
+        : (o.signedUp ? "查看报名" : (o.phase === "open" ? (o.free ? "免费报名" : "去报名") : "查看详情"));
+      var href = "offline-detail.html?id=" + encodeURIComponent(o.id) + (o.signedUp ? "&signed=1" : "");
+      return (
+        '<div class="mp-live-card" style="margin-top:12px">' +
+          '<a href="' + href + '" style="color:inherit">' +
+            '<div class="mp-live-cover" style="background:url(' + esc(o.cover) + ') center/cover;min-height:120px">' +
+              "<h3>" + esc(o.name) + "</h3>" +
+              "<p>" + esc(Teachers.nameOf(o.teacherId)) + " · " + esc(o.term) + " · " + esc(o.city) + "</p>" +
+            "</div>" +
+          "</a>" +
+          '<div style="padding:10px 12px 6px;background:#fff">' +
+            '<div class="ol-tags">' +
+              '<span class="ol-tag ' + payCls + '">' + (o.free ? "免费" : "付费 " + o.price) + "</span>" +
+              '<span class="ol-tag ' + (o.signedUp ? "signed" : "unsigned") + '">' + (o.signedUp ? "已报名" : "未报名") + "</span>" +
+              '<span class="ol-tag ' + phaseCls + '">' + esc(o.phaseText) + "</span>" +
+            "</div>" +
           "</div>" +
-        "</a>" +
-        '<div style="padding:10px 12px;font-size:12px;color:#4e5969;line-height:1.7;background:#fff">' +
-          "<div>报名 " + esc(o.signup) + " · 开课 " + esc(o.courseStart) + "</div>" +
-          "<div>签到 " + esc(o.checkin) + " · 预计 " + o.expected + " / 名额 " + o.capacity + "（已报 " + o.signed + "）</div>" +
-          "<div>地址 " + esc(o.address) + "</div>" +
-        "</div>" +
-        '<div class="mp-live-ft">' +
-          '<div class="mp-live-ft-l">' + price + "</div>" +
-          '<a class="mp-live-ft-btn" href="offline-detail.html?id=' + o.id + '">查看详情</a>' +
-        "</div>" +
-      "</div>"
-    );
-  }).join("");
+          '<div style="padding:0 12px 10px;font-size:12px;color:#4e5969;line-height:1.7;background:#fff">' +
+            "<div>报名 " + esc(o.signup) + " · 开课 " + esc(o.courseStart) + "</div>" +
+            "<div>签到 " + esc(o.checkin) + " · 预计 " + o.expected + " / 名额 " + o.capacity + "（已报 " + o.signed + "）</div>" +
+            "<div>地址 " + esc(o.address) + "</div>" +
+          "</div>" +
+          '<div class="mp-live-ft">' +
+            '<div class="mp-live-ft-l">' + (o.free ? "免费" : o.price) + "</div>" +
+            '<a class="mp-live-ft-btn" href="' + href + '">' + ctaText + "</a>" +
+          "</div>" +
+        "</div>"
+      );
+    }).join("") : '<div class="mp-empty"><div class="mp-empty-ico">📍</div>暂无该状态的线下课</div>';
+  }
+
+  document.getElementById("off-tabs").addEventListener("click", function (e) {
+    var t = e.target.closest(".mp-tab");
+    if (!t) return;
+    e.preventDefault();
+    document.querySelectorAll("#off-tabs .mp-tab").forEach(function (x) { x.classList.remove("active"); });
+    t.classList.add("active");
+    filter = t.getAttribute("data-state") || "";
+    render();
+  });
+
+  render();
   </script>
 </body>
 </html>

@@ -6,7 +6,7 @@
 <title>租户配置 · 运营后台</title>
 <link rel="stylesheet" href="../assets/css/proto.css?v=17" />
 </head>
-<body class="admin-body" data-module="tenant" data-nav="tenants" data-title="租户配置" data-crumb="运营后台 / 租户管理 / 租户列表 / 租户配置" data-assist="1">
+<body class="admin-body" data-module="sys" data-nav="tenants" data-title="租户配置" data-crumb="运营后台 / 系统管理 / 租户列表 / 租户配置" data-assist="1">
 <div id="page-content" style="display:none">
 
   <!-- 返回 + 当前租户 -->
@@ -15,26 +15,30 @@
     <div class="spacer"></div>
     <span class="muted" style="font-size:13px">
       当前租户：<b style="color:var(--color-text)">星启家庭教育</b> · 编码 10001 ·
-      <span class="badge badge-success">正常</span> · 专业版 · 到期 2027-03-12
+      <span class="badge badge-success">正常</span> · 使用截止 <b id="tc-expire-top" style="color:var(--color-text)">2027-03-12</b>
     </span>
   </div>
 
   <!-- Tab -->
   <div class="tabs" id="tc-tabs">
     <a class="active" href="#" data-tab="tenant">租户</a>
+    <a href="#" data-tab="quota">额度</a>
     <a href="#" data-tab="dept">组织架构</a>
     <a href="#" data-tab="post">岗位</a>
     <a href="#" data-tab="user">租户用户</a>
     <a href="#" data-tab="grant">应用授权</a>
+    <a href="#" data-tab="log">操作日志</a>
   </div>
 
   <!-- ================= Tab 1：租户 ================= -->
   <div class="tc-pane active" data-pane="tenant">
     <div class="toolbar" style="margin-bottom:16px">
-      <button class="btn" id="btn-renew">续费</button>
-      <button class="btn" id="btn-renew-records">续费记录</button>
+      <button class="btn" id="btn-renew">续期</button>
+      <button class="btn" id="btn-renew-records">续期记录</button>
       <button class="btn" id="btn-edit">编辑信息</button>
       <button class="btn" id="btn-stop">停用租户</button>
+      <div class="spacer"></div>
+      <span class="muted" style="font-size:12px">本页为租户的<b>唯一配置入口</b>：租户信息、容量与费率、营销额度、组织与用户、应用授权、续期与操作日志均在此维护</span>
     </div>
 
     <div class="grid-2" style="gap:16px">
@@ -45,19 +49,16 @@
             <div class="ud-avatar">星</div>
             <div>
               <h3 style="margin:0 0 4px;font-size:16px">星启家庭教育 <span class="badge badge-success" style="margin-left:4px">正常</span></h3>
-              <p class="muted" style="margin:0;font-size:12px">专业版 · 2026-03-12 开通 · 到期 2027-03-12</p>
+              <p class="muted" style="margin:0;font-size:12px">2026-03-12 开通 · 使用截止日期 <span id="tc-expire-basic">2027-03-12</span></p>
             </div>
           </div>
           <div class="kv-row"><span>租户编码</span><b>10001</b></div>
           <div class="kv-row"><span>租户名称</span><b>星启家庭教育</b></div>
           <div class="kv-row"><span>所属公司</span><b>星启家庭教育咨询有限公司</b></div>
           <div class="kv-row"><span>开通来源</span><b>注册留资</b></div>
-          <div class="kv-row"><span>套餐版本</span><b><span class="tag tag-blue">专业版</span></b></div>
-          <div class="kv-row"><span>服务费率</span><b>1%（默认）</b></div>
-          <div class="kv-row"><span>商家账号数</span><b>6</b></div>
           <div class="kv-row"><span>组织 / 岗位</span><b>7 个部门 · 6 个岗位</b></div>
           <div class="kv-row"><span>开通时间</span><b>2026-03-12</b></div>
-          <div class="kv-row"><span>到期时间</span><b>2027-03-12</b></div>
+          <div class="kv-row"><span>使用截止日期</span><b id="tc-expire-kv">2027-03-12</b></div>
         </div>
       </div>
 
@@ -71,7 +72,7 @@
               <b>商家管理后台</b>
               <span class="badge badge-success">已授权</span>
             </div>
-            <p class="ud-tenant-meta">应用标识：APP_MCH_ADMIN &nbsp;&nbsp; 授权来源：套餐默认 &nbsp;&nbsp; 授权时间：2026-03-12</p>
+            <p class="ud-tenant-meta">应用标识：APP_MCH_ADMIN &nbsp;&nbsp; 授权来源：默认授权 &nbsp;&nbsp; 授权时间：2026-03-12</p>
             <div class="ud-tenant-tags">
               <span class="ud-tag-label">平台内置角色</span>
               <span class="ud-chip ud-chip-blue">商户管理员</span><span class="ud-chip ud-chip-blue">内容运营</span><span class="ud-chip ud-chip-blue">销售</span><span class="ud-chip ud-chip-blue">财务</span>
@@ -82,19 +83,213 @@
               <b>C 端小程序</b>
               <span class="badge badge-success">已授权</span>
             </div>
-            <p class="ud-tenant-meta">应用标识：APP_C_MP &nbsp;&nbsp; 授权来源：套餐默认 &nbsp;&nbsp; 授权时间：2026-03-12</p>
+            <p class="ud-tenant-meta">应用标识：APP_C_MP &nbsp;&nbsp; 授权来源：默认授权 &nbsp;&nbsp; 授权时间：2026-03-12</p>
           </div>
           <div class="ud-tenant">
             <div class="ud-tenant-hd">
               <b>视频号助手</b>
-              <span class="badge badge-warn">试用中（至 09-30）</span>
+              <span class="badge badge-warn">临时授权（至 2026-09-30）</span>
             </div>
-            <p class="ud-tenant-meta">应用标识：APP_CHANNELS &nbsp;&nbsp; 授权来源：单独授权（试用） &nbsp;&nbsp; 授权时间：2026-09-01</p>
+            <p class="ud-tenant-meta">应用标识：APP_CHANNELS &nbsp;&nbsp; 授权来源：单独授权（临时） &nbsp;&nbsp; 授权时间：2026-09-01</p>
           </div>
           <p class="muted" style="margin:12px 0 0;font-size:12px">应用授权决定该租户在商家后台可见的功能范围与可分配的角色；在「应用授权」分页可单独增减。</p>
         </div>
       </div>
+
+      <!-- 容量与费率：按租户单独配置（2026-10-02 评审标注） -->
+      <div class="card" style="margin-top:16px">
+        <div class="card-hd">
+          <h2>容量与费率</h2>
+          <button type="button" class="btn btn-sm" id="btn-capacity">编辑配置</button>
+        </div>
+        <div class="card-bd">
+          <p class="muted" style="margin:0 0 12px;font-size:12px">本租户的容量与费率<b>按租户单独配置</b>：开通时使用平台默认值，可在此逐项覆盖，仅对本租户生效。</p>
+          <div class="grid-3">
+            <div class="cap-item">
+              <span class="cap-label">商家账号数</span>
+              <b class="cap-value" id="cap-accounts-val">6</b>
+              <span class="cap-hint">可创建的后台登录账号上限</span>
+            </div>
+            <div class="cap-item">
+              <span class="cap-label">直播场次（/月）</span>
+              <b class="cap-value" id="cap-live-val">10</b>
+              <span class="cap-hint">按自然月统计</span>
+            </div>
+            <div class="cap-item">
+              <span class="cap-label">订单服务费率</span>
+              <b class="cap-value" id="cap-rate-val">0%（默认）</b>
+              <span class="cap-hint">适用于本租户订单分账</span>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
+  </div>
+
+  <!-- ================= Tab：额度（2026-10-02 新增） ================= -->
+  <div class="tc-pane" data-pane="quota">
+    <div class="alert alert-info" style="margin-bottom:12px;display:block;line-height:1.9">
+      <span>
+        <b>营销额度</b>：额度即商家在本平台的<b>线下付款累计入账金额</b>，由平台运营人工调整（每次调整要么<b>增加</b>、要么<b>减少</b>）。
+        额度用于扣减商家的<b>营销短信</b>（每条 ¥X）与<b>直播人次 UV</b>（每场直播结束后按 UV 数统计扣减）。
+        当可用额度<b>低于额度阈值</b>（阈值可为负）时，该租户将被<b>限制发起直播、限制发送短信</b>。
+      </span>
+    </div>
+
+    <!-- 额度概览 -->
+    <div class="card" style="margin-bottom:12px">
+      <div class="card-hd">
+        <h2>额度概览</h2>
+        <div style="display:flex;gap:8px">
+          <button type="button" class="btn btn-sm" id="btn-quota-rule">编辑规则</button>
+          <button type="button" class="btn btn-sm btn-primary" id="btn-quota-adjust">调整额度</button>
+        </div>
+      </div>
+      <div class="card-bd">
+        <div class="grid-4">
+          <div class="cap-item">
+            <span class="cap-label">当前可用额度</span>
+            <b class="cap-value" id="q-balance-val">¥1,286.50</b>
+            <span class="cap-hint" id="q-status-hint"><span class="badge badge-success" id="q-status">正常</span></span>
+          </div>
+          <div class="cap-item">
+            <span class="cap-label">额度阈值</span>
+            <b class="cap-value" id="q-threshold-val">-¥200.00</b>
+            <span class="cap-hint">低于该值将限制营销能力</span>
+          </div>
+          <div class="cap-item">
+            <span class="cap-label">营销短信单价</span>
+            <b class="cap-value" id="q-sms-val">¥0.10 / 条</b>
+            <span class="cap-hint">按成功发送条数扣减</span>
+          </div>
+          <div class="cap-item">
+            <span class="cap-label">直播 UV 单价</span>
+            <b class="cap-value" id="q-uv-val">¥0.05 / 人次</b>
+            <span class="cap-hint">每场直播结束后按 UV 结算</span>
+          </div>
+        </div>
+        <p class="muted" style="margin:12px 0 0;font-size:12px">
+          额度为租户级配置，仅对本租户生效；单价与阈值由平台运营统一维护，余额可人工增减。
+        </p>
+      </div>
+    </div>
+
+    <!-- 额度流水 -->
+    <div class="card">
+      <div class="card-hd"><h2>额度流水</h2><span class="muted" style="font-size:12px">逐笔记录入账、人工调整与扣减，可追溯到关联的短信任务 / 直播场次</span></div>
+      <div class="card-bd" style="padding:0">
+        <div class="card-bd" style="border-bottom:1px solid var(--color-border)">
+          <div class="form-grid" style="grid-template-columns:repeat(5,minmax(0,1fr));gap:8px 12px">
+            <select id="q-f-type">
+              <option value="">变动类型</option>
+              <option>线下付款入账</option>
+              <option>额度调整（增加）</option>
+              <option>额度调整（减少）</option>
+              <option>营销短信扣减</option>
+              <option>直播 UV 扣减</option>
+            </select>
+            <input id="q-f-time1" type="date" />
+            <input id="q-f-time2" type="date" />
+            <button class="btn btn-primary" id="q-btn-query">查询</button>
+            <button class="btn" id="q-btn-reset">重置</button>
+          </div>
+        </div>
+        <table class="data">
+          <thead>
+            <tr>
+              <th style="width:150px">时间</th>
+              <th style="width:150px">类型</th>
+              <th style="width:120px">变动金额</th>
+              <th style="width:120px">变动后余额</th>
+              <th>关联对象</th>
+              <th style="width:130px">操作人</th>
+              <th>备注</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>2026-10-02 10:20</td>
+              <td><span class="tag">营销短信扣减</span></td>
+              <td><b class="q-neg">-¥12.00</b></td>
+              <td class="mono">¥1,286.50</td>
+              <td>群发任务「国庆冲刺唤醒」· 120 条</td>
+              <td>系统自动</td>
+              <td class="muted" style="font-size:12px">0.10 元/条 × 120</td>
+            </tr>
+            <tr>
+              <td>2026-10-01 21:10</td>
+              <td><span class="tag">直播 UV 扣减</span></td>
+              <td><b class="q-neg">-¥18.60</b></td>
+              <td class="mono">¥1,298.50</td>
+              <td>直播「秋季家长必修课」· 372 UV</td>
+              <td>系统自动</td>
+              <td class="muted" style="font-size:12px">0.05 元/人次 × 372</td>
+            </tr>
+            <tr>
+              <td>2026-10-01 09:00</td>
+              <td><span class="tag tag-blue">额度调整（增加）</span></td>
+              <td><b class="q-pos">+¥2,000.00</b></td>
+              <td class="mono">¥1,317.10</td>
+              <td>线下付款入账</td>
+              <td>平台运营 · 王顾问</td>
+              <td class="muted" style="font-size:12px">对公转账，财务确认后入账</td>
+            </tr>
+            <tr>
+              <td>2026-09-28 15:40</td>
+              <td><span class="tag">营销短信扣减</span></td>
+              <td><b class="q-neg">-¥8.50</b></td>
+              <td class="mono">-¥682.90</td>
+              <td>群发任务「开学季回访」· 85 条</td>
+              <td>系统自动</td>
+              <td class="muted" style="font-size:12px">抵扣后低于阈值，已限制营销能力</td>
+            </tr>
+            <tr>
+              <td>2026-09-25 11:05</td>
+              <td><span class="tag tag-blue">线下付款入账</span></td>
+              <td><b class="q-pos">+¥500.00</b></td>
+              <td class="mono">-¥674.40</td>
+              <td>对公转账</td>
+              <td>平台运营 · 王顾问</td>
+              <td class="muted" style="font-size:12px">线下付款，平台代录</td>
+            </tr>
+            <tr>
+              <td>2026-09-20 16:30</td>
+              <td><span class="tag">直播 UV 扣减</span></td>
+              <td><b class="q-neg">-¥21.50</b></td>
+              <td class="mono">-¥1,174.40</td>
+              <td>直播「期次说明会」· 430 UV</td>
+              <td>系统自动</td>
+              <td class="muted" style="font-size:12px">统计完成即扣减</td>
+            </tr>
+            <tr>
+              <td>2026-09-15 10:00</td>
+              <td><span class="tag">额度调整（减少）</span></td>
+              <td><b class="q-neg">-¥200.00</b></td>
+              <td class="mono">-¥1,152.90</td>
+              <td>—</td>
+              <td>平台运营 · 赵老师</td>
+              <td class="muted" style="font-size:12px">冲抵前期多记账金额</td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="ua-pagination">
+          <span class="muted">共 <b>37</b> 条额度流水</span>
+          <div class="spacer" style="flex:1"></div>
+          <select class="ua-size"><option>10条/页</option><option>20条/页</option></select>
+          <button class="btn btn-sm" disabled>上一页</button>
+          <button class="btn btn-sm">下一页</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:12px"><div class="card-bd">
+      <p class="muted" style="margin:0;font-size:12px;line-height:1.9">
+        <b>口径说明：</b>① 额度 = <b>线下付款累计入账</b> − 营销短信扣减 − 直播 UV 扣减 ± 人工调整；<br>
+        ② 营销短信按<b>成功发送条数</b>扣减（单价可配置）；直播按<b>每场结束后的 UV 人次</b>结算扣减（单价可配置）；<br>
+        ③ 可用额度 <b>低于额度阈值</b>时，商家后台将<b>禁止发起直播、禁止发送营销短信</b>，其余能力不受影响；充值入账后自动恢复；<br>
+        ④ 商家可在<b>商家管理后台 · 交易 / 资产管理 / 营销额度</b>查看本页配置结果与流水。
+      </p>
+    </div></div>
   </div>
 
   <!-- ================= Tab 2：组织架构 ================= -->
@@ -368,7 +563,7 @@
       <div class="ua-pagination">
         <span class="muted">共 <b>6</b> 个用户</span>
         <div class="spacer" style="flex:1"></div>
-        <span class="muted" style="font-size:12px">用户数上限由套餐决定，专业版最多 20 个</span>
+        <span class="muted" style="font-size:12px">用户数上限由本租户「容量与费率」配置决定，当前上限 6 个</span>
       </div>
     </div></div>
   </div>
@@ -376,13 +571,13 @@
   <!-- ================= Tab 5：应用授权 ================= -->
   <div class="tc-pane" data-pane="grant">
     <div class="alert alert-info" style="margin-bottom:12px">
-      <span>授权规则：应用默认<b>随套餐自动授权</b>；可对本租户<b>单独开通或取消</b>覆盖套餐默认。取消授权后该租户后台入口隐藏、接口拒绝调用，数据保留。</span>
+      <span>授权规则：应用默认<b>对新开通租户自动授权</b>；可对本租户<b>单独开通或取消</b>。取消授权后该租户后台入口隐藏、接口拒绝调用，数据保留。</span>
     </div>
 
     <div class="toolbar" style="margin-bottom:12px">
       <button class="btn btn-primary" id="btn-grant-add">添加授权</button>
       <div class="spacer"></div>
-      <span class="muted" style="font-size:12px">套餐版本：专业版 · 默认包含「商家管理后台」「C 端小程序」；「开放接口」需单独开通</span>
+      <span class="muted" style="font-size:12px">默认包含「商家管理后台」「C 端小程序」；「视频号助手」「开放接口」需单独开通</span>
     </div>
 
     <div class="card"><div class="card-bd" style="padding:0">
@@ -391,7 +586,6 @@
           <tr>
             <th>应用名称</th>
             <th>应用标识</th>
-            <th>套餐要求</th>
             <th>授权来源</th>
             <th>授权状态</th>
             <th>授权时间</th>
@@ -402,8 +596,8 @@
           <tr>
             <td><b>商家管理后台</b><p class="muted" style="margin:2px 0 0;font-size:12px">商家侧经营端：内容/直播/SCRM/交易/用户</p></td>
             <td>APP_MCH_ADMIN</td>
-            <td>全部套餐</td>
-            <td>套餐默认</td>
+
+            <td>默认授权</td>
             <td><span class="badge badge-success">已授权</span></td>
             <td>2026-03-12 10:00</td>
             <td class="row-actions"><a href="#" data-grant-act="revoke">取消授权</a></td>
@@ -411,8 +605,8 @@
           <tr>
             <td><b>C 端小程序</b><p class="muted" style="margin:2px 0 0;font-size:12px">内容售卖与直播转化的 C 端承接</p></td>
             <td>APP_C_MP</td>
-            <td>全部套餐</td>
-            <td>套餐默认</td>
+
+            <td>默认授权</td>
             <td><span class="badge badge-success">已授权</span></td>
             <td>2026-03-12 10:00</td>
             <td class="row-actions"><a href="#" data-grant-act="revoke">取消授权</a></td>
@@ -420,16 +614,16 @@
           <tr>
             <td><b>视频号助手</b><p class="muted" style="margin:2px 0 0;font-size:12px">公域视频号订单同步与推广链接管理</p></td>
             <td>APP_CHANNELS</td>
-            <td>专业版</td>
-            <td>单独授权（试用）</td>
-            <td><span class="badge badge-warn">试用中（至 09-30）</span></td>
+
+            <td>单独授权（临时）</td>
+            <td><span class="badge badge-warn">临时授权（至 2026-09-30）</span></td>
             <td>2026-09-01 15:20</td>
-            <td class="row-actions"><a href="#" data-grant-act="formalize">转为正式授权</a><a href="#" data-grant-act="revoke">取消授权</a></td>
+            <td class="row-actions"><a href="#" data-grant-act="formalize">转为长期授权</a><a href="#" data-grant-act="revoke">取消授权</a></td>
           </tr>
           <tr>
             <td><b>开放接口（OpenAPI）</b><p class="muted" style="margin:2px 0 0;font-size:12px">商品/订单/用户数据开放，供商家自有系统对接</p></td>
             <td>APP_OPEN_API</td>
-            <td>专业版</td>
+
             <td>—</td>
             <td><span class="badge">未授权</span></td>
             <td>—</td>
@@ -438,7 +632,6 @@
           <tr>
             <td><b>企微 SCRM 连接器</b><p class="muted" style="margin:2px 0 0;font-size:12px">企业微信侧边栏与群运营能力，规划中</p></td>
             <td>APP_WECOM_SCRM</td>
-            <td>专业版</td>
             <td>—</td>
             <td><span class="badge">已下架</span></td>
             <td>—</td>
@@ -452,33 +645,94 @@
     </div></div>
   </div>
 
+  <!-- ================= Tab 7：操作日志（2026-10-02 新增） ================= -->
+  <div class="tc-pane" data-pane="log">
+    <div class="alert alert-info" style="margin-bottom:12px;display:block;line-height:1.9">
+      <span>记录本租户在运营后台的<b>全部管理操作</b>：租户信息变更、容量与费率、额度调整、续期、应用授权、用户与角色变更等。日志<b>不可修改、不可删除</b>，保留 180 天；可按操作类型 / 操作人 / 时间范围筛选，支持导出。</span>
+    </div>
+
+    <div class="card">
+      <div class="card-hd">
+        <h2>操作日志</h2>
+        <button type="button" class="btn btn-sm" id="btn-log-export">导出日志</button>
+      </div>
+      <div class="card-bd" style="border-bottom:1px solid var(--color-border)">
+        <div class="form-grid" style="grid-template-columns:repeat(5,minmax(0,1fr));gap:8px 12px">
+          <select id="lg-f-type">
+            <option value="">全部类型</option>
+            <option>租户信息变更</option>
+            <option>容量与费率</option>
+            <option>额度调整</option>
+            <option>续期</option>
+            <option>应用授权</option>
+            <option>用户与角色</option>
+          </select>
+          <select id="lg-f-operator">
+            <option value="">全部操作人</option>
+            <option>平台运营</option>
+            <option>租户管理员</option>
+            <option>系统自动</option>
+          </select>
+          <input id="lg-f-time1" type="date" />
+          <input id="lg-f-time2" type="date" />
+          <div style="display:flex;gap:8px">
+            <button class="btn btn-primary" id="lg-btn-query">查询</button>
+            <button class="btn" id="lg-btn-reset">重置</button>
+          </div>
+        </div>
+      </div>
+      <div class="card-bd" style="padding:0">
+        <table class="data">
+          <thead>
+            <tr>
+              <th style="width:150px">操作时间</th>
+              <th style="width:130px">操作类型</th>
+              <th>操作内容</th>
+              <th style="width:150px">操作人</th>
+              <th style="width:120px">来源 IP</th>
+              <th style="width:90px">结果</th>
+              <th style="width:230px">备注</th>
+            </tr>
+          </thead>
+          <tbody id="lg-tbody"></tbody>
+        </table>
+        <div class="ua-pagination">
+          <span class="muted" id="lg-count">共 0 条操作日志</span>
+          <div class="spacer" style="flex:1"></div>
+          <button class="btn btn-sm" disabled>上一页</button>
+          <button class="btn btn-sm">下一页</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
 </div>
 
 <!-- ============ 弹层 ============ -->
 <div class="proto-mask" id="mask"></div>
 
-<!-- 续费记录抽屉 -->
+<!-- 续期记录抽屉 -->
 <div class="proto-drawer" id="drawer-renew-records" style="width:720px">
-  <div class="proto-drawer-hd"><h3>续费记录 · 星启家庭教育</h3><button class="btn btn-sm btn-ghost" data-close>×</button></div>
+  <div class="proto-drawer-hd"><h3>续期记录 · 星启家庭教育</h3><button class="btn btn-sm btn-ghost" data-close>×</button></div>
   <div class="proto-drawer-bd">
     <table class="data">
       <thead>
-        <tr><th>续费时间</th><th>套餐版本</th><th>续费时长</th><th>金额</th><th>支付方式</th><th>状态</th><th>操作人</th><th>备注</th></tr>
+        <tr><th>变更时间</th><th>原使用截止日期</th><th>新使用截止日期</th><th>变更时长</th><th>操作人</th><th>备注</th></tr>
       </thead>
       <tbody>
         <tr>
-          <td>2026-09-08 15:26</td><td><span class="tag tag-blue">专业版</span></td><td>1 年</td><td><b>¥4,980.00</b></td>
-          <td>线下汇款</td><td><span class="badge badge-warn">待财务确认</span></td><td>平台运营</td>
-          <td class="muted" style="font-size:12px">财务确认后到期时间顺延至 2028-03-12</td>
+          <td>2026-09-08 15:26</td><td class="mono">2027-03-12</td><td class="mono">2028-03-12</td>
+          <td><b>+365 天</b></td><td>王顾问（平台运营）</td>
+          <td class="muted" style="font-size:12px">续期 1 年，线下汇款已到账</td>
         </tr>
         <tr>
-          <td>2026-03-12 10:02</td><td><span class="tag tag-blue">专业版</span></td><td>1 年</td><td><b>¥4,980.00</b></td>
-          <td>对公转账</td><td><span class="badge badge-success">已支付</span></td><td>王顾问（平台运营）</td>
-          <td class="muted" style="font-size:12px">首次开通，有效期至 2027-03-12</td>
+          <td>2026-03-12 10:02</td><td class="mono">—</td><td class="mono">2027-03-12</td>
+          <td><b>开通</b></td><td>系统自动</td>
+          <td class="muted" style="font-size:12px">租户开通，初始使用截止日期</td>
         </tr>
       </tbody>
     </table>
-    <p class="muted" style="margin-top:10px;font-size:12px">说明：续费登记后由财务确认到账，确认成功状态变为「已支付」并自动顺延到期时间；服务费率保持不变。</p>
+    <p class="muted" style="margin-top:10px;font-size:12px">说明：平台运营可直接设置本租户的<b>使用截止日期</b>（延长或缩短均可），每次变更都会写入记录与操作日志，到期后商家后台转为只读。</p>
   </div>
   <div class="proto-drawer-ft"><button class="btn" data-close>关闭</button></div>
 </div>
@@ -490,12 +744,13 @@
     <div class="form-grid">
       <div class="field"><label>租户名称 *</label><input value="星启家庭教育" /></div>
       <div class="field"><label>所属公司</label><input value="星启家庭教育咨询有限公司" /></div>
-      <div class="field"><label>服务费率</label>
+      <div class="field"><label>订单服务费率</label>
         <select style="width:100%;padding:6px 8px;border:1px solid var(--color-border);border-radius:6px">
-          <option selected>1%（默认）</option><option>0.6%（战略合作）</option>
+          <option selected>0%（默认）</option>
         </select>
       </div>
     </div>
+    <p class="muted" style="margin:10px 0 0;font-size:12px">容量与费率、额度、续期等配置分别在对应分页维护；本弹窗仅修改租户基础信息。</p>
   </div>
   <div class="proto-modal-ft" style="border-top:1px solid var(--color-border);padding:12px 20px;display:flex;gap:8px;justify-content:flex-end">
     <button class="btn" data-close>取消</button>
@@ -503,29 +758,120 @@
   </div>
 </div>
 
-<!-- 续费 -->
-<div class="proto-modal" id="modal-renew" style="width:460px">
-  <div class="proto-modal-hd"><h3 style="font-size:16px;font-weight:600">租户续费</h3><button class="btn btn-sm btn-ghost" data-close>×</button></div>
+<!-- 编辑容量与费率（租户级） -->
+<div class="proto-modal" id="modal-capacity" style="width:520px">
+  <div class="proto-modal-hd"><h3 style="font-size:16px;font-weight:600">编辑容量与费率</h3><button class="btn btn-sm btn-ghost" data-close>×</button></div>
   <div class="proto-modal-bd">
+    <p class="muted" style="margin:0 0 12px;font-size:12px">仅对本租户生效；开通时使用平台默认值，可在此逐项覆盖。</p>
     <div class="form-grid">
-      <div class="field"><label>租户</label><div>星启家庭教育</div></div>
-      <div class="field"><label>当前到期</label><div>2027-03-12</div></div>
-      <div class="field"><label>续费套餐 *</label>
-        <select style="width:100%;padding:6px 8px;border:1px solid var(--color-border);border-radius:6px">
-          <option>专业版</option><option>标准版</option><option>旗舰版</option>
-        </select>
-      </div>
-      <div class="field"><label>续费时长 *</label>
-        <select style="width:100%;padding:6px 8px;border:1px solid var(--color-border);border-radius:6px">
-          <option>1 年</option><option>2 年</option><option>3 个月</option>
+      <div class="field"><label>商家账号数 *</label><input id="cap-accounts" placeholder="可创建的后台登录账号上限，例：6" /></div>
+      <div class="field"><label>直播场次（/月）*</label><input id="cap-live" placeholder="按自然月统计，例：10" /></div>
+      <div class="field" style="grid-column:1/-1"><label>订单服务费率 *</label>
+        <select id="cap-rate" style="width:100%;padding:6px 8px;border:1px solid var(--color-border);border-radius:6px">
+          <option>0%（默认）</option>
         </select>
       </div>
     </div>
-    <p class="muted" style="margin-top:8px;font-size:12px">续费生效后到期时间自动顺延，服务费率保持不变。</p>
+    <p class="muted" style="margin:10px 0 0;font-size:12px">调整服务费率将影响该租户后续订单的分账与结算，历史订单按原费率快照留存。</p>
   </div>
   <div class="proto-modal-ft" style="border-top:1px solid var(--color-border);padding:12px 20px;display:flex;gap:8px;justify-content:flex-end">
     <button class="btn" data-close>取消</button>
-    <button class="btn btn-primary" data-close data-toast="续费已登记，等待财务确认（原型）">确认续费</button>
+    <button class="btn btn-primary" id="cap-submit">保存</button>
+  </div>
+</div>
+
+<!-- 调整额度（租户级，2026-10-02 新增） -->
+<div class="proto-modal" id="modal-quota-adjust" style="width:520px">
+  <div class="proto-modal-hd"><h3 style="font-size:16px;font-weight:600">调整额度</h3><button class="btn btn-sm btn-ghost" data-close>×</button></div>
+  <div class="proto-modal-bd">
+    <p class="muted" style="margin:0 0 12px;font-size:12px">每次调整只能<b>增加</b>或<b>减少</b>；调整后立即生效并计入额度流水，商家后台可查看。</p>
+    <div class="form-grid">
+      <div class="field" style="grid-column:1/-1"><label>调整方向 *</label>
+        <div style="display:flex;gap:20px;align-items:center;padding-top:4px">
+          <label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer">
+            <input type="radio" name="q-dir" value="add" checked /> 增加额度
+          </label>
+          <label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer">
+            <input type="radio" name="q-dir" value="sub" /> 减少额度
+          </label>
+        </div>
+      </div>
+      <div class="field"><label>调整金额 *</label><input id="q-amount" placeholder="请输入金额，例：2000" /></div>
+      <div class="field"><label>调整原因 *</label>
+        <select id="q-reason" style="width:100%;padding:6px 8px;border:1px solid var(--color-border);border-radius:6px">
+          <option>线下付款入账</option>
+          <option>合同赠送额度</option>
+          <option>冲抵多记账金额</option>
+          <option>违规扣减</option>
+          <option>其他</option>
+        </select>
+      </div>
+      <div class="field" style="grid-column:1/-1"><label>备注</label>
+        <textarea id="q-remark" rows="2" style="width:100%;padding:8px;border:1px solid var(--color-border);border-radius:6px" placeholder="选填，如付款单号 / 说明"></textarea>
+      </div>
+    </div>
+    <div class="kv" style="margin-top:4px">
+      <div class="kv-row"><span>当前可用额度</span><b id="q-cur-balance">¥1,286.50</b></div>
+      <div class="kv-row"><span>本次预计调整后</span><b id="q-preview">¥1,286.50</b></div>
+    </div>
+    <p class="muted" style="margin:10px 0 0;font-size:12px">调整记录包含操作人与时间，不可删除、不可修改。</p>
+  </div>
+  <div class="proto-modal-ft" style="border-top:1px solid var(--color-border);padding:12px 20px;display:flex;gap:8px;justify-content:flex-end">
+    <button class="btn" data-close>取消</button>
+    <button class="btn btn-primary" id="q-submit">确认调整</button>
+  </div>
+</div>
+
+<!-- 编辑额度规则（租户级） -->
+<div class="proto-modal" id="modal-quota-rule" style="width:520px">
+  <div class="proto-modal-hd"><h3 style="font-size:16px;font-weight:600">编辑额度规则</h3><button class="btn btn-sm btn-ghost" data-close>×</button></div>
+  <div class="proto-modal-bd">
+    <p class="muted" style="margin:0 0 12px;font-size:12px">单价与阈值仅对本租户生效；修改后，新产生的短信 / 直播将按新单价扣减。</p>
+    <div class="form-grid">
+      <div class="field"><label>营销短信单价（元/条）*</label><input id="r-sms" placeholder="例：0.10" /></div>
+      <div class="field"><label>直播 UV 单价（元/人次）*</label><input id="r-uv" placeholder="例：0.05" /></div>
+      <div class="field" style="grid-column:1/-1"><label>额度阈值（元，可为负）*</label><input id="r-threshold" placeholder="例：-200；可用额度低于该值时限制发起直播与发送短信" /></div>
+    </div>
+    <p class="muted" style="margin:10px 0 0;font-size:12px">阈值用于风险控制：余额低于阈值（可为负）即触发限制，充值入账后自动恢复。</p>
+  </div>
+  <div class="proto-modal-ft" style="border-top:1px solid var(--color-border);padding:12px 20px;display:flex;gap:8px;justify-content:flex-end">
+    <button class="btn" data-close>取消</button>
+    <button class="btn btn-primary" id="r-submit">保存</button>
+  </div>
+</div>
+
+<!-- 续期（修改使用截止日期） -->
+<div class="proto-modal" id="modal-renew" style="width:520px">
+  <div class="proto-modal-hd"><h3 style="font-size:16px;font-weight:600">租户续期</h3><button class="btn btn-sm btn-ghost" data-close>×</button></div>
+  <div class="proto-modal-bd">
+    <p class="muted" style="margin:0 0 12px;font-size:12px">直接设置该租户的<b>使用截止日期</b>：可延长、也可缩短；保存后即时生效，并写入「续期记录」与「操作日志」。</p>
+    <div class="form-grid">
+      <div class="field"><label>租户</label><div>星启家庭教育</div></div>
+      <div class="field"><label>当前使用截止日期</label><div class="mono" id="rn-cur">2027-03-12</div></div>
+      <div class="field" style="grid-column:1/-1"><label>新的使用截止日期 *</label><input id="rn-date" type="date" /></div>
+      <div class="field"><label>变更原因 *</label>
+        <select id="rn-reason" style="width:100%;padding:6px 8px;border:1px solid var(--color-border);border-radius:6px">
+          <option>续期（已付费）</option>
+          <option>合同赠送时长</option>
+          <option>误设更正</option>
+          <option>提前终止</option>
+          <option>其他</option>
+        </select>
+      </div>
+      <div class="field"><label>生效时间</label><div>立即生效</div></div>
+      <div class="field" style="grid-column:1/-1"><label>备注</label>
+        <textarea id="rn-remark" rows="2" style="width:100%;padding:8px;border:1px solid var(--color-border);border-radius:6px" placeholder="选填，如续期年限 / 合同号 / 说明"></textarea>
+      </div>
+    </div>
+    <div class="kv" style="margin-top:4px">
+      <div class="kv-row"><span>本次变更</span><b id="rn-delta">—</b></div>
+      <div class="kv-row"><span>调整后使用截止日期</span><b id="rn-preview">2027-03-12</b></div>
+    </div>
+    <p class="muted" style="margin:10px 0 0;font-size:12px">租户达到使用截止日期后仍未续期，商家后台将转为只读，C 端内容下架。</p>
+  </div>
+  <div class="proto-modal-ft" style="border-top:1px solid var(--color-border);padding:12px 20px;display:flex;gap:8px;justify-content:flex-end">
+    <button class="btn" data-close>取消</button>
+    <button class="btn btn-primary" id="rn-submit">确认续期</button>
   </div>
 </div>
 
@@ -541,7 +887,7 @@
     </ul>
     <div class="field"><label>停用原因 *</label>
       <select style="width:100%;padding:6px 8px;border:1px solid var(--color-border);border-radius:6px">
-        <option>合同到期未续费</option><option>违规经营</option><option>商家主动申请</option><option>其他</option>
+        <option>合同到期未续期</option><option>违规经营</option><option>商家主动申请</option><option>其他</option>
       </select>
     </div>
   </div>
@@ -700,13 +1046,13 @@
         </select>
       </div>
       <div class="field"><label>授权方式 *</label>
-        <select style="width:100%;padding:6px 8px;border:1px solid var(--color-border);border-radius:6px">
-          <option>正式授权</option><option>试用授权</option>
+        <select id="grant-mode" style="width:100%;padding:6px 8px;border:1px solid var(--color-border);border-radius:6px">
+          <option>长期授权</option><option selected>临时授权</option>
         </select>
       </div>
-      <div class="field"><label>试用到期日</label><input type="date" value="2026-10-31" /></div>
+      <div class="field"><label>临时授权截止日</label><input id="grant-until" type="date" value="2026-10-31" /></div>
     </div>
-    <p class="muted" style="margin:10px 0 0;font-size:12px">单独授权将覆盖套餐默认；试用到期后自动回收，如需继续使用请转为正式授权。</p>
+    <p class="muted" style="margin:10px 0 0;font-size:12px">单独授权独立生效，不受其它配置影响；临时授权到期后自动回收，如需继续使用请转为长期授权。</p>
   </div>
   <div class="proto-modal-ft" style="border-top:1px solid var(--color-border);padding:12px 20px;display:flex;gap:8px;justify-content:flex-end">
     <button class="btn" data-close>取消</button>
@@ -770,10 +1116,22 @@
 /* ===== 部门树缩进 ===== */
 .dept-name[data-level="2"] { padding-left: 12px; color: var(--color-text); }
 .dept-name[data-level="3"] { padding-left: 24px; color: var(--color-text-secondary); }
+/* ===== 容量与费率 ===== */
+.grid-3 { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px; }
+@media (max-width: 1000px) { .grid-3 { grid-template-columns:1fr; } }
+.cap-item { border:1px solid var(--color-border); border-radius:8px; padding:12px 14px; display:flex; flex-direction:column; gap:4px; }
+.cap-label { font-size:12px; color:var(--color-text-secondary); }
+.cap-value { font-size:20px; font-weight:600; }
+.cap-hint { font-size:12px; color:var(--color-text-muted); }
+/* ===== 额度 ===== */
+.q-pos { color:#009a29; }
+.q-neg { color:#cb2634; }
+.quota-preview { display:flex; justify-content:space-between; align-items:center; padding:10px 12px; border:1px dashed var(--color-border); border-radius:8px; margin-top:8px; font-size:13px; }
+.quota-preview b { font-size:16px; }
 </style>
 
 <script src="../assets/js/proto.js"></script>
-<script src="../assets/js/ops-shell.js?v=27"></script>
+<script src="../assets/js/ops-shell.js?v=28"></script>
 <script>
 (function () {
   var mask = document.getElementById("mask");
@@ -786,7 +1144,7 @@
   document.querySelectorAll("[data-close]").forEach(function (n) { n.addEventListener("click", closeAll); });
 
   /* ===== Tab 切换（支持 ?tab=，便于外链与旧页重定向） ===== */
-  var TABS = ["tenant", "dept", "post", "user", "grant"];
+  var TABS = ["tenant", "quota", "dept", "post", "user", "grant", "log"];
   function activate(key, updateUrl) {
     if (TABS.indexOf(key) < 0) key = "tenant";
     document.querySelectorAll("#tc-tabs a").forEach(function (a) {
@@ -816,10 +1174,268 @@
   activate(initTab, false);
 
   /* ===== Tab1：租户 ===== */
-  document.getElementById("btn-renew").addEventListener("click", function () { open(document.getElementById("modal-renew")); });
+  function fmtDate(d) {
+    return d.getFullYear() + "-" + ("0" + (d.getMonth() + 1)).slice(-2) + "-" + ("0" + d.getDate()).slice(-2);
+  }
+  function parseDate(s) {
+    var m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(s).trim());
+    return m ? new Date(+m[1], +m[2] - 1, +m[3]) : null;
+  }
+  function currentExpire() { return document.getElementById("tc-expire-kv").textContent.trim(); }
+  function setExpire(v) {
+    document.getElementById("tc-expire-top").textContent = v;
+    document.getElementById("tc-expire-basic").textContent = v;
+    document.getElementById("tc-expire-kv").textContent = v;
+  }
+  function renewPreview() {
+    var cur = parseDate(document.getElementById("rn-cur").textContent);
+    var next = parseDate(document.getElementById("rn-date").value);
+    var delta = document.getElementById("rn-delta");
+    var prev = document.getElementById("rn-preview");
+    if (!next) { delta.textContent = "—"; delta.className = ""; prev.textContent = currentExpire(); return; }
+    var days = Math.round((next - cur) / 86400000);
+    if (days > 0) { delta.textContent = "延长 " + days + " 天"; delta.className = "q-pos"; }
+    else if (days < 0) { delta.textContent = "缩短 " + Math.abs(days) + " 天"; delta.className = "q-neg"; }
+    else { delta.textContent = "无变化"; delta.className = ""; }
+    prev.textContent = fmtDate(next);
+  }
+  document.getElementById("btn-renew").addEventListener("click", function () {
+    var cur = currentExpire();
+    document.getElementById("rn-cur").textContent = cur;
+    document.getElementById("rn-date").value = cur;
+    document.getElementById("rn-remark").value = "";
+    document.getElementById("rn-reason").selectedIndex = 0;
+    renewPreview();
+    open(document.getElementById("modal-renew"));
+  });
+  document.getElementById("rn-date").addEventListener("input", renewPreview);
+  document.getElementById("rn-submit").addEventListener("click", function () {
+    var cur = parseDate(document.getElementById("rn-cur").textContent);
+    var next = parseDate(document.getElementById("rn-date").value);
+    if (!next) { Proto.toast("请选择新的使用截止日期"); return; }
+    var days = Math.round((next - cur) / 86400000);
+    if (days === 0) { Proto.toast("新的使用截止日期与当前一致，无需变更"); return; }
+    var nv = fmtDate(next);
+    var reason = document.getElementById("rn-reason").value;
+    var remark = document.getElementById("rn-remark").value.trim();
+    setExpire(nv);
+    closeAll();
+    addLog({
+      type: "续期",
+      content: "使用截止日期 " + fmtDate(cur) + " → " + nv + "（" + (days > 0 ? "延长 " + days + " 天" : "缩短 " + Math.abs(days) + " 天") + "），原因：" + reason,
+      note: remark || "—"
+    });
+    Proto.toast("使用截止日期已更新为 " + nv + "，商家后台可查看（原型）");
+  });
   document.getElementById("btn-edit").addEventListener("click", function () { open(document.getElementById("modal-edit")); });
   document.getElementById("btn-renew-records").addEventListener("click", function () { open(document.getElementById("drawer-renew-records")); });
   document.getElementById("btn-stop").addEventListener("click", function () { open(document.getElementById("modal-stop")); });
+
+  /* ===== Tab7：操作日志（2026-10-02 新增） ===== */
+  var LOGS = [
+    { t: "2026-10-02 10:24", type: "额度调整", content: "增加额度 ¥2,000.00（原因：线下付款入账），可用额度 -¥1,174.40 → ¥825.60", op: "王顾问（平台运营）", ip: "10.12.8.31", r: "成功", note: "对公转账，财务已确认" },
+    { t: "2026-10-02 09:40", type: "容量与费率", content: "商家账号数 6 → 8；直播场次（/月）10 → 12", op: "王顾问（平台运营）", ip: "10.12.8.31", r: "成功", note: "商家申请扩容，已核对合同" },
+    { t: "2026-09-30 16:05", type: "应用授权", content: "取消「视频号助手」临时授权", op: "李运营（平台运营）", ip: "10.12.8.44", r: "成功", note: "临时授权已到期" },
+    { t: "2026-09-25 11:05", type: "额度调整", content: "增加额度 ¥500.00（原因：线下付款入账）", op: "王顾问（平台运营）", ip: "10.12.8.31", r: "成功", note: "平台代录，付款单号 HT20260925-18" },
+    { t: "2026-09-20 16:30", type: "额度调整", content: "直播 UV 扣减 ¥21.50（直播「期次说明会」430 UV × ¥0.05）", op: "系统自动", ip: "—", r: "成功", note: "直播结束后自动结算" },
+    { t: "2026-09-15 10:00", type: "额度调整", content: "减少额度 ¥200.00（原因：冲抵多记账金额）", op: "赵老师（平台运营）", ip: "10.12.9.7", r: "成功", note: "与商家核对后冲抵" },
+    { t: "2026-09-10 17:05", type: "租户信息变更", content: "保存租户资料（企业信息）", op: "赵老师（租户管理员）", ip: "221.218.66.12", r: "失败", note: "企业信息审核未通过，提交被拒绝" },
+    { t: "2026-09-08 15:26", type: "续期", content: "使用截止日期 2027-03-12 → 2028-03-12（延长 365 天），原因：续期（已付费）", op: "王顾问（平台运营）", ip: "10.12.8.31", r: "成功", note: "续期 1 年，线下汇款已到账" },
+    { t: "2026-09-01 15:20", type: "应用授权", content: "新增「视频号助手」临时授权（至 2026-09-30）", op: "李运营（平台运营）", ip: "10.12.8.44", r: "成功", note: "功能评估期授权" },
+    { t: "2026-08-20 14:32", type: "用户与角色", content: "新增用户「阮荣均」（运营部 / 内容运营），分配角色「内容运营」", op: "赵老师（租户管理员）", ip: "221.218.66.12", r: "成功", note: "—" },
+    { t: "2026-08-12 10:40", type: "用户与角色", content: "重置用户「王助教」登录密码", op: "赵老师（租户管理员）", ip: "221.218.66.12", r: "成功", note: "用户申请重置" },
+    { t: "2026-04-06 09:45", type: "容量与费率", content: "订单服务费率 0%（默认）→ 0%（默认）", op: "王顾问（平台运营）", ip: "10.12.8.31", r: "成功", note: "费率口径调整，服务费默认 0%" },
+    { t: "2026-03-12 10:00", type: "租户信息变更", content: "租户开通：星启家庭教育（10001），开通来源：注册留资", op: "系统自动", ip: "—", r: "成功", note: "初始使用截止日期 2027-03-12" }
+  ];
+  var LOG_BADGE = { "成功": "badge-success", "失败": "badge-danger", "待确认": "badge-warn" };
+  function renderLogs() {
+    var ty = document.getElementById("lg-f-type").value;
+    var op = document.getElementById("lg-f-operator").value;
+    var t1 = document.getElementById("lg-f-time1").value;
+    var t2 = document.getElementById("lg-f-time2").value;
+    var tbody = document.getElementById("lg-tbody");
+    var rows = LOGS.filter(function (r) {
+      if (ty && r.type !== ty) return false;
+      if (op && r.op.indexOf(op) < 0) return false;
+      var day = r.t.slice(0, 10);
+      if (t1 && day < t1) return false;
+      if (t2 && day > t2) return false;
+      return true;
+    });
+    tbody.innerHTML = "";
+    rows.forEach(function (r) {
+      var tr = document.createElement("tr");
+      function cell(text, cls) {
+        var td = document.createElement("td");
+        if (cls) td.className = cls;
+        td.textContent = text;
+        tr.appendChild(td);
+        return td;
+      }
+      cell(r.t, "mono");
+      var tdType = document.createElement("td");
+      var tag = document.createElement("span");
+      tag.className = "tag";
+      tag.textContent = r.type;
+      tdType.appendChild(tag);
+      tr.appendChild(tdType);
+      cell(r.content);
+      cell(r.op);
+      cell(r.ip, "mono");
+      var tdR = document.createElement("td");
+      var bg = document.createElement("span");
+      bg.className = "badge " + (LOG_BADGE[r.r] || "");
+      bg.textContent = r.r;
+      tdR.appendChild(bg);
+      tr.appendChild(tdR);
+      cell(r.note, "muted");
+      tbody.appendChild(tr);
+    });
+    document.getElementById("lg-count").textContent = "共 " + rows.length + " 条操作日志" + (rows.length === LOGS.length ? "" : "（已筛选，全量 " + LOGS.length + " 条）");
+  }
+  function addLog(entry) {
+    var d = new Date();
+    var stamp = d.getFullYear() + "-" + ("0" + (d.getMonth() + 1)).slice(-2) + "-" + ("0" + d.getDate()).slice(-2) +
+      " " + ("0" + d.getHours()).slice(-2) + ":" + ("0" + d.getMinutes()).slice(-2);
+    LOGS.unshift({
+      t: stamp, type: entry.type, content: entry.content,
+      op: "平台运营（当前登录账号）", ip: "10.12.8.31", r: "成功", note: entry.note || "—"
+    });
+    renderLogs();
+  }
+  document.getElementById("lg-f-type").addEventListener("change", renderLogs);
+  document.getElementById("lg-f-operator").addEventListener("change", renderLogs);
+  document.getElementById("lg-btn-query").addEventListener("click", function () {
+    renderLogs();
+    Proto.toast("已按条件筛选操作日志（原型）");
+  });
+  document.getElementById("lg-btn-reset").addEventListener("click", function () {
+    document.getElementById("lg-f-type").value = "";
+    document.getElementById("lg-f-operator").value = "";
+    document.getElementById("lg-f-time1").value = "";
+    document.getElementById("lg-f-time2").value = "";
+    renderLogs();
+    Proto.toast("已重置");
+  });
+  document.getElementById("btn-log-export").addEventListener("click", function () {
+    Proto.toast("已导出本租户操作日志（原型）");
+  });
+  renderLogs();
+
+  /* 容量与费率（租户级单独配置） */
+  document.getElementById("btn-capacity").addEventListener("click", function () {
+    document.getElementById("cap-accounts").value = document.getElementById("cap-accounts-val").textContent.trim();
+    document.getElementById("cap-live").value = document.getElementById("cap-live-val").textContent.trim();
+    var cur = document.getElementById("cap-rate-val").textContent.trim();
+    var sel = document.getElementById("cap-rate");
+    Array.prototype.forEach.call(sel.options, function (o) { o.selected = (o.textContent === cur); });
+    open(document.getElementById("modal-capacity"));
+  });
+  document.getElementById("cap-submit").addEventListener("click", function () {
+    var acc = document.getElementById("cap-accounts").value.trim();
+    var live = document.getElementById("cap-live").value.trim();
+    if (!acc) { Proto.toast("请填写商家账号数"); return; }
+    if (!live) { Proto.toast("请填写直播场次"); return; }
+    document.getElementById("cap-accounts-val").textContent = acc;
+    document.getElementById("cap-live-val").textContent = live;
+    document.getElementById("cap-rate-val").textContent = document.getElementById("cap-rate").value;
+    closeAll();
+    Proto.toast("本租户容量与费率已更新（原型）");
+  });
+
+  /* ===== Tab：额度（2026-10-02 新增） ===== */
+  function parseMoney(s) {
+    var n = parseFloat(String(s).replace(/[¥,\s]/g, ""));
+    return isNaN(n) ? 0 : n;
+  }
+  function fmtMoney(n) {
+    var neg = n < 0;
+    var t = Math.abs(n).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    return (neg ? "-¥" : "¥") + t;
+  }
+  function currentBalance() { return parseMoney(document.getElementById("q-balance-val").textContent); }
+  function currentThreshold() { return parseMoney(document.getElementById("q-threshold-val").textContent); }
+  function refreshQuotaStatus() {
+    var bal = currentBalance(), th = currentThreshold();
+    var badge = document.getElementById("q-status");
+    if (bal < th) {
+      badge.className = "badge badge-danger";
+      badge.textContent = "已限制（低于阈值）";
+    } else if (bal < 0) {
+      badge.className = "badge badge-warn";
+      badge.textContent = "预警（余额为负）";
+    } else {
+      badge.className = "badge badge-success";
+      badge.textContent = "正常";
+    }
+  }
+
+  var qModal = document.getElementById("modal-quota-adjust");
+  function quotaDir() {
+    var r = document.querySelector('input[name="q-dir"]:checked');
+    return r ? r.value : "add";
+  }
+  function quotaPreview() {
+    var amt = parseFloat(document.getElementById("q-amount").value);
+    if (isNaN(amt)) amt = 0;
+    var next = currentBalance() + (quotaDir() === "add" ? amt : -amt);
+    var el = document.getElementById("q-preview");
+    el.textContent = fmtMoney(next);
+    el.className = next < 0 ? "q-neg" : "q-pos";
+  }
+  document.getElementById("btn-quota-adjust").addEventListener("click", function () {
+    document.getElementById("q-amount").value = "";
+    document.getElementById("q-remark").value = "";
+    document.getElementById("q-reason").selectedIndex = 0;
+    document.querySelector('input[name="q-dir"][value="add"]').checked = true;
+    document.getElementById("q-cur-balance").textContent = fmtMoney(currentBalance());
+    document.getElementById("q-preview").textContent = fmtMoney(currentBalance());
+    document.getElementById("q-preview").className = currentBalance() < 0 ? "q-neg" : "q-pos";
+    open(qModal);
+  });
+  document.getElementById("q-amount").addEventListener("input", quotaPreview);
+  Array.prototype.forEach.call(document.querySelectorAll('input[name="q-dir"]'), function (r) {
+    r.addEventListener("change", quotaPreview);
+  });
+  document.getElementById("q-submit").addEventListener("click", function () {
+    var amt = parseFloat(document.getElementById("q-amount").value);
+    if (isNaN(amt) || amt <= 0) { Proto.toast("请输入大于 0 的调整金额"); return; }
+    var dir = quotaDir();
+    var next = currentBalance() + (dir === "add" ? amt : -amt);
+    document.getElementById("q-balance-val").textContent = fmtMoney(next);
+    refreshQuotaStatus();
+    closeAll();
+    Proto.toast((dir === "add" ? "已增加额度 " : "已减少额度 ") + fmtMoney(amt) + "，商家后台可查看该笔流水（原型）");
+  });
+
+  document.getElementById("btn-quota-rule").addEventListener("click", function () {
+    document.getElementById("r-sms").value = parseMoney(document.getElementById("q-sms-val").textContent.split("/")[0]);
+    document.getElementById("r-uv").value = parseMoney(document.getElementById("q-uv-val").textContent.split("/")[0]);
+    document.getElementById("r-threshold").value = currentThreshold();
+    open(document.getElementById("modal-quota-rule"));
+  });
+  document.getElementById("r-submit").addEventListener("click", function () {
+    var sms = parseFloat(document.getElementById("r-sms").value);
+    var uv = parseFloat(document.getElementById("r-uv").value);
+    var th = parseFloat(document.getElementById("r-threshold").value);
+    if (isNaN(sms) || sms <= 0) { Proto.toast("请填写正确的营销短信单价"); return; }
+    if (isNaN(uv) || uv <= 0) { Proto.toast("请填写正确的直播 UV 单价"); return; }
+    if (isNaN(th)) { Proto.toast("请填写额度阈值（可为负）"); return; }
+    document.getElementById("q-sms-val").textContent = "¥" + sms.toFixed(2) + " / 条";
+    document.getElementById("q-uv-val").textContent = "¥" + uv.toFixed(2) + " / 人次";
+    document.getElementById("q-threshold-val").textContent = fmtMoney(th);
+    refreshQuotaStatus();
+    closeAll();
+    Proto.toast("本租户额度规则已更新（原型）");
+  });
+  document.getElementById("q-btn-query").addEventListener("click", function () { Proto.toast("已按条件筛选额度流水（原型）"); });
+  document.getElementById("q-btn-reset").addEventListener("click", function () {
+    document.getElementById("q-f-type").value = "";
+    document.getElementById("q-f-time1").value = "";
+    document.getElementById("q-f-time2").value = "";
+    Proto.toast("已重置");
+  });
+  refreshQuotaStatus();
 
   /* ===== Tab2：组织架构 ===== */
   var deptTitle = document.getElementById("dept-title");
@@ -923,13 +1539,13 @@
       var x = document.getElementById("cf-text");
       if (act === "grant") {
         t.textContent = "单独授权";
-        x.textContent = "确认为该租户单独开通「" + name + "」？将覆盖套餐默认授权，即时生效。";
+        x.textContent = "确认为该租户单独开通「" + name + "」？开通后该租户后台即时生效。";
       } else if (act === "revoke") {
         t.textContent = "取消授权";
         x.textContent = "确认取消该租户的「" + name + "」授权？取消后该应用入口隐藏、接口拒绝调用（数据保留）。";
       } else {
-        t.textContent = "转为正式授权";
-        x.textContent = "确认将「" + name + "」由试用转为正式授权？转正后不再自动回收，按套餐计费。";
+        t.textContent = "转为长期授权";
+        x.textContent = "确认将「" + name + "」由临时授权转为长期授权？转正后不再自动回收。";
       }
       open(document.getElementById("modal-confirm"));
     });

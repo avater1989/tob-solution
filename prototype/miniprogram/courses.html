@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>线上课 · To-B 小程序</title>
   <link rel="stylesheet" href="../assets/css/proto.css?v=17" />
-  <link rel="stylesheet" href="../assets/css/mp.css?v=21" />
+  <link rel="stylesheet" href="../assets/css/mp.css?v=22" />
 </head>
 <body class="mp-page" data-tabbar="0">
   <div class="mp-frame">
@@ -23,13 +23,14 @@
   <script src="../assets/js/prototype-business-store.js"></script>
   <script src="../assets/js/goods-store.js?v=2"></script>
   <script src="../assets/js/listing-store.js?v=1"></script>
-  <script src="../assets/js/mp-commerce.js?v=2"></script>
-  <script src="../assets/js/mp-shell.js?v=4"></script>
+  <script src="../assets/js/mp-commerce.js?v=3"></script>
+  <script src="../assets/js/mp-shell.js?v=5"></script>
   <script>
   var Store = window.CourseStore;
   var Tags = window.ContentTags;
   var Teachers = window.Teachers;
   var Mp = window.MpCommerce;
+  var LS = window.ListingStore;
 
   function esc(s) {
     return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) {
@@ -37,8 +38,17 @@
     });
   }
 
+  /* 列表展示内容由「首页装修 → 线上课」的上架位决定；未配置时展示全部已启用线上课 */
+  function listedIds() {
+    if (!LS) return null;
+    var rows = LS.listBySlot("online").filter(function (r) { return r.visible && r.status === "active"; });
+    return rows.length ? rows.map(function (r) { return r.content_id; }) : null;
+  }
+
+  var order = listedIds();
   var list = Store.list({ status: "enabled" }).filter(function (c) {
-    return c.storeVisible !== false;
+    if (c.storeVisible === false) return false;
+    return order ? order.indexOf(c.id) >= 0 : true;
   });
 
   document.getElementById("cs-list").innerHTML = list.map(function (c) {

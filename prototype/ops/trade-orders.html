@@ -6,11 +6,11 @@
 <title>订单列表 · 运营后台</title>
 <link rel="stylesheet" href="../assets/css/proto.css?v=17" />
 </head>
-<body class="admin-body" data-module="biz" data-nav="trade-orders" data-title="订单列表" data-crumb="运营后台 / 交易 / 订单管理 / 订单列表">
+<body class="admin-body" data-module="trade" data-nav="trade-orders" data-title="订单列表" data-crumb="运营后台 / 财务 / 订单管理 / 订单列表">
 <div id="header-actions">
   <button class="btn" id="btn-export" data-phase2-only="1">导出订单</button>
   <button class="btn" id="btn-sync">同步公域订单</button>
-  <button class="btn" onclick="location.href='entitlement.html'">权益开通记录</button>
+  <button class="btn" onclick="location.href='entitlement.html'" data-phase2-only="1">权益开通记录</button>
 </div>
 <div id="page-content" style="display:none">
 
@@ -18,7 +18,7 @@
   <div class="grid-4" style="margin-bottom:16px">
     <div class="stat"><div class="label">近 30 天交易额</div><div class="value">¥12,648.50</div><div class="hint">128 笔已支付</div></div>
     <div class="stat"><div class="label">待付款</div><div class="value">9</div><div class="hint">超 30 分钟自动关闭</div></div>
-    <div class="stat"><div class="label">待开通权益</div><div class="value">2</div><div class="hint"><a href="entitlement.html" style="color:inherit">去处理 →</a></div></div>
+    <div class="stat"><div class="label">待开通权益</div><div class="value">2</div><div class="hint"><a href="entitlement.html" style="color:inherit" data-phase2-only="1">去处理 →</a></div></div>
     <div class="stat"><div class="label">已完成</div><div class="value">116</div><div class="hint">权益已开通</div></div>
   </div>
 
@@ -56,7 +56,7 @@
       </select>
       <select id="f-refund-status">
         <option value="">退款状态</option>
-        <option>无退款</option><option>退款中</option><option>已退款</option><option>已驳回</option>
+        <option>无退款</option><option>用户已申请</option><option>退款中</option><option>已退款</option><option>已驳回</option>
       </select>
       <input id="f-time1" type="datetime-local" />
       <input id="f-time2" type="datetime-local" />
@@ -64,6 +64,8 @@
       <button class="btn" id="btn-reset">重置</button>
     </div>
   </div></div>
+
+  <p class="muted" style="margin:0 0 8px;font-size:12px">退款状态口径：<b>用户已申请</b>（C 端用户在小程序发起退款申请，待运营人员审核） → <b>退款中</b>（审核通过、退款处理中）→ <b>已退款</b> / <b>已驳回</b>。</p>
 
   <!-- 表格 -->
   <div class="card"><div class="card-bd" style="padding:0">
@@ -104,8 +106,8 @@
           <td>2026-09-07 14:22</td>
           <td class="row-actions">
             <a href="order-detail.html?no=YB20260907000331">详情</a>
-            <a href="entitlement.html">权益记录</a>
-            <a href="aftersales.html">退款</a>
+            <a href="entitlement.html" data-phase2-only="1">权益记录</a>
+            <a href="aftersales.html" data-phase2-only="1">退款</a>
           </td>
         </tr>
         <tr>
@@ -117,7 +119,7 @@
           <td><span class="tag tag-purple">直播间</span></td>
           <td><span class="tag tag-blue">晨光少儿成长</span></td>
           <td><span class="tag tag-green">自建</span></td>
-          <td>服务费 0.6%</td>          <td><span class="badge badge-success">已完成</span></td>
+          <td>服务费 0%</td>          <td><span class="badge badge-success">已完成</span></td>
           <td><span class="badge badge-info">已开通</span></td>
           <td><span class="muted">—</span></td>
           <td>2026-03-28 20:18</td>
@@ -135,7 +137,7 @@
           <td><span class="tag tag-blue">小程序</span></td>
           <td><span class="tag tag-blue">晨光少儿成长</span></td>
           <td><span class="tag tag-green">自建</span></td>
-          <td>服务费 0.6%</td>          <td><span class="badge badge-warn">待付款</span></td>
+          <td>服务费 0%</td>          <td><span class="badge badge-warn">待付款</span></td>
           <td><span class="muted">未开通</span></td>
           <td><span class="muted">—</span></td>
           <td>2026-03-27 15:30</td>
@@ -153,13 +155,13 @@
           <td><span class="tag tag-blue">小程序</span></td>
           <td><span class="tag tag-blue">星启家庭教育</span></td>
           <td><span class="tag tag-green">自建</span></td>
-          <td>服务费 0.6%</td>          <td><span class="badge badge-danger">已退款</span></td>
+          <td>服务费 0%</td>          <td><span class="badge badge-danger">已退款</span></td>
           <td><span class="badge">已回收</span></td>
           <td><span class="badge badge-danger">已退款 ¥9.90</span></td>
           <td>2026-03-25 14:22</td>
           <td class="row-actions">
             <a href="order-detail.html?no=YB20260325000666">详情</a>
-            <a href="aftersales.html">退款单</a>
+            <a href="aftersales.html" data-phase2-only="1">退款单</a>
           </td>
         </tr>
         <tr>
@@ -190,13 +192,13 @@
           <td><span class="tag tag-blue">小程序</span></td>
           <td><span class="tag tag-blue">星启家庭教育</span></td>
           <td><span class="tag tag-green">自建</span></td>
-          <td>服务费 0.6%</td>          <td><span class="badge badge-info">已支付</span></td>
+          <td>服务费 0%</td>          <td><span class="badge badge-info">已支付</span></td>
           <td><span class="badge badge-info">已开通</span></td>
-          <td><span class="badge badge-warn">退款中</span></td>
+          <td><span class="badge badge-warn">用户已申请</span></td>
           <td>2026-03-24 18:47</td>
           <td class="row-actions">
             <a href="order-detail.html?no=YB20260324100231">详情</a>
-            <a href="aftersales.html">退款单</a>
+            <a href="aftersales.html" data-phase2-only="1">退款单</a>
           </td>
         </tr>
       </tbody>
@@ -286,7 +288,7 @@
 <script src="../assets/js/board-data.js?v=6"></script>
 <script src="../assets/js/board-metrics.js?v=11"></script>
 <script src="../assets/js/board-insights.js?v=4"></script>
-<script src="../assets/js/ops-shell.js?v=27"></script>
+<script src="../assets/js/ops-shell.js?v=28"></script>
 <script>
 (function () {
   // ===== Mask =====

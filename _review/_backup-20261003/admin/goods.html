@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>商品列表 · 商家管理后台</title>
+<link rel="stylesheet" href="../assets/css/proto.css?v=17" />
+<style>
+.mono { font-family:ui-monospace,Consolas,monospace; font-size:12px; }
+.proto-mask, .proto-modal { display:none; }
+.proto-mask.open { display:block; }
+.proto-modal.open { display:flex; }
+.proto-mask { position:fixed; inset:0; background:rgba(0,0,0,.45); z-index:1000; }
+.status-stack { display:flex; flex-direction:column; gap:4px; align-items:flex-start; }
+</style>
+</head>
+<body class="admin-body" data-module="trade" data-nav="goods" data-title="商品列表" data-crumb="交易 / 商品管理 / 商品列表">
+<div id="header-actions">
+  <a class="btn" href="goods-edit.html?create_mode=from_platform">通过平台商品创建</a>
+  <a class="btn btn-primary" href="goods-edit.html?create_mode=from_content">新建商品</a>
+</div>
+<div id="page-content" style="display:none">
+
+  <div class="grid-4" style="grid-template-columns:repeat(3,minmax(0,1fr));margin-bottom:16px">
+    <div class="stat"><div class="label">在售商品</div><div class="value" id="st-onsale">0</div></div>
+    <div class="stat"><div class="label">草稿</div><div class="value" id="st-draft">0</div></div>
+    <div class="stat"><div class="label">平台商品镜像</div><div class="value" id="st-platform">0</div></div>
+  </div>
+
+  <div class="card" style="margin-bottom:8px"><div class="card-bd">
+    <div class="form-grid" style="grid-template-columns:repeat(7,minmax(0,1fr));gap:8px 12px">
+      <input id="f-name" placeholder="商品名称 / ID" />
+      <select id="f-type">
+        <option value="">内容类型</option>
+        <option value="online_course">线上课</option>
+        <option value="offline">线下课</option>
+        <option value="article">文章</option>
+        <option value="plan">定制化计划</option>
+        <option value="live">直播</option>
+      </select>
+      <select id="f-mode">
+        <option value="">创建方式</option>
+        <option value="from_content">通过内容创建</option>
+        <option value="from_platform">通过平台商品创建</option>
+      </select>
+      <select id="f-cat"><option value="">商品类目</option></select>
+      <select id="f-status">
+        <option value="">上架状态</option>
+        <option value="on_sale">上架中</option>
+        <option value="off">已下架</option>
+        <option value="draft">未上架</option>
+      </select>
+      <button class="btn btn-primary" id="btn-query">筛选</button>
+      <button class="btn" id="btn-reset">重置</button>
+    </div>
+  </div></div>
+
+  <div class="card"><div class="card-bd" style="padding:0">
+    <table class="data">
+      <thead>
+        <tr>
+          <th style="width:36px"><input type="checkbox" id="ck-all" /></th>
+          <th style="width:150px">商品编号</th>
+          <th>商品名称</th>
+          <th>内容类型</th>
+          <th>创建方式</th>
+          <th>关联内容</th>
+          <th>类目</th>
+          <th>价格</th>
+          <th>上架</th>
+          <th style="width:220px">操作</th>
+        </tr>
+      </thead>
+      <tbody id="gd-tbody"></tbody>
+    </table>
+  </div></div>
+
+  <div class="toolbar" style="margin-top:8px">
+    <span class="muted">共 <b id="gd-total">0</b> 个商品</span>
+    <div class="spacer"></div>
+    <span class="muted" style="font-size:12px">商品不参与平台审核，创建后可直接上架售卖</span>
+  </div>
+
+  <div class="card" style="margin-top:16px"><div class="card-bd">
+    <p class="muted" style="font-size:12px;line-height:1.8;margin:0">
+      <b>两种建品入口：</b>右上角「<b>新建商品</b>」= 通过内容创建（默认路径），同一内容可建多个商品；
+      右上角「<b>通过平台商品创建</b>」= 平台已下发的商品镜像，不可编辑、仅可上下架。
+      <br /><b>上架口径：</b>商品不参与平台审核，创建后即可直接上架售卖；「上架」只代表商品可售，展示到小程序哪个模块、免费还是付费、试看范围与付费后跳转，由「交易 · 店铺运营 · 首页装修」的上架配置决定。微信小店商品的审批走微信接口，见「微信小店商品」。
+    </p>
+  </div></div>
+</div>
+
+<script src="../assets/js/proto.js"></script>
+<script src="../assets/js/goods-taxonomy.js?v=1"></script>
+<script src="../assets/js/prototype-business-store.js"></script>
+<script src="../assets/js/goods-store.js?v=2"></script>
+<script src="../assets/js/listing-store.js?v=1"></script>
+<script src="../assets/js/share-modal.js"></script>
+<script src="../assets/js/admin-shell.js?v=31"></script>
+<script>
+(function () {
+  var Tax = window.GoodsTaxonomy;
+  var Biz = window.ProtoBiz;
+  var Goods = window.GoodsStore;
+  var rows = [];
+
+  function persist() {
+    if (!Biz || !Biz.load || !Biz.save) return;
+    var data = Biz.load();
+    data.goodsDemo = rows.filter(function (r) { return !r.channel || r.channel === "store"; });
+    Biz.save(data);
+  }
+
+  function loadRows() {
+    /* 单一数据源：GoodsStore.all() 已做 contents[] 归一化（组合商品） */
+    try { rows = Goods.all(); } catch (e) { rows = []; }
+    if (rows.length) return;
+    try {
+      if (Biz && typeof Biz.load === "function") {
+        var data = Biz.load();
+        rows = (data && data.goodsDemo ? data.goodsDemo : []).map(Goods.normalize);
+      }
+    } catch (e2) {}
+    if (!rows.length) {
+      rows = [
+        { goods_id: "G001", channel: "store", create_mode: "from_content", content_source: "self", content_type: "online_course", content_id: "C003", category_id: "GC02", tag_ids: ["GT01"], name: "AI 学习规划入门", status: "on_sale", audit_status: "approved", price: 199 },
+        { goods_id: "G002B", channel: "store", create_mode: "from_content", content_source: "self", content_type: "online_course", content_id: "C001", category_id: "GC08", tag_ids: [], name: "体验价商品", status: "draft", audit_status: "draft", price: 9.9 },
+        { goods_id: "G-DRAFT", channel: "store", create_mode: "from_content", content_source: "self", content_type: "article", content_id: "A001", category_id: "GC07", tag_ids: [], name: "草稿商品", status: "draft", audit_status: "draft", price: 129 },
+        { goods_id: "G-PL01", channel: "store", create_mode: "from_content", content_source: "self", content_type: "plan", content_id: "PL001", category_id: "GC07", tag_ids: [], name: "定制化计划商品", status: "draft", audit_status: "draft", price: 199 },
+        { goods_id: "G-PF01", channel: "store", create_mode: "from_platform", content_source: "platform", content_type: "online_course", content_id: "C-PF01", platform_goods_id: "PG001", category_id: "GC02", tag_ids: [], name: "平台精选课", status: "on_sale", audit_status: "approved", price: 39.9 }
+      ].map(Goods.normalize);
+    }
+  }
+
+  /* 上架状态徽标统一走 Proto.shelfTag（R-UI-010 全局配色一致） */
+  function shelfBadge(s) { return Proto.shelfTag(s); }
+  function modeLabel(m) { return m === "from_platform" ? "平台商品" : "内容创建"; }
+
+  /* 内容不含价格；商品指向内容，点内容可回到内容编辑页 */
+  function contentHref(type, cid) {
+    if (!cid) return "";
+    if (type === "online_course") return "content-video-edit.html?id=" + encodeURIComponent(cid);
+    if (type === "offline") return "content-offline-edit.html?id=" + encodeURIComponent(cid);
+    if (type === "article") return "content-article-edit.html?id=" + encodeURIComponent(cid);
+    if (type === "plan") return "assess-plans.html?id=" + encodeURIComponent(cid);
+    if (type === "live") return "live-edit.html?live_id=" + encodeURIComponent(cid);
+    return "";
+  }
+
+  /* 该商品的交付内容（组合商品可多条）：渲染为可点击的内容 ID */
+  function contentCell(r) {
+    var cs = Goods.contentsOf(r);
+    if (!cs.length) return '<span class="mono">—</span>';
+    return cs.map(function (c) {
+      var href = contentHref(c.content_type, c.content_id);
+      var txt = href
+        ? '<a class="mono" href="' + href + '">' + Tax.esc(c.content_id) + "</a>"
+        : '<span class="mono">' + Tax.esc(c.content_id) + "</span>";
+      return txt;
+    }).join("、") + (cs.length > 1 ? ' <span class="badge badge-info">组合 ' + cs.length + " 项</span>" : "");
+  }
+
+  document.getElementById("f-cat").innerHTML = '<option value="">商品类目</option>' + Tax.catOptionsHtml();
+
+  /* 从内容页跳进来时带 ?content_id=：只看该内容关联的商品 */
+  var urlContentId = "";
+  try { urlContentId = new URLSearchParams(location.search).get("content_id") || ""; } catch (e) { urlContentId = ""; }
+  (function renderContentFilterChip() {
+    if (!urlContentId) return;
+    var bar = document.getElementById("f-cat").closest(".card-bd");
+    if (!bar) return;
+    var chip = document.createElement("div");
+    chip.style.cssText = "margin-top:10px;font-size:13px;color:var(--color-text-secondary)";
+    chip.innerHTML = '已按内容筛选：<b class="mono">' + Tax.esc(urlContentId) + '</b> ' +
+      '<a href="goods.html" style="color:var(--color-primary)">清除筛选</a>';
+    bar.appendChild(chip);
+  })();
+
+  function filtered() {
+    var name = (document.getElementById("f-name").value || "").trim().toLowerCase();
+    var type = document.getElementById("f-type").value;
+    var mode = document.getElementById("f-mode").value;
+    var cat = document.getElementById("f-cat").value;
+    var status = document.getElementById("f-status").value;
+    return rows.filter(function (r) {
+      if (r.channel && r.channel !== "store") return false;
+      if (urlContentId && !Goods.contentsOf(r).some(function (c) { return c.content_id === urlContentId; })) return false;
+      if (name && String(r.name).toLowerCase().indexOf(name) < 0 && String(r.goods_id).toLowerCase().indexOf(name) < 0) return false;
+      if (type && !Goods.contentsOf(r).some(function (c) { return c.content_type === type; })) return false;
+      if (mode && r.create_mode !== mode) return false;
+      if (cat && r.category_id !== cat) return false;
+      if (status && r.status !== status) return false;
+      return true;
+    });
+  }
+
+  function renderStats() {
+    var store = rows.filter(function (r) { return !r.channel || r.channel === "store"; });
+    document.getElementById("st-onsale").textContent = store.filter(function (r) { return r.status === "on_sale"; }).length;
+    document.getElementById("st-draft").textContent = store.filter(function (r) { return (r.audit_status || "draft") === "draft"; }).length;
+    document.getElementById("st-platform").textContent = store.filter(function (r) { return r.create_mode === "from_platform"; }).length;
+  }
+
+  function buildActs(r) {
+    var locked = r.create_mode === "from_platform";
+    var editHref = locked
+      ? "goods-edit.html?create_mode=from_platform&goods_id=" + encodeURIComponent(r.goods_id) + "&readonly=1"
+      : "goods-edit.html?create_mode=from_content&goods_id=" + encodeURIComponent(r.goods_id) + "&content_type=" + encodeURIComponent(r.content_type || "") + "&content_id=" + encodeURIComponent(r.content_id || "");
+    var id = Tax.esc(r.goods_id);
+    var acts = [];
+    acts.push('<a href="' + editHref + '">' + (locked ? "查看" : "编辑") + "</a>");
+    acts.push('<a href="#" data-row-act="' + (r.status === "on_sale" ? "off" : "on") + '" data-id="' + id + '">' + (r.status === "on_sale" ? "下架" : "上架") + "</a>");
+    if (!locked) acts.push('<a href="#" data-row-act="share" data-id="' + id + '">分享</a>');
+    return acts.join(" ");
+  }
+
+  function render() {
+    var list = filtered();
+    document.getElementById("gd-total").textContent = list.length;
+    document.getElementById("gd-tbody").innerHTML = list.map(function (r) {
+      var editHref = r.create_mode === "from_platform"
+        ? "goods-edit.html?create_mode=from_platform&goods_id=" + encodeURIComponent(r.goods_id) + "&readonly=1"
+        : "goods-edit.html?create_mode=from_content&goods_id=" + encodeURIComponent(r.goods_id) + "&content_type=" + encodeURIComponent(r.content_type || "") + "&content_id=" + encodeURIComponent(r.content_id || "");
+      var cat = Tax.catPathLabel(r.category_id) || "—";
+      var contentCellHtml = contentCell(r);
+      /* 内容类型：单类型直接显示，组合商品显示全部类型（去重） */
+      var types = [];
+      Goods.contentsOf(r).forEach(function (c) {
+        if (c.content_type && types.indexOf(c.content_type) < 0) types.push(c.content_type);
+      });
+      if (!types.length && r.content_type) types.push(r.content_type);
+      var typeLabel = types.map(function (t) { return Tax.contentTypeLabel(t); }).join("、") || "—";
+      return "<tr>" +
+        '<td><input type="checkbox" /></td>' +
+        '<td><a class="mono" href="' + editHref + '">' + Tax.esc(r.goods_id) + "</a></td>" +
+        '<td><a href="' + editHref + '">' + Tax.esc(r.name) + "</a></td>" +
+        "<td>" + Tax.esc(typeLabel) + "</td>" +
+        "<td>" + modeLabel(r.create_mode) + "</td>" +
+        "<td>" + contentCellHtml + "</td>" +
+        "<td>" + Tax.esc(cat) + "</td>" +
+        "<td><b>¥" + (r.price != null ? Number(r.price).toFixed(2) : "—") + "</b></td>" +
+        "<td>" + shelfBadge(r.status) + "</td>" +
+        '<td class="row-actions">' + buildActs(r) + "</td>" +
+        "</tr>";
+    }).join("") || '<tr><td colspan="10" class="muted" style="text-align:center;padding:24px">暂无商品</td></tr>';
+    renderStats();
+  }
+
+  document.getElementById("btn-query").addEventListener("click", render);
+  document.getElementById("btn-reset").addEventListener("click", function () {
+    ["f-name", "f-type", "f-mode", "f-cat", "f-status"].forEach(function (id) {
+      document.getElementById(id).value = "";
+    });
+    render();
+  });
+
+  document.getElementById("gd-tbody").addEventListener("click", function (e) {
+    var a = e.target.closest("[data-row-act]");
+    if (!a) return;
+    e.preventDefault();
+    var act = a.getAttribute("data-row-act");
+    var id = a.getAttribute("data-id");
+    var row = rows.find(function (r) { return r.goods_id === id; });
+    if (!row) return;
+    if (act === "share") {
+      if (window.ShareModal) ShareModal.open({ title: row.name, link: "https://yibo.app/g/" + id });
+      else Proto.toast("分享（原型）");
+      return;
+    }
+    if (act === "on") {
+      row.status = "on_sale";
+      persist();
+      Proto.toast("已上架");
+      render();
+      return;
+    }
+    if (act === "off") {
+      row.status = "off";
+      persist();
+      Proto.toast("已下架");
+      render();
+    }
+  });
+
+  loadRows();
+  render();
+})();
+</script>
+</body>
+</html>

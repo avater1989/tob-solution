@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>直播 · To-B 小程序</title>
+  <link rel="stylesheet" href="../assets/css/proto.css?v=17" />
+  <link rel="stylesheet" href="../assets/css/mp.css?v=22" />
+</head>
+<body class="mp-page" data-tabbar="0">
+  <div class="mp-frame">
+    <div class="mp-top" style="height:170px"></div>
+    <div class="mp-status"><span>9:41</span><span>直播</span><span>100%</span></div>
+    <div class="mp-nav"><a class="back" href="home.html">←</a>直播</div>
+    <div class="mp-body" style="padding:0 14px">
+
+      <!-- 状态筛选 -->
+      <div class="mp-tabs" id="lv-tabs" style="margin-bottom:10px">
+        <a class="mp-tab active" href="#" data-state="">全部</a>
+        <a class="mp-tab" href="#" data-state="live">直播中</a>
+        <a class="mp-tab" href="#" data-state="will">预告</a>
+        <a class="mp-tab" href="#" data-state="replay">回放</a>
+      </div>
+
+      <div id="lv-list"></div>
+    </div>
+  </div>
+  <p class="mp-hint">直播列表：进行中 / 预告 / 回放，展示内容由「首页装修 → 直播展示」决定 · <a href="../admin/lives.html">管理端直播列表</a></p>
+
+  <script src="../assets/js/proto.js"></script>
+  <script src="../assets/js/prototype-business-store.js"></script>
+  <script src="../assets/js/goods-store.js?v=2"></script>
+  <script src="../assets/js/listing-store.js?v=1"></script>
+  <script src="../assets/js/mp-commerce.js?v=3"></script>
+  <script src="../assets/js/mp-shell.js?v=5"></script>
+  <script>
+  var GD = window.GoodsStore;
+  var LS = window.ListingStore;
+  var Mp = window.MpCommerce;
+
+  /* 直播场次：状态 / 时间与「首页装修 → 直播展示」登记一致 */
+  var LIVES = [
+    {
+      id: "L001", name: "春启 03 期家长公开课", host: "林老师",
+      time: "09-12 20:00", status: "live", people: 1286,
+      sub: "正在讲解情绪先于道理", cover: "linear-gradient(135deg,#ff8a3d,#ffb37a)"
+    },
+    {
+      id: "L002", name: "午间答疑 · 付费直播", host: "王博士",
+      time: "09-15 20:00", status: "will", people: 186,
+      sub: "免费预约 · 开播前 1 小时提醒", cover: "linear-gradient(135deg,#4d7cfe,#7db3ff)"
+    },
+    {
+      id: "L003", name: "写作业不吼不叫 · 方法拆解", host: "李老师",
+      time: "09-20 19:30", status: "will", people: 92,
+      sub: "免费预约 · 已隐藏（首页装修中未展示）", cover: "linear-gradient(135deg,#2fbf71,#6fdcad)"
+    },
+    {
+      id: "L004", name: "亲子沟通 21 天训练营 · 第 4 期", host: "张老师",
+      time: "09-05 20:00", status: "replay", people: 862,
+      sub: "时长 86 分钟 · 回看永久有效", cover: "linear-gradient(135deg,#d7dee8,#8fa0b8)"
+    }
+  ];
+
+  var STATUS_TEXT = { live: "直播中", will: "预告", replay: "回放" };
+
+  function esc(s) {
+    return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) {
+      return ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c];
+    });
+  }
+
+  /* 展示名单由「首页装修 → 直播展示」的上架位决定；未配置时展示全部 */
+  function listed() {
+    if (!LS) return null;
+    var rows = LS.listBySlot("live").filter(function (r) { return r.visible && r.status === "active"; });
+    return rows.length ? rows : null;
+  }
+
+  function rowsOf() {
+    var rows = listed();
+    if (!rows) return LIVES.map(function (l) { return { live: l }; });
+    return rows.map(function (r) {
+      var l = LIVES.filter(function (x) { return x.id === r.content_id; })[0];
+      return l ? { live: l, listing: r } : null;
+    }).filter(Boolean);
+  }
+
+  var filter = "";
+
+  function cardHtml(row) {
+    var l = row.live, r = row.listing;
+    var free = r ? r.pay_mode === "free" : false;
+    var goodsId = r && r.default_goods_id ? r.default_goods_id : "";
+    var priceTxt = "";
+    if (!free && goodsId && GD) {
+      var g = GD.get(goodsId);
+      if (g) priceTxt = "¥" + Number(g.price || 0).toFixed(2).replace(/\.00$/, "");
+    }
+    var coverCls = l.status === "will" ? " soon" : (l.status === "replay" ? " replay" : "");
+    var badge = l.status === "live"
+      ? '<span class="mp-live-badge"><i></i>直播中 · ' + l.people + " 人</span>"
+      : (l.status === "will"
+        ? '<span class="mp-live-badge">' + esc(l.time) + "</span>"
+        : '<span class="mp-live-badge">已结束 · 可回看</span>');
+    var ftLeft = free
+      ? "免费观看"
+      : (l.status === "live"
+        ? "门票 <b>" + priceTxt + "</b>"
+        : "回看价 <b>" + priceTxt + "</b> · 永久有效");
+    /* C 端全部购买入口统一跳「商品详情页」，再由商品详情页进入收银台 */
+    var buyHref = "goods-detail.html?goods_id=" + encodeURIComponent(goodsId) +
+      "&content_id=" + encodeURIComponent(l.id) +
+      (r ? "&listing_id=" + encodeURIComponent(r.listing_id) : "") +
+      "&return=" + encodeURIComponent("live-room.html");
+    var btn = free
+      ? '<a class="mp-live-ft-btn ghost" href="#" data-toast="已预约，开播前将提醒你（原型）">预约提醒</a>'
+      : '<a class="mp-live-ft-btn' + (l.status === "replay" ? " ghost" : "") + '" href="' + buyHref + '">购买</a>';
+    return (
+      '<div class="mp-live-card">' +
+        '<a href="live-room.html" style="color:inherit">' +
+          '<div class="mp-live-cover' + coverCls + '" style="background:' + l.cover + '">' +
+            badge +
+            "<h3>" + esc(l.name) + "</h3>" +
+            "<p>" + esc(l.host) + " · " + esc(l.sub) + "</p>" +
+          "</div>" +
+        "</a>" +
+        '<div class="mp-live-ft">' +
+          '<div class="mp-live-ft-l">' + ftLeft + "</div>" +
+          btn +
+        "</div>" +
+      "</div>"
+    );
+  }
+
+  function render() {
+    var rows = rowsOf().filter(function (row) { return !filter || row.live.status === filter; });
+    var groups = [
+      { state: "live", title: "直播中" },
+      { state: "will", title: "直播预告" },
+      { state: "replay", title: "直播回放" }
+    ];
+    var html = "";
+    groups.forEach(function (g) {
+      var list = rows.filter(function (row) { return row.live.status === g.state; });
+      if (!list.length) return;
+      html += '<div class="mp-section-head" style="margin:6px 0 10px"><div class="mp-section-title">' +
+        g.title + "</div><span class=\"muted\" style=\"font-size:11px;color:#86909c\">" + list.length + " 场</span></div>";
+      html += list.map(cardHtml).join("");
+    });
+    document.getElementById("lv-list").innerHTML = html ||
+      '<div class="mp-empty"><div class="mp-empty-ico">📺</div>暂无该状态的直播</div>';
+  }
+
+  document.getElementById("lv-tabs").addEventListener("click", function (e) {
+    var t = e.target.closest(".mp-tab");
+    if (!t) return;
+    e.preventDefault();
+    document.querySelectorAll("#lv-tabs .mp-tab").forEach(function (x) { x.classList.remove("active"); });
+    t.classList.add("active");
+    filter = t.getAttribute("data-state") || "";
+    render();
+  });
+
+  render();
+  </script>
+</body>
+</html>

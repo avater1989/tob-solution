@@ -21,7 +21,7 @@
     try {
       var curPhase = document.currentScript;
       var phaseSrc = (curPhase && curPhase.src)
-        ? curPhase.src.replace(/ops-shell\.js[^/]*$/, "phase2-config.js?v=5")
+        ? curPhase.src.replace(/ops-shell\.js[^/]*$/, "phase2-config.js?v=7")
         : "../assets/js/phase2-config.js";
       var xhrPhase = new XMLHttpRequest();
       xhrPhase.open("GET", phaseSrc, false);
@@ -86,13 +86,9 @@
 
   // 兼容旧页 data-module
   if (moduleId === "audit") moduleId = "content";
-  // 2026-09-27：「租户管理」已提升为独立顶级模块，原先归入「系统管理」的映射取消
-  // 全局订单曾挂在数据下
-  if (moduleId === "data" && active === "orders") moduleId = "biz";
-  // 历史交易页用 trade 模块名 → 现归 biz；财务页仍用 trade
-  if (moduleId === "trade" && /^(trade-orders|entitlement|platform-goods|goods-edit|aftersales|orders)$/.test(active)) {
-    moduleId = "biz";
-  }
+  // 2026-10-02：「租户管理」模块已并入「系统管理」顶级模块（旧页 data-module="tenant" 兜底映射到 sys）
+  if (moduleId === "tenant") moduleId = "sys";
+  // 2026-10-02：订单列表 / 全局订单已由「交易」移至「财务」，不再回落到 biz
   // 内容审核页导航高亮
   if (moduleId === "content" && /^content-/.test(active)) {
     /* keep content; platform-content highlight via crumb pages */
@@ -100,7 +96,7 @@
 
   var modules = [
     { id: "workbench", label: "工作台", href: "dashboard.html" },
-    { id: "tenant", label: "租户管理", href: "tenants.html" },
+    /* 2026-10-02：原「租户管理」顶级模块已并入「系统管理」 */
     { id: "content", label: "内容与审核", href: "content-video.html" },
     { id: "biz", label: "交易", href: "trade-orders.html" },
     { id: "trade", label: "财务", href: "settlements.html" },
@@ -114,20 +110,6 @@
         group: "概览",
         links: [
           { id: "dashboard", href: "dashboard.html#today", label: "工作台" },
-        ],
-      },
-    ],
-    tenant: [
-      {
-        group: "租户管理",
-        links: [
-          { id: "tenants", href: "tenants.html", label: "租户列表" },
-        ],
-      },
-      {
-        group: "套餐管理",
-        links: [
-          { id: "plans", href: "plans.html", label: "套餐管理" },
         ],
       },
     ],
@@ -172,6 +154,15 @@
     ],
     trade: [
       {
+        /* 2026-10-02 评审标注：「订单列表」由「交易」板块移入「财务」板块（一期）
+         * 2026-10-02 评审标注（本轮）：「订单列表」与「全局订单」合并，只保留订单列表
+         *（trade-orders.html 已含跨租户 / 平台分账列），orders.html 降级为跳转桩 */
+        group: "订单管理",
+        links: [
+          { id: "trade-orders", href: "trade-orders.html", label: "订单列表" },
+        ],
+      },
+      {
         group: "收款与进件",
         links: [
           { id: "pay-channels", href: "pay-channels.html", label: "收款与清分" },
@@ -205,7 +196,6 @@
       {
         group: "订单管理",
         links: [
-          { id: "trade-orders", href: "trade-orders.html", label: "订单列表" },
           { id: "entitlement", href: "entitlement.html", label: "权益开通记录", badge: 2 },
         ],
       },
@@ -242,6 +232,14 @@
       },
     ],
     sys: [
+      {
+        /* 2026-10-02 评审标注：原「租户管理」顶级模块并入「系统管理」目录下 */
+        group: "租户管理",
+        links: [
+          { id: "tenants", href: "tenants.html", label: "租户列表" },
+          { id: "plans", href: "plans.html", label: "套餐管理" },
+        ],
+      },
       {
         group: "系统用户管理",
         links: [
@@ -280,7 +278,7 @@
       "<li>结算：对账对平 → 商家确认 → 财务复核 → 打款</li>" +
       "<li>提现：额度 / 风控 / 留存审核后打款</li></ol></div>" +
       "<div class='assist-block'><h3>注意事项</h3><ul>" +
-      "<li>服务费口径 1% 与 10% 待统一（见详细设计）</li>" +
+      "<li>服务费口径已统一为 0%（默认），按租户合同可覆盖</li>" +
       "<li>打款为敏感操作，需双人复核并留痕</li>" +
       "<li>风控预警统一汇入运营工作台待办</li></ul></div>",
     biz:
@@ -351,14 +349,14 @@
     return html;
   }
 
-  /* 评审路径：二期步骤（内容审核）随二期开关显隐
-   * 2026-09-29 评审标注：「平台内容」去掉二期标识 → 一期步骤 */
+  /* 评审路径：二期步骤随二期开关显隐
+   * 2026-10-02 评审标注：「内容与审核」整模块标记为二期 → 「平台内容」同步改为二期步骤 */
   var reviewSteps = [
     { href: "tenants.html", label: "租户开通", phase2: false },
-    { href: "content-video.html", label: "平台内容", phase2: false },
+    { href: "content-video.html", label: "平台内容", phase2: true },
     { href: "audit.html", label: "内容审核", phase2: true },
     { href: "settlements.html", label: "对账结算", phase2: false },
-    { href: "orders.html", label: "全局订单", phase2: false },
+    { href: "trade-orders.html", label: "订单列表", phase2: false },
     { href: "data.html", label: "数据", phase2: false },
   ];
   var CIRCLED = ["①", "②", "③", "④", "⑤", "⑥", "⑦", "⑧", "⑨"];
@@ -379,7 +377,7 @@
   /* 公告条标记为二期：一期视图下不显示（2026-09-29 评审标注） */
   var notice = showNotice && phase2On
     ? '<div class="notice-bar" id="notice-bar">' +
-      "<span>运营后台 · 租户管理 / 内容与审核 / 交易 / 财务 / 数据 / 系统管理</span>" +
+      "<span>运营后台 · 工作台 / 内容与审核 / 交易 / 财务 / 数据 / 系统管理（含租户管理）</span>" +
       '<button type="button" class="close-notice" id="close-notice" aria-label="关闭">×</button>' +
       "</div>"
     : "";

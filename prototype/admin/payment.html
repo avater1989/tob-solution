@@ -58,7 +58,7 @@
           <div class="kv-row"><span>收单权限</span><b>小程序支付、微信内 H5</b></div>
         </div>
         <div class="kv">
-          <div class="kv-row"><span>清分模式</span><b>平台收单 + 会员分账（服务费 0.6%）</b></div>
+          <div class="kv-row"><span>清分模式</span><b>平台收单 + 会员分账（服务费 0%）</b></div>
           <div class="kv-row"><span>手续费扣费</span><b>按日结（通联协议）</b></div>
           <div class="kv-row"><span>结算银行卡</span><b>招商银行 ****8888（对公）</b></div>
           <div class="kv-row"><span>进件时间</span><b>2026-06-28 审核通过</b></div>
@@ -72,7 +72,7 @@
   <div class="card" style="margin-bottom:12px"><div class="card-hd"><h2>分账会员（小 B · IP 商户）</h2><span class="muted" style="font-size:12px">各机构独立进件（企业会员 memberType=2），须完成绑定手机与提现签约</span></div>
     <div class="card-bd" style="padding:0">
       <table class="data">
-        <thead><tr><th>机构 / IP</th><th>通联会员号</th><th>进件状态</th><th>绑定结算卡</th><th>签约状态</th><th>默认分账比例<br><span class="muted" style="font-weight:400">自建 · 服务费 0.6% / 平台内容 · 佣金 20%</span></th><th>提现方式</th><th style="width:130px">操作</th></tr></thead>
+        <thead><tr><th>机构 / IP</th><th>通联会员号</th><th>进件状态</th><th>绑定结算卡</th><th>签约状态</th><th>默认分账比例<br><span class="muted" style="font-weight:400">自建 · 服务费 0% / 平台内容 · 佣金 20%</span></th><th>提现方式</th><th style="width:130px">操作</th></tr></thead>
         <tbody>
           <tr>
             <td><b>星启家庭教育</b><br><span class="muted" style="font-size:12px">本店铺主体</span></td>
@@ -80,7 +80,7 @@
             <td><span class="badge badge-success">已通过</span></td>
             <td>工商银行 ****2233</td>
             <td><span class="badge badge-success">已签约</span></td>
-            <td><b>99.4%</b> / <b>20%</b></td>
+            <td><b>100%</b> / <b>20%</b></td>
             <td>自动提现（每周一）</td>
             <td class="row-actions"><a href="withdraw.html">提现记录</a></td>
           </tr>
@@ -90,7 +90,7 @@
             <td><span class="badge badge-success">已通过</span></td>
             <td>建设银行 ****6688</td>
             <td><span class="badge badge-success">已签约</span></td>
-            <td><b>99.4%</b> / <b>20%</b></td>
+            <td><b>100%</b> / <b>20%</b></td>
             <td>手动提现</td>
             <td class="row-actions"><a href="withdraw.html">提现记录</a></td>
           </tr>
@@ -114,7 +114,7 @@
     <div class="card-bd">
       <div class="kv">
         <div class="kv-row"><span>入账口径</span><b>按订单<b>支付时间</b>入账（与通联、微信账单一致）</b></div>
-        <div class="kv-row"><span>分账模式</span><b>平台内容按佣金率（默认 20%）；商家自建内容按服务费率（默认 0.6%）</b></div>
+        <div class="kv-row"><span>分账模式</span><b>平台内容按佣金率（默认 20%）；商家自建内容按服务费率（默认 0%）</b></div>
         <div class="kv-row"><span>分账时点</span><b>支付成功后按结算规则自动分账；异常订单支持手动补分账</b></div>
         <div class="kv-row"><span>退款处理</span><b>支持「仅退回买家金额」或「同时退回分账资金」；受原收款人账户余额约束</b></div>
         <div class="kv-row"><span>提现规则</span><b>提现至进件绑定的唯一结算卡；<b>未完成提现协议签约禁止提现</b></b></div>
@@ -131,7 +131,7 @@
 </style>
 
 <script src="../assets/js/proto.js"></script>
-<script src="../assets/js/admin-shell.js?v=28"></script>
+<script src="../assets/js/admin-shell.js?v=31"></script>
 <script>
 (function () {
   document.querySelectorAll("[data-row-act]").forEach(function(a){

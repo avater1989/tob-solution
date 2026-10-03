@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>收银台 · To-B 小程序</title>
+  <link rel="stylesheet" href="../assets/css/proto.css?v=17" />
+  <link rel="stylesheet" href="../assets/css/mp.css?v=22" />
+  <style>
+    .cs-card { background:#fff; border-radius:10px; padding:2px 14px; }
+    .cs-row { display:flex; justify-content:space-between; gap:12px; padding:11px 0; border-bottom:1px solid #f3f4f6; font-size:13px; }
+    .cs-row:last-child { border-bottom:0; }
+    .cs-k { color:#86909c; flex-shrink:0; }
+    .cs-v { color:#1d2129; text-align:right; }
+    .cs-goods { display:flex; gap:10px; padding:14px; }
+    .cs-cover { width:64px; height:64px; border-radius:8px; flex-shrink:0; display:grid; place-items:center; color:#fff; font-size:11px; text-align:center; line-height:1.25; }
+    .cs-amount { color:#dc2626; font-size:22px; font-weight:700; }
+    .cs-amount-sm { color:#dc2626; font-weight:600; }
+    .cs-pay { display:flex; align-items:center; gap:10px; padding:12px 0; border-bottom:1px solid #f3f4f6; font-size:13px; }
+    .cs-pay:last-child { border-bottom:0; }
+    .cs-pay-ico { width:24px; height:24px; border-radius:6px; display:grid; place-items:center; color:#fff; font-size:11px; flex-shrink:0; }
+    .cs-pay-bd { flex:1; }
+    .cs-pay-sub { font-size:11px; color:#86909c; margin-top:2px; }
+    .cs-radio { width:18px; height:18px; border-radius:50%; border:2px solid #d9dee7; flex-shrink:0; }
+    .cs-radio.on { border-color:#07c160; position:relative; }
+    .cs-radio.on::after { content:""; position:absolute; inset:3px; border-radius:50%; background:#07c160; }
+    .cs-pay.mute { opacity:.45; }
+    .cs-tip { padding:0 16px; color:#86909c; font-size:11px; line-height:1.7; }
+  </style>
+</head>
+<body class="mp-page" data-tabbar="0">
+  <div class="mp-frame" style="padding-bottom:78px">
+    <div class="mp-top" style="height:170px"></div>
+    <div class="mp-status"><span>9:41</span><span>收银台</span><span>100%</span></div>
+    <div class="mp-nav"><a class="back" id="cs-back" href="javascript:history.back()">←</a>收银台</div>
+    <div class="mp-body" id="cs-root"></div>
+    <div class="mp-bottom-bar" id="cs-bar" style="align-items:center">
+      <div style="flex:1;font-size:12px;color:#86909c">应付 <span class="cs-amount" id="cs-bar-amt">¥0</span></div>
+      <button class="mp-btn" type="button" id="cs-pay-btn" style="flex:1.1">确认支付</button>
+    </div>
+  </div>
+  <p class="mp-hint">C 端收银台：商品详情页「去支付」进入 · 支付成功后回到支付结果页 · <a href="../admin/goods.html">管理端商品列表</a></p>
+
+  <script src="../assets/js/proto.js"></script>
+  <script src="../assets/js/goods-taxonomy.js?v=1"></script>
+  <script src="../assets/js/prototype-business-store.js"></script>
+  <script src="../assets/js/goods-store.js?v=2"></script>
+  <script src="../assets/js/listing-store.js?v=1"></script>
+  <script src="../assets/js/mp-commerce.js?v=3"></script>
+  <script src="../assets/js/mp-shell.js?v=5"></script>
+  <script>
+  (function () {
+    var Mp = window.MpCommerce;
+    var GD = window.GoodsStore;
+    var LS = window.ListingStore;
+
+    function esc(s) {
+      return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) {
+        return ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c];
+      });
+    }
+
+    var qs = new URLSearchParams(location.search);
+    var goodsId = qs.get("goods_id") || "";
+    var contentId = qs.get("content_id") || "";
+    var listingId = qs.get("listing_id") || "";
+    var returnUrl = qs.get("return") || "";
+    var fromOrder = qs.get("from") === "order";
+    var orderNo = qs.get("order_no") || "";
+
+    /* 演示商品需要先补种，保证直接打开收银台也能取到订单商品 */
+    if (GD && GD.ensureDemoGoods) GD.ensureDemoGoods();
+
+    var goods = GD ? GD.get(goodsId) : null;
+    var listing = (LS && listingId) ? LS.get(listingId) : null;
+    if (!contentId && goods) contentId = goods.content_id;
+
+    var root = document.getElementById("cs-root");
+    var bar = document.getElementById("cs-bar");
+    var payBtn = document.getElementById("cs-pay-btn");
+    var back = document.getElementById("cs-back");
+    if (returnUrl) back.href = returnUrl;
+
+    if (!goods) {
+      root.innerHTML = '<p style="padding:48px 16px;text-align:center;color:#86909c">订单信息不完整，未找到商品</p>';
+      bar.style.display = "none";
+      return;
+    }
+
+    var type = goods.content_type;
+    var c = Mp.copyOf(type);
+    var free = listing ? listing.pay_mode === "free" : Number(goods.price || 0) <= 0;
+    var amount = free ? 0 : Number(goods.price || 0);
+    var amountTxt = "¥" + amount.toFixed(2);
+
+    /* 交付方式 / 退款规则：与后台「商品 - 交付与售后」字段一一对应 */
+    var DELIVER = {
+      online_course: { delivery: "支付后自动开通", refund: "未使用可退（支付后 7 天内且学习进度 ≤ 10%）" },
+      offline:       { delivery: "支付后自动开通", refund: "未开课可退，开课后不支持退款" },
+      article:       { delivery: "支付后自动开通", refund: "未阅读全文可退" },
+      live:          { delivery: "支付后自动开通", refund: "直播门票不支持退款" },
+      plan:          { delivery: "人工开通",       refund: "按已使用比例退款" }
+    };
+    var dv = DELIVER[type] || DELIVER.online_course;
+
+    var COVER = {
+      online_course: "linear-gradient(135deg,#4d7cfe,#7db3ff)",
+      offline:       "linear-gradient(135deg,#4d7cfe,#a3c4ff)",
+      article:       "linear-gradient(135deg,#f59e0b,#fbbf24)",
+      live:          "linear-gradient(135deg,#ff8a3d,#ffb37a)",
+      plan:          "linear-gradient(135deg,#7c3aed,#a78bfa)"
+    };
+    var COVER_TXT = { online_course: "线上课", offline: "线下课", article: "文章", live: "直播", plan: "计划" };
+
+    var deliverNames = (GD && GD.contentsOf) ? GD.contentsOf(goods).map(function (d) {
+      var cc = LS ? LS.resolveContent(d.content_type, d.content_id) : null;
+      return (cc ? cc.name : d.content_id);
+    }) : [];
+
+    var orderId = orderNo || ("CS" + new Date().getTime().toString().slice(-12));
+
+    root.innerHTML =
+      '<div class="mp-section">' +
+        '<div class="mp-section-title">订单信息</div>' +
+        '<div style="background:#fff;border-radius:10px">' +
+          '<div class="cs-goods">' +
+            '<div class="cs-cover" style="background:' + (COVER[type] || COVER.online_course) + '">' +
+              esc(COVER_TXT[type] || "内容") + "</div>" +
+            '<div style="flex:1;min-width:0">' +
+              '<div style="font-size:14px;font-weight:650;line-height:1.4">' + esc(goods.name) + "</div>" +
+              '<div class="mp-crow-tags" style="margin-top:6px">' +
+                '<span class="mp-crow-tag">' + esc(Mp.typeLabel(type)) + "</span>" +
+                '<span class="mp-crow-tag">' + esc(goods.goods_id) + "</span>" +
+                (deliverNames.length > 1 ? '<span class="mp-crow-tag">组合 ' + deliverNames.length + " 项</span>" : "") +
+              "</div>" +
+              '<div style="margin-top:8px"><span class="cs-amount-sm">' + amountTxt + "</span>" +
+                (!free && goods.list_price > 0 ? '<span style="color:#c0c4cc;font-size:12px;text-decoration:line-through;margin-left:6px">¥' + Number(goods.list_price).toFixed(2) + "</span>" : "") +
+              "</div>" +
+            "</div>" +
+          "</div>" +
+          '<div style="border-top:1px solid #f3f4f6;padding:2px 14px">' +
+            '<div class="cs-row"><span class="cs-k">订单号</span><span class="cs-v">' + esc(orderId) + "</span></div>" +
+            (listing ? '<div class="cs-row"><span class="cs-k">上架模块</span><span class="cs-v">' + esc(LS.SLOT_LABEL[listing.slot] || listing.slot) + "</span></div>" : "") +
+            '<div class="cs-row"><span class="cs-k">下单方式</span><span class="cs-v">' + (fromOrder ? "待付款订单支付" : "商品详情页下单") + "</span></div>" +
+          "</div>" +
+        "</div>" +
+      "</div>" +
+
+      '<div class="mp-section">' +
+        '<div class="mp-section-title">金额明细</div>' +
+        '<div class="cs-card">' +
+          '<div class="cs-row"><span class="cs-k">商品金额</span><span class="cs-v">' + amountTxt + "</span></div>" +
+          '<div class="cs-row"><span class="cs-k">优惠</span><span class="cs-v">—</span></div>' +
+          '<div class="cs-row"><span class="cs-k">应付金额</span><span class="cs-v"><span class="cs-amount">' + amountTxt + "</span></span></div>" +
+        "</div>" +
+      "</div>" +
+
+      '<div class="mp-section">' +
+        '<div class="mp-section-title">权益说明</div>' +
+        '<div class="cs-card">' +
+          '<div class="cs-row"><span class="cs-k">包含内容</span><span class="cs-v">' + esc(c.include) + "</span></div>" +
+          '<div class="cs-row"><span class="cs-k">开课方式</span><span class="cs-v">' + esc(c.startHow) + "</span></div>" +
+          '<div class="cs-row"><span class="cs-k">有效期</span><span class="cs-v">' + esc(c.validity + "（" + c.validityStart + "）") + "</span></div>" +
+          '<div class="cs-row"><span class="cs-k">交付方式</span><span class="cs-v">' + esc(dv.delivery) + "</span></div>" +
+          '<div class="cs-row"><span class="cs-k">退款规则</span><span class="cs-v">' + esc(dv.refund) + "</span></div>" +
+        "</div>" +
+      "</div>" +
+
+      '<div class="mp-section">' +
+        '<div class="mp-section-title">支付方式</div>' +
+        '<div class="cs-card" id="cs-methods">' +
+          '<div class="cs-pay" data-pay="wxpay">' +
+            '<span class="cs-pay-ico" style="background:#07c160">微</span>' +
+            '<span class="cs-pay-bd">微信支付<span class="cs-pay-sub">推荐使用，安全便捷</span></span>' +
+            '<span class="cs-radio on"></span>' +
+          "</div>" +
+          '<div class="cs-pay mute">' +
+            '<span class="cs-pay-ico" style="background:#f59e0b">零</span>' +
+            '<span class="cs-pay-bd">微信零钱<span class="cs-pay-sub">余额不足</span></span>' +
+            '<span class="cs-radio"></span>' +
+          "</div>" +
+          '<div class="cs-pay mute">' +
+            '<span class="cs-pay-ico" style="background:#4d7cfe">卡</span>' +
+            '<span class="cs-pay-bd">银行卡<span class="cs-pay-sub">暂不支持（原型）</span></span>' +
+            '<span class="cs-radio"></span>' +
+          "</div>" +
+        "</div>" +
+      "</div>" +
+
+      '<p class="cs-tip">原型示意：不接入真实支付，点击「确认支付」直接进入支付结果演示。</p>';
+
+    document.getElementById("cs-bar-amt").textContent = amountTxt;
+    payBtn.textContent = free ? "确认领取" : ("确认支付 " + amountTxt);
+
+    payBtn.addEventListener("click", function () {
+      var q = new URLSearchParams();
+      q.set("status", "success");
+      q.set("from", type);
+      q.set("order_mode", fromOrder ? "inline" : "jump_goods");
+      q.set("price", String(amount));
+      q.set("order_no", orderId);
+      if (goods.goods_id) q.set("goods_id", goods.goods_id);
+      if (contentId) q.set("content_id", contentId);
+      if (listingId) q.set("listing_id", listingId);
+      if (returnUrl) q.set("return", returnUrl);
+      location.href = "pay-result.html?" + q.toString();
+    });
+  })();
+  </script>
+</body>
+</html>

@@ -26,7 +26,7 @@
     <div class="stat"><div class="label">生效规则</div><div class="value">3</div><div class="hint">另有 1 条已停用</div></div>
     <div class="stat"><div class="label">本月分账金额</div><div class="value">¥86,420</div><div class="hint">分账 1,286 笔</div></div>
     <div class="stat"><div class="label">分账失败</div><div class="value">2</div><div class="hint">结算卡异常，待处理</div></div>
-    <div class="stat"><div class="label">平台费率</div><div class="value">0.6%<span style="font-size:14px"> / 20%</span></div><div class="hint">服务费（自建）/ 佣金（平台内容）</div></div>
+    <div class="stat"><div class="label">平台费率</div><div class="value">0%<span style="font-size:14px"> / 20%</span></div><div class="hint">服务费（自建）/ 佣金（平台内容）</div></div>
   </div>
 
   <!-- 规则列表 -->
@@ -57,7 +57,7 @@
           <tr>
             <td><b>家长课堂 · 自建内容默认规则</b><br><span class="muted" style="font-size:12px">链路 B</span></td>
             <td>家长课堂（类目）</td>
-            <td><span class="tag tag-blue">星启家庭教育 99.4%</span> <span class="tag tag-purple">艺博服务费 0.6%</span></td>
+            <td><span class="tag tag-blue">星启家庭教育 100%</span> <span class="tag tag-purple">艺博服务费 0%</span></td>
             <td>T+1 自动</td>
             <td><span class="badge badge-success">生效中</span></td>
             <td>2026-08-20 14:02</td>
@@ -66,7 +66,7 @@
           <tr>
             <td><b>1v1 咨询服务规则</b><br><span class="muted" style="font-size:12px">链路 B · 含老师分成</span></td>
             <td>平台商品 · 线上咨询</td>
-            <td><span class="tag tag-blue">星启家庭教育 94.4%</span> <span class="tag tag-green">授课老师 5%</span> <span class="tag tag-purple">艺博服务费 0.6%</span></td>
+            <td><span class="tag tag-blue">星启家庭教育 95%</span> <span class="tag tag-green">授课老师 5%</span> <span class="tag tag-purple">艺博服务费 0%</span></td>
             <td>T+7 自动</td>
             <td><span class="badge badge-success">生效中</span></td>
             <td>2026-08-30 16:20</td>
@@ -75,7 +75,7 @@
           <tr>
             <td><b>战略合同 · 慧心教育</b><br><span class="muted" style="font-size:12px">链路 B · 合同费率</span></td>
             <td>指定租户：慧心教育</td>
-            <td><span class="tag tag-blue">慧心教育 99.4%</span> <span class="tag tag-purple">艺博服务费 0.6%</span></td>
+            <td><span class="tag tag-blue">慧心教育 100%</span> <span class="tag tag-purple">艺博服务费 0%</span></td>
             <td>月结</td>
             <td><span class="badge">已停用</span></td>
             <td>2026-07-15 11:08</td>
@@ -90,9 +90,9 @@
   <div class="card"><div class="card-hd"><h2>规则说明与限制</h2></div>
     <div class="card-bd">
       <p class="muted" style="font-size:12px;line-height:1.9;margin:0">
-        <b>1. 双链路：</b>平台内容（链路 A）按佣金率（默认 20%）给商家分账佣金，课程金额留存艺博账户；商家自建内容（链路 B）商家拿课程金额，平台按服务费率（默认 0.6%）收服务费。同一订单只命中一条链路。<br>
+        <b>1. 双链路：</b>平台内容（链路 A）按佣金率（默认 20%）给商家分账佣金，课程金额留存艺博账户；商家自建内容（链路 B）商家拿课程金额，平台按服务费率（默认 0%）收服务费。同一订单只命中一条链路。<br>
         <b>2. 分账方资格：</b>所有分账方（机构、老师、推广人）须先完成通联支付会员进件、绑定结算银行卡并完成<b>提现协议签约</b>，未进件/未签约方不参与分账与提现。<br>
-        <b>3. 比例校验：</b>各分账方比例合计须等于 100%，平台费率由艺博统一配置（0.6% 服务费 / 20% 佣金）。<br>
+        <b>3. 比例校验：</b>各分账方比例合计须等于 100%，平台费率由艺博统一配置（0% 服务费 / 20% 佣金）。<br>
         <b>4. 结算周期：</b>支持 T+1 / T+7 / 周结 / 月结，与入金手续费扣费周期相互独立。<br>
         <b>5. 退款回退：</b>已分账订单退款时，支持「仅退回买家金额」或「同时退回分账资金」；受原收款人账户余额约束，不足需先充值。<br>
         <b>6. 变更生效：</b>规则修改后仅对<b>修改时间之后支付</b>的订单生效，历史订单按原规则快照执行。
@@ -140,13 +140,13 @@
         <tr>
           <td><b>星启家庭教育</b></td>
           <td class="mono">MEM-1001XX</td>
-          <td><input type="number" value="99.4" step="0.1" style="width:80px;padding:5px 8px;border:1px solid var(--color-border);border-radius:6px" /> %</td>
+          <td><input type="number" value="100" step="0.1" style="width:80px;padding:5px 8px;border:1px solid var(--color-border);border-radius:6px" /> %</td>
           <td><a href="#" data-row-act="del" style="color:#f53f3f">删除</a></td>
         </tr>
         <tr>
           <td><b>艺博平台</b> <span class="muted" style="font-size:12px">（平台服务费）</span></td>
           <td class="mono">TL-MCH-8801XXXX</td>
-          <td><input type="number" value="0.6" step="0.1" style="width:80px;padding:5px 8px;border:1px solid var(--color-border);border-radius:6px" /> %</td>
+          <td><input type="number" value="0" step="0.1" style="width:80px;padding:5px 8px;border:1px solid var(--color-border);border-radius:6px" /> %</td>
           <td><a href="#" data-row-act="del" style="color:#f53f3f">删除</a></td>
         </tr>
       </tbody>
@@ -168,8 +168,8 @@
     <div class="kv">
       <div class="kv-row"><span>命中规则</span><b>家长课堂 · 自建内容默认规则（链路 B）</b></div>
       <div class="kv-row"><span>入金手续费（0.3%）</span><b>-¥0.60</b></div>
-      <div class="kv-row"><span>星启家庭教育（99.4%）</span><b>¥197.81</b></div>
-      <div class="kv-row"><span>艺博平台服务费（0.6%）</span><b>¥1.19</b></div>
+      <div class="kv-row"><span>星启家庭教育（100%）</span><b>¥198.40</b></div>
+      <div class="kv-row"><span>艺博平台服务费（0%）</span><b>¥0.00</b></div>
     </div>
     <p class="muted" style="margin-top:10px">试算结果仅供参考，实际分账以通联支付回盘为准。平台内容（链路 A）按佣金率 20% 计，商家得佣金、平台留存。</p>
   </div>
@@ -187,7 +187,7 @@
 </style>
 
 <script src="../assets/js/proto.js"></script>
-<script src="../assets/js/admin-shell.js?v=28"></script>
+<script src="../assets/js/admin-shell.js?v=31"></script>
 <script>
 (function () {
   var mask = document.getElementById("mask");

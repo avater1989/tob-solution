@@ -22,7 +22,7 @@
     try {
       var curPhase = document.currentScript;
       var phaseSrc = (curPhase && curPhase.src)
-        ? curPhase.src.replace(/admin-shell\.js[^/]*$/, "phase2-config.js?v=5")
+        ? curPhase.src.replace(/admin-shell\.js[^/]*$/, "phase2-config.js?v=7")
         : "../assets/js/phase2-config.js";
       var xhrPhase = new XMLHttpRequest();
       xhrPhase.open("GET", phaseSrc, false);
@@ -260,6 +260,7 @@
         group: "资产管理",
         links: [
           { id: "assets", href: "assets.html", label: "资产总览" },
+          { id: "quota", href: "quota.html", label: "营销额度" },
           { id: "bills", href: "bills.html", label: "支付流水" },
           { id: "recon", href: "recon.html", label: "对账管理", badge: 2 },
           { id: "settlement", href: "settlement.html", label: "结算单", badge: 2 },
@@ -356,7 +357,7 @@
     trade:
       "<div class='assist-block'><h3>交易提示</h3><ul>" +
       "<li>支付成功开通权益，退款成功回收权益</li>" +
-      "<li>资金：备付金分账示意（服务费 1% + 商户 99%）</li>" +
+      "<li>资金：备付金分账示意（服务费 0% + 商户 100%）</li>" +
       "<li>T+1 自动对账，差异处理后才可结算</li></ul></div>" +
       "<div class='assist-block'><h3>店铺运营</h3><ul>" +
       "<li><a href='mp-home.html'>首页装修</a>（Banner / 直播 / 线上课 / 线下课 / 精选文章）</li>" +

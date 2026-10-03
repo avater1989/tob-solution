@@ -216,7 +216,7 @@
           <div class="ua-field"><label>应用范围：</label>
             <select id="r-scope">
               <option value="">请选择</option>
-              <option>全部套餐</option><option>专业版</option><option>标准版</option>
+              <option>全部租户</option><option>指定租户</option>
             </select>
           </div>
         </div>
@@ -250,28 +250,28 @@
         <tbody>
           <tr>
             <td><b>商户管理员</b><p class="muted" style="margin:2px 0 0;font-size:12px">租户最高权限，含权限配置与敏感操作</p></td>
-            <td>ROLE_MCH_ADMIN</td><td>全部套餐</td><td>15</td><td>18</td>
+            <td>ROLE_MCH_ADMIN</td><td>全部租户</td><td>15</td><td>18</td>
             <td><span class="badge badge-success">已发布</span></td>
             <td>2026-08-12 10:20</td>
             <td class="row-actions"><a href="#" data-role-act="perm">权限配置</a><a href="#" data-role-act="copy">复制</a><a href="#" data-role-act="edit">编辑</a></td>
           </tr>
           <tr>
             <td><b>内容运营</b><p class="muted" style="margin:2px 0 0;font-size:12px">课程/直播/素材管理，含提交上架</p></td>
-            <td>ROLE_MCH_CONTENT</td><td>全部套餐</td><td>9</td><td>18</td>
+            <td>ROLE_MCH_CONTENT</td><td>全部租户</td><td>9</td><td>18</td>
             <td><span class="badge badge-success">已发布</span></td>
             <td>2026-08-12 10:20</td>
             <td class="row-actions"><a href="#" data-role-act="perm">权限配置</a><a href="#" data-role-act="copy">复制</a><a href="#" data-role-act="edit">编辑</a></td>
           </tr>
           <tr>
             <td><b>销售</b><p class="muted" style="margin:2px 0 0;font-size:12px">线索池/跟进/推广链接，数据范围默认本人及下属</p></td>
-            <td>ROLE_MCH_SALES</td><td>全部套餐</td><td>6</td><td>18</td>
+            <td>ROLE_MCH_SALES</td><td>全部租户</td><td>6</td><td>18</td>
             <td><span class="badge badge-success">已发布</span></td>
             <td>2026-07-30 15:41</td>
             <td class="row-actions"><a href="#" data-role-act="perm">权限配置</a><a href="#" data-role-act="copy">复制</a><a href="#" data-role-act="edit">编辑</a></td>
           </tr>
           <tr>
             <td><b>财务</b><p class="muted" style="margin:2px 0 0;font-size:12px">订单/对账/结算查看与导出，含结算确认敏感操作</p></td>
-            <td>ROLE_MCH_FINANCE</td><td>全部套餐</td><td>7</td><td>18</td>
+            <td>ROLE_MCH_FINANCE</td><td>全部租户</td><td>7</td><td>18</td>
             <td><span class="badge badge-success">已发布</span></td>
             <td>2026-07-18 09:05</td>
             <td class="row-actions"><a href="#" data-role-act="perm">权限配置</a><a href="#" data-role-act="copy">复制</a><a href="#" data-role-act="edit">编辑</a></td>
@@ -333,9 +333,6 @@
           <option>内容 / 课程管理</option><option>用户 / 用户列表</option>
         </select>
       </div>
-      <div class="field" style="grid-column:1/-1">
-        <label style="display:flex;align-items:center;gap:6px"><input type="checkbox" /> 标记为敏感资源（使用留痕）</label>
-      </div>
     </div>
     <p class="muted" style="margin:10px 0 0;font-size:12px">新增后默认停用，需在角色「权限配置」中勾选后生效。</p>
   </div>
@@ -357,9 +354,6 @@
         <select id="ed-status" style="width:100%;padding:6px 8px;border:1px solid var(--color-border);border-radius:6px">
           <option>启用</option><option>停用</option>
         </select>
-      </div>
-      <div class="field" style="grid-column:1/-1">
-        <label style="display:flex;align-items:center;gap:6px"><input type="checkbox" /> 标记为敏感资源（使用留痕）</label>
       </div>
     </div>
     <p class="muted" style="margin:10px 0 0;font-size:12px">停用资源后，所有已勾选该资源的角色将即时失去对应入口/按钮/接口。</p>
@@ -399,7 +393,7 @@
       <div class="field"><label>角色编码 *</label><input placeholder="如 ROLE_MCH_MARKETING" /></div>
       <div class="field"><label>应用范围 *</label>
         <select style="width:100%;padding:6px 8px;border:1px solid var(--color-border);border-radius:6px">
-          <option>全部套餐</option><option>专业版</option><option>标准版</option>
+          <option>全部租户</option><option>指定租户</option>
         </select>
       </div>
       <div class="field"><label>状态</label>
@@ -432,7 +426,7 @@
       <div class="field"><label>角色编码</label><input id="re-code" disabled /></div>
       <div class="field"><label>应用范围</label>
         <select style="width:100%;padding:6px 8px;border:1px solid var(--color-border);border-radius:6px">
-          <option selected>全部套餐</option><option>专业版</option><option>标准版</option>
+          <option selected>全部租户</option><option>指定租户</option>
         </select>
       </div>
       <div class="field"><label>状态</label>
@@ -532,7 +526,7 @@ tr.collapsed { display: none; }
 </style>
 
 <script src="../assets/js/proto.js"></script>
-<script src="../assets/js/ops-shell.js?v=27"></script>
+<script src="../assets/js/ops-shell.js?v=28"></script>
 <script>
 (function () {
   var mask = document.getElementById("mask");
@@ -650,8 +644,8 @@ tr.collapsed { display: none; }
         var re = tr.children[5].textContent.trim() === "已下线";
         document.getElementById("publish-title").textContent = re ? "重新发布角色" : "发布角色";
         document.getElementById("publish-text").textContent = re
-          ? "确认重新发布「" + name + "」？发布后将随适用套餐的新租户开通自动下发。"
-          : "确认发布「" + name + "」？发布后新开通的适用套餐租户将自动获得该内置角色。";
+          ? "确认重新发布「" + name + "」？发布后对新开通的适用租户自动下发。"
+          : "确认发布「" + name + "」？发布后新开通的适用租户将自动获得该内置角色。";
         open(document.getElementById("modal-publish"));
       }
     });

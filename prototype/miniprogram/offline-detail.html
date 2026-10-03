@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>线下课详情 · To-B 小程序</title>
   <link rel="stylesheet" href="../assets/css/proto.css?v=17" />
-  <link rel="stylesheet" href="../assets/css/mp.css?v=21" />
+  <link rel="stylesheet" href="../assets/css/mp.css?v=22" />
   <style>
     .od-row { display:flex; justify-content:space-between; gap:12px; padding:10px 0; border-bottom:1px solid #f3f4f6; font-size:13px; }
     .od-row:last-child { border-bottom:0; }
@@ -40,8 +40,8 @@
   <script src="../assets/js/prototype-business-store.js"></script>
   <script src="../assets/js/goods-store.js?v=2"></script>
   <script src="../assets/js/listing-store.js?v=1"></script>
-  <script src="../assets/js/mp-commerce.js?v=2"></script>
-  <script src="../assets/js/mp-shell.js?v=4"></script>
+  <script src="../assets/js/mp-commerce.js?v=3"></script>
+  <script src="../assets/js/mp-shell.js?v=5"></script>
   <script>
   var Tags = window.ContentTags;
   var Teachers = window.Teachers;
@@ -159,7 +159,6 @@
     if (now > se) return { ok: false, owned: false, reason: "报名已截止", label: "报名截止" };
     if (o.capacity && o.signed >= o.capacity) return { ok: false, owned: false, reason: "名额已满", label: "已满员" };
     if (octx.free) return { ok: true, owned: false, reason: "", label: "立即报名" };
-    if (octx.orderMode === "inline") return { ok: true, owned: false, reason: "", label: "立即购票 ¥" + offlinePriceTxt() };
     return { ok: true, owned: false, reason: "", label: "去购买" };
   }
 

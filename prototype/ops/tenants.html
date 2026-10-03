@@ -6,7 +6,7 @@
 <title>租户列表 · 运营后台</title>
 <link rel="stylesheet" href="../assets/css/proto.css?v=17" />
 </head>
-<body class="admin-body" data-module="tenant" data-nav="tenants" data-title="租户列表" data-crumb="运营后台 / 租户管理 / 租户列表" data-assist="1">
+<body class="admin-body" data-module="sys" data-nav="tenants" data-title="租户列表" data-crumb="运营后台 / 系统管理 / 租户列表" data-assist="1">
 <div id="page-content" style="display:none">
 
   <!-- 搜索区 -->
@@ -30,29 +30,22 @@
             <option value="">请选择</option>
             <option>正常</option>
             <option>待开通</option>
-            <option>试用中</option>
             <option>已到期</option>
             <option>停用</option>
           </select>
         </div>
       </div>
       <div class="ua-search-row ua-more" id="search-more" style="display:none">
-        <div class="ua-field"><label>套餐版本：</label>
-          <select id="f-plan">
-            <option value="">请选择</option>
-            <option>试用版（14 天）</option><option>标准版</option><option>专业版</option><option>旗舰版</option>
-          </select>
-        </div>
         <div class="ua-field"><label>开通来源：</label>
           <select id="f-source">
             <option value="">请选择</option>
             <option>注册留资</option><option>系统录入</option>
           </select>
         </div>
-        <div class="ua-field"><label>服务费率：</label>
+        <div class="ua-field"><label>订单服务费率：</label>
           <select>
             <option value="">请选择</option>
-            <option>1%（默认）</option><option>0.6%（战略合作）</option>
+            <option>0%（默认）</option>
           </select>
         </div>
       </div>
@@ -68,7 +61,7 @@
   <div class="toolbar" style="margin-bottom:12px">
     <button class="btn btn-primary" id="btn-add">新增租户</button>
     <div class="spacer"></div>
-    <span class="muted" style="font-size:12px">商家在注册页留资后自动进入「待开通」队列；收款会员（通联）信息已并入本列表，点击会员号查看详情</span>
+    <span class="muted" style="font-size:12px">商家在注册页留资后自动进入「待开通」队列；租户信息编辑、容量与费率、营销额度、续期与操作日志统一在「配置」详情页内维护；收款会员（通联）信息已并入本列表，点击会员号查看详情</span>
   </div>
 
   <!-- 表格 -->
@@ -80,10 +73,10 @@
           <th>租户单位</th>
           <th>联系人</th>
           <th>手机号码</th>
-          <th>套餐版本</th>
-          <th>服务费率</th>
+          <th>订单服务费率</th>
+          <th>营销额度</th>
           <th>收款会员（通联）</th>
-          <th>到期时间</th>
+          <th>使用截止日期</th>
           <th>开通来源</th>
           <th>状态</th>
           <th style="width:220px">操作</th>
@@ -97,8 +90,8 @@
           <td>星启家庭教育（10001）</td>
           <td>赵老师</td>
           <td>138****2610</td>
-          <td><span class="tag tag-blue">专业版</span></td>
-          <td>1%（默认）</td>
+          <td>0%（默认）</td>
+          <td class="mono"><a href="tenant-config.html?id=10001&amp;tab=quota"><b>¥1,286.50</b></a></td>
           <td><a href="#" data-row-act="member" class="mono">MEM-1001XX</a><br><span class="badge badge-success">已通过</span> <span class="badge badge-success">已签约</span></td>
           <td>2027-03-12</td>
           <td>注册留资</td>
@@ -106,8 +99,6 @@
           <td class="row-actions">
             <a href="tenant-config.html?id=10001">配置</a>
             <a href="#" data-row-act="onboard">资料管理</a>
-            <a href="#" data-row-act="edit">编辑</a>
-            <a href="#" data-row-act="renew">续费</a>
             <a class="btn-enter-admin" href="../admin/dashboard.html" target="_blank" rel="noopener">进入商家后台</a>
           </td>
         </tr>
@@ -118,8 +109,8 @@
           <td>晨光少儿成长（10002）</td>
           <td>阮荣均</td>
           <td>139****8811</td>
-          <td><span class="tag tag-blue">标准版</span></td>
-          <td>1%（默认）</td>
+          <td>0%（默认）</td>
+          <td class="mono"><a href="tenant-config.html?id=10002&amp;tab=quota"><b>¥520.00</b></a></td>
           <td><a href="#" data-row-act="member" class="mono">MEM-1002AY</a><br><span class="badge badge-success">已通过</span> <span class="badge badge-success">已签约</span></td>
           <td>2026-12-01</td>
           <td>注册留资</td>
@@ -127,29 +118,25 @@
           <td class="row-actions">
             <a href="tenant-config.html?id=10002">配置</a>
             <a href="#" data-row-act="onboard">资料管理</a>
-            <a href="#" data-row-act="edit">编辑</a>
-            <a href="#" data-row-act="renew">续费</a>
             <a class="btn-enter-admin" href="../admin/dashboard.html" target="_blank" rel="noopener">进入商家后台</a>
           </td>
         </tr>
         <tr data-ob-tenant="慧心教育" data-ob-step="1" data-ob-step-note="未提交资料" data-ob-sign="未签约"
-            data-ob-member="—" data-ob-subject="慧心教育（试用中）" data-ob-contract="—"
+            data-ob-member="—" data-ob-subject="慧心教育（企业会员）" data-ob-contract="—"
             data-ob-records="—">
           <td><a href="tenant-config.html?id=10004"><b>慧心教育</b></a></td>
           <td>慧心教育（10004）</td>
           <td>孙校长</td>
           <td>136****3305</td>
-          <td><span class="tag">试用版（14 天）</span></td>
-          <td>1%（默认）</td>
+          <td>0%（默认）</td>
+          <td class="mono"><a href="tenant-config.html?id=10004&amp;tab=quota"><b>-¥90.00</b></a><br><span class="badge badge-warn">预警</span></td>
           <td><a href="#" data-row-act="member" class="mono">MEM-1003XX</a><br><span class="badge badge-warn">审核中</span> <span class="badge badge">未签约</span></td>
           <td>2026-09-08</td>
           <td>注册留资</td>
-          <td><span class="badge badge-info">试用中</span></td>
+          <td><span class="badge badge-warn">已到期</span></td>
           <td class="row-actions">
             <a href="tenant-config.html?id=10004">配置</a>
             <a href="#" data-row-act="onboard">资料管理</a>
-            <a href="#" data-row-act="edit">编辑</a>
-            <a href="#" data-row-act="renew">续费</a>
             <a class="btn-enter-admin" href="../admin/dashboard.html" target="_blank" rel="noopener">进入商家后台</a>
           </td>
         </tr>
@@ -158,8 +145,8 @@
           <td>—</td>
           <td>李经理</td>
           <td>137****2210</td>
-          <td><span class="muted">—</span></td>
           <td>—</td>
+          <td><span class="muted">—</span></td>
           <td><span class="muted">—</span></td>
           <td>—</td>
           <td>注册留资</td>
@@ -176,8 +163,8 @@
           <td>青藤家长学堂（10005）</td>
           <td>周老师</td>
           <td>135****7788</td>
-          <td><span class="tag tag-blue">标准版</span></td>
-          <td>1%（默认）</td>
+          <td>0%（默认）</td>
+          <td class="mono"><a href="tenant-config.html?id=10005&amp;tab=quota"><b>-¥260.00</b></a><br><span class="badge badge-danger">已限制</span></td>
           <td><a href="#" data-row-act="member" class="mono">MEM-1005BZ</a><br><span class="badge badge-success">已通过</span> <span class="badge badge">未签约</span></td>
           <td>2026-09-25</td>
           <td>注册留资</td>
@@ -185,8 +172,6 @@
           <td class="row-actions">
             <a href="tenant-config.html?id=10005">配置</a>
             <a href="#" data-row-act="onboard">资料管理</a>
-            <a href="#" data-row-act="edit">编辑</a>
-            <a href="#" data-row-act="renew">续费</a>
             <a class="btn-enter-admin" href="../admin/dashboard.html" target="_blank" rel="noopener">进入商家后台</a>
           </td>
         </tr>
@@ -195,8 +180,8 @@
           <td>乐学伴家庭（10006）</td>
           <td>吴主管</td>
           <td>188****4506</td>
-          <td><span class="tag tag-blue">标准版</span></td>
-          <td>1%（默认）</td>
+          <td>0%（默认）</td>
+          <td class="mono"><a href="tenant-config.html?id=10006&amp;tab=quota"><b>¥120.00</b></a></td>
           <td><span class="muted">—</span></td>
           <td>2026-08-30</td>
           <td>注册留资</td>
@@ -204,8 +189,6 @@
           <td class="row-actions">
             <a href="tenant-config.html?id=10006">配置</a>
             <a href="#" data-row-act="onboard">资料管理</a>
-            <a href="#" data-row-act="edit">编辑</a>
-            <a href="#" data-row-act="renew">续费</a>
             <a class="btn-enter-admin" href="../admin/dashboard.html" target="_blank" rel="noopener">进入商家后台</a>
           </td>
         </tr>
@@ -214,15 +197,14 @@
           <td>某旧商户（10008）</td>
           <td>钱财务</td>
           <td>135****9933</td>
-          <td><span class="tag">标准版</span></td>
-          <td>0.6%（战略合作）</td>
+          <td>0%（默认）</td>
+          <td><span class="muted">—</span></td>
           <td><a href="#" data-row-act="member" class="mono">MEM-1007XX</a><br><span class="badge badge-danger">已驳回</span> <span class="badge badge">未签约</span></td>
           <td>2026-06-30</td>
           <td>系统录入</td>
           <td><span class="badge">停用</span></td>
           <td class="row-actions">
             <a href="tenant-config.html?id=10008">配置</a>
-            <a href="#" data-row-act="edit">编辑</a>
             <a href="#" data-row-act="enable">恢复</a>
           </td>
         </tr>
@@ -231,15 +213,14 @@
           <td>知行家研习社（10009）</td>
           <td>郑老师</td>
           <td>150****6621</td>
-          <td><span class="tag tag-blue">旗舰版</span></td>
-          <td>0.6%（战略合作）</td>
+          <td>0%（默认）</td>
+          <td class="mono"><a href="tenant-config.html?id=10009&amp;tab=quota"><b>¥2,050.00</b></a></td>
           <td><a href="#" data-row-act="member" class="mono">MEM-1005XX</a><br><span class="badge badge-warn">审核中</span> <span class="badge badge">未签约</span></td>
           <td>2027-06-18</td>
           <td>系统录入</td>
           <td><span class="badge badge-success">正常</span></td>
           <td class="row-actions">
             <a href="tenant-config.html?id=10009">配置</a>
-            <a href="#" data-row-act="edit">编辑</a>
             <a href="#" data-row-act="disable">停用</a>
           </td>
         </tr>
@@ -307,16 +288,12 @@
     <div class="form-grid">
       <div class="field"><label>租户名称 *</label><input id="op-name" value="某某成长中心" /></div>
       <div class="field"><label>所属公司 *</label><input id="op-company" value="某某成长教育咨询中心" /></div>
-      <div class="field"><label>套餐版本 *</label>
-        <select id="op-plan" style="width:100%;padding:6px 8px;border:1px solid var(--color-border);border-radius:6px">
-          <option>试用版（14 天）</option><option>标准版</option><option>专业版</option><option>旗舰版</option>
+      <div class="field"><label>订单服务费率 *</label>
+        <select id="op-rate" style="width:100%;padding:6px 8px;border:1px solid var(--color-border);border-radius:6px">
+          <option>0%（默认）</option>
         </select>
       </div>
-      <div class="field"><label>服务费率 *</label>
-        <select style="width:100%;padding:6px 8px;border:1px solid var(--color-border);border-radius:6px">
-          <option>1%（默认）</option><option>0.6%（战略合作）</option>
-        </select>
-      </div>
+      <div class="field"><label>使用截止日期 *</label><input id="op-expire" type="date" value="2027-03-12" /></div>
       <div class="field"><label>管理员姓名 *</label><input id="op-admin" value="李经理" /></div>
       <div class="field"><label>管理员手机号 *</label><input id="op-phone" value="13712342210" /></div>
       <div class="field" style="grid-column:1/-1"><label>初始密码</label>
@@ -330,58 +307,6 @@
   <div class="proto-modal-ft" style="border-top:1px solid var(--color-border);padding:12px 20px;display:flex;gap:8px;justify-content:flex-end">
     <button class="btn" data-close>取消</button>
     <button class="btn btn-primary" id="open-submit">确认开通</button>
-  </div>
-</div>
-
-<!-- 编辑租户弹窗 -->
-<div class="proto-modal" id="modal-edit" style="width:520px">
-  <div class="proto-modal-hd">
-    <h3 style="font-size:16px;font-weight:600">编辑租户</h3>
-    <button class="btn btn-sm btn-ghost" data-close>×</button>
-  </div>
-  <div class="proto-modal-bd">
-    <div class="form-grid">
-      <div class="field"><label>租户名称 *</label><input id="ed-name" /></div>
-      <div class="field"><label>所属公司</label><input id="ed-company" /></div>
-      <div class="field"><label>服务费率</label>
-        <select id="ed-rate" style="width:100%;padding:6px 8px;border:1px solid var(--color-border);border-radius:6px">
-          <option selected>1%（默认）</option><option>0.6%（战略合作）</option>
-        </select>
-      </div>
-    </div>
-  </div>
-  <div class="proto-modal-ft" style="border-top:1px solid var(--color-border);padding:12px 20px;display:flex;gap:8px;justify-content:flex-end">
-    <button class="btn" data-close>取消</button>
-    <button class="btn btn-primary" data-close data-toast="租户信息已保存（原型）">保存</button>
-  </div>
-</div>
-
-<!-- 续费弹窗 -->
-<div class="proto-modal" id="modal-renew" style="width:460px">
-  <div class="proto-modal-hd">
-    <h3 style="font-size:16px;font-weight:600">租户续费</h3>
-    <button class="btn btn-sm btn-ghost" data-close>×</button>
-  </div>
-  <div class="proto-modal-bd">
-    <div class="form-grid">
-      <div class="field"><label>租户</label><div id="rn-name">—</div></div>
-      <div class="field"><label>当前到期</label><div>2027-03-12</div></div>
-      <div class="field"><label>续费套餐 *</label>
-        <select style="width:100%;padding:6px 8px;border:1px solid var(--color-border);border-radius:6px">
-          <option>专业版</option><option>标准版</option><option>旗舰版</option>
-        </select>
-      </div>
-      <div class="field"><label>续费时长 *</label>
-        <select style="width:100%;padding:6px 8px;border:1px solid var(--color-border);border-radius:6px">
-          <option>1 年</option><option>2 年</option><option>3 个月</option>
-        </select>
-      </div>
-    </div>
-    <p class="muted" style="margin-top:8px;font-size:12px">续费生效后到期时间自动顺延，服务费率保持不变。</p>
-  </div>
-  <div class="proto-modal-ft" style="border-top:1px solid var(--color-border);padding:12px 20px;display:flex;gap:8px;justify-content:flex-end">
-    <button class="btn" data-close>取消</button>
-    <button class="btn btn-primary" data-toast="续费已登记，等待财务确认（原型）" data-close>确认续费</button>
   </div>
 </div>
 
@@ -400,7 +325,7 @@
     </ul>
     <div class="field"><label>停用原因 *</label>
       <select id="ds-reason" style="width:100%;padding:6px 8px;border:1px solid var(--color-border);border-radius:6px">
-        <option>合同到期未续费</option><option>违规经营</option><option>商家主动申请</option><option>其他</option>
+        <option>合同到期未续期</option><option>违规经营</option><option>商家主动申请</option><option>其他</option>
       </select>
     </div>
   </div>
@@ -445,7 +370,7 @@
 
 
 <script src="../assets/js/proto.js"></script>
-<script src="../assets/js/ops-shell.js?v=27"></script>
+<script src="../assets/js/ops-shell.js?v=28"></script>
 <script>
 (function () {
   var mask = document.getElementById("mask");
@@ -486,16 +411,10 @@
         if (act === "open" || act === "add") {
           document.getElementById("open-title").textContent = act === "add" ? "新增租户" : "开通租户";
           open(document.getElementById("modal-open"));
-        } else if (act === "edit") {
-          document.getElementById("ed-name").value = name;
-          document.getElementById("ed-company").value = tr.children[1].textContent.replace(/（\d+）$/, "有限公司");
-          var rate = (tr.children[5] ? tr.children[5].textContent.trim() : "");
-          var rateSel = document.getElementById("ed-rate");
-          Array.prototype.forEach.call(rateSel.options, function (o) { o.selected = (o.textContent === rate); });
-          open(document.getElementById("modal-edit"));
-        } else if (act === "renew") {
-          document.getElementById("rn-name").textContent = name;
-          open(document.getElementById("modal-renew"));
+        } else if (act === "edit" || act === "renew") {
+          /* 2026-10-02 评审标注：租户信息编辑、续期统一在「租户配置」详情页内完成，列表不再提供入口 */
+          location.href = "tenant-config.html?id=" + encodeURIComponent(tr.getAttribute("data-ob-tenant") || "");
+          return;
         } else if (act === "onboard") {
           /* 资料管理：跳转到该租户的资料录入页（通联云商通企业会员资料） */
           location.href = "tenant-profile.html?id=" + encodeURIComponent(tr.getAttribute("data-ob-tenant") || "");
@@ -561,7 +480,7 @@
   document.getElementById("btn-query").addEventListener("click", function () { Proto.toast("已按条件查询（原型）"); });
   document.getElementById("btn-reset").addEventListener("click", function () {
     ["f-name", "f-contact", "f-phone"].forEach(function (id) { document.getElementById(id).value = ""; });
-    ["f-unit", "f-status", "f-plan", "f-source"].forEach(function (id) { document.getElementById(id).value = ""; });
+    ["f-unit", "f-status", "f-source"].forEach(function (id) { document.getElementById(id).value = ""; });
     Proto.toast("已重置");
   });
 })();

@@ -44,7 +44,7 @@
       ]
     },
 
-    /* ② 商家自建 · 服务费 0.6% · 已完成 · 直播商品（免费场次） */
+    /* ② 商家自建 · 服务费 0% · 已完成 · 直播商品（免费场次） */
     YB20260329100456: {
       order: {
         id: "YB20260329100456", type: "消费",
@@ -54,7 +54,7 @@
         time: "2026-03-28 20:18", payTime: "2026-03-28 20:18",
         payStatus: "已完成", refundStatus: "无", refundId: "",
         rightId: "R2026032910456", rightStatus: "有效", owner: "陈先生",
-        channel: "直播间", contentSource: "self", settleMode: "service_fee", serviceFeeRate: 0.6,
+        channel: "直播间", contentSource: "self", settleMode: "service_fee", serviceFeeRate: 0,
         contentOwner: "晨光少儿成长（商家自建）", tenant: "晨光少儿成长",
         deliverType: "支付后自动开通", payChannel: "通联支付（微信小程序内）",
         channelTxn: "—", payTxn: "—",
@@ -81,7 +81,7 @@
       notes: []
     },
 
-    /* ③ 商家自建 · 服务费 0.6% · 待付款 · 课程商品 */
+    /* ③ 商家自建 · 服务费 0% · 待付款 · 课程商品 */
     YB20260327100789: {
       order: {
         id: "YB20260327100789", type: "消费",
@@ -91,7 +91,7 @@
         time: "2026-03-27 15:30", payTime: "",
         payStatus: "待付款", refundStatus: "无", refundId: "",
         rightId: "", rightStatus: "未开通", owner: "刘女士",
-        channel: "小程序", contentSource: "self", settleMode: "service_fee", serviceFeeRate: 0.6,
+        channel: "小程序", contentSource: "self", settleMode: "service_fee", serviceFeeRate: 0,
         contentOwner: "青藤家长学堂（商家自建）", tenant: "晨光少儿成长",
         deliverType: "支付后自动开通", payChannel: "—",
         channelTxn: "—", payTxn: "—",
@@ -109,7 +109,7 @@
       notes: []
     },
 
-    /* ④ 商家自建 · 服务费 0.6% · 已退款（权益已回收）· 课程商品 */
+    /* ④ 商家自建 · 服务费 0% · 已退款（权益已回收）· 课程商品 */
     YB20260325000666: {
       order: {
         id: "YB20260325000666", type: "消费",
@@ -119,7 +119,7 @@
         time: "2026-03-25 14:22", payTime: "2026-03-25 14:22",
         payStatus: "已退款", refundStatus: "已退款", refundId: "RF202603300002",
         rightId: "R2026032500666", rightStatus: "已退款回收", owner: "赵女士",
-        channel: "小程序", contentSource: "self", settleMode: "service_fee", serviceFeeRate: 0.6,
+        channel: "小程序", contentSource: "self", settleMode: "service_fee", serviceFeeRate: 0,
         contentOwner: "星启家庭教育（商家自建）", tenant: "星启家庭教育",
         deliverType: "支付后自动开通", payChannel: "通联支付（微信小程序内）",
         channelTxn: "WX20260325140222", payTxn: "TL20260325140066XX",
@@ -197,7 +197,7 @@
       notes: []
     },
 
-    /* ⑥ 商家自建 · 服务费 0.6% · 已支付 + 退款中 · 课程商品 */
+    /* ⑥ 商家自建 · 服务费 0% · 已支付 + 退款状态「用户已申请」（待运营审核）· 课程商品 */
     YB20260324100231: {
       order: {
         id: "YB20260324100231", type: "消费",
@@ -205,9 +205,9 @@
         goodsType: "课程商品", orderType: "普通订单",
         amount: 299, discount: 0,
         time: "2026-03-24 18:47", payTime: "2026-03-24 18:47",
-        payStatus: "已支付", refundStatus: "退款中", refundId: "RF202604020001",
+        payStatus: "已支付", refundStatus: "用户已申请", refundId: "RF202604020001",
         rightId: "R2026032410231", rightStatus: "有效", owner: "周女士",
-        channel: "小程序", contentSource: "self", settleMode: "service_fee", serviceFeeRate: 0.6,
+        channel: "小程序", contentSource: "self", settleMode: "service_fee", serviceFeeRate: 0,
         contentOwner: "星启家庭教育（商家自建）", tenant: "星启家庭教育",
         deliverType: "支付后自动开通", payChannel: "通联支付（微信小程序内）",
         channelTxn: "WX20260324184706", payTxn: "TL20260324180031XX",
@@ -217,7 +217,7 @@
       user: {
         id: "U0006", name: "周女士", phone: "13300007788", wecom: true, owner: "赵老师",
         source: "小程序", registeredAt: "2026-03-24",
-        tags: [{ name: "训练营学员", color: "green" }, { name: "退款处理中", color: "orange" }]
+        tags: [{ name: "训练营学员", color: "green" }, { name: "退款申请中", color: "orange" }]
       },
       right: {
         id: "R2026032410231", course: "青春期沟通训练营", product: "青春期沟通训练营",
@@ -246,6 +246,36 @@
       ],
       notes: [
         { at: "2026-04-02 10:20", by: "赵老师", text: "买家反馈服务未达预期，已提交退款申请，待平台审核。" }
+      ]
+    },
+
+    /* ⑦ 商家自建 · 服务费 0% · 已支付 + 人工开通权益（无固定交付内容）· 服务类 */
+    YB20260320100888: {
+      order: {
+        id: "YB20260320100888", type: "消费",
+        product: "家庭教育 1 对 1 深度咨询", spec: "服务类 · 人工开通权益 · 1 次",
+        goodsType: "课程商品", orderType: "普通订单",
+        amount: 599, discount: 0,
+        time: "2026-03-20 16:30", payTime: "2026-03-20 16:31",
+        payStatus: "已支付", refundStatus: "无", refundId: "",
+        rightId: "", rightStatus: "未开通", owner: "孙女士",
+        channel: "小程序", contentSource: "self", settleMode: "service_fee", serviceFeeRate: 0,
+        contentOwner: "星启家庭教育（商家自建）", tenant: "星启家庭教育",
+        deliverType: "人工开通", payChannel: "通联支付（微信小程序内）",
+        channelTxn: "WX20260320163011", payTxn: "TL20260320160888XX",
+        promoter: "赵老师", consultant: "赵老师",
+        settlementId: "—", reconBatch: "T20260321", reconMatched: true
+      },
+      user: {
+        id: "U0012", name: "孙女士", phone: "15900009988", wecom: true, owner: "赵老师",
+        source: "小程序", registeredAt: "2026-03-18",
+        tags: [{ name: "高意向", color: "blue" }]
+      },
+      right: null,
+      refund: null,
+      aftersales: [],
+      notes: [
+        { at: "2026-03-20 16:45", by: "赵老师", text: "1 对 1 咨询，已预约顾问排期，支付后需人工开通权益。" }
       ]
     }
   };

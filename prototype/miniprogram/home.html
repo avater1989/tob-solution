@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>首页 · To-B 小程序</title>
   <link rel="stylesheet" href="../assets/css/proto.css?v=17" />
-  <link rel="stylesheet" href="../assets/css/mp.css?v=21" />
+  <link rel="stylesheet" href="../assets/css/mp.css?v=22" />
   <style>
   /* 首页店铺名称（原搜索栏位置，按评审标注去掉搜索 / 通知 / 扫一扫入口） */
   .mp-searchrow { padding-top: 8px; }
@@ -85,10 +85,7 @@
             <a class="mp-lcard-cover" href="lives.html">
               <img src="../assets/img/mp-home/live-1.png" alt="直播封面" />
               <span class="mp-lcard-meta">
-                <span class="mp-lcard-time">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="12" r="8"/><path d="M12 8v4.5l3 1.5"/></svg>
-                  09.17/21:30
-                </span>
+                <span class="mp-lcard-time mp-lcard-live"><i></i>直播中</span>
                 <span class="mp-lcard-host">翟海霞</span>
               </span>
             </a>
@@ -99,8 +96,8 @@
                 <img src="../assets/img/mp-home/av-2.png" alt="" />
                 <img src="../assets/img/mp-home/av-3.png" alt="" />
               </div>
-              <span class="mp-lcard-num">已有296人已预约</span>
-              <a class="mp-lcard-btn" href="#" data-toast="已预约该直播（原型）">预约</a>
+              <span class="mp-lcard-num">已有1.2万人观看</span>
+              <a class="mp-lcard-btn" href="live-room.html">进入直播间</a>
             </div>
           </div>
 
@@ -172,8 +169,8 @@
   <script src="../assets/js/prototype-business-store.js"></script>
   <script src="../assets/js/goods-store.js?v=2"></script>
   <script src="../assets/js/listing-store.js?v=1"></script>
-  <script src="../assets/js/mp-commerce.js?v=2"></script>
-  <script src="../assets/js/mp-shell.js?v=4"></script>
+  <script src="../assets/js/mp-commerce.js?v=3"></script>
+  <script src="../assets/js/mp-shell.js?v=5"></script>
   <script>
   (function () {
     var Store = window.CourseStore;

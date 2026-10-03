@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>精选文章 · To-B 小程序</title>
   <link rel="stylesheet" href="../assets/css/proto.css?v=17" />
-  <link rel="stylesheet" href="../assets/css/mp.css?v=21" />
+  <link rel="stylesheet" href="../assets/css/mp.css?v=22" />
   <style>
     .ar-pay { display:inline-block; font-size:11px; padding:1px 6px; border-radius:3px; background:#fff7e6; color:#d46b08; margin-right:4px; }
     .ar-free { display:inline-block; font-size:11px; padding:1px 6px; border-radius:3px; background:#e8f3ff; color:#165dff; margin-right:4px; }
@@ -27,11 +27,12 @@
   <script src="../assets/js/prototype-business-store.js"></script>
   <script src="../assets/js/goods-store.js?v=2"></script>
   <script src="../assets/js/listing-store.js?v=1"></script>
-  <script src="../assets/js/mp-commerce.js?v=2"></script>
-  <script src="../assets/js/mp-shell.js?v=4"></script>
+  <script src="../assets/js/mp-commerce.js?v=3"></script>
+  <script src="../assets/js/mp-shell.js?v=5"></script>
   <script>
   var Tags = window.ContentTags;
   var Mp = window.MpCommerce;
+  var LS = window.ListingStore;
   var ARTICLES = [
     { id: "A001", title: "9 月新学期家长指南", cover: "../assets/img/covers/term.jpg", author: "编辑部", tagIds: ["TG04"], date: "08-25", reads: 2340, intro: "开学前家长最关心的节奏、作息与沟通清单。" },
     { id: "A002", title: "孩子注意力训练方法论", cover: "../assets/img/covers/focus.jpg", author: "张老师", tagIds: ["TG06"], date: "08-30", reads: 1560, intro: "用可落地的小练习，帮孩子把注意力练成习惯。" },
@@ -45,7 +46,15 @@
     });
   }
 
-  document.getElementById("ar-list").innerHTML = ARTICLES.map(function (a) {
+  /* 列表展示内容由「首页装修 → 精选文章」的上架位决定；未配置时展示全部 */
+  var lsOrder = null;
+  if (LS) {
+    var rows = LS.listBySlot("article").filter(function (r) { return r.visible && r.status === "active"; });
+    if (rows.length) lsOrder = rows.map(function (r) { return r.content_id; });
+  }
+  var shown = lsOrder ? ARTICLES.filter(function (a) { return lsOrder.indexOf(a.id) >= 0; }) : ARTICLES;
+
+  document.getElementById("ar-list").innerHTML = shown.map(function (a) {
     var tag = (a.tagIds || []).map(function (id) {
       var t = Tags.get(id);
       return t ? t.name : "";

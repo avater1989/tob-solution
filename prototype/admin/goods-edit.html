@@ -66,13 +66,20 @@
   <!-- Path A: content -->
   <div id="path-content">
     <div class="cm-section">
-      <div class="cm-section-hd"><h3>交付内容 *</h3><span class="muted">内容不含价格；一个商品可交付多个内容（组合商品），同一内容也可建多个商品</span></div>
+      <div class="cm-section-hd"><h3>交付内容 *</h3><span class="muted">内容不含价格；一个商品可交付多个内容（组合商品），同一内容也可建多个商品；也可不关联内容、下单后人工开通权益</span></div>
       <div class="field">
         <label>交付内容 *</label>
         <div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center">
           <button type="button" class="btn btn-primary" id="btn-pick-content">选择交付内容</button>
           <span class="muted" style="font-size:12px;font-weight:400">弹窗内多选，可选「线上课 / 线下课 / 定制化计划 / 文章 / 直播」，确定后在此回显</span>
         </div>
+      </div>
+      <div class="field" style="margin-top:10px">
+        <label style="display:flex;align-items:center;gap:6px;font-weight:400">
+          <input type="checkbox" id="ck-manual" />
+          不关联交付内容（下单后由运营人员手工开通权益）
+        </label>
+        <span class="muted" style="font-size:12px">适用于线下服务、定制化交付等无固定内容资产的商品</span>
       </div>
       <div id="deliver-list"></div>
       <div class="linked-card" id="linked-card" style="display:none">
@@ -228,7 +235,7 @@
 <script src="../assets/js/prototype-business-store.js"></script>
 <script src="../assets/js/goods-store.js?v=2"></script>
 <script src="../assets/js/listing-store.js?v=1"></script>
-<script src="../assets/js/admin-shell.js?v=28"></script>
+<script src="../assets/js/admin-shell.js?v=31"></script>
 <script>
 (function () {
   var Store = window.CourseStore;
@@ -335,8 +342,29 @@
     updPickCount();
   }
 
+  function isManual() {
+    var ck = document.getElementById("ck-manual");
+    return ck ? ck.checked : false;
+  }
+  function syncManual() {
+    var m = isManual();
+    var btn = document.getElementById("btn-pick-content");
+    if (btn) btn.disabled = m;
+    var delivery = document.getElementById("f-delivery");
+    if (m) {
+      selected = [];
+      if (delivery) delivery.value = "人工开通";
+    }
+    renderDeliverList();
+  }
+
   function renderDeliverList() {
     var el = document.getElementById("deliver-list");
+    if (isManual()) {
+      el.innerHTML = '<div class="muted" style="font-size:12px;margin-top:10px">不关联交付内容，下单后由运营人员<b>手工开通权益</b></div>';
+      renderLinkedSummary();
+      return;
+    }
     if (!selected.length) {
       el.innerHTML = '<div class="muted" style="font-size:12px;margin-top:10px">尚未选择交付内容</div>';
     } else {
@@ -391,6 +419,7 @@
   }
 
   document.getElementById("btn-pick-content").addEventListener("click", openPick);
+  document.getElementById("ck-manual").addEventListener("change", syncManual);
   document.getElementById("pick-close").addEventListener("click", closePick);
   document.getElementById("pick-cancel").addEventListener("click", closePick);
   document.getElementById("pick-mask").addEventListener("click", closePick);
@@ -528,6 +557,7 @@
       document.getElementById("f-olist").value = editing.list_price || 0;
       if (editing.category_id) document.getElementById("f-category").value = editing.category_id;
       if (editing.delivery) document.getElementById("f-delivery").value = editing.delivery;
+      if (editing.manual_delivery) document.getElementById("ck-manual").checked = true;
       if (editing.refund_rule) document.getElementById("f-refund").value = editing.refund_rule;
       document.getElementById("f-source").value =
         editing.content_source === "platform" ? "平台内容 (platform)" : "商家自建 (self)";
@@ -558,6 +588,8 @@
     });
     renderDeliverList();
   })();
+
+  syncManual();
 
   document.getElementById("btn-save-draft").addEventListener("click", function () {
     if (readonly) return;
@@ -592,7 +624,8 @@
       setTimeout(function () { location.href = "goods.html"; }, 1000);
       return;
     }
-    if (!selected.length) { Proto.toast("请选择交付内容"); return; }
+    var manual = isManual();
+    if (!manual && !selected.length) { Proto.toast("请选择交付内容，或勾选「不关联交付内容」"); return; }
     if (!document.getElementById("f-gname").value.trim()) { Proto.toast("请填写商品名称"); return; }
     var shelf = (document.querySelector("input[name=shelf]:checked") || {}).value || "publish";
     var onSale = shelf === "publish";
@@ -603,7 +636,7 @@
         channel: "store",
         create_mode: "from_content",
         content_source: document.getElementById("f-source").value.indexOf("platform") >= 0 ? "platform" : "self",
-        contents: selected.map(function (s) {
+        contents: manual ? [] : selected.map(function (s) {
           return { content_type: s.content_type, content_id: s.content_id };
         }),
         category_id: document.getElementById("f-category").value,
@@ -614,7 +647,8 @@
         reject_reason: "",
         price: parseFloat(document.getElementById("f-price").value) || 0,
         list_price: parseFloat(document.getElementById("f-olist").value) || 0,
-        delivery: document.getElementById("f-delivery").value,
+        delivery: manual ? "人工开通" : document.getElementById("f-delivery").value,
+        manual_delivery: manual,
         refund_rule: document.getElementById("f-refund").value
       });
     } catch (eSave2) {}

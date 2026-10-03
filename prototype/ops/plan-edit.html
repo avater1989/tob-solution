@@ -6,7 +6,7 @@
 <title>新增套餐版本 · 运营后台</title>
 <link rel="stylesheet" href="../assets/css/proto.css?v=17" />
 </head>
-<body class="admin-body" data-module="tenant" data-nav="plans" data-title="新增套餐版本" data-crumb="运营后台 / 租户管理 / 套餐管理 / 新增套餐版本" data-assist="1">
+<body data-phase2="1" class="admin-body" data-module="sys" data-nav="plans" data-title="新增套餐版本" data-crumb="运营后台 / 系统管理 / 套餐管理 / 新增套餐版本" data-assist="1">
 <div id="page-content" style="display:none">
 
   <!-- 基础信息 -->
@@ -61,11 +61,11 @@
         <div class="field"><label>SCRM 线索池容量</label><input id="cap-leads" placeholder="线索与客户档案总量上限，例：5000" /></div>
         <div class="field" style="grid-column:1/-1"><label>服务费率策略</label>
           <select id="cap-rate" style="width:100%;padding:6px 8px;border:1px solid var(--color-border);border-radius:6px">
-            <option>1%（默认）</option><option>1% 或 0.6%（战略可签）</option><option>0.6% ~ 1%</option><option>待定</option>
+            <option>0%（默认）</option><option>待定</option>
           </select>
         </div>
       </div>
-      <p class="muted" style="margin:10px 0 0;font-size:12px">容量为单项上限；保存后即在该套餐版本列生效，租户详情可查看用量。</p>
+      <p class="muted" style="margin:10px 0 0;font-size:12px">此处为套餐默认值；「商家账号数 / 直播场次 / 订单服务费率」可在租户配置中逐项覆盖（系统管理 / 租户列表 → 配置 → 容量与费率）。</p>
     </div>
   </div>
 
@@ -91,7 +91,7 @@
 </style>
 
 <script src="../assets/js/proto.js"></script>
-<script src="../assets/js/ops-shell.js?v=27"></script>
+<script src="../assets/js/ops-shell.js?v=28"></script>
 <script>
 (function () {
   var params = new URLSearchParams(location.search);
@@ -104,10 +104,10 @@
     "旗舰版": "旗舰版"
   };
   var presets = {
-    "试用版": { apps: { video: false, open: false, wecom: false }, caps: { accounts: "2", courses: "3", live: "1", leads: "100", rate: "1%（默认）" } },
-    "标准版": { apps: { video: false, open: false, wecom: false }, caps: { accounts: "5", courses: "10", live: "3", leads: "1,000", rate: "1%（默认）" } },
-    "专业版": { apps: { video: true, open: true, wecom: true }, caps: { accounts: "10", courses: "50", live: "10", leads: "5,000", rate: "1% 或 0.6%（战略可签）" } },
-    "旗舰版": { apps: { video: true, open: true, wecom: true }, caps: { accounts: "20", courses: "不限", live: "30", leads: "20,000", rate: "0.6% ~ 1%" } }
+    "试用版": { apps: { video: false, open: false, wecom: false }, caps: { accounts: "2", courses: "3", live: "1", leads: "100", rate: "0%（默认）" } },
+    "标准版": { apps: { video: false, open: false, wecom: false }, caps: { accounts: "5", courses: "10", live: "3", leads: "1,000", rate: "0%（默认）" } },
+    "专业版": { apps: { video: true, open: true, wecom: true }, caps: { accounts: "10", courses: "50", live: "10", leads: "5,000", rate: "0%（默认）" } },
+    "旗舰版": { apps: { video: true, open: true, wecom: true }, caps: { accounts: "20", courses: "不限", live: "30", leads: "20,000", rate: "0%" } }
   };
 
   function applyHead() {
@@ -116,10 +116,10 @@
     if (isEdit) {
       document.title = "编辑套餐范围 · 运营后台";
       if (h1) h1.textContent = "编辑套餐范围：" + (disp[plan] || plan);
-      if (crumb) crumb.textContent = "运营后台 / 租户管理 / 套餐管理 / 编辑套餐范围";
+      if (crumb) crumb.textContent = "运营后台 / 系统管理 / 套餐管理 / 编辑套餐范围";
     } else {
       if (h1) h1.textContent = "新增套餐版本";
-      if (crumb) crumb.textContent = "运营后台 / 租户管理 / 套餐管理 / 新增套餐版本";
+      if (crumb) crumb.textContent = "运营后台 / 系统管理 / 套餐管理 / 新增套餐版本";
     }
   }
 

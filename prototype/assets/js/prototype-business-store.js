@@ -155,6 +155,24 @@
           reject_reason: "",
           submitted_at: "2026-09-10 09:00",
           price: 39.9
+        },
+        {
+          goods_id: "G-M001",
+          channel: "store",
+          create_mode: "from_content",
+          content_source: "self",
+          contents: [],
+          manual_delivery: true,
+          category_id: "GC05",
+          tag_ids: [],
+          name: "家庭教育 1 对 1 深度咨询（人工开通）",
+          status: "on_sale",
+          audit_status: "approved",
+          reject_reason: "",
+          submitted_at: "2026-09-12 10:00",
+          price: 599,
+          delivery: "人工开通",
+          refund_rule: "未使用可退"
         }
       ],
       platformGoodsCatalog: [

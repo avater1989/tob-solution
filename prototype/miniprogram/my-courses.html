@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>我的课程 · To-B 小程序</title>
+  <link rel="stylesheet" href="../assets/css/proto.css?v=17" />
+  <link rel="stylesheet" href="../assets/css/mp.css?v=22" />
+  <style>
+    .mc-head { padding:14px 14px 0; }
+    .mc-stat { display:flex; gap:10px; margin-bottom:10px; }
+    .mc-stat > div {
+      flex:1; background:#fff; border-radius:10px; padding:10px 12px;
+      box-shadow:0 1px 4px rgba(15,23,42,.05);
+    }
+    .mc-stat b { display:block; font-size:18px; }
+    .mc-stat span { font-size:11px; color:var(--mp-sub); }
+    .mc-item {
+      display:flex; gap:11px; padding:12px 13px; background:#fff; border-radius:10px;
+      margin-bottom:10px; align-items:center;
+    }
+    .mc-item-cover {
+      width:56px; height:56px; border-radius:8px; flex-shrink:0; color:#fff;
+      display:grid; place-items:center; font-size:12px; font-weight:700; text-align:center; line-height:1.25;
+    }
+    .mc-item-bd { flex:1; min-width:0; }
+    .mc-item-title { font-size:13.5px; font-weight:700; line-height:1.4; }
+    .mc-item-meta { font-size:11px; color:var(--mp-sub); margin-top:4px; line-height:1.6; }
+    .mc-item-cta { font-size:11px; color:var(--mp-brand); font-weight:700; margin-top:5px; }
+    .mc-tag {
+      display:inline-block; font-size:10px; padding:1px 6px; border-radius:3px;
+      background:#eef2f7; color:#4e5969; margin-right:4px;
+    }
+    .mc-tag.done { background:#e8ffea; color:#00b42a; }
+    .mc-tag.doing { background:#e8f3ff; color:#165dff; }
+    .mc-tag.lock { background:#fff7e6; color:#d46b08; }
+  </style>
+</head>
+<body class="mp-page" data-tabbar="0">
+  <div class="mp-frame">
+    <div class="mp-top" style="height:170px"></div>
+    <div class="mp-status"><span>9:41</span><span>我的课程</span><span>100%</span></div>
+    <div class="mp-nav"><a class="back" href="mine.html">←</a>我的课程</div>
+    <div class="mp-body" style="padding:0 14px 16px">
+
+      <!-- 概览 -->
+      <div class="mc-stat" id="mc-stat"></div>
+
+      <!-- 类型筛选 -->
+      <div class="mp-tabs" id="mc-tabs" style="margin-bottom:10px">
+        <a class="mp-tab active" href="#" data-type="">全部</a>
+        <a class="mp-tab" href="#" data-type="online_course">线上课</a>
+        <a class="mp-tab" href="#" data-type="offline">线下课</a>
+        <a class="mp-tab" href="#" data-type="article">文章</a>
+      </div>
+
+      <div id="mc-list"></div>
+    </div>
+  </div>
+  <p class="mp-hint">「我的课程」= 已购买 / 已加入的学习内容（线上课 · 线下课 · 文章）· <a href="mine.html">返回我的</a></p>
+
+  <script src="../assets/js/proto.js"></script>
+  <script src="../assets/js/content-tags.js?v=3"></script>
+  <script src="../assets/js/teachers-store.js?v=3"></script>
+  <script src="../assets/js/course-store.js?v=2"></script>
+  <script src="../assets/js/prototype-business-store.js"></script>
+  <script src="../assets/js/goods-store.js?v=2"></script>
+  <script src="../assets/js/listing-store.js?v=1"></script>
+  <script src="../assets/js/mp-commerce.js?v=3"></script>
+  <script src="../assets/js/mp-shell.js?v=5"></script>
+  <script>
+  (function () {
+    var Mp = window.MpCommerce;
+
+    function esc(s) {
+      return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) {
+        return ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c];
+      });
+    }
+
+    /* 我的课程 = 已购买（权益已开通）或已加入的学习内容，按内容类型统一展示
+       线上课 → learn / course；线下课 → offline-detail；文章 → article-detail */
+    var MINE = [
+      {
+        type: "online_course", id: "C001", name: "小学语文阅读启蒙",
+        sub: "4 节视频课 · 已学至第 2 章", progress: "进度 25%",
+        state: "doing", stateText: "学习中",
+        href: "learn.html?id=C001", cta: "继续学习 →",
+        cover: "阅读<br>启蒙", bg: "linear-gradient(160deg,#ffe0d8,#ffb3a0)"
+      },
+      {
+        type: "online_course", id: "CP001", name: "平台标准课 · 亲子沟通基础",
+        sub: "平台内容 · 免费课 · 长期有效", progress: "未开始",
+        state: "lock", stateText: "可学习",
+        href: "course.html?id=CP001", cta: "开始学习 →",
+        cover: "沟通<br>基础", bg: "linear-gradient(160deg,#d7e4ff,#7ea6ff)"
+      },
+      {
+        type: "offline", id: "O002", name: "亲子沟通实战 · 线下沙龙",
+        sub: "深圳 · 10-12 14:00 开课 · 已报名", progress: "待签到",
+        state: "doing", stateText: "已报名",
+        href: "offline-detail.html?id=O002&signed=1", cta: "查看详情 →",
+        cover: "沙龙", bg: "linear-gradient(135deg,#93c5fd,#2563eb)"
+      },
+      {
+        type: "offline", id: "O006", name: "卓越家族培养计划 · 线下工作坊",
+        sub: "上海 · 秋启 02 期 · 课程进行中", progress: "第 1 天 / 共 2 天",
+        state: "doing", stateText: "进行中",
+        href: "offline-detail.html?id=O006&signed=1", cta: "查看课程 →",
+        cover: "工作坊", bg: "linear-gradient(135deg,#a7f3d0,#059669)"
+      },
+      {
+        type: "article", id: "A002", name: "孩子注意力训练方法论",
+        sub: "张老师 · 2026-08-30 · 已解锁全文", progress: "可阅读",
+        state: "done", stateText: "已购",
+        href: "article-detail.html?id=A002", cta: "继续阅读 →",
+        cover: "专注<br>训练", bg: "linear-gradient(160deg,#ffe7c2,#ffc978)"
+      },
+      {
+        type: "article", id: "A001", name: "9 月新学期家长指南",
+        sub: "编辑部 · 免费精选 · 可分享", progress: "免费",
+        state: "lock", stateText: "免费",
+        href: "article-detail.html?id=A001", cta: "开始阅读 →",
+        cover: "开学<br>指南", bg: "linear-gradient(160deg,#dbeafe,#93c5fd)"
+      }
+    ];
+
+    var TYPE_TEXT = { online_course: "线上课", offline: "线下课", article: "文章" };
+    var filter = "";
+
+    function renderStat() {
+      var doing = MINE.filter(function (m) { return m.state === "doing"; }).length;
+      var types = ["online_course", "offline", "article"].filter(function (t) {
+        return MINE.some(function (m) { return m.type === t; });
+      }).length;
+      document.getElementById("mc-stat").innerHTML =
+        '<div><b>' + MINE.length + '</b><span>已加入内容</span></div>' +
+        '<div><b>' + doing + '</b><span>进行中</span></div>' +
+        '<div><b>' + types + '</b><span>内容类型</span></div>';
+    }
+
+    function renderList() {
+      var list = MINE.filter(function (m) { return !filter || m.type === filter; });
+      document.getElementById("mc-list").innerHTML = list.length
+        ? list.map(function (m) {
+            return '<a class="mc-item" href="' + esc(m.href) + '" style="color:inherit">' +
+              '<div class="mc-item-cover" style="background:' + m.bg + '">' + m.cover + '</div>' +
+              '<div class="mc-item-bd">' +
+                '<div class="mc-item-title">' + esc(m.name) + '</div>' +
+                '<div class="mc-item-meta">' +
+                  '<span class="mc-tag ' + m.state + '">' + esc(m.stateText) + '</span>' +
+                  '<span class="mc-tag">' + esc(TYPE_TEXT[m.type] || "") + '</span>' +
+                  esc(m.progress) + "</div>" +
+                '<div class="mc-item-meta">' + esc(m.sub) + "</div>" +
+                '<div class="mc-item-cta">' + esc(m.cta) + "</div>" +
+              "</div>" +
+            "</a>";
+          }).join("")
+        : '<div class="mp-empty"><div class="mp-empty-ico">📚</div>该类型下还没有内容</div>';
+    }
+
+    document.getElementById("mc-tabs").addEventListener("click", function (e) {
+      var t = e.target.closest(".mp-tab");
+      if (!t) return;
+      e.preventDefault();
+      document.querySelectorAll("#mc-tabs .mp-tab").forEach(function (x) { x.classList.remove("active"); });
+      t.classList.add("active");
+      filter = t.getAttribute("data-type") || "";
+      renderList();
+    });
+
+    renderStat();
+    renderList();
+  })();
+  </script>
+</body>
+</html>

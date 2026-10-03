@@ -8,7 +8,6 @@
 </head>
 <body class="admin-body" data-module="sys" data-nav="message-config" data-title="消息配置" data-crumb="运营后台 / 系统管理 / 消息配置">
 <div id="header-actions">
-  <button class="btn" id="btn-test">测试发送</button>
   <button class="btn btn-primary" id="btn-save">保存设置</button>
 </div>
 <div id="page-content" style="display:none">
@@ -137,7 +136,7 @@
 </style>
 
 <script src="../assets/js/proto.js"></script>
-<script src="../assets/js/ops-shell.js?v=27"></script>
+<script src="../assets/js/ops-shell.js?v=28"></script>
 <script>
 (function () {
   var SCENES = [
@@ -166,7 +165,7 @@
         "<td>"+esc(s.when)+"</td>" +
         "<td><span class=\"tag\">"+esc(s.ch)+"</span></td>" +
         "<td>"+(s.on?'<span class="badge badge-success">已启用</span>':'<span class="badge">已停用</span>')+"</td>" +
-        '<td class="row-actions"><a href="#" data-row-act="edit">编辑</a><a href="#" data-row-act="test">测试发送</a></td>' +
+        '<td class="row-actions"><a href="#" data-row-act="edit">编辑</a></td>' +
         "</tr>";
     }).join("");
   }
@@ -182,7 +181,6 @@
     var tr = el.closest("tr");
     var id = tr ? tr.getAttribute("data-id") : null;
     var s = SCENES.find(function(x){ return x.id === id; });
-    if (act === "test") { Proto.toast("已向管理员手机号发送测试通知（原型）"); return; }
     if (act === "edit" && s) {
       current = s;
       document.getElementById("sc-title").textContent = "编辑场景模板 · " + s.name;
@@ -208,7 +206,6 @@
     s.addEventListener("click", function(){ this.classList.toggle("on"); Proto.toast(this.classList.contains("on")?"渠道已启用":"渠道已停用"); });
   });
 
-  document.getElementById("btn-test").addEventListener("click", function(){ Proto.toast("测试通知已发送（原型）"); });
   document.getElementById("btn-save").addEventListener("click", function(){ Proto.toast("消息配置已保存（原型）"); });
   render();
 })();

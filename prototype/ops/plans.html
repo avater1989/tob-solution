@@ -6,7 +6,7 @@
 <title>套餐管理 · 运营后台</title>
 <link rel="stylesheet" href="../assets/css/proto.css?v=17" />
 </head>
-<body class="admin-body" data-module="tenant" data-nav="plans" data-title="套餐管理" data-crumb="运营后台 / 租户管理 / 套餐管理" data-assist="1">
+<body data-phase2="1" class="admin-body" data-module="sys" data-nav="plans" data-title="套餐管理" data-crumb="运营后台 / 系统管理 / 套餐管理" data-assist="1">
 <div id="page-content" style="display:none">
 
   <!-- 操作条 -->
@@ -84,11 +84,12 @@
             <td>1</td><td>3</td><td>10</td><td>30</td>
           </tr>
           <tr>
-            <td class="name"><b>服务费率策略</b><p class="muted">统一 0.6%（链路 B 商家自建内容），战略合同可签 0.3%</p></td>
-            <td>0.6%</td><td>0.6%</td><td>0.6%</td><td>0.6%</td>
+            <td class="name"><b>服务费率策略</b><p class="muted">统一 0%（链路 B 商家自建内容）</p></td>
+            <td>0%</td><td>0%</td><td>0%</td><td>0%</td>
           </tr>
         </tbody>
       </table>
+      <p class="muted" style="padding:10px 16px;border-top:1px solid var(--color-border);margin:0">「商家账号数 / 直播场次 / 订单服务费率」已改为<b>按租户单独配置</b>：租户开通时默认取套餐值，可在「系统管理 / 租户列表 → 配置 → 容量与费率」中逐项覆盖；本页仅保留套餐默认值。</p>
     </div>
   </div>
 
@@ -122,7 +123,7 @@
             <td><b>标准版</b><br /><span class="muted" style="font-size:12px">个人讲师 / 个体起步</span></td>
             <td>年付 / 续费</td>
             <td><b>¥4,980 / 年</b></td>
-            <td>0.6%（默认）</td>
+            <td>0%（默认）</td>
             <td>含商家管理后台与 C 端小程序，满足单 IP 内容售卖</td>
             <td class="row-actions"><a href="#" class="edit-price">编辑</a></td>
           </tr>
@@ -130,7 +131,7 @@
             <td><b>专业版</b><br /><span class="muted" style="font-size:12px">中小机构标配</span></td>
             <td>年付 / 续费</td>
             <td><b>¥9,800 / 年</b></td>
-            <td>0.6%（默认），战略可签 0.3%</td>
+            <td>0%（默认）</td>
             <td>解锁直播、内容、交易与数据看板，内容容量提升</td>
             <td class="row-actions"><a href="#" class="edit-price">编辑</a></td>
           </tr>
@@ -138,13 +139,13 @@
             <td><b>旗舰版</b><br /><span class="muted" style="font-size:12px">连锁 / 集团机构</span></td>
             <td>年付 / 续费</td>
             <td><b>¥19,800 / 年</b></td>
-            <td>0.3% ~ 0.6%</td>
+            <td>0%</td>
             <td>内容不限量、账号容量最大；可加购子账号与存储包</td>
             <td class="row-actions"><a href="#" class="edit-price">编辑</a></td>
           </tr>
         </tbody>
       </table>
-      <p class="muted" style="padding:10px 16px;border-top:1px solid var(--color-border);margin:0">价格口径：年付为对外建议零售价，战略费率需在合同审批中确认；租户续费 / 转正按当前生效定价快照计费。</p>
+      <p class="muted" style="padding:10px 16px;border-top:1px solid var(--color-border);margin:0">价格口径：年付为对外建议零售价，费率默认 0%，如需调整需在合同审批中确认；租户续费 / 转正按当前生效定价快照计费。</p>
     </div>
   </div>
 
@@ -168,7 +169,7 @@
         </select>
       </div>
       <div class="field"><label>建议零售价</label><input id="price-amount" placeholder="例：¥4,980 / 年" /></div>
-      <div class="field"><label>服务费率</label><input id="price-fee" placeholder="例：0.6%（默认）" /></div>
+      <div class="field"><label>服务费率</label><input id="price-fee" placeholder="例：0%（默认）" /></div>
       <div class="field" style="grid-column:1/-1"><label>说明</label>
         <textarea id="price-desc" rows="2" style="width:100%;padding:8px;border:1px solid var(--color-border);border-radius:6px"></textarea>
       </div>
@@ -223,7 +224,7 @@
 </style>
 
 <script src="../assets/js/proto.js"></script>
-<script src="../assets/js/ops-shell.js?v=27"></script>
+<script src="../assets/js/ops-shell.js?v=28"></script>
 <script>
 (function () {
   var mask = document.getElementById("mask");

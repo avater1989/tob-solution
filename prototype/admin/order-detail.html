@@ -12,6 +12,7 @@
   <button class="btn" id="btn-copy" type="button">复制订单号</button>
   <button class="btn" id="btn-add-note" type="button">添加备注</button>
   <button class="btn btn-primary" id="btn-refund" type="button">发起售后</button>
+  <button class="btn btn-primary" id="btn-open-right" type="button" style="display:none">开通权益</button>
 </div>
 <div id="page-content" style="display:none">
 
@@ -88,7 +89,6 @@
           <div class="kv-row"><span>权益回收状态</span><b id="od-recycle">—</b></div>
           <div class="kv-row"><span>退款状态</span><b id="od-refund-status">—</b></div>
           <div class="kv-row"><span>退款与权益回收</span><b id="od-refund-link">—</b></div>
-          <div class="kv-row"><span>权益开通记录</span><b><a href="entitlement.html" class="link">查看记录 →</a></b></div>
         </div>
       </div>
     </div>
@@ -311,7 +311,7 @@
 <script src="../assets/js/proto.js"></script>
 <script src="../assets/js/order-demo-store.js"></script>
 <script src="../assets/js/user-store.js?v=3"></script>
-<script src="../assets/js/admin-shell.js?v=28"></script>
+<script src="../assets/js/admin-shell.js?v=31"></script>
 <script>
 (function () {
   var US = window.UserStore;
@@ -398,7 +398,7 @@
   var unpaid = order.payStatus === "待付款";
   var refunded = order.payStatus === "已退款" || order.refundStatus === "已退款" ||
     (right && right.status === "已退款回收");
-  var refunding = !unpaid && !refunded && String(order.refundStatus || "").indexOf("退款中") >= 0;
+  var refunding = !unpaid && !refunded && /(退款中|用户已申请)/.test(String(order.refundStatus || ""));
   var rightStatus = (right && right.status) || order.rightStatus || "—";
   var failOpen = rightStatus === "开通失败";
   var expired = rightStatus === "已到期";
@@ -415,6 +415,10 @@
   var payChannel = unpaid ? "—" : (order.payChannel || "通联支付（微信小程序内）");
   var refundHit = (order.refundId && US && US.findRefund) ? US.findRefund(order.refundId, uid) : null;
   var refund = demoRefund || (refundHit ? refundHit.refund : null);
+
+  /* 人工开通权益：交付方式含「人工」且已支付、权益未开通（无固定内容资产的商品） */
+  var needManualOpen = deliverType.indexOf("人工") >= 0 && !unpaid && !refunded && !refunding &&
+    (rightStatus === "未开通" || rightStatus === "待开通" || rightStatus === "—");
 
   /* from-user banner */
   var showFromUser = from === "user" || !!uidParam;
@@ -513,6 +517,18 @@
       osStep("done", 2, "支付成功", hhmm(order.time)) +
       osStep("done", 3, "权益已开通", hhmm(openAt)) +
       osStep("cur", 4, "已到期", (right && right.endAt) ? String(right.endAt).slice(5) : "");
+  } else if (needManualOpen) {
+    badge.className = "badge badge-warn";
+    badge.textContent = "已支付 · 待人工开通权益";
+    alertEl.className = "alert alert-warn";
+    alertEl.style.marginTop = "10px";
+    alertEl.style.fontSize = "13px";
+    alertEl.innerHTML = "本单已支付，交付方式为<b>人工开通</b>，请为买家开通权益后完成履约。";
+    flow.innerHTML =
+      osStep("done", 1, "确认订单", hhmm(order.time)) +
+      osStep("done", 2, "支付成功", hhmm(order.time)) +
+      osStep("cur", 3, "待人工开通", "") +
+      osStep("", 4, "订单完成", "");
   } else {
     badge.className = "badge badge-info";
     badge.textContent = (order.payStatus === "已完成" ? "已完成" : "已支付") + " · 权益已开通";
@@ -694,13 +710,13 @@
 
   // ===== 分账：按商品来源走两条链路 =====
   // 链路 A（平台内容）→ 佣金模式：商家拿佣金（默认 20%），课程金额留存艺博账户
-  // 链路 B（商家自建）→ 服务费模式：商家拿课程金额，平台收服务费（默认 0.6%）
+  // 链路 B（商家自建）→ 服务费模式：商家拿课程金额，平台收服务费（默认 0%）
   var contentSource = order.contentSource || "self";
   var isPlatform = contentSource === "platform";
   var settleMode = order.settleMode || (isPlatform ? "commission" : "service_fee");
   var rate = isPlatform
     ? (order.commissionRate != null ? order.commissionRate : 20)
-    : (order.serviceFeeRate != null ? order.serviceFeeRate : 0.6);
+    : (order.serviceFeeRate != null ? order.serviceFeeRate : 0);
   /* 未支付 或 免费场次（0 元且无渠道支付流水）→ 不产生分账 */
   var noTxn = !order.channelTxn || order.channelTxn === "—";
   var freeSession = noTxn && amount === 0;
@@ -885,11 +901,14 @@
   notes.forEach(function (n) {
     logs.push({ at: n.at, text: "商家备注：" + n.text, by: n.by || "商家管理员" });
   });
-  logs.sort(function (a, b) { return String(b.at).localeCompare(String(a.at)); });
-  document.getElementById("od-logs").innerHTML = logs.map(function (l) {
-    return "<li><span class=\"log-time\">" + esc(l.at) + "</span>" + esc(l.text) +
-      '<span class="muted"> · ' + esc(l.by || "") + "</span></li>";
-  }).join("") || "<li class=\"muted\">暂无记录</li>";
+  function renderLogs() {
+    logs.sort(function (a, b) { return String(b.at).localeCompare(String(a.at)); });
+    document.getElementById("od-logs").innerHTML = logs.map(function (l) {
+      return "<li><span class=\"log-time\">" + esc(l.at) + "</span>" + esc(l.text) +
+        '<span class="muted"> · ' + esc(l.by || "") + "</span></li>";
+    }).join("") || "<li class=\"muted\">暂无记录</li>";
+  }
+  renderLogs();
 
   /* ===== 备注弹窗 ===== */
   var mask = document.getElementById("mask");
@@ -939,6 +958,25 @@
   if (refunded || refunding || unpaid) {
     document.getElementById("btn-refund").style.display = "none";
     document.getElementById("btn-refund-inline").style.display = "none";
+  }
+
+  /* ===== 人工开通权益按钮 ===== */
+  var btnOpenRight = document.getElementById("btn-open-right");
+  if (needManualOpen) {
+    btnOpenRight.style.display = "";
+    btnOpenRight.addEventListener("click", function () {
+      if (!confirm("确认为该订单人工开通权益？开通后买家即可访问对应内容。")) return;
+      document.getElementById("od-right-status").innerHTML = '<span class="badge badge-info">已开通</span>';
+      var now = (window.OrderDemoStore && OrderDemoStore.nowText) ? OrderDemoStore.nowText() : "";
+      document.getElementById("od-right-acquire").textContent = now;
+      document.getElementById("od-right-acquire-method").textContent = "人工开通";
+      logs.push({ at: now, text: "商家人工开通权益「" + (order.product || "") + "」", by: "商家管理员" });
+      renderLogs();
+      btnOpenRight.style.display = "none";
+      badge.textContent = "已支付 · 权益已开通";
+      alertEl.innerHTML = "本单权益已由商家<b>人工开通</b>，完成履约。";
+      Proto.toast("权益已人工开通（原型）");
+    });
   }
 })();
 </script>

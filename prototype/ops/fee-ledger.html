@@ -16,7 +16,7 @@
 <div id="page-content" style="display:none">
 
   <div class="alert alert-info" style="margin-bottom:12px">
-    <span>口径：平台费率收入 = 佣金收入（链路 A · 平台内容，默认 20%）+ 服务费收入（链路 B · 商家自建内容，默认 0.6%）；退款按账期冲减。台账与对账单、结算单、发票同源，可相互追溯。</span>
+    <span>口径：平台费率收入 = 佣金收入（链路 A · 平台内容，默认 20%）+ 服务费收入（链路 B · 商家自建内容，默认 0%）；退款按账期冲减。台账与对账单、结算单、发票同源，可相互追溯。</span>
   </div>
 
   <!-- 统计 -->
@@ -82,11 +82,11 @@
         </thead>
         <tbody>
           <tr><td>09-04 ~ 09-10</td><td>星启家庭教育</td><td>家长课堂</td><td>小程序</td><td>¥8,432.20</td><td>佣金 20%（链路 A）</td><td><b>¥6,745.76</b></td><td class="danger">-¥30.88</td><td><span class="badge badge-info">是</span></td><td><span class="badge badge-success">已到账</span></td></tr>
-          <tr><td>09-04 ~ 09-10</td><td>晨光少儿成长</td><td>家长课堂</td><td>小程序</td><td>¥12,648.50</td><td>服务费 0.6%（链路 B）</td><td><b>¥75.89</b></td><td class="danger">-¥23.86</td><td><span class="badge badge-info">是</span></td><td><span class="badge badge-success">已到账</span></td></tr>
-          <tr><td>09-04 ~ 09-10</td><td>青藤家长学堂</td><td>少儿专注力</td><td>视频号</td><td>¥3,069.00</td><td>服务费 0.6%（链路 B）</td><td><b>¥18.41</b></td><td class="danger">-¥0.00</td><td><span class="badge badge-info">是</span></td><td><span class="badge badge-warn">在途</span></td></tr>
-          <tr><td>09-04 ~ 09-10</td><td>慧心教育</td><td>亲子训练营</td><td>小程序</td><td>¥4,135.30</td><td>服务费 0.6%（链路 B）</td><td><b>¥24.81</b></td><td class="danger">-¥0.06</td><td><span class="badge">否</span></td><td><span class="badge badge-warn">在途</span></td></tr>
-          <tr><td>09-04 ~ 09-10</td><td>乐学伴家庭</td><td>全部商品</td><td>直播间</td><td>¥1,782.00</td><td>服务费 0.6%（链路 B）</td><td><b>¥10.69</b></td><td class="danger">-¥0.00</td><td><span class="badge">否</span></td><td><span class="badge badge-warn">在途</span></td></tr>
-          <tr><td>08-28 ~ 09-03</td><td>星启家庭教育</td><td>家长课堂</td><td>小程序</td><td>¥9,876.40</td><td>服务费 0.6%（链路 B）</td><td><b>¥59.26</b></td><td class="danger">-¥9.90</td><td><span class="badge badge-info">是</span></td><td><span class="badge badge-success">已到账</span></td></tr>
+          <tr><td>09-04 ~ 09-10</td><td>晨光少儿成长</td><td>家长课堂</td><td>小程序</td><td>¥12,648.50</td><td>服务费 0%（链路 B）</td><td><b>¥0.00</b></td><td class="danger">-¥0.00</td><td><span class="badge badge-info">是</span></td><td><span class="badge badge-success">已到账</span></td></tr>
+          <tr><td>09-04 ~ 09-10</td><td>青藤家长学堂</td><td>少儿专注力</td><td>视频号</td><td>¥3,069.00</td><td>服务费 0%（链路 B）</td><td><b>¥0.00</b></td><td class="danger">-¥0.00</td><td><span class="badge badge-info">是</span></td><td><span class="badge badge-warn">在途</span></td></tr>
+          <tr><td>09-04 ~ 09-10</td><td>慧心教育</td><td>亲子训练营</td><td>小程序</td><td>¥4,135.30</td><td>服务费 0%（链路 B）</td><td><b>¥0.00</b></td><td class="danger">-¥0.00</td><td><span class="badge">否</span></td><td><span class="badge badge-warn">在途</span></td></tr>
+          <tr><td>09-04 ~ 09-10</td><td>乐学伴家庭</td><td>全部商品</td><td>直播间</td><td>¥1,782.00</td><td>服务费 0%（链路 B）</td><td><b>¥0.00</b></td><td class="danger">-¥0.00</td><td><span class="badge">否</span></td><td><span class="badge badge-warn">在途</span></td></tr>
+          <tr><td>08-28 ~ 09-03</td><td>星启家庭教育</td><td>家长课堂</td><td>小程序</td><td>¥9,876.40</td><td>服务费 0%（链路 B）</td><td><b>¥0.00</b></td><td class="danger">-¥0.00</td><td><span class="badge badge-info">是</span></td><td><span class="badge badge-success">已到账</span></td></tr>
         </tbody>
       </table>
     </div>
@@ -116,7 +116,7 @@
 </style>
 
 <script src="../assets/js/proto.js"></script>
-<script src="../assets/js/ops-shell.js?v=27"></script>
+<script src="../assets/js/ops-shell.js?v=28"></script>
 <script>
 (function () {
   document.getElementById("btn-export").addEventListener("click", function () { Proto.toast("已导出服务费台账报表（原型）"); });

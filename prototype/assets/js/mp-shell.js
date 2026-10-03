@@ -4,7 +4,7 @@
     try {
       var curPhase = document.currentScript;
       var phaseSrc = (curPhase && curPhase.src)
-        ? curPhase.src.replace(/mp-shell\.js[^/]*$/, "phase2-config.js?v=5")
+        ? curPhase.src.replace(/mp-shell\.js[^/]*$/, "phase2-config.js?v=7")
         : "../assets/js/phase2-config.js";
       var xhrPhase = new XMLHttpRequest();
       xhrPhase.open("GET", phaseSrc, false);

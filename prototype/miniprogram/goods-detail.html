@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>商品详情 · To-B 小程序</title>
   <link rel="stylesheet" href="../assets/css/proto.css?v=17" />
-  <link rel="stylesheet" href="../assets/css/mp.css?v=21" />
+  <link rel="stylesheet" href="../assets/css/mp.css?v=22" />
   <style>
     .gdp-price { color:#dc2626; font-size:24px; font-weight:700; }
     .gdp-origin { color:#c0c4cc; font-size:13px; text-decoration:line-through; margin-left:8px; }
@@ -14,6 +14,13 @@
     .gdp-k { color:#86909c; flex-shrink:0; }
     .gdp-v { color:#1d2129; text-align:right; }
     .gdp-owned { background:#e8ffea; color:#00b42a; font-size:12px; padding:8px 12px; border-radius:8px; margin-top:10px; }
+    .gdp-sell { background:linear-gradient(135deg,#fff7e6,#fffdf7); border:1px solid #ffe4b5; border-radius:10px; padding:12px 14px; font-size:13px; line-height:1.65; color:#8a5a00; }
+    .gdp-detail { background:#fff; border-radius:10px; padding:14px; font-size:13px; line-height:1.75; color:#4e5969; }
+    .gdp-detail p { margin:0 0 10px; }
+    .gdp-detail p:last-child { margin-bottom:0; }
+    .gdp-detail ul { margin:0 0 10px; padding-left:20px; }
+    .gdp-detail li { margin-bottom:4px; }
+    .gdp-detail b { color:#1d2129; }
   </style>
 </head>
 <body class="mp-page" data-tabbar="0">
@@ -23,19 +30,18 @@
     <div class="mp-nav"><a class="back" href="home.html" id="gdp-back">←</a>商品详情</div>
     <div class="mp-body" id="gdp-root"></div>
     <div class="mp-bottom-bar" id="gdp-bar">
-      <button class="mp-btn mp-btn-outline" type="button" id="gdp-fav" style="width:88px">收藏</button>
-      <button class="mp-btn" type="button" id="gdp-cta" style="flex:1">立即购买</button>
+      <button class="mp-btn" type="button" id="gdp-cta" style="flex:1">去支付</button>
     </div>
   </div>
-  <p class="mp-hint">仅「跳转商品详情页」下单方式会进入本页 · <a href="../admin/goods.html">管理端商品列表</a></p>
+  <p class="mp-hint">C 端所有购买入口都会进入本页 · 本页只有「去支付」，点击后进入收银台 · <a href="../admin/goods.html">管理端商品列表</a></p>
 
   <script src="../assets/js/proto.js"></script>
   <script src="../assets/js/goods-taxonomy.js?v=1"></script>
   <script src="../assets/js/prototype-business-store.js"></script>
   <script src="../assets/js/goods-store.js?v=2"></script>
   <script src="../assets/js/listing-store.js?v=1"></script>
-  <script src="../assets/js/mp-commerce.js?v=2"></script>
-  <script src="../assets/js/mp-shell.js?v=4"></script>
+  <script src="../assets/js/mp-commerce.js?v=3"></script>
+  <script src="../assets/js/mp-shell.js?v=5"></script>
   <script>
   (function () {
     var Mp = window.MpCommerce;
@@ -55,6 +61,9 @@
     var contentId = qs.get("content_id") || "";
     var returnUrl = qs.get("return") || "";
 
+    /* 演示商品（线下课 / 直播 / 文章门票）需要先补种，否则首次直开本页会取不到商品 */
+    if (GD && GD.ensureDemoGoods) GD.ensureDemoGoods();
+
     var goods = GD ? GD.get(goodsId) : null;
     var listing = (LS && listingId) ? LS.get(listingId) : null;
     if (!contentId && goods) contentId = goods.content_id;
@@ -73,11 +82,60 @@
     var c = Mp.copyOf(goods.content_type);
     var purchasable = goods.audit_status === "approved" && goods.status === "on_sale";
 
+    /* 商品卖点 / 商品详情 / 交付方式 / 退款规则：与后台「商品 - 基本信息 / 交付与售后」字段一一对应 */
+    var DETAIL = {
+      online_course: {
+        sell: "系统化章节 + 配套练习，支付后立即开通，长期有效、随时回看。",
+        html: "<p>本商品交付该<b>线上课</b>的学习权益，支付成功后可在「我的 → 全部课程」进入学习。</p>" +
+              "<p><b>你将获得</b></p>" +
+              "<ul><li>全部章节视频与配套资料</li><li>学习进度记录、断点续看</li><li>课程后续更新内容免费同步</li></ul>" +
+              "<p><b>适合人群</b>：希望系统掌握家庭教育方法的家长与从业者。</p>",
+        delivery: "支付后自动开通",
+        refund: "未使用可退（支付后 7 天内且学习进度 ≤ 10%）"
+      },
+      offline: {
+        sell: "本场线下课报名资格，支付后即占用名额，请按课程时间到场。",
+        html: "<p>本商品交付<b>单场线下课</b>的报名资格（按场次隔离，不含其他场次）。</p>" +
+              "<p><b>报名后</b></p>" +
+              "<ul><li>可在「我的 → 全部课程」查看报名凭证</li><li>开课前 1 天收到到场提醒</li><li>现场凭报名手机号签到入场</li></ul>" +
+              "<p><b>温馨提示</b>：名额有限，报名后请尽量到场；如需取消请在开课前操作。</p>",
+        delivery: "支付后自动开通",
+        refund: "未开课可退，开课后不支持退款"
+      },
+      article: {
+        sell: "一次购买永久阅读，解锁全文与文中的模板 / 清单。",
+        html: "<p>本商品交付该文章的<b>全文阅读权益</b>，支付成功后立即解锁。</p>" +
+              "<p><b>你将获得</b></p>" +
+              "<ul><li>本文全部正文内容</li><li>文中提到的模板 / 清单 / 话术示例</li><li>长期有效的阅读权限</li></ul>" +
+              "<p><b>说明</b>：文章权益不含课程与直播权益，如需系统学习请购买对应课程。</p>",
+        delivery: "支付后自动开通",
+        refund: "未阅读全文可退"
+      },
+      live: {
+        sell: "本场直播观看权，含结束后 48 小时回放。",
+        html: "<p>本商品交付<b>单场直播</b>的观看资格。</p>" +
+              "<p><b>你将获得</b></p>" +
+              "<ul><li>开播时进入直播间观看</li><li>直播结束后 48 小时内回放</li><li>直播中讲师答疑与资料领取</li></ul>" +
+              "<p><b>温馨提示</b>：回放有效期以本页「权益与售后」展示为准。</p>",
+        delivery: "支付后自动开通",
+        refund: "直播门票不支持退款"
+      },
+      plan: {
+        sell: "一对一顾问对接，按计划周期分阶段推进。",
+        html: "<p>本商品交付定制化计划的完整学习权益。</p>" +
+              "<p><b>你将获得</b></p>" +
+              "<ul><li>本计划全部关卡与任务</li><li>专属顾问对接与阶段复盘</li><li>计划周期内的资料更新</li></ul>",
+        delivery: "人工开通",
+        refund: "按已使用比例退款"
+      }
+    };
+    var dv = DETAIL[goods.content_type] || DETAIL.online_course;
+
     /* 交付内容：组合商品列出全部内容（1 商品 : N 内容） */
     var deliverList = (GD && GD.contentsOf) ? GD.contentsOf(goods) : [];
     function deliverRowHtml() {
       if (!deliverList.length) {
-        return '<div class="gdp-row"><span class="gdp-k">所属内容</span><span class="gdp-v">—</span></div>';
+        return '<div class="gdp-row"><span class="gdp-k">交付内容</span><span class="gdp-v">—</span></div>';
       }
       var names = deliverList.map(function (d) {
         var cc = LS ? LS.resolveContent(d.content_type, d.content_id) : null;
@@ -85,7 +143,7 @@
           esc(Mp.typeLabel(d.content_type)) + " · " + esc(d.content_id) + "</span>";
       });
       return '<div class="gdp-row"><span class="gdp-k">' +
-        (deliverList.length > 1 ? "交付内容（组合 " + deliverList.length + " 项）" : "所属内容") +
+        (deliverList.length > 1 ? "交付内容（组合 " + deliverList.length + " 项）" : "交付内容") +
         '</span><span class="gdp-v" style="text-align:right">' + names.join("<br>") + "</span></div>";
     }
 
@@ -96,7 +154,7 @@
         '<div class="mp-crow-tags" style="margin-top:8px">' +
           '<span class="mp-crow-tag">' + esc(Mp.typeLabel(goods.content_type)) + "</span>" +
           '<span class="mp-crow-tag">' + esc(goods.goods_id) + "</span>" +
-          '<span class="mp-crow-tag">' + (goods.audit_status === "approved" ? "已通过审核" : "审核中") + "</span>" +
+          '<span class="mp-crow-tag">' + (goods.audit_status === "approved" ? "已上架" : "未上架") + "</span>" +
         "</div>" +
         '<div style="margin-top:10px"><span class="gdp-price">¥' + priceTxt + "</span>" +
           (goods.list_price > 0 ? '<span class="gdp-origin">¥' + Number(goods.list_price).toFixed(2) + "</span>" : "") +
@@ -105,12 +163,22 @@
       "</div>" +
 
       '<div class="mp-section">' +
+        '<div class="mp-section-title">商品卖点</div>' +
+        '<div class="gdp-sell">' + esc(dv.sell) + "</div>" +
+      "</div>" +
+
+      '<div class="mp-section">' +
+        '<div class="mp-section-title">商品详情</div>' +
+        '<div class="gdp-detail">' + dv.html + "</div>" +
+      "</div>" +
+
+      '<div class="mp-section">' +
         '<div class="mp-section-title">商品信息</div>' +
         '<div style="background:#fff;border-radius:10px;padding:4px 14px">' +
           deliverRowHtml() +
           '<div class="gdp-row"><span class="gdp-k">商品类目</span><span class="gdp-v">' + esc((Tax && Tax.catPathLabel && Tax.catPathLabel(goods.category_id)) || "—") + "</span></div>" +
           '<div class="gdp-row"><span class="gdp-k">内容来源</span><span class="gdp-v">' + (goods.content_source === "platform" ? "平台内容" : "商家自建") + "</span></div>" +
-          '<div class="gdp-row"><span class="gdp-k">结算模式</span><span class="gdp-v">' + (goods.content_source === "platform" ? "佣金模式（平台 80% / 商家 20%）" : "服务费模式（平台 0.6%）") + "</span></div>" +
+          '<div class="gdp-row"><span class="gdp-k">结算模式</span><span class="gdp-v">' + (goods.content_source === "platform" ? "佣金模式（平台 80% / 商家 20%）" : "服务费模式（平台 0%）") + "</span></div>" +
         "</div>" +
       "</div>" +
 
@@ -121,6 +189,8 @@
           '<div class="gdp-row"><span class="gdp-k">包含内容</span><span class="gdp-v">' + esc(c.include) + "</span></div>" +
           '<div class="gdp-row"><span class="gdp-k">开课方式</span><span class="gdp-v">' + esc(c.startHow) + "</span></div>" +
           '<div class="gdp-row"><span class="gdp-k">有效期</span><span class="gdp-v">' + esc(c.validity + "（" + c.validityStart + "）") + "</span></div>" +
+          '<div class="gdp-row"><span class="gdp-k">交付方式</span><span class="gdp-v">' + esc(dv.delivery) + "</span></div>" +
+          '<div class="gdp-row"><span class="gdp-k">退款规则</span><span class="gdp-v">' + esc(dv.refund) + "</span></div>" +
           '<div class="gdp-row"><span class="gdp-k">客服 / 售后</span><span class="gdp-v">' + esc(c.service) + "</span></div>" +
         "</div>" +
       "</div>" +
@@ -135,32 +205,28 @@
       (!purchasable ? '<p style="padding:0 16px;color:#d46b08;font-size:12px">该商品当前未上架或未通过审核，暂不可购买。</p>' : "");
 
     var cta = document.getElementById("gdp-cta");
-    if (owned) cta.textContent = "已购买 · 去学习";
-    else cta.textContent = purchasable ? ("立即购买 ¥" + priceTxt) : "暂不可购买";
-    if (!purchasable && !owned) cta.disabled = true;
-
-    document.getElementById("gdp-fav").addEventListener("click", function () {
-      Proto.toast("已收藏（原型）");
-    });
+    if (owned) {
+      cta.textContent = "已购买 · 去学习";
+    } else if (purchasable) {
+      cta.textContent = "去支付 ¥" + priceTxt;
+    } else {
+      cta.textContent = "暂不可购买";
+      cta.disabled = true;
+    }
 
     cta.addEventListener("click", function () {
       if (owned) {
-        location.href = returnUrl || (contentId ? ("course.html?id=" + encodeURIComponent(contentId)) : "mine.html");
+        location.href = returnUrl || (contentId ? ("learn.html?id=" + encodeURIComponent(contentId)) : "my-courses.html");
         return;
       }
       if (!purchasable) return;
-      Mp.openBuyNotice({
-        contentId: contentId,
-        contentType: goods.content_type,
-        listingId: listingId,
-        goodsId: goods.goods_id,
-        orderMode: "jump_goods",
-        title: goods.name,
-        /* 保留下单前的来源链接，支付成功后回到内容页（如 course.html?...&bought=1） */
-        returnUrl: returnUrl || ("goods-detail.html?goods_id=" + encodeURIComponent(goods.goods_id) +
-          (listingId ? "&listing_id=" + encodeURIComponent(listingId) : "") +
-          (contentId ? "&content_id=" + encodeURIComponent(contentId) : ""))
-      });
+      /* 商品详情页只有「去支付」：点击进入收银台 */
+      var q = new URLSearchParams();
+      q.set("goods_id", goods.goods_id);
+      if (listingId) q.set("listing_id", listingId);
+      if (contentId) q.set("content_id", contentId);
+      if (returnUrl) q.set("return", returnUrl);
+      location.href = "cashier.html?" + q.toString();
     });
   })();
   </script>

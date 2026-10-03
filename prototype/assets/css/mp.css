@@ -699,6 +699,7 @@
 .mp-order-state.wait { color: #f59e0b; }
 .mp-order-state.done { color: var(--mp-green); }
 .mp-order-state.refund { color: #86909c; }
+.mp-order-state.apply { color: #f04438; }
 .mp-order-bd { display: flex; gap: 11px; padding: 12px 13px; }
 .mp-order-img {
   width: 72px; height: 72px; border-radius: 10px; flex-shrink: 0;
@@ -857,6 +858,17 @@
   background: linear-gradient(135deg, #ff6a45, #f04438);
   color: #fff; font-size: 10.5px; font-weight: 700;
   padding: 3px 8px;
+}
+/* 直播中（进行中）状态角标：覆盖 .mp-lcard-time 的深色底，改为品牌红 */
+.mp-lcard-live {
+  background: linear-gradient(135deg, #ff6a45, #f04438);
+  gap: 4px;
+  padding-left: 8px;
+}
+.mp-lcard-live i {
+  width: 5px; height: 5px; border-radius: 50%; background: #fff;
+  display: inline-block; flex-shrink: 0;
+  animation: mpPulse 1.4s infinite ease-in-out;
 }
 .mp-lcard-title {
   font-size: 13.5px; font-weight: 700; color: var(--mp-ink);

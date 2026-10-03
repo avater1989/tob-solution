@@ -15,7 +15,7 @@
 
   <!-- 顶部统计 -->
   <div class="grid-4" style="margin-bottom:16px;grid-template-columns:repeat(3,1fr)">
-    <div class="stat"><div class="label">待确认结算额</div><div class="value">¥12,335.44</div><div class="hint">账期 03-25 ~ 03-31</div></div>
+    <div class="stat"><div class="label">待确认结算额</div><div class="value">¥12,409.90</div><div class="hint">账期 03-25 ~ 03-31</div></div>
     <div class="stat"><div class="label">结算中</div><div class="value">¥0.00</div><div class="hint">无进行中打款</div></div>
     <div class="stat"><div class="label">累计已结算</div><div class="value">¥46,830.55</div><div class="hint">共 6 期</div></div>
   </div>
@@ -58,8 +58,8 @@
           <td>86</td>
           <td>¥8,432.20</td>
           <td>¥308.80</td>
-          <td>¥48.74</td>
-          <td><b>¥8,074.66</b></td>
+          <td>¥0.00</td>
+          <td><b>¥8,123.40</b></td>
           <td><span class="badge badge-warn">待确认</span></td>
           <td>2026-04-08 03:00</td>
           <td class="row-actions">
@@ -73,8 +73,8 @@
           <td>128</td>
           <td>¥12,648.50</td>
           <td>¥238.60</td>
-          <td>¥74.46</td>
-          <td><b>¥12,335.44</b></td>
+          <td>¥0.00</td>
+          <td><b>¥12,409.90</b></td>
           <td><span class="badge badge-warn">待确认</span></td>
           <td>2026-04-01 03:00</td>
           <td class="row-actions">
@@ -88,8 +88,8 @@
           <td>96</td>
           <td>¥9,876.40</td>
           <td>¥99.00</td>
-          <td>¥58.66</td>
-          <td><b>¥9,718.74</b></td>
+          <td>¥0.00</td>
+          <td><b>¥9,777.40</b></td>
           <td><span class="badge badge-success">已打款</span></td>
           <td>2026-03-25 03:00</td>
           <td class="row-actions">
@@ -102,8 +102,8 @@
           <td>74</td>
           <td>¥8,102.30</td>
           <td>¥0.00</td>
-          <td>¥48.61</td>
-          <td><b>¥8,053.69</b></td>
+          <td>¥0.00</td>
+          <td><b>¥8,102.30</b></td>
           <td><span class="badge badge-success">已完结</span></td>
           <td>2026-03-18 03:00</td>
           <td class="row-actions">
@@ -145,7 +145,7 @@
     <div class="settle-calc">
       <div class="calc-row"><span>交易额（已对平）</span><b id="sd-gross">—</b></div>
       <div class="calc-row"><span>退款冲抵</span><b id="sd-refund" class="danger">—</b></div>
-      <div class="calc-row"><span>平台服务费（0.6%）</span><b id="sd-fee" class="danger">—</b></div>
+      <div class="calc-row"><span>平台服务费（0%）</span><b id="sd-fee" class="danger">—</b></div>
       <div class="calc-row total"><span>应结算金额</span><b id="sd-net">—</b></div>
     </div>
 
@@ -153,8 +153,8 @@
     <table class="data">
       <thead><tr><th>分账方</th><th>比例</th><th>金额</th><th>状态</th></tr></thead>
       <tbody id="sd-split">
-        <tr><td>星启家庭教育（商户）</td><td>99.4%</td><td id="sd-split-m">—</td><td><span class="badge" id="sd-split-ms">待分账</span></td></tr>
-        <tr><td>艺博平台（服务费）</td><td>0.6%</td><td id="sd-split-p">—</td><td><span class="badge" id="sd-split-ps">待分账</span></td></tr>
+        <tr><td>星启家庭教育（商户）</td><td>100%</td><td id="sd-split-m">—</td><td><span class="badge" id="sd-split-ms">待分账</span></td></tr>
+        <tr><td>艺博平台（服务费）</td><td>0%</td><td id="sd-split-p">—</td><td><span class="badge" id="sd-split-ps">待分账</span></td></tr>
       </tbody>
     </table>
 
@@ -188,7 +188,7 @@
 </style>
 
 <script src="../assets/js/proto.js"></script>
-<script src="../assets/js/admin-shell.js?v=28"></script>
+<script src="../assets/js/admin-shell.js?v=31"></script>
 <script>
 (function () {
   var mask = document.getElementById("mask");
@@ -201,10 +201,10 @@
   document.querySelectorAll("[data-close]").forEach(function (n) { n.addEventListener("click", closeAll); });
 
   var bills = {
-    ST20260407001: { period: "04-01 ~ 04-07", count: "86", gross: "¥8,432.20", refund: "¥308.80", fee: "¥48.74", net: "¥8,074.66", status: "待确认", time: "2026-04-08 03:00", payTime: "确认后 T+1", recon: "RC20260407001" },
-    ST20260331001: { period: "03-25 ~ 03-31", count: "128", gross: "¥12,648.50", refund: "¥238.60", fee: "¥74.46", net: "¥12,335.44", status: "待确认", time: "2026-04-01 03:00", payTime: "确认后 T+1", recon: "RC20260331001" },
-    ST20260324001: { period: "03-18 ~ 03-24", count: "96", gross: "¥9,876.40", refund: "¥99.00", fee: "¥58.66", net: "¥9,718.74", status: "已打款", time: "2026-03-25 03:00", payTime: "2026-03-26 10:20", recon: "RC20260324001" },
-    ST20260317001: { period: "03-11 ~ 03-17", count: "74", gross: "¥8,102.30", refund: "¥0.00", fee: "¥48.61", net: "¥8,053.69", status: "已完结", time: "2026-03-18 03:00", payTime: "2026-03-19 09:45", recon: "RC20260317001" },
+    ST20260407001: { period: "04-01 ~ 04-07", count: "86", gross: "¥8,432.20", refund: "¥308.80", fee: "¥0.00", net: "¥8,123.40", status: "待确认", time: "2026-04-08 03:00", payTime: "确认后 T+1", recon: "RC20260407001" },
+    ST20260331001: { period: "03-25 ~ 03-31", count: "128", gross: "¥12,648.50", refund: "¥238.60", fee: "¥0.00", net: "¥12,409.90", status: "待确认", time: "2026-04-01 03:00", payTime: "确认后 T+1", recon: "RC20260331001" },
+    ST20260324001: { period: "03-18 ~ 03-24", count: "96", gross: "¥9,876.40", refund: "¥99.00", fee: "¥0.00", net: "¥9,777.40", status: "已打款", time: "2026-03-25 03:00", payTime: "2026-03-26 10:20", recon: "RC20260324001" },
+    ST20260317001: { period: "03-11 ~ 03-17", count: "74", gross: "¥8,102.30", refund: "¥0.00", fee: "¥0.00", net: "¥8,102.30", status: "已完结", time: "2026-03-18 03:00", payTime: "2026-03-19 09:45", recon: "RC20260317001" },
   };
 
   function parseMoney(s) { return parseFloat(s.replace(/[¥,]/g, "")); }
@@ -220,7 +220,7 @@
     document.getElementById("sd-recon").textContent = d.recon + " →";
     document.getElementById("sd-gross").textContent = d.gross;
     document.getElementById("sd-refund").textContent = "-" + d.refund;
-    document.getElementById("sd-fee").textContent = "-" + d.fee;
+    document.getElementById("sd-fee").textContent = d.fee;
     document.getElementById("sd-net").textContent = d.net;
     var net = parseMoney(d.net);
     document.getElementById("sd-split-m").textContent = "¥" + net.toFixed(2);

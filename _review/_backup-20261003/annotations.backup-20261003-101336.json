@@ -1,0 +1,775 @@
+{
+  "v": 1,
+  "updated": "2026-10-03T10:11:49",
+  "items": [
+    {
+      "id": "rmur1yt8zzmok",
+      "page": "ops/orders.html",
+      "anchor": {
+        "selector": "body > div:nth-of-type(2) > div > aside > div:nth-of-type(2) > a:nth-of-type(1) > span",
+        "selectorIn": "",
+        "root": "",
+        "region": "shell",
+        "shell": "admin-shell.js",
+        "label": "span.nav-text",
+        "text": "订单列表",
+        "html": "<span class=\"nav-text\">订单列表</span>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "订单列表和全局订单只用保留一个，合并一下",
+      "status": "resolved",
+      "createdAt": "2026-10-02T14:22:50.771Z",
+      "updatedAt": "2026-10-02T15:07:04.108Z"
+    },
+    {
+      "id": "rmur1zi20718m",
+      "page": "ops/data.html",
+      "anchor": {
+        "selector": "#data-views",
+        "selectorIn": "#data-views",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "div#data-views.data-views",
+        "text": "经营总览 获客与转化 内容经营 商品与交易 客户经营 期次复盘 商家经营 商家健康度 只做分析，不含订单 / 售后业务管理；明细请前往 财务 / 订单列表",
+        "html": "<div class=\"data-views\" id=\"data-views\"> <a href=\"data.html\" data-view=\"overview\" data-phase2-only=\"1\">经营总览</a> <a href=\"data.html?view=acquire\" data-view=\"acquire\" data-phase2-only=\"1\">获客与转化</a> <a href=\"data.html?view=content\" data-view=\"content\" data-phase2-only=\"1\">内容经营</a> <"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "去掉",
+      "status": "resolved",
+      "createdAt": "2026-10-02T14:23:22.920Z",
+      "updatedAt": "2026-10-02T15:07:04.108Z"
+    },
+    {
+      "id": "rmur20bssaphs",
+      "page": "ops/data.html",
+      "anchor": {
+        "selector": "#admin-content-slot > div > section:nth-of-type(7) > div:nth-of-type(2) > div:nth-of-type(2) > table > thead > tr > th:nth-of-type(7)",
+        "selectorIn": "section:nth-of-type(7) > div:nth-of-type(2) > div:nth-of-type(2) > table > thead > tr > th:nth-of-type(7)",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "th",
+        "text": "健康度",
+        "html": "<th>健康度</th>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "健康度加一个说明",
+      "status": "resolved",
+      "createdAt": "2026-10-02T14:24:01.468Z",
+      "updatedAt": "2026-10-02T15:07:04.108Z"
+    },
+    {
+      "id": "rmur22gcjb722",
+      "page": "ops/data.html",
+      "anchor": {
+        "selector": "#admin-content-slot > div > section:nth-of-type(7) > div:nth-of-type(2) > div:nth-of-type(2) > table > thead > tr > th:nth-of-type(4)",
+        "selectorIn": "section:nth-of-type(7) > div:nth-of-type(2) > div:nth-of-type(2) > table > thead > tr > th:nth-of-type(4)",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "th",
+        "text": "客单价",
+        "html": "<th>客单价</th>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "增加消耗额度的统计",
+      "status": "resolved",
+      "createdAt": "2026-10-02T14:25:40.675Z",
+      "updatedAt": "2026-10-02T15:07:04.108Z"
+    },
+    {
+      "id": "rmur230iqfkli",
+      "page": "ops/message-config.html",
+      "anchor": {
+        "selector": "#scene-tbody > tr:nth-of-type(1) > td:nth-of-type(5) > a:nth-of-type(2)",
+        "selectorIn": "#scene-tbody > tr:nth-of-type(1) > td:nth-of-type(5) > a:nth-of-type(2)",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "a",
+        "text": "测试发送",
+        "html": "<a href=\"#\" data-row-act=\"test\">测试发送</a>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "去掉",
+      "status": "resolved",
+      "createdAt": "2026-10-02T14:26:06.818Z",
+      "updatedAt": "2026-10-02T15:07:04.108Z"
+    },
+    {
+      "id": "rmur23mrz08yx",
+      "page": "ops/apps.html",
+      "anchor": {
+        "selector": "#admin-content-slot > div > div:nth-of-type(3) > div > table > tbody > tr:nth-of-type(1) > td:nth-of-type(5) > a:nth-of-type(4)",
+        "selectorIn": "div:nth-of-type(3) > div > table > tbody > tr:nth-of-type(1) > td:nth-of-type(5) > a:nth-of-type(4)",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "a",
+        "text": "版本记录",
+        "html": "<a href=\"#\" data-row-act=\"ver\">版本记录</a>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "去掉",
+      "status": "resolved",
+      "createdAt": "2026-10-02T14:26:35.663Z",
+      "updatedAt": "2026-10-02T15:07:04.108Z"
+    },
+    {
+      "id": "rmur25c6m5c09",
+      "page": "ops/app-config.html",
+      "anchor": {
+        "selector": "#modal-res-add > div:nth-of-type(2) > div > div:nth-of-type(6) > label",
+        "selectorIn": "",
+        "root": "",
+        "region": "page",
+        "shell": "",
+        "label": "label",
+        "text": "标记为敏感资源（使用留痕）",
+        "html": "<label style=\"display:flex;align-items:center;gap:6px\"><input type=\"checkbox\"> 标记为敏感资源（使用留痕）</label>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "去掉",
+      "status": "resolved",
+      "createdAt": "2026-10-02T14:27:55.246Z",
+      "updatedAt": "2026-10-02T15:07:04.108Z"
+    },
+    {
+      "id": "rmur2a28lbqkt",
+      "page": "miniprogram/orders.html",
+      "anchor": {
+        "selector": "#order-list > div:nth-of-type(2) > div:nth-of-type(3) > a:nth-of-type(1)",
+        "selectorIn": "#order-list > div:nth-of-type(2) > div:nth-of-type(3) > a:nth-of-type(1)",
+        "root": ".mp-body",
+        "region": "mp",
+        "shell": "",
+        "label": "a.mp-btn-sm.primary",
+        "text": "去学习",
+        "html": "<a class=\"mp-btn-sm primary\" href=\"#\" data-act=\"learn\" data-idx=\"1\">去学习</a>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "去掉",
+      "status": "resolved",
+      "createdAt": "2026-10-02T14:31:35.637Z",
+      "updatedAt": "2026-10-02T15:07:04.108Z"
+    },
+    {
+      "id": "rmur2a5c372jf",
+      "page": "miniprogram/orders.html",
+      "anchor": {
+        "selector": "#order-list > div:nth-of-type(2) > div:nth-of-type(3) > a:nth-of-type(2)",
+        "selectorIn": "#order-list > div:nth-of-type(2) > div:nth-of-type(3) > a:nth-of-type(2)",
+        "root": ".mp-body",
+        "region": "mp",
+        "shell": "",
+        "label": "a.mp-btn-sm",
+        "text": "再次购买",
+        "html": "<a class=\"mp-btn-sm \" href=\"#\" data-act=\"toast\" data-idx=\"1\">再次购买</a>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "去掉",
+      "status": "resolved",
+      "createdAt": "2026-10-02T14:31:39.652Z",
+      "updatedAt": "2026-10-02T15:07:04.108Z"
+    },
+    {
+      "id": "rmur2clijs0b3",
+      "page": "miniprogram/orders.html",
+      "anchor": {
+        "selector": "#order-list > div:nth-of-type(3) > div:nth-of-type(3) > a",
+        "selectorIn": "#order-list > div:nth-of-type(3) > div:nth-of-type(3) > a",
+        "root": ".mp-body",
+        "region": "mp",
+        "shell": "",
+        "label": "a.mp-btn-sm.primary",
+        "text": "看回放",
+        "html": "<a class=\"mp-btn-sm primary\" href=\"#\" data-act=\"replay\" data-idx=\"2\">看回放</a>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "改为「我要退款」，注意：对应后台的订单列表状态，增加用户发起申请这样的状态，又运营人员统一后，可退款",
+      "status": "resolved",
+      "createdAt": "2026-10-02T14:33:33.931Z",
+      "updatedAt": "2026-10-02T15:07:04.108Z"
+    },
+    {
+      "id": "rmur2cpg1l8cg",
+      "page": "miniprogram/orders.html",
+      "anchor": {
+        "selector": "#order-list > div:nth-of-type(4) > div:nth-of-type(3) > a",
+        "selectorIn": "#order-list > div:nth-of-type(4) > div:nth-of-type(3) > a",
+        "root": ".mp-body",
+        "region": "mp",
+        "shell": "",
+        "label": "a.mp-btn-sm",
+        "text": "再次购买",
+        "html": "<a class=\"mp-btn-sm \" href=\"#\" data-act=\"toast\" data-idx=\"3\">再次购买</a>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "去掉",
+      "status": "resolved",
+      "createdAt": "2026-10-02T14:33:39.025Z",
+      "updatedAt": "2026-10-02T15:07:04.108Z"
+    },
+    {
+      "id": "rmur2excoer62",
+      "page": "miniprogram/mine.html",
+      "anchor": {
+        "selector": "body > div:nth-of-type(2) > div:nth-of-type(4) > div:nth-of-type(2) > div > a",
+        "selectorIn": "div:nth-of-type(2) > div > a",
+        "root": ".mp-body",
+        "region": "mp",
+        "shell": "",
+        "label": "a.mp-section-more",
+        "text": "全部课程 ›",
+        "html": "<a class=\"mp-section-more\" href=\"courses.html\">全部课程 ›</a>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "全部课程的页面，需要新增，不用原来的页面，改成，把线上课、线下课、文章等购买后，或者选择加入我的课程的这些内容都展示在里面",
+      "status": "resolved",
+      "createdAt": "2026-10-02T14:35:22.584Z",
+      "updatedAt": "2026-10-02T15:07:04.108Z"
+    },
+    {
+      "id": "rmur2jgixfoiz",
+      "page": "miniprogram/home.html",
+      "anchor": {
+        "selector": "#mpHomeBody > div:nth-of-type(4) > div:nth-of-type(1) > div",
+        "selectorIn": "div:nth-of-type(4) > div:nth-of-type(1) > div",
+        "root": ".mp-body",
+        "region": "mp",
+        "shell": "",
+        "label": "div.mp-section-title",
+        "text": "线下课",
+        "html": "<div class=\"mp-section-title\">线下课</div>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "更多里面，所有状态都展示出来。 1. 免费，已报名 2. 免费，未报名 3. 免费，报名截止，待开始 4. 免费，课程进行中 付费..类似的，请自动补齐",
+      "status": "resolved",
+      "createdAt": "2026-10-02T14:38:54.058Z",
+      "updatedAt": "2026-10-02T15:07:04.108Z"
+    },
+    {
+      "id": "rmur2l36frijl",
+      "page": "admin/board-acquire.html",
+      "anchor": {
+        "selector": "body > div:nth-of-type(2) > div:nth-of-type(2) > aside > div:nth-of-type(2) > a:nth-of-type(2) > span",
+        "selectorIn": "",
+        "root": "",
+        "region": "shell",
+        "shell": "admin-shell.js",
+        "label": "span.nav-text",
+        "text": "获客与转化",
+        "html": "<span class=\"nav-text\">获客与转化</span>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "标记为二期",
+      "status": "resolved",
+      "createdAt": "2026-10-02T14:40:10.072Z",
+      "updatedAt": "2026-10-02T15:07:04.108Z"
+    },
+    {
+      "id": "rmur2l5hubzv9",
+      "page": "admin/board-acquire.html",
+      "anchor": {
+        "selector": "body > div:nth-of-type(2) > div:nth-of-type(2) > aside > div:nth-of-type(2) > a:nth-of-type(3) > span",
+        "selectorIn": "",
+        "root": "",
+        "region": "shell",
+        "shell": "admin-shell.js",
+        "label": "span.nav-text",
+        "text": "内容经营",
+        "html": "<span class=\"nav-text\">内容经营</span>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "标记为二期",
+      "status": "resolved",
+      "createdAt": "2026-10-02T14:40:13.074Z",
+      "updatedAt": "2026-10-02T15:07:04.108Z"
+    },
+    {
+      "id": "rmur2l7yy1q8c",
+      "page": "admin/board-acquire.html",
+      "anchor": {
+        "selector": "body > div:nth-of-type(2) > div:nth-of-type(2) > aside > div:nth-of-type(2) > a:nth-of-type(4) > span",
+        "selectorIn": "",
+        "root": "",
+        "region": "shell",
+        "shell": "admin-shell.js",
+        "label": "span.nav-text",
+        "text": "商品与交易",
+        "html": "<span class=\"nav-text\">商品与交易</span>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "标记为二期",
+      "status": "resolved",
+      "createdAt": "2026-10-02T14:40:16.282Z",
+      "updatedAt": "2026-10-02T15:07:04.108Z"
+    },
+    {
+      "id": "rmur2lagdq48w",
+      "page": "admin/board-acquire.html",
+      "anchor": {
+        "selector": "body > div:nth-of-type(2) > div:nth-of-type(2) > aside > div:nth-of-type(2) > a:nth-of-type(5) > span",
+        "selectorIn": "",
+        "root": "",
+        "region": "shell",
+        "shell": "admin-shell.js",
+        "label": "span.nav-text",
+        "text": "客户经营",
+        "html": "<span class=\"nav-text\">客户经营</span>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "标记为二期",
+      "status": "resolved",
+      "createdAt": "2026-10-02T14:40:19.502Z",
+      "updatedAt": "2026-10-02T15:07:04.108Z"
+    },
+    {
+      "id": "rmur2ml1k8wvr",
+      "page": "admin/mp-home.html",
+      "anchor": {
+        "selector": "#sec-live > div:nth-of-type(1) > h2",
+        "selectorIn": "#sec-live > div:nth-of-type(1) > h2",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "h2",
+        "text": "直播展示",
+        "html": "<h2>直播展示</h2>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "增加编辑小程序里，直播列表中展示哪些直播的功能",
+      "status": "resolved",
+      "createdAt": "2026-10-02T14:41:19.880Z",
+      "updatedAt": "2026-10-02T15:07:04.108Z"
+    },
+    {
+      "id": "rmur2nbidjrxk",
+      "page": "admin/mp-home.html",
+      "anchor": {
+        "selector": "#sec-online > div:nth-of-type(1) > h2",
+        "selectorIn": "#sec-online > div:nth-of-type(1) > h2",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "h2",
+        "text": "线上课",
+        "html": "<h2>线上课</h2>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "增加编辑小程序里，线上课列表中展示哪些线上课的功能",
+      "status": "resolved",
+      "createdAt": "2026-10-02T14:41:54.181Z",
+      "updatedAt": "2026-10-02T15:07:04.108Z"
+    },
+    {
+      "id": "rmur2ng9dbhki",
+      "page": "admin/mp-home.html",
+      "anchor": {
+        "selector": "#online-more",
+        "selectorIn": "#online-more",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "select#online-more.input",
+        "text": "线上课列表 不展示「更多」",
+        "html": "<select class=\"input\" id=\"online-more\"> <option value=\"courses\" selected=\"\">线上课列表</option> <option value=\"none\">不展示「更多」</option> </select>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "去掉",
+      "status": "resolved",
+      "createdAt": "2026-10-02T14:42:00.337Z",
+      "updatedAt": "2026-10-02T15:07:04.108Z"
+    },
+    {
+      "id": "rmur2nyp8qhaq",
+      "page": "admin/mp-home.html",
+      "anchor": {
+        "selector": "#offline-more",
+        "selectorIn": "#offline-more",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "select#offline-more.input",
+        "text": "线下课列表 不展示「更多」",
+        "html": "<select class=\"input\" id=\"offline-more\"> <option value=\"offline\" selected=\"\">线下课列表</option> <option value=\"none\">不展示「更多」</option> </select>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "去掉",
+      "status": "resolved",
+      "createdAt": "2026-10-02T14:42:24.236Z",
+      "updatedAt": "2026-10-02T15:07:04.108Z"
+    },
+    {
+      "id": "rmur2oasbq26c",
+      "page": "admin/mp-home.html",
+      "anchor": {
+        "selector": "#sec-offline > div:nth-of-type(1) > h2",
+        "selectorIn": "#sec-offline > div:nth-of-type(1) > h2",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "h2",
+        "text": "线下课",
+        "html": "<h2>线下课</h2>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "增加编辑小程序里，线下课列表中展示哪些线下课的功能",
+      "status": "resolved",
+      "createdAt": "2026-10-02T14:42:39.899Z",
+      "updatedAt": "2026-10-02T15:07:04.108Z"
+    },
+    {
+      "id": "rmur2parg9eiv",
+      "page": "admin/mp-home.html",
+      "anchor": {
+        "selector": "#sec-article > div:nth-of-type(1) > h2",
+        "selectorIn": "#sec-article > div:nth-of-type(1) > h2",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "h2",
+        "text": "精选文章",
+        "html": "<h2>精选文章</h2>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "增加编辑小程序里，精选文章更多列表中展示哪些文章的功能",
+      "status": "resolved",
+      "createdAt": "2026-10-02T14:43:26.524Z",
+      "updatedAt": "2026-10-02T15:07:04.108Z"
+    },
+    {
+      "id": "rmur2pdwatr0c",
+      "page": "admin/mp-home.html",
+      "anchor": {
+        "selector": "#article-more",
+        "selectorIn": "#article-more",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "select#article-more.input",
+        "text": "文章列表 不展示「更多」",
+        "html": "<select class=\"input\" id=\"article-more\"> <option value=\"articles\" selected=\"\">文章列表</option> <option value=\"none\">不展示「更多」</option> </select>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "去掉",
+      "status": "resolved",
+      "createdAt": "2026-10-02T14:43:30.586Z",
+      "updatedAt": "2026-10-02T15:07:04.108Z"
+    },
+    {
+      "id": "rmur2riedplu4",
+      "page": "miniprogram/article-detail.html",
+      "anchor": {
+        "selector": "#ad-fav",
+        "selectorIn": "#ad-fav",
+        "root": ".mp-frame",
+        "region": "mp",
+        "shell": "",
+        "label": "button#ad-fav.mp-btn.mp-btn-outline",
+        "text": "收藏",
+        "html": "<button class=\"mp-btn mp-btn-outline\" type=\"button\" id=\"ad-fav\" style=\"width:88px\">收藏</button>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "去掉收藏",
+      "status": "resolved",
+      "createdAt": "2026-10-02T14:45:09.733Z",
+      "updatedAt": "2026-10-02T15:07:04.108Z"
+    },
+    {
+      "id": "rmur2ssxobj8q",
+      "page": "miniprogram/article-detail.html",
+      "anchor": {
+        "selector": "#ad-root > div:nth-of-type(4) > a",
+        "selectorIn": "div:nth-of-type(4) > a",
+        "root": ".mp-body",
+        "region": "mp",
+        "shell": "",
+        "label": "a.mp-btn.mp-btn-outline",
+        "text": "更多精选文章",
+        "html": "<a class=\"mp-btn mp-btn-outline\" href=\"articles.html\" style=\"margin-top:10px\">更多精选文章</a>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "去掉",
+      "status": "resolved",
+      "createdAt": "2026-10-02T14:46:10.045Z",
+      "updatedAt": "2026-10-02T15:07:04.108Z"
+    },
+    {
+      "id": "rmur2syjqnlui",
+      "page": "miniprogram/article-detail.html",
+      "anchor": {
+        "selector": "#ad-fav-free",
+        "selectorIn": "#ad-fav-free",
+        "root": ".mp-body",
+        "region": "mp",
+        "shell": "",
+        "label": "button#ad-fav-free.mp-btn",
+        "text": "收藏文章",
+        "html": "<button class=\"mp-btn\" type=\"button\" id=\"ad-fav-free\">收藏文章</button>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "收藏到我的课程",
+      "status": "resolved",
+      "createdAt": "2026-10-02T14:46:17.318Z",
+      "updatedAt": "2026-10-02T15:07:04.108Z"
+    },
+    {
+      "id": "rmur2va126hu2",
+      "page": "miniprogram/live-room.html",
+      "anchor": {
+        "selector": "body > div:nth-of-type(2) > div:nth-of-type(4) > div:nth-of-type(2) > a",
+        "selectorIn": "div:nth-of-type(4) > div:nth-of-type(2) > a",
+        "root": ".mp-frame",
+        "region": "mp",
+        "shell": "",
+        "label": "a.btn.btn-primary.btn-sm",
+        "text": "购买",
+        "html": "<a class=\"btn btn-primary btn-sm\" href=\"pay-result.html?from=live\">购买</a>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "点击跳转到商品详情。注意：C端所有的购买入口，都跳转到商品详情，请参照后台商品详情的内容来补全商品详情页。商品详情页里只有去支付的按钮，点击后，跳转到收银台。",
+      "status": "resolved",
+      "createdAt": "2026-10-02T14:48:05.510Z",
+      "updatedAt": "2026-10-02T15:07:04.108Z"
+    },
+    {
+      "id": "rmur4oeeg4k32",
+      "page": "miniprogram/lives.html",
+      "anchor": {
+        "selector": "#lv-tabs > a:nth-of-type(1)",
+        "selectorIn": "#lv-tabs > a:nth-of-type(1)",
+        "root": ".mp-body",
+        "region": "mp",
+        "shell": "",
+        "label": "a.mp-tab.active",
+        "text": "全部",
+        "html": "<a class=\"mp-tab active\" href=\"#\" data-state=\"\">全部</a>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "不需要tab，去掉",
+      "status": "open",
+      "createdAt": "2026-10-02T15:38:43.816Z"
+    },
+    {
+      "id": "rmur4plorqylh",
+      "page": "miniprogram/home.html",
+      "anchor": {
+        "selector": "#mpHomeBody > div:nth-of-type(2) > div:nth-of-type(2) > div:nth-of-type(1) > a > img",
+        "selectorIn": "div:nth-of-type(2) > div:nth-of-type(2) > div:nth-of-type(1) > a > img",
+        "root": ".mp-body",
+        "region": "mp",
+        "shell": "",
+        "label": "img",
+        "text": "",
+        "html": "<img src=\"../assets/img/mp-home/live-1.png\" alt=\"直播封面\">"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "改成直播中的样式",
+      "status": "open",
+      "createdAt": "2026-10-02T15:39:39.915Z"
+    },
+    {
+      "id": "rmurqm2cjvx7s",
+      "page": "admin/wxshop-goods.html",
+      "anchor": {
+        "selector": "#btn-create",
+        "selectorIn": "#btn-create",
+        "root": "#page-header-actions",
+        "region": "header-actions",
+        "shell": "",
+        "label": "button#btn-create.btn.btn-primary",
+        "text": "通过内容创建",
+        "html": "<button class=\"btn btn-primary\" id=\"btn-create\">通过内容创建</button>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "去掉这个入口",
+      "status": "open",
+      "createdAt": "2026-10-03T01:52:46.435Z"
+    },
+    {
+      "id": "rmurqmcw1ts77",
+      "page": "admin/wxshop-goods.html",
+      "anchor": {
+        "selector": "#tbody > tr:nth-of-type(1) > td:nth-of-type(10) > a:nth-of-type(3)",
+        "selectorIn": "#tbody > tr:nth-of-type(1) > td:nth-of-type(10) > a:nth-of-type(3)",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "a",
+        "text": "上架",
+        "html": "<a href=\"#\" data-act=\"on\" data-id=\"WX001\">上架</a>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "去掉",
+      "status": "open",
+      "createdAt": "2026-10-03T01:53:00.097Z"
+    },
+    {
+      "id": "rmurqmgmv71hb",
+      "page": "admin/wxshop-goods.html",
+      "anchor": {
+        "selector": "#tbody > tr:nth-of-type(1) > td:nth-of-type(10) > a:nth-of-type(4)",
+        "selectorIn": "#tbody > tr:nth-of-type(1) > td:nth-of-type(10) > a:nth-of-type(4)",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "a",
+        "text": "从微信拉取",
+        "html": "<a href=\"#\" data-act=\"pull\" data-id=\"WX001\">从微信拉取</a>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "去掉",
+      "status": "open",
+      "createdAt": "2026-10-03T01:53:04.951Z"
+    },
+    {
+      "id": "rmurqmkvhuail",
+      "page": "admin/wxshop-goods.html",
+      "anchor": {
+        "selector": "#tbody > tr:nth-of-type(3) > td:nth-of-type(10) > a:nth-of-type(3)",
+        "selectorIn": "#tbody > tr:nth-of-type(3) > td:nth-of-type(10) > a:nth-of-type(3)",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "a",
+        "text": "提审到微信",
+        "html": "<a href=\"#\" data-act=\"submit\" data-id=\"WX003\">提审到微信</a>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "去掉",
+      "status": "open",
+      "createdAt": "2026-10-03T01:53:10.445Z"
+    },
+    {
+      "id": "rmurqmox1fpgy",
+      "page": "admin/wxshop-goods.html",
+      "anchor": {
+        "selector": "#tbody > tr:nth-of-type(5) > td:nth-of-type(10) > a:nth-of-type(4)",
+        "selectorIn": "#tbody > tr:nth-of-type(5) > td:nth-of-type(10) > a:nth-of-type(4)",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "a",
+        "text": "驳回原因",
+        "html": "<a href=\"#\" data-act=\"reason\" data-id=\"WX005\">驳回原因</a>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "去掉",
+      "status": "open",
+      "createdAt": "2026-10-03T01:53:15.685Z"
+    },
+    {
+      "id": "rmurqmszymk99",
+      "page": "admin/wxshop-goods.html",
+      "anchor": {
+        "selector": "#tbody > tr:nth-of-type(4) > td:nth-of-type(10) > a:nth-of-type(3)",
+        "selectorIn": "#tbody > tr:nth-of-type(4) > td:nth-of-type(10) > a:nth-of-type(3)",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "a",
+        "text": "撤回提审",
+        "html": "<a href=\"#\" data-act=\"withdraw\" data-id=\"WX004\">撤回提审</a>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "去掉",
+      "status": "open",
+      "createdAt": "2026-10-03T01:53:20.974Z"
+    },
+    {
+      "id": "rmurqnca4b4cw",
+      "page": "admin/wxshop-goods.html",
+      "anchor": {
+        "selector": "#admin-content-slot > div > div:nth-of-type(2) > div",
+        "selectorIn": "div:nth-of-type(2) > div",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "div.card-bd.wx-sync-bar",
+        "text": "已授权 赵老师的书塾 wx_store_8f21**** 授权时间 2026-08-12 · 权限集 129 最后同步 2026-09-19 18:20 · 增量 +2",
+        "html": "<div class=\"card-bd wx-sync-bar\"> <div class=\"wx-sync-left\"> <span class=\"badge badge-success\">已授权</span> <b>赵老师的书塾</b> <span class=\"mono muted\">wx_store_8f21****</span> <span class=\"muted\" style=\"font-size:12px\">授权时间 2026-08-12 · 权限集 129</span> </div> <div class=\"muted\" style=\"f"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "去掉",
+      "status": "open",
+      "createdAt": "2026-10-03T01:53:45.964Z"
+    },
+    {
+      "id": "rmurqnvtu7mkf",
+      "page": "admin/wxshop-goods.html",
+      "anchor": {
+        "selector": "#admin-content-slot > div > div:nth-of-type(4) > div > table > thead > tr > th:nth-of-type(2)",
+        "selectorIn": "div:nth-of-type(4) > div > table > thead > tr > th:nth-of-type(2)",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "th",
+        "text": "微信小店商品ID",
+        "html": "<th>微信小店商品ID</th>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "右侧增加微信小店名称",
+      "status": "open",
+      "createdAt": "2026-10-03T01:54:11.298Z"
+    },
+    {
+      "id": "rmurrak1ffpl2",
+      "page": "admin/goods-edit.html",
+      "anchor": {
+        "selector": "#path-content > div > div:nth-of-type(1)",
+        "selectorIn": "#path-content > div > div:nth-of-type(1)",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "div.cm-section-hd",
+        "text": "交付内容 *内容不含价格；一个商品可交付多个内容（组合商品），同一内容也可建多个商品",
+        "html": "<div class=\"cm-section-hd\"><h3>交付内容 *</h3><span class=\"muted\">内容不含价格；一个商品可交付多个内容（组合商品），同一内容也可建多个商品</span></div>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "交互增加可以不选交付的内容，下单后由运营人员手工开通权益。",
+      "status": "open",
+      "createdAt": "2026-10-03T02:11:49.107Z"
+    }
+  ]
+}

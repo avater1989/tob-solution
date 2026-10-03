@@ -4,6 +4,11 @@
  *   - 价格不再来自内容，而是来自「上架位的默认成交商品」（ListingStore + GoodsStore）
  *   - 支持两种下单方式：jump_goods（跳商品详情页）/ inline（内容页直接按商品金额下单）
  *   - 权益主键由 content_id 改为 goods_id；contentIndex 供内容页反查是否已购买
+ *
+ * v3（2026-10-02 评审标注）：C 端「所有购买入口」统一跳商品详情页
+ *   - buy() 不再按上架位的 order_mode 分流，付费内容一律 openGoodsDetail()
+ *   - 商品详情页只有「去支付」→ 进入 cashier.html（收银台）→ pay-result.html
+ *   - order_mode 字段保留（后台配置与列表文案仍在使用），但不再决定购买去向
  */
 (function (global) {
   var RIGHTS_KEY = "mp_rights_v2";
@@ -287,7 +292,7 @@
         return '<div class="mp-notice-row"><span class="k">' + row.k + '</span><span class="v">' + row.v + "</span></div>";
       }).join("") +
       "</div>" +
-      '<p class="mp-notice-tip">原型示意：不接入真实支付，确认后进入支付结果演示。</p>' +
+      '<p class="mp-notice-tip">原型示意：不接入真实支付，确认后进入收银台。</p>' +
       "</div>" +
       '<div class="mp-sheet-ft">' +
       '<button type="button" class="mp-btn mp-btn-outline" data-close-sheet style="flex:1">取消</button>' +
@@ -307,6 +312,7 @@
     document.getElementById("mp-buy-confirm").addEventListener("click", function () {
       closeSheets();
       if (typeof opts.onConfirm === "function") { opts.onConfirm(item); return; }
+      /* 2026-10-02 评审标注：付费确认后统一进入收银台，由收银台完成支付 */
       var q = new URLSearchParams();
       q.set("status", "success");
       q.set("from", type);
@@ -316,7 +322,7 @@
       if (opts.contentId) q.set("content_id", opts.contentId);
       if (ctx.listing_id) q.set("listing_id", ctx.listing_id);
       if (opts.returnUrl) q.set("return", opts.returnUrl);
-      location.href = "pay-result.html?" + q.toString();
+      location.href = "cashier.html?" + q.toString();
     });
   }
 
@@ -352,7 +358,7 @@
       '<div class="mp-sheet-ft">' +
       '<button type="button" class="mp-btn mp-btn-outline" id="mp-trial-stay" style="flex:1">继续试看</button>' +
       '<button type="button" class="mp-btn" id="mp-trial-buy" style="flex:1.4">' +
-      (ctx.orderMode === "jump_goods" ? "去购买" : "立即购买 ¥" + priceTxt) +
+      (ctx.goods_id ? "去购买" : "立即购买 ¥" + priceTxt) +
       "</button>" +
       "</div>";
 
@@ -365,8 +371,13 @@
     document.getElementById("mp-trial-stay").addEventListener("click", closeSheets);
     document.getElementById("mp-trial-buy").addEventListener("click", function () {
       closeSheets();
-      if (ctx.orderMode === "jump_goods" && ctx.goods_id) {
-        openGoodsDetail(ctx.goods_id, { listingId: ctx.listing_id, returnUrl: opts.returnUrl });
+      /* 2026-10-02 评审标注：购买入口统一跳商品详情页（不再按 order_mode 分流） */
+      if (ctx.goods_id) {
+        openGoodsDetail(ctx.goods_id, {
+          listingId: ctx.listing_id,
+          contentId: opts.contentId,
+          returnUrl: opts.returnUrl
+        });
         return;
       }
       openBuyNotice({
@@ -395,7 +406,10 @@
   }
 
   /**
-   * 统一下单入口：按上架位的 order_mode 决定跳商品详情页还是原地下单
+   * 统一下单入口
+   * 2026-10-02 评审标注：C 端所有购买入口统一跳「商品详情页」，
+   * 再由商品详情页的「去支付」进入收银台；不再区分上架位的 order_mode。
+   * 免费内容仍原地开通权益；无成交商品时兜底走购买须知。
    */
   function buy(contentId, opts) {
     opts = opts || {};
@@ -405,7 +419,7 @@
       if (typeof opts.onFree === "function") opts.onFree(ctx);
       return ctx;
     }
-    if (ctx.orderMode === "jump_goods" && ctx.goods_id) {
+    if (ctx.goods_id) {
       openGoodsDetail(ctx.goods_id, {
         listingId: ctx.listing_id,
         contentId: contentId,
@@ -418,6 +432,7 @@
       contentType: ctx.contentType,
       slot: opts.slot,
       title: opts.title,
+      orderMode: "jump_goods",
       returnUrl: opts.returnUrl,
       onConfirm: opts.onConfirm
     });
