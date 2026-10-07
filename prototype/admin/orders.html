@@ -14,7 +14,7 @@
 <div id="page-content" style="display:none">
 
   <!-- 顶部统计卡片 -->
-  <div class="grid-4" style="margin-bottom:16px">
+  <div class="grid-4" style="margin-bottom:16px" data-phase2-only>
     <div class="stat"><div class="label">近 30 天交易额</div><div class="value">¥12,648.50</div><div class="hint">128 笔已支付</div></div>
     <div class="stat"><div class="label">待付款</div><div class="value">9</div><div class="hint">超 30 分钟自动关闭</div></div>
     <div class="stat"><div class="label">待开通权益</div><div class="value">2</div><div class="hint"><a href="entitlement.html" style="color:inherit">去处理 →</a></div></div>
@@ -39,7 +39,7 @@
       <input id="f-buyer" placeholder="买家（姓名/手机号）" />
       <select id="f-channel">
         <option value="">渠道来源</option>
-        <option>小程序</option><option>视频号</option><option>直播间</option>
+        <option>小程序</option><option>微信小店</option><option>直播间</option>
       </select>
       <select id="f-pay-status">
         <option value="">支付状态</option>
@@ -89,7 +89,7 @@
           <td>春启 03 期家长必修课<br><span class="muted">线上课 · 12 节 · 课程商品</span></td>
           <td>李***<br><span class="muted">U0001</span></td>
           <td><b>¥9.90</b></td>
-          <td><span class="tag tag-green">视频号</span></td>
+          <td><span class="tag tag-green">微信小店</span></td>
           <td data-phase2-only><span class="tag tag-purple">平台</span></td>
           <td data-phase2-only>佣金 20%</td>          <td><span class="badge badge-info">已支付</span></td>
           <td><span class="badge badge-info">已开通</span></td>
@@ -148,18 +148,18 @@
           </td>
         </tr>
         <tr>
-          <td><a href="order-detail.html?id=YB20260325000901" class="link-mono">YB20260325000901</a></td>
-          <td>视频号·春启 03 期家长课<br><span class="muted">线上课 · 公域同步</span></td>
+          <td><a href="order-detail.html?id=WX20260325000901" class="link-mono">WX20260325000901</a></td>
+          <td>春启 03 期家长课<br><span class="muted">线上课 · 微信小店同步</span></td>
           <td>张***<br><span class="muted">U0011</span></td>
           <td><b>¥99.00</b></td>
-          <td><span class="tag tag-green">视频号</span></td>
+          <td><span class="tag tag-green">微信小店</span></td>
           <td data-phase2-only><span class="tag tag-purple">平台</span></td>
           <td data-phase2-only>佣金 20%</td>          <td><span class="badge badge-info">已支付</span></td>
           <td><span class="badge badge-info">已开通</span></td>
           <td><span class="muted">—</span></td>
           <td>2026-03-25 11:05</td>
           <td class="row-actions">
-            <a href="order-detail.html?id=YB20260325000901">详情</a>
+            <a href="order-detail.html?id=WX20260325000901">详情</a>
             <a href="#" data-row-act="refund">退款</a>
             <a href="#" data-row-act="note">备注</a>
           </td>
@@ -296,6 +296,38 @@
   </div>
 </div>
 
+<!-- 人工开通权益：交付内容多选弹窗（与「创建商品 → 交付内容」同一交互） -->
+<div class="proto-modal" id="modal-open-right" style="width:640px">
+  <div class="proto-modal-hd">
+    <h3 style="font-size:16px;font-weight:600">人工开通权益</h3>
+    <button class="btn btn-sm btn-ghost" data-close>×</button>
+  </div>
+  <div class="proto-modal-bd">
+    <p class="muted" style="margin:0 0 12px;font-size:12px">
+      本单商品未关联交付内容，需在此选择要开通的交付内容；确认后买家即可在C 端访问。
+    </p>
+    <div class="kv" style="margin-bottom:12px">
+      <div class="kv-row"><span>订单号</span><b id="or-ord">—</b></div>
+      <div class="kv-row"><span>商品</span><b id="or-goods">—</b></div>
+      <div class="kv-row"><span>买家</span><b id="or-cust">—</b></div>
+    </div>
+    <div class="cm-tabs" id="or-tabs" style="margin-bottom:10px">
+      <button type="button" class="btn active" data-otype="online_course">线上课</button>
+      <button type="button" class="btn" data-otype="offline">线下课</button>
+      <button type="button" class="btn" data-otype="article">文章</button>
+      <button type="button" class="btn" data-otype="live">直播</button>
+    </div>
+    <div id="or-body"></div>
+  </div>
+  <div class="proto-drawer-ft" style="border-top:1px solid var(--color-border);padding:12px 20px;display:flex;align-items:center;gap:8px;justify-content:space-between">
+    <span class="muted" id="or-count">已选 0 项</span>
+    <span style="display:flex;gap:8px">
+      <button class="btn" data-close>取消</button>
+      <button class="btn btn-primary" id="or-submit">确认开通</button>
+    </span>
+  </div>
+</div>
+
 <style>
 .link-mono {
   font-family: ui-monospace, Consolas, monospace;
@@ -308,6 +340,16 @@
 .tag-blue { background: #e8f3ff; color: #165dff; }
 .tag-purple { background: #f4f0ff; color: #722ed1; }
 .tag-green { background: #e8ffea; color: #009a29; }
+.cm-tabs { display: flex; gap: 6px; flex-wrap: wrap; }
+.cm-tabs .btn.active { background: var(--color-primary); color: #fff; border-color: var(--color-primary); }
+.or-pick { border: 1px solid var(--color-border); border-radius: 8px; overflow: hidden; }
+.or-pick-row { display: flex; align-items: flex-start; gap: 10px; padding: 10px 12px; border-bottom: 1px dashed var(--color-border); }
+.or-pick-row:last-child { border-bottom: none; }
+.or-pick-row:hover { background: #fafbfc; }
+.or-pick-row label { display: flex; align-items: flex-start; gap: 8px; cursor: pointer; flex: 1; }
+.or-pick-row input { margin-top: 3px; }
+.or-pick-name { font-size: 13px; font-weight: 600; }
+.or-pick-meta { font-size: 12px; color: var(--color-text-secondary); margin-top: 2px; }
 </style>
 
 <script src="../assets/js/proto.js"></script>
@@ -382,13 +424,86 @@
           if (statusTd) statusTd.innerHTML = '<span class="badge">已关闭</span>';
           Proto.toast("订单已关闭（原型）");
         } else if (act === "open-right") {
-          if (!confirm("确认为该订单人工开通权益？开通后买家即可访问对应内容。")) return;
-          var rightsTd = tr.querySelectorAll("td")[8];
-          if (rightsTd) rightsTd.innerHTML = '<span class="badge badge-info">已开通</span>';
-          Proto.toast("权益已人工开通（原型）");
+          openRightPicker(tr);
         }
       });
     });
+  });
+
+  // ===== 人工开通权益：交付内容多选（与「创建商品 → 交付内容」同一交互）=====
+  var OR_POOL = {
+    online_course: [
+      { id: "C001", name: "春启 03 期家长必修课", meta: "线上课 · 12 节 · ¥99" },
+      { id: "C002", name: "9.9 引流课·亲子沟通", meta: "线上课 · 3 节 · ¥9.9" },
+      { id: "C003", name: "青春期沟通训练营", meta: "线上课 · 21 节 · ¥299" }
+    ],
+    offline: [
+      { id: "O001", name: "家庭教育 1 对 1 深度咨询", meta: "线下课 · 60 分钟 · ¥599" },
+      { id: "O002", name: "杭州家长沙龙·秋季场", meta: "线下课 · 半天 · ¥199" }
+    ],
+    article: [
+      { id: "A001", name: "亲子情绪管理音频课", meta: "文章 · 12 篇" },
+      { id: "A002", name: "家庭教育风格训练营", meta: "文章 · 8 篇" }
+    ],
+    live: [
+      { id: "L001", name: "今晚直播·家长公开课", meta: "直播 · 免费" },
+      { id: "L002", name: "视频号·春启 03 期家长课", meta: "直播 · ¥99" }
+    ]
+  };
+  var orSelected = [];
+  var orRow = null;
+
+  function renderOrBody(type) {
+    var list = OR_POOL[type] || [];
+    document.getElementById("or-body").innerHTML =
+      '<div class="or-pick">' + list.map(function (c) {
+        return '<div class="or-pick-row"><label>' +
+          '<input type="checkbox" data-oid="' + c.id + '"' + (orSelected.indexOf(c.id) >= 0 ? " checked" : "") + ' />' +
+          '<span><span class="or-pick-name">' + c.name + '</span>' +
+          '<span class="or-pick-meta">' + c.meta + '</span></span></label></div>';
+      }).join("") + '</div>';
+    document.getElementById("or-body").querySelectorAll("input[data-oid]").forEach(function (cb) {
+      cb.addEventListener("change", function () {
+        var id = cb.getAttribute("data-oid");
+        var i = orSelected.indexOf(id);
+        if (cb.checked && i < 0) orSelected.push(id);
+        if (!cb.checked && i >= 0) orSelected.splice(i, 1);
+        document.getElementById("or-count").textContent = "已选 " + orSelected.length + " 项";
+      });
+    });
+  }
+
+  function openRightPicker(tr) {
+    orRow = tr;
+    var d = rowData(tr);
+    orSelected = [];
+    document.getElementById("or-ord").textContent = d.orderNo;
+    document.getElementById("or-goods").textContent = d.goods;
+    document.getElementById("or-cust").textContent = d.buyer;
+    document.getElementById("or-count").textContent = "已选 0 项";
+    document.querySelectorAll("#or-tabs .btn").forEach(function (b) {
+      b.classList.toggle("active", b.getAttribute("data-otype") === "online_course");
+    });
+    renderOrBody("online_course");
+    open(document.getElementById("modal-open-right"));
+  }
+
+  document.querySelectorAll("#or-tabs .btn").forEach(function (b) {
+    b.addEventListener("click", function () {
+      document.querySelectorAll("#or-tabs .btn").forEach(function (x) { x.classList.remove("active"); });
+      b.classList.add("active");
+      renderOrBody(b.getAttribute("data-otype"));
+    });
+  });
+
+  document.getElementById("or-submit").addEventListener("click", function () {
+    if (!orSelected.length) { Proto.toast("请至少选择 1 个交付内容"); return; }
+    if (orRow) {
+      var rightsTd = orRow.querySelectorAll("td")[8];
+      if (rightsTd) rightsTd.innerHTML = '<span class="badge badge-info">已开通</span>';
+    }
+    closeAll();
+    Proto.toast("已开通 " + orSelected.length + " 项交付内容，买家 C 端即时可见（原型）");
   });
 
   // 退款处理：同意 → 退款中；驳回 → 驳回退款
@@ -421,7 +536,7 @@
 
   // ===== Header buttons =====
   document.getElementById("btn-export").addEventListener("click", function () { Proto.toast("已导出订单列表（原型）"); });
-  document.getElementById("btn-sync").addEventListener("click", function () { Proto.toast("已触发视频号订单同步（原型）"); });
+  document.getElementById("btn-sync").addEventListener("click", function () { Proto.toast("已触发微信小店订单同步（原型）"); });
   document.getElementById("btn-query").addEventListener("click", function () { Proto.toast("已筛选（原型）"); });
   document.getElementById("btn-reset").addEventListener("click", function () {
     ["f-order-no", "f-product", "f-buyer"].forEach(function (id) { document.getElementById(id).value = ""; });

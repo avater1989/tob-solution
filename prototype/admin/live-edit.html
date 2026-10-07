@@ -141,51 +141,40 @@
 
   <h2 class="page-section-title" id="sec-access">观看资格</h2>
   <div class="card"><div class="card-bd">
-    <p class="sec-help">决定<strong>谁可以进入</strong>本场直播/回放。与下方「直播间商品」无关：挂载商品不会自动获得观看资格。</p>
+    <p class="sec-help">决定本场直播<strong>是否公开</strong>。与下方「直播间商品」无关：挂载商品不会自动获得观看资格。</p>
     <div class="goods-section">
       <div class="goods-line goods-sale" id="le-access-modes">
-        <label><input type="radio" name="sale" value="free" checked /><span>免费</span></label>
-        <label><input type="radio" name="sale" value="paid" /><span>付费</span></label>
-        <label><input type="radio" name="sale" value="pwd" /><span>观看密码</span></label>
-        <label><input type="radio" name="sale" value="named" /><span>指定用户</span></label>
+        <label><input type="radio" name="sale" value="public" checked /><span>完全公开</span></label>
+        <label><input type="radio" name="sale" value="partial" /><span>部分公开</span></label>
       </div>
 
-      <div class="access-panel" id="access-panel-free">
+      <div class="access-panel" id="access-panel-public">
         <p class="muted" style="margin:0;font-size:12px">任意用户可进入本场直播与回放（仍受上架状态影响）。</p>
       </div>
-      <div class="access-panel" id="access-panel-paid" style="display:none">
-        <p class="muted" style="margin:0;font-size:12px">
-          选择付费后，会生成一款商品，需要前往更新商品信息并上架才生效。付费购买的是本场观看资格，不是购物车里的挂载商品。
-        </p>
-      </div>
-      <div class="access-panel" id="access-panel-pwd" style="display:none">
-        <div class="form-grid" style="grid-template-columns:1fr 1fr;margin-top:4px">
-          <div class="field"><label>观看密码（观众端）</label><input id="le-watch-pwd" type="text" placeholder="观众进房时输入" /></div>
-          <div class="field"><label>说明</label><div class="muted" style="font-size:12px;padding-top:8px">仅观众进房使用。</div></div>
-        </div>
-      </div>
-      <div class="access-panel" id="access-panel-named" style="display:none">
+      <div class="access-panel" id="access-panel-partial" style="display:none">
         <div class="toolbar" style="margin:4px 0 0;border:none;padding:0;background:transparent">
-          <button type="button" class="btn btn-sm" id="btn-pick-viewers">+ 选择可观看用户</button>
-          <button type="button" class="btn btn-sm" id="btn-edit-viewers" style="display:none">重新编辑</button>
+          <button type="button" class="btn btn-sm" id="btn-pick-terms">+ 选择期次</button>
+          <button type="button" class="btn btn-sm" id="btn-edit-terms" style="display:none">重新选择</button>
         </div>
-        <div id="viewer-summary" class="viewer-summary" style="display:none;margin-top:10px">
+        <div id="term-summary" class="viewer-summary" style="display:none;margin-top:10px">
           <div class="viewer-sum-block">
-            <div class="viewer-sum-label">按课程权益开放</div>
-            <div id="viewer-sum-courses" class="muted" style="font-size:13px">—</div>
-            <div class="muted" style="font-size:12px;margin-top:4px">持有所选课程有效权益的学员可观看；后续新购且权益仍有效的学员也会自动纳入。</div>
-          </div>
-          <div class="viewer-sum-block" style="margin-top:8px">
-            <div class="viewer-sum-label">手动补充名单</div>
-            <div id="viewer-sum-manual" class="muted" style="font-size:13px">暂无</div>
+            <div class="viewer-sum-label">已选期次</div>
+            <div id="term-sum-chosen" class="muted" style="font-size:13px">—</div>
+            <div class="muted" style="font-size:12px;margin-top:4px">仅所选期次内的用户可进入本场直播与回放；期次内后续新增用户自动纳入。</div>
           </div>
         </div>
+        <p class="muted" style="margin:10px 0 0;font-size:12px">未选择期次时，「部分公开」不生效，等同于完全公开。</p>
       </div>
 
 
       <div class="goods-line goods-validity">
         <span class="validity-label">有效期：</span>
-        <label class="opt"><input type="radio" name="valid" checked /><span class="opt-text">长期有效，暂不支持修改</span></label>
+        <label class="opt"><input type="radio" name="valid" value="forever" checked /><span class="opt-text">长期有效</span></label>
+        <label class="opt"><input type="radio" name="valid" value="custom" /><span class="opt-text">选择有效期</span>
+          <input type="date" class="valid-date" id="valid-start" disabled />
+          <span class="opt-text">至</span>
+          <input type="date" class="valid-date" id="valid-end" disabled />
+        </label>
       </div>
 
       <div class="goods-line goods-shelf-row">
@@ -291,7 +280,7 @@
     <p class="muted" style="margin:0 0 12px;font-size:13px;line-height:1.6">
       此处配置本场直播的<strong>整体促到提醒</strong>：覆盖开播前预约提醒、正式开播提醒、<strong>直播中应到未到人群召回</strong>与回放生成提醒。
       直播通过审核并上架后，系统将根据直播时间自动生成提醒任务；
-      高级规则、预约用户及发送记录可在「预约管理」中查看。
+      高级规则、预约用户及发送记录可在「直播促到」中查看。
     </p>
     <div class="form-grid" style="grid-template-columns:1fr 1fr">
       <div class="field"><label>启用预约提醒</label>
@@ -393,6 +382,25 @@
   <div class="proto-modal-ft" style="border-top:1px solid var(--color-border);padding:12px 20px;display:flex;gap:8px;justify-content:flex-end">
     <button class="btn" type="button" data-close>取消</button>
     <button class="btn btn-primary" type="button" id="vw-confirm">确认</button>
+  </div>
+</div>
+
+<!-- 选择期次（观看资格 = 部分公开 时使用） -->
+<div class="proto-modal" id="modal-terms" style="width:560px">
+  <div class="proto-modal-hd">
+    <h3 style="font-size:16px;font-weight:600">选择期次</h3>
+    <button class="btn btn-sm btn-ghost" type="button" data-close>×</button>
+  </div>
+  <div class="proto-modal-bd">
+    <div class="field">
+      <label>可观看本场的期次</label>
+      <div id="term-pick-list" class="vw-check-list"></div>
+      <p class="muted" style="margin:6px 0 0;font-size:12px">仅所选期次内的用户可进入本场直播与回放；期次内后续新增用户自动纳入。</p>
+    </div>
+  </div>
+  <div class="proto-modal-ft" style="border-top:1px solid var(--color-border);padding:12px 20px;display:flex;gap:8px;justify-content:flex-end">
+    <button class="btn" type="button" data-close>取消</button>
+    <button class="btn btn-primary" type="button" id="term-confirm">确认</button>
   </div>
 </div>
 
@@ -592,6 +600,12 @@
   width: 14px; height: 14px; margin: 0; vertical-align: middle;
 }
 .goods-validity .opt input[type=radio] { width: 14px; height: 14px; margin: 0; vertical-align: middle; }
+.goods-validity .opt { display: inline-flex; align-items: center; gap: 6px; }
+.goods-validity .valid-date {
+  padding: 2px 6px; font-size: 12px; height: 24px;
+  border: 1px solid #dcdfe6; border-radius: 3px; margin: 0 2px;
+}
+.goods-validity .valid-date:disabled { background: #f7f8fa; color: #b9bfc9; }
 .goods-links { gap: 12px; }
 .shelf-label { line-height: 22px; }
 .shelf-time-input {
@@ -772,6 +786,7 @@
 <script src="../assets/js/prototype-business-store.js"></script>
 <script src="../assets/js/live-ops.js?v=10"></script>
 <script src="../assets/js/live-reach.js"></script>
+<script src="../assets/js/term-store.js?v=3"></script>
 <script src="../assets/js/admin-shell.js?v=31"></script>
 <script>
 (function () {
@@ -892,17 +907,14 @@
   }
 
   function saleModeToAccess(mode) {
-    var m = String(mode || "免费");
-    if (m === "付费" || m === "单独售卖") return "paid";
-    if (m === "加密" || m === "观看密码") return "pwd";
-    if (m === "指定用户") return "named";
-    return "free";
+    var m = String(mode || "完全公开");
+    /* 历史口径（免费 / 付费 / 观看密码 / 指定用户）统一收敛到「完全公开 / 部分公开」 */
+    if (m === "部分公开" || m === "指定用户" || m === "加密" || m === "观看密码") return "partial";
+    return "public";
   }
   function accessToSaleMode(v) {
-    if (v === "paid") return "付费";
-    if (v === "pwd") return "加密";
-    if (v === "named") return "指定用户";
-    return "免费";
+    if (v === "partial") return "部分公开";
+    return "完全公开";
   }
   function selectedAccess() {
     var el = document.querySelector('input[name="sale"]:checked');
@@ -915,7 +927,7 @@
   }
   function syncAccessPanels() {
     var v = selectedAccess();
-    ["free", "paid", "pwd", "named"].forEach(function (k) {
+    ["public", "partial"].forEach(function (k) {
       var panel = $("access-panel-" + k);
       if (panel) panel.style.display = k === v ? "" : "none";
     });
@@ -1014,7 +1026,7 @@
     if ($("le-agree")) $("le-agree").checked = !!v.agreedOpsRules;
 
     setAccessMode(saleModeToAccess(v.saleMode || v.accessMode));
-    if ($("le-watch-pwd") && v.watchPassword) $("le-watch-pwd").value = v.watchPassword;
+    setTermSelection(v.terms || []);
     if ($("le-solo-sell")) $("le-solo-sell").checked = v.soloSell !== false;
 
     var join = v.catalogJoin != null ? !!v.catalogJoin : !!(v.courseName && v.courseName !== "请选择");
@@ -1063,7 +1075,10 @@
       content: ($("le-content") && $("le-content").value) || "",
       saleMode: saleMode,
       accessMode: access,
-      watchPassword: access === "pwd" && $("le-watch-pwd") ? $("le-watch-pwd").value.trim() : "",
+      terms: access === "partial" ? termState.slice() : [],
+      validityMode: validityMode(),
+      validStart: ($("valid-start") && $("valid-start").value) || "",
+      validEnd: ($("valid-end") && $("valid-end").value) || "",
       hostPassword: hostOn && $("le-host-pwd") ? $("le-host-pwd").value.trim() : "",
       soloSell: $("le-solo-sell") ? !!$("le-solo-sell").checked : true,
       products: products,
@@ -1741,6 +1756,93 @@
   };
 
   renderViewerSummary();
+
+  /* ===== 观看资格 · 部分公开：选择期次 ===== */
+  var termState = [];
+
+  function allTerms() {
+    if (window.TermStore && TermStore.options) {
+      try {
+        var opts = TermStore.options({ valueMode: "id" }) || [];
+        var list = opts.filter(function (o) { return o && o.value; });
+        if (list.length) return list;
+      } catch (e) { /* 回落到内置演示期次 */ }
+    }
+    return [
+      { value: "term_spring03", label: "春启 03 期" },
+      { value: "term_spring04", label: "春启 04 期" },
+      { value: "term_summer01", label: "暑期 01 期" }
+    ];
+  }
+  function termLabel(id) {
+    var hit = allTerms().filter(function (t) { return t.value === id || t.label === id; })[0];
+    return hit ? hit.label : id;
+  }
+  function setTermSelection(list) {
+    termState = (list || []).slice();
+    renderTermSummary();
+  }
+  function renderTermSummary() {
+    var box = $("term-summary");
+    var editBtn = $("btn-edit-terms");
+    var pickBtn = $("btn-pick-terms");
+    if (!box) return;
+    var has = termState.length > 0;
+    box.style.display = has ? "block" : "none";
+    if (editBtn) editBtn.style.display = has ? "" : "none";
+    if (pickBtn) pickBtn.textContent = has ? "调整期次" : "+ 选择期次";
+    var el = $("term-sum-chosen");
+    if (el) el.textContent = has ? termState.map(termLabel).join("、") : "—";
+  }
+  function openTermPicker() {
+    var list = allTerms();
+    var box = $("term-pick-list");
+    if (box) {
+      box.innerHTML = list.length
+        ? list.map(function (t) {
+            return '<label class="vw-check"><input type="checkbox" value="' + t.value + '"' +
+              (termState.indexOf(t.value) >= 0 ? " checked" : "") + " /> " + t.label + "</label>";
+          }).join("")
+        : '<span class="muted" style="font-size:13px">暂无可选期次，请先到「期次管理」创建。</span>';
+    }
+    openModal($("modal-terms"));
+  }
+  on($("btn-pick-terms"), "click", openTermPicker);
+  on($("btn-edit-terms"), "click", openTermPicker);
+  on($("term-confirm"), "click", function () {
+    var picked = [];
+    document.querySelectorAll("#term-pick-list input[type=checkbox]").forEach(function (cb) {
+      if (cb.checked) picked.push(cb.value);
+    });
+    setTermSelection(picked);
+    dirty = true;
+    closeModals();
+    toast(picked.length
+      ? ("已选择 " + picked.length + " 个期次（原型）")
+      : "未选择期次，部分公开等同于完全公开（原型）");
+  });
+
+  /* 有效期：长期有效 / 选择有效期 */
+  function validityMode() {
+    var el = document.querySelector('input[name="valid"]:checked');
+    return el ? el.value : "forever";
+  }
+  function syncValidity() {
+    var custom = validityMode() === "custom";
+    ["valid-start", "valid-end"].forEach(function (id) {
+      var el = $(id);
+      if (el) el.disabled = !custom;
+    });
+    if (custom) {
+      if ($("valid-start") && !$("valid-start").value) $("valid-start").value = "2026-10-08";
+      if ($("valid-end") && !$("valid-end").value) $("valid-end").value = "2027-10-08";
+    }
+  }
+  document.querySelectorAll('input[name="valid"]').forEach(function (r) {
+    on(r, "change", function () { syncValidity(); dirty = true; });
+  });
+  renderTermSummary();
+  syncValidity();
 
   document.querySelectorAll('[data-act="del"]').forEach(function (a) {
     on(a, "click", function (e) {

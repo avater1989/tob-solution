@@ -9,9 +9,6 @@
 #cmp-table td.grp, #cmp-table th.grp { white-space: nowrap; }
 #cmp-table tr.grp-row td { background: #fafbfc; font-weight: 600; color: var(--color-text-secondary); }
 #cmp-table td.cur { background: #f2f7ff; }
-.drill-kpi { display: flex; flex-wrap: wrap; gap: 4px 14px; }
-.drill-kpi span { font-size: 12px; color: var(--color-text-secondary); }
-.drill-kpi b { font-size: 13px; color: var(--color-text); }
 </style>
 </head>
 <body class="admin-body" data-module="data" data-nav="board-overview" data-title="经营总览" data-crumb="数据 / 经营总览" data-assist="1">
@@ -90,21 +87,6 @@
     </div>
   </div>
 
-  <!-- ===== 下钻专题总览汇总 ===== -->
-  <div class="card">
-    <div class="card-hd">
-      <h2>下钻专题总览汇总</h2>
-      <span class="muted" style="font-size:12px;font-weight:400">各专题页顶部总览指标 · 取当前所选区间</span>
-    </div>
-    <div class="card-bd" style="padding:0">
-      <table class="data">
-        <thead>
-          <tr><th style="width:120px">专题</th><th>总览指标</th><th style="width:120px">环比</th><th style="width:110px">操作</th></tr>
-        </thead>
-        <tbody id="drill-tbody"></tbody>
-      </table>
-    </div>
-  </div>
   <p class="board-attr" data-board-attr style="padding:12px 0"></p>
 </div>
 <script src="../assets/js/proto.js"></script>
@@ -247,71 +229,6 @@
     });
   }
 
-  /* ===== 下钻专题总览汇总 ===== */
-  function renderDrill(cur, d) {
-    var tb = termByRange(cur);
-    var payK = termKpi(tb, "payUsers");
-    var gmvK = termKpi(tb, "gmv");
-    var payPrior = safeVsPrior(payK);
-    var followRate = rate((d.wecomLeads || 0) - (d.noFollow || 0), d.wecomLeads);
-
-    var defs = [
-      {
-        name: "获客与转化", href: "board-acquire.html", deltaText: d.deltas && d.deltas.leads,
-        kpis: [
-          ["入池线索", num(d.poolLeads) + " 人"],
-          ["加微率", d.stepWecom || "—"],
-          ["归因支付", num(d.attributedPayUsers) + " 人"]
-        ]
-      },
-      {
-        name: "内容经营", href: "board-live.html", deltaText: null,
-        kpis: [
-          ["直播场次", num(d.liveSessions) + " 场"],
-          ["场均到场率", d.liveAttendAvg || "—"],
-          ["完课率", d.coverRate || "—"]
-        ]
-      },
-      {
-        name: "商品与交易", href: "board-convert.html", deltaText: d.deltas && d.deltas.gmv,
-        kpis: [
-          ["GMV", money(d.totalGmv)],
-          ["支付订单", num(d.totalPaidOrders) + " 笔"],
-          ["退款率", d.refundRate || "—"]
-        ]
-      },
-      {
-        name: "期次数据", href: "board-term-review.html",
-        deltaText: payPrior ? payPrior.text : null,
-        kpis: [
-          ["当前期次", tb && tb.term ? tb.term.name : "—"],
-          ["支付人数", payK ? payK.value + (payK.target != null ? " / " + payK.target : "") : "—"],
-          ["可归因 GMV", gmvK ? (gmvK.display || gmvK.value) : "—"]
-        ]
-      },
-      {
-        name: "客户经营", href: "board-private.html", deltaText: null,
-        kpis: [
-          ["跟进完成率", pctText(followRate)],
-          ["无跟进", num(d.noFollow) + " 人"],
-          ["流失", num(d.churn) + " 人"]
-        ]
-      }
-    ];
-
-    document.getElementById("drill-tbody").innerHTML = defs.map(function (x) {
-      var kpis = x.kpis.map(function (kv) {
-        return "<span>" + kv[0] + " <b>" + kv[1] + "</b></span>";
-      }).join("");
-      return "<tr>" +
-        "<td class='grp'><b>" + x.name + "</b></td>" +
-        '<td><div class="drill-kpi">' + kpis + "</div></td>" +
-        "<td>" + delta(x.deltaText) + "</td>" +
-        '<td><a href="' + x.href + '" data-board-link="' + x.href + '">下钻 →</a></td>' +
-        "</tr>";
-    }).join("");
-  }
-
   /* ===== 主渲染 ===== */
   function renderAll(cur) {
     var data = allData();
@@ -319,7 +236,6 @@
     d.rangeKey = cur;
     renderCards(d);
     renderCompare(cur, data);
-    renderDrill(cur, d);
     var hint = document.getElementById("compare-hint");
     if (hint) hint.textContent = "当前区间：" + (RANGE_LABEL[cur] || cur) + " · " + BM.comparePeriodHint({ range: cur });
     BM.wireBoardLinks();

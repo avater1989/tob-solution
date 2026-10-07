@@ -9,7 +9,6 @@
 <body class="admin-body" data-module="trade" data-nav="orders" data-title="订单详情" data-crumb="交易 / 订单 / 订单详情">
 <div id="header-actions">
   <button class="btn" id="btn-back-list" type="button">返回订单列表</button>
-  <button class="btn" id="btn-copy" type="button">复制订单号</button>
   <button class="btn" id="btn-add-note" type="button">添加备注</button>
   <button class="btn btn-primary" id="btn-refund" type="button">发起售后</button>
   <button class="btn btn-primary" id="btn-open-right" type="button" style="display:none">开通权益</button>
@@ -98,7 +97,7 @@
   <div class="card" style="margin-bottom:8px"><div class="card-hd"><h2>订单信息</h2></div>
     <div class="card-bd">
       <div class="kv-grid">
-        <div class="kv-row"><span>订单号</span><b class="mono" id="od-info-no">—</b></div>
+        <div class="kv-row"><span>订单号</span><b class="mono"><span id="od-info-no">—</span> <a class="link" id="btn-copy" href="#" style="margin-left:6px;font-size:12px;font-weight:400">复制</a></b></div>
         <div class="kv-row"><span>交易流水号</span><b class="mono" id="od-txn-no">—</b></div>
         <div class="kv-row"><span>通联支付交易单号</span><b class="mono" id="od-pay-txn">—</b></div>
         <div class="kv-row"><span>渠道支付流水号</span><b class="mono" id="od-channel-txn">—</b></div>
@@ -136,7 +135,6 @@
       <div class="card-bd">
         <div class="kv">
           <div class="kv-row"><span>商品总额</span><b id="od-amount-total">—</b></div>
-          <div class="kv-row"><span>优惠抵扣</span><b id="od-amount-discount">-¥0.00</b></div>
           <div class="kv-row"><span>实付金额</span><b class="price" id="od-amount-pay">—</b></div>
           <div class="kv-row"><span>累计退款</span><b id="od-amount-refund">¥0.00</b></div>
           <div class="kv-row"><span>净计收</span><b id="od-amount-net">—</b></div>
@@ -368,7 +366,8 @@
   if (!hit) {
     empty.style.display = "";
     found.style.display = "none";
-    document.getElementById("btn-copy").style.display = "none";
+    var copyBtn = document.getElementById("btn-copy");
+    if (copyBtn) copyBtn.style.display = "none";
     document.getElementById("btn-refund").style.display = "none";
     document.getElementById("btn-add-note").style.display = "none";
     if (from === "user" || uidParam) {
@@ -690,7 +689,6 @@
   var refundAmount = refunded ? Number((refund && refund.amount) || amount) : 0;
   document.getElementById("od-amount-total").textContent = money(amount + discountAmt);
   document.getElementById("od-amount-pay").textContent = money(amount);
-  document.getElementById("od-amount-discount").textContent = discountAmt ? ("-" + money(discountAmt)) : "-¥0.00";
   document.getElementById("od-amount-refund").textContent = money(refundAmount);
   document.getElementById("od-amount-net").textContent = money(unpaid ? 0 : (amount - refundAmount));
 

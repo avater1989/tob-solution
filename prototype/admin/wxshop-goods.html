@@ -26,7 +26,7 @@
 </div>
 <div id="page-content" style="display:none">
 
-  <div class="grid-4" style="margin-bottom:16px">
+  <div class="grid-4" style="margin-bottom:16px" data-phase2-only>
     <div class="stat"><div class="label">微信小店商品</div><div class="value" id="st-total">0</div><div class="hint">含草稿镜像</div></div>
     <div class="stat"><div class="label">上架中</div><div class="value" id="st-on">0</div><div class="hint">status = 5</div></div>
     <div class="stat"><div class="label">审核中 / 草稿</div><div class="value" id="st-audit">0</div><div class="hint">以微信审批为准</div></div>
@@ -207,8 +207,7 @@
     var list = filtered();
     document.getElementById("tbody").innerHTML = list.map(function (r) {
       var acts = [];
-      acts.push('<a href="#" data-act="view" data-id="' + Tax.esc(r.goods_id) + '">查看</a>');
-      /* 未关联商品的，紧跟「查看」给出关联入口；已关联则不再出现该按钮 */
+      /* 未关联商品的给出关联入口；已关联则不再出现该按钮 */
       if (!r.store_goods_id) {
         acts.push('<a href="#" data-act="link" data-id="' + Tax.esc(r.goods_id) + '">关联商品</a>');
       }
@@ -276,10 +275,7 @@
     var id = a.getAttribute("data-id");
     var row = rows.find(function (r) { return r.goods_id === id; });
     if (!row) return;
-    if (act === "view") {
-      Proto.toast("查看镜像：" + row.name + " · 审批 " + (row.audit_status || "—") +
-        (row.store_goods_id ? " · 关联商品 " + row.store_goods_id : " · 未关联商品"));
-    } else if (act === "link") {
+    if (act === "link") {
       openLink(row);
     }
   });

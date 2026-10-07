@@ -799,11 +799,11 @@
       <div class="field"><label>调整金额 *</label><input id="q-amount" placeholder="请输入金额，例：2000" /></div>
       <div class="field"><label>调整原因 *</label>
         <select id="q-reason" style="width:100%;padding:6px 8px;border:1px solid var(--color-border);border-radius:6px">
-          <option>线下付款入账</option>
-          <option>合同赠送额度</option>
-          <option>冲抵多记账金额</option>
-          <option>违规扣减</option>
-          <option>其他</option>
+          <option value="add">线下付款入账</option>
+          <option value="add">合同赠送额度</option>
+          <option value="sub">冲抵多记账金额</option>
+          <option value="sub">违规扣减</option>
+          <option value="add">其他（增加）</option>
         </select>
       </div>
       <div class="field" style="grid-column:1/-1"><label>备注</label>
@@ -1395,8 +1395,28 @@
   });
   document.getElementById("q-amount").addEventListener("input", quotaPreview);
   Array.prototype.forEach.call(document.querySelectorAll('input[name="q-dir"]'), function (r) {
-    r.addEventListener("change", quotaPreview);
+    r.addEventListener("change", function () {
+      /* 方向切换时，把原因收敛到该方向下的合法取值 */
+      syncQuotaReason();
+      quotaPreview();
+    });
   });
+  /* 原因切换时，同步回调整方向 */
+  document.getElementById("q-reason").addEventListener("change", function () {
+    var v = this.value;
+    if (!v) return;
+    document.querySelector('input[name="q-dir"][value="' + v + '"]').checked = true;
+    quotaPreview();
+  });
+
+  function syncQuotaReason() {
+    var sel = document.getElementById("q-reason");
+    var dir = quotaDir();
+    var keep = Array.prototype.find.call(sel.options, function (o) { return o.value === dir; });
+    if (keep && sel.value !== dir) sel.value = dir;
+    /* 若当前方向下无合法原因，退回到该方向第一个 */
+    if (sel.value !== dir) sel.selectedIndex = 0;
+  }
   document.getElementById("q-submit").addEventListener("click", function () {
     var amt = parseFloat(document.getElementById("q-amount").value);
     if (isNaN(amt) || amt <= 0) { Proto.toast("请输入大于 0 的调整金额"); return; }

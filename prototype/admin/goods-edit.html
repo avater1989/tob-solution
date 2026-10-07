@@ -155,8 +155,7 @@
         </div>
         <div class="field"><label>退款规则</label>
           <select id="f-refund" style="width:100%;padding:7px 8px;border:1px solid var(--color-border);border-radius:6px">
-            <option>未使用可退</option>
-            <option>按已使用比例退款</option>
+            <option>支持退款</option>
             <option>不支持退款</option>
           </select>
         </div>
@@ -558,7 +557,12 @@
       if (editing.category_id) document.getElementById("f-category").value = editing.category_id;
       if (editing.delivery) document.getElementById("f-delivery").value = editing.delivery;
       if (editing.manual_delivery) document.getElementById("ck-manual").checked = true;
-      if (editing.refund_rule) document.getElementById("f-refund").value = editing.refund_rule;
+      if (editing.refund_rule) {
+        /* 历史口径（未使用可退 / 按已使用比例退款）统一收敛到「支持退款」 */
+        var rr = editing.refund_rule;
+        if (rr !== "支持退款" && rr !== "不支持退款") rr = "支持退款";
+        document.getElementById("f-refund").value = rr;
+      }
       document.getElementById("f-source").value =
         editing.content_source === "platform" ? "平台内容 (platform)" : "商家自建 (self)";
       (editing.tag_ids || []).forEach(function (tid) {

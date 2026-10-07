@@ -26,14 +26,23 @@
     });
     return out;
   })();
-  /* 视频号带货商品（演示种子）：期次绑定后，这些商品产生的留资分配给期次承接助教 */
+  /* 微信小店商品（演示种子）：期次绑定后，这些商品产生的留资分配给期次承接助教 */
   var VX_GOODS = [
     { id: "P2026030101", name: "春启 03 期家长必修课" },
-    { id: "P2026090701", name: "视频号·春启 03 期家长课" },
-    { id: "P2026080201", name: "家庭教育入门体验课（视频号）" },
+    { id: "P2026090701", name: "微信小店·春启 03 期家长课" },
+    { id: "P2026080201", name: "家庭教育入门体验课（微信小店）" },
     { id: "P2026090105", name: "青春期沟通专题课" },
     { id: "P2026070120", name: "亲子沟通 21 天定制化计划 · 第 4 期" }
   ];
+  /* 自建商品（演示种子）：与微信小店商品并列，均可作为期次的留资承接商品 */
+  var SELF_GOODS = [
+    { id: "G001", name: "春启 03 期家长必修课（自建）" },
+    { id: "G002", name: "9.9 引流课·亲子沟通" },
+    { id: "G003", name: "青春期沟通训练营" },
+    { id: "G004", name: "家庭教育 1 对 1 深度咨询" },
+    { id: "G005", name: "今晚直播·家长公开课（门票）" }
+  ];
+  function goodsBySource(src) { return src === "self" ? SELF_GOODS : VX_GOODS; }
   var GOAL_FIELDS = [
     { key: "poolLeads", label: "入池人数目标", hint: "人" },
     { key: "wecomRate", label: "加微率目标", hint: "%" },
@@ -182,6 +191,8 @@
       name: String(t.name || "").trim(),
       startDate: t.startDate || "",
       endDate: t.endDate || "",
+      orderStartDate: t.orderStartDate || "",
+      orderEndDate: t.orderEndDate || "",
       owner: t.owner || "",
       remark: t.remark || "",
       goals: goals,
@@ -480,6 +491,31 @@
     if (modal) modal.classList.remove("open");
   }
 
+  /* 商品来源：微信小店商品 / 自建商品 */
+  function currentGoodsSrc() {
+    var el = document.querySelector('input[name="tm-goods-src"]:checked');
+    return el ? el.value : "wxshop";
+  }
+  function renderGoodsPicker(src) {
+    var goodsBox = document.getElementById("tm-vx-goods");
+    if (!goodsBox) return;
+    /* 切换来源时保留已勾选项（跨来源可多选，两条来源的商品都会承接留资） */
+    var keep = {};
+    goodsBox.querySelectorAll("[data-vx-good]").forEach(function (cb) {
+      if (cb.checked) keep[cb.getAttribute("data-vx-good")] = true;
+    });
+    goodsBox.innerHTML = "";
+    goodsBySource(src).forEach(function (g) {
+      var lab = document.createElement("label");
+      lab.style.cssText = "display:flex;align-items:flex-start;gap:8px;font-size:13px;cursor:pointer;margin:0";
+      lab.innerHTML =
+        '<input type="checkbox" data-vx-good="' + g.id + '" style="margin-top:2px"' +
+        (keep[g.id] ? " checked" : "") + " />" +
+        '<span><b>' + g.name + '</b><span class="muted" style="margin-left:6px;font-size:12px">' + g.id + "</span></span>";
+      goodsBox.appendChild(lab);
+    });
+  }
+
   function ensureEditorDom() {
     if (document.getElementById("modal-term-edit")) return;
     if (!document.getElementById("mask") && !document.querySelector(".proto-mask")) {
@@ -497,11 +533,17 @@
       '<div class="field" style="grid-column:1/-1"><label>期次名称 *</label><input id="tm-name" placeholder="如：春启 05 期" /></div>' +
       '<div class="field"><label>开始日期 *</label><input id="tm-start" type="date" /></div>' +
       '<div class="field"><label>结束日期 *</label><input id="tm-end" type="date" /></div>' +
+      '<div class="field"><label>商品下单开始日期</label><input id="tm-order-start" type="date" /></div>' +
+      '<div class="field"><label>商品下单结束日期</label><input id="tm-order-end" type="date" /></div>' +
       '<div class="field" style="grid-column:1/-1"><label>负责人 *</label>' +
       '<select id="tm-owner"><option value="">请选择员工</option></select></div>' +
       '<div class="field" style="grid-column:1/-1">' +
-      '<label>视频号商品</label>' +
-      '<p class="muted" style="margin:0 0 8px;font-size:12px;line-height:1.5">选择本期内承接留资的视频号带货商品；这些商品产生的留资将分配给下方承接助教。</p>' +
+      '<label>商品</label>' +
+      '<p class="muted" style="margin:0 0 8px;font-size:12px;line-height:1.5">选择本期内承接留资的商品：可选<b>微信小店商品</b>或<b>自建商品</b>；这些商品产生的留资将分配给下方承接助教。</p>' +
+      '<div style="display:flex;gap:16px;margin:0 0 8px">' +
+      '<label style="display:inline-flex;align-items:center;gap:6px;font-size:13px;cursor:pointer"><input type="radio" name="tm-goods-src" value="wxshop" checked /> 微信小店商品</label>' +
+      '<label style="display:inline-flex;align-items:center;gap:6px;font-size:13px;cursor:pointer"><input type="radio" name="tm-goods-src" value="self" /> 自建商品</label>' +
+      '</div>' +
       '<div id="tm-vx-goods" style="display:flex;flex-direction:column;align-items:flex-start;gap:6px;max-height:140px;overflow:auto;padding:8px 10px;border:1px solid var(--color-border);border-radius:6px;background:#fafbfc"></div>' +
       '</div>' +
       '<div class="field" style="grid-column:1/-1">' +
@@ -555,14 +597,9 @@
       o.textContent = n;
       owner.appendChild(o);
     });
-    var goodsBox = document.getElementById("tm-vx-goods");
-    VX_GOODS.forEach(function (g) {
-      var lab = document.createElement("label");
-      lab.style.cssText = "display:flex;align-items:flex-start;gap:8px;font-size:13px;cursor:pointer;margin:0";
-      lab.innerHTML =
-        '<input type="checkbox" data-vx-good="' + g.id + '" style="margin-top:2px" />' +
-        '<span><b>' + g.name + '</b><span class="muted" style="margin-left:6px;font-size:12px">' + g.id + "</span></span>";
-      goodsBox.appendChild(lab);
+    renderGoodsPicker(currentGoodsSrc());
+    document.querySelectorAll('input[name="tm-goods-src"]').forEach(function (r) {
+      r.addEventListener("change", function () { renderGoodsPicker(currentGoodsSrc()); });
     });
     document.getElementById("tm-asst-pick").addEventListener("click", openAsstPick);
     document.getElementById("asst-search").addEventListener("input", renderAsstOrg);
@@ -614,10 +651,11 @@
       if (end < start) { toast("结束日期不得早于开始日期"); return; }
       if (!ownerVal) { toast("请选择负责人"); return; }
       var vxGoods = [];
+      var allGoods = VX_GOODS.concat(SELF_GOODS);
       document.querySelectorAll("#tm-vx-goods [data-vx-good]").forEach(function (cb) {
         if (!cb.checked) return;
         var id = cb.getAttribute("data-vx-good");
-        var hit = VX_GOODS.filter(function (g) { return g.id === id; })[0];
+        var hit = allGoods.filter(function (g) { return g.id === id; })[0];
         if (hit) vxGoods.push({ id: hit.id, name: hit.name });
       });
       var assistants = asstSelected.slice();
@@ -631,6 +669,8 @@
         name: name,
         startDate: start,
         endDate: end,
+        orderStartDate: (document.getElementById("tm-order-start") || {}).value || "",
+        orderEndDate: (document.getElementById("tm-order-end") || {}).value || "",
         owner: ownerVal,
         remark: document.getElementById("tm-remark").value.trim(),
         goals: goals,
@@ -653,12 +693,28 @@
     document.getElementById("tm-name").value = term ? term.name : "";
     document.getElementById("tm-start").value = term ? term.startDate : "";
     document.getElementById("tm-end").value = term ? term.endDate : "";
+    var osEl = document.getElementById("tm-order-start");
+    var oeEl = document.getElementById("tm-order-end");
+    if (osEl) osEl.value = term ? (term.orderStartDate || "") : "";
+    if (oeEl) oeEl.value = term ? (term.orderEndDate || "") : "";
     document.getElementById("tm-owner").value = term ? (term.owner || "") : "";
     document.getElementById("tm-remark").value = term ? (term.remark || "") : "";
     var selectedGoods = {};
     ((term && term.vxGoods) || []).forEach(function (g) {
       selectedGoods[typeof g === "string" ? g : g.id] = true;
     });
+    /* 回显时按已选商品自动定位来源（微信小店商品 / 自建商品），再重建列表并勾选 */
+    var hitSrc = "wxshop";
+    var ids = Object.keys(selectedGoods);
+    if (ids.length) {
+      var inSelf = SELF_GOODS.some(function (g) { return ids.indexOf(g.id) >= 0; });
+      var inVx = VX_GOODS.some(function (g) { return ids.indexOf(g.id) >= 0; });
+      if (inSelf && !inVx) hitSrc = "self";
+    }
+    document.querySelectorAll('input[name="tm-goods-src"]').forEach(function (r) {
+      r.checked = r.value === hitSrc;
+    });
+    renderGoodsPicker(hitSrc);
     document.querySelectorAll("#tm-vx-goods [data-vx-good]").forEach(function (cb) {
       cb.checked = !!selectedGoods[cb.getAttribute("data-vx-good")];
     });

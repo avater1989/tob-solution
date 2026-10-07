@@ -161,33 +161,33 @@
       ]
     },
 
-    /* ⑤ 平台内容 · 佣金 20% · 已支付（公域同步）· 课程商品 */
-    YB20260325000901: {
+    /* ⑤ 微信小店同步 · 佣金 20% · 已支付 · 课程商品 */
+    WX20260325000901: {
       order: {
-        id: "YB20260325000901", type: "消费",
-        product: "视频号·春启 03 期家长课", spec: "12 节 · 课程商品 · 公域同步",
+        id: "WX20260325000901", type: "消费",
+        product: "春启 03 期家长课", spec: "12 节 · 课程商品 · 微信小店同步",
         goodsType: "课程商品", orderType: "普通订单",
         amount: 99, discount: 0,
         time: "2026-03-25 11:05", payTime: "2026-03-25 11:05",
         payStatus: "已支付", refundStatus: "无", refundId: "",
         rightId: "R2026032500901", rightStatus: "有效", owner: "张女士",
-        channel: "视频号", contentSource: "platform", settleMode: "commission", commissionRate: 20,
+        channel: "微信小店", contentSource: "platform", settleMode: "commission", commissionRate: 20,
         contentOwner: "艺博平台（内容中台下发）", tenant: "星启家庭教育",
-        deliverType: "支付后自动开通", payChannel: "通联支付（微信小程序内）",
+        deliverType: "支付后自动开通", payChannel: "通联支付（微信小店）",
         channelTxn: "WX20260325110503", payTxn: "TL20260325110001XX",
         promoter: "—", consultant: "—",
         settlementId: "JS202609001", reconBatch: "T20260326", reconMatched: true
       },
       user: {
         id: "U0011", name: "张女士", phone: "15900008832", wecom: false, owner: "—",
-        source: "视频号", registeredAt: "2026-03-25",
+        source: "微信小店", registeredAt: "2026-03-25",
         tags: [{ name: "公域新客", color: "blue" }]
       },
       right: {
-        id: "R2026032500901", course: "视频号·春启 03 期家长课", product: "视频号·春启 03 期家长课",
+        id: "R2026032500901", course: "春启 03 期家长课", product: "春启 03 期家长课",
         chapters: 12, rightType: "正式课", acquire: "订单购买", acquireMethod: "订单购买",
-        sourceRef: "YB20260325000901", courseId: "S101",
-        orderId: "YB20260325000901", orderStatus: "已支付",
+        sourceRef: "WX20260325000901", courseId: "S101",
+        orderId: "WX20260325000901", orderStatus: "已支付",
         startAt: "2026-03-25", endAt: "2027-03-25",
         status: "有效", learnStatus: "未学习", access: "可访问", courseStatus: "上架",
         lastChange: "2026-03-25 支付成功后自动开通", acquireAt: "2026-03-25 11:06"
