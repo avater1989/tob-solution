@@ -20,7 +20,6 @@
 .gd-upload-add em { font-style:normal; font-size:12px; }
 .mono { font-family:ui-monospace,Consolas,monospace; font-size:12px; color:var(--color-text-secondary); }
 .linked-card { background:#f7f8fa; border:1px solid var(--color-border); border-radius:8px; padding:12px 14px; }
-.tag-checks { display:flex; flex-wrap:wrap; gap:8px 14px; }
 .readonly-banner { background:#fff7e6; border:1px solid #ffd591; color:#ad6800; border-radius:8px; padding:10px 14px; margin-bottom:12px; font-size:13px; }
 .form-locked input, .form-locked select, .form-locked textarea { pointer-events:none; background:#f5f5f5; opacity:.9; }
 .proto-mask, .proto-modal { display:none; }
@@ -117,9 +116,6 @@
         </div>
         <div class="field"><label>内容来源</label>
           <input id="f-source" readonly style="width:100%;padding:7px 8px;border:1px solid var(--color-border);border-radius:6px;background:#f5f5f5" value="商家自建 (self)" />
-        </div>
-        <div class="field" style="grid-column:1/-1"><label>商品标签</label>
-          <div class="tag-checks" id="f-tags"></div>
         </div>
         <div class="field" style="grid-column:1/-1"><label>商品卖点</label><textarea id="f-sell" rows="2" style="width:100%;padding:8px;border:1px solid var(--color-border);border-radius:6px"></textarea></div>
       </div>
@@ -271,9 +267,6 @@
   }
 
   document.getElementById("f-category").innerHTML = Tax.catOptionsHtml();
-  document.getElementById("f-tags").innerHTML = Tax.listTags({ enabledOnly: true }).map(function (t) {
-    return '<label><input type="checkbox" name="gtag" value="' + Tax.esc(t.id) + '" /> ' + Tax.esc(t.name) + "</label>";
-  }).join("") || '<span class="muted">暂无标签，请先在「商品标签」维护</span>';
 
   function setMode(mode) {
     createMode = mode;
@@ -565,10 +558,6 @@
       }
       document.getElementById("f-source").value =
         editing.content_source === "platform" ? "平台内容 (platform)" : "商家自建 (self)";
-      (editing.tag_ids || []).forEach(function (tid) {
-        var cb = document.querySelector('input[name=gtag][value="' + tid + '"]');
-        if (cb) cb.checked = true;
-      });
       renderDeliverList();
       return;
     }
@@ -615,7 +604,6 @@
           content_id: pfRow.content_id || "",
           platform_goods_id: pf,
           category_id: document.getElementById("f-category").value,
-          tag_ids: [],
           name: document.getElementById("f-gname").value,
           status: "on_sale",
           audit_status: "approved",
@@ -644,7 +632,6 @@
           return { content_type: s.content_type, content_id: s.content_id };
         }),
         category_id: document.getElementById("f-category").value,
-        tag_ids: Array.from(document.querySelectorAll("input[name=gtag]:checked")).map(function (x) { return x.value; }),
         name: document.getElementById("f-gname").value.trim(),
         status: onSale ? "on_sale" : "draft",
         audit_status: onSale ? "approved" : "draft",

@@ -33,10 +33,6 @@
   <!-- ================= Tab 1：租户 ================= -->
   <div class="tc-pane active" data-pane="tenant">
     <div class="toolbar" style="margin-bottom:16px">
-      <button class="btn" id="btn-renew">续期</button>
-      <button class="btn" id="btn-renew-records">续期记录</button>
-      <button class="btn" id="btn-edit">编辑信息</button>
-      <button class="btn" id="btn-stop">停用租户</button>
       <div class="spacer"></div>
       <span class="muted" style="font-size:12px">本页为租户的<b>唯一配置入口</b>：租户信息、容量与费率、营销额度、组织与用户、应用授权、续期与操作日志均在此维护</span>
     </div>
@@ -53,51 +49,18 @@
             </div>
           </div>
           <div class="kv-row"><span>租户编码</span><b>10001</b></div>
-          <div class="kv-row"><span>租户名称</span><b>星启家庭教育</b></div>
+          <div class="kv-row"><span>租户名称</span><span class="kv-acts"><b>星启家庭教育</b><button type="button" class="btn btn-sm" id="btn-edit">编辑信息</button></span></div>
           <div class="kv-row"><span>所属公司</span><b>星启家庭教育咨询有限公司</b></div>
           <div class="kv-row"><span>开通来源</span><b>注册留资</b></div>
           <div class="kv-row"><span>组织 / 岗位</span><b>7 个部门 · 6 个岗位</b></div>
           <div class="kv-row"><span>开通时间</span><b>2026-03-12</b></div>
-          <div class="kv-row"><span>使用截止日期</span><b id="tc-expire-kv">2027-03-12</b></div>
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="card-hd"><h2>已授权应用</h2>
-          <a href="#" style="font-size:13px;color:var(--color-primary);text-decoration:none" data-goto-tab="grant">应用授权 →</a>
-        </div>
-        <div class="card-bd">
-          <div class="ud-tenant">
-            <div class="ud-tenant-hd">
-              <b>商家管理后台</b>
-              <span class="badge badge-success">已授权</span>
-            </div>
-            <p class="ud-tenant-meta">应用标识：APP_MCH_ADMIN &nbsp;&nbsp; 授权来源：默认授权 &nbsp;&nbsp; 授权时间：2026-03-12</p>
-            <div class="ud-tenant-tags">
-              <span class="ud-tag-label">平台内置角色</span>
-              <span class="ud-chip ud-chip-blue">商户管理员</span><span class="ud-chip ud-chip-blue">内容运营</span><span class="ud-chip ud-chip-blue">销售</span><span class="ud-chip ud-chip-blue">财务</span>
-            </div>
-          </div>
-          <div class="ud-tenant">
-            <div class="ud-tenant-hd">
-              <b>C 端小程序</b>
-              <span class="badge badge-success">已授权</span>
-            </div>
-            <p class="ud-tenant-meta">应用标识：APP_C_MP &nbsp;&nbsp; 授权来源：默认授权 &nbsp;&nbsp; 授权时间：2026-03-12</p>
-          </div>
-          <div class="ud-tenant">
-            <div class="ud-tenant-hd">
-              <b>视频号助手</b>
-              <span class="badge badge-warn">临时授权（至 2026-09-30）</span>
-            </div>
-            <p class="ud-tenant-meta">应用标识：APP_CHANNELS &nbsp;&nbsp; 授权来源：单独授权（临时） &nbsp;&nbsp; 授权时间：2026-09-01</p>
-          </div>
-          <p class="muted" style="margin:12px 0 0;font-size:12px">应用授权决定该租户在商家后台可见的功能范围与可分配的角色；在「应用授权」分页可单独增减。</p>
+          <div class="kv-row"><span>租户状态</span><span class="kv-acts"><span class="badge badge-success">正常</span><button type="button" class="btn btn-sm" id="btn-stop">停用租户</button></span></div>
+          <div class="kv-row"><span>使用截止日期</span><span class="kv-acts"><b id="tc-expire-kv">2027-03-12</b><button type="button" class="btn btn-sm" id="btn-renew">续期</button><button type="button" class="btn btn-sm" id="btn-renew-records">续期记录</button></span></div>
         </div>
       </div>
 
       <!-- 容量与费率：按租户单独配置（2026-10-02 评审标注） -->
-      <div class="card" style="margin-top:16px">
+      <div class="card">
         <div class="card-hd">
           <h2>容量与费率</h2>
           <button type="button" class="btn btn-sm" id="btn-capacity">编辑配置</button>
@@ -744,11 +707,6 @@
     <div class="form-grid">
       <div class="field"><label>租户名称 *</label><input value="星启家庭教育" /></div>
       <div class="field"><label>所属公司</label><input value="星启家庭教育咨询有限公司" /></div>
-      <div class="field"><label>订单服务费率</label>
-        <select style="width:100%;padding:6px 8px;border:1px solid var(--color-border);border-radius:6px">
-          <option selected>0%（默认）</option>
-        </select>
-      </div>
     </div>
     <p class="muted" style="margin:10px 0 0;font-size:12px">容量与费率、额度、续期等配置分别在对应分页维护；本弹窗仅修改租户基础信息。</p>
   </div>
@@ -1091,7 +1049,9 @@
 /* ===== 基本信息 ===== */
 .kv-row { display:flex; justify-content:space-between; padding:7px 0; font-size:13px; border-bottom:1px dashed var(--color-border); }
 .kv-row:last-child { border-bottom:none; }
-.kv-row span { color:var(--color-text-secondary); }
+.kv-row > span:first-child { color:var(--color-text-secondary); }
+/* 基本信息行内操作：按钮就近放在对应字段旁（2026-10-10 评审标注） */
+.kv-acts { display:inline-flex; align-items:center; gap:8px; }
 .grid-2 { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); }
 @media (max-width: 1100px) { .grid-2 { grid-template-columns:1fr; } }
 .tag { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 12px; }

@@ -247,7 +247,6 @@
           { id: "goods", href: "goods.html", label: "商品列表" },
           { id: "wxshop-goods", href: "wxshop-goods.html", label: "微信小店商品" },
           { id: "goods-category", href: "goods-category.html", label: "商品类目" },
-          { id: "goods-tags", href: "goods-tags.html", label: "商品标签" },
         ],
       },
       {

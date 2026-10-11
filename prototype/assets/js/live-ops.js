@@ -371,17 +371,15 @@
   }
 
   function scenarioKey(v) {
-    var p = v.platformReviewStatus;
+    /* 直播不设平台审核环节（2026-10-11 评审标注）：
+     * 状态机仅保留 草稿 / 待开播 / 直播中 / 已结束 / 已取消 五个场景，
+     * 原 platform_pending / platform_rejected / ready_shelf 场景一并收敛。*/
     var s = v.shelfStatus;
     var r = v.runtimeStatus;
     if (r === "cancelled") return "cancelled";
     if (r === "ended") return "ended";
     if (r === "living") return "living";
-    if (p === "pending") return "platform_pending";
-    if (p === "rejected") return "platform_rejected";
-    if (p === "passed" && s !== "published") return "ready_shelf";
-    if (p === "passed" && s === "published" && r === "not_started") return "upcoming";
-    /* not_submitted / withdrawn → draft */
+    if (s === "published" && r === "not_started") return "upcoming";
     return "draft";
   }
 
@@ -391,8 +389,6 @@
     var id = v.liveId || v.id;
     var detail = buildUrl("live-edit.html", { live_id: id, mode: "view" });
     var edit = buildUrl("live-edit.html", { live_id: id });
-    var editRejected = buildUrl("live-edit.html", { live_id: id, from: "platform_rejected", focus: "cover" });
-    var progress = buildUrl("live-edit.html", { live_id: id, mode: "view", focus: "platform" });
     var booking = buildUrl("live-booking.html", { live_id: id, from: "detail" });
     var control = buildUrl("live-control.html", { live_id: id });
     var screen = buildUrl("live-screen.html", { live_id: id });
@@ -400,49 +396,25 @@
     var replay = buildUrl("live-replay.html", { live_id: id });
 
     var map = {
+      /* 草稿 / 未上架：可直接上架，不经审核 */
       draft: {
         primary: { label: "继续编辑", href: edit },
         secondary: [
-          { label: "提交平台审核", action: "submit_platform" },
+          { label: "上架", action: "publish" },
           { label: "查看详情", href: detail },
-          { label: "复制", action: "copy" },
+          { label: "复制直播", action: "copy" },
           { label: "删除", action: "delete" }
-        ]
-      },
-      platform_pending: {
-        primary: { label: "查看审核状态", href: progress },
-        secondary: [
-          { label: "撤回并编辑", action: "withdraw_edit" },
-          { label: "查看详情", href: detail },
-          { label: "复制", action: "copy" }
-        ]
-      },
-      platform_rejected: {
-        primary: { label: "修改并重新提交", href: editRejected },
-        secondary: [
-          { label: "查看驳回原因", href: progress },
-          { label: "查看详情", href: detail },
-          { label: "复制直播", action: "copy" }
-        ]
-      },
-      ready_shelf: {
-        primary: { label: "上架", action: "publish" },
-        secondary: [
-          { label: "查看详情", href: detail },
-          { label: "直播促到", href: booking },
-          { label: "分享", action: "share" },
-          { label: "编辑", href: edit }
         ]
       },
       upcoming: {
         primary: { label: "查看详情", href: detail },
         secondary: [
-          { label: "场次数据", href: stats },
           { label: "直播促到", href: booking },
           { label: "分享", action: "share" },
           { label: "进入中控台", href: control },
           { label: "直播大屏", href: screen },
           { label: "编辑", href: edit },
+          { label: "复制直播", action: "copy" },
           { label: "取消上架", action: "unpublish" }
         ]
       },
@@ -453,6 +425,7 @@
           { label: "实时数据", href: stats },
           { label: "分享", action: "share" },
           { label: "查看详情", href: detail },
+          { label: "复制直播", action: "copy" },
           { label: "强制下架", action: "force_offline" }
         ]
       },
@@ -467,7 +440,6 @@
       cancelled: {
         primary: { label: "查看详情", href: detail },
         secondary: [
-          { label: "场次数据", href: stats },
           { label: "复制直播", action: "copy" },
           { label: "删除", action: "delete" }
         ]
@@ -507,10 +479,7 @@
   function nextHint(v) {
     var a = buildActions(v);
     var lines = {
-      draft: "完善配置后，在列表提交平台审核",
-      platform_pending: "等待平台审核结果",
-      platform_rejected: "按平台驳回原因修改后重新提交",
-      ready_shelf: "上架后可进行开播准备",
+      draft: "完善配置后直接上架，无需审核",
       upcoming: "完成预约提醒设置",
       living: "进入中控台管理直播",
       ended: "查看场次数据与回放",
@@ -526,13 +495,14 @@
     lives.forEach(function (v) {
       var allow = false;
       if (action === "publish") {
-        allow = v.platformReviewStatus === "passed" && v.shelfStatus !== "published" &&
-          v.runtimeStatus !== "living" && v.runtimeStatus !== "ended";
+        /* 直播不设平台审核：未上架且未进入直播中 / 已结束时即可上架 */
+        allow = v.shelfStatus !== "published" &&
+          v.runtimeStatus !== "living" && v.runtimeStatus !== "ended" && v.runtimeStatus !== "cancelled";
       } else if (action === "unpublish") {
         allow = v.shelfStatus === "published" && v.runtimeStatus !== "ended" && v.runtimeStatus !== "living";
       } else if (action === "delete") {
-        allow = v.platformReviewStatus === "not_submitted" || v.runtimeStatus === "cancelled" ||
-          v.auditStatus === "draft";
+        allow = v.runtimeStatus === "cancelled" ||
+          (v.shelfStatus !== "published" && v.runtimeStatus !== "living" && v.runtimeStatus !== "ended");
       }
       if (allow) ok.push(v);
       else fail.push(v);
@@ -814,18 +784,11 @@
     if (key === "living") return { allow: false, message: "直播进行中，禁止编辑基础配置。请使用中控台进行应急操作。" };
     if (key === "ended") return { allow: false, message: "直播已结束，不可编辑原直播。可查看数据、回放或复制直播。" };
     if (key === "cancelled") return { allow: false, message: "直播已取消，仅可查看或复制。" };
-    if (key === "platform_pending") {
-      return {
-        allow: true,
-        needWithdraw: true,
-        message: "当前直播正在平台审核中，编辑前需要撤回审核。撤回后直播将变为草稿，需要修改并重新提交。"
-      };
-    }
-    if (key === "upcoming" || key === "ready_shelf") {
+    if (key === "upcoming") {
       return {
         allow: true,
         warnOnSave: true,
-        message: "修改已审核直播后，原平台审核结果将失效，直播将退回草稿并取消上架，需要重新提交平台审核。"
+        message: "修改已上架直播后，变更将直接生效并同步到 C 端预告。"
       };
     }
     return { allow: true };

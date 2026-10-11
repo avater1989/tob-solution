@@ -8,8 +8,8 @@
 </head>
 <body class="admin-body" data-module="live" data-nav="live-replay" data-title="直播回放" data-crumb="直播 / 直播管理 / 直播回放">
 <div id="header-actions">
-  <button class="btn" id="btn-tutorial">使用教程</button>
-  <button class="btn" id="btn-import">导入外部回放</button>
+  <button class="btn" id="btn-tutorial" data-phase2-only>使用教程</button>
+  <button class="btn" id="btn-import" data-phase2-only>导入外部回放</button>
 </div>
 <div id="page-content" style="display:none">
 
@@ -97,7 +97,7 @@
           <th>回放时长</th>
           <th>生成状态</th>
           <th>上架状态</th>
-          <th>权重</th>
+          <th>排序</th>
           <th>播放量</th>
                     <th style="width:240px">操作</th>
         </tr>
@@ -113,7 +113,7 @@
           <td>72分钟</td>
           <td><span class="rp-badge rp-gen-ready">可用</span></td>
           <td><span class="rp-badge rp-on">已上架</span></td>
-          <td><span class="rp-price">¥0</span></td>
+          <td><span class="rp-sort" contenteditable="true" data-sort>50</span></td>
           <td>186</td>
           <td class="row-actions"></td>
         </tr>
@@ -127,7 +127,7 @@
           <td>6分钟</td>
           <td><span class="rp-badge rp-gen-ready">可用</span></td>
           <td><span class="rp-badge rp-on">已上架</span></td>
-          <td><span class="rp-price">¥0</span></td>
+          <td><span class="rp-sort" contenteditable="true" data-sort>50</span></td>
           <td>4</td>
           <td class="row-actions"></td>
         </tr>
@@ -141,7 +141,7 @@
           <td>—</td>
           <td><span class="rp-badge rp-gen-pending">待生成</span></td>
           <td><span class="rp-badge rp-off">未上架</span></td>
-          <td><span class="rp-price">¥0</span></td>
+          <td><span class="rp-sort" contenteditable="true" data-sort>50</span></td>
           <td>0</td>
           <td class="row-actions"></td>
         </tr>
@@ -155,7 +155,7 @@
           <td>—</td>
           <td><span class="rp-badge rp-gen-processing">处理中</span></td>
           <td><span class="rp-badge rp-off">未上架</span></td>
-          <td><span class="rp-price">¥0</span></td>
+          <td><span class="rp-sort" contenteditable="true" data-sort>50</span></td>
           <td>0</td>
           <td class="row-actions"></td>
         </tr>
@@ -169,7 +169,7 @@
           <td>—</td>
           <td><span class="rp-badge rp-gen-failed">生成失败</span></td>
           <td><span class="rp-badge rp-off">未上架</span></td>
-          <td><span class="rp-price">¥0</span></td>
+          <td><span class="rp-sort" contenteditable="true" data-sort>50</span></td>
           <td>0</td>
           <td class="row-actions"></td>
         </tr>
@@ -183,7 +183,7 @@
           <td>3分钟</td>
           <td><span class="rp-badge rp-gen-ready">可用</span></td>
           <td><span class="rp-badge rp-off">未上架</span></td>
-          <td><span class="rp-price">¥0</span></td>
+          <td><span class="rp-sort" contenteditable="true" data-sort>50</span></td>
           <td>0</td>
           <td class="row-actions"></td>
         </tr>
@@ -197,7 +197,7 @@
           <td>148分钟</td>
           <td><span class="rp-badge rp-gen-ready">可用</span></td>
           <td><span class="rp-badge rp-off">未上架</span></td>
-          <td><span class="rp-price">¥0</span></td>
+          <td><span class="rp-sort" contenteditable="true" data-sort>50</span></td>
           <td>0</td>
           <td class="row-actions"></td>
         </tr>
@@ -211,7 +211,7 @@
           <td>—</td>
           <td><span class="rp-badge rp-gen-processing">处理中</span></td>
           <td><span class="rp-badge rp-off">未上架</span></td>
-          <td><span class="rp-price">¥0</span></td>
+          <td><span class="rp-sort" contenteditable="true" data-sort>50</span></td>
           <td>0</td>
           <td class="row-actions"></td>
         </tr>
@@ -242,25 +242,6 @@
 
 <!-- ============ 弹窗 / 抽屉 ============ -->
 <div class="proto-mask" id="mask"></div>
-
-<!-- 权重设置弹窗 -->
-<div class="proto-modal" id="modal-weight">
-  <div class="proto-modal-hd">
-    <h3>权重设置</h3>
-    <button class="btn btn-sm btn-ghost" data-close>×</button>
-  </div>
-  <div class="proto-modal-bd">
-    <p class="muted">权重越高，回放列表中的排序越靠前。范围 0-100。</p>
-    <div class="field"><label>回放标题</label><div id="wt-title">—</div></div>
-    <div class="field"><label>权重值</label>
-      <input type="number" id="wt-value" min="0" max="100" value="50" style="width:120px" />
-    </div>
-  </div>
-  <div class="proto-modal-ft">
-    <button class="btn" data-close>取消</button>
-    <button class="btn btn-primary" id="btn-save-weight">保存</button>
-  </div>
-</div>
 
 <!-- 上架确认：展示观看范围与有效期 -->
 <div class="proto-modal" id="modal-publish">
@@ -299,7 +280,7 @@
       <div class="field"><label>上架状态</label><div id="dd-shelf">—</div></div>
       <div class="field"><label>观看范围</label><div id="dd-scope">—</div></div>
       <div class="field"><label>有效期</label><div id="dd-valid">—</div></div>
-      <div class="field"><label>权重</label><div id="dd-weight">—</div></div>
+      <div class="field"><label>排序</label><div id="dd-sort">—</div></div>
       <div class="field"><label>播放量</label><div id="dd-plays">—</div></div>
     </div>
     <h4 style="margin:16px 0 8px">回放预览</h4>
@@ -345,11 +326,13 @@
   display: block; font-size: 11px; color: #86909c; margin-top: 4px; font-weight: 400;
 }
 
-.rp-price {
-  display: inline-block; padding: 2px 8px; border-radius: 12px;
-  background: #fff7e6; color: #d48806;
-  font-size: 12px; font-weight: 500;
+.rp-sort {
+  display: inline-block; min-width: 34px; padding: 2px 8px; border-radius: 4px;
+  border: 1px solid transparent; background: #f2f3f5; color: var(--color-text);
+  font-size: 12px; text-align: center; cursor: text;
 }
+.rp-sort:hover { border-color: var(--color-border); background: #fff; }
+.rp-sort:focus { border-color: var(--color-primary); background: #fff; outline: none; }
 
 .row-actions a { margin-right: 8px; }
 
@@ -411,8 +394,8 @@
       ha.innerHTML =
         '<a class="btn" href="' + LiveOps.viewLiveUrl(live.liveId) + '">返回直播详情</a>' +
         '<a class="btn" href="live-replay.html">查看全部回放</a>' +
-        '<button type="button" class="btn" id="btn-tutorial">使用教程</button>' +
-        '<button type="button" class="btn" id="btn-import">导入外部回放</button>';
+        '<button type="button" class="btn" id="btn-tutorial" data-phase2-only>使用教程</button>' +
+        '<button type="button" class="btn" id="btn-import" data-phase2-only>导入外部回放</button>';
     }
     document.body.setAttribute("data-crumb", "直播 / 直播管理 / 直播回放 / " + live.liveName);
     document.title = "直播回放 · " + live.liveName + " · 商家管理后台";
@@ -486,7 +469,7 @@
       shelf: tr.dataset.shelf,
       scope: tr.getAttribute("data-scope") || "复用本场直播观看配置",
       valid: tr.getAttribute("data-valid") || "长期有效",
-      weight: tds[10] ? tds[10].textContent.trim() : "¥0",
+      sort: tds[10] ? tds[10].textContent.trim() : "50",
       plays: tds[11] ? tds[11].textContent.trim() : "0"
     };
   }
@@ -501,7 +484,6 @@
       var why = gen === "pending" ? "回放尚未生成，无法预览或上架" : "回放处理中，无法预览或上架";
       html =
         '<a href="#" class="is-disabled" data-row-act="play" title="' + why + '">预览</a>' +
-        '<a href="#" data-row-act="weight">权重</a>' +
         '<a href="#" class="is-disabled" data-row-act="on" title="' + why + '">上架</a>' +
         '<span class="act-hint">' + why + "</span>";
     } else if (gen === "failed") {
@@ -513,12 +495,10 @@
     } else if (shelf === "on") {
       html =
         '<a href="#" data-row-act="play">预览</a>' +
-        '<a href="#" data-row-act="weight">权重</a>' +
         '<a href="#" data-row-act="off">下架</a>';
     } else {
       html =
         '<a href="#" data-row-act="play">预览</a>' +
-        '<a href="#" data-row-act="weight">权重</a>' +
         '<a href="#" data-row-act="on">上架</a>';
     }
     actCell.innerHTML = html;
@@ -562,7 +542,7 @@
     document.getElementById("dd-shelf").textContent    = d.shelf === "on" ? "已上架" : "未上架";
     document.getElementById("dd-scope").textContent    = d.scope;
     document.getElementById("dd-valid").textContent    = d.valid;
-    document.getElementById("dd-weight").textContent   = d.weight;
+    document.getElementById("dd-sort").textContent   = d.sort;
     document.getElementById("dd-plays").textContent    = d.plays;
     open(document.getElementById("drawer-detail"));
   }
@@ -594,10 +574,6 @@
             return;
           }
           Proto.toast("打开预览（原型）");
-        }
-        else if (act === "weight") {
-          document.getElementById("wt-title").textContent = d.name;
-          open(document.getElementById("modal-weight"));
         }
         else if (act === "on") {
           if (gen !== "ready") {
@@ -640,10 +616,19 @@
     closeAll();
   });
 
-  // ===== Save weight =====
-  document.getElementById("btn-save-weight").addEventListener("click", function () {
-    Proto.toast("权重已保存（原型）");
-    closeAll();
+  // ===== 排序：行内编辑（2026-10-11 评审标注，原「权重」弹窗改为列表内直接编辑）=====
+  document.querySelectorAll("#rp-tbody [data-sort]").forEach(function (cell) {
+    cell.addEventListener("blur", function () {
+      var v = parseInt(cell.textContent.trim(), 10);
+      if (isNaN(v)) { cell.textContent = "50"; Proto.toast("排序值无效，已重置为 50"); return; }
+      if (v < 0) v = 0;
+      if (v > 999) v = 999;
+      cell.textContent = String(v);
+      Proto.toast("排序已更新为 " + v + "（原型）");
+    });
+    cell.addEventListener("keydown", function (e) {
+      if (e.key === "Enter") { e.preventDefault(); cell.blur(); }
+    });
   });
 
   // ===== Download =====

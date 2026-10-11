@@ -16,7 +16,7 @@
 
   <!-- 统计卡（合并原「审核记录」的累计 / 通过率口径） -->
   <div class="grid-4" style="margin-bottom:16px">
-    <div class="stat"><div class="label">待平台审核</div><div class="value" id="st-pending">0</div><div class="hint">直播 / 线上课 / 文章</div></div>
+    <div class="stat"><div class="label">待平台审核</div><div class="value" id="st-pending">0</div><div class="hint">线上课 / 文章</div></div>
     <div class="stat"><div class="label">累计审核</div><div class="value" id="st-total">0</div><div class="hint">全部租户</div></div>
     <div class="stat"><div class="label">通过率</div><div class="value" id="st-rate-pass">—</div><div class="hint" id="st-rate-hint">通过 0 · 驳回 0</div></div>
     <div class="stat"><div class="label">平均审核时长</div><div class="value">3.2 小时</div><div class="hint">SLA 目标 4 小时</div></div>
@@ -40,7 +40,7 @@
       </select>
       <select id="f-type">
         <option value="">内容类型</option>
-        <option>直播</option><option>线上课</option><option>文章</option>
+        <option>线上课</option><option>文章</option>
       </select>
       <select id="f-result">
         <option value="">审核结果</option>
@@ -96,7 +96,7 @@
       <tbody id="dt-rows"></tbody>
     </table>
     <div style="margin-top:10px;padding:8px 12px;border-radius:6px;background:#e8f3ff;border:1px solid #a0cfff;color:#165dff;font-size:12px">
-      审核范围：<b>直播（必审）</b>、<b>线上课 / 文章（上架前审核）</b>。审核通过后内容可上架至 C 端。商品不参与平台审核，商家创建后可直接上架。
+      审核范围：<b>线上课 / 文章（上架前审核）</b>。审核通过后内容可上架至 C 端。<b>直播不设平台审核</b>（商家配置完成后可直接上架，2026-10-11 口径变更），商品同样不参与平台审核。
     </div>
     <p class="muted" style="margin:10px 0 0;font-size:12px">平台审核通过后可上架；驳回需填写原因并通知商家；微信小店商品审批走微信接口，不在本队列。</p>
   </div>
@@ -143,7 +143,6 @@
         <option>A-03 宣传用语含绝对化承诺</option>
         <option>B-01 课程内容涉嫌侵权</option>
         <option>C-02 封面图与内容不符</option>
-        <option>D-05 直播信息不完整</option>
         <option>其他（需填写说明）</option>
       </select>
     </div>
@@ -183,7 +182,7 @@
   var rowMap = {};
   var currentTab = "pending";
 
-  // 视频 / 图文 的待审示例（线上课来自 CourseStore；直播来自 ProtoBiz；商品来自 goodsDemo）
+  // 线上课 / 文章 的待审示例（线上课来自 CourseStore）
   var LOCAL_ITEMS = [
     { id: "VI2026090503", typeLabel: "视频", name: "写作业不吼不叫 · 方法拆解", merchantName: "晨光少儿成长", submittedAt: "2026-09-05 11:32",
       rows: [["视频标题","写作业不吼不叫 · 方法拆解"],["视频封面","video-cover.jpg（已预览）"],["视频时长","42 分 18 秒"],["售卖价格","¥69.00"],["试看设置","每节前 3 分钟"]] },
@@ -228,29 +227,14 @@
     });
   }
 
-  function pendingLives() {
-    return (Biz.getLives() || []).filter(function (l) {
-      return l.auditStatus === "pending_platform_review";
-    });
-  }
-
   function allItems() {
-    var lives = pendingLives().map(function (l) {
-      return {
-        id: l.id, typeLabel: "直播", name: l.name,
-        merchantName: l.merchantName || "星启家庭教育",
-        submittedAt: l.submittedPlatformAt || l.submittedInternalAt || "—",
-        isLive: true,
-        isSeries: false,
-        rows: [["直播名称", l.name], ["开播时间", l.startAt || "—"], ["封面图", "live-cover.jpg（已预览）"], ["挂载商品", "关联课程商品"], ["宣传话术", "公开课招生话术"]]
-      };
-    });
+    /* 直播不设平台审核（2026-10-11 口径变更），队列只含线上课 / 文章 */
     var series = pendingSeries();
     var locals = LOCAL_ITEMS.filter(function (x) { return !localDone[x.id]; }).map(function (x) {
       return { id: x.id, typeLabel: x.typeLabel, name: x.name, merchantName: x.merchantName, submittedAt: x.submittedAt, isLive: false, isSeries: false, isGoods: false, rows: x.rows };
     });
-    /* 商品不参与平台审核：商家创建后可直接上架，故不进本队列 */
-    return lives.concat(series).concat(locals);
+    /* 商品与直播均不参与平台审核：创建 / 配置完成后可直接上架，故不进本队列 */
+    return series.concat(locals);
   }
 
   function esc(s) {

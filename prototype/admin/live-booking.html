@@ -84,7 +84,7 @@
 </head>
 <body class="admin-body" data-module="live" data-nav="live-booking" data-title="直播促到" data-crumb="直播 / 直播管理 / 直播促到">
 <div id="header-actions">
-  <button class="btn" type="button" id="btn-export">导出</button>
+  <button class="btn" type="button" id="btn-export" data-phase2-only>导出</button>
   <button class="btn btn-primary" type="button" id="btn-new-reminder">+ 新建提醒规则</button>
 </div>
 
@@ -103,14 +103,7 @@
           <option value="">全部直播状态</option>
           <option value="upcoming">待开播</option>
           <option value="ended">已结束</option>
-          <option value="draft_pending">待审核</option>
           <option value="cancelled">已取消</option>
-        </select>
-        <select class="input" id="list-f-audit" style="width:140px">
-          <option value="">全部审核状态</option>
-          <option value="approved">已通过</option>
-          <option value="pending">审核中</option>
-          <option value="rejected">已驳回</option>
         </select>
         <input class="input" id="list-f-keyword" type="text" placeholder="直播名称 / ID" style="width:220px" />
         <button class="btn btn-primary" type="button" id="list-btn-query">查询</button>
@@ -118,7 +111,6 @@
       </div>
       <div class="demo-bar">
         <span class="muted">原型联动：</span>
-        <button class="btn btn-sm" type="button" data-demo="approve" data-live="L003">模拟审核通过上架 (L003)</button>
         <button class="btn btn-sm" type="button" data-demo="reschedule" data-live="L001">模拟改期 (L001)</button>
         <button class="btn btn-sm" type="button" data-demo="cancel" data-live="L001">模拟取消直播 (L001)</button>
       </div>
@@ -130,7 +122,6 @@
           <tr>
             <th>直播名称</th>
             <th>直播状态</th>
-            <th>审核状态</th>
             <th>开播时间</th>
             <th>预约用户</th>
             <th>订阅提醒用户</th>
@@ -199,7 +190,6 @@
     <div class="card" style="margin-bottom:8px"><div class="card-bd" style="padding:10px 16px">
       <div class="demo-bar" style="border:none;margin:0;padding:0">
         <span class="muted">原型联动：</span>
-        <button class="btn btn-sm" type="button" id="demo-approve">模拟审核通过上架</button>
         <button class="btn btn-sm" type="button" id="demo-reschedule">模拟改期</button>
         <button class="btn btn-sm" type="button" id="demo-cancel">模拟取消直播</button>
       </div>
@@ -285,7 +275,7 @@
     <div class="bk-pane" id="pane-reminders">
       <div class="card" style="margin-bottom:8px"><div class="card-bd">
         <div class="toolbar" style="border:none;padding:0;background:transparent">
-          <span class="muted" style="font-size:12px">仅展示标准系统提醒（system_reminder）。直播审核通过并上架后自动生成默认计划。</span>
+          <span class="muted" style="font-size:12px">仅展示标准系统提醒（system_reminder）。直播上架后自动生成默认计划。</span>
           <div class="spacer"></div>
           <button class="btn btn-primary" type="button" id="btn-new-reminder-tab">+ 新建提醒规则</button>
         </div>
@@ -429,7 +419,7 @@
         <label>提醒渠道 *</label>
         <div style="display:flex;gap:16px;padding:6px 0;flex-wrap:wrap">
           <label><input type="checkbox" name="rm-ch" value="短信" checked /> 短信</label>
-          <label><input type="checkbox" name="rm-ch" value="外呼" /> 外呼</label>
+          <label><input type="checkbox" name="rm-ch" value="企微消息" /> 企微消息</label>
         </div>
       </div>
       <div class="field" style="grid-column:1/-1">
@@ -703,14 +693,6 @@
     };
     return '<span class="badge ' + (map[live.liveStatus] || "badge") + '">' + esc(live.liveStatusLabel || live.liveStatus) + "</span>";
   }
-  function auditBadge(live) {
-    var map = {
-      approved: "badge-success",
-      pending: "badge-warn",
-      rejected: "badge-danger"
-    };
-    return '<span class="badge ' + (map[live.auditStatus] || "badge") + '">' + esc(live.auditStatusLabel || live.auditStatus) + "</span>";
-  }
   function typeBadge(type) {
     return '<span class="rm-type ' + (TYPE_CLASS[type] || "") + '">' + esc(TYPE_LABEL[type] || type) + "</span>";
   }
@@ -733,11 +715,9 @@
   /* ---------- List view ---------- */
   function renderList() {
     var statusF = document.getElementById("list-f-live-status").value;
-    var auditF = document.getElementById("list-f-audit").value;
     var kw = (document.getElementById("list-f-keyword").value || "").trim().toLowerCase();
     var lives = LR.getLives().filter(function (l) {
       if (statusF && l.liveStatus !== statusF) return false;
-      if (auditF && l.auditStatus !== auditF) return false;
       if (kw && String(l.name).toLowerCase().indexOf(kw) < 0 && String(l.id).toLowerCase().indexOf(kw) < 0) return false;
       return true;
     });
@@ -745,14 +725,13 @@
     document.getElementById("list-summary").innerHTML = "共 <b>" + lives.length + "</b> 条";
     var tbody = document.getElementById("list-tbody");
     if (!lives.length) {
-      tbody.innerHTML = '<tr><td colspan="11" class="muted" style="text-align:center;padding:40px">暂无直播</td></tr>';
+      tbody.innerHTML = '<tr><td colspan="10" class="muted" style="text-align:center;padding:40px">暂无直播</td></tr>';
       return;
     }
     tbody.innerHTML = lives.map(function (l) {
       return "<tr>" +
         "<td><a class=\"link-blue\" href=\"live-booking.html?live_id=" + esc(l.id) + "\"><b>" + esc(l.name) + "</b></a><div class=\"muted bk-mono\" style=\"font-size:11px\">" + esc(l.id) + "</div></td>" +
         "<td>" + liveStatusBadge(l) + "</td>" +
-        "<td>" + auditBadge(l) + "</td>" +
         "<td>" + esc(l.startAt) + "</td>" +
         "<td class=\"bk-num\">" + num(l.bookedUsers) + "</td>" +
         "<td class=\"bk-num\">" + num(l.subscribedUsers) + "</td>" +
@@ -931,10 +910,7 @@
       banner.textContent = "已结束场次仅可查看历史预约与发送结果。";
     } else if (gate.notExecutable) {
       banner.style.display = "";
-      banner.textContent = "直播审核通过并上架后，提醒计划才会进入可执行状态。";
-    } else if (live && live.auditStatus === "pending") {
-      banner.style.display = "";
-      banner.textContent = "直播审核中，提醒任务暂停。审核通过并上架后将自动恢复 / 生成正式提醒计划。";
+      banner.textContent = "直播上架后，提醒计划才会进入可执行状态。";
     } else if (live && !live.shelf) {
       banner.style.display = "";
       banner.textContent = "直播未上架，提醒任务暂停。";
@@ -1151,13 +1127,13 @@
       triggerTime = "直播取消时";
     }
 
-    var canRun = live && live.auditStatus === "approved" && live.shelf;
+    var canRun = live && live.shelf;
     var status = existing && (existing.status === "completed" || existing.status === "cancelled")
       ? existing.status
       : (canRun && enabled ? "pending" : "paused");
     var pauseReason = "";
     if (!canRun) {
-      pauseReason = live && live.auditStatus === "pending" ? "直播审核中，提醒任务暂停" : "直播未上架，提醒任务暂停";
+      pauseReason = "直播未上架，提醒任务暂停";
     }
 
     var rem = {
@@ -1249,13 +1225,7 @@
   function runDemo(action, liveId) {
     liveId = liveId || currentLiveId;
     if (!liveId) { Proto.toast("请先选择直播"); return; }
-    if (action === "approve") {
-      askConfirm("模拟审核通过上架", "确认将「" + liveId + "」标记为审核通过并上架，并生成正式提醒计划？", function () {
-        LR.approveAndShelf(liveId);
-        Proto.toast("已审核通过并上架，提醒计划已生成");
-        boot(true);
-      });
-    } else if (action === "reschedule") {
+    if (action === "reschedule") {
       askConfirm("模拟改期", "确认将「" + liveId + "」开播时间改为 2026-09-11 20:00，并重算未执行提醒？", function () {
         var changed = LR.rescheduleReminders(liveId, "2026-09-11 20:00");
         Proto.toast("已改期，重算 " + changed.length + " 条提醒");
@@ -1289,7 +1259,7 @@
     document.getElementById("view-single").style.display = "";
     document.getElementById("bk-current-live-text").textContent = live.name;
     document.getElementById("bk-current-live-meta").innerHTML =
-      liveStatusBadge(live) + " " + auditBadge(live) + " · 开播 " + esc(live.startAt);
+      liveStatusBadge(live) + " · 开播 " + esc(live.startAt);
     var back = document.getElementById("bk-back-link");
     var backText = document.getElementById("bk-back-text");
     if (back) {
@@ -1365,7 +1335,6 @@
   document.getElementById("list-btn-query").addEventListener("click", renderList);
   document.getElementById("list-btn-reset").addEventListener("click", function () {
     document.getElementById("list-f-live-status").value = "";
-    document.getElementById("list-f-audit").value = "";
     document.getElementById("list-f-keyword").value = "";
     renderList();
   });
@@ -1449,7 +1418,6 @@
       runDemo(btn.getAttribute("data-demo"), btn.getAttribute("data-live"));
     });
   });
-  document.getElementById("demo-approve").addEventListener("click", function () { runDemo("approve"); });
   document.getElementById("demo-reschedule").addEventListener("click", function () { runDemo("reschedule"); });
   document.getElementById("demo-cancel").addEventListener("click", function () { runDemo("cancel"); });
 

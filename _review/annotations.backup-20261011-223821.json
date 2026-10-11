@@ -1,0 +1,259 @@
+{
+  "v": 1,
+  "updated": "2026-10-11T22:37:20",
+  "items": [
+    {
+      "id": "rmv2kdohkrnu6",
+      "page": "ops/tenant-config.html",
+      "anchor": {
+        "selector": "#modal-edit > div:nth-of-type(2) > div > div:nth-of-type(3) > label",
+        "selectorIn": "",
+        "root": "",
+        "region": "page",
+        "shell": "",
+        "label": "label",
+        "text": "订单服务费率",
+        "html": "<label>订单服务费率</label>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "去掉",
+      "status": "resolved",
+      "createdAt": "2026-10-10T15:43:45.464Z",
+      "updatedAt": "2026-10-10T17:00:15.119Z"
+    },
+    {
+      "id": "rmv2keol9n9gp",
+      "page": "ops/tenant-config.html",
+      "anchor": {
+        "selector": "#admin-content-slot > div > div:nth-of-type(3) > div:nth-of-type(2) > div:nth-of-type(2)",
+        "selectorIn": "div:nth-of-type(3) > div:nth-of-type(2) > div:nth-of-type(2)",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "div.card",
+        "text": "已授权应用 应用授权 → 商家管理后台 已授权 应用标识：APP_MCH_ADMIN 授权来源：默认授权 授权时间：2026-03-12 平台内置角色 商户管理员内容运营销售财务 C 端小程序 已授权 应用标识：APP_C_MP 授权来源：默认授权 授权时间：2026-03-12 视频号助手 临时授权（至 2026-0",
+        "html": "<div class=\"card\"> <div class=\"card-hd\"><h2>已授权应用</h2> <a href=\"#\" style=\"font-size:13px;color:var(--color-primary);text-decoration:none\" data-goto-tab=\"grant\">应用授权 →</a> </div> <div class=\"card-bd\"> <div class=\"ud-tenant\"> <div class=\"ud-tenant-hd\"> <b>商家管理后台</b> <span class=\"ba"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "去掉",
+      "status": "resolved",
+      "createdAt": "2026-10-10T15:44:32.253Z",
+      "updatedAt": "2026-10-10T17:00:15.119Z"
+    },
+    {
+      "id": "rmv2kgkaa6ifd",
+      "page": "ops/tenant-config.html",
+      "anchor": {
+        "selector": "#btn-renew",
+        "selectorIn": "#btn-renew",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "button#btn-renew.btn",
+        "text": "续期",
+        "html": "<button class=\"btn\" id=\"btn-renew\">续期</button>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "放在下方「使用截止日期」旁边",
+      "status": "resolved",
+      "createdAt": "2026-10-10T15:45:59.986Z",
+      "updatedAt": "2026-10-10T17:00:15.119Z"
+    },
+    {
+      "id": "rmv2kgmx3mb4k",
+      "page": "ops/tenant-config.html",
+      "anchor": {
+        "selector": "#btn-renew-records",
+        "selectorIn": "#btn-renew-records",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "button#btn-renew-records.btn",
+        "text": "续期记录",
+        "html": "<button class=\"btn\" id=\"btn-renew-records\">续期记录</button>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "放在下方「使用截止日期」旁边",
+      "status": "resolved",
+      "createdAt": "2026-10-10T15:46:03.400Z",
+      "updatedAt": "2026-10-10T17:00:15.119Z"
+    },
+    {
+      "id": "rmv2kh8ewypwa",
+      "page": "ops/tenant-config.html",
+      "anchor": {
+        "selector": "#btn-edit",
+        "selectorIn": "#btn-edit",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "button#btn-edit.btn",
+        "text": "编辑信息",
+        "html": "<button class=\"btn\" id=\"btn-edit\">编辑信息</button>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "放在下方「租户名称」旁边",
+      "status": "resolved",
+      "createdAt": "2026-10-10T15:46:31.256Z",
+      "updatedAt": "2026-10-10T17:00:15.119Z"
+    },
+    {
+      "id": "rmv2khk82jiso",
+      "page": "ops/tenant-config.html",
+      "anchor": {
+        "selector": "#btn-stop",
+        "selectorIn": "#btn-stop",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "button#btn-stop.btn",
+        "text": "停用租户",
+        "html": "<button class=\"btn\" id=\"btn-stop\">停用租户</button>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "放在下方租户状态旁边",
+      "status": "resolved",
+      "createdAt": "2026-10-10T15:46:46.562Z",
+      "updatedAt": "2026-10-10T17:00:15.119Z"
+    },
+    {
+      "id": "rmv3rac88nuvo",
+      "page": "admin/orders.html",
+      "anchor": {
+        "selector": "body > div:nth-of-type(7) > div:nth-of-type(2) > aside > div:nth-of-type(3) > a:nth-of-type(4) > span",
+        "selectorIn": "",
+        "root": "",
+        "region": "shell",
+        "shell": "admin-shell.js",
+        "label": "span.nav-text",
+        "text": "商品标签",
+        "html": "<span class=\"nav-text\">商品标签</span>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "去掉，把相应其他地方应用到商品标签都去掉",
+      "status": "open",
+      "createdAt": "2026-10-11T11:44:53.096Z"
+    },
+    {
+      "id": "rmv3rb35nb3u8",
+      "page": "admin/lives.html",
+      "anchor": {
+        "selector": "#admin-content-slot > div > div:nth-of-type(3) > div > table > thead > tr > th:nth-of-type(8)",
+        "selectorIn": "div:nth-of-type(3) > div > table > thead > tr > th:nth-of-type(8)",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "th",
+        "text": "审核状态",
+        "html": "<th>审核状态</th>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "去掉审核状态，直播不需要审核，把相应的去掉",
+      "status": "open",
+      "createdAt": "2026-10-11T11:45:27.995Z"
+    },
+    {
+      "id": "rmv3rbeelugvh",
+      "page": "admin/live-edit.html",
+      "anchor": {
+        "selector": "#admin-content-slot > div > div:nth-of-type(3) > div > div > div:nth-of-type(3) > label",
+        "selectorIn": "div:nth-of-type(3) > div > div > div:nth-of-type(3) > label",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "label",
+        "text": "直播间类型 *",
+        "html": "<label>直播间类型 *</label>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "去掉",
+      "status": "open",
+      "createdAt": "2026-10-11T11:45:42.573Z"
+    },
+    {
+      "id": "rmv3rcffszyqy",
+      "page": "admin/live-edit.html",
+      "anchor": {
+        "selector": "#access-panel-partial > p",
+        "selectorIn": "#access-panel-partial > p",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "p.muted",
+        "text": "未选择期次时，「部分公开」不生效，等同于完全公开。",
+        "html": "<p class=\"muted\" style=\"margin:10px 0 0;font-size:12px\">未选择期次时，「部分公开」不生效，等同于完全公开。</p>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "选择「部分公开」时，必选期次",
+      "status": "open",
+      "createdAt": "2026-10-11T11:46:30.568Z"
+    },
+    {
+      "id": "rmv3rean55cvq",
+      "page": "admin/lives.html",
+      "anchor": {
+        "selector": "#lv-tbody > tr:nth-of-type(1) > td:nth-of-type(10) > span > a",
+        "selectorIn": "#lv-tbody > tr:nth-of-type(1) > td:nth-of-type(10) > span > a",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "a.row-more",
+        "text": "更多",
+        "html": "<a href=\"javascript:;\" class=\"row-more\" data-more-toggle=\"\">更多</a>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "更多里，增加复制直播按钮",
+      "status": "open",
+      "createdAt": "2026-10-11T11:47:57.665Z"
+    },
+    {
+      "id": "rmv3xet7cp7a4",
+      "page": "admin/live-replay.html",
+      "anchor": {
+        "selector": "#rp-tbody > tr:nth-of-type(1) > td:nth-of-type(12) > a:nth-of-type(2)",
+        "selectorIn": "#rp-tbody > tr:nth-of-type(1) > td:nth-of-type(12) > a:nth-of-type(2)",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "a",
+        "text": "权重",
+        "html": "<a href=\"#\" data-row-act=\"weight\">权重</a>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "权重编辑，直接改到在当前列表对应的字段进行编辑，而且更名为：排序",
+      "status": "open",
+      "createdAt": "2026-10-11T14:36:19.416Z"
+    },
+    {
+      "id": "rmv3xg436ilub",
+      "page": "admin/lives.html",
+      "anchor": {
+        "selector": "#lv-tbody > tr:nth-of-type(1) > td:nth-of-type(10) > span > div > a:nth-of-type(1)",
+        "selectorIn": "#lv-tbody > tr:nth-of-type(1) > td:nth-of-type(10) > span > div > a:nth-of-type(1)",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "a",
+        "text": "场次数据",
+        "html": "<a href=\"live-stats.html?live_id=L001\" data-nav-live=\"L001\">场次数据</a>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "未开始的直播，不显示场次数据按钮",
+      "status": "open",
+      "createdAt": "2026-10-11T14:37:20.179Z"
+    }
+  ]
+}

@@ -13,31 +13,6 @@
 </div>
 <div id="page-content" style="display:none">
 
-  <!-- 审核状态横幅（驳回时展示） -->
-  <div class="audit-banner audit-banner-rejected" id="audit-banner" style="display:none">
-    <div class="audit-banner-icon">✕</div>
-    <div class="audit-banner-bd">
-      <div class="audit-banner-title">平台审核未通过 · 已驳回</div>
-      <div class="audit-banner-meta">
-        审核方：平台　·　驳回时间：<b id="ab-time">2026-09-03 17:30</b>
-      </div>
-      <div class="audit-banner-reason" id="ab-reason">
-        直播封面图包含第三方水印，请重新设计后再提交。建议尺寸 750*422px，去掉水印 logo。
-      </div>
-    </div>
-  </div>
-
-  <!-- 审核状态横幅（待审核/只读） -->
-  <div class="audit-banner audit-banner-pending" id="audit-banner-pending" style="display:none">
-    <div class="audit-banner-icon">⏱</div>
-    <div class="audit-banner-bd">
-      <div class="audit-banner-title">该直播已提交平台审核</div>
-      <div class="audit-banner-meta">
-        提交时间：<b id="ab-submit-time">2026-09-04 14:30</b>　·　当前不可编辑，可在列表撤回后修改
-      </div>
-    </div>
-  </div>
-
   <h2 class="page-section-title" id="sec-basic">基本信息</h2>
   <div class="card"><div class="card-bd">
     <div class="form-grid" style="grid-template-columns:1fr 1fr">
@@ -47,12 +22,6 @@
           <option>视频直播</option>
           <option>语音直播</option>
           <option>录播直播</option>
-        </select>
-      </div>
-      <div class="field"><label>直播间类型 *</label>
-        <select id="le-style">
-          <option>传统直播间</option>
-          <option>沉浸直播间</option>
         </select>
       </div>
       <div class="field"><label>主讲老师 *</label>
@@ -153,8 +122,9 @@
       </div>
       <div class="access-panel" id="access-panel-partial" style="display:none">
         <div class="toolbar" style="margin:4px 0 0;border:none;padding:0;background:transparent">
-          <button type="button" class="btn btn-sm" id="btn-pick-terms">+ 选择期次</button>
+          <button type="button" class="btn btn-sm btn-primary" id="btn-pick-terms">+ 选择期次</button>
           <button type="button" class="btn btn-sm" id="btn-edit-terms" style="display:none">重新选择</button>
+          <span class="muted" style="font-size:12px">已选：<b id="term-required-hint" style="color:#f53f3f">未选择（必选）</b></span>
         </div>
         <div id="term-summary" class="viewer-summary" style="display:none;margin-top:10px">
           <div class="viewer-sum-block">
@@ -163,7 +133,7 @@
             <div class="muted" style="font-size:12px;margin-top:4px">仅所选期次内的用户可进入本场直播与回放；期次内后续新增用户自动纳入。</div>
           </div>
         </div>
-        <p class="muted" style="margin:10px 0 0;font-size:12px">未选择期次时，「部分公开」不生效，等同于完全公开。</p>
+        <p class="muted" style="margin:10px 0 0;font-size:12px">选择「部分公开」时<b>必须选择至少 1 个期次</b>，未选择期次不可保存。</p>
       </div>
 
 
@@ -279,7 +249,7 @@
   <div class="card"><div class="card-bd">
     <p class="muted" style="margin:0 0 12px;font-size:13px;line-height:1.6">
       此处配置本场直播的<strong>整体促到提醒</strong>：覆盖开播前预约提醒、正式开播提醒、<strong>直播中应到未到人群召回</strong>与回放生成提醒。
-      直播通过审核并上架后，系统将根据直播时间自动生成提醒任务；
+      直播上架后，系统将根据直播时间自动生成提醒任务；
       高级规则、预约用户及发送记录可在「直播促到」中查看。
     </p>
     <div class="form-grid" style="grid-template-columns:1fr 1fr">
@@ -668,40 +638,6 @@
   background: linear-gradient(135deg,#165dff,#4080ff);
 }
 
-/* 审核状态横幅 */
-.audit-banner {
-  display: flex; align-items: flex-start; gap: 12px;
-  padding: 14px 18px; border-radius: 6px;
-  margin-bottom: 16px;
-  border: 1px solid;
-}
-.audit-banner-icon {
-  width: 28px; height: 28px; border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
-  font-weight: 700; font-size: 14px; color: #fff; flex-shrink: 0;
-}
-.audit-banner-bd { flex: 1; min-width: 0; }
-.audit-banner-title { font-size: 14px; font-weight: 600; margin-bottom: 6px; }
-.audit-banner-meta  { font-size: 12px; line-height: 20px; color: var(--color-text-muted); }
-.audit-banner-reason {
-  margin-top: 8px; padding: 8px 12px; border-radius: 4px;
-  font-size: 13px; line-height: 20px;
-}
-.audit-banner-act { flex-shrink: 0; }
-
-.audit-banner-rejected {
-  background: #fff5f5; border-color: #ffccc7; color: #cf1322;
-}
-.audit-banner-rejected .audit-banner-icon { background: #f53f3f; }
-.audit-banner-rejected .audit-banner-title { color: #cf1322; }
-.audit-banner-rejected .audit-banner-reason { background: #fff; color: #4e5969; }
-
-.audit-banner-pending {
-  background: #fffbe6; border-color: #ffe58f; color: #d48806;
-}
-.audit-banner-pending .audit-banner-icon { background: #faad14; }
-.audit-banner-pending .audit-banner-title { color: #d48806; }
-
 /* 待审核只读样式 */
 .is-readonly .form-grid input,
 .is-readonly .form-grid select,
@@ -811,8 +747,6 @@
   var live = liveId ? LiveOps.getLive(liveId) : null;
   var dirty = false;
   var baseline = "";
-  var warnOnSave = false;
-  var isRejectedFlow = false;
 
   var copyPrefill = null;
   var coverConfigured = true;
@@ -864,29 +798,18 @@
       location.replace(viewHref(live.liveId));
       return;
     }
-    if (gate.needWithdraw) {
-      if (!confirm(gate.message + "\n\n确认撤回并编辑？")) {
-        location.replace(viewHref(live.liveId));
-        return;
-      }
-      LiveOps.withdrawAndEdit(live.liveId);
-      live = LiveOps.getLive(live.liveId);
-    }
     if (gate.warnOnSave) {
-      warnOnSave = true;
-      if (!confirm(gate.message + "\n\n进入编辑页不会立刻改状态；只有保存修改后才会退回草稿。")) {
+      if (!confirm(gate.message + "\n\n确认进入编辑页？")) {
         location.replace(viewHref(live.liveId));
         return;
       }
     }
-    isRejectedFlow = live.platformReviewStatus === "rejected" || from === "platform_rejected";
   }
 
   function titleText() {
     if (copyFrom && !liveId) return "复制直播";
     if (isCreate) return "创建直播";
     if (isView) return "查看直播";
-    if (isRejectedFlow) return "修改并重新提交";
     return "编辑直播";
   }
 
@@ -1155,31 +1078,6 @@
     return LiveOps.canEditLive(v);
   }
 
-  function showRejectBanner(v) {
-    var ban = $("audit-banner");
-    if (!ban) return;
-    ban.style.display = "flex";
-    if ($("ab-reason")) {
-      $("ab-reason").textContent = (v.rejectReason || "请按平台驳回意见修改。") +
-        (v.rejectItems && v.rejectItems.length
-          ? " · 涉及：" + v.rejectItems.map(function (i) { return i.label || i.id; }).join("、")
-          : "");
-    }
-    if ($("ab-time")) $("ab-time").textContent = v.submittedPlatformAt || v.updatedAt || "—";
-    var coverCard = $("cover-card");
-    if (coverCard && (focus === "cover" || (v.rejectItems || []).some(function (i) { return i.id === "cover"; }))) {
-      coverCard.classList.add("field-warn");
-      var tip = document.createElement("div");
-      tip.className = "cover-fix-tip";
-      tip.id = "cover-fix-tip";
-      tip.textContent = "整改说明：封面包含第三方水印，请更换合规封面后重新提交。";
-      if (!$("cover-fix-tip")) coverCard.querySelector(".card-bd").appendChild(tip);
-      setTimeout(function () {
-        try { coverCard.scrollIntoView({ behavior: "smooth", block: "center" }); } catch (e) {}
-      }, 200);
-    }
-  }
-
   function renderViewHeader(v) {
     var ha = headerSlot();
     if (!ha) return;
@@ -1198,7 +1096,7 @@
       moreItems.push(it);
     });
     if (pack.primary && pack.primary.action && pack.primary.action !== "share") {
-      if (pack.primary.action !== "submit_platform" || scenarioAllowsSubmit(v)) moreItems.unshift(pack.primary);
+      moreItems.unshift(pack.primary);
     } else if (pack.primary && pack.primary.href && pack.primary.label !== "查看详情") {
       /* keep primary href actions like 中控 in more if not already header */
     }
@@ -1228,30 +1126,6 @@
     ha.querySelectorAll("[data-live-action]").forEach(function (btn) {
       on(btn, "click", function () {
         var act = btn.getAttribute("data-live-action");
-        if (act === "submit_platform") {
-          LiveOps.openSubmitPlatformModal(v.liveId, {
-            reload: false,
-            onSuccess: function () {
-              toast("已提交平台审核");
-              if (fromDashboard()) location.href = dashBackHref();
-              else location.reload();
-            }
-          });
-          return;
-        }
-        if (act === "withdraw_edit") {
-          if (!confirm("确认撤回并编辑？")) return;
-          LiveOps.withdrawAndEdit(v.liveId);
-          location.href = editHref(v.liveId);
-          return;
-        }
-        if (act === "withdraw_platform") {
-          if (!confirm("确认撤回平台审核？")) return;
-          LiveOps.withdrawAndEdit(v.liveId);
-          toast("已撤回");
-          location.reload();
-          return;
-        }
         if (act === "publish") { LiveOps.publish(v.liveId); toast("已上架"); location.reload(); return; }
         if (act === "unpublish") {
           if (!confirm("确认取消上架？")) return;
@@ -1270,11 +1144,6 @@
     });
   }
 
-  function scenarioAllowsSubmit(v) {
-    var k = LiveOps.scenarioKey(v);
-    return k === "draft" || k === "platform_rejected";
-  }
-
   function renderEditHeader() {
     var ha = headerSlot();
     if (!ha) return;
@@ -1284,13 +1153,8 @@
     }
     html += '<button type="button" class="btn" id="btn-cancel">取消</button>';
     html += '<button type="button" class="btn" id="btn-save-draft">保存草稿</button>';
-    if (isRejectedFlow) {
-      html += '<button type="button" class="btn btn-primary" id="btn-save-resubmit">保存并重新提交</button>';
-    } else if (warnOnSave) {
-      html += '<button type="button" class="btn btn-primary" id="btn-save-revert">保存修改并退回草稿</button>';
-    } else {
-      html += '<button type="button" class="btn btn-primary" id="btn-save-submit">保存并确认创建</button>';
-    }
+    /* 直播不设平台审核环节（2026-10-11 评审标注）：主按钮直接保存并上架 */
+    html += '<button type="button" class="btn btn-primary" id="btn-save-submit">保存并上架</button>';
     ha.innerHTML = html;
   }
 
@@ -1306,7 +1170,6 @@
       "<b>" + label + "</b>" +
       "<span>ID " + v.liveId + "</span>" +
       "<span>版本 v" + (v.currentVersion || 1) + "</span>" +
-      '<span class="chip">平台：' + (v.platformReviewStatusLabel || "") + "</span>" +
       '<span class="chip">上架：' + (v.shelfStatusLabel || "") + "</span>" +
       '<span class="chip">直播：' + (v.runtimeStatusLabel || "") + "</span>";
     pc.insertBefore(bar, pc.firstChild);
@@ -1332,16 +1195,6 @@
     enableBookingLink(live.liveId);
     insertStatusBar(live, "查看直播");
     renderViewHeader(live);
-    if (live.platformReviewStatus === "rejected" || focus === "platform" || focus === "cover") {
-      if (live.platformReviewStatus === "rejected") showRejectBanner(live);
-    }
-    if (live.platformReviewStatus === "pending") {
-      var banP = $("audit-banner-pending");
-      if (banP) {
-        banP.style.display = "flex";
-        if ($("ab-submit-time") && live.submittedPlatformAt) $("ab-submit-time").textContent = live.submittedPlatformAt;
-      }
-    }
     document.addEventListener("click", function () {
       document.querySelectorAll(".le-ops-more.open").forEach(function (n) { n.classList.remove("open"); });
     });
@@ -1355,12 +1208,7 @@
     fillForm(live);
     if (live.coverUrl && $("le-cover-img")) $("le-cover-img").src = live.coverUrl;
     enableBookingLink(live.liveId);
-    insertStatusBar(live, isRejectedFlow ? "修改并重新提交" : "编辑直播");
-    if (isRejectedFlow || live.platformReviewStatus === "rejected") {
-      showRejectBanner(live);
-      isRejectedFlow = true;
-      renderEditHeader();
-    }
+    insertStatusBar(live, "编辑直播");
   } else if (copyPrefill) {
     fillForm(copyPrefill);
     if ($("le-start")) $("le-start").value = "";
@@ -1444,13 +1292,6 @@
     var patch = Object.assign({}, f, extra);
     var saved;
     if (liveId) {
-      if (isRejectedFlow || (live && live.platformReviewStatus === "rejected")) {
-        patch.platformReviewStatus = "not_submitted";
-        patch.currentVersion = (live.currentVersion || 1) + 1;
-        patch.lastRejectReason = live.rejectReason || "";
-      } else if (warnOnSave) {
-        /* only revert when explicitly saving with revert button */
-      }
       saved = LiveOps.patchLive(liveId, patch);
     } else {
       saved = LiveOps.createLive(patch);
@@ -1476,71 +1317,26 @@
   });
 
   on($("btn-save-draft"), "click", function () {
-    var saved = persistDraft({
-      platformReviewStatus: (live && live.platformReviewStatus === "rejected") ? "not_submitted" : ((live && live.platformReviewStatus) || "not_submitted"),
-      nextActionHint: "完善后提交平台审核"
-    });
+    if (partialTermsMissing()) { toast("「部分公开」必须至少选择 1 个期次"); return; }
+    var saved = persistDraft({ nextActionHint: "完善配置后可直接上架" });
     if (!saved) return;
-    if (warnOnSave) {
-      /* draft save without revert for approved? Spec: only on save of changes revert. Saving draft of approved should revert. */
-      LiveOps.revertApprovedOnSave(liveId);
-      saved = LiveOps.getLive(liveId);
-    }
     toast("草稿已保存");
     setTimeout(function () { location.href = viewHref(liveId); }, 400);
   });
 
-  on($("btn-save-revert"), "click", function () {
-    if (snapshotForm() === baseline) {
-      toast("尚未修改内容");
-      return;
-    }
-    var saved = persistDraft({});
-    if (!saved) return;
-    LiveOps.revertApprovedOnSave(liveId);
-    toast("已保存并退回草稿，请重新提交平台审核");
-    setTimeout(function () { location.href = viewHref(liveId); }, 400);
-  });
-
-  function afterSaveOpenSubmit() {
-    LiveOps.openSubmitPlatformModal(liveId, {
-      form: collect(),
-      reload: false,
-      onSuccess: function () {
-        dirty = false;
-        toast("已提交平台审核");
-        if (fromDashboard()) {
-          location.href = dashBackHref();
-          return;
-        }
-        location.href = LiveOps.viewLiveUrl(liveId, { focus: "platform" });
-      }
-    });
-  }
-
+  /* 直播不设平台审核：保存即上架（2026-10-11 评审标注） */
   on($("btn-save-submit"), "click", function () {
-    var saved = persistDraft({ platformReviewStatus: "not_submitted" });
+    if (partialTermsMissing()) { toast("「部分公开」必须至少选择 1 个期次"); return; }
+    var saved = persistDraft({ shelfStatus: "published", nextActionHint: "已上架，等待开播" });
     if (!saved) return;
-    toast("草稿已保存，请确认提交检查");
-    afterSaveOpenSubmit();
-  });
-
-  on($("btn-save-resubmit"), "click", function () {
-    if (snapshotForm() === baseline && live && live.coverConfigured === false) {
-      toast("尚未修改驳回问题，不能重新提交");
+    dirty = false;
+    if (fromDashboard()) {
+      toast("已保存并上架");
+      location.href = dashBackHref();
       return;
     }
-    if (snapshotForm() === baseline) {
-      toast("尚未修改驳回问题，不能重新提交");
-      return;
-    }
-    var saved = persistDraft({
-      platformReviewStatus: "not_submitted",
-      coverConfigured: live && live.coverConfigured !== false
-    });
-    if (!saved) return;
-    toast("已保存新版本，请确认提交检查");
-    afterSaveOpenSubmit();
+    toast("已保存并上架（原型）");
+    setTimeout(function () { location.href = LiveOps.viewLiveUrl(liveId); }, 400);
   });
 
   on($("btn-view-booking"), "click", function () {
@@ -1786,13 +1582,21 @@
     var box = $("term-summary");
     var editBtn = $("btn-edit-terms");
     var pickBtn = $("btn-pick-terms");
+    var hint = $("term-required-hint");
     if (!box) return;
     var has = termState.length > 0;
     box.style.display = has ? "block" : "none";
     if (editBtn) editBtn.style.display = has ? "" : "none";
-    if (pickBtn) pickBtn.textContent = has ? "调整期次" : "+ 选择期次";
+    if (pickBtn) pickBtn.textContent = has ? "调整期次" : "+ 选择期次（必选）";
+    if (hint) hint.textContent = has ? termState.map(termLabel).join("、") : "未选择（必选）";
     var el = $("term-sum-chosen");
     if (el) el.textContent = has ? termState.map(termLabel).join("、") : "—";
+  }
+  /* 部分公开必选期次：保存 / 提交前校验（2026-10-11 评审标注） */
+  function partialTermsMissing() {
+    var el = document.querySelector('input[name="sale"]:checked');
+    if (!el || el.value !== "partial") return false;
+    return termState.length === 0;
   }
   function openTermPicker() {
     var list = allTerms();
@@ -1819,7 +1623,7 @@
     closeModals();
     toast(picked.length
       ? ("已选择 " + picked.length + " 个期次（原型）")
-      : "未选择期次，部分公开等同于完全公开（原型）");
+      : "「部分公开」必须至少选择 1 个期次");
   });
 
   /* 有效期：长期有效 / 选择有效期 */
