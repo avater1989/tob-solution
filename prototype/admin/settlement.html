@@ -20,6 +20,8 @@
     <div class="stat"><div class="label">累计已结算</div><div class="value">¥46,830.55</div><div class="hint">共 6 期</div></div>
   </div>
 
+  <p class="muted" style="margin:0 0 8px;font-size:12px">结算状态：<b>待确认</b> →（商家确认 / 7 天自动确认）<b>结算中</b> →（平台打款）<b>已打款</b> →（归档）<b>已完结</b>。仅「待确认」可确认，已打款后不可撤销。</p>
+
   <!-- 筛选 -->
   <div class="card" style="margin-bottom:8px"><div class="card-bd">
     <div class="form-grid" style="grid-template-columns:repeat(5,minmax(0,1fr));gap:8px 12px">
@@ -83,6 +85,20 @@
           </td>
         </tr>
         <tr>
+          <td><a href="#" class="link-mono" data-row-act="detail">ST20260317001</a></td>
+          <td>03-11 ~ 03-17</td>
+          <td>74</td>
+          <td>¥7,412.00</td>
+          <td>¥118.00</td>
+          <td>¥0.00</td>
+          <td><b>¥7,294.00</b></td>
+          <td><span class="badge badge-info">结算中</span></td>
+          <td>2026-03-18 03:00</td>
+          <td class="row-actions">
+            <a href="#" data-row-act="detail">详情</a>
+          </td>
+        </tr>
+        <tr>
           <td><a href="#" class="link-mono" data-row-act="detail">ST20260324001</a></td>
           <td>03-18 ~ 03-24</td>
           <td>96</td>
@@ -135,6 +151,7 @@
     <div class="form-grid" style="grid-template-columns:1fr 1fr">
       <div class="field"><label>结算单号</label><div id="sd-no" class="mono">—</div></div>
       <div class="field"><label>账期</label><div id="sd-period">—</div></div>
+      <div class="field"><label>结算账期</label><div>确认后 <b>T+7</b> 打款</div></div>
       <div class="field"><label>订单数</label><div id="sd-count">—</div></div>
       <div class="field"><label>状态</label><div id="sd-status">—</div></div>
       <div class="field"><label>生成时间</label><div id="sd-time">—</div></div>
@@ -188,7 +205,7 @@
 </style>
 
 <script src="../assets/js/proto.js"></script>
-<script src="../assets/js/admin-shell.js?v=31"></script>
+<script src="../assets/js/admin-shell.js?v=33"></script>
 <script>
 (function () {
   var mask = document.getElementById("mask");

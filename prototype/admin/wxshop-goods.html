@@ -55,7 +55,6 @@
         <option value="online_course">线上课</option>
         <option value="offline">线下课</option>
         <option value="article">文章</option>
-        <option value="plan">定制化计划</option>
         <option value="live">直播</option>
       </select>
       <button class="btn btn-primary" id="btn-query">筛选</button>
@@ -85,8 +84,7 @@
 
   <div class="card" style="margin-top:16px"><div class="card-bd">
     <p class="muted" style="font-size:12px;line-height:1.8;margin:0">
-      <b>口径：</b>通过内容创建后「提审到微信」，经微信小店开放接口提交审核 / 上架 / 下架；本平台存镜像，审批与 status 以微信为准。
-      支持撤回提审、查看驳回原因、重新提审、从微信拉取覆盖。<b>商品平台审核不在此页。</b>
+      <b>商品平台审核不在此页。</b>
       <br /><b>关联商品：</b>从微信侧同步下来的商品可能未绑定本地商品，须通过行内「关联商品」把它关联到「商品列表」中的一个商品（一对一），
       其订单才能交付权益与计收；已关联后不再显示该按钮。
       <br /><b>商品来源：</b>该小店商品在微信侧的分发场景，枚举「<b>视频号</b>」「<b>直播</b>」；由创建时所选内容类型推导（直播内容 → 直播，其余 → 视频号）。
@@ -121,7 +119,7 @@
 <script src="../assets/js/goods-taxonomy.js?v=1"></script>
 <script src="../assets/js/prototype-business-store.js"></script>
 <script src="../assets/js/goods-store.js?v=2"></script>
-<script src="../assets/js/admin-shell.js?v=31"></script>
+<script src="../assets/js/admin-shell.js?v=33"></script>
 <script>
 (function () {
   var Tax = window.GoodsTaxonomy;
@@ -136,7 +134,7 @@
     if (!rows.length) {
       rows = [
         { goods_id: "WX001", shop_name: "赵老师的书塾", content_type: "online_course", content_id: "C001", store_goods_id: "G002", wx_product_id: "100001234567", name: "小学语文阅读启蒙（微信小店）", status: 5, audit_status: "approved", price: 199, synced_at: "2026-09-19 18:20" },
-        { goods_id: "WX002", shop_name: "赵老师的书塾", content_type: "plan", content_id: "PL001", store_goods_id: "", wx_product_id: "100001234568", name: "亲子沟通 21 天定制化计划 · 第 4 期", status: 5, audit_status: "approved", price: 199, synced_at: "2026-09-19 18:20" },
+        { goods_id: "WX002", shop_name: "赵老师的书塾", content_type: "offline", content_id: "O001", store_goods_id: "", wx_product_id: "100001234568", name: "亲子沟通线下工作坊 · 第 4 期", status: 5, audit_status: "approved", price: 199, synced_at: "2026-09-19 18:20" },
         { goods_id: "WX003", shop_name: "赵老师的书塾", content_type: "article", content_id: "A001", store_goods_id: "", wx_product_id: "", name: "9 月新学期家长指南（小店草稿）", status: 0, audit_status: "draft", price: 6.9, synced_at: "" },
         /* 从微信侧同步下来的商品：不带内容与本地商品，须手工「关联商品」后才能交付权益与计收 */
         { goods_id: "WX004", shop_name: "赵老师的书塾", content_type: "", content_id: "", store_goods_id: "", wx_product_id: "100001234599", name: "家庭教育指导手册（微信同步）", status: 5, audit_status: "approved", price: 39, synced_at: "2026-09-19 18:20" }

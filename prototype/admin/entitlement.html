@@ -6,19 +6,11 @@
 <title>权益开通记录 · 商家管理后台</title>
 <link rel="stylesheet" href="../assets/css/proto.css?v=17" />
 </head>
-<body class="admin-body" data-module="trade" data-nav="entitlement" data-title="权益开通记录" data-crumb="交易 / 订单管理 / 权益开通记录">
+<body class="admin-body" data-module="trade" data-nav="orders" data-title="权益开通记录" data-crumb="交易 / 订单管理 / 权益开通记录">
 <div id="header-actions">
   <button class="btn" id="btn-export" data-phase2-only="1">导出记录</button>
 </div>
 <div id="page-content" style="display:none">
-
-  <!-- 顶部统计 -->
-  <div class="grid-4" style="margin-bottom:16px">
-    <div class="stat"><div class="label">今日开通</div><div class="value">26</div><div class="hint">支付后自动开通</div></div>
-    <div class="stat"><div class="label">待开通</div><div class="value">2</div><div class="hint">支付回调失败需人工处理</div></div>
-    <div class="stat"><div class="label">已回收</div><div class="value">4</div><div class="hint">退款联动回收</div></div>
-    <div class="stat"><div class="label">本月开通</div><div class="value">412</div><div class="hint">课程 356 · 服务 56</div></div>
-  </div>
 
   <!-- 状态 Tab -->
   <div class="tabs" id="et-tabs">
@@ -61,7 +53,6 @@
           <th>权益状态</th>
           <th>有效期</th>
           <th>开通时间</th>
-          <th style="width:170px">操作</th>
         </tr>
       </thead>
       <tbody id="et-tbody">
@@ -74,7 +65,6 @@
           <td><span class="badge badge-success">已开通</span></td>
           <td>永久有效</td>
           <td>2026-09-07 14:23</td>
-          <td class="row-actions"><a href="order-detail.html">查看订单</a><a href="#" data-row-act="recheck">重试开通</a></td>
         </tr>
         <tr>
           <td><input type="checkbox" /></td>
@@ -85,7 +75,6 @@
           <td><span class="badge badge-success">已开通</span></td>
           <td>2026-09-07 至 2026-12-07</td>
           <td>2026-09-07 10:12</td>
-          <td class="row-actions"><a href="order-detail.html">查看订单</a><a href="#" data-row-act="recheck">重试开通</a></td>
         </tr>
         <tr>
           <td><input type="checkbox" /></td>
@@ -96,7 +85,6 @@
           <td><span class="badge badge-warn">待开通</span><br><span class="muted" style="font-size:12px">支付回调超时</span></td>
           <td>—</td>
           <td>—</td>
-          <td class="row-actions"><a href="#" data-row-act="manual">手动开通</a><a href="order-detail.html">查看订单</a></td>
         </tr>
         <tr>
           <td><input type="checkbox" /></td>
@@ -107,7 +95,6 @@
           <td><span class="badge badge-success">已开通</span></td>
           <td>永久有效</td>
           <td>2026-09-06 20:31</td>
-          <td class="row-actions"><a href="order-detail.html">查看订单</a><a href="#" data-row-act="recheck">重试开通</a></td>
         </tr>
         <tr>
           <td><input type="checkbox" /></td>
@@ -118,7 +105,6 @@
           <td><span class="badge">已回收</span><br><span class="muted" style="font-size:12px">退款联动回收</span></td>
           <td>—</td>
           <td>2026-09-02 11:08</td>
-          <td class="row-actions"><a href="refunds.html">查看退款单</a><a href="#" data-row-act="manual">恢复权益</a></td>
         </tr>
       </tbody>
     </table>
@@ -138,40 +124,14 @@
     </p>
   </div></div>
 </div>
-
-<!-- 手动开通弹窗 -->
 <div class="proto-mask" id="mask"></div>
-<div class="proto-modal" id="modal-manual" style="width:520px">
-  <div class="proto-modal-hd"><h3 style="font-size:16px;font-weight:600">手动开通权益</h3><button class="btn btn-sm btn-ghost" data-close>×</button></div>
-  <div class="proto-modal-bd">
-    <div class="form-grid" style="grid-template-columns:1fr 1fr">
-      <div class="field" style="grid-column:1/-1"><label>关联订单号 *</label><div class="mono" id="mm-order">—</div></div>
-      <div class="field"><label>学员</label><div id="mm-user">—</div></div>
-      <div class="field"><label>商品</label><div id="mm-goods">—</div></div>
-      <div class="field" style="grid-column:1/-1"><label>生效方式</label>
-        <select style="width:100%;padding:7px 8px;border:1px solid var(--color-border);border-radius:6px">
-          <option>立即生效（永久有效）</option>
-          <option>按课程周期生效</option>
-          <option>自定义有效期</option>
-        </select>
-      </div>
-      <div class="field" style="grid-column:1/-1"><label>开通备注</label><input placeholder="如：支付回调异常补开通" value="支付回调异常，人工补开通" /></div>
-    </div>
-    <p class="muted" style="margin-top:8px">手动开通会记录操作日志，并在学员 C 端「我的-已购」即时可见。</p>
-  </div>
-  <div class="proto-drawer-ft" style="border-top:1px solid var(--color-border);padding:12px 20px;display:flex;gap:8px;justify-content:flex-end">
-    <button class="btn" data-close>取消</button>
-    <button class="btn btn-primary" id="mm-submit">确认开通</button>
-  </div>
-</div>
-
 <style>
 .link-mono { font-family:ui-monospace,Consolas,monospace; font-size:12px; color:var(--color-primary); text-decoration:none; }
 .mono { font-family:ui-monospace,Consolas,monospace; font-size:12px; }
 </style>
 
 <script src="../assets/js/proto.js"></script>
-<script src="../assets/js/admin-shell.js?v=31"></script>
+<script src="../assets/js/admin-shell.js?v=33"></script>
 <script>
 (function () {
   var mask = document.getElementById("mask");
@@ -183,26 +143,6 @@
   document.querySelectorAll("#et-tabs a").forEach(function(a){
     a.addEventListener("click", function(e){ e.preventDefault(); document.querySelectorAll("#et-tabs a").forEach(function(n){n.classList.remove("active");}); a.classList.add("active"); Proto.toast("已切换到「"+a.textContent+"」（原型）"); });
   });
-
-  document.querySelectorAll("#et-tbody tr").forEach(function(tr){
-    tr.querySelectorAll("[data-row-act]").forEach(function(a){
-      a.addEventListener("click", function(e){
-        e.preventDefault();
-        var act = a.getAttribute("data-row-act");
-        var tds = tr.querySelectorAll("td");
-        if (act === "manual") {
-          document.getElementById("mm-order").textContent = tds[1].textContent.trim();
-          document.getElementById("mm-user").textContent = tds[3].childNodes[0].textContent.trim();
-          document.getElementById("mm-goods").textContent = tds[2].childNodes[0].textContent.trim();
-          open(document.getElementById("modal-manual"));
-        } else if (act === "recheck") {
-          Proto.toast("已触发权益开通重试（原型）");
-        }
-      });
-    });
-  });
-
-  document.getElementById("mm-submit").addEventListener("click", function(){ closeAll(); Proto.toast("权益已手动开通，学员 C 端即时可见（原型）"); });
   document.getElementById("btn-export").addEventListener("click", function(){ Proto.toast("权益开通记录导出任务已创建（原型）"); });
   document.getElementById("btn-query").addEventListener("click", function(){ Proto.toast("已筛选（原型）"); });
   document.getElementById("btn-reset").addEventListener("click", function(){

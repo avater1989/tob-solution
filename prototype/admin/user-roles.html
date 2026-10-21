@@ -7,10 +7,35 @@
 <link rel="stylesheet" href="../assets/css/proto.css?v=17" />
 </head>
 <body class="admin-body" data-module="sys" data-nav="user-roles" data-title="用户角色" data-crumb="系统管理 / 系统用户管理 / 用户角色">
-<div id="header-actions">
-  <button class="btn btn-primary" id="btn-new-role">新建角色</button>
-</div>
 <div id="page-content" style="display:none">
+
+  <!-- 筛选 -->
+  <div class="card" style="margin-bottom:8px"><div class="card-bd">
+    <div class="form-grid" style="grid-template-columns:repeat(4,minmax(0,1fr));gap:8px 12px">
+      <input id="f-role-name" placeholder="角色名称" />
+      <select id="f-role-type">
+        <option value="">角色类型</option>
+        <option value="builtin">内置</option>
+        <option value="custom">自建</option>
+      </select>
+      <select id="f-role-status">
+        <option value="">状态</option>
+        <option value="启用">启用</option>
+        <option value="停用">停用</option>
+      </select>
+      <div style="display:flex;gap:8px">
+        <button class="btn btn-primary" id="btn-role-query">查询</button>
+        <button class="btn" id="btn-role-reset">重置</button>
+      </div>
+    </div>
+  </div></div>
+
+  <!-- 操作条（列表上方左侧） -->
+  <div class="toolbar" style="margin-bottom:8px">
+    <button class="btn btn-primary" id="btn-new-role">新建角色</button>
+    <div class="spacer"></div>
+    <span class="muted" style="font-size:12px">内置角色由平台预置，仅可查看权限；自建角色可编辑权限</span>
+  </div>
 
   <!-- 角色列表 -->
   <div id="panel-roles">
@@ -24,7 +49,7 @@
             <th>数据范围</th>
             <th>状态</th>
             <th>更新时间</th>
-            <th style="width:190px">操作</th>
+            <th style="width:240px">操作</th>
           </tr>
         </thead>
         <tbody id="ur-tbody">
@@ -38,7 +63,7 @@
             <td class="row-actions">
               <a href="#" data-row-act="copy">复制</a>
               <a href="#" data-row-act="detail">查看成员</a>
-              <a href="permissions.html">权限配置</a>
+              <a href="#" data-row-act="perm">查看权限</a>
             </td>
           </tr>
           <tr>
@@ -51,7 +76,7 @@
             <td class="row-actions">
               <a href="#" data-row-act="copy">复制</a>
               <a href="#" data-row-act="detail">查看成员</a>
-              <a href="permissions.html">权限配置</a>
+              <a href="#" data-row-act="perm">查看权限</a>
             </td>
           </tr>
           <tr>
@@ -64,7 +89,7 @@
             <td class="row-actions">
               <a href="#" data-row-act="copy">复制</a>
               <a href="#" data-row-act="detail">查看成员</a>
-              <a href="permissions.html">权限配置</a>
+              <a href="#" data-row-act="perm">查看权限</a>
             </td>
           </tr>
           <tr>
@@ -77,7 +102,7 @@
             <td class="row-actions">
               <a href="#" data-row-act="copy">复制</a>
               <a href="#" data-row-act="detail">查看成员</a>
-              <a href="permissions.html">权限配置</a>
+              <a href="#" data-row-act="perm">查看权限</a>
             </td>
           </tr>
           <tr>
@@ -89,8 +114,9 @@
             <td>2026-03-10</td>
             <td class="row-actions">
               <a href="#" data-row-act="copy">复制</a>
+              <a href="#" data-row-act="edit">编辑</a>
               <a href="#" data-row-act="detail">查看成员</a>
-              <a href="permissions.html">权限配置</a>
+              <a href="#" data-row-act="perm">权限配置</a>
               <a href="#" data-row-act="disable">停用</a>
             </td>
           </tr>
@@ -103,6 +129,7 @@
             <td>2026-03-20</td>
             <td class="row-actions">
               <a href="#" data-row-act="copy">复制</a>
+              <a href="#" data-row-act="edit">编辑</a>
               <a href="#" data-row-act="enable">启用</a>
               <a href="#" data-row-act="del" class="danger-link">删除</a>
             </td>
@@ -116,6 +143,74 @@
 
 <!-- ============ 弹窗 / 抽屉 ============ -->
 <div class="proto-mask" id="mask"></div>
+
+<!-- 权限配置弹窗（内置角色只读 / 自建角色可编辑） -->
+<div class="proto-modal" id="modal-perm" style="width:900px">
+  <div class="proto-modal-hd"><h3 style="font-size:16px;font-weight:600" id="pm-title">权限配置 · —</h3><button class="btn btn-sm btn-ghost" data-close>×</button></div>
+  <div class="proto-modal-bd">
+    <div class="alert alert-warn" id="pm-tip" style="margin:0 0 12px;display:none">
+      <span>当前为<b>内置角色</b>，权限由平台统一定义，此处仅供查看，不可修改。</span>
+    </div>
+    <div style="padding:0;overflow-x:auto;max-height:420px">
+      <table class="data">
+        <thead><tr><th style="width:150px">模块</th><th style="width:220px">功能</th><th style="width:80px">查看</th><th style="width:80px">编辑</th><th style="width:90px">审核/操作</th><th style="width:80px">导出</th></tr></thead>
+        <tbody id="pm-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+  <div class="proto-drawer-ft" style="border-top:1px solid var(--color-border);padding:12px 20px;display:flex;gap:8px;justify-content:flex-end">
+    <button class="btn" data-close>关闭</button>
+    <button class="btn btn-primary" id="pm-save">保存</button>
+  </div>
+</div>
+
+<!-- 新增角色弹窗 -->
+<div class="proto-modal" id="modal-add" style="width:560px">
+  <div class="proto-modal-hd"><h3 style="font-size:16px;font-weight:600">新建角色</h3><button class="btn btn-sm btn-ghost" data-close>×</button></div>
+  <div class="proto-modal-bd">
+    <div class="form-grid">
+      <div class="field"><label>角色名称 *</label><input id="ad-name" placeholder="如 助教" maxlength="20" /></div>
+      <div class="field"><label>数据范围 *</label>
+        <select id="ad-scope" style="width:100%">
+          <option>本人数据</option>
+          <option>本人及下级数据</option>
+          <option>本部门数据</option>
+          <option>全部数据</option>
+        </select>
+      </div>
+      <div class="field" style="grid-column:1/-1"><label>角色说明</label><input id="ad-desc" placeholder="一句话说明该角色的职责边界" maxlength="40" /></div>
+    </div>
+    <p class="muted" style="margin:10px 0 0;font-size:12px">新建角色默认无任何权限，需在「权限配置」中勾选资源后生效；名称在商户内不可重复。</p>
+  </div>
+  <div class="proto-modal-ft"><button class="btn" data-close>取消</button><button class="btn btn-primary" id="ad-submit">确定</button></div>
+</div>
+
+<!-- 编辑角色弹窗（内置角色打开时为只读） -->
+<div class="proto-modal" id="modal-edit" style="width:560px">
+  <div class="proto-modal-hd"><h3 style="font-size:16px;font-weight:600" id="ed-title">编辑角色</h3><button class="btn btn-sm btn-ghost" data-close>×</button></div>
+  <div class="proto-modal-bd">
+    <div class="alert alert-warn" id="ed-tip" style="margin:0 0 12px;display:none">
+      <span>当前为<b>内置角色</b>，名称、说明与数据范围由平台统一定义，不可修改，仅可查看。</span>
+    </div>
+    <div class="form-grid">
+      <div class="field"><label>角色名称 *</label><input id="ed-name" maxlength="20" /></div>
+      <div class="field"><label>数据范围 *</label>
+        <select id="ed-scope" style="width:100%">
+          <option>本人数据</option>
+          <option>本人及下级数据</option>
+          <option>本部门数据</option>
+          <option>全部数据</option>
+        </select>
+      </div>
+      <div class="field" style="grid-column:1/-1"><label>角色说明</label><input id="ed-desc" maxlength="40" /></div>
+      <div class="field"><label>状态</label>
+        <select id="ed-status" style="width:100%"><option>启用</option><option>停用</option></select>
+      </div>
+    </div>
+    <p class="muted" style="margin:10px 0 0;font-size:12px">停用后，该角色下成员立即失去对应菜单与按钮入口；角色名称修改不影响已分配成员。</p>
+  </div>
+  <div class="proto-modal-ft"><button class="btn" data-close>取消</button><button class="btn btn-primary" id="ed-submit">保存</button></div>
+</div>
 
 <!-- 角色成员抽屉 -->
 <div class="proto-drawer" id="drawer-members">
@@ -140,7 +235,7 @@
   </div>
   <div class="proto-drawer-ft">
     <button class="btn" data-close>关闭</button>
-    <button class="btn" onclick="location.href='permissions.html'">配置权限</button>
+    <button class="btn" id="rm-perm">配置权限</button>
     <button class="btn btn-primary" onclick="location.href='sys-users.html'">去用户列表分配成员</button>
   </div>
 </div>
@@ -152,7 +247,7 @@
 </style>
 
 <script src="../assets/js/proto.js"></script>
-<script src="../assets/js/admin-shell.js?v=31"></script>
+<script src="../assets/js/admin-shell.js?v=33"></script>
 <script>
 (function () {
   var mask = document.getElementById("mask");
@@ -211,13 +306,22 @@
     if (tds[2]) tds[2].textContent = "0";
     tbody.appendChild(tr);
     ensureCopyLink(tr);
+    var acts = tr.querySelector(".row-actions");
+    if (acts && !acts.querySelector('[data-row-act="edit"]')) {
+      var ed = document.createElement("a");
+      ed.href = "#";
+      ed.setAttribute("data-row-act", "edit");
+      ed.textContent = "编辑";
+      var permA = acts.querySelector('[data-row-act="perm"]');
+      acts.insertBefore(ed, permA || null);
+    }
     tr.querySelectorAll(".row-actions a").forEach(function (link) {
       if (link.getAttribute("data-row-act") === "del") link.classList.add("danger-link");
     });
     roles[name] = {
       desc: "复制自「" + base + "」，可独立调整权限与数据范围",
       scope: row.children[3] ? row.children[3].textContent.trim() : "全部数据",
-      perms: "继承自「" + base + "」的权限点，可进入权限配置调整",
+      perms: "继承自「" + base + "」的权限点，可在权限配置弹窗中调整",
       members: []
     };
     Proto.toast("已复制角色「" + base + "」为「" + name + "」（原型）");
@@ -233,6 +337,10 @@
     var name = roleNameOf(tr);
     if (act === "copy") {
       copyRole(tr);
+    } else if (act === "edit") {
+      openEdit(tr);
+    } else if (act === "perm") {
+      openPerm(name);
     } else if (act === "detail") {
       var r = roles[name] || { desc: "—", scope: "—", perms: "—", members: [] };
       document.getElementById("rm-title").textContent = "角色成员 · " + name;
@@ -253,7 +361,214 @@
     }
   });
 
-  document.getElementById("btn-new-role").addEventListener("click", function () { Proto.toast("打开新建角色（原型）"); });
+  /* ===== 权限配置弹窗（2026-10-21 评审标注：内置只读、自建可编辑、无需独立页面） ===== */
+  var PERMS = [
+    ["工作台", "工作台概览", 1, 0, 0, 0],
+    ["SCRM", "线索池", 1, 1, 0, 1],
+    ["SCRM", "跟进管理 / 企微群跟进", 1, 1, 0, 0],
+    ["SCRM", "客户群发 / 朋友圈", 1, 1, 0, 0],
+    ["直播", "直播列表", 1, 1, 0, 0],
+    ["直播", "创建直播 / 编辑", 1, 1, 0, 0],
+    ["直播", "中控台 / 开播", 1, 0, 1, 0],
+    ["直播", "场次数据 / 回放", 1, 0, 0, 1],
+    ["内容", "线上课 / 文章", 1, 1, 0, 0],
+    ["内容", "线下课 / 期次", 1, 1, 0, 0],
+    ["交易", "订单列表 / 详情", 1, 0, 0, 1],
+    ["交易", "退款审核", 1, 0, 1, 0],
+    ["交易", "对账 / 结算确认", 1, 0, 1, 1],
+    ["用户", "用户列表 / 详情", 1, 0, 0, 0],
+    ["用户", "成员与角色管理", 0, 0, 0, 0],
+    ["数据", "获客 / 直播 / 转化看板", 1, 0, 0, 1]
+  ];
+
+  /* 内置角色默认矩阵（只读） */
+  var BUILTIN_MATRIX = {
+    "商户管理员": PERMS.map(function () { return [1, 1, 1, 1]; }),
+    "内容运营": PERMS.map(function (p) {
+      if (p[0] === "交易") return [0, 0, 0, 0];
+      if (p[1].indexOf("成员与角色") > -1) return [0, 0, 0, 0];
+      return [1, 1, p[2] || 0, p[0] === "数据" ? 1 : 0];
+    }),
+    "销售顾问": PERMS.map(function (p) {
+      if (p[0] === "交易") return [1, 0, 0, 0];
+      if (p[1].indexOf("成员与角色") > -1) return [0, 0, 0, 0];
+      return [1, 1, p[2] || 0, p[0] === "数据" ? 0 : 0];
+    }),
+    "财务": PERMS.map(function (p) {
+      if (p[0] === "交易") return [1, 0, 1, 1];
+      if (p[0] === "用户") return [1, 0, 0, 0];
+      return [0, 0, 0, 0];
+    })
+  };
+
+  /* 自建角色的初始矩阵（可编辑） */
+  var CUSTOM_SEED = {
+    "主播": PERMS.map(function (p) {
+      if (p[0] === "直播") return [1, 0, p[1].indexOf("中控") > -1 ? 1 : 0, 0];
+      if (p[0] === "内容") return [1, 0, 0, 0];
+      return [0, 0, 0, 0];
+    })
+  };
+
+  var customMatrix = {};   /* 自建角色的可编辑矩阵 */
+  var pmRole = null;
+
+  function isBuiltinRole(name) { return Object.prototype.hasOwnProperty.call(BUILTIN_MATRIX, name); }
+
+  function matrixOf(name) {
+    if (isBuiltinRole(name)) return BUILTIN_MATRIX[name];
+    if (!customMatrix[name]) {
+      customMatrix[name] = (CUSTOM_SEED[name] || PERMS.map(function (p) { return [1, 0, p[2] || 0, 0]; }))
+        .map(function (row) { return row.slice(); });
+    }
+    return customMatrix[name];
+  }
+
+  function openPerm(name, readonlyHint) {
+    pmRole = name;
+    var builtin = isBuiltinRole(name);
+    document.getElementById("pm-title").textContent = (builtin ? "查看权限 · " : "权限配置 · ") + name;
+    document.getElementById("pm-tip").style.display = builtin ? "" : "none";
+    var m = matrixOf(name);
+    var lastMod = "";
+    document.getElementById("pm-tbody").innerHTML = PERMS.map(function (p, i) {
+      var modCell = p[0] !== lastMod
+        ? '<td class="perm-mod-label"><b>' + p[0] + "</b></td>"
+        : '<td class="muted">"</td>';
+      lastMod = p[0];
+      return "<tr>" + modCell + "<td>" + p[1] + "</td>" +
+        [0, 1, 2, 3].map(function (c) {
+          return '<td><input type="checkbox" data-r="' + i + '" data-c="' + c + '"' +
+            (m[i][c] ? " checked" : "") + (builtin ? " disabled" : "") + " /></td>";
+        }).join("") + "</tr>";
+    }).join("");
+
+    var save = document.getElementById("pm-save");
+    save.disabled = builtin;
+    save.textContent = builtin ? "内置角色不可修改" : "保存";
+
+    document.getElementById("pm-tbody").querySelectorAll('input[type="checkbox"]').forEach(function (ck) {
+      ck.addEventListener("change", function () {
+        if (builtin) return;
+        m[ck.getAttribute("data-r")][ck.getAttribute("data-c")] = ck.checked ? 1 : 0;
+      });
+    });
+    open(document.getElementById("modal-perm"));
+  }
+
+  document.getElementById("pm-save").addEventListener("click", function () {
+    if (pmRole && isBuiltinRole(pmRole)) { Proto.toast("内置角色权限不可修改"); return; }
+    closeAll();
+    Proto.toast("「" + pmRole + "」权限已保存并即时生效（原型）");
+  });
+
+  /* 成员抽屉内的「配置权限」：关闭抽屉后打开权限弹窗 */
+  var rmPermBtn = document.getElementById("rm-perm");
+  if (rmPermBtn) {
+    rmPermBtn.addEventListener("click", function () {
+      var nm = (document.getElementById("rm-name").textContent || "").trim();
+      if (!nm || nm === "—") return;
+      closeAll();
+      setTimeout(function () { openPerm(nm); }, 60);
+    });
+  }
+
+  /* ===== 新建 / 编辑角色弹窗（2026-10-21 评审标注） ===== */
+  var editingRow = null;
+
+  function appendRoleRow(name, desc, scope) {
+    var tr = document.createElement("tr");
+    tr.innerHTML =
+      '<td><b>' + name + '</b> <span class="tag" style="background:#f2f3f5;color:#4e5969">自定义</span></td>' +
+      '<td>' + (desc || "—") + '</td>' +
+      '<td>0</td>' +
+      '<td>' + scope + '</td>' +
+      '<td><span class="badge badge-success">启用</span></td>' +
+      '<td>' + new Date().toISOString().slice(0, 10) + '</td>' +
+      '<td class="row-actions"><a href="#" data-row-act="copy">复制</a><a href="#" data-row-act="edit">编辑</a>' +
+      '<a href="#" data-row-act="detail">查看成员</a><a href="#" data-row-act="perm">权限配置</a>' +
+      '<a href="#" data-row-act="disable">停用</a><a href="#" data-row-act="del" class="danger-link">删除</a></td>';
+    tbody.appendChild(tr);
+    roles[name] = { desc: desc || "—", scope: scope, perms: "尚未配置权限，请在权限配置中勾选资源", members: [] };
+    return tr;
+  }
+
+  document.getElementById("ad-submit").addEventListener("click", function () {
+    var name = (document.getElementById("ad-name").value || "").trim();
+    if (!name) { Proto.toast("请填写角色名称"); return; }
+    if (roles[name] || tbody.textContent.indexOf(name) >= 0) { Proto.toast("角色名称已存在"); return; }
+    appendRoleRow(name, (document.getElementById("ad-desc").value || "").trim(), document.getElementById("ad-scope").value);
+    closeAll();
+    Proto.toast("已创建角色「" + name + "」，请继续配置权限（原型）");
+  });
+
+  function openEdit(tr) {
+    editingRow = tr;
+    var name = roleNameOf(tr);
+    var builtin = isBuiltinRole(name) || !!tr.querySelector(".tag-orange");
+    document.getElementById("ed-title").textContent = (builtin ? "查看角色 · " : "编辑角色 · ") + name;
+    document.getElementById("ed-tip").style.display = builtin ? "" : "none";
+    document.getElementById("ed-name").value = name;
+    document.getElementById("ed-name").disabled = builtin;
+    document.getElementById("ed-desc").value = (tr.children[1] ? tr.children[1].textContent : "").trim();
+    document.getElementById("ed-desc").disabled = builtin;
+    document.getElementById("ed-scope").value = (tr.children[3] ? tr.children[3].textContent : "全部数据").trim();
+    document.getElementById("ed-scope").disabled = builtin;
+    document.getElementById("ed-status").value = (tr.children[4] ? tr.children[4].textContent : "启用").trim() === "停用" ? "停用" : "启用";
+    document.getElementById("ed-status").disabled = builtin;
+    var btn = document.getElementById("ed-submit");
+    btn.disabled = builtin;
+    btn.textContent = builtin ? "内置角色不可修改" : "保存";
+    open(document.getElementById("modal-edit"));
+  }
+
+  document.getElementById("ed-submit").addEventListener("click", function () {
+    if (!editingRow) return;
+    var oldName = roleNameOf(editingRow);
+    if (isBuiltinRole(oldName)) { Proto.toast("内置角色不可修改"); return; }
+    var name = (document.getElementById("ed-name").value || "").trim();
+    if (!name) { Proto.toast("请填写角色名称"); return; }
+    var firstTd = editingRow.querySelector("td");
+    firstTd.querySelector("b").textContent = name;
+    editingRow.children[1].textContent = (document.getElementById("ed-desc").value || "").trim() || "—";
+    editingRow.children[3].textContent = document.getElementById("ed-scope").value;
+    var st = document.getElementById("ed-status").value;
+    editingRow.children[4].innerHTML = '<span class="badge ' + (st === "启用" ? "badge-success" : "") + '">' + st + '</span>';
+    editingRow.children[5].textContent = new Date().toISOString().slice(0, 10);
+    if (roles[oldName] && name !== oldName) { roles[name] = roles[oldName]; delete roles[oldName]; }
+    closeAll();
+    Proto.toast("角色「" + name + "」已保存（原型）");
+  });
+
+  document.getElementById("btn-new-role").addEventListener("click", function () {
+    document.getElementById("ad-name").value = "";
+    document.getElementById("ad-desc").value = "";
+    document.getElementById("ad-scope").value = "本人数据";
+    open(document.getElementById("modal-add"));
+  });
+
+  /* 筛选 */
+  function applyRoleFilter() {
+    var kw = (document.getElementById("f-role-name").value || "").trim();
+    var ty = document.getElementById("f-role-type").value;
+    var st = document.getElementById("f-role-status").value;
+    tbody.querySelectorAll("tr").forEach(function (tr) {
+      var name = roleNameOf(tr);
+      var builtin = isBuiltinRole(name) || !!tr.querySelector(".tag-orange");
+      var status = (tr.children[4] ? tr.children[4].textContent : "").trim();
+      var ok = (!kw || name.indexOf(kw) >= 0) &&
+        (!ty || (ty === "builtin" ? builtin : !builtin)) &&
+        (!st || status.indexOf(st) >= 0);
+      tr.style.display = ok ? "" : "none";
+    });
+  }
+  document.getElementById("btn-role-query").addEventListener("click", function () {
+    applyRoleFilter(); Proto.toast("已按条件查询（原型）");
+  });
+  document.getElementById("btn-role-reset").addEventListener("click", function () {
+    ["f-role-name", "f-role-type", "f-role-status"].forEach(function (id) { document.getElementById(id).value = ""; });
+    applyRoleFilter(); Proto.toast("已重置");
+  });
 })();
 </script>
 </body>

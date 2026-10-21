@@ -1,0 +1,274 @@
+{
+  "v": 1,
+  "updated": "2026-10-21T23:33:55",
+  "items": [
+    {
+      "id": "rmvi97ap8ygd3",
+      "page": "ops/apps.html",
+      "anchor": {
+        "selector": "#admin-content-slot > div > div:nth-of-type(3) > div > table > tbody > tr:nth-of-type(1) > td:nth-of-type(5) > a:nth-of-type(2)",
+        "selectorIn": "div:nth-of-type(3) > div > table > tbody > tr:nth-of-type(1) > td:nth-of-type(5) > a:nth-of-type(2)",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "a",
+        "text": "角色管理",
+        "html": "<a href=\"app-config.html?id=APP_SCRM&amp;tab=roles\">角色管理</a>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "直接跳转到角色配置页。",
+      "status": "open",
+      "createdAt": "2026-10-21T15:15:10.700Z"
+    },
+    {
+      "id": "rmvi97lfy0agy",
+      "page": "ops/app-config.html",
+      "anchor": {
+        "selector": "#admin-content-slot > div > div:nth-of-type(1) > a:nth-of-type(2)",
+        "selectorIn": "div:nth-of-type(1) > a:nth-of-type(2)",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "a.btn",
+        "text": "角色管理 →",
+        "html": "<a class=\"btn\" href=\"app-config-roles.html\">角色管理 →</a>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "去掉这个入口",
+      "status": "open",
+      "createdAt": "2026-10-21T15:15:24.622Z"
+    },
+    {
+      "id": "rmvi97srzbdk3",
+      "page": "ops/app-config.html",
+      "anchor": {
+        "selector": "#admin-content-slot > div > div:nth-of-type(2) > div:nth-of-type(1)",
+        "selectorIn": "div:nth-of-type(2) > div:nth-of-type(1)",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "div.alert.alert-info",
+        "text": "资源树按应用隔离，此处仅维护本应用的资源。类型分为 模块 / 菜单 / 按钮 / 接口：模块与菜单决定端上入口，按钮决定页面内操作，接口用于开放能力。角色的权限勾选即从本资源树产生。",
+        "html": "<div class=\"alert alert-info\" style=\"margin-bottom:12px\"> <span>资源树按<b>应用隔离</b>，此处仅维护本应用的资源。类型分为 <b>模块 / 菜单 / 按钮 / 接口</b>：模块与菜单决定端上入口，按钮决定页面内操作，接口用于开放能力。角色的权限勾选即从本资源树产生。</span> </div>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "去掉",
+      "status": "open",
+      "createdAt": "2026-10-21T15:15:34.127Z"
+    },
+    {
+      "id": "rmvi991vlsbrq",
+      "page": "ops/message-config.html",
+      "anchor": {
+        "selector": "#btn-add",
+        "selectorIn": "#btn-add",
+        "root": "#page-header-actions",
+        "region": "header-actions",
+        "shell": "",
+        "label": "button#btn-add.btn.btn-primary",
+        "text": "新增模板映射",
+        "html": "<button class=\"btn btn-primary\" id=\"btn-add\">新增模板映射</button>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "按钮放在列表上方",
+      "status": "open",
+      "createdAt": "2026-10-21T15:16:32.577Z"
+    },
+    {
+      "id": "rmvi9d4b0vm2k",
+      "page": "ops/tenants.html",
+      "anchor": {
+        "selector": "#admin-content-slot > div > div:nth-of-type(3) > div > table > thead > tr > th:nth-of-type(7)",
+        "selectorIn": "div:nth-of-type(3) > div > table > thead > tr > th:nth-of-type(7)",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "th",
+        "text": "收款会员（通联）",
+        "html": "<th>收款会员（通联）</th>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "去掉该字段下的超链",
+      "status": "open",
+      "createdAt": "2026-10-21T15:19:42.348Z"
+    },
+    {
+      "id": "rmvi9h8mjkbmu",
+      "page": "admin/aftersales.html",
+      "anchor": {
+        "selector": "#admin-content-slot > div > div:nth-of-type(4) > div > table > thead > tr > th:nth-of-type(3)",
+        "selectorIn": "div:nth-of-type(4) > div > table > thead > tr > th:nth-of-type(3)",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "th",
+        "text": "关联订单/商品",
+        "html": "<th>关联订单/商品</th>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "去掉下方订单号的超链",
+      "status": "open",
+      "createdAt": "2026-10-21T15:22:54.571Z"
+    },
+    {
+      "id": "rmvi9i9cj9xpf",
+      "page": "admin/aftersales.html",
+      "anchor": {
+        "selector": "#admin-content-slot > div > div:nth-of-type(4) > div > table > thead > tr > th:nth-of-type(7)",
+        "selectorIn": "div:nth-of-type(4) > div > table > thead > tr > th:nth-of-type(7)",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "th",
+        "text": "状态",
+        "html": "<th>状态</th>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "完善状态机与状态操作",
+      "status": "open",
+      "createdAt": "2026-10-21T15:23:42.163Z"
+    },
+    {
+      "id": "rmvi9il773xme",
+      "page": "admin/recon.html",
+      "anchor": {
+        "selector": "#admin-content-slot > div > div:nth-of-type(3) > div > table > thead > tr > th:nth-of-type(8)",
+        "selectorIn": "div:nth-of-type(3) > div > table > thead > tr > th:nth-of-type(8)",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "th",
+        "text": "状态",
+        "html": "<th>状态</th>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "完善PRD状态机及状态操作",
+      "status": "open",
+      "createdAt": "2026-10-21T15:23:57.523Z",
+      "updatedAt": "2026-10-21T15:30:20.399Z"
+    },
+    {
+      "id": "rmvi9lk9prnr5",
+      "page": "admin/user-roles.html",
+      "anchor": {
+        "selector": "#btn-new-role",
+        "selectorIn": "#btn-new-role",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "button#btn-new-role.btn.btn-primary",
+        "text": "新建角色",
+        "html": "<button class=\"btn btn-primary\" id=\"btn-new-role\">新建角色</button>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "增加新增角色的弹窗",
+      "status": "open",
+      "createdAt": "2026-10-21T15:26:16.285Z"
+    },
+    {
+      "id": "rmvi9m0rv0r4o",
+      "page": "admin/user-roles.html",
+      "anchor": {
+        "selector": "#panel-roles > div > div > table > thead > tr > th:nth-of-type(7)",
+        "selectorIn": "#panel-roles > div > div > table > thead > tr > th:nth-of-type(7)",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "th",
+        "text": "操作",
+        "html": "<th style=\"width:190px\">操作</th>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "增加编辑的操作，及弹窗，内置不能编辑。 操作的内容，请参照【运营后台】的用户角色权限页面的操作",
+      "status": "open",
+      "createdAt": "2026-10-21T15:26:37.675Z",
+      "updatedAt": "2026-10-21T15:27:45.848Z"
+    },
+    {
+      "id": "rmvi9p7e5r11z",
+      "page": "admin/orders.html",
+      "anchor": {
+        "selector": "#btn-sync",
+        "selectorIn": "#btn-sync",
+        "root": "#page-header-actions",
+        "region": "header-actions",
+        "shell": "",
+        "label": "button#btn-sync.btn",
+        "text": "同步公域订单",
+        "html": "<button class=\"btn\" id=\"btn-sync\">同步公域订单</button>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "左侧，增加「权益开通记录」按钮，展示的内容，对应订单列表下方的菜单页面。同时去掉订单列表下方的「权益开通记录」",
+      "status": "open",
+      "createdAt": "2026-10-21T15:29:06.221Z"
+    },
+    {
+      "id": "rmvi9qmpixh9x",
+      "page": "admin/settlement.html",
+      "anchor": {
+        "selector": "#admin-content-slot > div > div:nth-of-type(3) > div > table > thead > tr > th:nth-of-type(8)",
+        "selectorIn": "div:nth-of-type(3) > div > table > thead > tr > th:nth-of-type(8)",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "th",
+        "text": "状态",
+        "html": "<th>状态</th>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "完善PRD状态机及状态操作",
+      "status": "open",
+      "createdAt": "2026-10-21T15:30:12.727Z"
+    },
+    {
+      "id": "rmvi9v5k06lw5",
+      "page": "ops/recon.html",
+      "anchor": {
+        "selector": "#btn-run",
+        "selectorIn": "#btn-run",
+        "root": "#page-header-actions",
+        "region": "header-actions",
+        "shell": "",
+        "label": "button#btn-run.btn.btn-primary",
+        "text": "发起本期对账",
+        "html": "<button class=\"btn btn-primary\" id=\"btn-run\">发起本期对账</button>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "改成「发起对账」。 弹出弹窗：选择时间区间、租户（多选）。 这个功能是可以提供给运营人员，在自动对账外的，增加手动对账功能。",
+      "status": "open",
+      "createdAt": "2026-10-21T15:33:43.777Z"
+    },
+    {
+      "id": "rmvi9ve6258ec",
+      "page": "ops/recon.html",
+      "anchor": {
+        "selector": "#admin-content-slot > div > div:nth-of-type(1) > div:nth-of-type(1)",
+        "selectorIn": "div:nth-of-type(1) > div:nth-of-type(1)",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "div.stat",
+        "text": "本期账期09-04 ~ 09-10T+1 自动对账",
+        "html": "<div class=\"stat\"><div class=\"label\">本期账期</div><div class=\"value\" style=\"font-size:18px\">09-04 ~ 09-10</div><div class=\"hint\">T+1 自动对账</div></div>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "去掉",
+      "status": "open",
+      "createdAt": "2026-10-21T15:33:54.938Z"
+    }
+  ]
+}

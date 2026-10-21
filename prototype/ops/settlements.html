@@ -152,6 +152,7 @@
     <div class="card-bd">
       <ul class="muted" style="font-size:13px;line-height:1.9;padding-left:16px;margin:0">
         <li>结算单生成条件：对账单已对平 + 无未结差异 + 已达结算门槛 + 商家已确认；</li>
+        <li><b>结算账期</b>按租户配置（见「租户配置 → 容量与费率 → 结算账期」，如 T+7），决定结算单确认后的打款时点；</li>
         <li>流程：待商家确认 → 已确认 → 待财务复核 → 复核通过 → 打款中 → 已打款 → 已完结；</li>
         <li>复核驳回 → 已退回（附原因）；商家申诉或资金冻结 → 结算暂停；</li>
         <li>若规则开启「先票后款」，则未关联有效发票不得打款。</li>
@@ -166,7 +167,7 @@
 </style>
 
 <script src="../assets/js/proto.js"></script>
-<script src="../assets/js/ops-shell.js?v=28"></script>
+<script src="../assets/js/ops-shell.js?v=29"></script>
 <script>
 (function () {
   var all = document.getElementById("ck-all");

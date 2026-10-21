@@ -14,11 +14,10 @@
 <div id="page-content" style="display:none">
 
   <!-- 顶部统计 -->
-  <div class="grid-4" style="margin-bottom:16px">
+  <div class="grid-3" style="margin-bottom:16px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px">
     <div class="stat"><div class="label">本期账期</div><div class="value">2026-04-01 ~ 04-07</div><div class="hint">T+1 自动对账</div></div>
     <div class="stat"><div class="label">本期交易额</div><div class="value">¥8,432.20</div><div class="hint">86 笔</div></div>
     <div class="stat"><div class="label">本期退款额</div><div class="value">¥308.80</div><div class="hint">4 笔</div></div>
-    <div class="stat"><div class="label">未平差异</div><div class="value">2</div><div class="hint">金额差 1 / 单边账 1</div></div>
   </div>
 
   <!-- 对账单列表 -->
@@ -27,11 +26,11 @@
       <input id="f-bill-no" placeholder="对账单号" />
       <select id="f-channel">
         <option value="">账单渠道</option>
-        <option>通联支付</option><option>视频号小店</option>
+        <option>通联支付</option><option>微信小店</option>
       </select>
       <select id="f-status">
         <option value="">对账状态</option>
-        <option>已对平</option><option>有差异</option><option>待对账</option>
+        <option>已对平</option><option>待对账</option>
       </select>
       <input id="f-period1" type="date" />
       <button class="btn btn-primary" id="btn-query">筛选</button>
@@ -49,7 +48,6 @@
           <th>渠道账单笔数</th>
           <th>交易额</th>
           <th>退款额</th>
-          <th>差异笔数</th>
           <th>状态</th>
           <th>生成时间</th>
           <th style="width:130px">操作</th>
@@ -64,23 +62,20 @@
           <td>86</td>
           <td><b>¥8,432.20</b></td>
           <td>¥308.80</td>
-          <td><span class="badge badge-warn">2</span></td>
-          <td><span class="badge badge-warn">有差异</span></td>
+          <td><span class="badge badge-success">已对平</span></td>
           <td>2026-04-08 02:00</td>
           <td class="row-actions">
-            <a href="#" data-tab-jump="diffs">差异处理</a>
             <a href="#" data-toast="下载渠道账单（原型）">下载账单</a>
           </td>
         </tr>
         <tr>
           <td><a href="recon-detail.html?no=RC20260407002" class="link-mono">RC20260407002</a></td>
           <td>04-01 ~ 04-07</td>
-          <td>视频号小店</td>
+          <td>微信小店</td>
           <td>31</td>
           <td>31</td>
           <td><b>¥3,069.00</b></td>
           <td>¥0.00</td>
-          <td><span class="badge badge-success">0</span></td>
           <td><span class="badge badge-success">已对平</span></td>
           <td>2026-04-08 02:05</td>
           <td class="row-actions">
@@ -95,7 +90,6 @@
           <td>42</td>
           <td><b>¥4,135.30</b></td>
           <td>¥9.90</td>
-          <td><span class="badge badge-success">0</span></td>
           <td><span class="badge badge-success">已对平</span></td>
           <td>2026-04-01 02:00</td>
           <td class="row-actions">
@@ -105,12 +99,11 @@
         <tr>
           <td><a href="recon-detail.html?no=RC20260331002" class="link-mono">RC20260331002</a></td>
           <td>03-25 ~ 03-31</td>
-          <td>视频号小店</td>
+          <td>微信小店</td>
           <td>18</td>
           <td>18</td>
           <td><b>¥1,782.00</b></td>
           <td>¥0.00</td>
-          <td><span class="badge badge-success">0</span></td>
           <td><span class="badge badge-success">已对平</span></td>
           <td>2026-04-01 02:03</td>
           <td class="row-actions">
@@ -135,74 +128,7 @@
       </tbody>
     </table>
   </div></div>
-
-  <!-- 差异处理弹窗 -->
   <div class="proto-mask" id="mask"></div>
-  <div class="proto-modal" id="modal-diffs" style="width:900px">
-    <div class="proto-modal-hd">
-      <h3 style="font-size:16px;font-weight:600">对账差异 · <span id="diffs-no">RC20260407001</span></h3>
-      <button class="btn btn-sm btn-ghost" data-close>×</button>
-    </div>
-    <div class="proto-modal-bd">
-    <p class="muted" style="margin:0 0 10px;font-size:12px"><span id="diffs-sub">04-01 ~ 04-07 · 通联支付</span>，差异 <b id="diffs-count">2</b> 笔，处理后将重新汇总至结算单。</p>
-    <div style="padding:0;overflow-x:auto">
-      <table class="data">
-        <thead>
-          <tr>
-            <th>差异类型</th>
-            <th>平台记录</th>
-            <th>渠道记录</th>
-            <th>差值</th>
-            <th>发现时间</th>
-            <th>处理状态</th>
-            <th style="width:170px">操作</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td><span class="badge badge-warn">金额不一致</span></td>
-            <td>YB20260403100112 · ¥299.00<br><span class="muted">已支付 04-03 20:15</span></td>
-            <td>交易单 4200002388202604031…<br><b>¥269.10</b>（券后）</td>
-            <td class="danger">-¥29.90</td>
-            <td>2026-04-08 02:00</td>
-            <td><span class="badge badge-warn">待处理</span></td>
-            <td class="row-actions">
-              <a href="#" data-diff-act="recheck">重取渠道账单</a>
-              <a href="#" data-diff-act="confirm">人工确认</a>
-            </td>
-          </tr>
-          <tr>
-            <td><span class="badge badge-danger">渠道单边账</span></td>
-            <td>未找到对应订单<br><span class="muted">疑似掉单</span></td>
-            <td>交易单 4200002388202604029…<br><b>¥9.90</b>（04-02 23:59）</td>
-            <td class="danger">+¥9.90</td>
-            <td>2026-04-08 02:00</td>
-            <td><span class="badge badge-warn">待处理</span></td>
-            <td class="row-actions">
-              <a href="#" data-diff-act="repair">补单修复</a>
-              <a href="#" data-diff-act="suspend">挂起</a>
-            </td>
-          </tr>
-          <tr>
-            <td><span class="badge badge-info">退款状态不一致</span></td>
-            <td>RF202604010008 · 退款中</td>
-            <td>退款成功 04-02</td>
-            <td>¥0.00</td>
-            <td>2026-04-03 02:00</td>
-            <td><span class="badge badge-success">已自动平账</span></td>
-            <td class="row-actions">
-              <a href="refunds.html">查看退款单</a>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-    </div>
-    <div class="proto-drawer-ft" style="border-top:1px solid var(--color-border);padding:12px 20px;display:flex;gap:8px;justify-content:flex-end">
-      <button class="btn" data-close>关闭</button>
-      <button class="btn btn-primary" id="diffs-recheck">重新拉取渠道账单</button>
-    </div>
-  </div>
 
 </div>
 
@@ -214,10 +140,9 @@
 </style>
 
 <script src="../assets/js/proto.js"></script>
-<script src="../assets/js/admin-shell.js?v=31"></script>
+<script src="../assets/js/admin-shell.js?v=33"></script>
 <script>
 (function () {
-  // 差异处理改为弹窗
   var mask = document.getElementById("mask");
   function closeAll() {
     mask.classList.remove("open");
@@ -227,44 +152,11 @@
   mask.addEventListener("click", closeAll);
   document.querySelectorAll("[data-close]").forEach(function (n) { n.addEventListener("click", closeAll); });
 
-  document.querySelectorAll('[data-tab-jump="diffs"]').forEach(function (a) {
-    a.addEventListener("click", function (e) {
-      e.preventDefault();
-      var tr = a.closest("tr");
-      var no = tr ? tr.querySelector("td").textContent.trim() : "—";
-      var period = tr ? tr.querySelectorAll("td")[1].textContent.trim() : "";
-      var channel = tr ? tr.querySelectorAll("td")[2].textContent.trim() : "";
-      var cnt = tr ? tr.querySelectorAll("td")[7].textContent.trim() : "";
-      document.getElementById("diffs-no").textContent = no;
-      document.getElementById("diffs-sub").textContent = period + " · " + channel;
-      document.getElementById("diffs-count").textContent = cnt;
-      open(document.getElementById("modal-diffs"));
-    });
-  });
-
-  document.getElementById("diffs-recheck").addEventListener("click", function () {
-    closeAll();
-    Proto.toast("已重新拉取渠道账单，差异将自动重算（原型）");
-  });
-
-  // 差异操作
-  document.querySelectorAll("[data-diff-act]").forEach(function (a) {
-    a.addEventListener("click", function (e) {
-      e.preventDefault();
-      var act = a.getAttribute("data-diff-act");
-      var msg = {
-        recheck: "已重新拉取渠道账单，稍后自动重试对账（原型）",
-        confirm: "已人工确认差异，按渠道 ¥269.10 重算（原型）",
-        repair: "已发起补单修复，订单稍后生成（原型）",
-        suspend: "差异已挂起，下期账单继续跟踪（原型）",
-      }[act];
-      Proto.toast(msg);
-    });
-  });
-
   document.getElementById("btn-export").addEventListener("click", function () { Proto.toast("已导出对账单（原型）"); });
   document.getElementById("btn-query").addEventListener("click", function () { Proto.toast("已筛选（原型）"); });
 })();
 </script>
 </body>
-</html>
+</html>  <p class="muted" style="margin:0 0 8px;font-size:12px">对账状态：<b>待对账</b> →（平台 T+1 自动对账，按本商户账期）<b>已对平</b>，对平后进入结算池；存在差异时状态仍为<b>待对账</b>，由平台在运营后台处理差异后自动重算。商家侧<b>只读</b>，仅可查看与下载账单。</p>
+
+

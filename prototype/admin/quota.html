@@ -26,7 +26,7 @@
       <div class="asset-metrics">
         <div class="am"><span>额度阈值</span><b>-¥200.00</b></div>
         <div class="am"><span>营销短信单价</span><b>¥0.10 / 条</b></div>
-        <div class="am"><span>直播 UV 单价</span><b>¥0.05 / 人次</b></div>
+        <div class="am"><span>直播流量单价</span><b>快直播 ¥1.20 / G<br/>点播 ¥0.60 / G</b></div>
         <div class="am"><span>本月已扣减</span><b>¥126.50</b></div>
       </div>
     </div>
@@ -43,7 +43,8 @@
         <option>额度调整（增加）</option>
         <option>额度调整（减少）</option>
         <option>营销短信扣减</option>
-        <option>直播 UV 扣减</option>
+        <option>快直播流量扣减</option>
+        <option>点播流量扣减</option>
       </select>
       <input id="f-time1" type="date" />
       <input id="f-time2" type="date" />
@@ -81,12 +82,12 @@
           </tr>
           <tr>
             <td>2026-10-01 21:10</td>
-            <td><span class="tag">直播 UV 扣减</span></td>
+            <td><span class="tag">快直播流量扣减</span></td>
             <td><b class="q-neg">-¥18.60</b></td>
             <td class="mono">¥1,298.50</td>
-            <td>直播「秋季家长必修课」· 372 UV</td>
+            <td>直播「秋季家长必修课」· 快直播 · 15.5 G</td>
             <td>系统自动</td>
-            <td class="muted" style="font-size:12px">0.05 元/人次 × 372</td>
+            <td class="muted" style="font-size:12px">1.20 元/G × 15.5</td>
           </tr>
           <tr>
             <td>2026-10-01 09:00</td>
@@ -117,12 +118,12 @@
           </tr>
           <tr>
             <td>2026-09-20 16:30</td>
-            <td><span class="tag">直播 UV 扣减</span></td>
+            <td><span class="tag">点播流量扣减</span></td>
             <td><b class="q-neg">-¥21.50</b></td>
             <td class="mono">-¥1,174.40</td>
-            <td>直播「期次说明会」· 430 UV</td>
+            <td>直播「期次说明会」· 点播回放 · 35.8 G</td>
             <td>系统自动</td>
-            <td class="muted" style="font-size:12px">统计完成即扣减</td>
+            <td class="muted" style="font-size:12px">0.60 元/G × 35.8</td>
           </tr>
           <tr>
             <td>2026-09-15 10:00</td>
@@ -147,7 +148,7 @@
   <!-- 口径说明 -->
   <div class="card" style="margin-top:16px"><div class="card-bd">
     <p class="muted" style="font-size:12px;line-height:1.9">
-      <b>口径说明：</b>营销额度由<b>平台运营统一配置与调整</b>，商家侧只读；额度来源于线下付款入账，用于扣减营销短信（按条数 × 单价）与直播人次 UV（每场结束后按 UV × 单价）。
+      <b>口径说明：</b>营销额度由<b>平台运营统一配置与调整</b>，商家侧只读；额度来源于线下付款入账，用于扣减营销短信（按条数 × 单价）与直播流量（快直播按上下播时段流量 G × 单价、点播按回放播放流量 G × 单价，两档单价独立）。
     </p>
   </div></div>
 </div>
@@ -171,7 +172,7 @@
 </style>
 
 <script src="../assets/js/proto.js"></script>
-<script src="../assets/js/admin-shell.js?v=31"></script>
+<script src="../assets/js/admin-shell.js?v=33"></script>
 <script>
 (function () {
   document.getElementById("btn-query").addEventListener("click", function () { Proto.toast("已按条件筛选额度流水（原型）"); });

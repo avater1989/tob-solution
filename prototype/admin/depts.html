@@ -34,7 +34,7 @@
   <div class="toolbar" style="margin-bottom:12px">
     <button class="btn btn-primary" id="btn-add">新增部门</button>
     <div class="spacer"></div>
-    <span class="muted" style="font-size:12px">维护本商户后台登录用户的组织结构（三级：一级 → 二级 → 三级）；用户按部门归属，用于数据范围与角色授权</span>
+    <span class="muted" style="font-size:12px">维护本商户后台登录用户的组织结构（<b>不限层级</b>，可逐级新增子部门）；用户按部门归属，用于数据范围与角色授权</span>
   </div>
 
   <!-- 表格 -->
@@ -85,7 +85,7 @@
           <td>1</td>
           <td><span class="badge badge-success">启用</span></td>
           <td>2026-08-20 14:32</td>
-          <td class="row-actions"><a href="#" data-act="edit">编辑</a><a href="#" data-act="disable">停用</a></td>
+          <td class="row-actions"><a href="#" data-act="add-child">新增子部门</a><a href="#" data-act="edit">编辑</a><a href="#" data-act="disable">停用</a></td>
         </tr>
         <tr>
           <td class="dept-name" data-level="3">│&nbsp;&nbsp;&nbsp;└─ 商户运营组</td>
@@ -96,7 +96,7 @@
           <td>2</td>
           <td><span class="badge badge-success">启用</span></td>
           <td>2026-08-20 14:35</td>
-          <td class="row-actions"><a href="#" data-act="edit">编辑</a><a href="#" data-act="disable">停用</a></td>
+          <td class="row-actions"><a href="#" data-act="add-child">新增子部门</a><a href="#" data-act="edit">编辑</a><a href="#" data-act="disable">停用</a></td>
         </tr>
         <tr>
           <td class="dept-name" data-level="2">├─ 销售部</td>
@@ -118,7 +118,7 @@
           <td>3</td>
           <td><span class="badge badge-success">启用</span></td>
           <td>2026-04-06 09:46</td>
-          <td class="row-actions"><a href="#" data-act="edit">编辑</a><a href="#" data-act="disable">停用</a></td>
+          <td class="row-actions"><a href="#" data-act="add-child">新增子部门</a><a href="#" data-act="edit">编辑</a><a href="#" data-act="disable">停用</a></td>
         </tr>
         <tr>
           <td class="dept-name" data-level="2">└─ 活动部</td>
@@ -187,7 +187,7 @@
         </select>
       </div>
     </div>
-    <p class="muted" style="margin:10px 0 0;font-size:12px" id="dept-tip">三级部门下不可再新增子部门；部门删除前需先转移该部门下的用户。</p>
+    <p class="muted" style="margin:10px 0 0;font-size:12px" id="dept-tip">部门层级不限深度，可逐级新增子部门；部门删除前需先转移该部门下的用户。</p>
   </div>
   <div class="proto-modal-ft" style="border-top:1px solid var(--color-border);padding:12px 20px;display:flex;gap:8px;justify-content:flex-end">
     <button class="btn" data-close>取消</button>
@@ -220,13 +220,16 @@
 .ua-page.active { background: var(--color-primary); border-color: var(--color-primary); color: #fff; }
 .ua-page:disabled { color: var(--color-text-muted); cursor: not-allowed; }
 .ua-size { padding: 5px 8px; border: 1px solid var(--color-border); border-radius: 6px; font-family: inherit; font-size: 13px; }
-/* ===== 部门树缩进 ===== */
+/* ===== 部门树缩进（不限层级：按 data-level 递进 12px） ===== */
 .dept-name[data-level="2"] { padding-left: 12px; color: var(--color-text); }
 .dept-name[data-level="3"] { padding-left: 24px; color: var(--color-text-secondary); }
+.dept-name[data-level="4"] { padding-left: 36px; color: var(--color-text-secondary); }
+.dept-name[data-level="5"] { padding-left: 48px; color: var(--color-text-secondary); }
+.dept-name[data-level="6"] { padding-left: 60px; color: var(--color-text-secondary); }
 </style>
 
 <script src="../assets/js/proto.js"></script>
-<script src="../assets/js/admin-shell.js?v=31"></script>
+<script src="../assets/js/admin-shell.js?v=33"></script>
 <script>
 (function () {
   var mask = document.getElementById("mask");
@@ -244,7 +247,7 @@
 
   document.getElementById("btn-add").addEventListener("click", function () {
     title.textContent = "新增部门";
-    tip.textContent = "三级部门下不可再新增子部门；部门删除前需先转移该部门下的用户。";
+    tip.textContent = "部门层级不限深度，可逐级新增子部门；部门删除前需先转移该部门下的用户。";
     document.getElementById("dept-name-input").value = "";
     document.getElementById("dept-code").value = "";
     open(modal);
@@ -260,9 +263,8 @@
         var act = a.getAttribute("data-act");
         if (act === "add-child") {
           title.textContent = "新增子部门 · " + name;
-          tip.textContent = level >= 3
-            ? "当前已是最深层级，不可再新增子部门。"
-            : "将挂在「" + name + "」下，作为第 " + (level + 1) + " 级部门。";
+          /* 2026-10-13 评审标注：不做层级校验，不限层级 */
+          tip.textContent = "将挂在「" + name + "」下，作为第 " + (level + 1) + " 级部门。";
           open(modal);
         } else if (act === "edit") {
           title.textContent = "编辑部门 · " + name;

@@ -24,7 +24,7 @@
     <a class="active" href="#" data-tab="tenant">租户</a>
     <a href="#" data-tab="quota">额度</a>
     <a href="#" data-tab="dept">组织架构</a>
-    <a href="#" data-tab="post">岗位</a>
+    <a href="#" data-tab="post">职位</a>
     <a href="#" data-tab="user">租户用户</a>
     <a href="#" data-tab="grant">应用授权</a>
     <a href="#" data-tab="log">操作日志</a>
@@ -52,10 +52,11 @@
           <div class="kv-row"><span>租户名称</span><span class="kv-acts"><b>星启家庭教育</b><button type="button" class="btn btn-sm" id="btn-edit">编辑信息</button></span></div>
           <div class="kv-row"><span>所属公司</span><b>星启家庭教育咨询有限公司</b></div>
           <div class="kv-row"><span>开通来源</span><b>注册留资</b></div>
-          <div class="kv-row"><span>组织 / 岗位</span><b>7 个部门 · 6 个岗位</b></div>
+          <div class="kv-row"><span>组织 / 职位</span><b>7 个部门 · 6 个职位</b></div>
           <div class="kv-row"><span>开通时间</span><b>2026-03-12</b></div>
           <div class="kv-row"><span>租户状态</span><span class="kv-acts"><span class="badge badge-success">正常</span><button type="button" class="btn btn-sm" id="btn-stop">停用租户</button></span></div>
           <div class="kv-row"><span>使用截止日期</span><span class="kv-acts"><b id="tc-expire-kv">2027-03-12</b><button type="button" class="btn btn-sm" id="btn-renew">续期</button><button type="button" class="btn btn-sm" id="btn-renew-records">续期记录</button></span></div>
+          <div class="kv-row"><span>结算账期</span><b id="tc-settle-kv">T+7</b></div>
         </div>
       </div>
 
@@ -67,7 +68,7 @@
         </div>
         <div class="card-bd">
           <p class="muted" style="margin:0 0 12px;font-size:12px">本租户的容量与费率<b>按租户单独配置</b>：开通时使用平台默认值，可在此逐项覆盖，仅对本租户生效。</p>
-          <div class="grid-3">
+          <div class="grid-4">
             <div class="cap-item">
               <span class="cap-label">商家账号数</span>
               <b class="cap-value" id="cap-accounts-val">6</b>
@@ -83,6 +84,11 @@
               <b class="cap-value" id="cap-rate-val">0%（默认）</b>
               <span class="cap-hint">适用于本租户订单分账</span>
             </div>
+            <div class="cap-item">
+              <span class="cap-label">结算账期</span>
+              <b class="cap-value" id="cap-settle-val">T+7</b>
+              <span class="cap-hint">订单完成至可提现的间隔</span>
+            </div>
           </div>
         </div>
       </div>
@@ -94,7 +100,7 @@
     <div class="alert alert-info" style="margin-bottom:12px;display:block;line-height:1.9">
       <span>
         <b>营销额度</b>：额度即商家在本平台的<b>线下付款累计入账金额</b>，由平台运营人工调整（每次调整要么<b>增加</b>、要么<b>减少</b>）。
-        额度用于扣减商家的<b>营销短信</b>（每条 ¥X）与<b>直播人次 UV</b>（每场直播结束后按 UV 数统计扣减）。
+        额度用于扣减商家的<b>营销短信</b>（每条 ¥X）与<b>直播流量</b>（快直播按上下播时段流量 G 结算、点播按回放播放流量 G 结算）。
         当可用额度<b>低于额度阈值</b>（阈值可为负）时，该租户将被<b>限制发起直播、限制发送短信</b>。
       </span>
     </div>
@@ -104,6 +110,7 @@
       <div class="card-hd">
         <h2>额度概览</h2>
         <div style="display:flex;gap:8px">
+          <button type="button" class="btn btn-sm" id="btn-quota-trade" data-phase2-only>授权交易额度</button>
           <button type="button" class="btn btn-sm" id="btn-quota-rule">编辑规则</button>
           <button type="button" class="btn btn-sm btn-primary" id="btn-quota-adjust">调整额度</button>
         </div>
@@ -126,9 +133,12 @@
             <span class="cap-hint">按成功发送条数扣减</span>
           </div>
           <div class="cap-item">
-            <span class="cap-label">直播 UV 单价</span>
-            <b class="cap-value" id="q-uv-val">¥0.05 / 人次</b>
-            <span class="cap-hint">每场直播结束后按 UV 结算</span>
+            <span class="cap-label">直播流量单价</span>
+            <div class="cap-pair">
+              <span class="cap-line"><em>快直播</em><b class="cap-value" id="q-uv-live-val">¥1.20 / G</b></span>
+              <span class="cap-line"><em>点播</em><b class="cap-value" id="q-uv-vod-val">¥0.60 / G</b></span>
+            </div>
+            <span class="cap-hint">按场次实际消耗流量结算</span>
           </div>
         </div>
         <p class="muted" style="margin:12px 0 0;font-size:12px">
@@ -149,7 +159,8 @@
               <option>额度调整（增加）</option>
               <option>额度调整（减少）</option>
               <option>营销短信扣减</option>
-              <option>直播 UV 扣减</option>
+              <option>快直播流量扣减</option>
+              <option>点播流量扣减</option>
             </select>
             <input id="q-f-time1" type="date" />
             <input id="q-f-time2" type="date" />
@@ -181,12 +192,12 @@
             </tr>
             <tr>
               <td>2026-10-01 21:10</td>
-              <td><span class="tag">直播 UV 扣减</span></td>
+              <td><span class="tag">快直播流量扣减</span></td>
               <td><b class="q-neg">-¥18.60</b></td>
               <td class="mono">¥1,298.50</td>
-              <td>直播「秋季家长必修课」· 372 UV</td>
+              <td>直播「秋季家长必修课」· 快直播 · 15.5 G</td>
               <td>系统自动</td>
-              <td class="muted" style="font-size:12px">0.05 元/人次 × 372</td>
+              <td class="muted" style="font-size:12px">1.20 元/G × 15.5</td>
             </tr>
             <tr>
               <td>2026-10-01 09:00</td>
@@ -217,12 +228,12 @@
             </tr>
             <tr>
               <td>2026-09-20 16:30</td>
-              <td><span class="tag">直播 UV 扣减</span></td>
+              <td><span class="tag">点播流量扣减</span></td>
               <td><b class="q-neg">-¥21.50</b></td>
               <td class="mono">-¥1,174.40</td>
-              <td>直播「期次说明会」· 430 UV</td>
+              <td>直播「期次说明会」· 点播回放 · 35.8 G</td>
               <td>系统自动</td>
-              <td class="muted" style="font-size:12px">统计完成即扣减</td>
+              <td class="muted" style="font-size:12px">0.60 元/G × 35.8</td>
             </tr>
             <tr>
               <td>2026-09-15 10:00</td>
@@ -247,8 +258,8 @@
 
     <div class="card" style="margin-top:12px"><div class="card-bd">
       <p class="muted" style="margin:0;font-size:12px;line-height:1.9">
-        <b>口径说明：</b>① 额度 = <b>线下付款累计入账</b> − 营销短信扣减 − 直播 UV 扣减 ± 人工调整；<br>
-        ② 营销短信按<b>成功发送条数</b>扣减（单价可配置）；直播按<b>每场结束后的 UV 人次</b>结算扣减（单价可配置）；<br>
+        <b>口径说明：</b>① 额度 = <b>线下付款累计入账</b> − 营销短信扣减 − 直播流量扣减 ± 人工调整；<br>
+        ② 营销短信按<b>成功发送条数</b>扣减（单价可配置）；直播流量按<b>实际消耗流量（G）</b>结算扣减，分 <b>快直播</b>（上下播时段流量）与 <b>点播</b>（回放播放流量）两档，单价分别可配置；<br>
         ③ 可用额度 <b>低于额度阈值</b>时，商家后台将<b>禁止发起直播、禁止发送营销短信</b>，其余能力不受影响；充值入账后自动恢复；<br>
         ④ 商家可在<b>商家管理后台 · 交易 / 资产管理 / 营销额度</b>查看本页配置结果与流水。
       </p>
@@ -366,20 +377,20 @@
     </div></div>
   </div>
 
-  <!-- ================= Tab 3：岗位 ================= -->
+  <!-- ================= Tab 3：职位 ================= -->
   <div class="tc-pane" data-pane="post">
     <div class="toolbar" style="margin-bottom:12px">
-      <button class="btn btn-primary" id="btn-post-add">新增岗位</button>
+      <button class="btn btn-primary" id="btn-post-add">新增职位</button>
       <div class="spacer"></div>
-      <span class="muted" style="font-size:12px">岗位为该租户内部的职务名称，供「租户用户」的「职位」字段选用；岗位不涉及权限，权限由应用授权的角色决定</span>
+      <span class="muted" style="font-size:12px">职位为该租户内部的职务名称，供「租户用户」选用；职位不涉及权限，权限由应用授权的角色决定</span>
     </div>
 
     <div class="card"><div class="card-bd" style="padding:0">
       <table class="data">
         <thead>
           <tr>
-            <th>岗位名称</th>
-            <th>岗位编码</th>
+            <th>职位名称</th>
+            <th>职位编码</th>
             <th>排序</th>
             <th>在职人数</th>
             <th>状态</th>
@@ -397,9 +408,9 @@
         </tbody>
       </table>
       <div class="ua-pagination">
-        <span class="muted">共 <b>6</b> 个岗位</span>
+        <span class="muted">共 <b>6</b> 个职位</span>
         <div class="spacer" style="flex:1"></div>
-        <span class="muted" style="font-size:12px">停用岗位不影响已选用该岗位的用户，但不可再分配</span>
+        <span class="muted" style="font-size:12px">停用职位不影响已选用该职位的用户，但不可再分配</span>
       </div>
     </div></div>
   </div>
@@ -729,6 +740,16 @@
           <option>0%（默认）</option>
         </select>
       </div>
+      <div class="field" style="grid-column:1/-1"><label>结算账期 *</label>
+        <select id="cap-settle" style="width:100%;padding:6px 8px;border:1px solid var(--color-border);border-radius:6px">
+          <option>T+1</option>
+          <option selected>T+7</option>
+          <option>T+15</option>
+          <option>T+30</option>
+          <option>月结（次月 5 日）</option>
+        </select>
+        <p class="muted" style="margin:6px 0 0;font-size:12px">账期决定订单完成至可提现的间隔；调整后仅对新完成订单生效，历史结算单按原账期留存。</p>
+      </div>
     </div>
     <p class="muted" style="margin:10px 0 0;font-size:12px">调整服务费率将影响该租户后续订单的分账与结算，历史订单按原费率快照留存。</p>
   </div>
@@ -784,13 +805,14 @@
 <div class="proto-modal" id="modal-quota-rule" style="width:520px">
   <div class="proto-modal-hd"><h3 style="font-size:16px;font-weight:600">编辑额度规则</h3><button class="btn btn-sm btn-ghost" data-close>×</button></div>
   <div class="proto-modal-bd">
-    <p class="muted" style="margin:0 0 12px;font-size:12px">单价与阈值仅对本租户生效；修改后，新产生的短信 / 直播将按新单价扣减。</p>
+    <p class="muted" style="margin:0 0 12px;font-size:12px">单价与阈值仅对本租户生效；修改后，新产生的短信 / 直播流量将按新单价扣减。</p>
     <div class="form-grid">
       <div class="field"><label>营销短信单价（元/条）*</label><input id="r-sms" placeholder="例：0.10" /></div>
-      <div class="field"><label>直播 UV 单价（元/人次）*</label><input id="r-uv" placeholder="例：0.05" /></div>
+      <div class="field"><label>直播-快直播流量单价（元/G）*</label><input id="r-uv-live" placeholder="例：1.20" /></div>
+      <div class="field"><label>直播-点播流量单价（元/G）*</label><input id="r-uv-vod" placeholder="例：0.60" /></div>
       <div class="field" style="grid-column:1/-1"><label>额度阈值（元，可为负）*</label><input id="r-threshold" placeholder="例：-200；可用额度低于该值时限制发起直播与发送短信" /></div>
     </div>
-    <p class="muted" style="margin:10px 0 0;font-size:12px">阈值用于风险控制：余额低于阈值（可为负）即触发限制，充值入账后自动恢复。</p>
+    <p class="muted" style="margin:10px 0 0;font-size:12px">快直播按<b>上下播时段消耗流量</b>结算，点播按<b>回放播放消耗流量</b>结算，两档单价独立。阈值用于风险控制：余额低于阈值（可为负）即触发限制，充值入账后自动恢复。</p>
   </div>
   <div class="proto-modal-ft" style="border-top:1px solid var(--color-border);padding:12px 20px;display:flex;gap:8px;justify-content:flex-end">
     <button class="btn" data-close>取消</button>
@@ -894,22 +916,22 @@
   </div>
 </div>
 
-<!-- 岗位 -->
+<!-- 职位 -->
 <div class="proto-modal" id="modal-post" style="width:520px">
-  <div class="proto-modal-hd"><h3 style="font-size:16px;font-weight:600" id="post-title">新增岗位</h3><button class="btn btn-sm btn-ghost" data-close>×</button></div>
+  <div class="proto-modal-hd"><h3 style="font-size:16px;font-weight:600" id="post-title">新增职位</h3><button class="btn btn-sm btn-ghost" data-close>×</button></div>
   <div class="proto-modal-bd">
     <div class="form-grid">
-      <div class="field"><label>岗位名称 *</label><input id="post-name" placeholder="如 市场推广" /></div>
-      <div class="field"><label>岗位编码 *</label><input id="post-code" placeholder="如 POS_MARKETING" /></div>
+      <div class="field"><label>职位名称 *</label><input id="post-name" placeholder="如 市场推广" /></div>
+      <div class="field"><label>职位编码 *</label><input id="post-code" placeholder="如 POS_MARKETING" /></div>
       <div class="field"><label>排序</label><input id="post-sort" placeholder="数字越小越靠前" value="1" /></div>
-      <div class="field"><label>岗位状态</label>
+      <div class="field"><label>职位状态</label>
         <select style="width:100%;padding:6px 8px;border:1px solid var(--color-border);border-radius:6px">
           <option selected>启用</option><option>停用</option>
         </select>
       </div>
-      <div class="field" style="grid-column:1/-1"><label>岗位说明</label><input placeholder="选填" /></div>
+      <div class="field" style="grid-column:1/-1"><label>职位说明</label><input placeholder="选填" /></div>
     </div>
-    <p class="muted" style="margin:10px 0 0;font-size:12px">岗位仅作为组织内的职务标识，授予权限请在「应用授权」与商家后台的角色中配置。</p>
+    <p class="muted" style="margin:10px 0 0;font-size:12px">职位仅作为组织内的职务标识，授予权限请在「应用授权」与商家后台的角色中配置。</p>
   </div>
   <div class="proto-modal-ft" style="border-top:1px solid var(--color-border);padding:12px 20px;display:flex;gap:8px;justify-content:flex-end">
     <button class="btn" data-close>取消</button>
@@ -933,7 +955,7 @@
         <select style="width:100%;padding:6px 8px;border:1px solid var(--color-border);border-radius:6px">
           <option>请选择</option><option>运营负责人</option><option>内容运营</option><option>课程顾问</option><option>财务专员</option><option>校长</option>
         </select>
-        <div class="muted" style="font-size:12px">选项来自本租户「岗位」分页</div>
+        <div class="muted" style="font-size:12px">选项来自本租户「职位」分页</div>
       </div>
       <div class="field" style="grid-column:1/-1"><label>关联角色 *（仅限已授权应用下的平台内置角色）</label>
         <select style="width:100%;padding:6px 8px;border:1px solid var(--color-border);border-radius:6px">
@@ -1083,6 +1105,11 @@
 .cap-label { font-size:12px; color:var(--color-text-secondary); }
 .cap-value { font-size:20px; font-weight:600; }
 .cap-hint { font-size:12px; color:var(--color-text-muted); }
+/* 双单价卡（快直播 / 点播流量单价，2026-10-13 评审标注） */
+.cap-pair { display:flex; flex-direction:column; gap:4px; }
+.cap-line { display:flex; align-items:baseline; gap:6px; }
+.cap-line em { font-style:normal; font-size:12px; color:var(--color-text-secondary); flex-shrink:0; }
+.cap-line .cap-value { font-size:16px; }
 /* ===== 额度 ===== */
 .q-pos { color:#009a29; }
 .q-neg { color:#cb2634; }
@@ -1091,7 +1118,7 @@
 </style>
 
 <script src="../assets/js/proto.js"></script>
-<script src="../assets/js/ops-shell.js?v=28"></script>
+<script src="../assets/js/ops-shell.js?v=29"></script>
 <script>
 (function () {
   var mask = document.getElementById("mask");
@@ -1197,7 +1224,7 @@
     { t: "2026-10-02 09:40", type: "容量与费率", content: "商家账号数 6 → 8；直播场次（/月）10 → 12", op: "王顾问（平台运营）", ip: "10.12.8.31", r: "成功", note: "商家申请扩容，已核对合同" },
     { t: "2026-09-30 16:05", type: "应用授权", content: "取消「视频号助手」临时授权", op: "李运营（平台运营）", ip: "10.12.8.44", r: "成功", note: "临时授权已到期" },
     { t: "2026-09-25 11:05", type: "额度调整", content: "增加额度 ¥500.00（原因：线下付款入账）", op: "王顾问（平台运营）", ip: "10.12.8.31", r: "成功", note: "平台代录，付款单号 HT20260925-18" },
-    { t: "2026-09-20 16:30", type: "额度调整", content: "直播 UV 扣减 ¥21.50（直播「期次说明会」430 UV × ¥0.05）", op: "系统自动", ip: "—", r: "成功", note: "直播结束后自动结算" },
+    { t: "2026-09-20 16:30", type: "额度调整", content: "点播流量扣减 ¥21.50（直播「期次说明会」点播回放 35.8 G × ¥0.60）", op: "系统自动", ip: "—", r: "成功", note: "点播统计完成后自动结算" },
     { t: "2026-09-15 10:00", type: "额度调整", content: "减少额度 ¥200.00（原因：冲抵多记账金额）", op: "赵老师（平台运营）", ip: "10.12.9.7", r: "成功", note: "与商家核对后冲抵" },
     { t: "2026-09-10 17:05", type: "租户信息变更", content: "保存租户资料（企业信息）", op: "赵老师（租户管理员）", ip: "221.218.66.12", r: "失败", note: "企业信息审核未通过，提交被拒绝" },
     { t: "2026-09-08 15:26", type: "续期", content: "使用截止日期 2027-03-12 → 2028-03-12（延长 365 天），原因：续期（已付费）", op: "王顾问（平台运营）", ip: "10.12.8.31", r: "成功", note: "续期 1 年，线下汇款已到账" },
@@ -1289,6 +1316,9 @@
     var cur = document.getElementById("cap-rate-val").textContent.trim();
     var sel = document.getElementById("cap-rate");
     Array.prototype.forEach.call(sel.options, function (o) { o.selected = (o.textContent === cur); });
+    var curSettle = document.getElementById("cap-settle-val").textContent.trim();
+    var selSettle = document.getElementById("cap-settle");
+    Array.prototype.forEach.call(selSettle.options, function (o) { o.selected = (o.textContent === curSettle); });
     open(document.getElementById("modal-capacity"));
   });
   document.getElementById("cap-submit").addEventListener("click", function () {
@@ -1299,6 +1329,8 @@
     document.getElementById("cap-accounts-val").textContent = acc;
     document.getElementById("cap-live-val").textContent = live;
     document.getElementById("cap-rate-val").textContent = document.getElementById("cap-rate").value;
+    document.getElementById("cap-settle-val").textContent = document.getElementById("cap-settle").value;
+    document.getElementById("tc-settle-kv").textContent = document.getElementById("cap-settle").value;
     closeAll();
     Proto.toast("本租户容量与费率已更新（原型）");
   });
@@ -1390,19 +1422,23 @@
 
   document.getElementById("btn-quota-rule").addEventListener("click", function () {
     document.getElementById("r-sms").value = parseMoney(document.getElementById("q-sms-val").textContent.split("/")[0]);
-    document.getElementById("r-uv").value = parseMoney(document.getElementById("q-uv-val").textContent.split("/")[0]);
+    document.getElementById("r-uv-live").value = parseMoney(document.getElementById("q-uv-live-val").textContent.split("/")[0]);
+    document.getElementById("r-uv-vod").value = parseMoney(document.getElementById("q-uv-vod-val").textContent.split("/")[0]);
     document.getElementById("r-threshold").value = currentThreshold();
     open(document.getElementById("modal-quota-rule"));
   });
   document.getElementById("r-submit").addEventListener("click", function () {
     var sms = parseFloat(document.getElementById("r-sms").value);
-    var uv = parseFloat(document.getElementById("r-uv").value);
+    var uvLive = parseFloat(document.getElementById("r-uv-live").value);
+    var uvVod = parseFloat(document.getElementById("r-uv-vod").value);
     var th = parseFloat(document.getElementById("r-threshold").value);
     if (isNaN(sms) || sms <= 0) { Proto.toast("请填写正确的营销短信单价"); return; }
-    if (isNaN(uv) || uv <= 0) { Proto.toast("请填写正确的直播 UV 单价"); return; }
+    if (isNaN(uvLive) || uvLive <= 0) { Proto.toast("请填写正确的直播-快直播流量单价"); return; }
+    if (isNaN(uvVod) || uvVod <= 0) { Proto.toast("请填写正确的直播-点播流量单价"); return; }
     if (isNaN(th)) { Proto.toast("请填写额度阈值（可为负）"); return; }
     document.getElementById("q-sms-val").textContent = "¥" + sms.toFixed(2) + " / 条";
-    document.getElementById("q-uv-val").textContent = "¥" + uv.toFixed(2) + " / 人次";
+    document.getElementById("q-uv-live-val").textContent = "¥" + uvLive.toFixed(2) + " / G";
+    document.getElementById("q-uv-vod-val").textContent = "¥" + uvVod.toFixed(2) + " / G";
     document.getElementById("q-threshold-val").textContent = fmtMoney(th);
     refreshQuotaStatus();
     closeAll();
@@ -1457,10 +1493,10 @@
     });
   });
 
-  /* ===== Tab3：岗位 ===== */
+  /* ===== Tab3：职位 ===== */
   var postTitle = document.getElementById("post-title");
   document.getElementById("btn-post-add").addEventListener("click", function () {
-    postTitle.textContent = "新增岗位";
+    postTitle.textContent = "新增职位";
     document.getElementById("post-name").value = "";
     document.getElementById("post-code").value = "";
     document.getElementById("post-sort").value = "1";
@@ -1469,11 +1505,11 @@
   document.getElementById("post-submit").addEventListener("click", function () {
     var n = document.getElementById("post-name").value.trim();
     var c = document.getElementById("post-code").value.trim();
-    if (!n) { Proto.toast("请填写岗位名称"); return; }
-    if (!c) { Proto.toast("请填写岗位编码"); return; }
-    var isNew = postTitle.textContent === "新增岗位";
+    if (!n) { Proto.toast("请填写职位名称"); return; }
+    if (!c) { Proto.toast("请填写职位编码"); return; }
+    var isNew = postTitle.textContent === "新增职位";
     closeAll();
-    Proto.toast(isNew ? "岗位「" + n + "」已创建，可在用户「职位」中选用（原型）" : "岗位「" + n + "」已保存（原型）");
+    Proto.toast(isNew ? "职位「" + n + "」已创建，可在用户「职位」中选用（原型）" : "职位「" + n + "」已保存（原型）");
   });
   document.querySelectorAll("[data-post-act]").forEach(function (a) {
     a.addEventListener("click", function (e) {
@@ -1482,16 +1518,16 @@
       var name = a.closest("tr").children[0].textContent.trim();
       var code = a.closest("tr").children[1].textContent.trim();
       if (act === "edit") {
-        postTitle.textContent = "编辑岗位 · " + name;
+        postTitle.textContent = "编辑职位 · " + name;
         document.getElementById("post-name").value = name;
         document.getElementById("post-code").value = code;
         open(document.getElementById("modal-post"));
       } else if (act === "disable") {
-        Proto.toast("岗位已停用，已选用该岗位的用户不受影响（原型）");
+        Proto.toast("职位已停用，已选用该职位的用户不受影响（原型）");
       } else if (act === "enable") {
-        Proto.toast("岗位已启用（原型）");
+        Proto.toast("职位已启用（原型）");
       } else if (act === "del") {
-        Proto.toast("删除前需先将该岗位下的用户改为其它岗位（原型）");
+        Proto.toast("删除前需先将该职位下的用户改为其它职位（原型）");
       }
     });
   });

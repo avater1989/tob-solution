@@ -21,7 +21,7 @@
     try {
       var curPhase = document.currentScript;
       var phaseSrc = (curPhase && curPhase.src)
-        ? curPhase.src.replace(/ops-shell\.js[^/]*$/, "phase2-config.js?v=7")
+        ? curPhase.src.replace(/ops-shell\.js[^/]*$/, "phase2-config.js?v=8")
         : "../assets/js/phase2-config.js";
       var xhrPhase = new XMLHttpRequest();
       xhrPhase.open("GET", phaseSrc, false);
@@ -101,7 +101,7 @@
     { id: "biz", label: "交易", href: "trade-orders.html" },
     { id: "trade", label: "财务", href: "settlements.html" },
     { id: "data", label: "数据", href: "data.html" },
-    { id: "sys", label: "系统管理", href: "sys-users.html" },
+    { id: "sys", label: "系统管理", href: "tenants.html" },
   ];
 
   var sidebars = {
@@ -173,7 +173,7 @@
         group: "资金",
         links: [
           /* 2026-09-29 评审标注：「支付流水」从「财务」组移到「资金」组，置于对账管理之上 */
-          { id: "pay-flows", href: "pay-flows.html", label: "支付流水" },
+          { id: "pay-flows", href: "pay-flows.html", label: "租户支付流水" },
           { id: "recon", href: "recon.html", label: "对账管理", badge: 3 },
           { id: "settlements", href: "settlements.html", label: "结算管理", badge: 5 },
           { id: "payouts", href: "payouts.html", label: "提现审核", badge: 2 },
@@ -406,7 +406,6 @@
     '<button type="button" class="admin-user" id="admin-user-btn">平台运营 <i class="caret">▾</i></button>' +
     '<div class="user-dropdown" id="user-dropdown">' +
     '<div class="udd-hd"><b>平台运营</b><br><span>平台运营管理员 · 艺博教育科技</span></div>' +
-    '<button type="button" class="udd-item" id="udd-profile">个人信息</button>' +
     '<button type="button" class="udd-item" id="udd-password">修改密码</button>' +
     '<div class="udd-sep"></div>' +
     '<button type="button" class="udd-item udd-logout" id="udd-logout">退出登录</button>' +
@@ -539,10 +538,6 @@
       setTimeout(function () { location.href = "../login.html"; }, 1200);
     });
 
-    document.getElementById("udd-profile").addEventListener("click", function () {
-      userMenu.classList.remove("open");
-      Proto.toast("个人信息（原型）");
-    });
     document.getElementById("udd-password").addEventListener("click", function () {
       userMenu.classList.remove("open");
       openPwd();

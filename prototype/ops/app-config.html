@@ -19,19 +19,9 @@
     </span>
   </div>
 
-  <!-- Tab -->
-  <div class="tabs" id="ac-tabs">
-    <a class="active" href="#" data-tab="resources">资源管理</a>
-    <a href="#" data-tab="roles">角色管理</a>
-  </div>
-
   <!-- ================= Tab 1：资源管理 ================= -->
   <div class="tc-pane active" data-pane="resources">
-    <div class="alert alert-info" style="margin-bottom:12px">
-      <span>资源树按<b>应用隔离</b>，此处仅维护本应用的资源。类型分为 <b>模块 / 菜单 / 按钮 / 接口</b>：模块与菜单决定端上入口，按钮决定页面内操作，接口用于开放能力。角色的权限勾选即从本资源树产生。</span>
-    </div>
-
-    <div class="card" style="margin-bottom:12px"><div class="card-bd">
+      <div class="card" style="margin-bottom:12px"><div class="card-bd">
       <div class="ua-search">
         <div class="ua-search-row">
           <div class="ua-field"><label>资源名称：</label><input id="f-name" placeholder="请输入资源名称" /></div>
@@ -219,6 +209,17 @@
               <option>全部租户</option><option>指定租户</option>
             </select>
           </div>
+        <div class="field tenant-picker" id="r-scope-tenants" style="display:none">
+          <label>选择租户（可多选）*</label>
+          <div class="tp-list"><label><input type="checkbox" checked> 星启家庭教育</label>
+            <label><input type="checkbox" checked> 晨光少儿成长</label>
+            <label><input type="checkbox"> 慧心教育</label>
+            <label><input type="checkbox"> 青藤家长学堂</label>
+            <label><input type="checkbox"> 乐学伴家庭</label>
+            <label><input type="checkbox"> 知行家研习社</label>
+          </div>
+          <p class="muted" style="margin:6px 0 0;font-size:12px">仅所选租户会下发该角色；全部租户表示覆盖当前与未来新增租户。</p>
+        </div>
         </div>
         <div class="ua-search-btns">
           <button class="btn btn-primary" id="btn-r-query">查询</button>
@@ -392,10 +393,21 @@
       <div class="field"><label>角色名称 *</label><input placeholder="请输入角色名称" /></div>
       <div class="field"><label>角色编码 *</label><input placeholder="如 ROLE_MCH_MARKETING" /></div>
       <div class="field"><label>应用范围 *</label>
-        <select style="width:100%;padding:6px 8px;border:1px solid var(--color-border);border-radius:6px">
+        <select id="ra-scope" style="width:100%;padding:6px 8px;border:1px solid var(--color-border);border-radius:6px">
           <option>全部租户</option><option>指定租户</option>
         </select>
       </div>
+        <div class="field tenant-picker" id="ra-scope-tenants" style="display:none">
+          <label>选择租户（可多选）*</label>
+          <div class="tp-list"><label><input type="checkbox" checked> 星启家庭教育</label>
+            <label><input type="checkbox" checked> 晨光少儿成长</label>
+            <label><input type="checkbox"> 慧心教育</label>
+            <label><input type="checkbox"> 青藤家长学堂</label>
+            <label><input type="checkbox"> 乐学伴家庭</label>
+            <label><input type="checkbox"> 知行家研习社</label>
+          </div>
+          <p class="muted" style="margin:6px 0 0;font-size:12px">仅所选租户会下发该角色；全部租户表示覆盖当前与未来新增租户。</p>
+        </div>
       <div class="field"><label>状态</label>
         <select style="width:100%;padding:6px 8px;border:1px solid var(--color-border);border-radius:6px">
           <option>草稿</option><option>已发布</option>
@@ -425,10 +437,21 @@
       <div class="field"><label>角色名称 *</label><input id="re-name" /></div>
       <div class="field"><label>角色编码</label><input id="re-code" disabled /></div>
       <div class="field"><label>应用范围</label>
-        <select style="width:100%;padding:6px 8px;border:1px solid var(--color-border);border-radius:6px">
+        <select id="re-scope" style="width:100%;padding:6px 8px;border:1px solid var(--color-border);border-radius:6px">
           <option selected>全部租户</option><option>指定租户</option>
         </select>
       </div>
+        <div class="field tenant-picker" id="re-scope-tenants" style="display:none">
+          <label>选择租户（可多选）*</label>
+          <div class="tp-list"><label><input type="checkbox" checked> 星启家庭教育</label>
+            <label><input type="checkbox" checked> 晨光少儿成长</label>
+            <label><input type="checkbox"> 慧心教育</label>
+            <label><input type="checkbox"> 青藤家长学堂</label>
+            <label><input type="checkbox"> 乐学伴家庭</label>
+            <label><input type="checkbox"> 知行家研习社</label>
+          </div>
+          <p class="muted" style="margin:6px 0 0;font-size:12px">仅所选租户会下发该角色；全部租户表示覆盖当前与未来新增租户。</p>
+        </div>
       <div class="field"><label>状态</label>
         <select style="width:100%;padding:6px 8px;border:1px solid var(--color-border);border-radius:6px">
           <option selected>已发布</option><option>草稿</option><option>已下线</option>
@@ -497,6 +520,8 @@
 </div>
 
 <style>
+.tenant-picker .tp-list { display:flex; flex-wrap:wrap; gap:8px 16px; padding:8px 10px; border:1px solid var(--color-border); border-radius:6px; }
+.tenant-picker .tp-list label { font-size:13px; white-space:nowrap; }
 .ua-search {
   /* 占位：样式来自 proto.css 的 .ua-search 若无则用下方 .ua-field */
 }
@@ -526,7 +551,7 @@ tr.collapsed { display: none; }
 </style>
 
 <script src="../assets/js/proto.js"></script>
-<script src="../assets/js/ops-shell.js?v=28"></script>
+<script src="../assets/js/ops-shell.js?v=29"></script>
 <script>
 (function () {
   var mask = document.getElementById("mask");
@@ -539,7 +564,7 @@ tr.collapsed { display: none; }
   document.querySelectorAll("[data-close]").forEach(function (n) { n.addEventListener("click", closeAll); });
 
   /* ===== Tab 切换（支持 ?tab=） ===== */
-  var TABS = ["resources", "roles"];
+  var TABS = ["resources"];
   function activate(key, updateUrl) {
     if (TABS.indexOf(key) < 0) key = "resources";
     document.querySelectorAll("#ac-tabs a").forEach(function (a) {
@@ -652,6 +677,15 @@ tr.collapsed { display: none; }
   });
   document.getElementById("btn-role-add").addEventListener("click", function () { open(document.getElementById("modal-role-add")); });
   document.getElementById("btn-r-query").addEventListener("click", function () { Proto.toast("已按条件查询（原型）"); });
+  /* ===== 指定租户多选（2026-10-21 评审标注） ===== */
+  [["r-scope","r-scope-tenants"],["ra-scope","ra-scope-tenants"],["re-scope","re-scope-tenants"]].forEach(function(pair){
+    var sel = document.getElementById(pair[0]);
+    var box = document.getElementById(pair[1]);
+    if (!sel || !box) return;
+    function sync(){ box.style.display = sel.value === "指定租户" ? "" : "none"; }
+    sel.addEventListener("change", sync);
+    sync();
+  });
   document.getElementById("btn-r-reset").addEventListener("click", function () {
     document.getElementById("r-name").value = "";
     ["r-status", "r-scope"].forEach(function (id) { document.getElementById(id).value = ""; });

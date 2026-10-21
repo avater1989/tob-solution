@@ -51,7 +51,6 @@
           <select id="f-status">
             <option value="">请选择</option>
             <option>正常</option>
-            <option>锁定</option>
             <option>停用</option>
           </select>
         </div>
@@ -69,9 +68,9 @@
   <!-- 操作条 -->
   <div class="toolbar" style="margin-bottom:12px">
     <button class="btn btn-primary" id="btn-add">新增用户</button>
-    <button class="btn" id="btn-import">同步用户</button>
+    <button class="btn" id="btn-import" data-phase2-only>同步用户</button>
     <div class="spacer"></div>
-    <span class="muted" style="font-size:12px">此处管理运营后台自身的登录账号，与租户用户（商家管理后台账号）相互独立；「同步用户」从指定系统拉取新增账号</span>
+    <span class="muted" style="font-size:12px">此处管理运营后台自身的登录账号，与租户用户（商家管理后台账号）相互独立；「同步用户」为二期能力（从指定系统拉取新增账号），一期不展示</span>
   </div>
 
   <!-- 表格 -->
@@ -121,7 +120,7 @@
           <td>审核专员</td>
           <td>审核专员</td>
           <td>全部数据</td>
-          <td><span class="badge badge-warn">正常(锁定)</span></td>
+          <td><span class="badge badge-success">正常</span></td>
           <td class="row-actions"><a href="#" data-row-act="edit">编辑</a><a href="#" data-row-act="pwd">修改密码</a><a href="#" data-row-act="view">查看</a></td>
         </tr>
         <tr>
@@ -271,7 +270,7 @@
         </select>
       </div>
     </div>
-    <p class="muted" style="margin:10px 0 0;font-size:12px">锁定账号需在用户查看页解锁；超级管理员账号不可停用。</p>
+    <p class="muted" style="margin:10px 0 0;font-size:12px">超级管理员账号不可停用。</p>
   </div>
   <div class="proto-modal-ft" style="border-top:1px solid var(--color-border);padding:12px 20px;display:flex;gap:8px;justify-content:flex-end">
     <button class="btn" data-close>取消</button>
@@ -391,7 +390,7 @@
 </style>
 
 <script src="../assets/js/proto.js"></script>
-<script src="../assets/js/ops-shell.js?v=28"></script>
+<script src="../assets/js/ops-shell.js?v=29"></script>
 <script>
 (function () {
   var mask = document.getElementById("mask");
@@ -446,7 +445,7 @@
           document.getElementById("vw-dept").textContent = tr.children[3].textContent.trim();
           document.getElementById("vw-title").textContent = tr.children[4].textContent.trim();
           document.getElementById("vw-role").textContent = tr.children[5].textContent.trim();
-          document.getElementById("vw-status").textContent = tr.children[7].textContent.trim().replace(/\(锁定\)/, "（锁定）");
+          document.getElementById("vw-status").textContent = tr.children[7].textContent.trim();
           open(document.getElementById("modal-view"));
         }
       });

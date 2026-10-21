@@ -7,206 +7,283 @@
 <link rel="stylesheet" href="../assets/css/proto.css?v=17" />
 </head>
 <body class="admin-body" data-module="sys" data-nav="message-config" data-title="消息配置" data-crumb="运营后台 / 系统管理 / 消息配置">
-<div id="header-actions">
-  <button class="btn btn-primary" id="btn-save">保存设置</button>
-</div>
 <div id="page-content" style="display:none">
 
-  <div class="alert alert-info" style="margin-bottom:12px;padding:10px 12px;border-radius:8px;background:#e8f3ff;border:1px solid #a0cfff;color:#165dff;font-size:13px">
-    C 端触达渠道与场景模板<b>统一在本页配置</b>，商家端仅可查看发送记录、不可修改模板。
-    <b>短信签名与模板须先提交短信平台与运营商审核</b>，审核通过后方可生效；<b>小程序服务通知</b>使用平台内模板，无需外部审核。
+  <div class="alert alert-info" style="margin-bottom:12px;display:block;line-height:1.9">
+    <span>
+      本页只做<b>模板映射</b>：短信模板在<b>短信平台</b>配置、小程序服务通知模板在<b>微信公众平台</b>配置，本页记录
+      <b>模板类型</b>、<b>对应平台的模板 ID</b> 与<b>适用租户</b>，供各业务场景调用。
+      商家端仅可查看发送记录，不可修改模板。
+    </span>
   </div>
 
-  <!-- 发送渠道 -->
-  <div class="card" style="margin-bottom:12px"><div class="card-hd"><h2>发送渠道</h2><span class="muted" style="font-size:12px">渠道与模板由平台统一维护</span></div>
-    <div class="card-bd" style="padding:0">
-      <table class="data">
-        <thead><tr><th>渠道</th><th>说明</th><th>配置状态</th><th>每日限额</th><th>模板审核</th><th>启用</th><th style="width:190px">操作</th></tr></thead>
-        <tbody>
-          <tr>
-            <td><b>小程序服务通知</b></td>
-            <td>支付成功、开课提醒、直播开播等，需用户订阅</td>
-            <td><span class="badge badge-success">已配置</span></td>
-            <td>无限制</td>
-            <td><span class="badge badge-info">平台内模板 · 免审</span></td>
-            <td><span class="switch on" data-switch></span></td>
-            <td class="row-actions"><a href="#" data-row-act="tpl">模板配置</a></td>
-          </tr>
-          <tr>
-            <td><b>短信</b></td>
-            <td>与直播提醒复用同一签名与额度</td>
-            <td><span class="badge badge-success">已配置</span></td>
-            <td>5,000 条</td>
-            <td><span class="badge badge-success">运营商审核通过</span></td>
-            <td><span class="switch on" data-switch></span></td>
-            <td class="row-actions"><a href="#" data-row-act="sms">签名与模板</a><a href="#" data-toast="短信额度（原型示意）">短信额度</a></td>
-          </tr>
-        </tbody>
-      </table>
+  <!-- 筛选 -->
+  <div class="card" style="margin-bottom:8px"><div class="card-bd">
+    <div class="form-grid" style="grid-template-columns:repeat(5,minmax(0,1fr));gap:8px 12px">
+      <input id="f-name" placeholder="模板名称 / 平台模板 ID" />
+      <select id="f-type">
+        <option value="">模板类型</option>
+        <option value="sms">短信</option>
+        <option value="mp">小程序服务通知</option>
+      </select>
+      <select id="f-tenant">
+        <option value="">适用租户</option>
+        <option value="all">全部租户</option>
+        <option value="星启家庭教育">星启家庭教育</option>
+        <option value="晨光少儿成长">晨光少儿成长</option>
+        <option value="慧心教育">慧心教育</option>
+        <option value="青藤家长学堂">青藤家长学堂</option>
+      </select>
+      <select id="f-status">
+        <option value="">状态</option>
+        <option value="on">启用</option>
+        <option value="off">停用</option>
+      </select>
+      <div style="display:flex;gap:8px">
+        <button class="btn btn-primary" id="btn-query">查询</button>
+        <button class="btn" id="btn-reset">重置</button>
+      </div>
     </div>
+  </div></div>
+
+  <!-- 列表工具栏（列表上方左侧） -->
+  <div class="toolbar" style="margin-bottom:8px">
+    <button class="btn btn-primary" id="btn-add">新增模板映射</button>
+    <div class="spacer"></div>
+    <span class="muted" style="font-size:12px">模板正文与审核在各自平台维护，本页仅登记映射关系</span>
   </div>
 
-  <!-- 短信模板审核 -->
-  <div class="card" style="margin-bottom:12px"><div class="card-hd"><h2>短信签名与模板审核</h2><span class="muted" style="font-size:12px">提交后由短信平台 / 运营商审核，通常 1–3 个工作日</span></div>
-    <div class="card-bd" style="padding:0">
-      <table class="data">
-        <thead><tr><th>签名 / 模板</th><th>模板 ID</th><th>用途</th><th>提交时间</th><th>审核状态</th><th>操作</th></tr></thead>
-        <tbody>
-          <tr>
-            <td><b>【艺博教育】</b></td>
-            <td class="mono">SMS-SIGN-0001</td>
-            <td>短信签名</td>
-            <td>2026-08-12 10:20</td>
-            <td><span class="badge badge-success">审核通过</span></td>
-            <td class="row-actions"><a href="#" data-toast="查看签名详情（原型）">详情</a></td>
-          </tr>
-          <tr>
-            <td>支付成功通知</td>
-            <td class="mono">SMS-TPL-1001</td>
-            <td>交易通知</td>
-            <td>2026-08-12 10:26</td>
-            <td><span class="badge badge-success">审核通过</span></td>
-            <td class="row-actions"><a href="#" data-toast="查看模板详情（原型）">详情</a></td>
-          </tr>
-          <tr>
-            <td>开课提醒通知</td>
-            <td class="mono">SMS-TPL-1002</td>
-            <td>服务通知</td>
-            <td>2026-09-28 16:40</td>
-            <td><span class="badge badge-warn">审核中</span></td>
-            <td class="row-actions"><a href="#" data-toast="撤回审核申请（原型）">撤回</a></td>
-          </tr>
-        </tbody>
-      </table>
-      <p class="muted" style="margin:10px 14px;font-size:12px">新增或修改短信模板需重新提交审核；审核中不影响已通过模板的正常发送。</p>
-    </div>
-  </div>
+  <!-- 模板映射列表 -->
+  <div class="card"><div class="card-bd" style="padding:0">
+    <table class="data">
+      <thead>
+        <tr>
+          <th style="width:180px">模板名称</th>
+          <th style="width:150px">模板类型</th>
+          <th style="width:190px">平台模板 ID</th>
+          <th>适用租户</th>
+          <th style="width:90px">状态</th>
+          <th style="width:150px">更新时间</th>
+          <th style="width:130px">操作</th>
+        </tr>
+      </thead>
+      <tbody id="tpl-tbody"></tbody>
+    </table>
+  </div></div>
 
-  <!-- 场景模板 -->
-  <div class="card" style="margin-bottom:12px"><div class="card-hd"><h2>场景模板</h2><span class="muted" style="font-size:12px">按业务场景配置触发时机与发送渠道</span></div>
-    <div class="card-bd" style="padding:0">
-      <table class="data">
-        <thead>
-          <tr><th>场景</th><th>触发时机</th><th>发送渠道</th><th>状态</th><th>操作</th></tr>
-        </thead>
-        <tbody id="scene-tbody"></tbody>
-      </table>
-    </div>
+  <div class="toolbar" style="margin-top:8px">
+    <span class="muted">共 <b id="tpl-count">0</b> 条模板映射</span>
+    <div class="spacer"></div>
+    <select><option>10条/页</option><option>20条/页</option></select>
+    <button class="btn btn-sm" disabled>上一页</button><button class="btn btn-sm">下一页</button>
   </div>
 </div>
 
-<!-- 场景编辑弹窗 -->
+<!-- 新增 / 编辑模板映射 -->
 <div class="proto-mask" id="mask"></div>
-<div class="proto-modal" id="modal-scene" style="width:560px">
-  <div class="proto-modal-hd"><h3 id="sc-title" style="font-size:16px;font-weight:600">编辑场景模板</h3><button class="btn btn-sm btn-ghost" data-close>×</button></div>
+<div class="proto-modal" id="modal-tpl" style="width:600px">
+  <div class="proto-modal-hd"><h3 id="tpl-title" style="font-size:16px;font-weight:600">新增模板映射</h3><button class="btn btn-sm btn-ghost" data-close>×</button></div>
   <div class="proto-modal-bd">
     <div class="form-grid" style="grid-template-columns:1fr 1fr;gap:10px 16px">
-      <div class="field"><label>场景</label><div id="sc-name">—</div></div>
-      <div class="field"><label>触发时机</label><input id="sc-when" /></div>
-      <div class="field"><label>发送渠道 *</label>
-        <select id="sc-ch" style="width:100%;padding:7px 8px;border:1px solid var(--color-border);border-radius:6px">
-          <option>小程序服务通知</option><option>短信</option>
-          <option>小程序服务通知 + 短信</option>
+      <div class="field" style="grid-column:1/-1"><label>模板名称 *</label><input id="tpl-name" placeholder="如：支付成功通知" /></div>
+      <div class="field"><label>模板类型 *</label>
+        <select id="tpl-type" style="width:100%;padding:7px 8px;border:1px solid var(--color-border);border-radius:6px">
+          <option value="sms">短信</option>
+          <option value="mp">小程序服务通知</option>
         </select>
       </div>
-      <div class="field"><label>启用状态</label>
-        <select id="sc-on" style="width:100%;padding:7px 8px;border:1px solid var(--color-border);border-radius:6px">
-          <option value="1">启用</option><option value="0">停用</option>
+      <div class="field"><label>平台模板 ID *</label><input id="tpl-pid" placeholder="如 SMS-TPL-1001 / MP-TPL-2001" />
+        <span class="muted" style="font-size:12px" id="tpl-pid-hint">短信平台模板 ID</span>
+      </div>
+      <div class="field" style="grid-column:1/-1"><label>适用租户 *</label>
+        <select id="tpl-scope" style="width:100%;padding:7px 8px;border:1px solid var(--color-border);border-radius:6px">
+          <option value="all">全部租户</option>
+          <option value="some">指定租户</option>
         </select>
       </div>
-      <div class="field" style="grid-column:1/-1"><label>通知文案 *</label>
-        <textarea id="sc-text" rows="3" style="width:100%;padding:8px;border:1px solid var(--color-border);border-radius:6px"></textarea>
-        <span class="muted" style="font-size:12px">支持变量：{学员昵称} {课程名称} {开课时间} {直播时间} {退款金额}</span>
+      <div class="field" style="grid-column:1/-1" id="tpl-tenants-wrap" hidden>
+        <label>选择租户（可多选）*</label>
+        <div class="tp-list" id="tpl-tenants"></div>
+      </div>
+      <div class="field"><label>状态</label>
+        <select id="tpl-status" style="width:100%;padding:7px 8px;border:1px solid var(--color-border);border-radius:6px">
+          <option value="on">启用</option>
+          <option value="off">停用</option>
+        </select>
       </div>
     </div>
-    <p class="muted" style="margin-top:8px">交易类通知（支付成功 / 退款结果）建议保持启用，停用后买家将收不到关键状态变更提醒；改动短信模板需重新提交运营商审核。</p>
+    <p class="muted" style="margin:10px 0 0;font-size:12px">模板正文在对应平台维护；本页仅登记模板 ID 与适用范围，切换模板 ID 后新发送的消息立即生效。</p>
   </div>
   <div class="proto-drawer-ft" style="border-top:1px solid var(--color-border);padding:12px 20px;display:flex;gap:8px;justify-content:flex-end">
     <button class="btn" data-close>取消</button>
-    <button class="btn btn-primary" id="sc-save">保存</button>
+    <button class="btn btn-primary" id="tpl-save">保存</button>
   </div>
 </div>
 
 <style>
-.switch{width:40px;height:22px;border-radius:11px;background:#c9cdd4;position:relative;cursor:pointer;display:inline-block;vertical-align:middle}
-.switch::after{content:"";position:absolute;top:2px;left:2px;width:18px;height:18px;border-radius:50%;background:#fff;transition:all .15s}
-.switch.on{background:#165dff}
-.switch.on::after{left:20px}
-.mono{font-family:ui-monospace,Consolas,monospace;font-size:12px}
+.mono { font-family:ui-monospace,Consolas,monospace; font-size:12px; }
+.tp-list { display:flex; flex-wrap:wrap; gap:8px 16px; padding:8px 10px; border:1px solid var(--color-border); border-radius:6px; }
+.tp-list label { font-size:13px; white-space:nowrap; }
 </style>
 
 <script src="../assets/js/proto.js"></script>
-<script src="../assets/js/ops-shell.js?v=28"></script>
+<script src="../assets/js/ops-shell.js?v=29"></script>
 <script>
 (function () {
-  var SCENES = [
-    { id:"pay",     name:"支付成功",       when:"支付回调成功后即时",       ch:"小程序服务通知 + 短信", on:true,  txt:"{学员昵称}，你已成功报名《{课程名称}》，点击立即开始学习。" },
-    { id:"benefit", name:"权益开通",       when:"权益开通成功后即时",       ch:"小程序服务通知",       on:true,  txt:"权益已开通：{课程名称}，有效期至 {有效期}。" },
-    { id:"course",  name:"开课提醒",       when:"开课前 1 小时",            ch:"小程序服务通知 + 短信", on:true,  txt:"{学员昵称}，你报名的《{课程名称}》将于 {开课时间} 开课，记得准时参加。" },
-    { id:"live",    name:"直播开播提醒",   when:"开播前 30 分钟",           ch:"小程序服务通知",       on:true,  txt:"{学员昵称}，你预约的直播《{直播名称}》将于 {直播时间} 开播。" },
-    { id:"claim",   name:"领课兑换成功",   when:"兑换成功后即时",           ch:"小程序服务通知",       on:true,  txt:"兑换成功！《{课程名称}》已加入你的学习清单，添加企微老师领取学习资料。" },
-    { id:"member",  name:"会员到期提醒",   when:"到期前 7 天 / 到期当天",   ch:"短信",                 on:false, txt:"{学员昵称}，你的会员将于 {到期时间} 到期，续费可继续学习全部课程。" },
-    { id:"refund",  name:"退款结果",       when:"退款成功 / 驳回后即时",     ch:"短信",                 on:true,  txt:"你的退款申请已处理，退款金额 {退款金额} 元，预计 1-3 个工作日到账。" },
-    { id:"replay",  name:"直播回放生成",   when:"回放生成后即时",           ch:"小程序服务通知",       on:false, txt:"《{直播名称}》回放已生成，点击继续观看。" }
+  var TENANTS = ["星启家庭教育", "晨光少儿成长", "慧心教育", "青藤家长学堂", "乐学伴家庭", "知行家研习社"];
+
+  /* 模板映射种子：只登记类型 + 平台模板 ID + 适用租户 */
+  var TPLS = [
+    { id: "1", name: "支付成功通知",   type: "sms", pid: "SMS-TPL-1001", scope: "all",  tenants: [],  status: "on",  updated: "2026-09-28 16:40" },
+    { id: "2", name: "开课提醒通知",   type: "sms", pid: "SMS-TPL-1002", scope: "all",  tenants: [],  status: "on",  updated: "2026-09-28 16:40" },
+    { id: "3", name: "退款结果通知",   type: "sms", pid: "SMS-TPL-1003", scope: "all",  tenants: [],  status: "on",  updated: "2026-09-20 10:12" },
+    { id: "4", name: "支付成功",       type: "mp",  pid: "MP-TPL-2001",  scope: "all",  tenants: [],  status: "on",  updated: "2026-09-18 09:30" },
+    { id: "5", name: "权益开通",       type: "mp",  pid: "MP-TPL-2002",  scope: "all",  tenants: [],  status: "on",  updated: "2026-09-18 09:30" },
+    { id: "6", name: "直播开播提醒",   type: "mp",  pid: "MP-TPL-2003",  scope: "some", tenants: ["星启家庭教育", "青藤家长学堂"], status: "on",  updated: "2026-10-08 14:05" },
+    { id: "7", name: "会员到期提醒",   type: "sms", pid: "SMS-TPL-1004", scope: "some", tenants: ["晨光少儿成长"], status: "off", updated: "2026-10-12 11:20" }
   ];
 
   var mask = document.getElementById("mask");
-  function closeAll(){ mask.classList.remove("open"); document.querySelectorAll(".proto-modal").forEach(function(n){n.classList.remove("open");}); }
-  function open(n){ mask.classList.add("open"); n.classList.add("open"); }
+  function closeAll() { mask.classList.remove("open"); document.querySelectorAll(".proto-modal").forEach(function (n) { n.classList.remove("open"); }); }
+  function open(n) { mask.classList.add("open"); n.classList.add("open"); }
   mask.addEventListener("click", closeAll);
-  document.querySelectorAll("[data-close]").forEach(function(n){ n.addEventListener("click", closeAll); });
+  document.querySelectorAll("[data-close]").forEach(function (n) { n.addEventListener("click", closeAll); });
 
-  function esc(s){ return String(s==null?"":s).replace(/[&<>"']/g,function(c){return({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"})[c];}); }
+  function esc(s) { return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) { return ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]; }); }
+  function typeLabel(t) { return t === "sms" ? "短信" : "小程序服务通知"; }
+  function scopeLabel(r) { return r.scope === "all" ? "全部租户" : ("指定 " + r.tenants.length + " 个租户"); }
 
-  function render(){
-    document.getElementById("scene-tbody").innerHTML = SCENES.map(function(s){
-      return '<tr data-id="'+s.id+'">' +
-        "<td><b>"+esc(s.name)+"</b></td>" +
-        "<td>"+esc(s.when)+"</td>" +
-        "<td><span class=\"tag\">"+esc(s.ch)+"</span></td>" +
-        "<td>"+(s.on?'<span class="badge badge-success">已启用</span>':'<span class="badge">已停用</span>')+"</td>" +
-        '<td class="row-actions"><a href="#" data-row-act="edit">编辑</a></td>' +
-        "</tr>";
-    }).join("");
+  function filtered() {
+    var kw = (document.getElementById("f-name").value || "").trim().toLowerCase();
+    var ty = document.getElementById("f-type").value;
+    var te = document.getElementById("f-tenant").value;
+    var st = document.getElementById("f-status").value;
+    return TPLS.filter(function (r) {
+      if (kw && r.name.toLowerCase().indexOf(kw) < 0 && r.pid.toLowerCase().indexOf(kw) < 0) return false;
+      if (ty && r.type !== ty) return false;
+      if (st && r.status !== st) return false;
+      if (te === "all" && r.scope !== "all") return false;
+      if (te && te !== "all" && !(r.scope === "all" || r.tenants.indexOf(te) >= 0)) return false;
+      return true;
+    });
   }
 
-  var current = null;
-  document.addEventListener("click", function(e){
-    var el = e.target.closest("[data-row-act]");
-    if (!el) return;
+  function render() {
+    var rows = filtered();
+    document.getElementById("tpl-tbody").innerHTML = rows.map(function (r) {
+      return "<tr data-id=\"" + r.id + "\">" +
+        "<td><b>" + esc(r.name) + "</b></td>" +
+        "<td><span class=\"tag " + (r.type === "sms" ? "tag-blue" : "tag-green") + "\">" + typeLabel(r.type) + "</span></td>" +
+        "<td class=\"mono\">" + esc(r.pid) + "</td>" +
+        "<td>" + scopeLabel(r) +
+          (r.scope === "some" ? "<br><span class=\"muted\" style=\"font-size:12px\">" + esc(r.tenants.join("、")) + "</span>" : "") +
+        "</td>" +
+        "<td>" + (r.status === "on" ? '<span class="badge badge-success">启用</span>' : '<span class="badge">停用</span>') + "</td>" +
+        "<td>" + esc(r.updated) + "</td>" +
+        "<td class=\"row-actions\"><a href=\"#\" data-row-act=\"edit\">编辑</a><a href=\"#\" data-row-act=\"" + (r.status === "on" ? "off" : "on") + "\">" + (r.status === "on" ? "停用" : "启用") + "</a></td>" +
+        "</tr>";
+    }).join("");
+    document.getElementById("tpl-count").textContent = rows.length;
+  }
+
+  /* 适用租户多选 */
+  function renderTenantChecks(selected) {
+    document.getElementById("tpl-tenants").innerHTML = TENANTS.map(function (t) {
+      var ck = selected && selected.indexOf(t) >= 0 ? " checked" : "";
+      return "<label><input type=\"checkbox\" value=\"" + esc(t) + "\"" + ck + "> " + esc(t) + "</label>";
+    }).join("");
+  }
+  function currentFormTenants() {
+    return Array.prototype.slice.call(document.querySelectorAll("#tpl-tenants input:checked")).map(function (n) { return n.value; });
+  }
+
+  document.getElementById("tpl-scope").addEventListener("change", function () {
+    document.getElementById("tpl-tenants-wrap").hidden = this.value !== "some";
+  });
+  document.getElementById("tpl-type").addEventListener("change", function () {
+    document.getElementById("tpl-pid-hint").textContent =
+      this.value === "sms" ? "短信平台模板 ID" : "微信公众平台模板 ID";
+  });
+
+  var editing = null;
+
+  document.getElementById("btn-add").addEventListener("click", function () {
+    editing = null;
+    document.getElementById("tpl-title").textContent = "新增模板映射";
+    document.getElementById("tpl-name").value = "";
+    document.getElementById("tpl-type").value = "sms";
+    document.getElementById("tpl-pid").value = "";
+    document.getElementById("tpl-pid-hint").textContent = "短信平台模板 ID";
+    document.getElementById("tpl-scope").value = "all";
+    document.getElementById("tpl-tenants-wrap").hidden = true;
+    renderTenantChecks([]);
+    document.getElementById("tpl-status").value = "on";
+    open(document.getElementById("modal-tpl"));
+  });
+
+  document.getElementById("tpl-tbody").addEventListener("click", function (e) {
+    var a = e.target.closest("[data-row-act]");
+    if (!a) return;
     e.preventDefault();
-    var act = el.getAttribute("data-row-act");
-    if (act === "sms") { Proto.toast("短信签名与模板 ID 配置（原型）"); return; }
-    if (act === "tpl") { Proto.toast("打开渠道模板配置（原型）"); return; }
-    var tr = el.closest("tr");
-    var id = tr ? tr.getAttribute("data-id") : null;
-    var s = SCENES.find(function(x){ return x.id === id; });
-    if (act === "edit" && s) {
-      current = s;
-      document.getElementById("sc-title").textContent = "编辑场景模板 · " + s.name;
-      document.getElementById("sc-name").textContent = s.name;
-      document.getElementById("sc-when").value = s.when;
-      document.getElementById("sc-ch").value = s.ch;
-      document.getElementById("sc-on").value = s.on ? "1" : "0";
-      document.getElementById("sc-text").value = s.txt;
-      open(document.getElementById("modal-scene"));
+    var tr = a.closest("tr");
+    var r = TPLS.filter(function (x) { return x.id === tr.getAttribute("data-id"); })[0];
+    if (!r) return;
+    var act = a.getAttribute("data-row-act");
+    if (act === "on" || act === "off") {
+      r.status = act;
+      r.updated = "2026-10-21 " + new Date().toTimeString().slice(0, 5);
+      render();
+      Proto.toast(act === "on" ? "模板映射已启用（原型）" : "模板映射已停用（原型）");
+      return;
     }
+    editing = r;
+    document.getElementById("tpl-title").textContent = "编辑模板映射 · " + r.name;
+    document.getElementById("tpl-name").value = r.name;
+    document.getElementById("tpl-type").value = r.type;
+    document.getElementById("tpl-pid").value = r.pid;
+    document.getElementById("tpl-pid-hint").textContent = r.type === "sms" ? "短信平台模板 ID" : "微信公众平台模板 ID";
+    document.getElementById("tpl-scope").value = r.scope;
+    document.getElementById("tpl-tenants-wrap").hidden = r.scope !== "some";
+    renderTenantChecks(r.tenants);
+    document.getElementById("tpl-status").value = r.status;
+    open(document.getElementById("modal-tpl"));
   });
 
-  document.getElementById("sc-save").addEventListener("click", function(){
-    if (!current) return;
-    current.when = document.getElementById("sc-when").value.trim();
-    current.ch = document.getElementById("sc-ch").value;
-    current.on = document.getElementById("sc-on").value === "1";
-    current.txt = document.getElementById("sc-text").value.trim();
-    closeAll(); render(); Proto.toast("场景模板已保存（原型）");
+  document.getElementById("tpl-save").addEventListener("click", function () {
+    var name = document.getElementById("tpl-name").value.trim();
+    var pid = document.getElementById("tpl-pid").value.trim();
+    var type = document.getElementById("tpl-type").value;
+    var scope = document.getElementById("tpl-scope").value;
+    var tenants = scope === "some" ? currentFormTenants() : [];
+    if (!name) { Proto.toast("请填写模板名称"); return; }
+    if (!pid) { Proto.toast("请填写平台模板 ID"); return; }
+    if (scope === "some" && !tenants.length) { Proto.toast("请至少选择 1 个适用租户"); return; }
+    var now = "2026-10-21 " + new Date().toTimeString().slice(0, 5);
+    if (editing) {
+      editing.name = name; editing.pid = pid; editing.type = type;
+      editing.scope = scope; editing.tenants = tenants;
+      editing.status = document.getElementById("tpl-status").value;
+      editing.updated = now;
+    } else {
+      TPLS.push({
+        id: String(Date.now()), name: name, type: type, pid: pid,
+        scope: scope, tenants: tenants,
+        status: document.getElementById("tpl-status").value, updated: now
+      });
+    }
+    closeAll();
+    render();
+    Proto.toast(editing ? "模板映射已更新（原型）" : "模板映射已创建（原型）");
   });
 
-  document.querySelectorAll("[data-switch]").forEach(function(s){
-    s.addEventListener("click", function(){ this.classList.toggle("on"); Proto.toast(this.classList.contains("on")?"渠道已启用":"渠道已停用"); });
+  document.getElementById("btn-query").addEventListener("click", render);
+  document.getElementById("btn-reset").addEventListener("click", function () {
+    ["f-name", "f-type", "f-tenant", "f-status"].forEach(function (id) { document.getElementById(id).value = ""; });
+    render();
+    Proto.toast("已重置");
   });
 
-  document.getElementById("btn-save").addEventListener("click", function(){ Proto.toast("消息配置已保存（原型）"); });
+  renderTenantChecks([]);
   render();
 })();
 </script>

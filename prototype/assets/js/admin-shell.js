@@ -22,7 +22,7 @@
     try {
       var curPhase = document.currentScript;
       var phaseSrc = (curPhase && curPhase.src)
-        ? curPhase.src.replace(/admin-shell\.js[^/]*$/, "phase2-config.js?v=7")
+        ? curPhase.src.replace(/admin-shell\.js[^/]*$/, "phase2-config.js?v=8")
         : "../assets/js/phase2-config.js";
       var xhrPhase = new XMLHttpRequest();
       xhrPhase.open("GET", phaseSrc, false);
@@ -238,7 +238,6 @@
         group: "订单管理",
         links: [
           { id: "orders", href: "orders.html", label: "订单列表" },
-          { id: "entitlement", href: "entitlement.html", label: "权益开通记录", badge: 2 },
         ],
       },
       {
@@ -281,7 +280,6 @@
           { id: "sys-users", href: "sys-users.html", label: "用户列表" },
           { id: "depts", href: "depts.html", label: "部门管理" },
           { id: "user-roles", href: "user-roles.html", label: "用户角色" },
-          { id: "permissions", href: "permissions.html", label: "权限配置" },
         ],
       },
       {

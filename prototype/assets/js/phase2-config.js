@@ -64,7 +64,6 @@ window.ProtoPhase2 = (function () {
       "audit-goods",
       "audit-appeal",
       /* 交易：除「订单列表」（已移至财务）外的全部内容 */
-      "entitlement",
       "platform-goods",
       "goods-edit",
       "aftersales",

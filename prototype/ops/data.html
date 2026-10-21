@@ -285,7 +285,7 @@
         </table>
         <p class="muted" style="margin:0;padding:10px 14px;font-size:12px;line-height:1.7;border-top:1px solid var(--color-border)">
           <b>口径说明</b> ——
-          <b>额度消耗</b>：该租户近 30 天「营销额度」的扣减合计 = 营销短信成功条数 × 短信单价 + 直播 UV 人次 × UV 单价（单价按租户单独配置，见「系统管理 / 租户列表 → 配置 → 额度」；额度余额低于阈值时该租户将无法发起直播与发送营销短信）。
+          <b>额度消耗</b>：该租户近 30 天「营销额度」的扣减合计 = 营销短信成功条数 × 短信单价 + 快直播流量（G）× 快直播单价 + 点播流量（G）× 点播单价（单价按租户单独配置，见「系统管理 / 租户列表 → 配置 → 额度」；额度余额低于阈值时该租户将无法发起直播与发送营销短信）。
           <b>健康度</b>：GMV 达成率 40% + 退款率 20% + 内容供给 20% + 私域线索 20% 的加权评分，≥80 健康 / 60–79 预警 / &lt;60 高危，每日 06:00 更新。
         </p>
       </div>
@@ -347,7 +347,7 @@
 </style>
 
 <script src="../assets/js/proto.js"></script>
-<script src="../assets/js/ops-shell.js?v=28"></script>
+<script src="../assets/js/ops-shell.js?v=29"></script>
 <script>
 (function () {
   /* 视角 → 标题 / 面包屑（对照商家管理后台「数据」板块，平台侧视角） */

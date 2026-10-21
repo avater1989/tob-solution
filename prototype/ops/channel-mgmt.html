@@ -7,9 +7,6 @@
 <link rel="stylesheet" href="../assets/css/proto.css?v=17" />
 </head>
 <body class="admin-body" data-module="sys" data-nav="channel-mgmt" data-title="渠道管理" data-crumb="运营后台 / 系统管理 / 渠道管理">
-<div id="header-actions">
-  <button class="btn btn-primary" id="btn-create">新增渠道</button>
-</div>
 <div id="page-content" style="display:none">
 
   <!-- 筛选 -->
@@ -32,9 +29,13 @@
       <button class="btn btn-primary" id="btn-query">查询</button>
       <button class="btn" id="btn-reset">重置</button>
       <div class="spacer"></div>
-      <button class="btn" id="btn-col">列展示</button>
     </div>
   </div></div>
+
+  <!-- 列表工具栏 -->
+  <div class="toolbar" style="margin-bottom:8px">
+    <button class="btn btn-primary" id="btn-create">新增渠道</button>
+  </div>
 
   <!-- 表格 -->
   <div class="card"><div class="card-bd" style="padding:0">
@@ -61,7 +62,6 @@
           <td>阮荣均</td><td>2026-03-29 10:22</td>
           <td class="row-actions">
             <a href="#" data-row-act="edit">修改</a>
-            <a href="#" data-row-act="del" class="danger">删除</a>
           </td>
         </tr>
         <tr>
@@ -73,7 +73,6 @@
           <td>阮荣均</td><td>2026-03-28 18:30</td>
           <td class="row-actions">
             <a href="#" data-row-act="edit">修改</a>
-            <a href="#" data-row-act="del" class="danger">删除</a>
           </td>
         </tr>
         <tr>
@@ -85,7 +84,6 @@
           <td>赵老师</td><td>2026-03-25 14:30</td>
           <td class="row-actions">
             <a href="#" data-row-act="edit">修改</a>
-            <a href="#" data-row-act="del" class="danger">删除</a>
           </td>
         </tr>
         <tr>
@@ -97,7 +95,6 @@
           <td>刘助教</td><td>2026-03-20 09:18</td>
           <td class="row-actions">
             <a href="#" data-row-act="edit">修改</a>
-            <a href="#" data-row-act="del" class="danger">删除</a>
           </td>
         </tr>
         <tr>
@@ -109,7 +106,6 @@
           <td>王助教</td><td>2026-03-18 16:00</td>
           <td class="row-actions">
             <a href="#" data-row-act="edit">修改</a>
-            <a href="#" data-row-act="del" class="danger">删除</a>
           </td>
         </tr>
         <tr>
@@ -121,7 +117,6 @@
           <td>陈奕均</td><td>2026-03-15 11:30</td>
           <td class="row-actions">
             <a href="#" data-row-act="edit">修改</a>
-            <a href="#" data-row-act="del" class="danger">删除</a>
           </td>
         </tr>
         <tr>
@@ -133,7 +128,6 @@
           <td>陈奕均</td><td>2026-03-10 14:22</td>
           <td class="row-actions">
             <a href="#" data-row-act="edit">修改</a>
-            <a href="#" data-row-act="del" class="danger">删除</a>
           </td>
         </tr>
         <tr>
@@ -145,7 +139,6 @@
           <td>阮荣均</td><td>2026-03-08 10:00</td>
           <td class="row-actions">
             <a href="#" data-row-act="edit">修改</a>
-            <a href="#" data-row-act="del" class="danger">删除</a>
           </td>
         </tr>
         <tr>
@@ -157,7 +150,6 @@
           <td>赵老师</td><td>2026-03-05 09:00</td>
           <td class="row-actions">
             <a href="#" data-row-act="edit">修改</a>
-            <a href="#" data-row-act="del" class="danger">删除</a>
           </td>
         </tr>
       </tbody>
@@ -216,29 +208,6 @@
   </div>
 </div>
 
-<!-- 列展示抽屉 -->
-<div class="proto-drawer" id="drawer-col" style="width:340px">
-  <div class="proto-drawer-hd">
-    <h3>列展示</h3>
-    <button class="btn btn-sm btn-ghost" data-close>×</button>
-  </div>
-  <div class="proto-drawer-bd">
-    <div id="col-list">
-      <label><input type="checkbox" checked> 渠道编码</label>
-      <label><input type="checkbox" checked> 渠道名称</label>
-      <label><input type="checkbox" checked> 渠道类型</label>
-      <label><input type="checkbox" checked> 排序号</label>
-      <label><input type="checkbox" checked> 更新人</label>
-      <label><input type="checkbox" checked> 更新时间</label>
-      <label><input type="checkbox" checked> 状态</label>
-    </div>
-  </div>
-  <div class="proto-drawer-ft">
-    <button class="btn" data-close>取消</button>
-    <button class="btn btn-primary" id="col-apply">应用</button>
-  </div>
-</div>
-
 <style>
 .tag { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 12px; }
 .tag-blue { background: #e8f3ff; color: #165dff; }
@@ -252,7 +221,7 @@
 </style>
 
 <script src="../assets/js/proto.js"></script>
-<script src="../assets/js/ops-shell.js?v=28"></script>
+<script src="../assets/js/ops-shell.js?v=29"></script>
 <script>
 (function () {
   // ===== Mask / modal =====
@@ -328,8 +297,6 @@
     ["f-type","f-status"].forEach(function (id) { document.getElementById(id).value = ""; });
     Proto.toast("已重置");
   });
-  document.getElementById("btn-col").addEventListener("click", function () { open(document.getElementById("drawer-col")); });
-  document.getElementById("col-apply").addEventListener("click", function () { closeAll(); Proto.toast("列展示已应用（原型）"); });
   document.getElementById("btn-next").addEventListener("click", function () {
     var inp = document.getElementById("pg-input");
     inp.value = parseInt(inp.value || 1) + 1;

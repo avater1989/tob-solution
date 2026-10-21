@@ -3,17 +3,17 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>支付流水 · 运营后台</title>
+<title>租户支付流水 · 运营后台</title>
 <link rel="stylesheet" href="../assets/css/proto.css?v=17" />
 </head>
-<body class="admin-body" data-module="trade" data-nav="pay-flows" data-title="支付流水" data-crumb="运营后台 / 交易与结算 / 支付流水">
+<body class="admin-body" data-module="trade" data-nav="pay-flows" data-title="租户支付流水" data-crumb="运营后台 / 交易与结算 / 租户支付流水">
 <div id="header-actions">
   <button class="btn" id="btn-export">导出流水</button>
 </div>
 <div id="page-content" style="display:none">
 
   <div class="alert alert-info" style="margin-bottom:12px">
-    <span>平台视角全量支付流水：与商家管理后台「支付流水」同源，额外带 <b>租户</b> 列，用于跨租户核查。按订单「支付时间」逐笔记录收入 / 支出，支持与<b>通联支付「资金账单」</b>跨平台对账。</span>
+    <span>平台视角全量<b>租户支付流水</b>：与商家管理后台「支付流水」同源，额外带 <b>租户</b> 列，用于跨租户核查。按订单「支付时间」逐笔记录收入 / 支出，支持与<b>通联支付「资金账单」</b>跨平台对账。</span>
   </div>
 
   <!-- 顶部统计 -->
@@ -45,9 +45,9 @@
     </div>
   </div></div>
 
-  <!-- 支付流水明细 -->
+  <!-- 租户支付流水明细 -->
   <div class="card" id="panel-txn">
-    <div class="card-hd"><h2>支付流水明细</h2><span class="muted" style="font-size:12px">按订单「支付时间」逐笔记录收入 / 支出 · 含租户</span></div>
+    <div class="card-hd"><h2>租户支付流水明细</h2><span class="muted" style="font-size:12px">按订单「支付时间」逐笔记录收入 / 支出 · 含租户</span></div>
     <div class="card-bd" style="padding:0">
     <table class="data">
       <thead>
@@ -69,13 +69,13 @@
   <!-- 口径说明 -->
   <div class="card" style="margin-top:16px"><div class="card-bd">
     <p class="muted" style="font-size:12px;line-height:1.9">
-      <b>口径说明：</b>支付流水按订单「支付时间」逐笔记录收入 / 支出，平台侧为全租户并集，租户列标识归属；支持与<b>通联支付「资金账单」</b>跨平台对账。
+      <b>口径说明：</b>租户支付流水按订单「支付时间」逐笔记录收入 / 支出，平台侧为全租户并集，租户列标识归属；支持与<b>通联支付「资金账单」</b>跨平台对账。
       平台费率收入（佣金 / 服务费）见「服务费台账」；分账与结算规则由平台统一配置（运营后台 · 结算规则配置）；数据同步可能存在约 3 秒误差，属正常现象。
     </p>
   </div></div>
 
   <div class="toolbar" style="margin-top:8px">
-    <span class="muted">共 <b>12,486</b> 条支付流水</span>
+    <span class="muted">共 <b>12,486</b> 条租户支付流水</span>
     <div class="spacer"></div>
     <select><option>10条/页</option><option>20条/页</option></select>
     <button class="btn btn-sm" disabled>上一页</button><button class="btn btn-sm">下一页</button>
@@ -88,12 +88,78 @@
 </style>
 
 <script src="../assets/js/proto.js"></script>
-<script src="../assets/js/ops-shell.js?v=28"></script>
+<script src="../assets/js/ops-shell.js?v=29"></script>
 <script>
 (function () {
   document.getElementById("btn-query").addEventListener("click", function(){ Proto.toast("已筛选（原型）"); });
-  document.getElementById("btn-reset").addEventListener("click", function(){ Proto.toast("已重置（原型）"); });
-  document.getElementById("btn-export").addEventListener("click", function(){ Proto.toast("已导出支付流水（原型）"); });
+  document.getElementById("btn-reset").addEventListener("click", function(){
+    ["f-tenant","f-account","f-type"].forEach(function(id){ document.getElementById(id).value = ""; });
+    ["f-no","f-time1","f-time2"].forEach(function(id){ document.getElementById(id).value = ""; });
+    Proto.toast("已重置（原型）");
+  });
+
+  /* ===== 导出流水（2026-10-13 评审标注）=====
+   * 按当前筛选条件过滤列表行，并以列表表头字段导出 CSV（Excel / WPS 可直接打开）。
+   */
+  function v(id) { return (document.getElementById(id).value || "").trim(); }
+
+  function rowMatches(tr) {
+    var tds = tr.querySelectorAll("td");
+    if (!tds.length) return false;
+    var time = tds[0].textContent.trim();            // 交易时间
+    var no = tds[1].textContent.trim();              // 交易单号
+    var tenant = tds[2].textContent.trim();          // 租户
+    var orderNo = tds[3].textContent.trim();         // 关联订单
+    var type = tds[4].textContent.trim();            // 收支类型
+    var account = tds[7].textContent.trim();         // 账户
+
+    if (v("f-tenant") && tenant !== v("f-tenant")) return false;
+    if (v("f-account") && account !== v("f-account")) return false;
+    if (v("f-type") && type !== v("f-type")) return false;
+    if (v("f-no")) {
+      var kw = v("f-no").toLowerCase();
+      if (no.toLowerCase().indexOf(kw) < 0 && orderNo.toLowerCase().indexOf(kw) < 0) return false;
+    }
+    var day = time.slice(0, 10);
+    if (v("f-time1") && day < v("f-time1").slice(0, 10)) return false;
+    if (v("f-time2") && day > v("f-time2").slice(0, 10)) return false;
+    return true;
+  }
+
+  function csvCell(s) {
+    s = String(s == null ? "" : s).replace(/\s+/g, " ").trim();
+    return /[",\n]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s;
+  }
+
+  function exportCsv() {
+    var table = document.querySelector("#panel-txn table.data");
+    if (!table) { Proto.toast("未找到流水列表"); return; }
+    var head = [].map.call(table.querySelectorAll("thead th"), function (th) { return th.textContent.trim(); });
+    var rows = [].filter.call(table.querySelectorAll("tbody tr"), rowMatches);
+
+    if (!rows.length) { Proto.toast("当前筛选条件下无可导出的流水"); return; }
+
+    var lines = [head.map(csvCell).join(",")];
+    rows.forEach(function (tr) {
+      var cells = [].map.call(tr.querySelectorAll("td"), function (td) { return td.textContent.trim(); });
+      lines.push(cells.map(csvCell).join(","));
+    });
+
+    /* BOM 头保证 Excel 打开中文不乱码 */
+    var blob = new Blob(["﻿" + lines.join("\r\n")], { type: "text/csv;charset=utf-8;" });
+    var a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    var stamp = v("f-time1") ? v("f-time1").slice(0, 10).replace(/-/g, "") : "";
+    a.download = "租户支付流水" + (stamp ? "_" + stamp : "") + ".csv";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(function () { URL.revokeObjectURL(a.href); }, 1000);
+
+    Proto.toast("已按当前筛选导出 " + rows.length + " 条流水（" + head.length + " 个字段，原型）");
+  }
+
+  document.getElementById("btn-export").addEventListener("click", exportCsv);
 })();
 </script>
 </body>

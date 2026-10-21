@@ -7,71 +7,119 @@
 <link rel="stylesheet" href="../assets/css/proto.css?v=17" />
 </head>
 <body class="admin-body" data-module="sys" data-nav="message-push" data-title="消息推送" data-crumb="系统管理 / 消息推送">
-<div id="header-actions">
-  <select id="f-scene" class="btn" style="padding:6px 10px">
-    <option value="">全部场景</option><option>支付成功</option><option>权益开通</option><option>开课提醒</option>
-    <option>直播开播提醒</option><option>领课兑换成功</option><option>会员到期提醒</option><option>退款结果</option>
-  </select>
-  <select id="f-ch" class="btn" style="padding:6px 10px">
-    <option value="">全部渠道</option><option>小程序服务通知</option><option>短信</option>
-  </select>
-</div>
 <div id="page-content" style="display:none">
 
   <div class="alert alert-info" style="margin-bottom:12px;padding:10px 12px;border-radius:8px;background:#e8f3ff;border:1px solid #a0cfff;color:#165dff;font-size:13px">
     <b>消息模板由平台统一配置</b>（短信签名与模板需经短信平台与运营商审核），商家端<b>仅支持查看发送记录</b>，不可修改渠道与模板。如需调整通知文案或渠道，请联系平台运营。
   </div>
 
-  <!-- 发送概览 -->
-  <div class="grid-4" style="margin-bottom:16px">
-    <div class="stat"><div class="label">近 7 日发送</div><div class="value">1,286</div><div class="hint">小程序 892 · 短信 394</div></div>
-    <div class="stat"><div class="label">送达</div><div class="value">1,241</div><div class="hint">送达率 96.5%</div></div>
-    <div class="stat"><div class="label">未送达</div><div class="value">45</div><div class="hint">含用户未订阅 32 · 发送失败 13</div></div>
-    <div class="stat"><div class="label">启用场景</div><div class="value">6 / 8</div><div class="hint">由平台统一配置</div></div>
+  <!-- 发送概览（随筛选联动） -->
+  <div class="grid-3" style="margin-bottom:12px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px">
+    <div class="stat"><div class="label">发送</div><div class="value" id="st-sent">0</div><div class="hint" id="st-sent-hint">小程序 0 · 短信 0</div></div>
+    <div class="stat"><div class="label">送达</div><div class="value" id="st-ok">0</div><div class="hint" id="st-ok-hint">送达率 —</div></div>
+    <div class="stat"><div class="label">未送达</div><div class="value" id="st-fail">0</div><div class="hint" id="st-fail-hint">含用户未订阅 · 发送失败</div></div>
   </div>
 
+  <!-- 筛选（位于标题与统计下方） -->
+  <div class="card" style="margin-bottom:8px"><div class="card-bd">
+    <div class="form-grid" style="grid-template-columns:repeat(5,minmax(0,1fr));gap:8px 12px">
+      <select id="f-scene">
+        <option value="">全部场景</option><option>支付成功</option><option>权益开通</option><option>开课提醒</option>
+        <option>直播开播提醒</option><option>领课兑换成功</option><option>会员到期提醒</option><option>退款结果</option>
+      </select>
+      <select id="f-ch">
+        <option value="">全部渠道</option><option>小程序服务通知</option><option>短信</option>
+      </select>
+      <input id="f-time1" type="date" title="开始日期（最早可选近 30 天）" />
+      <input id="f-time2" type="date" title="结束日期（最晚今天）" />
+      <div style="display:flex;gap:8px">
+        <button class="btn btn-primary" id="btn-query">查询</button>
+        <button class="btn" id="btn-reset">重置</button>
+      </div>
+    </div>
+    <p class="muted" style="margin:8px 0 0;font-size:12px">时间区间最多可查<b>近 30 天</b>；更早记录请联系平台运营导出。</p>
+  </div></div>
+
   <!-- 发送记录 -->
-  <div class="card"><div class="card-hd"><h2>发送记录</h2><span class="muted" style="font-size:12px">近 7 日 · 只读</span></div>
+  <div class="card"><div class="card-hd"><h2>发送记录</h2><span class="muted" style="font-size:12px">只读 · 随筛选联动</span></div>
     <div class="card-bd" style="padding:0">
       <table class="data">
         <thead><tr><th>时间</th><th>场景</th><th>接收人</th><th>渠道</th><th>结果</th></tr></thead>
         <tbody id="rec-tbody">
-          <tr data-scene="支付成功" data-ch="小程序服务通知"><td>2026-09-07 14:23</td><td>支付成功</td><td>李***（U0001）</td><td>小程序服务通知</td><td><span class="badge badge-success">送达</span></td></tr>
-          <tr data-scene="权益开通" data-ch="小程序服务通知"><td>2026-09-07 14:23</td><td>权益开通</td><td>李***（U0001）</td><td>小程序服务通知</td><td><span class="badge badge-success">送达</span></td></tr>
-          <tr data-scene="开课提醒" data-ch="短信"><td>2026-09-07 09:20</td><td>开课提醒</td><td>张***（U0002）</td><td>短信</td><td><span class="badge badge-success">送达</span></td></tr>
-          <tr data-scene="领课兑换成功" data-ch="小程序服务通知"><td>2026-09-06 20:31</td><td>领课兑换成功</td><td>刘***（U0004）</td><td>小程序服务通知</td><td><span class="badge badge-warn">用户未订阅</span></td></tr>
-          <tr data-scene="退款结果" data-ch="短信"><td>2026-09-06 20:19</td><td>退款结果</td><td>陈***（U0010）</td><td>短信</td><td><span class="badge badge-success">送达</span></td></tr>
-          <tr data-scene="直播开播提醒" data-ch="小程序服务通知"><td>2026-09-06 19:30</td><td>直播开播提醒</td><td>王***（U0007）</td><td>小程序服务通知</td><td><span class="badge badge-success">送达</span></td></tr>
-          <tr data-scene="会员到期提醒" data-ch="短信"><td>2026-09-06 10:00</td><td>会员到期提醒</td><td>赵***（U0012）</td><td>短信</td><td><span class="badge badge-danger">发送失败</span></td></tr>
+          <tr data-scene="支付成功" data-ch="小程序服务通知" data-date="2026-10-21" data-n="412"><td>2026-10-21 14:23</td><td>支付成功</td><td>李***（U0001）</td><td>小程序服务通知</td><td><span class="badge badge-success">送达</span></td></tr>
+          <tr data-scene="权益开通" data-ch="小程序服务通知" data-date="2026-10-21" data-n="398"><td>2026-10-21 14:23</td><td>权益开通</td><td>李***（U0001）</td><td>小程序服务通知</td><td><span class="badge badge-success">送达</span></td></tr>
+          <tr data-scene="开课提醒" data-ch="短信" data-date="2026-10-20" data-n="186"><td>2026-10-20 09:20</td><td>开课提醒</td><td>张***（U0002）</td><td>短信</td><td><span class="badge badge-success">送达</span></td></tr>
+          <tr data-scene="领课兑换成功" data-ch="小程序服务通知" data-date="2026-10-19" data-n="124"><td>2026-10-19 20:31</td><td>领课兑换成功</td><td>刘***（U0004）</td><td>小程序服务通知</td><td><span class="badge badge-warn">用户未订阅</span></td></tr>
+          <tr data-scene="退款结果" data-ch="短信" data-date="2026-10-18" data-n="68"><td>2026-10-18 20:19</td><td>退款结果</td><td>陈***（U0010）</td><td>短信</td><td><span class="badge badge-success">送达</span></td></tr>
+          <tr data-scene="直播开播提醒" data-ch="小程序服务通知" data-date="2026-10-16" data-n="72"><td>2026-10-16 19:30</td><td>直播开播提醒</td><td>王***（U0007）</td><td>小程序服务通知</td><td><span class="badge badge-success">送达</span></td></tr>
+          <tr data-scene="会员到期提醒" data-ch="短信" data-date="2026-10-12" data-n="26"><td>2026-10-12 10:00</td><td>会员到期提醒</td><td>赵***（U0012）</td><td>短信</td><td><span class="badge badge-danger">发送失败</span></td></tr>
         </tbody>
       </table>
       <p class="muted" id="rec-empty" style="display:none;padding:18px 14px;font-size:13px">当前筛选下暂无发送记录</p>
     </div>
   </div>
-  <p class="muted" style="margin-top:10px;font-size:12px">只展示近 7 日记录；更早记录请联系平台运营导出。</p>
 </div>
 
 <script src="../assets/js/proto.js"></script>
-<script src="../assets/js/admin-shell.js?v=31"></script>
+<script src="../assets/js/admin-shell.js?v=33"></script>
 <script>
 (function () {
   var scene = document.getElementById("f-scene");
   var ch = document.getElementById("f-ch");
+  var t1 = document.getElementById("f-time1");
+  var t2 = document.getElementById("f-time2");
   var rows = Array.prototype.slice.call(document.querySelectorAll("#rec-tbody tr"));
 
+  function fmt(d) { return d.toISOString().slice(0, 10); }
+  var today = new Date();
+  var minDate = new Date(today.getTime() - 29 * 86400000); // 含今天共 30 天
+  t1.min = fmt(minDate); t1.max = fmt(today);
+  t2.min = fmt(minDate); t2.max = fmt(today);
+  t1.value = fmt(minDate);
+  t2.value = fmt(today);
+
   function apply() {
-    var visible = 0;
+    var visible = 0, mp = 0, sms = 0, okN = 0, failN = 0;
     rows.forEach(function (tr) {
+      var d = tr.getAttribute("data-date") || "";
       var ok = (!scene.value || tr.getAttribute("data-scene") === scene.value) &&
-        (!ch.value || tr.getAttribute("data-ch") === ch.value);
+        (!ch.value || tr.getAttribute("data-ch") === ch.value) &&
+        (!t1.value || d >= t1.value) &&
+        (!t2.value || d <= t2.value);
       tr.style.display = ok ? "" : "none";
-      if (ok) visible++;
+      if (!ok) return;
+      visible++;
+      var n = parseInt(tr.getAttribute("data-n"), 10) || 0;
+      var isSms = tr.getAttribute("data-ch") === "短信";
+      if (isSms) sms += n; else mp += n;
+      var badge = tr.querySelector(".badge");
+      var cls = badge ? badge.className : "";
+      if (cls.indexOf("badge-success") >= 0) okN += n; else failN += n;
     });
+
+    var total = mp + sms;
+    var rate = total ? ((okN / total) * 100).toFixed(1) + "%" : "—";
+    document.getElementById("st-sent").textContent = total.toLocaleString();
+    document.getElementById("st-sent-hint").textContent = "小程序 " + mp.toLocaleString() + " · 短信 " + sms.toLocaleString();
+    document.getElementById("st-ok").textContent = okN.toLocaleString();
+    document.getElementById("st-ok-hint").textContent = "送达率 " + rate;
+    document.getElementById("st-fail").textContent = failN.toLocaleString();
     document.getElementById("rec-empty").style.display = visible ? "none" : "block";
   }
 
-  scene.addEventListener("change", function () { apply(); Proto.toast("已按场景筛选（原型）"); });
-  ch.addEventListener("change", function () { apply(); Proto.toast("已按渠道筛选（原型）"); });
+  document.getElementById("btn-query").addEventListener("click", function () {
+    if (t1.value && t2.value && t1.value > t2.value) { Proto.toast("开始日期不能晚于结束日期"); return; }
+    apply();
+    Proto.toast("已按筛选条件查询");
+  });
+  document.getElementById("btn-reset").addEventListener("click", function () {
+    scene.value = ""; ch.value = "";
+    t1.value = fmt(minDate); t2.value = fmt(today);
+    apply();
+    Proto.toast("已重置");
+  });
+  [scene, ch, t1, t2].forEach(function (el) { el.addEventListener("change", apply); });
+
   apply();
 })();
 </script>

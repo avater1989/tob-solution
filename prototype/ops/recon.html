@@ -9,23 +9,25 @@
 <body class="admin-body" data-module="trade" data-nav="recon" data-title="对账管理" data-crumb="运营后台 / 交易与结算 / 对账管理">
 <div id="header-actions">
   <button class="btn" id="btn-export">导出对账单</button>
-  <button class="btn" id="btn-notice">重发确认通知</button>
-  <button class="btn btn-primary" id="btn-run">发起本期对账</button>
+  <button class="btn" id="btn-notice" data-phase2-only>重发确认通知</button>
+  <button class="btn btn-primary" id="btn-run">发起对账</button>
 </div>
 <div id="page-content" style="display:none">
 
-  <!-- 统计 -->
-  <div class="grid-4" style="margin-bottom:16px">
-    <div class="stat"><div class="label">本期账期</div><div class="value" style="font-size:18px">09-04 ~ 09-10</div><div class="hint">T+1 自动对账</div></div>
+  <!-- 统计（一期不展示，均为二期） -->
+  <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-bottom:16px" data-phase2-only>
     <div class="stat"><div class="label">待商家确认</div><div class="value">5</div><div class="hint">跨 5 个租户</div></div>
     <div class="stat"><div class="label">未平差异</div><div class="value">3</div><div class="hint">金额差 2 / 单边账 1</div></div>
-    <div class="stat"><div class="label">本期平台交易额</div><div class="value">¥286,430.20</div><div class="hint">2,146 笔合计</div></div>
   </div>
 
   <!-- Tab -->
   <div class="tabs" id="rc-tabs">
     <a class="active" href="#" data-tab="bills">对账单</a>
     <a href="#" data-tab="diffs">差异处理</a>
+  </div>
+
+  <div class="alert alert-info" style="margin-bottom:8px;display:block">
+    对账分<b>自动对账</b>与<b>手动对账</b>两种。自动对账在<b>每个租户各自的结算账期</b>结束时生成对账单；手动对账用于补跑或指定范围补对，需选择时间区间与租户。
   </div>
 
   <!-- 对账单 -->
@@ -37,7 +39,7 @@
           <option value="">全部租户</option>
           <option>星启家庭教育</option><option>晨光少儿成长</option><option>青藤家长学堂</option><option>慧心教育</option><option>乐学伴家庭</option>
         </select>
-        <select id="f-channel"><option value="">账单渠道</option><option>通联支付</option><option>视频号小店</option></select>
+        <select id="f-channel"><option value="">账单渠道</option><option>通联支付</option><option>微信小店</option></select>
         <select id="f-status"><option value="">对账状态</option><option>待对账</option><option>已对平</option><option>有差异</option><option>待商家确认</option><option>已确认</option><option>商家已申诉</option></select>
         <button class="btn btn-primary" id="btn-query">筛选</button>
       </div>
@@ -50,6 +52,7 @@
             <th>对账单号</th>
             <th>租户</th>
             <th>账期</th>
+            <th>对账方式</th>
             <th>渠道</th>
             <th>平台订单数</th>
             <th>渠道笔数</th>
@@ -67,20 +70,30 @@
             <td><a href="recon-detail.html" class="link-mono">PRC20260910001</a></td>
             <td><a href="tenant-config.html?id=10001">星启家庭教育</a></td>
             <td>09-04 ~ 09-10</td>
+            <td>自动</td>
             <td>通联支付</td>
-            <td>86</td><td>86</td>
-            <td><b>¥8,432.20</b></td><td>¥308.80</td><td>¥0.00</td><td><b>¥8,123.40</b></td>
+            <td>86</td>
+            <td>86</td>
+            <td><b>¥8,432.20</b></td>
+            <td>¥308.80</td>
+            <td>¥0.00</td>
+            <td><b>¥8,123.40</b></td>
             <td><span class="badge badge-warn">2</span></td>
             <td><span class="badge badge-warn">有差异</span></td>
-            <td class="row-actions"><a href="#" data-tab-jump="diffs">差异处理</a><a href="recon-detail.html">明细</a></td>
+            <td class="row-actions"><a href="recon-diff-detail.html">差异处理</a><a href="recon-detail.html">明细</a></td>
           </tr>
           <tr>
             <td><a href="recon-detail.html" class="link-mono">PRC20260910002</a></td>
             <td><a href="tenant-config.html?id=10002">晨光少儿成长</a></td>
-            <td>09-04 ~ 09-10</td>
+            <td>09-10</td>
+            <td>自动</td>
             <td>通联支付</td>
-            <td>128</td><td>128</td>
-            <td><b>¥12,648.50</b></td><td>¥238.60</td><td>¥0.00</td><td><b>¥12,409.90</b></td>
+            <td>128</td>
+            <td>128</td>
+            <td><b>¥12,648.50</b></td>
+            <td>¥238.60</td>
+            <td>¥0.00</td>
+            <td><b>¥12,409.90</b></td>
             <td><span class="badge badge-success">0</span></td>
             <td><span class="badge badge-warn">待商家确认</span></td>
             <td class="row-actions"><a href="recon-detail.html">明细</a><a href="#" data-row-act="notice">催确认</a></td>
@@ -89,9 +102,14 @@
             <td><a href="recon-detail.html" class="link-mono">PRC20260910003</a></td>
             <td><a href="tenant-config.html?id=10005">青藤家长学堂</a></td>
             <td>09-04 ~ 09-10</td>
-            <td>视频号小店</td>
-            <td>31</td><td>31</td>
-            <td><b>¥3,069.00</b></td><td>¥0.00</td><td>¥0.00</td><td><b>¥3,069.00</b></td>
+            <td>自动</td>
+            <td>微信小店</td>
+            <td>31</td>
+            <td>31</td>
+            <td><b>¥3,069.00</b></td>
+            <td>¥0.00</td>
+            <td>¥0.00</td>
+            <td><b>¥3,069.00</b></td>
             <td><span class="badge badge-success">0</span></td>
             <td><span class="badge badge-success">已确认</span></td>
             <td class="row-actions"><a href="recon-detail.html">明细</a></td>
@@ -99,10 +117,15 @@
           <tr>
             <td><a href="recon-detail.html" class="link-mono">PRC20260910004</a></td>
             <td><a href="tenant-config.html?id=10004">慧心教育</a></td>
-            <td>09-04 ~ 09-10</td>
+            <td>08-27 ~ 09-10</td>
+            <td>自动</td>
             <td>通联支付</td>
-            <td>42</td><td>42</td>
-            <td><b>¥4,135.30</b></td><td>¥9.90</td><td>¥0.00</td><td><b>¥4,125.40</b></td>
+            <td>42</td>
+            <td>42</td>
+            <td><b>¥4,135.30</b></td>
+            <td>¥9.90</td>
+            <td>¥0.00</td>
+            <td><b>¥4,125.40</b></td>
             <td><span class="badge badge-success">0</span></td>
             <td><span class="badge badge-warn">待商家确认</span></td>
             <td class="row-actions"><a href="recon-detail.html">明细</a><a href="#" data-row-act="notice">催确认</a></td>
@@ -110,10 +133,15 @@
           <tr>
             <td><a href="recon-detail.html" class="link-mono">PRC20260910005</a></td>
             <td><a href="tenant-config.html?id=10006">乐学伴家庭</a></td>
-            <td>09-04 ~ 09-10</td>
+            <td>09-10</td>
+            <td>手动（补跑）</td>
             <td>通联支付</td>
-            <td>18</td><td>18</td>
-            <td><b>¥1,782.00</b></td><td>¥0.00</td><td>¥0.00</td><td><b>¥1,782.00</b></td>
+            <td>18</td>
+            <td>18</td>
+            <td><b>¥1,782.00</b></td>
+            <td>¥0.00</td>
+            <td>¥0.00</td>
+            <td><b>¥1,782.00</b></td>
             <td><span class="badge badge-success">0</span></td>
             <td><span class="badge badge-danger">商家已申诉</span></td>
             <td class="row-actions"><a href="recon-detail.html">明细</a><a href="#" data-row-act="review">复核申诉</a></td>
@@ -122,10 +150,17 @@
             <td><span class="link-mono muted">PRC20260911001</span></td>
             <td>星启家庭教育</td>
             <td>09-11</td>
+            <td>自动</td>
             <td>通联支付</td>
-            <td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td>
+            <td>—</td>
+            <td>—</td>
+            <td>—</td>
+            <td>—</td>
+            <td>—</td>
+            <td>—</td>
+            <td>—</td>
             <td><span class="badge">待对账</span></td>
-            <td class="row-actions"><span class="muted" style="font-size:12px">次日 02:00 生成</span></td>
+            <td class="row-actions"><span class="muted" style="font-size:12px">账期结束后次日 02:00 自动生成</span></td>
           </tr>
         </tbody>
       </table>
@@ -200,17 +235,46 @@
       </div>
     </div>
   </div>
+</div>
 
-  <!-- 规则说明 -->
-  <div class="card" style="margin-top:8px"><div class="card-hd"><h2>对账规则说明</h2></div>
-    <div class="card-bd">
-      <ul class="muted" style="font-size:13px;line-height:1.9;padding-left:16px;margin:0">
-        <li>每日 T+1 02:00 自动拉取通联支付 / 视频号小店账单，与平台订单按渠道交易单号逐笔核对；</li>
-        <li>差异类型：金额不一致、平台/渠道单边账、退款状态不一致、重复支付、跨期差异；</li>
-        <li>金额与笔数全部一致 → 「已对平」并进入待商家确认；存在差异 → 处理完差异后重算；</li>
-        <li>商家确认后对账单进入结算池；商家申诉将暂停该账期结算，待平台复核。</li>
-      </ul>
+<div class="proto-mask" id="mask"></div>
+<div class="proto-modal" id="modal-run" style="width:560px">
+  <div class="proto-modal-hd"><h3 style="font-size:16px;font-weight:600">发起对账</h3><button class="btn btn-sm btn-ghost" data-close>×</button></div>
+  <div class="proto-modal-bd">
+    <div class="alert alert-info" style="display:block;margin-bottom:12px;padding:8px 12px;font-size:12px">
+      日常对账由系统按<b>各租户自己的结算账期</b>自动生成，无需手工发起；本入口用于<b>补跑</b>或指定范围内补对。
     </div>
+    <div class="field"><label>对账方式</label>
+      <div style="display:flex;gap:18px;align-items:center;font-size:13px">
+        <label style="font-weight:400;white-space:nowrap"><input type="radio" name="run-mode" value="auto" disabled> 自动（按租户账期）</label>
+        <label style="font-weight:400;white-space:nowrap"><input type="radio" name="run-mode" value="manual" checked> 手动</label>
+      </div>
+    </div>
+    <div class="field"><label>时间区间 *</label>
+      <div style="display:flex;gap:8px;align-items:center">
+        <input type="date" id="run-start" value="2026-09-01" style="flex:1" />
+        <span class="muted">至</span>
+        <input type="date" id="run-end" value="2026-09-10" style="flex:1" />
+      </div>
+      <p class="muted" style="margin:6px 0 0;font-size:12px">区间最长 31 天；与已生成对账单重叠的日期自动跳过。</p>
+    </div>
+    <div class="field"><label>租户（可多选）*</label>
+      <div id="run-tenants" style="border:1px solid var(--color-border);border-radius:6px;padding:8px 10px;display:flex;flex-wrap:wrap;gap:8px 16px">
+        <label style="font-weight:400;white-space:nowrap"><input type="checkbox" checked /> 星启家庭教育</label>
+        <label style="font-weight:400;white-space:nowrap"><input type="checkbox" checked /> 晨光少儿成长</label>
+        <label style="font-weight:400;white-space:nowrap"><input type="checkbox" /> 青藤家长学堂</label>
+        <label style="font-weight:400;white-space:nowrap"><input type="checkbox" /> 慧心教育</label>
+        <label style="font-weight:400;white-space:nowrap"><input type="checkbox" /> 乐学伴家庭</label>
+      </div>
+      <p class="muted" id="run-tenants-tip" style="margin:6px 0 0;font-size:12px">已选 2 个租户；至少选择 1 个。</p>
+    </div>
+    <div class="field"><label>对账范围</label>
+      <select style="width:100%"><option>全部渠道（通联支付 / 微信小店）</option><option>仅通联支付</option><option>仅微信小店</option></select>
+    </div>
+  </div>
+  <div class="proto-modal-ft">
+    <button class="btn" data-close>取消</button>
+    <button class="btn btn-primary" id="run-submit">开始对账</button>
   </div>
 </div>
 
@@ -222,7 +286,7 @@
 </style>
 
 <script src="../assets/js/proto.js"></script>
-<script src="../assets/js/ops-shell.js?v=28"></script>
+<script src="../assets/js/ops-shell.js?v=29"></script>
 <script>
 (function () {
   var tabs = document.querySelectorAll("#rc-tabs a");
@@ -235,9 +299,6 @@
   }
   tabs.forEach(function (a) {
     a.addEventListener("click", function (e) { e.preventDefault(); switchTab(a.getAttribute("data-tab")); });
-  });
-  document.querySelectorAll("[data-tab-jump]").forEach(function (a) {
-    a.addEventListener("click", function (e) { e.preventDefault(); switchTab(a.getAttribute("data-tab-jump")); });
   });
 
   document.querySelectorAll("[data-row-act]").forEach(function (a) {
@@ -252,7 +313,31 @@
     });
   });
 
-  document.getElementById("btn-run").addEventListener("click", function () { Proto.toast("已发起本期对账（原型）"); });
+  var mask = document.getElementById("mask");
+  function closeAll() {
+    mask.classList.remove("open");
+    document.querySelectorAll(".proto-modal").forEach(function (m) { m.classList.remove("open"); });
+  }
+  function open(node) { mask.classList.add("open"); node.classList.add("open"); }
+  mask.addEventListener("click", closeAll);
+  document.querySelectorAll("[data-close]").forEach(function (b) { b.addEventListener("click", closeAll); });
+
+  var tenantsBox = document.getElementById("run-tenants");
+  function syncTenants() {
+    var n = tenantsBox.querySelectorAll("input:checked").length;
+    document.getElementById("run-tenants-tip").textContent = n
+      ? "已选 " + n + " 个租户。"
+      : "未选择租户，无法发起对账。";
+  }
+  tenantsBox.addEventListener("change", syncTenants);
+
+  document.getElementById("btn-run").addEventListener("click", function () { open(document.getElementById("modal-run")); });
+  document.getElementById("run-submit").addEventListener("click", function () {
+    var n = tenantsBox.querySelectorAll("input:checked").length;
+    if (!n) { Proto.toast("请至少选择 1 个租户"); return; }
+    closeAll();
+    Proto.toast("已发起手动对账：" + n + " 个租户，区间 " + document.getElementById("run-start").value + " ~ " + document.getElementById("run-end").value + "（原型）");
+  });
   document.getElementById("btn-export").addEventListener("click", function () { Proto.toast("已导出对账单（原型）"); });
   document.getElementById("btn-notice").addEventListener("click", function () { Proto.toast("已批量重发确认通知（原型）"); });
   document.getElementById("btn-query").addEventListener("click", function () { Proto.toast("已筛选（原型）"); });
