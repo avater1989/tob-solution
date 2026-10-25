@@ -9,12 +9,11 @@
 <body class="admin-body" data-module="trade" data-nav="settlement" data-title="结算单" data-crumb="交易 / 资产管理 / 结算单">
 <div id="header-actions">
   <button class="btn" id="btn-export">导出结算单</button>
-  <button class="btn btn-primary" id="btn-apply">申请结算</button>
 </div>
 <div id="page-content" style="display:none">
 
   <!-- 顶部统计 -->
-  <div class="grid-4" style="margin-bottom:16px;grid-template-columns:repeat(3,1fr)">
+  <div class="grid-4" style="margin-bottom:16px;grid-template-columns:repeat(3,1fr)" data-phase2-only>
     <div class="stat"><div class="label">待确认结算额</div><div class="value">¥12,409.90</div><div class="hint">账期 03-25 ~ 03-31</div></div>
     <div class="stat"><div class="label">结算中</div><div class="value">¥0.00</div><div class="hint">无进行中打款</div></div>
     <div class="stat"><div class="label">累计已结算</div><div class="value">¥46,830.55</div><div class="hint">共 6 期</div></div>
@@ -160,7 +159,7 @@
 
     <h4 style="margin:16px 0 8px">结算金额构成</h4>
     <div class="settle-calc">
-      <div class="calc-row"><span>交易额（已对平）</span><b id="sd-gross">—</b></div>
+      <div class="calc-row"><span>交易额（对账完成）</span><b id="sd-gross">—</b></div>
       <div class="calc-row"><span>退款冲抵</span><b id="sd-refund" class="danger">—</b></div>
       <div class="calc-row"><span>平台服务费（0%）</span><b id="sd-fee" class="danger">—</b></div>
       <div class="calc-row total"><span>应结算金额</span><b id="sd-net">—</b></div>
@@ -269,7 +268,6 @@
   });
   document.getElementById("sd-export").addEventListener("click", function () { Proto.toast("已导出结算单（原型）"); });
   document.getElementById("btn-export").addEventListener("click", function () { Proto.toast("已导出结算单列表（原型）"); });
-  document.getElementById("btn-apply").addEventListener("click", function () { Proto.toast("已发起结算申请（原型）"); });
   document.getElementById("btn-query").addEventListener("click", function () { Proto.toast("已筛选（原型）"); });
 })();
 </script>

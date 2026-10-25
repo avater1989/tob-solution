@@ -11,7 +11,7 @@
 
 <div id="header-actions">
   <a class="btn" href="content-video.html">返回列表</a>
-  <button class="btn" id="btn-draft">保存草稿</button>
+  <button class="btn" id="btn-draft">保存</button>
   <button class="btn btn-primary" id="btn-save-chapters">保存并配置章节</button>
 </div>
 
@@ -99,7 +99,7 @@
 <script src="../assets/js/proto.js"></script>
 <script src="../assets/js/content-tags.js?v=3"></script>
 <script src="../assets/js/teachers-store.js?v=3"></script>
-<script src="../assets/js/course-store.js?v=2"></script>
+<script src="../assets/js/course-store.js?v=4"></script>
 <script src="../assets/js/admin-shell.js?v=33"></script>
 <script>
 var Store = window.CourseStore;
@@ -123,9 +123,7 @@ var locked = !Store.canEditContent(course);
 var lockEl = document.getElementById("edit-lock");
 if (locked) {
   lockEl.style.display = "block";
-  lockEl.textContent = course.source === "platform"
-    ? "平台下发内容，商家侧不可编辑。"
-    : (course.status === Store.STATUS.enabled ? "内容已上架，请先下架后再编辑。" : "审核中不可编辑。");
+  lockEl.textContent = "平台下发内容，商家侧不可编辑。";
   document.querySelectorAll("#page-content input, #page-content textarea, #page-content select, #page-content [contenteditable]").forEach(function (el) {
     el.disabled = true;
     if (el.isContentEditable) el.contentEditable = "false";
@@ -190,8 +188,8 @@ function collect() {
   course.shareTitle = document.getElementById("f-share-title").value.trim();
   course.shareDesc = document.getElementById("f-share-desc").value.trim();
   course.storeVisible = document.querySelector('input[name="store"]:checked').value === "1";
-  if (course.status !== Store.STATUS.enabled && course.status !== Store.STATUS.pending_audit) {
-    course.status = Store.STATUS.draft;
+  if (course.status !== Store.STATUS.enabled) {
+    course.status = Store.STATUS.pending;
   }
   return course;
 }
@@ -201,7 +199,7 @@ document.getElementById("btn-draft").addEventListener("click", function () {
   var c = collect();
   if (!c) return;
   Store.save(c);
-  Proto.toast("草稿已保存");
+  Proto.toast("已保存");
   history.replaceState(null, "", "content-video-edit.html?id=" + encodeURIComponent(c.id));
 });
 

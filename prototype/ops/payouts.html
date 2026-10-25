@@ -19,10 +19,9 @@
   </div>
 
   <!-- 统计 -->
-  <div class="grid-4" style="margin-bottom:16px">
+  <div class="grid-4" style="margin-bottom:16px" data-phase2-only>
     <div class="stat"><div class="label">待审核</div><div class="value">2</div><div class="hint">合计 ¥8,600.00</div></div>
     <div class="stat"><div class="label">今日已到账</div><div class="value">¥12,400.00</div><div class="hint">4 笔</div></div>
-    <div class="stat"><div class="label">风控拦截</div><div class="value">2</div><div class="hint">退款率超标 / 卡不一致</div></div>
     <div class="stat"><div class="label">平均审核时长</div><div class="value">3.4h</div><div class="hint">目标 ≤ 4h</div></div>
   </div>
 
@@ -51,7 +50,6 @@
           <th>提现金额</th>
           <th>可提现余额</th>
           <th>到账账户</th>
-          <th>风控标记</th>
           <th>状态</th>
           <th>申请时间</th>
           <th style="width:160px">操作</th>
@@ -59,65 +57,15 @@
       </thead>
       <tbody>
         <tr>
-          <td><a href="#" class="link-mono" data-row-act="detail">PWD20260910001</a></td>
-          <td>星启家庭教育</td>
-          <td>手动提现</td>
-          <td><b>¥6,000.00</b></td>
-          <td>¥6,000.00</td>
-          <td>招商银行 ****8842</td>
-          <td class="muted">—</td>
-          <td><span class="badge badge-warn">待审核</span></td>
-          <td>2026-09-10 09:20</td>
-          <td class="row-actions"><a href="#" data-row-act="approve">通过</a><a href="#" data-row-act="reject">驳回</a><a href="#" data-row-act="detail">详情</a></td>
-        </tr>
+          <td><a href="#" class="link-mono" data-row-act="detail">PWD20260910001</a></td><td>星启家庭教育</td><td>手动提现</td><td><b>¥6,000.00</b></td><td>¥6,000.00</td><td>招商银行 ****8842</td><td><span class="badge badge-warn">待审核</span></td><td>2026-09-10 09:20</td><td class="row-actions"><a href="#" data-row-act="approve">通过</a><a href="#" data-row-act="reject">驳回</a><a href="#" data-row-act="detail">详情</a></td></tr>
         <tr>
-          <td><a href="#" class="link-mono" data-row-act="detail">PWD20260910002</a></td>
-          <td>慧心教育</td>
-          <td>手动提现</td>
-          <td><b>¥2,600.00</b></td>
-          <td>¥2,600.00</td>
-          <td>工商银行 ****3321</td>
-          <td><span class="badge badge-danger">退款率超标</span></td>
-          <td><span class="badge badge-warn">待审核</span></td>
-          <td>2026-09-10 11:05</td>
-          <td class="row-actions"><a href="#" data-row-act="approve">通过</a><a href="#" data-row-act="reject">驳回</a><a href="#" data-row-act="detail">详情</a></td>
-        </tr>
+          <td><a href="#" class="link-mono" data-row-act="detail">PWD20260910002</a></td><td>慧心教育</td><td>手动提现</td><td><b>¥2,600.00</b></td><td>¥2,600.00</td><td>工商银行 ****3321</td><td><span class="badge badge-warn">待审核</span></td><td>2026-09-10 11:05</td><td class="row-actions"><a href="#" data-row-act="approve">通过</a><a href="#" data-row-act="reject">驳回</a><a href="#" data-row-act="detail">详情</a></td></tr>
         <tr>
-          <td><a href="#" class="link-mono" data-row-act="detail">PWD20260909001</a></td>
-          <td>晨光少儿成长</td>
-          <td>自动提现</td>
-          <td><b>¥5,200.00</b></td>
-          <td>¥5,200.00</td>
-          <td>招商银行 ****8888</td>
-          <td class="muted">—</td>
-          <td><span class="badge badge-success">已到账</span></td>
-          <td>2026-09-09 08:00</td>
-          <td class="row-actions"><a href="#" data-row-act="detail">详情</a></td>
-        </tr>
+          <td><a href="#" class="link-mono" data-row-act="detail">PWD20260909001</a></td><td>晨光少儿成长</td><td>自动提现</td><td><b>¥5,200.00</b></td><td>¥5,200.00</td><td>招商银行 ****8888</td><td><span class="badge badge-success">已到账</span></td><td>2026-09-09 08:00</td><td class="row-actions"><a href="#" data-row-act="detail">详情</a></td></tr>
         <tr>
-          <td><a href="#" class="link-mono" data-row-act="detail">PWD20260908002</a></td>
-          <td>乐学伴家庭</td>
-          <td>手动提现</td>
-          <td><b>¥2,000.00</b></td>
-          <td>¥2,400.00</td>
-          <td>建设银行 ****7710</td>
-          <td><span class="badge badge-danger">结算卡不一致</span></td>
-          <td><span class="badge badge-danger">已驳回</span></td>
-          <td>2026-09-08 14:20</td>
-          <td class="row-actions"><a href="#" data-row-act="detail">详情</a></td>
-        </tr>
+          <td><a href="#" class="link-mono" data-row-act="detail">PWD20260908002</a></td><td>乐学伴家庭</td><td>手动提现</td><td><b>¥2,000.00</b></td><td>¥2,400.00</td><td>建设银行 ****7710</td><td><span class="badge badge-danger">已驳回</span></td><td>2026-09-08 14:20</td><td class="row-actions"><a href="#" data-row-act="detail">详情</a></td></tr>
         <tr>
-          <td><a href="#" class="link-mono" data-row-act="detail">PWD20260908001</a></td>
-          <td>青藤家长学堂</td>
-          <td>自动提现</td>
-          <td><b>¥4,100.00</b></td>
-          <td>¥4,100.00</td>
-          <td>招商银行 ****5512</td>
-          <td class="muted">—</td>
-          <td><span class="badge badge-warn">打款失败</span></td>
-          <td>2026-09-08 08:00</td>
-          <td class="row-actions"><a href="#" data-row-act="retry">重试</a><a href="#" data-row-act="detail">详情</a></td>
-        </tr>
+          <td><a href="#" class="link-mono" data-row-act="detail">PWD20260908001</a></td><td>青藤家长学堂</td><td>自动提现</td><td><b>¥4,100.00</b></td><td>¥4,100.00</td><td>招商银行 ****5512</td><td><span class="badge badge-warn">打款失败</span></td><td>2026-09-08 08:00</td><td class="row-actions"><a href="#" data-row-act="retry">重试</a><a href="#" data-row-act="detail">详情</a></td></tr>
       </tbody>
     </table>
   </div></div>
@@ -304,7 +252,7 @@
   });
 
   document.getElementById("btn-rule").addEventListener("click", function () { open(document.getElementById("modal-rule")); });
-  document.getElementById("btn-batch").addEventListener("click", function () { Proto.toast("已批量通过无风控标记的提现（原型）"); });
+  document.getElementById("btn-batch").addEventListener("click", function () { Proto.toast("已批量通过所选提现（原型）"); });
   document.getElementById("btn-export").addEventListener("click", function () { Proto.toast("已导出提现记录（原型）"); });
   document.getElementById("btn-query").addEventListener("click", function () { Proto.toast("已筛选（原型）"); });
   document.getElementById("pd-export").addEventListener("click", function () { Proto.toast("已导出提现详情（原型）"); });

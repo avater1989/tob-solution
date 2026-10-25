@@ -542,7 +542,7 @@
           buyer: "陈妈妈",
           phone: "138****6521",
           amount: 1990,
-          type: "退货退款",
+          type: "退款并回收权益",
           reason: "课程内容与预期不符",
           status: "pending_merchant",
           statusLabel: "待商家处理",
@@ -563,7 +563,7 @@
           type: "仅退款",
           reason: "重复购买",
           status: "done",
-          statusLabel: "已完成",
+          statusLabel: "已退款",
           createdAt: "2026-09-07 15:20:00",
           product: "视频号体验课券",
           logs: []
@@ -578,7 +578,7 @@
           type: "仅退款",
           reason: "课程不适合",
           status: "done",
-          statusLabel: "退款处理完成",
+          statusLabel: "已退款",
           createdAt: "2026-09-09 13:50:00",
           product: "引流体验课",
           rightsRecycled: true,
@@ -926,7 +926,7 @@
     type: "仅退款",
     reason: "课程不适合",
     status: "done",
-    statusLabel: "退款处理完成",
+    statusLabel: "已退款",
     createdAt: "2026-09-09 13:50:00",
     product: "引流体验课",
     rightsRecycled: true,
@@ -966,12 +966,12 @@
 
   function resolveAftersale(row, decision, reason) {
     if (!row) return null;
-    row.status = decision === "agree" ? "returning" : "rejected";
-    row.statusLabel = decision === "agree" ? "待买家退货" : "已拒绝";
+    row.status = decision === "agree" ? "refunding" : "rejected";
+    row.statusLabel = decision === "agree" ? "退款中" : "已驳回";
     row.logs = row.logs || [];
     row.logs.push({
       at: DEMO_NOW,
-      text: decision === "agree" ? "商家同意并发放退货地址" : ("商家拒绝：" + (reason || "")),
+      text: decision === "agree" ? "商家同意退款，系统原路退回并回收权益" : ("商家驳回：" + (reason || "")),
       by: "赵老师"
     });
     if (decision !== "agree") row.rejectReason = reason || "";

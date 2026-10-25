@@ -1,0 +1,25 @@
+{
+  "v": 1,
+  "updated": "2026-10-25T22:07:21",
+  "items": [
+    {
+      "id": "rmvnwjhcr2xv2",
+      "page": "admin/account.html",
+      "anchor": {
+        "selector": "#admin-content-slot > div > div:nth-of-type(3) > div:nth-of-type(2) > table > tbody > tr:nth-of-type(2) > td:nth-of-type(3) > a",
+        "selectorIn": "div:nth-of-type(3) > div:nth-of-type(2) > table > tbody > tr:nth-of-type(2) > td:nth-of-type(3) > a",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "a",
+        "text": "更换手机",
+        "html": "<a href=\"#\" data-act=\"phone\">更换手机</a>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "去掉",
+      "status": "open",
+      "createdAt": "2026-10-25T14:07:21.243Z"
+    }
+  ]
+}

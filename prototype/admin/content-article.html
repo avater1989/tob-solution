@@ -47,7 +47,7 @@
       <input class="input" type="text" id="ca-keyword" placeholder="搜索图文名称或简介..." style="width:240px" />
       <div id="ca-tag" style="width:200px;display:inline-block;vertical-align:middle"></div>
       <select class="input" id="ca-status" style="width:140px">
-        <option value="">全部上下架</option><option>已上架</option><option>已下架</option>
+        <option value="">全部状态</option><option>待上架</option><option>已上架</option><option>已下架</option>
       </select>
       <button class="btn btn-primary">查询</button>
       <button class="btn">重置</button>
@@ -92,8 +92,11 @@ var ARTICLES = [
     author: "张老师", tagIds: ["TG06", "TG04"], date: "2026-08-30", reads: 1560, words: 980,
     status: "已上架", onShelf: true },
   { id: "A003", title: "家庭情绪急救指南", cover: "../assets/img/covers/emotion.jpg",
-    author: "李老师", tagIds: ["TG03", "TG01"], date: "—", reads: 0, words: 320,
-    status: "已下架", onShelf: false }
+    author: "李老师", tagIds: ["TG03", "TG01"], date: "2026-08-12", reads: 860, words: 320,
+    status: "已下架", onShelf: false },
+  { id: "A006", title: "幼小衔接家长准备清单", cover: "../assets/img/covers/parent.jpg",
+    author: "编辑部", tagIds: ["TG04"], date: "—", reads: 0, words: 640,
+    status: "待上架", onShelf: false }
 ];
 
 var filterTagIds = [];
@@ -150,10 +153,10 @@ function renderList() {
         '<div class="ca-actions">' +
           '<button class="btn" data-share="' + a.id + '" data-phase2-only="1"' + (a.onShelf ? '' : ' disabled') + '>分享设置</button>' +
           '<a class="btn" href="content-article-detail.html?id=' + a.id + '">查看</a>' +
+          '<a class="btn" href="content-article-edit.html?id=' + a.id + '">编辑</a>' +
           (a.onShelf
             ? '<button class="btn" data-shelf-off="' + a.id + '">下架</button>'
-            : '<a class="btn btn-primary" href="content-article-edit.html?id=' + a.id + '">编辑</a>' +
-              '<button class="btn" data-shelf-on="' + a.id + '">上架</button>') +
+            : '<button class="btn btn-primary" data-shelf-on="' + a.id + '">上架</button>') +
         '</div>' +
       '</div>';
   }).join("");

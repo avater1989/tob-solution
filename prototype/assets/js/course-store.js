@@ -14,28 +14,32 @@
   var OLD_KEY = "tob_series_v1";
   var SCHEMA_VER = "v3";
 
+  /* v4：内容状态收敛为三态（一期不设平台内容审核）
+   *   待上架 —— 新建未上架 / 已下架后待重新上架 / 已上架后编辑产生改动
+   *   已上架 —— 已在小程序模块展示
+   *   已下架 —— 主动下架
+   * 旧值 draft / pending_audit / rejected 在 normalizeCourse 中迁移为 pending，
+   * STATUS 里保留同名键指向 pending，仅为兼容尚未清理的旧页面引用。
+   */
   var STATUS = {
-    draft: "draft",
-    pending_audit: "pending_audit",
+    pending: "pending",
     enabled: "enabled",
-    rejected: "rejected",
-    disabled: "disabled"
+    disabled: "disabled",
+    draft: "pending",
+    pending_audit: "pending",
+    rejected: "pending"
   };
 
   var STATUS_LABEL = {
-    draft: "草稿",
-    pending_audit: "待平台审核",
+    pending: "待上架",
     enabled: "已上架",
-    rejected: "已驳回",
     disabled: "已下架"
   };
 
   var STATUS_BADGE = {
-    draft: "audit-cancelled",
-    pending_audit: "audit-pending",
-    enabled: "audit-approved",
-    rejected: "audit-rejected",
-    disabled: "audit-cancelled"
+    pending: "shelf-pending",
+    enabled: "shelf-on",
+    disabled: "shelf-off"
   };
 
   var BADGE_LABEL = { hot: "热门课", premium: "精品课", "": "—" };
@@ -68,8 +72,17 @@
     };
   }
 
+  /* 旧状态 → 三态。历史 localStorage 中可能存在 draft / pending_audit / rejected */
+  function migrateStatus(s) {
+    var v = String(s == null ? "" : s);
+    if (v === "enabled" || v === "on_sale") return STATUS.enabled;
+    if (v === "disabled") return STATUS.disabled;
+    return STATUS.pending;
+  }
+
   function normalizeCourse(c) {
     c = clone(c || {});
+    c.status = migrateStatus(c.status);
     c.term = c.term || "";
     c.teacherId = c.teacherId || "";
     if (!c.teacherId && c.teacher) {
@@ -209,6 +222,34 @@
         merchantName: "晨光少儿成长",
         chapters: [
           { id: "C003-C1", title: "第一章 AI 工具入门", free: true, tagIds: ["TG07"], videoName: "认识常用 AI 工具.mp4", duration: "18分钟", mindmapName: "AI工具.xmind", pptName: "AI入门.pptx", views: 790 }
+        ]
+      }),
+      normalizeCourse({
+        id: "C004",
+        name: "青春期沟通实战课",
+        term: "秋季 02 期",
+        teacherId: "TCH02",
+        teacher: "李老师",
+        tagIds: ["TG03"],
+        badge: "",
+        cover: "../assets/img/covers/talk.jpg",
+        intro: "面向 10-15 岁孩子家长的沟通实战课，含 4 个高频冲突场景拆解。",
+        outlineText: "共 2 章：冲突识别 → 沟通话术",
+        detail: "",
+        purchaseNotes: "",
+        source: "self",
+        status: STATUS.pending,
+        storeVisible: true,
+        views: 0,
+        comments: 0,
+        favorites: 0,
+        commentList: [],
+        goodsIds: [],
+        updatedAt: "2026-09-18 15:40",
+        merchantName: "星启家庭教育",
+        chapters: [
+          { id: "C004-C1", title: "第一章 识别冲突信号", free: true, tagIds: ["TG03"], videoName: "冲突信号识别.mp4", duration: "11分钟", mindmapName: "", pptName: "", views: 0 },
+          { id: "C004-C2", title: "第二章 沟通话术拆解", free: false, tagIds: ["TG02"], videoName: "六句沟通话术.mp4", duration: "13分钟", mindmapName: "", pptName: "", views: 0 }
         ]
       }),
       normalizeCourse({
@@ -368,17 +409,10 @@
     writeAll(readAll().filter(function (c) { return c.id !== id; }));
   }
 
-  function setStatus(id, status, meta) {
-    meta = meta || {};
+  function setStatus(id, status) {
     var c = get(id);
     if (!c) return null;
-    c.status = status;
-    if (status === STATUS.pending_audit) {
-      c.submittedAt = nowStr();
-      c.rejectReason = "";
-    }
-    if (status === STATUS.rejected) c.rejectReason = meta.reason || "";
-    if (status === STATUS.enabled) c.rejectReason = "";
+    c.status = migrateStatus(status);
     return save(c);
   }
 
@@ -399,7 +433,7 @@
       detail: "",
       purchaseNotes: "",
       source: source,
-      status: STATUS.draft,
+      status: STATUS.pending,
       storeVisible: true,
       shareTitle: "",
       shareDesc: "",
@@ -452,14 +486,12 @@
   function canEditOutline(course) {
     if (!course) return false;
     if (course.source === "platform" && !isOpsSide()) return false;
-    if (course.status === STATUS.enabled || course.status === STATUS.pending_audit) return false;
     return true;
   }
 
   function canEditContent(course) {
     if (!course) return true;
     if (course.source === "platform" && !isOpsSide()) return false;
-    if (course.status === STATUS.enabled || course.status === STATUS.pending_audit) return false;
     return true;
   }
 
@@ -467,18 +499,9 @@
     return !!(course && course.status === STATUS.enabled);
   }
 
-  function canSubmitAudit(course) {
-    return !!(course && course.source === "self" && chapterCount(course) > 0 &&
-      (course.status === STATUS.draft || course.status === STATUS.rejected || course.status === STATUS.disabled));
-  }
-
-  function submitAudit(id) {
-    var c = get(id);
-    if (!c) return { ok: false, msg: "课程不存在" };
-    if (c.source === "platform") return { ok: false, msg: "平台内容无需提交商家审核队列" };
-    if (!chapterCount(c)) return { ok: false, msg: "请先配置至少 1 个章节再提交审核" };
-    setStatus(id, STATUS.pending_audit);
-    return { ok: true, course: get(id) };
+  /* 上架前置：至少 1 个章节；平台下发内容由运营侧上架，商家侧只可上下架 */
+  function canShelf(course) {
+    return !!(course && chapterCount(course) > 0);
   }
 
   function enableDirect(id) {
@@ -489,23 +512,14 @@
     return { ok: true, course: get(id) };
   }
 
-  function approveAudit(id) {
+  function disable(id) {
     var c = get(id);
-    if (!c || c.status !== STATUS.pending_audit) return { ok: false, msg: "不在待审状态" };
-    setStatus(id, STATUS.enabled);
+    if (!c) return { ok: false, msg: "课程不存在" };
+    setStatus(id, STATUS.disabled);
     return { ok: true, course: get(id) };
   }
 
-  function rejectAudit(id, reason) {
-    var c = get(id);
-    if (!c || c.status !== STATUS.pending_audit) return { ok: false, msg: "不在待审状态" };
-    setStatus(id, STATUS.rejected, { reason: reason || "" });
-    return { ok: true, course: get(id) };
-  }
-
-  function listPendingAudit() {
-    return list({ status: STATUS.pending_audit });
-  }
+  /* 一期不设平台内容审核，原 approveAudit / rejectAudit / listPendingAudit 已移除 */
 
   /* 【已降级 · v3】内容↔商品关系的权威源是商品的 content_id；
    * 以下写入方法仅为兼容旧页面保留，新代码请用 GoodsStore.listByContent / GoodsStore.save */
@@ -535,7 +549,7 @@
   /** 待补建商品：内容曾带价但尚无任何关联商品（v3 迁移遗留，需人工确认） */
   function needsGoods(course) {
     if (!course) return false;
-    if (course.status === "draft" && !course._legacyPrice) return false;
+    if (course.status === "pending" && !course._legacyPrice) return false;
     if (!course._legacyPrice) return false;
     return listGoodsIds(course.id).length === 0;
   }
@@ -569,12 +583,9 @@
     canEditOutline: canEditOutline,
     canEditContent: canEditContent,
     canCreateGoods: canCreateGoods,
-    canSubmitAudit: canSubmitAudit,
-    submitAudit: submitAudit,
+    canShelf: canShelf,
     enableDirect: enableDirect,
-    approveAudit: approveAudit,
-    rejectAudit: rejectAudit,
-    listPendingAudit: listPendingAudit,
+    disable: disable,
     setGoodsId: setGoodsId,
     addGoodsId: addGoodsId,
     listGoodsIds: listGoodsIds,

@@ -12,12 +12,12 @@
 </div>
 <div id="page-content" style="display:none">
 
-  <div class="alert alert-info" style="margin-bottom:12px">
+  <div class="alert alert-info" style="margin-bottom:12px" data-phase2-only>
     <span>平台视角全量<b>租户支付流水</b>：与商家管理后台「支付流水」同源，额外带 <b>租户</b> 列，用于跨租户核查。按订单「支付时间」逐笔记录收入 / 支出，支持与<b>通联支付「资金账单」</b>跨平台对账。</span>
   </div>
 
   <!-- 顶部统计 -->
-  <div class="grid-4" style="margin-bottom:16px">
+  <div class="grid-4" style="margin-bottom:16px" data-phase2-only>
     <div class="stat"><div class="label">本期收入</div><div class="value">¥24,650.00</div><div class="hint">近 30 天 · 全平台</div></div>
     <div class="stat"><div class="label">本期支出</div><div class="value">¥2,080.15</div><div class="hint">退款 + 入金手续费 + 分成</div></div>
     <div class="stat"><div class="label">净收入</div><div class="value">¥22,569.85</div><div class="hint">按支付时间口径</div></div>
@@ -66,13 +66,6 @@
     </table>
   </div></div>
 
-  <!-- 口径说明 -->
-  <div class="card" style="margin-top:16px"><div class="card-bd">
-    <p class="muted" style="font-size:12px;line-height:1.9">
-      <b>口径说明：</b>租户支付流水按订单「支付时间」逐笔记录收入 / 支出，平台侧为全租户并集，租户列标识归属；支持与<b>通联支付「资金账单」</b>跨平台对账。
-      平台费率收入（佣金 / 服务费）见「服务费台账」；分账与结算规则由平台统一配置（运营后台 · 结算规则配置）；数据同步可能存在约 3 秒误差，属正常现象。
-    </p>
-  </div></div>
 
   <div class="toolbar" style="margin-top:8px">
     <span class="muted">共 <b>12,486</b> 条租户支付流水</span>

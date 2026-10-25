@@ -42,9 +42,9 @@
       </select>
       <select class="input" id="f-status" style="width:140px">
         <option value="">全部状态</option>
+        <option value="待上架">待上架</option>
         <option value="已上架">已上架</option>
         <option value="已下架">已下架</option>
-        <option value="草稿">草稿</option>
       </select>
       <button class="btn btn-primary" id="btn-query">查询</button>
       <button class="btn" id="btn-reset">重置</button>
@@ -108,6 +108,18 @@ var OFFLINES = [
     checkinStart: "2026-11-28 08:00", checkinEnd: "2026-11-28 08:50",
     expected: 25, capacity: 30, signed: 0,
     status: "已下架", onShelf: false
+  },
+  {
+    id: "O004", name: "青春期家长工作坊 · 线下", term: "秋季场",
+    teacherId: "TCH02", tagIds: ["TG03"], badge: "",
+    cover: "../assets/img/covers/comm.jpg",
+    intro: "半日工作坊，聚焦青春期亲子冲突的沟通策略。",
+    address: "杭州市西湖区文三路 90 号 2F",
+    signupStart: "2026-11-05 10:00", signupEnd: "2026-11-25 23:59",
+    courseStart: "2026-12-05 09:30", courseEnd: "2026-12-05 17:00",
+    checkinStart: "2026-12-05 08:30", checkinEnd: "2026-12-05 09:20",
+    expected: 40, capacity: 50, signed: 0,
+    status: "待上架", onShelf: false
   }
 ];
 
@@ -159,10 +171,10 @@ function render() {
     var goodsRows = Goods.listByContent(o.id);
     var acts =
       '<a class="btn" href="content-offline-signups.html?id=' + encodeURIComponent(o.id) + '">报名记录</a>' +
-      (o.onShelf ? '' : '<a class="btn" href="content-offline-edit.html?id=' + encodeURIComponent(o.id) + '">编辑</a>') +
+      '<a class="btn" href="content-offline-edit.html?id=' + encodeURIComponent(o.id) + '">编辑</a>' +
       (o.onShelf
         ? '<button class="btn" data-shelf-off="' + o.id + '">下架</button>'
-        : '<button class="btn" data-shelf-on="' + o.id + '">上架</button>');
+        : '<button class="btn btn-primary" data-shelf-on="' + o.id + '">上架</button>');
     return '<div class="cs-row">' +
       '<div class="cs-cover"><img src="' + esc(o.cover) + '" alt="" /></div>' +
       '<div class="cs-info">' +

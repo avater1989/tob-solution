@@ -10,26 +10,34 @@
 <div id="header-actions">
   <a class="btn" href="recon.html" style="text-decoration:none">返回列表</a>
   <button class="btn" id="btn-export">导出明细</button>
-  <button class="btn" id="btn-notice">重发确认通知</button>
+  <button class="btn" id="btn-add">补加订单</button>
+  <button class="btn btn-primary" id="btn-confirm">确认账单并推送</button>
 </div>
 <div id="page-content" style="display:none">
 
-  <div class="alert alert-warning" style="margin-bottom:12px">
-    <span>本对账单存在 <b>2</b> 笔未平差异，处理完成后将重新汇总；差异未结清前不进入结算流程。</span>
+  <!-- 商家异议提示（重新对账中展示） -->
+  <div class="alert alert-warning" id="banner-objection" style="margin-bottom:12px;display:none">
+    <span><b>商家申请重新对账</b>（2026-09-12 09:41）：<span id="obj-text">—</span></span>
   </div>
 
   <!-- 对账单信息 -->
   <div class="card" style="margin-bottom:12px">
-    <div class="card-hd"><h2>对账单信息</h2><span class="badge badge-warn">有差异</span></div>
+    <div class="card-hd">
+      <h2>对账单信息</h2>
+      <span class="badge" id="bill-status">—</span>
+    </div>
     <div class="card-bd">
-      <div class="form-grid readonly" style="grid-template-columns:repeat(3,minmax(0,1fr))">
-        <div class="field"><label>对账单号</label><div class="mono">PRC20260910001</div></div>
-        <div class="field"><label>租户</label><div>星启家庭教育</div></div>
-        <div class="field"><label>账期</label><div>2026-09-04 ~ 2026-09-10</div></div>
-        <div class="field"><label>账单渠道</label><div>通联支付</div></div>
-        <div class="field"><label>平台订单数 / 渠道笔数</label><div>86 / 86</div></div>
-        <div class="field"><label>生成时间</label><div>2026-09-11 02:00</div></div>
+      <div class="form-grid readonly" style="grid-template-columns:repeat(4,minmax(0,1fr))">
+        <div class="field"><label>对账单号</label><div class="mono" id="bill-no">—</div></div>
+        <div class="field"><label>账单版本</label><div id="bill-ver">—</div></div>
+        <div class="field"><label>租户</label><div id="bill-tenant">—</div></div>
+        <div class="field"><label>账期</label><div id="bill-period">—</div></div>
+        <div class="field"><label>账单渠道</label><div id="bill-channel">—</div></div>
+        <div class="field"><label>生成方式</label><div id="bill-mode">—</div></div>
+        <div class="field"><label>平台订单数 / 渠道笔数</label><div id="bill-count">—</div></div>
+        <div class="field"><label>生成时间</label><div id="bill-created">—</div></div>
       </div>
+      <p class="muted" style="margin:10px 0 0;font-size:12px" id="bill-tip">—</p>
     </div>
   </div>
 
@@ -38,74 +46,136 @@
     <div class="card-hd"><h2>金额构成</h2><span class="muted" style="font-size:12px">应结算 = 交易额 − 退款额 − 服务费 − 其他分账方分成</span></div>
     <div class="card-bd">
       <div class="calc">
-        <div class="calc-row"><span>交易额（已核对）</span><b>¥8,432.20</b></div>
-        <div class="calc-row"><span>退款额</span><b class="danger">-¥308.80</b></div>
+        <div class="calc-row"><span>交易额（已核对）</span><b id="sum-gross">—</b></div>
+        <div class="calc-row"><span>退款额（含售后单）</span><b class="danger" id="sum-refund">—</b></div>
         <div class="calc-row"><span>平台服务费（0%）</span><b class="danger">¥0.00</b></div>
         <div class="calc-row"><span>其他分账方分成</span><b class="danger">-¥0.00</b></div>
-        <div class="calc-row total"><span>应结算金额</span><b>¥8,123.40</b></div>
+        <div class="calc-row total"><span>应结算金额</span><b id="sum-net">—</b></div>
       </div>
+      <p class="muted" style="margin:8px 0 0;font-size:12px" id="sum-tip">—</p>
     </div>
   </div>
 
-  <!-- 订单明细 -->
+  <!-- 订单级明细 -->
   <div class="card" style="margin-bottom:12px">
-    <div class="card-hd"><h2>订单级明细</h2><span class="muted" style="font-size:12px">差异行已高亮</span></div>
-    <div class="card-bd" style="padding:0">
+    <div class="card-hd">
+      <h2>订单级明细</h2>
+      <span class="muted" style="font-size:12px">核对时可剔除订单或补加订单；剔除的订单释放回待对账池</span>
+    </div>
+    <div class="card-bd" style="padding:0;overflow-x:auto">
       <table class="data">
         <thead>
           <tr>
             <th>平台订单号</th><th>渠道交易单号</th><th>买家</th><th>商品</th>
-            <th>支付金额</th><th>退款</th><th>服务费</th><th>分账方</th><th>对账结果</th>
+            <th>支付金额</th><th>退款</th><th>来源</th><th>状态</th><th style="width:100px">操作</th>
           </tr>
         </thead>
-        <tbody>
-          <tr>
-            <td class="mono">YB20260903100112</td><td class="mono">4200002388202604031…</td><td>周***</td>
-            <td>青春期沟通训练营</td><td>¥299.00</td><td class="muted">—</td><td>¥0.00</td><td>星启 100% / 服务费 0%</td>
-            <td><span class="badge badge-warn">金额不一致</span></td>
-          </tr>
-          <tr>
-            <td class="muted mono">未找到对应订单</td><td class="mono">4200002388202604029…</td><td>—</td>
-            <td>—</td><td>—</td><td class="muted">—</td><td class="muted">—</td><td class="muted">—</td>
-            <td><span class="badge badge-danger">渠道单边账</span></td>
-          </tr>
-          <tr>
-            <td class="mono">YB20260903100108</td><td class="mono">4200002388202604030…</td><td>李***</td>
-            <td>家庭教育入门系列</td><td>¥399.00</td><td class="muted">—</td><td>¥0.00</td><td>星启 100% / 服务费 0%</td>
-            <td><span class="badge badge-success">一致</span></td>
-          </tr>
-          <tr>
-            <td class="mono">YB20260902100088</td><td class="mono">4200002388202604022…</td><td>陈***</td>
-            <td>家长公开课 03 期</td><td>¥0.00</td><td class="muted">—</td><td class="muted">—</td><td class="muted">—</td>
-            <td><span class="badge badge-success">一致</span></td>
-          </tr>
-          <tr>
-            <td class="mono">YB20260902100076</td><td class="mono">4200002388202604021…</td><td>吴***</td>
-            <td>少儿专注力启蒙课</td><td>¥99.00</td><td><span class="badge badge-warn">已退款</span></td><td class="muted">¥0.00（退款冲减）</td><td>星启 100% / 服务费 0%</td>
-            <td><span class="badge badge-success">一致</span></td>
-          </tr>
-        </tbody>
+        <tbody id="order-body"></tbody>
       </table>
     </div>
     <div class="toolbar" style="padding:10px 16px">
-      <span class="muted">共 <b>86</b> 笔（仅展示前 5 笔）</span>
+      <span class="muted">共 <b id="order-total">0</b> 笔（仅展示前若干笔示例）</span>
       <div class="spacer"></div>
-      <button class="btn btn-sm" disabled>上一页</button>
-      <button class="btn btn-sm">下一页</button>
+      <span class="muted" id="order-delta">剔除 0 / 补加 0</span>
     </div>
   </div>
 
-  <!-- 确认与申诉记录 -->
+  <!-- 关联售后单 -->
+  <div class="card" style="margin-bottom:12px">
+    <div class="card-hd">
+      <h2>关联售后单</h2>
+      <span class="muted" style="font-size:12px">补加订单时，其对应售后单随订单自动纳入账单</span>
+    </div>
+    <div class="card-bd" style="padding:0;overflow-x:auto">
+      <table class="data">
+        <thead>
+          <tr><th>售后单号</th><th>原订单号</th><th>售后类型</th><th>退款金额</th><th>售后状态</th><th>来源</th></tr>
+        </thead>
+        <tbody id="svc-body"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- 操作记录 -->
   <div class="card">
-    <div class="card-hd"><h2>确认与申诉记录</h2></div>
+    <div class="card-hd"><h2>操作与异议记录</h2></div>
     <div class="card-bd">
       <div class="timeline">
-        <div class="tl-item"><div class="tl-dot"></div><div class="tl-bd"><b>对账单生成</b><span class="muted">系统自动 · 2026-09-11 02:00</span><p class="muted">T+1 自动对账完成，发现 2 笔差异，进入差异处理。</p></div></div>
-        <div class="tl-item"><div class="tl-dot warn"></div><div class="tl-bd"><b>差异工单创建</b><span class="muted">系统自动 · 2026-09-11 02:01</span><p class="muted">DIF20260910001（金额不一致）、DIF20260910002（渠道单边账）。</p></div></div>
-        <div class="tl-item"><div class="tl-dot info"></div><div class="tl-bd"><b>待处理中</b><span class="muted">风控组 · 陈审核 · 处理中</span><p class="muted">差异未结清，对账单暂不可进入结算。</p></div></div>
+        <div class="tl-item"><div class="tl-dot"></div><div class="tl-bd"><b>账单生成 V1</b><span class="muted">系统自动 · 2026-09-11 02:00</span><p class="muted">按租户账期 T+7 自动生成，纳入 84 笔未对账订单、含 2 笔售后单。</p></div></div>
+        <div class="tl-item"><div class="tl-dot"></div><div class="tl-bd"><b>确认并推送商家</b><span class="muted">陈审核（财务）· 2026-09-11 10:20</span><p class="muted">V1 已推送至商家后台，等待商家确认。</p></div></div>
+        <div class="tl-item"><div class="tl-dot warn"></div><div class="tl-bd"><b>商家申请重新对账</b><span class="muted">星启家庭教育 · 2026-09-12 09:41</span><p class="muted">异议：9 月 6 日两笔直播课订单的退款未计入本期；另有 1 笔 ¥9.90 试听订单被重复计入。</p></div></div>
+        <div class="tl-item"><div class="tl-dot info"></div><div class="tl-bd"><b>重新核对 V2</b><span class="muted">陈审核（财务）· 2026-09-12 14:05</span><p class="muted">已剔除 1 笔（重复计入）、补加 2 笔（含 2 笔售后单），生成 V2 待推送。</p></div></div>
       </div>
     </div>
   </div>
+
+</div>
+
+<div class="proto-mask" id="mask"></div>
+
+<!-- 补加订单 -->
+<div class="proto-modal" id="modal-add" style="width:720px">
+  <div class="proto-modal-hd"><h3 style="font-size:16px;font-weight:600">补加订单</h3><button class="btn btn-sm btn-ghost" data-close>×</button></div>
+  <div class="proto-modal-bd">
+    <p class="muted" style="margin:0 0 8px;font-size:12px">
+      仅列出该租户在本账期内<b>尚未进入任何对账单</b>的订单。勾选后随账单补加；若订单存在售后单，<b>售后单将一并纳入</b>并参与退款额计算。
+    </p>
+    <div class="card" style="border:1px solid var(--color-border)"><div class="card-bd" style="padding:0;max-height:320px;overflow:auto">
+      <table class="data">
+        <thead><tr><th style="width:40px"></th><th>平台订单号</th><th>商品</th><th>支付金额</th><th>退款</th><th>售后单</th></tr></thead>
+        <tbody id="pool-body"></tbody>
+      </table>
+    </div></div>
+    <p class="muted" style="margin:10px 0 0;font-size:12px" id="pool-tip">已选 0 笔。</p>
+    <div class="field" style="margin-top:10px"><label>补加原因 *</label>
+      <select id="add-reason" style="width:100%">
+        <option>渠道账单存在、平台漏单（补录）</option>
+        <option>跨期订单，应计入本期</option>
+        <option>商家申诉要求补加</option>
+        <option>其他</option>
+      </select>
+    </div>
+  </div>
+  <div class="proto-modal-ft"><button class="btn" data-close>取消</button><button class="btn btn-primary" id="add-submit">确认补加</button></div>
+</div>
+
+<!-- 剔除订单 -->
+<div class="proto-modal" id="modal-remove" style="width:560px">
+  <div class="proto-modal-hd"><h3 style="font-size:16px;font-weight:600">剔除订单 · <span class="mono" id="rm-no">—</span></h3><button class="btn btn-sm btn-ghost" data-close>×</button></div>
+  <div class="proto-modal-bd">
+    <div class="form-grid readonly" style="grid-template-columns:1fr 1fr">
+      <div class="field"><label>支付金额</label><div id="rm-pay">—</div></div>
+      <div class="field"><label>退款额</label><div id="rm-refund">—</div></div>
+    </div>
+    <div class="field" style="margin-top:8px"><label>剔除原因 *</label>
+      <select id="rm-reason" style="width:100%">
+        <option>金额与渠道账单不一致</option>
+        <option>渠道单边账（平台无此笔）</option>
+        <option>重复计入本期</option>
+        <option>不属于本期账期</option>
+        <option>其他</option>
+      </select>
+    </div>
+    <div class="field" style="margin-top:8px"><label>说明</label><textarea id="rm-note" rows="3" style="width:100%" placeholder="填写剔除依据，写入操作记录"></textarea></div>
+    <p class="muted" style="margin:8px 0 0;font-size:12px">剔除后该订单<b>释放回待对账池</b>，后续生成账单时可被重新命中；本期交易额 / 退款额 / 应结金额同步重算。</p>
+  </div>
+  <div class="proto-modal-ft"><button class="btn" data-close>取消</button><button class="btn btn-primary" id="rm-submit">确认剔除</button></div>
+</div>
+
+<!-- 确认推送 -->
+<div class="proto-modal" id="modal-confirm" style="width:560px">
+  <div class="proto-modal-hd"><h3 style="font-size:16px;font-weight:600">确认账单并推送商家</h3><button class="btn btn-sm btn-ghost" data-close>×</button></div>
+  <div class="proto-modal-bd">
+    <p style="margin:0 0 8px;font-size:13px">本次将推送 <b id="cf-no">—</b>（<b id="cf-ver">—</b>）至商家后台，推送后账单 <b>不可再修改</b>，需等商家确认或退回重新对账。</p>
+    <div class="calc">
+      <div class="calc-row"><span>订单笔数</span><b id="cf-count">—</b></div>
+      <div class="calc-row"><span>交易额</span><b id="cf-gross">—</b></div>
+      <div class="calc-row"><span>退款额</span><b id="cf-refund">—</b></div>
+      <div class="calc-row total"><span>应结算金额</span><b id="cf-net">—</b></div>
+    </div>
+    <p class="muted" style="margin:10px 0 0;font-size:12px">商家确认后对账完成，账单进入结算池；商家确认前可「申请重新对账」并描述异议点。</p>
+  </div>
+  <div class="proto-modal-ft"><button class="btn" data-close>取消</button><button class="btn btn-primary" id="cf-submit">确认并推送</button></div>
 </div>
 
 <style>
@@ -127,14 +197,268 @@
 .tl-bd b { font-size:13px; }
 .tl-bd span { font-size:12px; margin-left:8px; }
 .tl-bd p { margin:4px 0 0; font-size:12px; }
+tr.removed td { opacity:.5; }
+tr.removed td .mono, tr.removed td b { text-decoration:line-through; }
 </style>
 
 <script src="../assets/js/proto.js"></script>
 <script src="../assets/js/ops-shell.js?v=29"></script>
 <script>
 (function () {
-  document.getElementById("btn-export").addEventListener("click", function () { Proto.toast("已导出对账单明细（原型）"); });
-  document.getElementById("btn-notice").addEventListener("click", function () { Proto.toast("已向商家重发确认通知（原型）"); });
+
+  /* ===== 演示数据 ===== */
+  var BILL = {
+    no: "PRC20260910001", ver: 2, tenant: "星启家庭教育",
+    period: "2026-09-04 ~ 2026-09-10", channel: "通联支付",
+    mode: "自动（T+7）", created: "2026-09-11 02:00",
+    status: "重新对账中",
+    objection: "9 月 6 日两笔直播课订单的退款未计入本期；另有 1 笔 ¥9.90 试听订单被重复计入，请复核。",
+    orders: [
+      { no: "YB20260903100112", trade: "4200002388202604031", buyer: "周***", goods: "青春期沟通训练营", pay: 299, refund: 0, src: "本期", removed: false },
+      { no: "YB20260903100108", trade: "4200002388202604030", buyer: "李***", goods: "家庭教育入门系列", pay: 399, refund: 0, src: "本期", removed: false },
+      { no: "YB20260902100088", trade: "4200002388202604022", buyer: "陈***", goods: "家长公开课 03 期", pay: 0, refund: 0, src: "本期", removed: false },
+      { no: "YB20260902100076", trade: "4200002388202604021", buyer: "吴***", goods: "少儿专注力启蒙课", pay: 99, refund: 99, src: "本期", removed: false },
+      { no: "YB20260901100044", trade: "4200002388202604018", buyer: "孙***", goods: "9.9 元试听包", pay: 9.9, refund: 0, src: "补加", removed: false }
+    ],
+    services: [
+      { no: "AS202609080001", order: "YB20260906100031", type: "仅退款", amount: 129, status: "已退款", src: "本期" },
+      { no: "AS202609080002", order: "YB20260906100032", type: "退款并回收权益", amount: 199, status: "已退款", src: "本期" }
+    ]
+  };
+
+  /* 补加候选：本账期内尚未进入任何账单的订单 */
+  var POOL = [
+    { no: "YB20260906100031", trade: "4200002388202604025", buyer: "郑***", goods: "亲子沟通训练营（直播）", pay: 129, refund: 129, svc: 1 },
+    { no: "YB20260906100032", trade: "4200002388202604026", buyer: "冯***", goods: "家庭教育工作坊", pay: 199, refund: 199, svc: 1 },
+    { no: "YB20260905100027", trade: "4200002388202604024", buyer: "许***", goods: "青春期父母课", pay: 299, refund: 0, svc: 0 },
+    { no: "YB20260904100019", trade: "4200002388202604023", buyer: "何***", goods: "家长读书会年卡", pay: 365, refund: 0, svc: 0 }
+  ];
+
+  var STATUS_CLS = { "待核对": "badge-info", "待商家确认": "badge-warn", "重新对账中": "badge-danger", "已确认": "badge-success" };
+  var TIP = {
+    "待核对": "账单待运营/财务核对：可剔除订单、补加订单，确认无误后推送商家。商家侧不可见。",
+    "待商家确认": "账单已推送商家，等待商家确认；此状态不可再修改，如需调整须等商家「申请重新对账」。",
+    "重新对账中": "商家已提交异议，账单退回运营侧重新核对；处理完成后可再次确认推送（版本 +1）。",
+    "已确认": "商家已确认，对账完成，账单进入结算池，不可再修改。"
+  };
+
+  function $(id) { return document.getElementById(id); }
+  function money(n) { return "¥" + n.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","); }
+  function sum(arr, key) { return arr.reduce(function (s, x) { return s + (x.removed ? 0 : (x[key] || 0)); }, 0); }
+
+  /* 底数：账单内其余订单（原型仅展示前若干笔） */
+  var BASE = (function () {
+    var live = BILL.orders.filter(function (o) { return !o.removed; });
+    return {
+      count: 86 - live.length,
+      gross: 8432.20 - sum(live, "pay"),
+      refund: 308.80 - sum(live, "refund")
+    };
+  })();
+
+  function totals() {
+    var live = BILL.orders.filter(function (o) { return !o.removed; });
+    var gross = BASE.gross + sum(live, "pay");
+    var refund = BASE.refund + sum(live, "refund");
+    return { count: BASE.count + live.length, gross: gross, refund: refund, net: gross - refund };
+  }
+
+  function renderStatus() {
+    var b = $("bill-status");
+    b.textContent = BILL.status;
+    b.className = "badge " + (STATUS_CLS[BILL.status] || "badge");
+    $("bill-tip").textContent = TIP[BILL.status] || "";
+
+    var obj = BILL.status === "重新对账中";
+    $("banner-objection").style.display = obj ? "" : "none";
+    $("obj-text").textContent = BILL.objection;
+
+    var editable = BILL.status === "待核对" || BILL.status === "重新对账中";
+    $("btn-add").disabled = !editable;
+    $("btn-confirm").disabled = !editable;
+  }
+
+  function renderOrders() {
+    $("order-body").innerHTML = BILL.orders.map(function (o, i) {
+      var srcTag = o.src === "补加" ? '<span class="tag tag-teal" style="font-size:11px">补加</span>' : '<span class="muted">本期</span>';
+      var st = o.removed ? '<span class="badge badge-danger">已剔除</span>' : '<span class="badge badge-success">已核对</span>';
+      var act = o.removed
+        ? '<a href="#" data-restore="' + i + '">恢复</a>'
+        : '<a href="#" data-remove="' + i + '" class="danger-link">剔除</a>';
+      return '<tr class="' + (o.removed ? "removed" : "") + '">' +
+        '<td class="mono">' + o.no + '</td>' +
+        '<td class="mono">' + o.trade + '…</td>' +
+        '<td>' + o.buyer + '</td>' +
+        '<td>' + o.goods + '</td>' +
+        '<td>' + money(o.pay) + '</td>' +
+        '<td>' + (o.refund ? '<span class="badge badge-warn">已退款</span>' : '<span class="muted">—</span>') + '</td>' +
+        '<td>' + srcTag + '</td>' +
+        '<td>' + st + '</td>' +
+        '<td>' + act + '</td>' +
+        '</tr>';
+    }).join("");
+
+    var rm = BILL.orders.filter(function (o) { return o.removed; }).length;
+    var ad = BILL.orders.filter(function (o) { return o.src === "补加" && !o.removed; }).length;
+    $("order-delta").textContent = "剔除 " + rm + " / 补加 " + ad;
+    $("order-total").textContent = totals().count;
+
+    bindRows();
+  }
+
+  function renderServices() {
+    $("svc-body").innerHTML = BILL.services.map(function (s) {
+      return '<tr><td class="mono">' + s.no + '</td><td class="mono">' + s.order + '</td>' +
+        '<td><span class="badge badge-info">' + s.type + '</span></td>' +
+        '<td class="danger">' + money(s.amount) + '</td>' +
+        '<td><span class="badge badge-success">' + s.status + '</span></td>' +
+        '<td>' + (s.src === "补加带入" ? '<span class="tag tag-teal" style="font-size:11px">补加带入</span>' : '<span class="muted">本期</span>') + '</td></tr>';
+    }).join("");
+  }
+
+  function renderTotals() {
+    var t = totals();
+    $("bill-count").textContent = t.count + " / " + (t.count + 2);
+    $("sum-gross").textContent = money(t.gross);
+    $("sum-refund").textContent = "-" + money(t.refund);
+    $("sum-net").textContent = money(t.net);
+    var rm = BILL.orders.filter(function (o) { return o.removed; }).length;
+    var ad = BILL.orders.filter(function (o) { return o.src === "补加" && !o.removed; }).length;
+    $("sum-tip").textContent = (rm || ad)
+      ? "已按剔除 " + rm + " 笔、补加 " + ad + " 笔重算；被剔除订单释放回待对账池。"
+      : "账单金额按当前明细汇总，剔除 / 补加后自动重算。";
+  }
+
+  function renderAll() { renderStatus(); renderOrders(); renderServices(); renderTotals(); }
+
+  /* ===== 弹窗 ===== */
+  var mask = $("mask");
+  function closeAll() {
+    mask.classList.remove("open");
+    document.querySelectorAll(".proto-modal").forEach(function (n) { n.classList.remove("open"); });
+  }
+  function open(n) { mask.classList.add("open"); n.classList.add("open"); }
+  mask.addEventListener("click", closeAll);
+  document.querySelectorAll("[data-close]").forEach(function (n) { n.addEventListener("click", closeAll); });
+
+  /* ===== 剔除 / 恢复 ===== */
+  var rmIndex = -1;
+  function bindRows() {
+    document.querySelectorAll("[data-remove]").forEach(function (a) {
+      a.addEventListener("click", function (e) {
+        e.preventDefault();
+        rmIndex = parseInt(a.getAttribute("data-remove"), 10);
+        var o = BILL.orders[rmIndex];
+        $("rm-no").textContent = o.no;
+        $("rm-pay").textContent = money(o.pay);
+        $("rm-refund").textContent = money(o.refund);
+        $("rm-note").value = "";
+        open($("modal-remove"));
+      });
+    });
+    document.querySelectorAll("[data-restore]").forEach(function (a) {
+      a.addEventListener("click", function (e) {
+        e.preventDefault();
+        var i = parseInt(a.getAttribute("data-restore"), 10);
+        BILL.orders[i].removed = false;
+        renderAll();
+        Proto.toast("已恢复该订单至本期账单（原型）");
+      });
+    });
+  }
+
+  $("rm-submit").addEventListener("click", function () {
+    if (rmIndex < 0) return;
+    BILL.orders[rmIndex].removed = true;
+    var reason = $("rm-reason").value;
+    closeAll();
+    renderAll();
+    Proto.toast("已剔除 1 笔（" + reason + "），金额已重算并释放回待对账池（原型）");
+  });
+
+  /* ===== 补加订单 ===== */
+  function renderPool() {
+    $("pool-body").innerHTML = POOL.map(function (p, i) {
+      var svc = p.svc
+        ? '<span class="badge badge-warn">含 1 笔售后单</span>'
+        : '<span class="muted">—</span>';
+      return '<tr><td><input type="checkbox" data-pool="' + i + '" /></td>' +
+        '<td class="mono">' + p.no + '</td><td>' + p.goods + '</td>' +
+        '<td>' + money(p.pay) + '</td>' +
+        '<td>' + (p.refund ? money(p.refund) : '<span class="muted">—</span>') + '</td>' +
+        '<td>' + svc + '</td></tr>';
+    }).join("");
+    $("pool-body").querySelectorAll("[data-pool]").forEach(function (c) {
+      c.addEventListener("change", syncPool);
+    });
+    syncPool();
+  }
+
+  function syncPool() {
+    var picked = Array.prototype.slice.call($("pool-body").querySelectorAll("[data-pool]:checked"))
+      .map(function (c) { return POOL[parseInt(c.getAttribute("data-pool"), 10)]; });
+    var amt = picked.reduce(function (s, p) { return s + p.pay; }, 0);
+    var svc = picked.reduce(function (s, p) { return s + p.svc; }, 0);
+    $("pool-tip").textContent = picked.length
+      ? "已选 " + picked.length + " 笔，支付金额 " + money(amt) + "；含售后单 " + svc + " 笔（将一并纳入账单）。"
+      : "已选 0 笔。";
+  }
+
+  $("btn-add").addEventListener("click", function () { renderPool(); open($("modal-add")); });
+
+  $("add-submit").addEventListener("click", function () {
+    var picked = Array.prototype.slice.call($("pool-body").querySelectorAll("[data-pool]:checked"))
+      .map(function (c) { return parseInt(c.getAttribute("data-pool"), 10); });
+    if (!picked.length) { Proto.toast("请至少勾选 1 笔订单"); return; }
+
+    var svcAdded = 0;
+    picked.forEach(function (i) {
+      var p = POOL[i];
+      BILL.orders.push({ no: p.no, trade: p.trade, buyer: p.buyer, goods: p.goods, pay: p.pay, refund: p.refund, src: "补加", removed: false });
+      if (p.svc) {
+        BILL.services.push({ no: "AS2026090900" + (10 + BILL.services.length), order: p.no, type: "仅退款", amount: p.refund, status: "已退款", src: "补加带入" });
+        svcAdded += 1;
+      }
+      /* 已补加的订单从候选池移除 */
+      POOL[i].used = true;
+    });
+    POOL = POOL.filter(function (p) { return !p.used; });
+
+    closeAll();
+    renderAll();
+    Proto.toast("已补加 " + picked.length + " 笔订单" + (svcAdded ? "，并带入 " + svcAdded + " 笔售后单" : "") + "（原型）");
+  });
+
+  /* ===== 确认推送 ===== */
+  $("btn-confirm").addEventListener("click", function () {
+    var t = totals();
+    $("cf-no").textContent = BILL.no;
+    $("cf-ver").textContent = "V" + BILL.ver;
+    $("cf-count").textContent = t.count + " 笔";
+    $("cf-gross").textContent = money(t.gross);
+    $("cf-refund").textContent = "-" + money(t.refund);
+    $("cf-net").textContent = money(t.net);
+    open($("modal-confirm"));
+  });
+
+  $("cf-submit").addEventListener("click", function () {
+    BILL.status = "待商家确认";
+    closeAll();
+    renderAll();
+    Proto.toast("已确认并推送商家：「" + BILL.no + "」V" + BILL.ver + "（原型）");
+  });
+
+  $("btn-export").addEventListener("click", function () { Proto.toast("已导出对账单明细（原型）"); });
+
+  /* ===== 初始化 ===== */
+  $("bill-no").textContent = BILL.no;
+  $("bill-ver").textContent = "V" + BILL.ver;
+  $("bill-tenant").textContent = BILL.tenant;
+  $("bill-period").textContent = BILL.period;
+  $("bill-channel").textContent = BILL.channel;
+  $("bill-mode").textContent = BILL.mode;
+  $("bill-created").textContent = BILL.created;
+  renderAll();
 })();
 </script>
 </body>

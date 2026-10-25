@@ -12,10 +12,10 @@
 
   <!-- 顶部统计 -->
   <div class="grid-4" style="margin-bottom:16px">
-    <div class="stat"><div class="label">本期收入</div><div class="value">¥24,650.00</div><div class="hint">近 30 天</div></div>
-    <div class="stat"><div class="label">本期支出</div><div class="value">¥2,080.15</div><div class="hint">退款 + 入金手续费 + 分成</div></div>
-    <div class="stat"><div class="label">净收入</div><div class="value">¥22,569.85</div><div class="hint">按支付时间口径</div></div>
-    <div class="stat"><div class="label">待核对差异</div><div class="value">2</div><div class="hint"><a href="recon.html" style="color:inherit">去对账 →</a></div></div>
+    <div class="stat"><div class="label">本期收入</div><div class="value" id="s-income">¥24,650.00</div><div class="hint">按当前筛选统计</div></div>
+    <div class="stat"><div class="label">本期支出</div><div class="value" id="s-expense">¥2,080.15</div><div class="hint">按当前筛选统计</div></div>
+    <div class="stat"><div class="label">净收入</div><div class="value" id="s-net">¥22,569.85</div><div class="hint">按当前筛选统计</div></div>
+    <div class="stat" data-phase2-only><div class="label">待核对差异</div><div class="value">2</div><div class="hint"><a href="recon.html" style="color:inherit">去对账 →</a></div></div>
   </div>
 
   <!-- 筛选 -->
@@ -46,12 +46,12 @@
         </tr>
       </thead>
       <tbody>
-        <tr><td>2026-09-07 16:22</td><td class="mono">TXN0920210233</td><td class="mono">YB20260907000331</td><td>订单收入</td><td><b class="success">+¥78.00</b></td><td>—</td><td>通联支付</td><td>春启 03 期家长必修课</td></tr>
-        <tr><td>2026-09-07 16:22</td><td class="mono">TXN0920210234</td><td class="mono">YB20260907000331</td><td>入金手续费</td><td>—</td><td class="danger">-¥0.23</td><td>通联支付</td><td>入金手续费 0.3%</td></tr>
-        <tr><td>2026-09-07 14:22</td><td class="mono">TXN0920209871</td><td class="mono">YB20260907000215</td><td>订单收入</td><td><b class="success">+¥299.00</b></td><td>—</td><td>通联支付</td><td>线上课</td></tr>
-        <tr><td>2026-09-07 14:22</td><td class="mono">TXN0920209872</td><td class="mono">YB20260907000215</td><td>入金手续费</td><td>—</td><td class="danger">-¥0.90</td><td>通联支付</td><td>入金手续费 0.3%</td></tr>
-        <tr><td>2026-09-06 20:19</td><td class="mono">TXN0920188666</td><td class="mono">YB20260906000892</td><td>退款</td><td>—</td><td class="danger">-¥9.90</td><td>通联支付</td><td>售后 AS202609070005</td></tr>
-        <tr><td>2026-09-06 20:19</td><td class="mono">TXN0920188667</td><td class="mono">YB20260906000892</td><td>手续费返还</td><td><b class="success">+¥0.03</b></td><td>—</td><td>通联支付</td><td>退款返还入金手续费</td></tr>
+        <tr data-inc="78" data-exp="0" data-acct="通联支付" data-type="订单收入" data-day="2026-09-07"><td>2026-09-07 16:22</td><td class="mono">TXN0920210233</td><td class="mono">YB20260907000331</td><td>订单收入</td><td><b class="success">+¥78.00</b></td><td>—</td><td>通联支付</td><td>春启 03 期家长必修课</td></tr>
+        <tr data-inc="0" data-exp="0.23" data-acct="通联支付" data-type="入金手续费" data-day="2026-09-07"><td>2026-09-07 16:22</td><td class="mono">TXN0920210234</td><td class="mono">YB20260907000331</td><td>入金手续费</td><td>—</td><td class="danger">-¥0.23</td><td>通联支付</td><td>入金手续费 0.3%</td></tr>
+        <tr data-inc="299" data-exp="0" data-acct="通联支付" data-type="订单收入" data-day="2026-09-07"><td>2026-09-07 14:22</td><td class="mono">TXN0920209871</td><td class="mono">YB20260907000215</td><td>订单收入</td><td><b class="success">+¥299.00</b></td><td>—</td><td>通联支付</td><td>线上课</td></tr>
+        <tr data-inc="0" data-exp="0.9" data-acct="通联支付" data-type="入金手续费" data-day="2026-09-07"><td>2026-09-07 14:22</td><td class="mono">TXN0920209872</td><td class="mono">YB20260907000215</td><td>入金手续费</td><td>—</td><td class="danger">-¥0.90</td><td>通联支付</td><td>入金手续费 0.3%</td></tr>
+        <tr data-inc="0" data-exp="9.9" data-acct="通联支付" data-type="退款" data-day="2026-09-06"><td>2026-09-06 20:19</td><td class="mono">TXN0920188666</td><td class="mono">YB20260906000892</td><td>退款</td><td>—</td><td class="danger">-¥9.90</td><td>通联支付</td><td>售后 AS202609070005</td></tr>
+        <tr data-inc="0.03" data-exp="0" data-acct="通联支付" data-type="手续费返还" data-day="2026-09-06"><td>2026-09-06 20:19</td><td class="mono">TXN0920188667</td><td class="mono">YB20260906000892</td><td>手续费返还</td><td><b class="success">+¥0.03</b></td><td>—</td><td>通联支付</td><td>退款返还入金手续费</td></tr>
       </tbody>
     </table>
   </div></div>
@@ -85,8 +85,55 @@
 <script src="../assets/js/admin-shell.js?v=33"></script>
 <script>
 (function () {
-  document.getElementById("btn-query").addEventListener("click", function(){ Proto.toast("已筛选（原型）"); });
-  document.getElementById("btn-reset").addEventListener("click", function(){ Proto.toast("已重置（原型）"); });
+  function v(id){ return (document.getElementById(id).value || "").trim(); }
+  function money(n){ return "¥" + n.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","); }
+
+  /* 顶部统计跟随下方筛选条件重算（收款账户 / 收支类型 / 单号 / 时间区间） */
+  function recalcStats(){
+    var rows = Array.prototype.slice.call(document.querySelectorAll("#panel-txn tbody tr"));
+    var inc = 0, exp = 0, hit = 0;
+    rows.forEach(function (tr) {
+      var ok = true;
+      var acct = tr.getAttribute("data-acct") || "";
+      var type = tr.getAttribute("data-type") || "";
+      var day = tr.getAttribute("data-day") || "";
+      var no = tr.children[1] ? tr.children[1].textContent.trim() : "";
+      var ord = tr.children[2] ? tr.children[2].textContent.trim() : "";
+      if (v("f-account") && acct !== v("f-account")) ok = false;
+      if (v("f-type") && type !== v("f-type")) ok = false;
+      if (v("f-no")) {
+        var kw = v("f-no").toLowerCase();
+        if (no.toLowerCase().indexOf(kw) < 0 && ord.toLowerCase().indexOf(kw) < 0) ok = false;
+      }
+      if (v("f-time1") && day < v("f-time1").slice(0, 10)) ok = false;
+      if (v("f-time2") && day > v("f-time2").slice(0, 10)) ok = false;
+      if (!ok) return;
+      hit++;
+      inc += parseFloat(tr.getAttribute("data-inc") || 0);
+      exp += parseFloat(tr.getAttribute("data-exp") || 0);
+    });
+    if (!hit) return;   /* 无命中时保持全量口径 */
+    document.getElementById("s-income").textContent = money(inc);
+    document.getElementById("s-expense").textContent = money(exp);
+    document.getElementById("s-net").textContent = money(inc - exp);
+  }
+
+  document.getElementById("btn-query").addEventListener("click", function(){
+    recalcStats();
+    Proto.toast("已按当前筛选统计（原型）");
+  });
+  ["f-account","f-type","f-no","f-time1","f-time2"].forEach(function (id) {
+    var n = document.getElementById(id);
+    if (n) n.addEventListener("change", recalcStats);
+  });
+  document.getElementById("btn-reset").addEventListener("click", function(){
+    ["f-account","f-type"].forEach(function(id){ document.getElementById(id).value = ""; });
+    ["f-no","f-time1","f-time2"].forEach(function(id){ document.getElementById(id).value = ""; });
+    document.getElementById("s-income").textContent = "¥24,650.00";
+    document.getElementById("s-expense").textContent = "¥2,080.15";
+    document.getElementById("s-net").textContent = "¥22,569.85";
+    Proto.toast("已重置（原型）");
+  });
 })();
 </script>
 </body>

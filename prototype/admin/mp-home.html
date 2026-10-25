@@ -90,7 +90,7 @@
         <tbody id="live-tbody"></tbody>
       </table>
       <div style="margin-top:10px"><button class="btn" id="btn-live-add">+ 添加直播</button></div>
-      <p class="muted" style="font-size:12px;margin:10px 0 0">创建与审核请前往 <a href="lives.html">直播列表</a>；通过审核的场次默认可展示，在此勾选哪些场次进入 C 端直播模块。</p>
+      <p class="muted" style="font-size:12px;margin:10px 0 0">创建请前往 <a href="lives.html">直播列表</a>；已创建并上架的场次可在此勾选，决定哪些场次进入 C 端直播模块。</p>
     </div>
   </div>
 
@@ -196,7 +196,7 @@
 
 <script src="../assets/js/proto.js"></script>
 <script src="../assets/js/teachers-store.js?v=3"></script>
-<script src="../assets/js/course-store.js?v=2"></script>
+<script src="../assets/js/course-store.js?v=4"></script>
 <script src="../assets/js/prototype-business-store.js"></script>
 <script src="../assets/js/goods-store.js?v=2"></script>
 <script src="../assets/js/listing-store.js?v=1"></script>
@@ -478,7 +478,7 @@ function goodsOptionsHtml(contentId, selectedId, forLive) {
   var goods = GD.listApprovedByContent(contentId);
   var empty = forLive
     ? '<option value="">不指定（免费场次）</option>'
-    : '<option value="">该内容下暂无已通过审核的商品</option>';
+    : '<option value="">该内容下暂无可售商品</option>';
   if (!goods.length) return empty;
   var opts = forLive ? '<option value=""' + (!selectedId ? " selected" : "") + ">不指定（免费场次）</option>" : "";
   opts += goods.map(function (g) {

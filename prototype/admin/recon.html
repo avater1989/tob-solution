@@ -8,17 +8,21 @@
 </head>
 <body class="admin-body" data-module="trade" data-nav="recon" data-title="对账管理" data-crumb="交易 / 资产管理 / 对账管理">
 <div id="header-actions">
-  <span class="muted" style="font-size:12px;margin-right:8px">对账由平台在运营后台统一发起</span>
+  <span class="muted" style="font-size:12px;margin-right:8px">账单由平台生成并推送，确认后对账完成</span>
   <button class="btn" id="btn-export">导出对账单</button>
 </div>
 <div id="page-content" style="display:none">
 
   <!-- 顶部统计 -->
-  <div class="grid-3" style="margin-bottom:16px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px">
-    <div class="stat"><div class="label">本期账期</div><div class="value">2026-04-01 ~ 04-07</div><div class="hint">T+1 自动对账</div></div>
+  <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-bottom:16px" data-phase2-only>
+    <div class="stat"><div class="label">待确认账单</div><div class="value">2</div><div class="hint">请及时确认或提出异议</div></div>
     <div class="stat"><div class="label">本期交易额</div><div class="value">¥8,432.20</div><div class="hint">86 笔</div></div>
-    <div class="stat"><div class="label">本期退款额</div><div class="value">¥308.80</div><div class="hint">4 笔</div></div>
+    <div class="stat"><div class="label">本期退款额</div><div class="value">¥308.80</div><div class="hint">4 笔（含售后单）</div></div>
   </div>
+
+  <p class="muted" style="margin:0 0 8px;font-size:12px">
+    对账流程：平台生成账单 → 平台核对并推送 → <b>商家确认</b>（对账完成，进入结算）或 <b>申请重新对账</b>（填写异议点退回平台重核）。商家侧<b>不可修改账单明细</b>。
+  </p>
 
   <!-- 对账单列表 -->
   <div class="card" style="margin-bottom:8px"><div class="card-bd">
@@ -26,11 +30,11 @@
       <input id="f-bill-no" placeholder="对账单号" />
       <select id="f-channel">
         <option value="">账单渠道</option>
-        <option>通联支付</option><option>微信小店</option>
+        <option>通联支付</option>
       </select>
       <select id="f-status">
         <option value="">对账状态</option>
-        <option>已对平</option><option>待对账</option>
+        <option>待确认</option><option>重新对账中</option><option>已确认</option>
       </select>
       <input id="f-period1" type="date" />
       <button class="btn btn-primary" id="btn-query">筛选</button>
@@ -48,81 +52,75 @@
           <th>渠道账单笔数</th>
           <th>交易额</th>
           <th>退款额</th>
-          <th>状态</th>
-          <th>生成时间</th>
-          <th style="width:130px">操作</th>
+          <th>应结金额</th>
+          <th>对账状态</th>
+          <th>推送时间</th>
+          <th style="width:150px">操作</th>
         </tr>
       </thead>
       <tbody>
         <tr>
-          <td><a href="recon-detail.html?no=RC20260407001" class="link-mono">RC20260407001</a></td>
+          <td><a href="recon-detail.html?no=RC20260407001" class="link-mono">RC20260407001</a> <span class="tag" style="font-size:11px">V2</span></td>
           <td>04-01 ~ 04-07</td>
           <td>通联支付</td>
           <td>86</td>
           <td>86</td>
           <td><b>¥8,432.20</b></td>
           <td>¥308.80</td>
-          <td><span class="badge badge-success">已对平</span></td>
-          <td>2026-04-08 02:00</td>
+          <td><b>¥8,123.40</b></td>
+          <td><span class="badge badge-danger">重新对账中</span></td>
+          <td>2026-04-09 10:20</td>
           <td class="row-actions">
-            <a href="#" data-toast="下载渠道账单（原型）">下载账单</a>
+            <a href="recon-detail.html?no=RC20260407001">查看</a>
+            <a href="recon-detail.html?no=RC20260407001&amp;act=objection">申请重新对账</a>
           </td>
         </tr>
         <tr>
-          <td><a href="recon-detail.html?no=RC20260407002" class="link-mono">RC20260407002</a></td>
+          <td><a href="recon-detail.html?no=RC20260407002" class="link-mono">RC20260407002</a> <span class="tag" style="font-size:11px">V1</span></td>
           <td>04-01 ~ 04-07</td>
-          <td>微信小店</td>
+          <td>通联支付</td>
           <td>31</td>
           <td>31</td>
           <td><b>¥3,069.00</b></td>
           <td>¥0.00</td>
-          <td><span class="badge badge-success">已对平</span></td>
-          <td>2026-04-08 02:05</td>
+          <td><b>¥3,069.00</b></td>
+          <td><span class="badge badge-warn">待确认</span></td>
+          <td>2026-04-08 10:05</td>
           <td class="row-actions">
-            <a href="#" data-toast="下载渠道账单（原型）">下载账单</a>
+            <a href="recon-detail.html?no=RC20260407002">查看</a>
+            <a href="recon-detail.html?no=RC20260407002&amp;act=confirm">确认</a>
           </td>
         </tr>
         <tr>
-          <td><a href="recon-detail.html?no=RC20260331001" class="link-mono">RC20260331001</a></td>
+          <td><a href="recon-detail.html?no=RC20260331001" class="link-mono">RC20260331001</a> <span class="tag" style="font-size:11px">V1</span></td>
           <td>03-25 ~ 03-31</td>
           <td>通联支付</td>
           <td>42</td>
           <td>42</td>
           <td><b>¥4,135.30</b></td>
           <td>¥9.90</td>
-          <td><span class="badge badge-success">已对平</span></td>
-          <td>2026-04-01 02:00</td>
+          <td><b>¥4,125.40</b></td>
+          <td><span class="badge badge-warn">待确认</span></td>
+          <td>2026-04-01 10:00</td>
           <td class="row-actions">
-            <a href="#" data-toast="下载渠道账单（原型）">下载账单</a>
+            <a href="recon-detail.html?no=RC20260331001">查看</a>
+            <a href="recon-detail.html?no=RC20260331001&amp;act=confirm">确认</a>
           </td>
         </tr>
         <tr>
-          <td><a href="recon-detail.html?no=RC20260331002" class="link-mono">RC20260331002</a></td>
+          <td><a href="recon-detail.html?no=RC20260331002" class="link-mono">RC20260331002</a> <span class="tag" style="font-size:11px">V1</span></td>
           <td>03-25 ~ 03-31</td>
-          <td>微信小店</td>
+          <td>通联支付</td>
           <td>18</td>
           <td>18</td>
           <td><b>¥1,782.00</b></td>
           <td>¥0.00</td>
-          <td><span class="badge badge-success">已对平</span></td>
-          <td>2026-04-01 02:03</td>
+          <td><b>¥1,782.00</b></td>
+          <td><span class="badge badge-success">已确认</span></td>
+          <td>2026-04-01 10:03</td>
           <td class="row-actions">
+            <a href="recon-detail.html?no=RC20260331002">查看</a>
             <a href="#" data-toast="下载渠道账单（原型）">下载账单</a>
-          </td>
-        </tr>
-        <tr>
-          <td><span class="link-mono muted">RC20260408001</span></td>
-          <td>04-08</td>
-          <td>通联支付</td>
-          <td>—</td>
-          <td>—</td>
-          <td>—</td>
-          <td>—</td>
-          <td>—</td>
-          <td><span class="badge">待对账</span></td>
-          <td>次日 02:00 生成</td>
-          <td class="row-actions">
-            <a href="#" data-toast="等待 T+1 自动对账（原型）">—</a>
           </td>
         </tr>
       </tbody>
@@ -148,7 +146,6 @@
     mask.classList.remove("open");
     document.querySelectorAll(".proto-modal, .proto-drawer").forEach(function (n) { n.classList.remove("open"); });
   }
-  function open(node) { mask.classList.add("open"); node.classList.add("open"); }
   mask.addEventListener("click", closeAll);
   document.querySelectorAll("[data-close]").forEach(function (n) { n.addEventListener("click", closeAll); });
 
@@ -157,6 +154,4 @@
 })();
 </script>
 </body>
-</html>  <p class="muted" style="margin:0 0 8px;font-size:12px">对账状态：<b>待对账</b> →（平台 T+1 自动对账，按本商户账期）<b>已对平</b>，对平后进入结算池；存在差异时状态仍为<b>待对账</b>，由平台在运营后台处理差异后自动重算。商家侧<b>只读</b>，仅可查看与下载账单。</p>
-
-
+</html>

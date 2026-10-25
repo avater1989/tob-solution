@@ -142,15 +142,8 @@
           { id: "assess-plans", href: "assess-plans.html", label: "定制化计划" },
         ],
       },
-      {
-        group: "审核",
-        links: [
-          { id: "audit", href: "audit.html", label: "内容审核", badge: 0 },
-          { id: "audit-live", href: "audit.html?type=live", label: "直播审核" },
-          { id: "audit-goods", href: "audit.html?type=goods", label: "商品审核" },
-          { id: "audit-appeal", href: "audit.html?tab=appeal", label: "申诉处理" },
-        ],
-      },
+      /* 2026-10-25：「审核」组已下线 —— 一期内容不设平台审核（内容仅待上架/已上架/已下架三态），
+       * 直播不设平台审核、商品不参与平台审核（见 PRD §9 口径），审核工作台不再是模块入口 */
     ],
     trade: [
       {
@@ -354,7 +347,6 @@
   var reviewSteps = [
     { href: "tenants.html", label: "租户开通", phase2: false },
     { href: "content-video.html", label: "平台内容", phase2: true },
-    { href: "audit.html", label: "内容审核", phase2: true },
     { href: "settlements.html", label: "对账结算", phase2: false },
     { href: "trade-orders.html", label: "订单列表", phase2: false },
     { href: "data.html", label: "数据", phase2: false },

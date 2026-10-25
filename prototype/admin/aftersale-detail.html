@@ -31,12 +31,11 @@
       <div class="os-flow" id="as-flow">
         <div class="os-step done"><i>1</i>买家申请</div>
         <div class="os-step cur"><i>2</i>商家审核</div>
-        <div class="os-step"><i>3</i>买家退货</div>
-        <div class="os-step"><i>4</i>收货退款</div>
+        <div class="os-step"><i>3</i>退款到账</div>
       </div>
     </div>
     <div class="alert alert-warning" style="margin-top:12px;font-size:13px">
-      买家提交申请后 <b>7 天</b>未处理将自动同意并发送默认退货地址；含售后中商品的订单，需先完成售后才可发起主动退款。
+      买家提交申请后 <b>7 天</b>未处理将自动同意并退款；含售后中商品的订单，需先完成售后才可发起主动退款。
     </div>
   </div></div>
 
@@ -47,7 +46,6 @@
           <div class="kv-row"><span>售后类型</span><b id="kv-type">—</b></div>
           <div class="kv-row"><span>申请件数</span><b>1 件</b></div>
           <div class="kv-row"><span>退款金额</span><b class="price" id="kv-amount">—</b></div>
-          <div class="kv-row"><span>是否退运费</span><b>不退运费（默认）</b></div>
           <div class="kv-row"><span>申请原因</span><b id="kv-reason">—</b></div>
           <div class="kv-row"><span>问题描述</span><b id="kv-desc">—</b></div>
           <div class="kv-row"><span>申请凭证</span><b><a href="#" class="link" data-toast="预览凭证图片（原型）">图片凭证 1 张</a></b></div>
@@ -81,7 +79,7 @@
           <div class="kv-row"><span>买家</span><b id="kv-buyer">—</b></div>
           <div class="kv-row"><span>用户 ID</span><b id="kv-user-id">—</b></div>
           <div class="kv-row"><span>手机号</span><b id="kv-phone">—</b></div>
-          <div class="kv-row"><span>退货收货地址（待发送）</span><b id="kv-addr">商家待同意后提供</b></div>
+          <div class="kv-row"><span>退款路径</span><b id="kv-addr">原路退回（通联支付）</b></div>
         </div>
       </div>
     </div>
@@ -121,7 +119,7 @@
   <div class="card" id="as-actions"><div class="card-bd" style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
     <span style="font-weight:600">商家处理：</span>
     <button class="btn" id="btn-reject">拒绝申请</button>
-    <button class="btn btn-primary" id="btn-agree">同意并发退货地址</button>
+    <button class="btn btn-primary" id="btn-agree">同意并退款</button>
     <a class="btn" id="btn-view-order" href="order-detail.html">查看原订单</a>
   </div></div>
 
@@ -135,18 +133,15 @@
 
 <div class="proto-mask" id="mask"></div>
 <div class="proto-modal" id="modal-agree" style="width:520px">
-  <div class="proto-modal-hd"><h3 style="font-size:16px;font-weight:600">同意退货退款</h3><button class="btn btn-sm btn-ghost" data-close>×</button></div>
+  <div class="proto-modal-hd"><h3 style="font-size:16px;font-weight:600">同意退款</h3><button class="btn btn-sm btn-ghost" data-close>×</button></div>
   <div class="proto-modal-bd">
     <div class="form-grid" style="grid-template-columns:1fr 1fr">
-      <div class="field" style="grid-column:1/-1"><label>退款金额 *</label><input id="agree-amount" value="" /><span class="muted" style="font-size:12px">确认收货时按此金额原路退款</span></div>
-      <div class="field"><label>是否退运费</label>
-        <select style="width:100%;padding:7px 8px;border:1px solid var(--color-border);border-radius:6px"><option>不退运费</option><option>退运费 ¥6.00</option></select>
-      </div>
+      <div class="field" style="grid-column:1/-1"><label>退款金额 *</label><input id="agree-amount" value="" /><span class="muted" style="font-size:12px">确认后按此金额原路退款</span></div>
       <div class="field"><label>退款后权益处理</label>
         <select style="width:100%;padding:7px 8px;border:1px solid var(--color-border);border-radius:6px"><option>自动回收课程权益 / 服务额度</option><option>保留权益（客诉安抚）</option></select>
       </div>
     </div>
-    <p class="muted" style="margin-top:8px">同意后系统按通联支付原路退款（虚拟商品无退货物流环节），并按所选策略回收或保留权益；链路 B 退款受原收款人账户余额约束，不足需先充值。</p>
+    <p class="muted" style="margin-top:8px">同意后系统按通联支付原路退款（无实物商品，无退货物流环节），并按所选策略回收或保留权益；链路 B 退款受原收款人账户余额约束，不足需先充值。</p>
   </div>
   <div class="proto-drawer-ft" style="border-top:1px solid var(--color-border);padding:12px 20px;display:flex;gap:8px;justify-content:flex-end">
     <button class="btn" data-close>取消</button>
@@ -350,8 +345,7 @@
 
   function badgeClass(status) {
     if (status === "pending_merchant") return "badge-warn";
-    if (status === "returning") return "badge-info";
-    if (status === "rejected") return "badge-danger";
+    if (status === "refunding") return "badge-info"; if (status === "rejected") return "badge-danger";
     if (status === "done") return "badge-success";
     return "";
   }
@@ -422,9 +416,9 @@
       var story = document.getElementById("as-story");
       story.style.display = "";
       story.innerHTML = "表达链路：订单已退款 → 退款处理完成 → 权益被回收 → 用户当前不能访问课程。";
-      document.getElementById("kv-addr").textContent = "课程商品仅退款，无需退货";
+      document.getElementById("kv-addr").textContent = "原路退回（通联支付）";
       document.getElementById("kv-deadline").textContent = "—";
-      document.getElementById("kv-timeout-rule").textContent = "仅退款 · 无退货时效";
+      document.getElementById("kv-timeout-rule").textContent = "仅退款 · 无退货环节";
       var warn = document.querySelector("#as-found .alert.alert-warning");
       if (warn && warn.id !== "as-story") {
         warn.innerHTML = "本单为<b>课程商品仅退款</b>：退款完成后系统自动回收课程权益，买家无法再访问对应课程。";
@@ -433,20 +427,17 @@
       rightsCard.style.display = "none";
     }
 
-    if (row.status === "returning") {
-      document.getElementById("kv-addr").textContent = "默认退货地址（深圳仓）已发送";
+    if (row.status === "refunding") {
       document.getElementById("as-flow").innerHTML =
         '<div class="os-step done"><i>1</i>买家申请</div>' +
-        '<div class="os-step done"><i>2</i>商家审核</div>' +
-        '<div class="os-step cur"><i>3</i>买家退货</div>' +
-        '<div class="os-step"><i>4</i>收货退款</div>';
+        '<div class="os-step done"><i>2</i>商家同意退款</div>' +
+        '<div class="os-step cur"><i>3</i>退款到账</div>';
     } else if (row.status === "rejected" || row.status === "done") {
       if (isKnowledgeRefund(row)) {
         document.getElementById("as-flow").innerHTML =
           '<div class="os-step done"><i>1</i>买家申请</div>' +
           '<div class="os-step done"><i>2</i>商家同意退款</div>' +
-          '<div class="os-step done"><i>3</i>退款完成</div>' +
-          '<div class="os-step cur"><i>4</i>权益已回收</div>';
+          '<div class="os-step cur"><i>3</i>退款完成 · 权益已回收</div>';
       } else {
         document.getElementById("as-flow").innerHTML =
           '<div class="os-step done"><i>1</i>买家申请</div>' +
@@ -498,7 +489,7 @@
     if (!row) return;
     row = Biz.resolveAftersale(row, "agree");
     closeAll();
-    Proto.toast("已同意，退货地址已发送买家");
+    Proto.toast("已同意退款，等待渠道退款回调");
     render(row);
     offerDashContinue("已同意售后");
   });

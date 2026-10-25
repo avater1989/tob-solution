@@ -25,18 +25,19 @@
        入参可传展示文案（如「已上架」）或存储枚举（如 enabled / on_sale / off）。
        内容列表与商品列表统一调用本方法，勿再各页自行拼 span（R-UI-010）。 */
     shelfTag: function (status) {
+      /* 内容三态：待上架 / 已上架 / 已下架（一期不设内容审核）。
+       * 旧状态键保留映射，避免历史数据或未清理页面渲染出审核类文案。
+       */
       var LABEL = {
-        enabled: "已上架", disabled: "已下架",
-        on_sale: "上架中", off: "已下架",
-        draft: "草稿",
-        pending_audit: "待审核", pending: "待平台审核",
-        approved: "已通过", rejected: "已驳回"
+        enabled: "已上架", disabled: "已下架", on_sale: "上架中", off: "已下架",
+        approved: "已通过",
+        pending: "待上架", draft: "待上架", pending_audit: "待上架", rejected: "待上架"
       };
       var raw = String(status == null ? "" : status);
       var text = LABEL[raw] || raw;
       var cls = "off";
       if (/已上架|上架中|已发布|已通过/.test(text)) cls = "on";
-      else if (/待审|审核中/.test(text)) cls = "pending";
+      else if (/待上架|待审|审核中/.test(text)) cls = "pending";
       else if (/不通过|已驳回|驳回/.test(text)) cls = "rejected";
       return '<span class="shelf-tag shelf-tag-' + cls + '">' + text + "</span>";
     },

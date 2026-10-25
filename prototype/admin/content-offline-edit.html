@@ -16,7 +16,7 @@
 
 <div id="header-actions">
   <a class="btn" href="content-offline.html">返回列表</a>
-  <button class="btn" id="btn-draft">保存草稿</button>
+  <button class="btn" id="btn-draft">保存</button>
   <button class="btn btn-primary" id="btn-publish">保存并上架</button>
 </div>
 
@@ -259,7 +259,7 @@ function saveToast(msg) {
   setTimeout(function () { location.href = "content-offline.html"; }, 600);
 }
 
-document.getElementById("btn-draft").addEventListener("click", function () { saveToast("草稿已保存"); });
+document.getElementById("btn-draft").addEventListener("click", function () { saveToast("已保存"); });
 document.getElementById("btn-publish").addEventListener("click", function () { saveToast("已保存并上架（原型）"); });
 </script>
 </body>

@@ -14,12 +14,8 @@
 </div>
 <div id="page-content" style="display:none">
 
-  <div class="alert alert-info" style="margin-bottom:12px">
-    <span>打款为敏感操作：需 <b>双人复核</b>（提交人 ≠ 复核人）并全程留痕；打款失败保留原结算单，支持原单重试。</span>
-  </div>
-
   <!-- 统计 -->
-  <div class="grid-4" style="margin-bottom:16px">
+  <div class="grid-4" style="margin-bottom:16px" data-phase2-only>
     <div class="stat"><div class="label">待商家确认</div><div class="value">¥32,420.60</div><div class="hint">5 单</div></div>
     <div class="stat"><div class="label">待财务复核</div><div class="value">¥18,905.42</div><div class="hint">3 单 · 其中 1 单超 24h</div></div>
     <div class="stat"><div class="label">结算中（打款中）</div><div class="value">¥8,123.40</div><div class="hint">1 单</div></div>
@@ -73,7 +69,7 @@
           <td>¥8,432.20</td><td>¥308.80</td><td>¥0.00</td>
           <td><b>¥8,123.40</b></td>
           <td><span class="badge badge-warn">待商家确认</span></td>
-          <td class="row-actions"><a href="settlement-detail.html">详情</a><a href="#" data-row-act="notice">催确认</a></td>
+          <td class="row-actions"><a href="settlement-detail.html">详情</a></td>
         </tr>
         <tr>
           <td><input type="checkbox" class="ck-row" /></td>
@@ -85,7 +81,7 @@
           <td>¥12,648.50</td><td>¥238.60</td><td>¥0.00</td>
           <td><b>¥12,409.90</b></td>
           <td><span class="badge badge-info">待财务复核</span></td>
-          <td class="row-actions"><a href="settlement-detail.html">复核</a><a href="settlement-detail.html">详情</a></td>
+          <td class="row-actions"><a href="#" data-row-act="review" data-no="ST20260910002">复核确认</a><a href="settlement-detail.html">详情</a></td>
         </tr>
         <tr>
           <td><input type="checkbox" class="ck-row" /></td>
@@ -97,7 +93,7 @@
           <td>¥4,135.30</td><td>¥9.90</td><td>¥0.00</td>
           <td><b>¥4,125.40</b></td>
           <td><span class="badge badge-info">待财务复核</span></td>
-          <td class="row-actions"><a href="settlement-detail.html">复核</a><a href="settlement-detail.html">详情</a></td>
+          <td class="row-actions"><a href="#" data-row-act="review" data-no="ST20260910002">复核确认</a><a href="settlement-detail.html">详情</a></td>
         </tr>
         <tr>
           <td><input type="checkbox" class="ck-row" /></td>
@@ -147,18 +143,22 @@
     <button class="btn btn-sm">下一页</button>
   </div>
 
-  <!-- 结算规则快照 -->
-  <div class="card" style="margin-top:12px"><div class="card-hd"><h2>结算流程说明</h2></div>
-    <div class="card-bd">
-      <ul class="muted" style="font-size:13px;line-height:1.9;padding-left:16px;margin:0">
-        <li>结算单生成条件：对账单已对平 + 无未结差异 + 已达结算门槛 + 商家已确认；</li>
-        <li><b>结算账期</b>按租户配置（见「租户配置 → 容量与费率 → 结算账期」，如 T+7），决定结算单确认后的打款时点；</li>
-        <li>流程：待商家确认 → 已确认 → 待财务复核 → 复核通过 → 打款中 → 已打款 → 已完结；</li>
-        <li>复核驳回 → 已退回（附原因）；商家申诉或资金冻结 → 结算暂停；</li>
-        <li>若规则开启「先票后款」，则未关联有效发票不得打款。</li>
-      </ul>
+
+<div class="proto-mask" id="mask"></div>
+<div class="proto-modal" id="modal-review" style="width:520px">
+  <div class="proto-modal-hd"><h3 style="font-size:16px;font-weight:600">财务复核确认</h3><button class="btn btn-sm btn-ghost" data-close>×</button></div>
+  <div class="proto-modal-bd">
+    <p style="margin:0 0 8px;font-size:13px">确认对结算单 <b id="rv-no">—</b> 的金额与分账无误？确认后进入打款环节，<b>本操作仅需一次确认</b>，全程留痕。</p>
+    <div class="calc">
+      <div class="calc-row"><span>应结算金额</span><b>¥12,409.90</b></div>
+      <div class="calc-row"><span>订单数</span><b>128 笔</b></div>
+      <div class="calc-row total"><span>打款金额</span><b>¥12,409.90</b></div>
     </div>
+    <p class="muted" style="margin:10px 0 0;font-size:12px">复核驳回将退回商家确认并附原因；结算单生成于对账完成（商家已确认账单）后。</p>
   </div>
+  <div class="proto-modal-ft"><button class="btn" data-close>取消</button><button class="btn btn-primary" id="rv-submit">确认并进入打款</button></div>
+</div>
+
 </div>
 
 <style>
@@ -177,18 +177,32 @@
   });
   function checkedCount(){ return rows().filter(function (c) { return c.checked; }).length; }
 
-  document.querySelectorAll("[data-row-act]").forEach(function (a) {
-    a.addEventListener("click", function (e) { e.preventDefault(); Proto.toast("已向商家重发结算确认通知（原型）"); });
+  var mask = document.getElementById("mask");
+  function closeAll(){ mask.classList.remove("open"); document.querySelectorAll(".proto-modal").forEach(function(n){ n.classList.remove("open"); }); }
+  function open(n){ mask.classList.add("open"); n.classList.add("open"); }
+  mask.addEventListener("click", closeAll);
+  document.querySelectorAll("[data-close]").forEach(function(n){ n.addEventListener("click", closeAll); });
+
+  document.querySelectorAll('[data-row-act="review"]').forEach(function (a) {
+    a.addEventListener("click", function (e) {
+      e.preventDefault();
+      document.getElementById("rv-no").textContent = a.getAttribute("data-no") || "";
+      open(document.getElementById("modal-review"));
+    });
+  });
+  document.getElementById("rv-submit").addEventListener("click", function () {
+    closeAll();
+    Proto.toast("财务复核已确认，进入打款环节（原型）");
   });
   document.getElementById("btn-batch-confirm").addEventListener("click", function () {
     var n = checkedCount();
     if (!n) { Proto.toast("请先勾选结算单"); return; }
-    Proto.toast("已批量提交复核，共 " + n + " 单（原型）");
+    Proto.toast("已批量提交财务确认，共 " + n + " 单（原型）");
   });
   document.getElementById("btn-batch-pay").addEventListener("click", function () {
     var n = checkedCount();
     if (!n) { Proto.toast("请先勾选结算单"); return; }
-    Proto.toast("已批量发起打款，共 " + n + " 单，待第二人复核（原型）");
+    Proto.toast("已批量发起打款，共 " + n + " 单（原型）");
   });
   document.getElementById("btn-export").addEventListener("click", function () { Proto.toast("已导出结算单列表（原型）"); });
   document.getElementById("btn-query").addEventListener("click", function () { Proto.toast("已筛选（原型）"); });

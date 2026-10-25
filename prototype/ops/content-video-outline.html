@@ -71,7 +71,7 @@
 <script src="../assets/js/proto.js"></script>
 <script src="../assets/js/content-tags.js?v=3"></script>
 <script src="../assets/js/teachers-store.js?v=3"></script>
-<script src="../assets/js/course-store.js?v=1"></script>
+<script src="../assets/js/course-store.js?v=4"></script>
 <script src="../assets/js/ops-shell.js?v=29"></script>
 <script>
 var Store = window.CourseStore;
@@ -111,16 +111,13 @@ function render() {
   var alertEl = document.getElementById("o-readonly");
   if (readonly) {
     alertEl.style.display = "block";
-    alertEl.textContent = course.status === Store.STATUS.enabled
-      ? "内容已上架，章节锁定。请先返回列表下架后再调整。"
-      : (course.status === Store.STATUS.pending_audit ? "审核中，章节锁定。" : "当前只读。");
+    alertEl.textContent = "平台下发内容，商家侧不可调整章节。";
   } else {
     alertEl.style.display = "none";
   }
   document.getElementById("btn-new-ch").style.display = readonly ? "none" : "";
   document.getElementById("btn-publish").style.display = readonly ? "none" : "";
-  document.getElementById("btn-publish").textContent =
-    course.source === "platform" ? "完成并上架" : "完成并提交";
+  document.getElementById("btn-publish").textContent = "完成并上架";
   document.getElementById("o-ch-count").textContent = Store.chapterCount(course);
 
   document.getElementById("o-chapters").innerHTML = (course.chapters || []).map(function (ch, i) {
@@ -227,8 +224,8 @@ document.getElementById("o-chapters").addEventListener("click", function (e) {
 });
 
 document.getElementById("btn-publish").addEventListener("click", function () {
-  var r = course.source === "platform" ? Store.enableDirect(id) : Store.submitAudit(id);
-  Proto.toast(r.ok ? (course.source === "platform" ? "已上架" : "已提交审核") : r.msg);
+  var r = Store.enableDirect(id);
+  Proto.toast(r.ok ? "已上架" : r.msg);
   if (r.ok) setTimeout(function () { location.href = "content-video.html"; }, 600);
 });
 </script>

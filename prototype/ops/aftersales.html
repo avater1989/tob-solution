@@ -15,8 +15,8 @@
   <!-- 顶部统计 -->
   <div class="grid-4" style="margin-bottom:16px">
     <div class="stat"><div class="label">待处理</div><div class="value">4</div><div class="hint">需 7 天内处理，超时自动同意</div></div>
-    <div class="stat"><div class="label">待退货</div><div class="value">1</div><div class="hint">等待买家寄回</div></div>
-    <div class="stat"><div class="label">待收货退款</div><div class="value">2</div><div class="hint">商家验收后退款</div></div>
+    <div class="stat"><div class="label">退款中</div><div class="value">6</div><div class="hint">等待渠道回调</div></div>
+    <div class="stat"><div class="label">已退款</div><div class="value">28</div><div class="hint">近 7 天</div></div>
     <div class="stat"><div class="label">本月售后率</div><div class="value">2.4%</div><div class="hint">售后单/已支付订单</div></div>
   </div>
 
@@ -25,7 +25,7 @@
     <a class="active" href="#" data-tab="all">全部</a>
     <a href="#" data-tab="pending">待处理</a>
     <a href="#" data-tab="processing">处理中</a>
-    <a href="#" data-tab="done">已完成</a>
+    <a href="#" data-tab="done">已退款</a>
     <a href="#" data-tab="closed">已关闭</a>
   </div>
 
@@ -35,10 +35,10 @@
       <input id="f-no" placeholder="售后单号 / 订单号" />
       <input id="f-buyer" placeholder="买家（姓名/手机号）" />
       <select id="f-type">
-        <option value="">售后类型</option><option>仅退款</option><option>退款并回收权益</option>
+        <option value="">售后类型</option><option>仅退款</option><option>退款并回收权益</option><option>退款不回收权益</option>
       </select>
       <select id="f-status">
-        <option value="">状态</option><option>待商家处理</option><option>待买家退货</option><option>待商家收货</option><option>已完成</option><option>已关闭</option>
+        <option value="">状态</option><option>待商家处理</option><option>退款中</option><option>已退款</option><option>已驳回</option><option>已关闭</option>
       </select>
       <select id="f-tenant">
         <option value="">订单来源租户</option><option>星启家庭教育</option><option>晨光少儿成长</option><option>慧心教育</option><option>青藤家长学堂</option>
@@ -70,12 +70,12 @@
       <tbody id="as-tbody">
         <tr>
           <td><a href="aftersale-detail.html?id=AS202609080001" class="link-mono">AS202609080001</a></td>
-          <td><span class="tag tag-warn">退货退款</span></td>
+          <td><span class="tag tag-blue">仅退款</span></td>
           <td><a href="#" data-toast="订单详情（原型示意）" class="link-mono">YB20260907000331</a><br><span class="muted" style="font-size:12px">家长手册 · 2 件</span></td>
           <td>李*** U0001</td>
           <td><span class="tag tag-blue">星启家庭教育</span></td>
-          <td><b class="danger">¥78.00</b><br><span class="muted" style="font-size:12px">含退运费 ¥0</span></td>
-          <td>尺码/规格不符</td>
+          <td><b class="danger">¥78.00</b></td>
+          <td>商品质量问题</td>
           <td><span class="badge badge-warn">待商家处理</span></td>
           <td>2026-09-08 10:12</td>
           <td class="row-actions"><a href="aftersale-detail.html?id=AS202609080001">处理</a><a href="aftersale-detail.html?id=AS202609080001">详情</a></td>
@@ -88,7 +88,7 @@
           <td><span class="tag tag-blue">慧心教育</span></td>
           <td><b class="danger">¥39.00</b></td>
           <td>商品质量问题</td>
-          <td><span class="badge badge-warn">待回收权益</span></td>
+          <td><span class="badge badge-warn">退款中</span></td>
           <td>2026-09-06 21:30</td>
           <td class="row-actions"><a href="aftersale-detail.html?id=AS202609060002">处理</a><a href="aftersale-detail.html?id=AS202609060002">详情</a></td>
         </tr>
@@ -100,7 +100,7 @@
           <td><span class="tag tag-blue">星启家庭教育</span></td>
           <td><b class="danger">¥299.00</b></td>
           <td>已学部分按比例退款，回收课程权益</td>
-          <td><span class="badge badge-success">已完成</span></td>
+          <td><span class="badge badge-success">已退款</span></td>
           <td>2026-09-04 09:15</td>
           <td class="row-actions"><a href="aftersale-detail.html?id=AS202609040009">详情</a></td>
         </tr>
@@ -128,7 +128,7 @@
           <td><span class="tag tag-blue">星启家庭教育</span></td>
           <td><b class="danger">¥299.00</b></td>
           <td>商品/服务问题</td>
-          <td><span class="badge badge-warn">待审核</span><br><span class="muted" style="font-size:12px">权益：退款成功后回收</span></td>
+          <td><span class="badge badge-warn">待商家处理</span><br><span class="muted" style="font-size:12px">权益：退款成功后回收</span></td>
           <td>2026-04-02 10:15</td>
           <td class="row-actions"><a href="#" data-row-act="audit">审核</a><a href="#" data-row-act="detail">详情</a></td>
         </tr>
@@ -204,7 +204,7 @@
 
   <div class="card" style="margin-top:16px"><div class="card-bd">
     <p class="muted" style="font-size:12px;line-height:1.8">
-      <b>售后时效：</b>售后单 <b>7 天</b>内未处理将自动同意并退款；虚拟商品不涉及退货物流，退款时按设置回收课程权益 / 服务额度。
+      <b>售后时效：</b>售后单 <b>7 天</b>内未处理将自动同意并退款；平台无实物商品，售后不含退货与物流环节；退款时按设置回收课程权益 / 服务额度。
       已分佣的推广订单退款后佣金损失由商家承担；退款将返还通联入金手续费。链路 A（平台内容）退款由平台主导，链路 B（商家自建）退回商家账户且受余额约束。
       售后规则由平台统一配置（运营后台 · 交易选项），商家侧不再单独设置。运营后台汇总处理全部租户的售后与退款单，可按「订单来源租户」筛选。
     </p>
@@ -223,11 +223,8 @@
       <div class="field"><label>商家处理超时</label>
         <select style="width:100%;padding:7px 8px;border:1px solid var(--color-border);border-radius:6px"><option>7 天自动同意</option><option>3 天自动同意</option></select>
       </div>
-      <div class="field" style="grid-column:1/-1"><label>退货物流超时</label>
-        <select style="width:100%;padding:7px 8px;border:1px solid var(--color-border);border-radius:6px"><option>买家 7 天未寄回自动关闭</option><option>买家 15 天未寄回自动关闭</option></select>
-      </div>
     </div>
-    <p class="muted" style="margin-top:8px">完整售后设置（7 天无理由、运费险、退货地址）请前往「交易设置-交易选项-售后设置」。</p>
+    <p class="muted" style="margin-top:8px">完整售后设置（7 天无理由、自动同意时限、权益回收策略）请前往「交易设置-交易选项-售后设置」。</p>
   </div>
   <div class="proto-drawer-ft" style="border-top:1px solid var(--color-border);padding:12px 20px;display:flex;gap:8px;justify-content:flex-end">
     <button class="btn" data-close>取消</button>

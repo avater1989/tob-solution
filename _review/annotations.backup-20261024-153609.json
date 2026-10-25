@@ -1,0 +1,981 @@
+{
+  "v": 1,
+  "updated": "2026-10-24T14:20:59",
+  "items": [
+    {
+      "id": "rmvkbdvgbbhv3",
+      "page": "admin/aftersales.html",
+      "anchor": {
+        "selector": "#as-tbody > tr:nth-of-type(6) > td:nth-of-type(7) > span:nth-of-type(1)",
+        "selectorIn": "#as-tbody > tr:nth-of-type(6) > td:nth-of-type(7) > span:nth-of-type(1)",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "span.badge.badge-info",
+        "text": "待买家退货",
+        "html": "<span class=\"badge badge-info\">待买家退货</span>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "无实物商品，不考虑这些状态",
+      "status": "resolved",
+      "createdAt": "2026-10-23T01:51:49.115Z",
+      "updatedAt": "2026-10-23T02:57:42.502Z"
+    },
+    {
+      "id": "rmvkbdxpagij1",
+      "page": "admin/aftersales.html",
+      "anchor": {
+        "selector": "#as-tbody > tr:nth-of-type(7) > td:nth-of-type(7) > span:nth-of-type(1)",
+        "selectorIn": "#as-tbody > tr:nth-of-type(7) > td:nth-of-type(7) > span:nth-of-type(1)",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "span.badge.badge-warn",
+        "text": "待商家收货",
+        "html": "<span class=\"badge badge-warn\">待商家收货</span>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "无实物商品，不考虑这些状态",
+      "status": "resolved",
+      "createdAt": "2026-10-23T01:51:52.030Z",
+      "updatedAt": "2026-10-23T02:57:42.502Z"
+    },
+    {
+      "id": "rmvkbegwcl7ui",
+      "page": "admin/aftersales.html",
+      "anchor": {
+        "selector": "#as-tbody > tr:nth-of-type(7) > td:nth-of-type(6)",
+        "selectorIn": "#as-tbody > tr:nth-of-type(7) > td:nth-of-type(6)",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "td",
+        "text": "尺码/规格不符",
+        "html": "<td>尺码/规格不符</td>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "无实物商品，不考虑这些原因",
+      "status": "resolved",
+      "createdAt": "2026-10-23T01:52:16.908Z",
+      "updatedAt": "2026-10-23T02:57:42.502Z"
+    },
+    {
+      "id": "rmvkbf2l5px4g",
+      "page": "admin/aftersales.html",
+      "anchor": {
+        "selector": "#as-tbody > tr:nth-of-type(6) > td:nth-of-type(2) > span",
+        "selectorIn": "#as-tbody > tr:nth-of-type(6) > td:nth-of-type(2) > span",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "span.tag.tag-warn",
+        "text": "退货退款",
+        "html": "<span class=\"tag tag-warn\">退货退款</span>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "无实物商品，不考虑这些类型",
+      "status": "resolved",
+      "createdAt": "2026-10-23T01:52:45.017Z",
+      "updatedAt": "2026-10-23T02:57:42.502Z"
+    },
+    {
+      "id": "rmvlukrs5bq6j",
+      "page": "ops/recon.html",
+      "anchor": {
+        "selector": "#panel-bills > div:nth-of-type(2) > div > table > tbody > tr:nth-of-type(2) > td:nth-of-type(14) > a:nth-of-type(2)",
+        "selectorIn": "#panel-bills > div:nth-of-type(2) > div > table > tbody > tr:nth-of-type(2) > td:nth-of-type(14) > a:nth-of-type(2)",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "a",
+        "text": "催确认",
+        "html": "<a href=\"#\" data-row-act=\"notice\">催确认</a>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "去掉",
+      "status": "resolved",
+      "createdAt": "2026-10-24T03:36:49.829Z",
+      "updatedAt": "2026-10-24T04:26:28.623Z"
+    },
+    {
+      "id": "rmvlukx87sk5w",
+      "page": "ops/recon.html",
+      "anchor": {
+        "selector": "#panel-bills > div:nth-of-type(2) > div > table > tbody > tr:nth-of-type(4) > td:nth-of-type(14) > a:nth-of-type(2)",
+        "selectorIn": "#panel-bills > div:nth-of-type(2) > div > table > tbody > tr:nth-of-type(4) > td:nth-of-type(14) > a:nth-of-type(2)",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "a",
+        "text": "催确认",
+        "html": "<a href=\"#\" data-row-act=\"notice\">催确认</a>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "去掉",
+      "status": "resolved",
+      "createdAt": "2026-10-24T03:36:56.887Z",
+      "updatedAt": "2026-10-24T04:26:28.623Z"
+    },
+    {
+      "id": "rmvlumfm3jhb7",
+      "page": "ops/recon-detail.html",
+      "anchor": {
+        "selector": "#btn-notice",
+        "selectorIn": "#btn-notice",
+        "root": "#page-header-actions",
+        "region": "header-actions",
+        "shell": "",
+        "label": "button#btn-notice.btn",
+        "text": "重发确认通知",
+        "html": "<button class=\"btn\" id=\"btn-notice\">重发确认通知</button>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "去掉",
+      "status": "resolved",
+      "createdAt": "2026-10-24T03:38:07.371Z",
+      "updatedAt": "2026-10-24T04:26:28.623Z"
+    },
+    {
+      "id": "rmvluwfkffq0h",
+      "page": "ops/recon.html",
+      "anchor": {
+        "selector": "#panel-bills > div:nth-of-type(2) > div > table > tbody > tr:nth-of-type(3) > td:nth-of-type(5)",
+        "selectorIn": "#panel-bills > div:nth-of-type(2) > div > table > tbody > tr:nth-of-type(3) > td:nth-of-type(5)",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "td",
+        "text": "微信小店",
+        "html": "<td>微信小店</td>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "一期不考虑微信小店对账",
+      "status": "resolved",
+      "createdAt": "2026-10-24T03:45:53.871Z",
+      "updatedAt": "2026-10-24T04:26:28.623Z"
+    },
+    {
+      "id": "rmvluwn4h2ox3",
+      "page": "ops/recon.html",
+      "anchor": {
+        "selector": "#modal-run > div:nth-of-type(2) > div:nth-of-type(5) > label",
+        "selectorIn": "",
+        "root": "",
+        "region": "page",
+        "shell": "",
+        "label": "label",
+        "text": "对账范围",
+        "html": "<label>对账范围</label>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "一期不考虑微信小店对账",
+      "status": "resolved",
+      "createdAt": "2026-10-24T03:46:03.665Z",
+      "updatedAt": "2026-10-24T04:26:28.623Z"
+    },
+    {
+      "id": "rmvluwyq9l53m",
+      "page": "ops/recon.html",
+      "anchor": {
+        "selector": "#panel-bills > div:nth-of-type(2) > div > table > tbody > tr:nth-of-type(5) > td:nth-of-type(14) > a:nth-of-type(2)",
+        "selectorIn": "#panel-bills > div:nth-of-type(2) > div > table > tbody > tr:nth-of-type(5) > td:nth-of-type(14) > a:nth-of-type(2)",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "a",
+        "text": "复核申诉",
+        "html": "<a href=\"#\" data-row-act=\"review\">复核申诉</a>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "去掉",
+      "status": "resolved",
+      "createdAt": "2026-10-24T03:46:18.705Z",
+      "updatedAt": "2026-10-24T04:26:28.623Z"
+    },
+    {
+      "id": "rmvluxa2qmvan",
+      "page": "ops/recon.html",
+      "anchor": {
+        "selector": "#panel-bills > div:nth-of-type(2) > div > table > tbody > tr:nth-of-type(6) > td:nth-of-type(14)",
+        "selectorIn": "#panel-bills > div:nth-of-type(2) > div > table > tbody > tr:nth-of-type(6) > td:nth-of-type(14)",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "td.row-actions",
+        "text": "账期结束后次日 02:00 自动生成",
+        "html": "<td class=\"row-actions\"><span class=\"muted\" style=\"font-size:12px\">账期结束后次日 02:00 自动生成</span></td>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "去掉",
+      "status": "resolved",
+      "createdAt": "2026-10-24T03:46:33.411Z",
+      "updatedAt": "2026-10-24T04:26:28.623Z"
+    },
+    {
+      "id": "rmvlv2coepvbq",
+      "page": "ops/recon.html",
+      "anchor": {
+        "selector": "#panel-bills > div:nth-of-type(2) > div > table > thead > tr > th:nth-of-type(14)",
+        "selectorIn": "#panel-bills > div:nth-of-type(2) > div > table > thead > tr > th:nth-of-type(14)",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "th",
+        "text": "操作",
+        "html": "<th style=\"width:150px\">操作</th>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "差异处理，不放在当前列表中，让用户去到详情，对应有差异的每一条单独处理，不需要跳转新页面",
+      "status": "resolved",
+      "createdAt": "2026-10-24T03:50:30.063Z",
+      "updatedAt": "2026-10-24T04:26:28.623Z"
+    },
+    {
+      "id": "rmvlv2j0p1ypf",
+      "page": "ops/recon.html",
+      "anchor": {
+        "selector": "#rc-tabs > a:nth-of-type(2)",
+        "selectorIn": "#rc-tabs > a:nth-of-type(2)",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "a",
+        "text": "差异处理",
+        "html": "<a href=\"#\" data-tab=\"diffs\">差异处理</a>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "去掉",
+      "status": "resolved",
+      "createdAt": "2026-10-24T03:50:38.281Z",
+      "updatedAt": "2026-10-24T04:26:28.623Z"
+    },
+    {
+      "id": "rmvlv2x6zmuan",
+      "page": "admin/recon.html",
+      "anchor": {
+        "selector": "#admin-content-slot > div > div:nth-of-type(3) > div > table > tbody > tr:nth-of-type(2) > td:nth-of-type(3)",
+        "selectorIn": "div:nth-of-type(3) > div > table > tbody > tr:nth-of-type(2) > td:nth-of-type(3)",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "td",
+        "text": "微信小店",
+        "html": "<td>微信小店</td>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "一期不考虑微信小店对账",
+      "status": "resolved",
+      "createdAt": "2026-10-24T03:50:56.652Z",
+      "updatedAt": "2026-10-24T04:26:28.623Z"
+    },
+    {
+      "id": "rmvlv387jirnh",
+      "page": "admin/recon.html",
+      "anchor": {
+        "selector": "#admin-content-slot > div > div:nth-of-type(3) > div > table > tbody > tr:nth-of-type(5) > td:nth-of-type(10)",
+        "selectorIn": "div:nth-of-type(3) > div > table > tbody > tr:nth-of-type(5) > td:nth-of-type(10)",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "td",
+        "text": "次日 02:00 生成",
+        "html": "<td>次日 02:00 生成</td>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "去掉这一行",
+      "status": "resolved",
+      "createdAt": "2026-10-24T03:51:10.928Z",
+      "updatedAt": "2026-10-24T04:26:28.623Z"
+    },
+    {
+      "id": "rmvlv4j58y9q3",
+      "page": "admin/recon.html",
+      "anchor": {
+        "selector": "#admin-content-slot > div > div:nth-of-type(3) > div > table > thead > tr > th:nth-of-type(8)",
+        "selectorIn": "div:nth-of-type(3) > div > table > thead > tr > th:nth-of-type(8)",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "th",
+        "text": "状态",
+        "html": "<th>状态</th>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "这个状态，更改为：商家确认状态",
+      "status": "resolved",
+      "createdAt": "2026-10-24T03:52:11.756Z",
+      "updatedAt": "2026-10-24T04:26:28.623Z"
+    },
+    {
+      "id": "rmvlzdqy9i6s8",
+      "page": "ops/settlements.html",
+      "anchor": {
+        "selector": "#st-tbody > tr:nth-of-type(1) > td:nth-of-type(12) > a:nth-of-type(2)",
+        "selectorIn": "#st-tbody > tr:nth-of-type(1) > td:nth-of-type(12) > a:nth-of-type(2)",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "a",
+        "text": "催确认",
+        "html": "<a href=\"#\" data-row-act=\"notice\">催确认</a>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "去掉。 结算流程：对账完成之后，自动生成结算单，生成后，先由商家确认，再由运营后台的财务做确认，运营后台一次确认就可以。",
+      "status": "open",
+      "createdAt": "2026-10-24T05:51:20.241Z",
+      "updatedAt": "2026-10-24T06:00:28.193Z"
+    },
+    {
+      "id": "rmvlzfq8mz5h7",
+      "page": "admin/settlement.html",
+      "anchor": {
+        "selector": "#btn-apply",
+        "selectorIn": "#btn-apply",
+        "root": "#page-header-actions",
+        "region": "header-actions",
+        "shell": "",
+        "label": "button#btn-apply.btn.btn-primary",
+        "text": "申请结算",
+        "html": "<button class=\"btn btn-primary\" id=\"btn-apply\">申请结算</button>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "去掉",
+      "status": "open",
+      "createdAt": "2026-10-24T05:52:52.630Z"
+    },
+    {
+      "id": "rmvlzpl2xssj6",
+      "page": "ops/settlements.html",
+      "anchor": {
+        "selector": "#st-tbody > tr:nth-of-type(2) > td:nth-of-type(12) > a:nth-of-type(1)",
+        "selectorIn": "#st-tbody > tr:nth-of-type(2) > td:nth-of-type(12) > a:nth-of-type(1)",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "a",
+        "text": "复核",
+        "html": "<a href=\"settlement-detail.html\">复核</a>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "这里的每次确认，都需要一个二次确认弹窗",
+      "status": "open",
+      "createdAt": "2026-10-24T06:00:32.505Z"
+    },
+    {
+      "id": "rmvlzxc6429s1",
+      "page": "ops/payouts.html",
+      "anchor": {
+        "selector": "#admin-content-slot > div > div:nth-of-type(4) > div > table > thead > tr > th:nth-of-type(7)",
+        "selectorIn": "div:nth-of-type(4) > div > table > thead > tr > th:nth-of-type(7)",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "th",
+        "text": "风控标记",
+        "html": "<th>风控标记</th>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "去掉",
+      "status": "open",
+      "createdAt": "2026-10-24T06:06:34.205Z"
+    },
+    {
+      "id": "rmvlzzyp4jhdw",
+      "page": "ops/settlements.html",
+      "anchor": {
+        "selector": "#admin-content-slot > div > div:nth-of-type(1)",
+        "selectorIn": "div:nth-of-type(1)",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "div.alert.alert-info",
+        "text": "打款为敏感操作：需 双人复核（提交人 ≠ 复核人）并全程留痕；打款失败保留原结算单，支持原单重试。",
+        "html": "<div class=\"alert alert-info\" style=\"margin-bottom:12px\"> <span>打款为敏感操作：需 <b>双人复核</b>（提交人 ≠ 复核人）并全程留痕；打款失败保留原结算单，支持原单重试。</span> </div>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "去掉",
+      "status": "open",
+      "createdAt": "2026-10-24T06:08:36.712Z"
+    },
+    {
+      "id": "rmvm002knsz1z",
+      "page": "ops/settlements.html",
+      "anchor": {
+        "selector": "#admin-content-slot > div > div:nth-of-type(2) > div:nth-of-type(1)",
+        "selectorIn": "div:nth-of-type(2) > div:nth-of-type(1)",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "div.stat",
+        "text": "待商家确认¥32,420.605 单",
+        "html": "<div class=\"stat\"><div class=\"label\">待商家确认</div><div class=\"value\">¥32,420.60</div><div class=\"hint\">5 单</div></div>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "标记为二期",
+      "status": "open",
+      "createdAt": "2026-10-24T06:08:41.735Z",
+      "updatedAt": "2026-10-24T06:16:12.052Z"
+    },
+    {
+      "id": "rmvm0064yx7l9",
+      "page": "ops/settlements.html",
+      "anchor": {
+        "selector": "#admin-content-slot > div > div:nth-of-type(2) > div:nth-of-type(2)",
+        "selectorIn": "div:nth-of-type(2) > div:nth-of-type(2)",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "div.stat",
+        "text": "待财务复核¥18,905.423 单 · 其中 1 单超 24h",
+        "html": "<div class=\"stat\"><div class=\"label\">待财务复核</div><div class=\"value\">¥18,905.42</div><div class=\"hint\">3 单 · 其中 1 单超 24h</div></div>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "标记为二期",
+      "status": "open",
+      "createdAt": "2026-10-24T06:08:46.355Z",
+      "updatedAt": "2026-10-24T06:16:16.423Z"
+    },
+    {
+      "id": "rmvm009lp81o1",
+      "page": "ops/settlements.html",
+      "anchor": {
+        "selector": "#admin-content-slot > div > div:nth-of-type(2) > div:nth-of-type(3)",
+        "selectorIn": "div:nth-of-type(2) > div:nth-of-type(3)",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "div.stat",
+        "text": "结算中（打款中）¥8,123.401 单",
+        "html": "<div class=\"stat\"><div class=\"label\">结算中（打款中）</div><div class=\"value\">¥8,123.40</div><div class=\"hint\">1 单</div></div>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "标记为二期",
+      "status": "open",
+      "createdAt": "2026-10-24T06:08:50.845Z",
+      "updatedAt": "2026-10-24T06:16:20.462Z"
+    },
+    {
+      "id": "rmvm00lnz8elk",
+      "page": "ops/settlements.html",
+      "anchor": {
+        "selector": "#admin-content-slot > div > div:nth-of-type(6) > div:nth-of-type(1)",
+        "selectorIn": "div:nth-of-type(6) > div:nth-of-type(1)",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "div.card-hd",
+        "text": "结算流程说明",
+        "html": "<div class=\"card-hd\"><h2>结算流程说明</h2></div>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "去掉",
+      "status": "open",
+      "createdAt": "2026-10-24T06:09:06.480Z"
+    },
+    {
+      "id": "rmvm014njdni1",
+      "page": "ops/settlement-detail.html",
+      "anchor": {
+        "selector": "#admin-content-slot > div > div:nth-of-type(3) > div:nth-of-type(2) > div > div:nth-of-type(4)",
+        "selectorIn": "div:nth-of-type(3) > div:nth-of-type(2) > div > div:nth-of-type(4)",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "div.calc-row",
+        "text": "其他分账方分成-¥0.00",
+        "html": "<div class=\"calc-row\"><span>其他分账方分成</span><b class=\"danger\">-¥0.00</b></div>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "去掉",
+      "status": "open",
+      "createdAt": "2026-10-24T06:09:31.087Z"
+    },
+    {
+      "id": "rmvm021l8sct0",
+      "page": "ops/settlement-detail.html",
+      "anchor": {
+        "selector": "#admin-content-slot > div > div:nth-of-type(2) > div:nth-of-type(2) > div > div:nth-of-type(9) > label",
+        "selectorIn": "div:nth-of-type(2) > div:nth-of-type(2) > div > div:nth-of-type(9) > label",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "label",
+        "text": "是否需先开票",
+        "html": "<label>是否需先开票</label>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "去掉",
+      "status": "open",
+      "createdAt": "2026-10-24T06:10:13.772Z"
+    },
+    {
+      "id": "rmvm0911f6z6w",
+      "page": "ops/payouts.html",
+      "anchor": {
+        "selector": "#admin-content-slot > div > div:nth-of-type(2) > div:nth-of-type(1)",
+        "selectorIn": "div:nth-of-type(2) > div:nth-of-type(1)",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "div.stat",
+        "text": "待审核2合计 ¥8,600.00",
+        "html": "<div class=\"stat\"><div class=\"label\">待审核</div><div class=\"value\">2</div><div class=\"hint\">合计 ¥8,600.00</div></div>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "标记为二期",
+      "status": "open",
+      "createdAt": "2026-10-24T06:15:39.651Z",
+      "updatedAt": "2026-10-24T06:15:56.814Z"
+    },
+    {
+      "id": "rmvm099mmejcw",
+      "page": "ops/payouts.html",
+      "anchor": {
+        "selector": "#admin-content-slot > div > div:nth-of-type(2) > div:nth-of-type(2)",
+        "selectorIn": "div:nth-of-type(2) > div:nth-of-type(2)",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "div.stat",
+        "text": "今日已到账¥12,400.004 笔",
+        "html": "<div class=\"stat\"><div class=\"label\">今日已到账</div><div class=\"value\">¥12,400.00</div><div class=\"hint\">4 笔</div></div>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "标记为二期",
+      "status": "open",
+      "createdAt": "2026-10-24T06:15:50.782Z"
+    },
+    {
+      "id": "rmvm09i4pr9cs",
+      "page": "ops/payouts.html",
+      "anchor": {
+        "selector": "#admin-content-slot > div > div:nth-of-type(2) > div:nth-of-type(3)",
+        "selectorIn": "div:nth-of-type(2) > div:nth-of-type(3)",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "div.stat",
+        "text": "风控拦截2退款率超标 / 卡不一致",
+        "html": "<div class=\"stat\"><div class=\"label\">风控拦截</div><div class=\"value\">2</div><div class=\"hint\">退款率超标 / 卡不一致</div></div>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "去掉",
+      "status": "open",
+      "createdAt": "2026-10-24T06:16:01.801Z"
+    },
+    {
+      "id": "rmvm09kzf7dsp",
+      "page": "ops/payouts.html",
+      "anchor": {
+        "selector": "#admin-content-slot > div > div:nth-of-type(2) > div:nth-of-type(4)",
+        "selectorIn": "div:nth-of-type(2) > div:nth-of-type(4)",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "div.stat",
+        "text": "平均审核时长3.4h目标 ≤ 4h",
+        "html": "<div class=\"stat\"><div class=\"label\">平均审核时长</div><div class=\"value\">3.4h</div><div class=\"hint\">目标 ≤ 4h</div></div>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "标记为二期",
+      "status": "open",
+      "createdAt": "2026-10-24T06:16:05.499Z"
+    },
+    {
+      "id": "rmvm0a3f6xk46",
+      "page": "ops/settlements.html",
+      "anchor": {
+        "selector": "#admin-content-slot > div > div:nth-of-type(2) > div:nth-of-type(4)",
+        "selectorIn": "div:nth-of-type(2) > div:nth-of-type(4)",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "div.stat",
+        "text": "累计已结算¥486,830.55共 42 期",
+        "html": "<div class=\"stat\"><div class=\"label\">累计已结算</div><div class=\"value\">¥486,830.55</div><div class=\"hint\">共 42 期</div></div>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "标记为二期",
+      "status": "open",
+      "createdAt": "2026-10-24T06:16:29.394Z"
+    },
+    {
+      "id": "rmvm0aa70pzrn",
+      "page": "ops/recon.html",
+      "anchor": {
+        "selector": "#admin-content-slot > div > div:nth-of-type(2)",
+        "selectorIn": "div:nth-of-type(2)",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "div.alert.alert-info",
+        "text": "账单由运营侧发起：自动在每个租户各自的结算账期结束时生成；手动选时间区间时，只命中尚未进入任何对账单的订单。生成后进入「待核对」，运营/财务核对明细（剔除 / 补加订单）→ 确认账单并推送 → 商家确认后对账完成。",
+        "html": "<div class=\"alert alert-info\" style=\"margin-bottom:8px;display:block\"> 账单由运营侧发起：<b>自动</b>在每个租户各自的结算账期结束时生成；<b>手动</b>选时间区间时，<b>只命中尚未进入任何对账单的订单</b>。生成后进入「待核对」，运营/财务核对明细（剔除 / 补加订单）→ <b>确认账单并推送</b> → 商家确认后对账完成。 </div>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "去掉",
+      "status": "open",
+      "createdAt": "2026-10-24T06:16:38.173Z"
+    },
+    {
+      "id": "rmvm0ajdalbya",
+      "page": "ops/pay-flows.html",
+      "anchor": {
+        "selector": "#admin-content-slot > div > div:nth-of-type(2) > div:nth-of-type(4)",
+        "selectorIn": "div:nth-of-type(2) > div:nth-of-type(4)",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "div.stat",
+        "text": "待核对差异2去对账 →",
+        "html": "<div class=\"stat\"><div class=\"label\">待核对差异</div><div class=\"value\">2</div><div class=\"hint\"><a href=\"recon.html\" style=\"color:inherit\">去对账 →</a></div></div>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "标记为二期",
+      "status": "open",
+      "createdAt": "2026-10-24T06:16:50.063Z"
+    },
+    {
+      "id": "rmvm0aq42wehw",
+      "page": "ops/pay-flows.html",
+      "anchor": {
+        "selector": "#admin-content-slot > div > div:nth-of-type(2) > div:nth-of-type(1)",
+        "selectorIn": "div:nth-of-type(2) > div:nth-of-type(1)",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "div.stat",
+        "text": "本期收入¥24,650.00近 30 天 · 全平台",
+        "html": "<div class=\"stat\"><div class=\"label\">本期收入</div><div class=\"value\">¥24,650.00</div><div class=\"hint\">近 30 天 · 全平台</div></div>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "标记为二期",
+      "status": "open",
+      "createdAt": "2026-10-24T06:16:58.802Z"
+    },
+    {
+      "id": "rmvm0asbmnhhu",
+      "page": "ops/pay-flows.html",
+      "anchor": {
+        "selector": "#admin-content-slot > div > div:nth-of-type(2) > div:nth-of-type(2)",
+        "selectorIn": "div:nth-of-type(2) > div:nth-of-type(2)",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "div.stat",
+        "text": "本期支出¥2,080.15退款 + 入金手续费 + 分成",
+        "html": "<div class=\"stat\"><div class=\"label\">本期支出</div><div class=\"value\">¥2,080.15</div><div class=\"hint\">退款 + 入金手续费 + 分成</div></div>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "标记为二期",
+      "status": "open",
+      "createdAt": "2026-10-24T06:17:01.666Z"
+    },
+    {
+      "id": "rmvm0aw5bsrxa",
+      "page": "ops/pay-flows.html",
+      "anchor": {
+        "selector": "#admin-content-slot > div > div:nth-of-type(2) > div:nth-of-type(3)",
+        "selectorIn": "div:nth-of-type(2) > div:nth-of-type(3)",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "div.stat",
+        "text": "净收入¥22,569.85按支付时间口径",
+        "html": "<div class=\"stat\"><div class=\"label\">净收入</div><div class=\"value\">¥22,569.85</div><div class=\"hint\">按支付时间口径</div></div>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "标记为二期",
+      "status": "open",
+      "createdAt": "2026-10-24T06:17:06.623Z"
+    },
+    {
+      "id": "rmvm0ayffpcib",
+      "page": "ops/pay-flows.html",
+      "anchor": {
+        "selector": "#admin-content-slot > div > div:nth-of-type(1)",
+        "selectorIn": "div:nth-of-type(1)",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "div.alert.alert-info",
+        "text": "平台视角全量租户支付流水：与商家管理后台「支付流水」同源，额外带 租户 列，用于跨租户核查。按订单「支付时间」逐笔记录收入 / 支出，支持与通联支付「资金账单」跨平台对账。",
+        "html": "<div class=\"alert alert-info\" style=\"margin-bottom:12px\"> <span>平台视角全量<b>租户支付流水</b>：与商家管理后台「支付流水」同源，额外带 <b>租户</b> 列，用于跨租户核查。按订单「支付时间」逐笔记录收入 / 支出，支持与<b>通联支付「资金账单」</b>跨平台对账。</span> </div>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "标记为二期",
+      "status": "open",
+      "createdAt": "2026-10-24T06:17:09.579Z"
+    },
+    {
+      "id": "rmvm0b4wcd37r",
+      "page": "ops/pay-flows.html",
+      "anchor": {
+        "selector": "#admin-content-slot > div > div:nth-of-type(5) > div",
+        "selectorIn": "div:nth-of-type(5) > div",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "div.card-bd",
+        "text": "口径说明：租户支付流水按订单「支付时间」逐笔记录收入 / 支出，平台侧为全租户并集，租户列标识归属；支持与通联支付「资金账单」跨平台对账。 平台费率收入（佣金 / 服务费）见「服务费台账」；分账与结算规则由平台统一配置（运营后台 · 结算规则配置）；数据同步可能存在约 3 秒误差，属正常现象。",
+        "html": "<div class=\"card-bd\"> <p class=\"muted\" style=\"font-size:12px;line-height:1.9\"> <b>口径说明：</b>租户支付流水按订单「支付时间」逐笔记录收入 / 支出，平台侧为全租户并集，租户列标识归属；支持与<b>通联支付「资金账单」</b>跨平台对账。 平台费率收入（佣金 / 服务费）见「服务费台账」；分账与结算规则由平台统一配置（运营后台 · 结算规则配置）；数据同步可能存在约 3 秒误差，属正常现象。 </p> </div>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "去掉",
+      "status": "open",
+      "createdAt": "2026-10-24T06:17:17.964Z"
+    },
+    {
+      "id": "rmvm0bv9l914a",
+      "page": "admin/bills.html",
+      "anchor": {
+        "selector": "#admin-content-slot > div > div:nth-of-type(1) > div:nth-of-type(2)",
+        "selectorIn": "div:nth-of-type(1) > div:nth-of-type(2)",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "div.stat",
+        "text": "本期支出¥2,080.15退款 + 入金手续费 + 分成",
+        "html": "<div class=\"stat\"><div class=\"label\">本期支出</div><div class=\"value\">¥2,080.15</div><div class=\"hint\">退款 + 入金手续费 + 分成</div></div>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "按照下方筛选来统计",
+      "status": "open",
+      "createdAt": "2026-10-24T06:17:52.137Z",
+      "updatedAt": "2026-10-24T06:19:15.936Z"
+    },
+    {
+      "id": "rmvm0bymjtal8",
+      "page": "admin/bills.html",
+      "anchor": {
+        "selector": "#admin-content-slot > div > div:nth-of-type(1) > div:nth-of-type(3)",
+        "selectorIn": "div:nth-of-type(1) > div:nth-of-type(3)",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "div.stat",
+        "text": "净收入¥22,569.85按支付时间口径",
+        "html": "<div class=\"stat\"><div class=\"label\">净收入</div><div class=\"value\">¥22,569.85</div><div class=\"hint\">按支付时间口径</div></div>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "按照下方筛选来统计",
+      "status": "open",
+      "createdAt": "2026-10-24T06:17:56.491Z",
+      "updatedAt": "2026-10-24T06:19:27.870Z"
+    },
+    {
+      "id": "rmvm0c17wirdf",
+      "page": "admin/bills.html",
+      "anchor": {
+        "selector": "#admin-content-slot > div > div:nth-of-type(1) > div:nth-of-type(4)",
+        "selectorIn": "div:nth-of-type(1) > div:nth-of-type(4)",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "div.stat",
+        "text": "待核对差异2去对账 →",
+        "html": "<div class=\"stat\"><div class=\"label\">待核对差异</div><div class=\"value\">2</div><div class=\"hint\"><a href=\"recon.html\" style=\"color:inherit\">去对账 →</a></div></div>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "标记为二期",
+      "status": "open",
+      "createdAt": "2026-10-24T06:17:59.852Z"
+    },
+    {
+      "id": "rmvm0cx9mhaal",
+      "page": "admin/bills.html",
+      "anchor": {
+        "selector": "#admin-content-slot > div > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(3)",
+        "selectorIn": "div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(3)",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "div.hint",
+        "text": "近 30 天",
+        "html": "<div class=\"hint\">近 30 天</div>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "去掉",
+      "status": "open",
+      "createdAt": "2026-10-24T06:18:41.386Z",
+      "updatedAt": "2026-10-24T06:18:55.623Z"
+    },
+    {
+      "id": "rmvm0dfftsnzt",
+      "page": "admin/bills.html",
+      "anchor": {
+        "selector": "#admin-content-slot > div > div:nth-of-type(1) > div:nth-of-type(1)",
+        "selectorIn": "div:nth-of-type(1) > div:nth-of-type(1)",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "div.stat",
+        "text": "本期收入¥24,650.00近 30 天",
+        "html": "<div class=\"stat\"><div class=\"label\">本期收入</div><div class=\"value\">¥24,650.00</div><div class=\"hint\">近 30 天</div></div>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "按照下方筛选来统计",
+      "status": "open",
+      "createdAt": "2026-10-24T06:19:04.937Z",
+      "updatedAt": "2026-10-24T06:19:21.705Z"
+    },
+    {
+      "id": "rmvm0f1pegt30",
+      "page": "admin/recon.html",
+      "anchor": {
+        "selector": "#admin-content-slot > div > div:nth-of-type(1) > div:nth-of-type(1)",
+        "selectorIn": "div:nth-of-type(1) > div:nth-of-type(1)",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "div.stat",
+        "text": "待确认账单2请及时确认或提出异议",
+        "html": "<div class=\"stat\"><div class=\"label\">待确认账单</div><div class=\"value\">2</div><div class=\"hint\">请及时确认或提出异议</div></div>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "标记为二期",
+      "status": "open",
+      "createdAt": "2026-10-24T06:20:20.450Z"
+    },
+    {
+      "id": "rmvm0f49hvsd5",
+      "page": "admin/recon.html",
+      "anchor": {
+        "selector": "#admin-content-slot > div > div:nth-of-type(1) > div:nth-of-type(2)",
+        "selectorIn": "div:nth-of-type(1) > div:nth-of-type(2)",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "div.stat",
+        "text": "本期交易额¥8,432.2086 笔",
+        "html": "<div class=\"stat\"><div class=\"label\">本期交易额</div><div class=\"value\">¥8,432.20</div><div class=\"hint\">86 笔</div></div>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "标记为二期",
+      "status": "open",
+      "createdAt": "2026-10-24T06:20:23.765Z"
+    },
+    {
+      "id": "rmvm0f6qtzsr1",
+      "page": "admin/recon.html",
+      "anchor": {
+        "selector": "#admin-content-slot > div > div:nth-of-type(1) > div:nth-of-type(3)",
+        "selectorIn": "div:nth-of-type(1) > div:nth-of-type(3)",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "div.stat",
+        "text": "本期退款额¥308.804 笔（含售后单）",
+        "html": "<div class=\"stat\"><div class=\"label\">本期退款额</div><div class=\"value\">¥308.80</div><div class=\"hint\">4 笔（含售后单）</div></div>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "标记为二期",
+      "status": "open",
+      "createdAt": "2026-10-24T06:20:26.981Z"
+    },
+    {
+      "id": "rmvm0fpqxdvym",
+      "page": "admin/settlement.html",
+      "anchor": {
+        "selector": "#admin-content-slot > div > div:nth-of-type(1) > div:nth-of-type(1)",
+        "selectorIn": "div:nth-of-type(1) > div:nth-of-type(1)",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "div.stat",
+        "text": "待确认结算额¥12,409.90账期 03-25 ~ 03-31",
+        "html": "<div class=\"stat\"><div class=\"label\">待确认结算额</div><div class=\"value\">¥12,409.90</div><div class=\"hint\">账期 03-25 ~ 03-31</div></div>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "标记为二期",
+      "status": "open",
+      "createdAt": "2026-10-24T06:20:51.609Z"
+    },
+    {
+      "id": "rmvm0fshykw6v",
+      "page": "admin/settlement.html",
+      "anchor": {
+        "selector": "#admin-content-slot > div > div:nth-of-type(1) > div:nth-of-type(2)",
+        "selectorIn": "div:nth-of-type(1) > div:nth-of-type(2)",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "div.stat",
+        "text": "结算中¥0.00无进行中打款",
+        "html": "<div class=\"stat\"><div class=\"label\">结算中</div><div class=\"value\">¥0.00</div><div class=\"hint\">无进行中打款</div></div>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "标记为二期",
+      "status": "open",
+      "createdAt": "2026-10-24T06:20:55.174Z"
+    },
+    {
+      "id": "rmvm0fviudm8q",
+      "page": "admin/settlement.html",
+      "anchor": {
+        "selector": "#admin-content-slot > div > div:nth-of-type(1) > div:nth-of-type(3)",
+        "selectorIn": "div:nth-of-type(1) > div:nth-of-type(3)",
+        "root": "#page-content",
+        "region": "content",
+        "shell": "",
+        "label": "div.stat",
+        "text": "累计已结算¥46,830.55共 6 期",
+        "html": "<div class=\"stat\"><div class=\"label\">累计已结算</div><div class=\"value\">¥46,830.55</div><div class=\"hint\">共 6 期</div></div>"
+      },
+      "type": "copy",
+      "priority": "P1",
+      "comment": "标记为二期",
+      "status": "open",
+      "createdAt": "2026-10-24T06:20:59.094Z"
+    }
+  ]
+}

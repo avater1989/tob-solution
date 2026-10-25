@@ -12,12 +12,11 @@
 </div>
 <div id="page-content" style="display:none">
 
-  <!-- 顶部统计 -->
-  <div class="grid-4" style="margin-bottom:16px" data-phase2-only>
+  <!-- 顶部统计（二期） -->
+  <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-bottom:16px" data-phase2-only>
     <div class="stat"><div class="label">待处理</div><div class="value">4</div><div class="hint">需 7 天内处理，超时自动同意</div></div>
-    <div class="stat"><div class="label">待退货</div><div class="value">1</div><div class="hint">等待买家寄回</div></div>
-    <div class="stat"><div class="label">待收货退款</div><div class="value">2</div><div class="hint">商家验收后退款</div></div>
-    <div class="stat"><div class="label">本月售后率</div><div class="value">2.4%</div><div class="hint">售后单/已支付订单</div></div>
+    <div class="stat"><div class="label">退款中</div><div class="value">2</div><div class="hint">等待渠道退款回调</div></div>
+    <div class="stat"><div class="label">本月售后率</div><div class="value">2.4%</div><div class="hint">售后单 / 已支付订单</div></div>
   </div>
 
   <!-- 状态 Tab（类型维度由筛选「售后类型」与列表「类型」列承载） -->
@@ -29,7 +28,7 @@
     <a href="#" data-tab="closed">已关闭</a>
   </div>
 
-  <p class="muted" style="margin:0 0 8px;font-size:12px">状态流转：<b>待商家处理</b> →（仅退款）<b>退款中</b> → <b>已退款</b>；<b>待商家处理</b> →（退货退款）<b>待买家退货</b> → <b>待商家收货</b> → <b>退款中</b> → <b>已退款</b>；<b>待商家处理</b> → <b>已驳回</b>；超时未寄回 / 买家撤回 → <b>已关闭</b>。仅「待商家处理」「待商家收货」有可执行的审核类操作。</p>
+  <p class="muted" style="margin:0 0 8px;font-size:12px">状态流转：<b>待商家处理</b> →（审核通过）<b>退款中</b> →（渠道回调成功）<b>已退款</b>；<b>待商家处理</b> →（驳回）<b>已驳回</b>；买家撤回 → <b>已关闭</b>。平台无实物商品，不含<b>退货与物流环节</b>；仅「待商家处理」有可执行的审核类操作。</p>
 
   <!-- 筛选 -->
   <div class="card" style="margin-bottom:8px"><div class="card-bd">
@@ -37,10 +36,10 @@
       <input id="f-no" placeholder="售后单号 / 订单号" />
       <input id="f-buyer" placeholder="买家（姓名/手机号）" />
       <select id="f-type">
-        <option value="">售后类型</option><option>仅退款</option><option>退款并回收权益</option>
+        <option value="">售后类型</option><option>仅退款</option><option>退款并回收权益</option><option>退款不回收权益</option>
       </select>
       <select id="f-status">
-        <option value="">状态</option><option>待商家处理</option><option>待买家退货</option><option>待商家收货</option><option>退款中</option><option>已退款</option><option>已驳回</option><option>已关闭</option>
+        <option value="">状态</option><option>待商家处理</option><option>退款中</option><option>已退款</option><option>已驳回</option><option>已关闭</option>
       </select>
       <input id="f-time1" type="datetime-local" />
       <input id="f-time2" type="datetime-local" />
@@ -68,11 +67,11 @@
       <tbody id="as-tbody">
         <tr data-status="待商家处理">
           <td><a href="aftersale-detail.html?id=AS202609080001" class="link-mono">AS202609080001</a></td>
-          <td><span class="tag tag-warn">退货退款</span></td>
-          <td><span style="font-family:ui-monospace,Consolas,monospace;font-size:12px">YB20260907000331</span><br><span class="muted" style="font-size:12px">家长手册 · 2 件</span></td>
+          <td><span class="tag tag-blue">仅退款</span></td>
+          <td><span style="font-family:ui-monospace,Consolas,monospace;font-size:12px">YB20260907000331</span><br><span class="muted" style="font-size:12px">家长手册（电子版）</span></td>
           <td>李*** U0001</td>
-          <td><b class="danger">¥78.00</b><br><span class="muted" style="font-size:12px">含退运费 ¥0</span></td>
-          <td>尺码/规格不符</td>
+          <td><b class="danger">¥78.00</b></td>
+          <td>内容与预期不符</td>
           <td><span class="badge badge-warn">待商家处理</span></td>
           <td>2026-09-08 10:12</td>
           <td class="row-actions"><a href="aftersale-detail.html?id=AS202609080001">处理</a><a href="aftersale-detail.html?id=AS202609080001">详情</a></td>
@@ -91,10 +90,10 @@
         <tr data-status="退款中">
           <td><a href="aftersale-detail.html?id=AS202609060002" class="link-mono">AS202609060002</a></td>
           <td><span class="tag tag-green">仅退款</span></td>
-          <td><span style="font-family:ui-monospace,Consolas,monospace;font-size:12px">YB20260906000892</span><br><span class="muted" style="font-size:12px">家长手册</span></td>
+          <td><span style="font-family:ui-monospace,Consolas,monospace;font-size:12px">YB20260906000892</span><br><span class="muted" style="font-size:12px">家长手册（电子版）</span></td>
           <td>陈*** U0010</td>
           <td><b class="danger">¥39.00</b></td>
-          <td>商品质量问题</td>
+          <td>内容与预期不符</td>
           <td><span class="badge badge-warn">退款中</span></td>
           <td>2026-09-06 21:30</td>
           <td class="row-actions"><a href="aftersale-detail.html?id=AS202609060002">处理</a><a href="aftersale-detail.html?id=AS202609060002">详情</a></td>
@@ -121,39 +120,19 @@
           <td>2026-09-02 11:22</td>
           <td class="row-actions"><a href="aftersale-detail.html?id=AS202609020003">详情</a></td>
         </tr>
-        <tr data-status="待买家退货">
-          <td><a href="aftersale-detail.html?id=AS202609100002" class="link-mono">AS202609100002</a></td>
-          <td><span class="tag tag-warn">退货退款</span></td>
-          <td><span style="font-family:ui-monospace,Consolas,monospace;font-size:12px">YB20260909000415</span><br><span class="muted" style="font-size:12px">家长手册 · 1 件</span></td>
-          <td>王*** U0002</td>
-          <td><b class="danger">¥39.00</b><br><span class="muted" style="font-size:12px">含退运费 ¥0</span></td>
-          <td>商品质量问题</td>
-          <td><span class="badge badge-info">待买家退货</span><br><span class="muted" style="font-size:12px">7 天未寄回自动关闭</span></td>
-          <td>2026-09-10 09:20</td>
-          <td class="row-actions"><a href="aftersale-detail.html?id=AS202609100002">催寄回</a><a href="aftersale-detail.html?id=AS202609100002">详情</a></td>
-        </tr>
-        <tr data-status="待商家收货">
-          <td><a href="aftersale-detail.html?id=AS202609090006" class="link-mono">AS202609090006</a></td>
-          <td><span class="tag tag-warn">退货退款</span></td>
-          <td><span style="font-family:ui-monospace,Consolas,monospace;font-size:12px">YB20260908000377</span><br><span class="muted" style="font-size:12px">家长手册 · 2 件</span></td>
-          <td>赵*** U0008</td>
-          <td><b class="danger">¥78.00</b><br><span class="muted" style="font-size:12px">含退运费 ¥0</span></td>
-          <td>尺码/规格不符</td>
-          <td><span class="badge badge-warn">待商家收货</span><br><span class="muted" style="font-size:12px">顺丰 SF1234567890</span></td>
-          <td>2026-09-09 14:05</td>
-          <td class="row-actions"><a href="aftersale-detail.html?id=AS202609090006">确认收货</a><a href="aftersale-detail.html?id=AS202609090006">详情</a></td>
-        </tr>
+        
+        
         <!-- 订单退款已并入本页（原「交易 · 订单退款」） -->
         <tr data-kind="refund"
             data-no="RF202604020001" data-order="YB20260324100231" data-buyer="周***"
-            data-amount="¥299.00" data-type="退款并回收权益" data-reason="商品/服务问题"
+            data-amount="¥299.00" data-type="退款并回收权益" data-reason="内容/服务问题"
             data-benefit="退款成功后回收" data-status="待商家处理" data-time="2026-04-02 10:15">
           <td><a href="#" class="link-mono" data-row-act="detail">RF202604020001</a></td>
           <td><span class="tag tag-purple">退款并回收权益</span></td>
           <td><span style="font-family:ui-monospace,Consolas,monospace;font-size:12px">YB20260324100231</span></td>
           <td>周*** U0006</td>
           <td><b class="danger">¥299.00</b></td>
-          <td>商品/服务问题</td>
+          <td>内容/服务问题</td>
           <td><span class="badge badge-warn">待商家处理</span><br><span class="muted" style="font-size:12px">权益：退款成功后回收</span></td>
           <td>2026-04-02 10:15</td>
           <td class="row-actions"><a href="#" data-row-act="audit">审核</a><a href="#" data-row-act="detail">详情</a></td>
@@ -226,7 +205,7 @@
 
   <div class="card" style="margin-top:16px"><div class="card-bd">
     <p class="muted" style="font-size:12px;line-height:1.8">
-      <b>售后时效：</b>售后单 <b>7 天</b>内未处理将自动同意并退款；虚拟商品不涉及退货物流，退款时按设置回收课程权益 / 服务额度。
+      <b>售后时效：</b>售后单 <b>7 天</b>内未处理将自动同意并退款；平台无实物商品，售后不含退货与物流环节；退款时按设置回收课程权益 / 服务额度。
       已分佣的推广订单退款后佣金损失由商家承担；退款将返还通联入金手续费。链路 A（平台内容）退款由平台主导，链路 B（商家自建）退回商家账户且受余额约束。
       售后规则由平台统一配置（运营后台 · 交易选项），商家侧不再单独设置。
     </p>
@@ -245,11 +224,8 @@
       <div class="field"><label>商家处理超时</label>
         <select style="width:100%;padding:7px 8px;border:1px solid var(--color-border);border-radius:6px"><option>7 天自动同意</option><option>3 天自动同意</option></select>
       </div>
-      <div class="field" style="grid-column:1/-1"><label>退货物流超时</label>
-        <select style="width:100%;padding:7px 8px;border:1px solid var(--color-border);border-radius:6px"><option>买家 7 天未寄回自动关闭</option><option>买家 15 天未寄回自动关闭</option></select>
-      </div>
-    </div>
-    <p class="muted" style="margin-top:8px">完整售后设置（7 天无理由、运费险、退货地址）请前往「交易设置-交易选项-售后设置」。</p>
+          </div>
+    <p class="muted" style="margin-top:8px">完整售后设置请前往「交易设置-交易选项-售后设置」。</p>
   </div>
   <div class="proto-drawer-ft" style="border-top:1px solid var(--color-border);padding:12px 20px;display:flex;gap:8px;justify-content:flex-end">
     <button class="btn" data-close>取消</button>
@@ -361,7 +337,7 @@
   var TAB_SET = {
     all: null,
     pending: ["待商家处理"],
-    processing: ["待买家退货", "待商家收货", "退款中"],
+    processing: ["退款中"],
     done: ["已退款"],
     closed: ["已驳回", "已关闭"]
   };
